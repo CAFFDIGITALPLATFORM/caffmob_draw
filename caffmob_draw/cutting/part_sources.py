@@ -227,12 +227,17 @@ def synthetic_records(module, thickness_for):
                      for role in ('LEFT', 'RIGHT', 'BOTTOM', 'TOP', 'BACK')}
     inner = max(50.0, width - structure['LEFT'][2] - structure['RIGHT'][2])
     vertical = height - structure['BOTTOM'][2] - structure['TOP'][2]
+    # Feature 012 (D-09): comprimento das chapas pela montagem do módulo (lateral ou base passante).
+    from ..cabinet_editor.structure import carcass_lengths
+    assembly = getattr(cab, 'assembly', 'LATERAL') if cab is not None else 'LATERAL'
+    lengths = carcass_lengths(width, height, structure['LEFT'][2], structure['RIGHT'][2], structure['BOTTOM'][2],
+                              assembly)
     edge = [True, False, False, False]
     candidates = [          # (papel, comprimento, largura, componente, nome da peça, fitas)
-        ('LEFT', height, depth, "LAT", "Lateral esquerda", edge),
-        ('RIGHT', height, depth, "LAT", "Lateral direita", edge),
-        ('BOTTOM', inner, depth, "BAS", "Base inferior", edge),
-        ('TOP', inner, depth, "BAS", "Base superior", edge),
+        ('LEFT', lengths['LEFT'], depth, "LAT", "Lateral esquerda", edge),
+        ('RIGHT', lengths['RIGHT'], depth, "LAT", "Lateral direita", edge),
+        ('BOTTOM', max(50.0, lengths['BOTTOM']), depth, "BAS", "Base inferior", edge),
+        ('TOP', max(50.0, lengths['TOP']), depth, "BAS", "Base superior", edge),
         ('BACK', max(50.0, vertical + 16.0), max(50.0, inner + 16.0), "FUN_INF", "Fundo", [False] * 4),
     ]
     spec = [(component, name, length, part_width, structure[role][1], edges, structure[role][3])

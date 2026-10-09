@@ -104,8 +104,16 @@ class BTM_OT_ImportModel(bpy.types.Operator, ImportHelper):
         new = [obj for obj in bpy.data.objects if obj not in before]
         meshes = [obj for obj in new if obj.type == 'MESH']
         unit = self._apply_unit(context, new, ext)
+        root = _group_import(new, meshes, os.path.splitext(os.path.basename(self.filepath))[0])
         for obj in context.selected_objects:
             obj.select_set(False)
+        if root is not None:
+            root.select_set(True)
+            context.view_layer.objects.active = root
+            self.report({'INFO'}, tr("{} malha(s) importada(s) num grupo, unidade: {}. Alt + clique seleciona uma "
+                                     "peça; para converter, selecione as peças com Alt + Shift + clique, o pai por "
+                                     "último").format(len(meshes), unit))
+            return {'FINISHED'}
         for obj in meshes:
             obj.select_set(True)
         if meshes:
@@ -150,3 +158,24 @@ def unregister():
     for cls in reversed(classes):
         if cls.is_registered:
             bpy.utils.unregister_class(cls)
+
+
+def _group_import(new, meshes, name):
+    """Feature 011 (RN-02, D-09): o arquivo importado vira um componente; devolve a raiz, ou None com uma malha só.
+
+    - várias raízes, todas malhas (OBJ): um grupo de peças novo (`group.create_group`);
+    - uma raiz que não é malha (Empty do FBX/glTF): ela mesma vira o grupo;
+    - várias raízes mistas: as malhas de topo vão para um grupo novo; os Empties ficam como vieram.
+    """
+    from . import group
+    if len(meshes) < 2:
+        return None
+    roots = [obj for obj in new if obj.parent is None or obj.parent not in new]
+    if len(roots) == 1 and roots[0].type != 'MESH':
+        data = roots[0].btm_group
+        data.is_group, data.kind = True, 'PLAIN'
+        return roots[0]
+    mesh_roots = [obj for obj in roots if obj.type == 'MESH']
+    if len(mesh_roots) < 2:
+        return None
+    return group.create_group(mesh_roots, 'PLAIN', name or "Grupo")

@@ -56,10 +56,12 @@ def run():
     check("46 peças e 4 materiais", len(meshes) == 46 and len(materials) == 4, f"{len(meshes)} {materials}")
     rest = {o.name: o.matrix_world.copy() for o in meshes}
 
-    for o in meshes:
-        o.select_set(True)
-    ctx.view_layer.objects.active = meshes[0]
+    imported = ctx.view_layer.objects.active            # feature 011 (D-09): o OBJ entra num grupo, já selecionado
+    check("importação vira um grupo", group.is_group(imported) and set(group.members(imported)) == set(meshes),
+          imported.name if imported else "nada")
+    imported_name = imported.name if imported else ""
     check("Montar esquadria", bpy.ops.caffmob.window_assemble('EXEC_DEFAULT') == {'FINISHED'})
+    check("o grupo da importação sai", imported_name and imported_name not in bpy.data.objects, imported_name)
     frame = ctx.view_layer.objects.active
     sashes = {o.name: o for o in frame.children_recursive if group.is_group(o)}
     counts = sorted([(frame.name, len(group.members(frame)))] + [(n, len(group.members(s))) for n, s in sashes.items()])

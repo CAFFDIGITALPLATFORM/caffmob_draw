@@ -108,6 +108,26 @@ Como funciona:
 - **Plano de corte:** as peças da porta ficam fora por padrão. Para uma folha entrar no corte, marque-a como peça de
   produção na seção Selecionado.
 
+### Porta ou janela numa região marcada
+
+Para a porta ou a janela ocupar um vão que você já conhece, marque a região na parede antes de escolher a abertura:
+1. Em **Construir › Aberturas**, clique em **Marcar região**.
+2. Clique num canto do vão na parede e depois no canto oposto. Os cantos andam na grade de 10 mm (com **Shift**,
+   1 mm). Um clique um pouco abaixo do piso ou além da ponta da parede vale como a borda.
+3. A região fica desenhada em azul na parede, com as medidas. Na barra lateral, **Esquerda**, **Direita**, **Base** e
+   **Topo** acertam os cantos pelo teclado.
+4. Escolha a porta (simples, dupla ou vão aberto) ou a janela. Ela já aparece na região; tecle **Enter** ou clique
+   para confirmar.
+
+O furo na parede fica **exatamente** do tamanho da região, sem nenhum milímetro a mais na largura ou na altura (sem a
+região, a medida digitada é a da folha e o furo sai um pouco maior):
+- a **porta** encosta no piso e vai até a borda de cima da região, mesmo que a região comece acima do piso;
+- a **janela** usa a borda de baixo da região como peitoril.
+
+Se a região passa da ponta da parede, é mais alta que ela ou encosta em outra porta ou janela, um aviso diz o motivo e
+a inserção segue presa ao cursor, como sempre. **Esc** durante a inserção cancela a porta e mantém a região; **Esc** na
+vista 3D ou o **X** ao lado de **Marcar região** apaga a região.
+
 ## 1b. Modo de vista
 
 No topo da seção **Construir**:

@@ -46,5 +46,49 @@
  "Valor Inválido: {} não é editável para este objeto.": {
   "pt_BR": "Valor Inválido: {} não é editável para este objeto.",
   "en_US": "Invalid Value: {} is not editable for this object."
+ },
+ "Seleção por componente: desligada": {
+  "pt_BR": "Seleção por componente: desligada",
+  "en_US": "Component Selection: off"
+ },
+ "Seleção por componente: ligada": {
+  "pt_BR": "Seleção por componente: ligada",
+  "en_US": "Component Selection: on"
+ },
+ "Selecionar peça": {
+  "pt_BR": "Selecionar peça",
+  "en_US": "Select Part"
+ },
+ "Seleciona só a peça sob o cursor, sem subir para o componente": {
+  "pt_BR": "Seleciona só a peça sob o cursor, sem subir para o componente",
+  "en_US": "Selects only the part under the cursor, without going up to the component"
+ },
+ "Somar à seleção": {
+  "pt_BR": "Somar à seleção",
+  "en_US": "Add to Selection"
+ },
+ "Voltar à seleção por componente": {
+  "pt_BR": "Voltar à seleção por componente",
+  "en_US": "Back to Component Selection"
+ },
+ "Clique sem Alt: a peça escolhida deixa de ser isenta e o componente volta a ser selecionado": {
+  "pt_BR": "Clique sem Alt: a peça escolhida deixa de ser isenta e o componente volta a ser selecionado",
+  "en_US": "Click without Alt: the picked part is no longer exempt and the component is selected again"
+ },
+ "Seleção por componente": {
+  "pt_BR": "Seleção por componente",
+  "en_US": "Component Selection"
+ },
+ "Ligada: Alt + clique seleciona uma peça": {
+  "pt_BR": "Ligada: Alt + clique seleciona uma peça",
+  "en_US": "On: Alt + click selects one part"
+ },
+ "Desligada: clique seleciona a peça": {
+  "pt_BR": "Desligada: clique seleciona a peça",
+  "en_US": "Off: click selects the part"
+ },
+ "Clicar numa peça seleciona o componente inteiro (porta, janela, item importado). Alt + clique seleciona só a peça": {
+  "pt_BR": "Clicar numa peça seleciona o componente inteiro (porta, janela, item importado). Alt + clique seleciona só a peça",
+  "en_US": "Clicking a part selects the whole component (door, window, imported item). Alt + click selects only the part"
  }
 }

@@ -243,8 +243,14 @@ def operator_names(records):
 
 
 # Verificações ------------------------------------------------------------------------------------------------
+def retired_prefixes():
+    """Operadores aposentados de propósito (feature 012, T055; D-06): ficam fora da conta do RF-08."""
+    path = Path(__file__).resolve().parent / "fixtures" / "sidebar_retired_012.json"
+    return tuple(json.loads(path.read_text(encoding='utf-8'))['operator_prefixes'])
+
+
 def missing_capabilities(baseline, current):
-    """RF-08: operadores da linha de base sem caminho agora (em nenhum contexto)."""
+    """RF-08: operadores da linha de base sem caminho agora (em nenhum contexto), menos os aposentados."""
     before = set()
     for records in baseline['sidebar'].values():
         before |= operator_names(records)
@@ -253,7 +259,8 @@ def missing_capabilities(baseline, current):
     after = set()
     for name in current['sidebar']:
         after |= operator_names(current['sidebar'][name]) | operator_names(current['paths'][name])
-    return sorted(before - after)
+    retired = retired_prefixes()
+    return sorted(name for name in before - after if not name.startswith(retired))
 
 
 def repeated(current):

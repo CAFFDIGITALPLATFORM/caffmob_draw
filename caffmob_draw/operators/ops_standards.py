@@ -5,6 +5,11 @@
 - Gestão: definir ativa, duplicar, renomear, excluir (embutidas protegidas).
 - Arquivos: exportar/importar `.btmdim.json` e `DIMENSIONEXPORT` do Promob.
 - `caffmob.standards_report`: janela com o relatório da última aplicação/importação.
+
+Feature 012 (T033, T034; D-22, RN-10): mudar o padrão global (Configurador, Aplicar, Definir ativa) só grava e
+ativa; quem decide o que muda na cena são as duas perguntas: `caffmob.standards_apply_scene` ("Aplicar a todos os
+módulos existentes na cena?") e, se houver módulos com padrão diferente do global anterior,
+`caffmob.standards_apply_differ` ("Aplicar também nos móveis que diferem do padrão global anterior?").
 """
 
 import os
@@ -142,11 +147,14 @@ class BTM_OT_StandardsConfigurator(bpy.types.Operator):
         right = split.column()
         draw_editor(right, context, draft)
         changes = draw_pending(layout, scene, draft)
+        if definition is not None and not definition.builtin:
+            row = layout.row(align=True)
+            row.label(text=tr("Montagem"))
+            row.prop(draft, "assembly", expand=True)
         if changes and definition is not None and not definition.builtin:
-            count = len(sync.affected_modules(scene))
             row = layout.row()
-            row.label(text=tr("Ao aplicar, {} módulo(s) do projeto serão atualizados.").format(count), icon='MOD_BUILD')
-            row.prop(draft, "include_manual")
+            row.active = False
+            row.label(text=tr("Ao aplicar, o sistema pergunta se os módulos da cena devem mudar."), icon='MOD_BUILD')
 
     def execute(self, context):
         scene = context.scene
@@ -158,13 +166,11 @@ class BTM_OT_StandardsConfigurator(bpy.types.Operator):
         if definition.builtin:
             return {'FINISHED'}
         try:
-            report = api.apply_draft(scene, draft, include_manual=draft.include_manual)
+            api.apply_draft(scene, draft, modules=[])
         except api.StandardsError as exc:
             self.report({'ERROR'}, str(exc))
             return {'CANCELLED'}
-        _set_report(tr("Padrão de Dimensões aplicado"), _apply_report_lines(report))
-        self.report({'INFO'}, _sync_report_message(report))
-        _show_report(context)
+        ask_apply(context, definition.uid)
         return {'FINISHED'}
 
 
@@ -174,26 +180,15 @@ class BTM_OT_StandardsApply(bpy.types.Operator):
     bl_label = "Aplicar Padrão de Dimensões"
     bl_options = {'REGISTER', 'UNDO'}
 
-    include_manual: bpy.props.BoolProperty(
-        name="Incluir medidas manuais",
-        description="Também substitui medidas editadas à mão nos módulos (RN-23)",
-        default=False)  # type: ignore
-
-    def invoke(self, context, event):
-        count = len(sync.affected_modules(context.scene))
-        return context.window_manager.invoke_confirm(
-            self, event, title="Aplicar Padrão de Dimensões",
-            message=tr("{} módulo(s) serão atualizados.").format(count), confirm_text="Aplicar")
-
     def execute(self, context):
         draft = context.window_manager.btm_standards_draft
+        definition = api.draft_definition(context.scene, draft)
         try:
-            report = api.apply_draft(context.scene, draft, include_manual=self.include_manual)
+            api.apply_draft(context.scene, draft, modules=[])
         except api.StandardsError as exc:
             self.report({'ERROR'}, str(exc))
             return {'CANCELLED'}
-        _set_report(tr("Padrão de Dimensões aplicado"), _apply_report_lines(report))
-        self.report({'INFO'}, _sync_report_message(report))
+        ask_apply(context, definition.uid if definition is not None else "")
         return {'FINISHED'}
 
 
@@ -220,18 +215,17 @@ class BTM_OT_StandardsSetActive(bpy.types.Operator):
     bl_property = "definition"
 
     definition: bpy.props.EnumProperty(name="Definição", items=_definition_items)  # type: ignore
-    include_manual: bpy.props.BoolProperty(name="Incluir medidas manuais", default=False)  # type: ignore
 
     def invoke(self, context, event):
         return context.window_manager.invoke_props_dialog(self, title="Definir Definição Ativa",
-                                                          confirm_text="Definir e aplicar")
+                                                          confirm_text="Definir")
 
     def draw(self, context):
         layout = self.layout
         layout.prop(self, "definition")
-        layout.label(text=tr("{} módulo(s) serão atualizados.").format(len(sync.affected_modules(context.scene))),
-                     icon='MOD_BUILD')
-        layout.prop(self, "include_manual")
+        hint = layout.row()
+        hint.active = False
+        hint.label(text=tr("Depois o sistema pergunta se os módulos da cena devem mudar."), icon='MOD_BUILD')
 
     def execute(self, context):
         scene = context.scene
@@ -239,10 +233,11 @@ class BTM_OT_StandardsSetActive(bpy.types.Operator):
         if definition is None:
             self.report({'ERROR'}, "Definição não encontrada.")
             return {'CANCELLED'}
+        previous = api.active_definition(scene)
+        previous_uid = previous.uid if previous is not None else ""
         api.set_active(scene, definition)
-        report = sync.apply_definition(scene, definition, include_manual=self.include_manual)
-        _set_report(tr("Definição ativa alterada"), _apply_report_lines(report))
-        self.report({'INFO'}, _sync_report_message(report))
+        sync.apply_definition(scene, definition, modules=[])     # propriedades de cena; módulos pelas perguntas
+        ask_apply(context, previous_uid)
         return {'FINISHED'}
 
 
@@ -416,6 +411,7 @@ class BTM_OT_StandardsImportPromob(bpy.types.Operator, ImportHelper):
         for raw in data['raw_attributes']:
             item = definition.raw_attributes.add()
             item.attr_id, item.value, item.key = raw['id'], raw['value'], raw['key']
+        definition.assembly = data.get('assembly', 'LATERAL')      # feature 012 (D-27): CAFF_MONTAGEM
         rep = data['report']
         lines = [tr("Definição: {}").format(name),
                  tr("Atributos no arquivo: {}; reconhecidos: {}").format(rep['total'], rep['mapped']),
@@ -425,6 +421,8 @@ class BTM_OT_StandardsImportPromob(bpy.types.Operator, ImportHelper):
             lines.append(tr("Valores inválidos ignorados: {}").format(', '.join(rep['invalid'][:10])))
         if rep['duplicates']:
             lines.append(tr("IDs duplicados (vale o último): {}").format(', '.join(rep['duplicates'][:10])))
+        if rep.get('assembly_warning'):
+            lines.append(rep['assembly_warning'])
         lines.append(tr("Use \"Definir ativa\" para aplicar esta definição ao projeto."))
         _set_report(tr("Importação do Promob"), lines)
         self.report({'INFO'}, tr("\"{}\": {} de {} atributos reconhecidos.").format(name, rep['mapped'], rep['total']))
@@ -451,7 +449,8 @@ class BTM_OT_StandardsExportPromob(bpy.types.Operator, ExportHelper):
         if not raw:
             raw = io_promob.attributes_from_values(values)
         try:
-            io_promob.write_dimensionexport(self.filepath, definition.name, values, raw)
+            io_promob.write_dimensionexport(self.filepath, definition.name, values, raw,
+                                            assembly=getattr(definition, 'assembly', 'LATERAL'))
         except OSError as exc:
             self.report({'ERROR'}, tr("Não foi possível gravar: {}").format(exc))
             return {'CANCELLED'}
@@ -483,7 +482,115 @@ class BTM_OT_StandardsReport(bpy.types.Operator):
         return {'FINISHED'}
 
 
+# ----------------------------------------------------------------------------------------------------------------
+# As duas perguntas ao mudar o padrão global (feature 012, T033; D-22, RN-10, RN-11)
+# ----------------------------------------------------------------------------------------------------------------
+
+def ask_apply(context, previous_uid):
+    """Abre a 1ª pergunta (com janela); sem janela, nada muda na cena (scripts chamam o operador com EXEC)."""
+    if bpy.app.background or context.window is None:
+        return
+    bpy.ops.caffmob.standards_apply_scene('INVOKE_DEFAULT', previous_uid=previous_uid)
+
+
+def _apply_names(context, names, objects):
+    definition = api.active_definition(context.scene)
+    chosen = [objects[name] for name in names if name in objects]
+    if definition is None or not chosen:
+        return 0
+    report = sync.apply_definition(context.scene, definition, modules=chosen)
+    _set_report(tr("Padrão de Dimensões aplicado"), _apply_report_lines(report))
+    return report.get('caffmob', 0)
+
+
+def _draw_counts(layout, the_plan):
+    col = layout.column(align=True)
+    col.label(text=tr("{} módulo(s) seguem o padrão global").format(len(the_plan.follow)), icon='CHECKMARK')
+    col.label(text=tr("{} com padrão diferente do global anterior").format(len(the_plan.differ)), icon='MODIFIER')
+    if the_plan.not_applicable:
+        col.label(text=tr("{} não aplicável(is): itens importados ou armários antigos").format(
+            len(the_plan.not_applicable)), icon='INFO')
+    if the_plan.legacy:
+        hint = col.row()
+        hint.active = False
+        hint.label(text=tr("Converta os armários antigos para CAFFMob para que recebam o padrão"))
+
+
+class BTM_OT_StandardsApplyScene(bpy.types.Operator):
+    """Aplica o Padrão de Dimensões global aos módulos que já estão na cena"""
+    bl_idname = "caffmob.standards_apply_scene"
+    bl_label = "Aplicar a todos os módulos existentes na cena?"
+    bl_options = {'REGISTER', 'UNDO'}
+
+    previous_uid: bpy.props.StringProperty(options={'HIDDEN', 'SKIP_SAVE'})  # type: ignore
+    apply_differ: bpy.props.BoolProperty(
+        name="Aplicar também nos que diferem", default=False, options={'HIDDEN', 'SKIP_SAVE'},
+        description="Sem diálogo (scripts): já responde Sim à segunda pergunta")  # type: ignore
+    interactive: bpy.props.BoolProperty(default=False, options={'HIDDEN', 'SKIP_SAVE'})  # type: ignore
+
+    def invoke(self, context, event):
+        self.interactive = True
+        the_plan, _objects = sync.plan_for(context.scene, self.previous_uid, context)
+        if not (the_plan.follow or the_plan.differ):
+            if the_plan.not_applicable:
+                self.report({'INFO'}, tr("Nenhum módulo CAFFMob na cena; {} item(ns) não aplicável(is)").format(
+                    len(the_plan.not_applicable)))
+            return {'FINISHED'}
+        return context.window_manager.invoke_props_dialog(self, title=tr("Aplicar a todos os módulos existentes na "
+                                                                         "cena?"), confirm_text=tr("Sim"))
+
+    def draw(self, context):
+        the_plan, _objects = sync.plan_for(context.scene, self.previous_uid, context)
+        _draw_counts(self.layout, the_plan)
+        hint = self.layout.row()
+        hint.active = False
+        hint.label(text=tr("Cancelar = Não: só os armários novos usam o padrão"))
+
+    def execute(self, context):
+        the_plan, objects = sync.plan_for(context.scene, self.previous_uid, context)
+        count = _apply_names(context, the_plan.follow, objects)
+        if the_plan.differ:
+            if self.interactive:
+                bpy.ops.caffmob.standards_apply_differ('INVOKE_DEFAULT', previous_uid=self.previous_uid)
+            elif self.apply_differ:
+                count += _apply_names(context, the_plan.differ, objects)
+        self.report({'INFO'}, tr("{} módulo(s) atualizados").format(count))
+        return {'FINISHED'}
+
+
+class BTM_OT_StandardsApplyDiffer(bpy.types.Operator):
+    """Aplica o padrão global também aos módulos com padrão próprio ou de outro padrão"""
+    bl_idname = "caffmob.standards_apply_differ"
+    bl_label = "Aplicar também nos móveis que diferem do padrão global anterior?"
+    bl_options = {'REGISTER', 'UNDO'}
+
+    previous_uid: bpy.props.StringProperty(options={'HIDDEN', 'SKIP_SAVE'})  # type: ignore
+
+    def invoke(self, context, event):
+        return context.window_manager.invoke_props_dialog(
+            self, title=tr("Aplicar também nos móveis que diferem do padrão global anterior?"), confirm_text=tr("Sim"))
+
+    def draw(self, context):
+        the_plan, _objects = sync.plan_for(context.scene, self.previous_uid, context)
+        col = self.layout.column(align=True)
+        for name in the_plan.differ[:6]:
+            col.label(text=name, icon='MODIFIER')
+        if len(the_plan.differ) > 6:
+            col.label(text=tr("e mais {}").format(len(the_plan.differ) - 6))
+        hint = self.layout.row()
+        hint.active = False
+        hint.label(text=tr("Cancelar = Não: esses ficam como estão"))
+
+    def execute(self, context):
+        the_plan, objects = sync.plan_for(context.scene, self.previous_uid, context)
+        count = _apply_names(context, the_plan.differ, objects)
+        self.report({'INFO'}, tr("{} módulo(s) atualizados").format(count))
+        return {'FINISHED'}
+
+
 classes = (
+    BTM_OT_StandardsApplyScene,
+    BTM_OT_StandardsApplyDiffer,
     BTM_OT_StandardsConfigurator,
     BTM_OT_StandardsApply,
     BTM_OT_StandardsSetActive,

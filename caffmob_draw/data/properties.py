@@ -46,7 +46,26 @@ def back_setback_of(obj):
     return float(structure.back_setback)
 
 
+_GEOMETRY_SUSPENDED = [False]
+
+
+class suspended_geometry:
+    """Bloco em que mudar várias propriedades do módulo não refaz a malha a cada uma (feature 012, aplicar o padrão).
+    Quem usa chama `update_cabinet_geom` uma vez no fim."""
+
+    def __enter__(self):
+        self.previous = _GEOMETRY_SUSPENDED[0]
+        _GEOMETRY_SUSPENDED[0] = True
+        return self
+
+    def __exit__(self, *_exc):
+        _GEOMETRY_SUSPENDED[0] = self.previous
+        return False
+
+
 def update_cabinet_geom(self, context):
+    if _GEOMETRY_SUSPENDED[0]:
+        return
     obj = self.id_data
     if obj and obj.type == 'MESH':
         from ..geometry.mesh_gen import generate_cabinet_mesh
@@ -326,6 +345,28 @@ class BTM_PG_CabinetProperties(bpy.types.PropertyGroup):
             ('TALL', "Paneleiro/Despensa", "")
         ],
         default='BASE'
+    )  # type: ignore
+    # Feature 012 (D-08, D-10): montagem (lateral ou base passante) e linha do Padrão de Dimensões do módulo.
+    assembly: bpy.props.EnumProperty(
+        name="Montagem",
+        items=[
+            ('LATERAL', "Lateral passante", "As laterais vão do piso ao topo; base e tampo ficam entre elas"),
+            ('BASE', "Base passante", "A base ocupa a largura toda; as laterais ficam em cima dela"),
+        ],
+        default='LATERAL',
+        update=update_cabinet_geom
+    )  # type: ignore
+    line: bpy.props.EnumProperty(
+        name="Linha",
+        description="Linha do Padrão de Dimensões que dá as chapas e as medidas do módulo",
+        items=[
+            ('COZ', "Cozinha", ""),
+            ('DOR', "Dormitório", ""),
+            ('BAN', "Banheiro", ""),
+            ('SAL', "Sala", ""),
+            ('ESC', "Escritório", ""),
+        ],
+        default='COZ'
     )  # type: ignore
 
     # Propriedades de abertura e swing da porta

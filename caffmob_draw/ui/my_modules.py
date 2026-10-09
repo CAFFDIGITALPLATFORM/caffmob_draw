@@ -34,9 +34,14 @@ def _draw_origin(layout, context, origin):
 
 def draw(layout, context):
     st = context.window_manager.btm_sidebar
-    layout.prop(st, "my_modules_filter", text="")
+    from ..legacy import gate
+    legacy = gate.legacy_ui(context)         # feature 012 (T049): grupos herdados só com a preferência de suporte
+    if legacy:
+        layout.prop(st, "my_modules_filter", text="")
     for origin, label, icon in ORIGINS:
-        if st.my_modules_filter not in ('ALL', origin):
+        if origin != 'MODULES' and not legacy:
+            continue
+        if legacy and st.my_modules_filter not in ('ALL', origin):
             continue
         box = layout.box()
         box.label(text=tr(label), icon=icon)

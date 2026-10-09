@@ -1,0 +1,434 @@
+{
+ "Mostrar bibliotecas herdadas": {
+  "pt_BR": "Mostrar bibliotecas herdadas",
+  "en_US": "Show legacy libraries"
+ },
+ "Mostra a interface das bibliotecas frameless, face frame, closets e de molduras, que foram substituídas pelos armários CAFFMob. Use só para suporte ou para comparar uma conversão": {
+  "pt_BR": "Mostra a interface das bibliotecas frameless, face frame, closets e de molduras, que foram substituídas pelos armários CAFFMob. Use só para suporte ou para comparar uma conversão",
+  "en_US": "Shows the interface of the frameless, face frame, closets and molding libraries, which were replaced by CAFFMob cabinets. Use only for support or to compare a conversion"
+ },
+ "Avançado": {
+  "pt_BR": "Avançado",
+  "en_US": "Advanced"
+ },
+ "Só armários CAFFMob têm montagem": {
+  "pt_BR": "Só armários CAFFMob têm montagem",
+  "en_US": "Only CAFFMob cabinets have an assembly"
+ },
+ "Montagem": {
+  "pt_BR": "Montagem",
+  "en_US": "Assembly"
+ },
+ "Padrão próprio: difere do Padrão de Dimensões global": {
+  "pt_BR": "Padrão próprio: difere do Padrão de Dimensões global",
+  "en_US": "Own standard: differs from the global Dimension Standard"
+ },
+ "Lateral passante": {
+  "pt_BR": "Lateral passante",
+  "en_US": "Full-height sides"
+ },
+ "As laterais vão do piso ao topo; base e tampo ficam entre elas": {
+  "pt_BR": "As laterais vão do piso ao topo; base e tampo ficam entre elas",
+  "en_US": "Sides run from floor to top; bottom and top sit between them"
+ },
+ "Base passante": {
+  "pt_BR": "Base passante",
+  "en_US": "Full-width bottom"
+ },
+ "A base ocupa a largura toda; as laterais ficam em cima dela": {
+  "pt_BR": "A base ocupa a largura toda; as laterais ficam em cima dela",
+  "en_US": "The bottom spans the full width; the sides sit on it"
+ },
+ "Linha do Padrão de Dimensões que dá as chapas e as medidas do módulo": {
+  "pt_BR": "Linha do Padrão de Dimensões que dá as chapas e as medidas do módulo",
+  "en_US": "Dimension Standard line that gives the module's sheets and sizes"
+ },
+ "Cozinha": {
+  "pt_BR": "Cozinha",
+  "en_US": "Kitchen"
+ },
+ "Dormitório": {
+  "pt_BR": "Dormitório",
+  "en_US": "Bedroom"
+ },
+ "Banheiro": {
+  "pt_BR": "Banheiro",
+  "en_US": "Bathroom"
+ },
+ "Sala": {
+  "pt_BR": "Sala",
+  "en_US": "Living room"
+ },
+ "Escritório": {
+  "pt_BR": "Escritório",
+  "en_US": "Office"
+ },
+ "Agregados presos ao armário": {
+  "pt_BR": "Agregados presos ao armário",
+  "en_US": "Aggregates attached to the cabinet"
+ },
+ "sem perdas": {
+  "pt_BR": "sem perdas",
+  "en_US": "nothing lost"
+ },
+ "perdas: {}": {
+  "pt_BR": "perdas: {}",
+  "en_US": "lost: {}"
+ },
+ "Tipo de armário aproximado": {
+  "pt_BR": "Tipo de armário aproximado",
+  "en_US": "Approximate cabinet type"
+ },
+ "Painéis fixos": {
+  "pt_BR": "Painéis fixos",
+  "en_US": "Fixed panels"
+ },
+ "Frentes especiais (basculante de puxar, painel embutido, eletrodoméstico)": {
+  "pt_BR": "Frentes especiais (basculante de puxar, painel embutido, eletrodoméstico)",
+  "en_US": "Special fronts (pull-out, inset panel, appliance)"
+ },
+ "Portas além de duas": {
+  "pt_BR": "Portas além de duas",
+  "en_US": "Doors beyond two"
+ },
+ "Grupo {}": {
+  "pt_BR": "Grupo {}",
+  "en_US": "Group {}"
+ },
+ "nenhum armário de biblioteca antiga no grupo": {
+  "pt_BR": "nenhum armário de biblioteca antiga no grupo",
+  "en_US": "no legacy-library cabinet in the group"
+ },
+ "Não foi possível abrir o grupo {}: {}": {
+  "pt_BR": "Não foi possível abrir o grupo {}: {}",
+  "en_US": "Could not open group {}: {}"
+ },
+ "{} armário(s) de bibliotecas antigas: use Converter para CAFFMob na barra lateral": {
+  "pt_BR": "{} armário(s) de bibliotecas antigas: use Converter para CAFFMob na barra lateral",
+  "en_US": "{} legacy-library cabinet(s): use Convert to CAFFMob in the sidebar"
+ },
+ "Converter para CAFFMob": {
+  "pt_BR": "Converter para CAFFMob",
+  "en_US": "Convert to CAFFMob"
+ },
+ "Converte armários frameless, face frame e closets em armários CAFFMob, com o relatório do que se perdeu": {
+  "pt_BR": "Converte armários frameless, face frame e closets em armários CAFFMob, com o relatório do que se perdeu",
+  "en_US": "Converts frameless, face frame and closets cabinets into CAFFMob cabinets, reporting what was lost"
+ },
+ "Só o armário selecionado": {
+  "pt_BR": "Só o armário selecionado",
+  "en_US": "Selected cabinet only"
+ },
+ "{} armário(s) de bibliotecas antigas viram armários CAFFMob. Ctrl+Z desfaz.": {
+  "pt_BR": "{} armário(s) de bibliotecas antigas viram armários CAFFMob. Ctrl+Z desfaz.",
+  "en_US": "{} legacy-library cabinet(s) become CAFFMob cabinets. Ctrl+Z undoes."
+ },
+ "Converter": {
+  "pt_BR": "Converter",
+  "en_US": "Convert"
+ },
+ "Selecione um armário de biblioteca antiga": {
+  "pt_BR": "Selecione um armário de biblioteca antiga",
+  "en_US": "Select a legacy-library cabinet"
+ },
+ "{} armário(s) convertidos; {} com perdas": {
+  "pt_BR": "{} armário(s) convertidos; {} com perdas",
+  "en_US": "{} cabinet(s) converted; {} with losses"
+ },
+ "Conversão para CAFFMob": {
+  "pt_BR": "Conversão para CAFFMob",
+  "en_US": "Conversion to CAFFMob"
+ },
+ "Converter grupos antigos": {
+  "pt_BR": "Converter grupos antigos",
+  "en_US": "Convert old groups"
+ },
+ "Converte os grupos salvos nas bibliotecas antigas em módulos CAFFMob da categoria Geral": {
+  "pt_BR": "Converte os grupos salvos nas bibliotecas antigas em módulos CAFFMob da categoria Geral",
+  "en_US": "Converts the groups saved in the legacy libraries into CAFFMob modules in the General category"
+ },
+ "Nenhum grupo antigo para converter": {
+  "pt_BR": "Nenhum grupo antigo para converter",
+  "en_US": "No old group to convert"
+ },
+ "{} grupo(s) salvos nas bibliotecas antigas viram módulos CAFFMob em Geral. Os arquivos originais ficam na pasta.": {
+  "pt_BR": "{} grupo(s) salvos nas bibliotecas antigas viram módulos CAFFMob em Geral. Os arquivos originais ficam na pasta.",
+  "en_US": "{} group(s) saved in the legacy libraries become CAFFMob modules in General. The original files stay in the folder."
+ },
+ "{} módulo(s) salvos em Geral": {
+  "pt_BR": "{} módulo(s) salvos em Geral",
+  "en_US": "{} module(s) saved in General"
+ },
+ "Conversão dos grupos antigos": {
+  "pt_BR": "Conversão dos grupos antigos",
+  "en_US": "Old groups conversion"
+ },
+ "Digite um nome para a categoria": {
+  "pt_BR": "Digite um nome para a categoria",
+  "en_US": "Type a name for the category"
+ },
+ "Já existe uma categoria com esse nome": {
+  "pt_BR": "Já existe uma categoria com esse nome",
+  "en_US": "A category with this name already exists"
+ },
+ "O nome não pode ter / nem \\": {
+  "pt_BR": "O nome não pode ter / nem \\",
+  "en_US": "The name cannot contain / or \\"
+ },
+ "Arquivo de categorias inválido; as categorias do usuário foram ignoradas": {
+  "pt_BR": "Arquivo de categorias inválido; as categorias do usuário foram ignoradas",
+  "en_US": "Invalid categories file; user categories were ignored"
+ },
+ "Categoria sem nome ignorada": {
+  "pt_BR": "Categoria sem nome ignorada",
+  "en_US": "Unnamed category ignored"
+ },
+ "Categoria repetida ignorada: {}": {
+  "pt_BR": "Categoria repetida ignorada: {}",
+  "en_US": "Repeated category ignored: {}"
+ },
+ "Linha desconhecida na categoria {}: usada Cozinha": {
+  "pt_BR": "Linha desconhecida na categoria {}: usada Cozinha",
+  "en_US": "Unknown line in category {}: Kitchen used"
+ },
+ "Criar armário": {
+  "pt_BR": "Criar armário",
+  "en_US": "Create cabinet"
+ },
+ "Criar categoria": {
+  "pt_BR": "Criar categoria",
+  "en_US": "Create category"
+ },
+ "Catálogo de modelos inválido": {
+  "pt_BR": "Catálogo de modelos inválido",
+  "en_US": "Invalid model catalog"
+ },
+ "Modelo sem identificador ignorado": {
+  "pt_BR": "Modelo sem identificador ignorado",
+  "en_US": "Model without identifier ignored"
+ },
+ "Modelo {}: tipo desconhecido": {
+  "pt_BR": "Modelo {}: tipo desconhecido",
+  "en_US": "Model {}: unknown type"
+ },
+ "Modelo {}: frente desconhecida": {
+  "pt_BR": "Modelo {}: frente desconhecida",
+  "en_US": "Model {}: unknown front"
+ },
+ "Catálogo de modelos não encontrado": {
+  "pt_BR": "Catálogo de modelos não encontrado",
+  "en_US": "Model catalog not found"
+ },
+ "Torre": {
+  "pt_BR": "Torre",
+  "en_US": "Tall"
+ },
+ "Cria um armário CAFFMob pelo Padrão de Dimensões e abre o editor de armário nele": {
+  "pt_BR": "Cria um armário CAFFMob pelo Padrão de Dimensões e abre o editor de armário nele",
+  "en_US": "Creates a CAFFMob cabinet from the Dimension Standard and opens the cabinet editor on it"
+ },
+ "Linha do padrão": {
+  "pt_BR": "Linha do padrão",
+  "en_US": "Standard line"
+ },
+ "Criar": {
+  "pt_BR": "Criar",
+  "en_US": "Create"
+ },
+ "Altura {} · profundidade {} (do padrão)": {
+  "pt_BR": "Altura {} · profundidade {} (do padrão)",
+  "en_US": "Height {} · depth {} (from the standard)"
+ },
+ "Cria uma categoria na biblioteca do usuário, com a linha do Padrão de Dimensões que os armários dela usam": {
+  "pt_BR": "Cria uma categoria na biblioteca do usuário, com a linha do Padrão de Dimensões que os armários dela usam",
+  "en_US": "Creates a category in the user library, with the Dimension Standard line its cabinets use"
+ },
+ "Categoria criada: {}": {
+  "pt_BR": "Categoria criada: {}",
+  "en_US": "Category created: {}"
+ },
+ "Trocar linha": {
+  "pt_BR": "Trocar linha",
+  "en_US": "Change line"
+ },
+ "Troca a linha do Padrão de Dimensões da categoria": {
+  "pt_BR": "Troca a linha do Padrão de Dimensões da categoria",
+  "en_US": "Changes the category's Dimension Standard line"
+ },
+ "Só as categorias do usuário trocam de linha": {
+  "pt_BR": "Só as categorias do usuário trocam de linha",
+  "en_US": "Only user categories change line"
+ },
+ "Biblioteca CAFFMob": {
+  "pt_BR": "Biblioteca CAFFMob",
+  "en_US": "CAFFMob Library"
+ },
+ "Clique no painel BIBLIOTECA CAFFMOB": {
+  "pt_BR": "Clique no painel BIBLIOTECA CAFFMOB",
+  "en_US": "Click on the BIBLIOTECA CAFFMOB panel"
+ },
+ "Biblioteca CAFFMob (hover)": {
+  "pt_BR": "Biblioteca CAFFMob (hover)",
+  "en_US": "CAFFMob Library (hover)"
+ },
+ "Fechar biblioteca": {
+  "pt_BR": "Fechar biblioteca",
+  "en_US": "Close library"
+ },
+ "Fecha o painel BIBLIOTECA CAFFMOB": {
+  "pt_BR": "Fecha o painel BIBLIOTECA CAFFMOB",
+  "en_US": "Closes the BIBLIOTECA CAFFMOB panel"
+ },
+ "Modelos prontos": {
+  "pt_BR": "Modelos prontos",
+  "en_US": "Ready-made models"
+ },
+ "Nenhum módulo salvo nesta categoria": {
+  "pt_BR": "Nenhum módulo salvo nesta categoria",
+  "en_US": "No module saved in this category"
+ },
+ "Inserir modelo": {
+  "pt_BR": "Inserir modelo",
+  "en_US": "Insert model"
+ },
+ "Insere o modelo pronto com as medidas, as chapas e a montagem do Padrão de Dimensões da linha": {
+  "pt_BR": "Insere o modelo pronto com as medidas, as chapas e a montagem do Padrão de Dimensões da linha",
+  "en_US": "Inserts the ready-made model with the sizes, sheets and assembly of the line's Dimension Standard"
+ },
+ "Modelo não encontrado: {}": {
+  "pt_BR": "Modelo não encontrado: {}",
+  "en_US": "Model not found: {}"
+ },
+ "Sem porta": {
+  "pt_BR": "Sem porta",
+  "en_US": "No door"
+ },
+ "Cria um módulo de armário CAFFMob com as medidas, as chapas e a montagem do Padrão de Dimensões": {
+  "pt_BR": "Cria um módulo de armário CAFFMob com as medidas, as chapas e a montagem do Padrão de Dimensões",
+  "en_US": "Creates a CAFFMob cabinet module with the Dimension Standard sizes, sheets and assembly"
+ },
+ "Ao aplicar, o sistema pergunta se os módulos da cena devem mudar.": {
+  "pt_BR": "Ao aplicar, o sistema pergunta se os módulos da cena devem mudar.",
+  "en_US": "When applying, you will be asked whether the scene modules should change."
+ },
+ "Definir": {
+  "pt_BR": "Definir",
+  "en_US": "Set"
+ },
+ "Depois o sistema pergunta se os módulos da cena devem mudar.": {
+  "pt_BR": "Depois o sistema pergunta se os módulos da cena devem mudar.",
+  "en_US": "Then you will be asked whether the scene modules should change."
+ },
+ "{} módulo(s) seguem o padrão global": {
+  "pt_BR": "{} módulo(s) seguem o padrão global",
+  "en_US": "{} module(s) follow the global standard"
+ },
+ "{} com padrão diferente do global anterior": {
+  "pt_BR": "{} com padrão diferente do global anterior",
+  "en_US": "{} with a standard different from the previous global one"
+ },
+ "{} não aplicável(is): itens importados ou armários antigos": {
+  "pt_BR": "{} não aplicável(is): itens importados ou armários antigos",
+  "en_US": "{} not applicable: imported items or legacy cabinets"
+ },
+ "Converta os armários antigos para CAFFMob para que recebam o padrão": {
+  "pt_BR": "Converta os armários antigos para CAFFMob para que recebam o padrão",
+  "en_US": "Convert the legacy cabinets to CAFFMob so they receive the standard"
+ },
+ "Aplicar a todos os módulos existentes na cena?": {
+  "pt_BR": "Aplicar a todos os módulos existentes na cena?",
+  "en_US": "Apply to all modules in the scene?"
+ },
+ "Aplica o Padrão de Dimensões global aos módulos que já estão na cena": {
+  "pt_BR": "Aplica o Padrão de Dimensões global aos módulos que já estão na cena",
+  "en_US": "Applies the global Dimension Standard to the modules already in the scene"
+ },
+ "Aplicar também nos que diferem": {
+  "pt_BR": "Aplicar também nos que diferem",
+  "en_US": "Also apply to those that differ"
+ },
+ "Sem diálogo (scripts): já responde Sim à segunda pergunta": {
+  "pt_BR": "Sem diálogo (scripts): já responde Sim à segunda pergunta",
+  "en_US": "Without dialog (scripts): answers Yes to the second question"
+ },
+ "Nenhum módulo CAFFMob na cena; {} item(ns) não aplicável(is)": {
+  "pt_BR": "Nenhum módulo CAFFMob na cena; {} item(ns) não aplicável(is)",
+  "en_US": "No CAFFMob module in the scene; {} item(s) not applicable"
+ },
+ "Cancelar = Não: só os armários novos usam o padrão": {
+  "pt_BR": "Cancelar = Não: só os armários novos usam o padrão",
+  "en_US": "Cancel = No: only new cabinets use the standard"
+ },
+ "{} módulo(s) atualizados": {
+  "pt_BR": "{} módulo(s) atualizados",
+  "en_US": "{} module(s) updated"
+ },
+ "Aplicar também nos móveis que diferem do padrão global anterior?": {
+  "pt_BR": "Aplicar também nos móveis que diferem do padrão global anterior?",
+  "en_US": "Also apply to furniture that differs from the previous global standard?"
+ },
+ "Aplica o padrão global também aos módulos com padrão próprio ou de outro padrão": {
+  "pt_BR": "Aplica o padrão global também aos módulos com padrão próprio ou de outro padrão",
+  "en_US": "Also applies the global standard to modules with their own standard or from another standard"
+ },
+ "e mais {}": {
+  "pt_BR": "e mais {}",
+  "en_US": "and {} more"
+ },
+ "Cancelar = Não: esses ficam como estão": {
+  "pt_BR": "Cancelar = Não: esses ficam como estão",
+  "en_US": "Cancel = No: those stay as they are"
+ },
+ "Sem Padrão de Dimensões ativo: medidas de fábrica": {
+  "pt_BR": "Sem Padrão de Dimensões ativo: medidas de fábrica",
+  "en_US": "No active Dimension Standard: factory sizes"
+ },
+ "O padrão não tem a linha {}: medidas de fábrica": {
+  "pt_BR": "O padrão não tem a linha {}: medidas de fábrica",
+  "en_US": "The standard has no line {}: factory sizes"
+ },
+ "Montagem desconhecida: {}; usada lateral passante": {
+  "pt_BR": "Montagem desconhecida: {}; usada lateral passante",
+  "en_US": "Unknown assembly: {}; full-height sides used"
+ },
+ "Regra de montagem da caixa dos armários": {
+  "pt_BR": "Regra de montagem da caixa dos armários",
+  "en_US": "Cabinet box assembly rule"
+ },
+ "{} armário(s) de bibliotecas antigas": {
+  "pt_BR": "{} armário(s) de bibliotecas antigas",
+  "en_US": "{} legacy-library cabinet(s)"
+ },
+ "Biblioteca no topo da viewport: BIBLIOTECA CAFFMOB": {
+  "pt_BR": "Biblioteca no topo da viewport: BIBLIOTECA CAFFMOB",
+  "en_US": "Library at the top of the viewport: BIBLIOTECA CAFFMOB"
+ },
+ "Padrão: {}": {
+  "pt_BR": "Padrão: {}",
+  "en_US": "Standard: {}"
+ },
+ "Armário de biblioteca antiga": {
+  "pt_BR": "Armário de biblioteca antiga",
+  "en_US": "Legacy-library cabinet"
+ },
+ "Converter este para CAFFMob": {
+  "pt_BR": "Converter este para CAFFMob",
+  "en_US": "Convert this one to CAFFMob"
+ },
+ "Balcão 1 porta": {
+  "pt_BR": "Balcão 1 porta",
+  "en_US": "Base 1 door"
+ },
+ "Balcão 2 portas": {
+  "pt_BR": "Balcão 2 portas",
+  "en_US": "Base 2 doors"
+ },
+ "Aéreo 1 porta": {
+  "pt_BR": "Aéreo 1 porta",
+  "en_US": "Wall 1 door"
+ },
+ "Aéreo 2 portas": {
+  "pt_BR": "Aéreo 2 portas",
+  "en_US": "Wall 2 doors"
+ }
+}

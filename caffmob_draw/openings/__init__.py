@@ -4,13 +4,14 @@
 - `materials`, `build`: materiais compartilhados e montagem em poucas malhas por papel
 - `sync`: monta e refaz a porta ou a janela dentro da caixa da parede
 - `props`, `ops`: `Object.btm_opening_real` e "Atualizar portas e janelas"
+- `region_core`, `region_props`, `region`: região marcada na parede antes da porta ou janela (feature 011)
 """
 
 
 def _modules():
     from ..ui import view_mode
-    from . import ops, props
-    return (props, ops, view_mode)
+    from . import ops, props, region, region_props
+    return (props, ops, view_mode, region_props, region)
 
 
 def register():

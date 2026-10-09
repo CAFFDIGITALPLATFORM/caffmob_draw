@@ -19,6 +19,18 @@ def _meshes(context):
     return [o for o in context.selected_objects if o.type == 'MESH' and not group.is_group(o.parent)]
 
 
+def _import_groups(context):
+    """Grupos simples selecionados (o OBJ importado vira um, feature 011 D-09): a esquadria se monta com as peças."""
+    return [o for o in context.selected_objects if group.is_group(o) and o.btm_group.kind == 'PLAIN']
+
+
+def _assemble_meshes(context):
+    meshes = _meshes(context)
+    for source in _import_groups(context):
+        meshes += [m for m in group.members(source) if m.type == 'MESH' and m not in meshes]
+    return meshes
+
+
 class BTM_OT_GroupCreate(bpy.types.Operator):
     """Junta as peças selecionadas num grupo que se move como uma coisa só (as peças continuam separadas)"""
     bl_idname = "caffmob.group_create"
@@ -104,7 +116,7 @@ class BTM_OT_WindowAssemble(bpy.types.Operator):
 
     @classmethod
     def poll(cls, context):
-        if not _meshes(context):
+        if not _assemble_meshes(context):
             cls.poll_message_set(tr("Selecione as peças do grupo"))
             return False
         return True
@@ -126,7 +138,9 @@ class BTM_OT_WindowAssemble(bpy.types.Operator):
         if not self.rows:            # chamada sem diálogo (scripts e testes): usa a sugestão
             self._suggest(context)
         frame_names = [n for r in self.rows if r.role == 'FRAME' for n in r.names.split("\n")]
-        objs = {o.name: o for o in _meshes(context)}
+        objs = {o.name: o for o in _assemble_meshes(context)}
+        for source in _import_groups(context):
+            group.ungroup(source)            # as peças saem do grupo da importação para não sobrar um grupo vazio
         frame = group.create_group([objs[n] for n in frame_names if n in objs], 'FRAME', self.name or "Janela")
         if frame is None:
             self.report({'WARNING'}, tr("Escolha ao menos um grupo como esquadria"))
@@ -163,7 +177,7 @@ class BTM_OT_WindowAssemble(bpy.types.Operator):
 
     def _suggest(self, context):
         self.rows.clear()
-        for label, role, names in grouping.suggest([o.name for o in _meshes(context)]):
+        for label, role, names in grouping.suggest([o.name for o in _assemble_meshes(context)]):
             row = self.rows.add()
             row.label, row.names, row.count = label, "\n".join(names), len(names)
             row.role = 'FRAME' if role == 'FRAME' else 'SLIDE'

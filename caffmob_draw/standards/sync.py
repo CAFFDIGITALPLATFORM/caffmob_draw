@@ -1,8 +1,13 @@
-"""Sincronização Padrão de Dimensões → bibliotecas legadas (T019; D-05, D-06, D-16a; RN-23).
+"""Sincronização Padrão de Dimensões → módulos do projeto (T019; D-05, D-06, D-16a; RN-23).
 
 Grava os valores da definição nas propriedades de cena consumidas pelo frameless (`Scene.hb_frameless`) e pelo
-closets (`Scene.hb_closets`), conforme `legacy_targets` do esquema, e atualiza os módulos existentes.
-Medidas marcadas como editadas à mão (`btm_overrides` no objeto raiz) são preservadas, salvo `include_manual`.
+closets (`Scene.hb_closets`), conforme `legacy_targets` do esquema, para os arquivos antigos abrirem coerentes.
+
+Feature 012 (T031; D-20, D-21, RN-10, RN-11): quem é atualizado são os **módulos CAFFMob**, cada um na sua linha
+(espessuras por papel, montagem, altura e profundidade do tipo; a largura fica). `scene_modules` classifica a cena
+para as duas perguntas (`apply_core`): segue, difere (padrão próprio ou outro padrão de origem) e não aplicável
+(armário herdado não convertido, item importado). Os armários herdados só são atualizados no modo de suporte
+(`legacy/gate.py`), como antes.
 """
 
 import json
@@ -82,8 +87,13 @@ def make_skip(include_manual, skipped):
 # ----------------------------------------------------------------------------------------------------------------
 
 def affected_modules(scene):
-    """Módulos que a aplicação de uma definição pode alterar (para a confirmação "N módulos" — D-16a)."""
-    return [obj for obj in scene.objects if obj.get(FRAMELESS_TAG) or obj.get(CLOSET_TAG)]
+    """Módulos que a aplicação de uma definição pode alterar (para a confirmação "N módulos" — D-16a).
+    Feature 012: os módulos CAFFMob (os herdados só no modo de suporte)."""
+    from ..legacy import gate
+    found = [obj for obj in scene.objects if is_caffmob_module(obj)]
+    if gate.legacy_ui():
+        found += [obj for obj in scene.objects if obj.get(FRAMELESS_TAG) or obj.get(CLOSET_TAG)]
+    return found
 
 
 def _scenes_for(scene):
@@ -156,16 +166,92 @@ def _tag_lines(scene):
             obj[LINE_PROP] = 'DOR'
 
 
-def apply_definition(scene, definition, include_manual=False, changed_keys=None):
-    """Aplica a definição ao projeto. Devolve o relatório da sincronização."""
+def apply_definition(scene, definition, include_manual=False, changed_keys=None, modules=None):
+    """Aplica a definição ao projeto. `modules` = objetos CAFFMob escolhidos pelas perguntas (None = todos os que
+    seguem o padrão). Devolve o relatório da sincronização."""
     _SYNC_DEPTH[0] += 1
     try:
-        return _apply_definition(scene, definition, include_manual, changed_keys)
+        return _apply_definition(scene, definition, include_manual, changed_keys, modules)
     finally:
         _SYNC_DEPTH[0] -= 1
 
 
-def _apply_definition(scene, definition, include_manual, changed_keys):
+# ----------------------------------------------------------------------------------------------------------------
+# Módulos CAFFMob (feature 012)
+# ----------------------------------------------------------------------------------------------------------------
+
+STANDARD_UID_PROP = 'btm_standard_uid'
+
+
+def is_caffmob_module(obj):
+    from ..selection import classify
+    return obj.type == 'MESH' and classify.btm_kind(obj) == 'MODULE' and getattr(obj, 'btm_cabinet', None) is not None
+
+
+def _other_roots(scene, taken):
+    """Componentes não paramétricos de topo: grupos de peças (SketchUp, OBJ) e itens da biblioteca de objetos."""
+    from ..selection import classify
+    found = []
+    for obj in scene.objects:
+        if obj.name in taken or classify.module_root(obj)[0] is not None:
+            continue
+        group = getattr(obj, 'btm_group', None)
+        item = getattr(obj, 'btm_object_item', None)
+        is_root = (group is not None and group.is_group) or (item is not None and item.is_item)
+        if is_root and classify.free_group(obj) in (None, obj):
+            found.append(obj)
+    return found
+
+
+def scene_modules(scene, context=None):
+    """[(objeto, apply_core.ModuleInfo)] da cena: CAFFMob, herdados (raízes) e outros componentes de topo."""
+    from ..cabinet_editor import bridge
+    from ..legacy import gate
+    from . import apply_core
+    context = context or bpy.context
+    out = []
+    for obj in scene.objects:
+        if is_caffmob_module(obj):
+            own = bridge.is_own_standard(context, obj)
+            out.append((obj, apply_core.ModuleInfo(obj.name, apply_core.CAFFMOB, obj.get(STANDARD_UID_PROP, ""), own)))
+    for obj in gate.legacy_roots(scene):
+        out.append((obj, apply_core.ModuleInfo(obj.name, apply_core.LEGACY, obj.get(STANDARD_UID_PROP, ""), False)))
+    taken = {obj.name for obj, _info in out}
+    for obj in _other_roots(scene, taken):
+        out.append((obj, apply_core.ModuleInfo(obj.name, apply_core.OTHER, "", False)))
+    return out
+
+
+def plan_for(scene, previous_uid, context=None):
+    from . import apply_core
+    modules = scene_modules(scene, context)
+    return apply_core.plan([info for _obj, info in modules], previous_uid), {obj.name: obj for obj, _i in modules}
+
+
+def apply_to_module(context, obj, definition, values):
+    """Leva o módulo CAFFMob ao padrão: chapas e medidas da linha dele, montagem do padrão; a largura fica."""
+    from ..data.properties import suspended_geometry, update_cabinet_geom
+    from . import cabinet_defaults
+    cab = obj.btm_cabinet
+    found = cabinet_defaults.defaults(values, cab.line, cab.cabinet_type)
+    with suspended_geometry():
+        cab.height, cab.depth, cab.thickness = found.height, found.depth, found.carcass
+        for role in ('TOP', 'BOTTOM', 'BACK', 'LEFT', 'RIGHT'):
+            value = found.thickness.get(role, found.carcass)
+            setattr(cab, 'thickness_' + role.lower(), 0.0 if abs(value - found.carcass) < 1e-9 else value)
+        cab.assembly = getattr(definition, 'assembly', 'LATERAL')
+    structure = getattr(obj, 'btm_structure', None)
+    if structure is not None:
+        for entry in structure.components:
+            entry.thickness = 0.0                       # sai o padrão próprio de espessura
+    clear_overrides(obj)
+    obj[STANDARD_UID_PROP] = definition.uid
+    obj[LINE_PROP] = cab.line
+    update_cabinet_geom(cab, context)
+
+
+def _apply_definition(scene, definition, include_manual, changed_keys, modules=None):
+    from ..legacy import gate
     from . import api
     context = bpy.context
     scene = scene or context.scene
@@ -174,18 +260,29 @@ def _apply_definition(scene, definition, include_manual, changed_keys):
     skipped = []
     skip = make_skip(include_manual, skipped)
     _tag_lines(scene)
-    frameless_count = len([o for o in scene.objects if o.get(FRAMELESS_TAG)])
-    if frameless_count and hasattr(scene, 'hb_frameless'):
-        _update_frameless(context, skip)
-    closets_count = _update_closets(scene, skip) if hasattr(scene, 'hb_closets') else 0
+    if modules is None:          # sem as perguntas (scripts): todos os CAFFMob, e os de padrão próprio com include_manual
+        modules = [obj for obj, info in scene_modules(scene, context)
+                   if info.kind == 'CAFFMOB' and (include_manual or not info.own)]
+    caffmob_count = 0
+    for obj in modules:
+        if obj.name in bpy.data.objects and is_caffmob_module(obj):
+            apply_to_module(context, obj, definition, values)
+            caffmob_count += 1
+    frameless_count = closets_count = 0
+    if gate.legacy_ui(context):  # modo de suporte: sincronização herdada, como antes da 012
+        frameless_count = len([o for o in scene.objects if o.get(FRAMELESS_TAG)])
+        if frameless_count and hasattr(scene, 'hb_frameless'):
+            _update_frameless(context, skip)
+        closets_count = _update_closets(scene, skip) if hasattr(scene, 'hb_closets') else 0
     settings = getattr(scene, 'btm_settings', None)
     if settings is not None and hasattr(settings, 'cut_plan_stale'):
         settings.cut_plan_stale = True
     keys = changed_keys if changed_keys is not None else []
-    without_target = [k for k in keys if not schema.PARAMS[k].legacy_targets]
+    without_target = [k for k in keys if k in schema.PARAMS and not schema.PARAMS[k].legacy_targets]
     return {
         'definition': definition.name,
-        'modules_updated': frameless_count + closets_count,
+        'modules_updated': caffmob_count + frameless_count + closets_count,
+        'caffmob': caffmob_count,
         'frameless': frameless_count,
         'closets': closets_count,
         'targets_written': targets,

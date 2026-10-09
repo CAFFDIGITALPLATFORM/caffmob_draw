@@ -32,12 +32,45 @@ def draw_view_mode(layout, context):
     hint.label(text=tr("Vista: {}").format(view_mode_core.label(scene.btm_view_mode, scene.btm_view_lines)))
 
 
+def draw_wall_region(layout, context):
+    """Região na parede (feature 011, T020): marcar antes de escolher a porta ou a janela, que entra com as medidas
+    exatas dela; marcada, mostra as medidas (editáveis) e "Limpar região"."""
+    from .. import units
+    region = getattr(context.window_manager, 'btm_wall_region', None)
+    if region is None:
+        return
+    box = layout.box()
+    row = box.row(align=True)
+    row.operator("caffmob.wall_region", text=N_("Marcar região"), icon='SELECT_SET')
+    if not region.active:
+        hint = box.row()
+        hint.active = False
+        hint.label(text=tr("Opcional: a porta ou janela entra no tamanho exato da região"))
+        return
+    row.operator("caffmob.wall_region_clear", text="", icon='X')
+    unit = context.scene.unit_settings
+    box.label(text=tr("Região em {}: {} × {}").format(
+        region.wall, units.unit_to_string(unit, region.x1 - region.x0), units.unit_to_string(unit, region.z1 - region.z0)),
+        icon='CHECKMARK')
+    grid = box.grid_flow(columns=2, align=True)
+    grid.prop(region, "x0", text=tr("Esquerda"))
+    grid.prop(region, "x1", text=tr("Direita"))
+    grid.prop(region, "z0", text=tr("Base"))
+    grid.prop(region, "z1", text=tr("Topo"))
+
+
 def draw(layout, context):
     walls = has_walls(context.scene)
     row = layout.row(align=True)
     row.scale_y = 1.3
     row.operator("caffmob.wall_editor", text=N_("Editor de Paredes"), icon='MESH_GRID')
     draw_view_mode(layout, context)
+    from ..legacy import gate                               # feature 012 (T061): armários de bibliotecas antigas
+    legacy = gate.legacy_roots(context.scene) if not gate.legacy_ui(context) else []
+    if legacy:
+        box = layout.box()
+        box.label(text=tr("{} armário(s) de bibliotecas antigas").format(len(legacy)), icon='INFO')
+        box.operator("caffmob.legacy_convert", text=tr("Converter para CAFFMob"), icon='FILE_REFRESH')
     from ..openings import sync as openings_sync           # feature 010: caixas antigas de portas e janelas
     old = openings_sync.outdated(context.scene)
     if old:
@@ -58,6 +91,7 @@ def draw(layout, context):
                 empty_state(body, NO_WALL)
             col = body.column()
             col.enabled = walls
+            draw_wall_region(col, context)
             sidebar_proxy.draw_panel(vs.HOME_BUILDER_PT_room_layout_doors_windows, col, context)
     with group_scope(layout, context, 'floor', N_("Piso e teto"), 'MESH_PLANE') as body:
         if body is not None:

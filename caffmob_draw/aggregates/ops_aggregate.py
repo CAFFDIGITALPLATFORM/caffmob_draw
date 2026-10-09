@@ -199,7 +199,7 @@ class BTM_OT_AggregateMove(bpy.types.Operator):
 
 
 class BTM_OT_DeleteWithAggregates(bpy.types.Operator):
-    """Apaga os objetos selecionados; se tiverem agregados, pergunta se eles vão junto"""
+    """Apaga os objetos selecionados com tudo que está abaixo deles; se tiverem agregados, pergunta se eles vão junto"""
     bl_idname = "caffmob.delete_with_aggregates"
     bl_label = "Apagar"
     bl_options = {'REGISTER', 'UNDO'}
@@ -210,8 +210,12 @@ class BTM_OT_DeleteWithAggregates(bpy.types.Operator):
 
     @classmethod
     def poll(cls, context):
-        return context.mode == 'OBJECT' and any(_children_aggregates(o) or _stuck_children(o)
-                                                for o in context.selected_objects)
+        # Feature 011 (D-05): também quando algum selecionado tem descendentes, para apagar o componente inteiro;
+        # parede, piso e teto seguem no Delete do Blender.
+        from ..selection import component
+        return context.mode == 'OBJECT' and any(
+            (o.children and component.deletes_subtree(o)) or _children_aggregates(o) or _stuck_children(o)
+            for o in context.selected_objects)
 
     def invoke(self, context, event):
         if not any(_children_aggregates(o) for o in context.selected_objects):
@@ -224,24 +228,36 @@ class BTM_OT_DeleteWithAggregates(bpy.types.Operator):
         self.layout.prop(self, "with_aggregates")
 
     def execute(self, context):
-        targets = list(context.selected_objects)
-        _release_stuck_children(targets)
-        for obj in targets:
-            for child in _children_aggregates(obj):
-                if self.with_aggregates:
-                    if child not in targets:
-                        targets.append(child)
-                else:
-                    convert.unconvert(child)
-        for obj in targets:
-            if obj.name in bpy.data.objects:
-                for agg in [c for c in obj.children_recursive if getattr(c, 'btm_aggregate', None) is not None
-                            and c.btm_aggregate.cutter is not None]:
-                    cutter = agg.btm_aggregate.cutter
-                    if cutter.name in bpy.data.objects:
-                        bpy.data.objects.remove(cutter, do_unlink=True)
-                bpy.data.objects.remove(obj, do_unlink=True)
+        delete_components(list(context.selected_objects), keep_aggregates=not self.with_aggregates)
         return {'FINISHED'}
+
+
+def delete_components(targets, keep_aggregates=False):
+    """Apaga `targets` com a subárvore inteira, de baixo para cima (feature 011, D-05 e D-06).
+
+    Itens grudados são soltos no lugar; com `keep_aggregates`, os agregados próprios voltam a ser objetos soltos.
+    Vãos de porta e janela tiram o furo (booleano) da parede; recortes de agregados saem junto.
+    """
+    from ..selection import component
+    _release_stuck_children(targets)
+    plan = component.delete_plan(targets, keep_aggregates=keep_aggregates)
+    if keep_aggregates:
+        for target in targets:
+            for agg in component.own_aggregates(target):
+                convert.unconvert(agg)
+    for opening in plan.openings:
+        wall = opening.parent
+        if wall is not None and wall.get('IS_WALL_BP'):
+            for mod in [m for m in wall.modifiers if m.type == 'BOOLEAN' and m.object == opening]:
+                wall.modifiers.remove(mod)
+    for obj in plan.remove:
+        agg = getattr(obj, 'btm_aggregate', None)
+        cutter = agg.cutter if agg is not None else None
+        if cutter is not None and cutter.name in bpy.data.objects and cutter not in plan.remove:
+            bpy.data.objects.remove(cutter, do_unlink=True)
+    alive = [obj for obj in plan.remove if obj.name in bpy.data.objects]
+    if alive:
+        bpy.data.batch_remove(alive)      # feature 012: em lote; um a um custava segundos com centenas de peças
 
 
 def _stuck_children(obj):
@@ -270,9 +286,10 @@ def _release_stuck_children(targets):
 
 
 def _children_aggregates(obj):
+    """Agregados próprios abaixo de `obj`; a folha da porta, da janela ou da esquadria é peça delas (feature 011)."""
+    from ..selection import component
     try:
-        return [c for c in obj.children_recursive if getattr(c, 'btm_aggregate', None) is not None
-                and c.btm_aggregate.is_aggregate]
+        return component.own_aggregates(obj)
     except ReferenceError:
         return []
 

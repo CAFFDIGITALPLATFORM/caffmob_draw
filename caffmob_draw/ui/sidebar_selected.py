@@ -5,7 +5,7 @@ opções da biblioteca (dimensões, construção, padrões, vãos, seleção…)
 frame", com os subpainéis do face frame desenhados pelo proxy, no lugar do antigo painel "Face Frame Cabinet".
 """
 
-from ..data.i18n import N_
+from ..data.i18n import N_, tr
 from . import object_properties, sidebar_proxy
 from .sidebar import group_scope
 
@@ -32,10 +32,46 @@ def _draw_face_frame(layout, context):
             sidebar_proxy.draw_panel(child, box, context, header=True)
 
 
+def _draw_standard(layout, context):
+    """Padrão de origem, montagem e "Padrão próprio" do armário CAFFMob ativo (feature 012, T036; RF-07)."""
+    from ..cabinet_editor import bridge
+    from ..selection import classify
+    root, library = classify.module_root(context.active_object)
+    if library != 'BTM' or not bridge.is_caffmob_module(root):
+        return
+    box = layout.box()
+    origin = bridge.origin_definition(context, root)
+    box.label(text=tr("Padrão: {}").format(origin.name if origin is not None else "—"), icon='PRESET')
+    row = box.row(align=True)
+    row.prop(root.btm_cabinet, "assembly", expand=True)
+    if bridge.is_own_standard(context, root):
+        note = box.row()
+        note.active = False
+        note.label(text=tr("Padrão próprio: difere do Padrão de Dimensões global"), icon='MODIFIER')
+
+
+def _draw_legacy(layout, context):
+    """Armário de biblioteca antiga selecionado: botão para converter só ele (feature 012, T061; D-26)."""
+    from ..legacy import gate
+    from ..selection import classify
+    _root, library = classify.module_root(context.active_object)
+    if library not in gate.LEGACY_LIBRARIES:
+        return
+    box = layout.box()
+    box.label(text=tr("Armário de biblioteca antiga"), icon='INFO')
+    op = box.operator("caffmob.legacy_convert", text=tr("Converter este para CAFFMob"), icon='FILE_REFRESH')
+    op.only_active = True
+
+
 def draw(layout, context):
     object_properties.draw_selected(layout, context)
     if context.active_object is not None:
-        _draw_face_frame(layout, context)
+        from ..legacy import gate
+        _draw_standard(layout, context)
+        if gate.legacy_ui(context):
+            _draw_face_frame(layout, context)
+        else:
+            _draw_legacy(layout, context)
     if any(o.type == 'MESH' for o in context.selected_objects):        # feature 009 (RN-12)
         with group_scope(layout, context, 'sel_retexture', N_("Retexturizar"), 'MATERIAL') as body:
             if body is not None:

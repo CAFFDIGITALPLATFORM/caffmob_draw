@@ -319,6 +319,40 @@ def configured_part(context, root, role):
     return str(material), float(thickness)
 
 
+# Montagem e padrão próprio (feature 012, T028; D-09, D-12) ---------------------------------------------------
+def is_caffmob_module(root):
+    from ..selection import classify
+    return root is not None and classify.btm_kind(root) == 'MODULE' and getattr(root, 'btm_cabinet', None) is not None
+
+
+def origin_definition(context, root):
+    """Padrão global de origem do módulo (`btm_standard_uid`), ou o ativo se não houver."""
+    from ..standards import api
+    uid = root.get('btm_standard_uid', "")
+    return (api.find_definition(context.scene, uid=uid) if uid else None) or api.active_definition(context.scene)
+
+
+def is_own_standard(context, root):
+    """O módulo CAFFMob tem padrão próprio (montagem, espessura por papel ou valores à mão diferentes do padrão)?"""
+    from ..standards import apply_core, sync
+    if not is_caffmob_module(root):
+        return False
+    origin = origin_definition(context, root)
+    origin_assembly = getattr(origin, 'assembly', 'LATERAL') if origin is not None else 'LATERAL'
+    thickness = [entry.thickness for entry in root.btm_structure.components] if hasattr(root, 'btm_structure') else []
+    return apply_core.is_own(sync.get_overrides(root), root.btm_cabinet.assembly, origin_assembly, thickness)
+
+
+def set_assembly(context, root, data):
+    """Troca a montagem do módulo CAFFMob; a malha e a lista de corte seguem (propriedade com `update`)."""
+    if not is_caffmob_module(root):
+        return [common.tr("Só armários CAFFMob têm montagem")]
+    if root.btm_cabinet.assembly != data['assembly']:
+        root.btm_cabinet.assembly = data['assembly']
+        scene_divisions.reflow(context, root, force=True)
+    return []
+
+
 def _item(root, role):
     return root.btm_structure.item(role, create=True)
 
@@ -636,4 +670,5 @@ EDIT_008 = {'TOGGLE_EXTRA': toggle_extra, 'SET_BAYS': set_bays, 'SET_BACK': set_
 
 
 EDIT_006 = {'ADD_DIVISION': add_division, 'EDIT_DIVISION': edit_division, 'REMOVE_DIVISION': remove_division,
-            'EDIT_PART': edit_part, 'REMOVE_PART': remove_part, 'RESTORE_PART': restore_part}
+            'EDIT_PART': edit_part, 'REMOVE_PART': remove_part, 'RESTORE_PART': restore_part,
+            'SET_ASSEMBLY': set_assembly}

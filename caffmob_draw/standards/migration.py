@@ -4,6 +4,9 @@
   definição "Migrada" (origem MIGRATED), que passa a ser a ativa.
 - M-02: projeto sem definição recebe as embutidas; a ativa é "Padrão EUA (HB5)" se já houver gabinetes legados
   (para não mudar medidas de projetos do Home Builder) e "Padrão Brasil" nos demais casos.
+- M-03 (feature 012, T004): raiz de módulo sem `btm_standard_uid` recebe o uid do padrão ativo, sem refazer nada.
+  Roda a cada abertura (idempotente). `line` e `assembly` dos módulos CAFFMob antigos já leem os padrões das
+  propriedades (COZ, lateral passante).
 
 As migrações rodam uma vez por arquivo (marca `btm_standards_migrated` na cena principal), a partir do
 `load_file_post` do add-on (handler `@persistent` já existente) e, na abertura sem arquivo, de um timer.
@@ -15,6 +18,7 @@ from ..data import dimension_schema as schema
 from . import api, builtin, sync
 
 MIGRATED_FLAG = 'btm_standards_migrated'
+STANDARD_UID_PROP = 'btm_standard_uid'
 MIGRATED_NAME = "Migrada"
 
 # config_* (obsoleto) → componentes do padrão (linha Cozinha)
@@ -104,13 +108,30 @@ def migrate_scene(scene):
     return applied
 
 
+def stamp_standard_uid(scene):
+    """M-03: grava o padrão de origem nas raízes de módulo que ainda não o têm. Devolve quantas foram marcadas."""
+    from ..selection import classify
+    definition = api.active_definition(scene)
+    if definition is None:
+        return 0
+    count = 0
+    for obj in scene.objects:
+        if classify.module_library(obj) and not obj.get(STANDARD_UID_PROP):
+            obj[STANDARD_UID_PROP] = definition.uid
+            count += 1
+    return count
+
+
 def run(scene=None):
     """Chamado pelo `load_file_post` do add-on depois de garantir a cena principal."""
     scene = api.main_scene(scene or bpy.context.scene)
     if scene is None:
         return []
     try:
-        return migrate_scene(scene)
+        applied = migrate_scene(scene)
+        if stamp_standard_uid(scene):
+            applied.append('M-03')
+        return applied
     except api.StandardsError as exc:
         print(f"CAFFMob Draw: migração do Padrão de Dimensões não aplicada: {exc}")
         return []

@@ -30,6 +30,23 @@ def face_frame_note(layout):
         row.label(text=tr(FACE_FRAME_NOTE), icon='INFO')
 
 
+def draw_assembly(layout, context):
+    """Montagem do armário CAFFMob e a marca "Padrão próprio" (feature 012, T029; RN-08, RN-09)."""
+    from . import bridge
+    s = props.session()
+    root = s.root() if s is not None else None
+    if not bridge.is_caffmob_module(root):
+        return
+    box = layout.box()
+    row = box.row(align=True)
+    row.label(text=tr("Montagem"))
+    row.prop(root.btm_cabinet, "assembly", expand=True)
+    if bridge.is_own_standard(context, root):
+        note = box.row()
+        note.active = False
+        note.label(text=tr("Padrão próprio: difere do Padrão de Dimensões global"), icon='MODIFIER')
+
+
 class BTM_PT_CabinetEditorStructure(_TabPanel, bpy.types.Panel):
     bl_label = "Componentes"
     bl_idname = "BTM_PT_cabinet_editor_structure"
@@ -39,6 +56,7 @@ class BTM_PT_CabinetEditorStructure(_TabPanel, bpy.types.Panel):
     def draw(self, context):
         ui = context.window_manager.btm_cabinet_editor
         layout = self.layout
+        draw_assembly(layout, context)
         if not ui.structure:
             row = layout.row()
             row.active = False

@@ -54,6 +54,12 @@ def active_definition(scene=None):
     return data.definitions[index]
 
 
+def active_assembly(scene=None):
+    """Montagem do padrão ativo (feature 012): 'LATERAL' ou 'BASE'; 'LATERAL' sem padrão."""
+    definition = active_definition(scene)
+    return getattr(definition, 'assembly', 'LATERAL') if definition is not None else 'LATERAL'
+
+
 def find_definition(scene, uid=None, name=None):
     data = standards(scene)
     if data is None:
@@ -89,6 +95,8 @@ def unique_name(scene, base):
 
 
 def copy_values(source, target):
+    if hasattr(source, 'assembly') and hasattr(target, 'assembly'):      # feature 012 (D-10)
+        target.assembly = source.assembly
     target.values.clear()
     for item in source.values:
         new = target.values.add()
@@ -260,6 +268,10 @@ def pending_changes(scene, draft):
         return []
     unit = user_unit(scene)
     changes = []
+    if getattr(draft, 'assembly', 'LATERAL') != getattr(definition, 'assembly', 'LATERAL'):
+        labels = {'LATERAL': tr("Lateral passante"), 'BASE': tr("Base passante")}
+        changes.append({'key': 'assembly', 'label': tr("Montagem"), 'old': labels[definition.assembly],
+                        'new': labels[draft.assembly]})
     for item in draft.values:
         param = schema.get_param(item.name)
         if param is None:
@@ -284,8 +296,10 @@ def _component_label(param):
     return ""
 
 
-def apply_draft(scene, draft, include_manual=False):
-    """Grava o rascunho na definição (versão +1) e sincroniza os módulos. Devolve o relatório da sincronização."""
+def apply_draft(scene, draft, include_manual=False, modules=None):
+    """Grava o rascunho na definição (versão +1) e sincroniza os módulos. Devolve o relatório da sincronização.
+
+    `modules` (feature 012): os módulos CAFFMob a atualizar; `[]` só grava (as perguntas escolhem depois, D-22)."""
     definition = draft_definition(scene, draft)
     if definition is None:
         raise StandardsError(tr("A definição do rascunho não existe mais."))
@@ -300,7 +314,7 @@ def apply_draft(scene, draft, include_manual=False):
         definition.updated_at = builtin.now_iso()
     from . import sync
     report = sync.apply_definition(scene, definition, include_manual=include_manual,
-                                   changed_keys=[c['key'] for c in changes])
+                                   changed_keys=[c['key'] for c in changes], modules=modules)
     report['changes'] = changes
     return report
 

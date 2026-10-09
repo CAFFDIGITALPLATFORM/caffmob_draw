@@ -9,6 +9,14 @@ externas, chapas, componentes); a coleção dá os valores. Atributos importados
 import bpy
 
 
+# Feature 012 (RN-08): lateral passante (laterais do piso ao topo, base e tampo entre elas) ou base passante (a base
+# ocupa a largura toda e as laterais ficam em cima dela). O Promob não tem esse atributo: vai em `CAFF_MONTAGEM`.
+ASSEMBLY_ITEMS = [
+    ('LATERAL', "Lateral passante", "As laterais vão do piso ao topo; base e tampo ficam entre elas"),
+    ('BASE', "Base passante", "A base ocupa a largura toda; as laterais ficam em cima dela"),
+]
+
+
 class BTM_PG_StandardValue(bpy.types.PropertyGroup):
     """Valor de um parâmetro; `name` é a chave do esquema (ex.: "COZ.sheets.LAT.thickness")."""
     value: bpy.props.FloatProperty(name="Valor (mm)", default=0.0)  # type: ignore
@@ -43,6 +51,9 @@ class BTM_PG_StandardDefinition(bpy.types.PropertyGroup):
     updated_at: bpy.props.StringProperty(name="Atualizada em")  # type: ignore
     values: bpy.props.CollectionProperty(type=BTM_PG_StandardValue)  # type: ignore
     raw_attributes: bpy.props.CollectionProperty(type=BTM_PG_RawAttribute)  # type: ignore
+    assembly: bpy.props.EnumProperty(
+        name="Montagem", items=ASSEMBLY_ITEMS, default='LATERAL',
+        description="Regra de montagem da caixa dos armários")  # type: ignore
 
 
 class BTM_PG_Standards(bpy.types.PropertyGroup):
@@ -104,6 +115,7 @@ class BTM_PG_StandardsDraft(bpy.types.PropertyGroup):
         update=_edit_text_update)  # type: ignore
     edit_enum: bpy.props.EnumProperty(name="Valor", items=_edit_enum_items, update=_edit_enum_update)  # type: ignore
     error: bpy.props.StringProperty()  # type: ignore
+    assembly: bpy.props.EnumProperty(name="Montagem", items=ASSEMBLY_ITEMS, default='LATERAL')  # type: ignore
     include_manual: bpy.props.BoolProperty(
         name="Incluir medidas manuais",
         description="Também substitui medidas editadas à mão nos módulos (RN-23)",

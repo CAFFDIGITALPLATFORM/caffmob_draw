@@ -1,0 +1,28 @@
+{"ts": "2026-10-09T17:03:43Z", "action": "T001", "status": "done", "files": ["caffmob_draw/selection/component_props.py"]}
+{"ts": "2026-10-09T17:03:43Z", "action": "T002", "status": "done", "files": ["caffmob_draw/openings/region_props.py"]}
+{"ts": "2026-10-09T17:03:43Z", "action": "T003", "status": "done", "files": ["tests/test_component_delete.py"]}
+{"ts": "2026-10-09T17:03:43Z", "action": "T004", "status": "done", "files": ["tests/test_component_core.py"]}
+{"ts": "2026-10-09T17:03:43Z", "action": "T005", "status": "done", "files": ["tests/test_wall_region_core.py"]}
+{"ts": "2026-10-09T17:03:43Z", "action": "T006", "status": "done", "files": ["caffmob_draw/selection/component.py"]}
+{"ts": "2026-10-09T17:03:43Z", "action": "T007", "status": "done", "files": ["caffmob_draw/openings/region_core.py"]}
+{"ts": "2026-10-09T17:03:43Z", "action": "T008", "status": "done", "files": ["caffmob_draw/selection/component.py"]}
+{"ts": "2026-10-09T17:11:56Z", "action": "T009", "status": "done", "files": ["caffmob_draw/selection/component_select.py"]}
+{"ts": "2026-10-09T17:11:56Z", "action": "T010", "status": "done", "files": ["caffmob_draw/selection/component_pick.py"]}
+{"ts": "2026-10-09T17:11:56Z", "action": "T021", "status": "done", "files": ["caffmob_draw/__init__.py"]}
+{"ts": "2026-10-09T17:11:56Z", "action": "T011", "status": "done", "files": ["tests/blender_011_drag_probe.py"]}
+{"ts": "2026-10-09T17:11:56Z", "action": "T012", "status": "done", "files": []}
+{"ts": "2026-10-09T17:12:57Z", "action": "T013", "status": "done", "files": ["caffmob_draw/aggregates/ops_aggregate.py", "caffmob_draw/selection/component.py", "tests/test_component_delete.py"]}
+{"ts": "2026-10-09T17:12:57Z", "action": "T014", "status": "done", "files": ["caffmob_draw/operators/doors_windows.py"]}
+{"ts": "2026-10-09T17:14:23Z", "action": "T015", "status": "done", "files": ["caffmob_draw/aggregates/ops_import.py", "caffmob_draw/aggregates/ops_group.py", "tests/blender_007_window_smoke.py"]}
+{"ts": "2026-10-09T17:14:58Z", "action": "T016", "status": "done", "files": ["caffmob_draw/ui/view3d_sidebar.py", "caffmob_draw/selection/component_props.py"]}
+{"ts": "2026-10-09T17:14:58Z", "action": "T017", "status": "done", "files": ["caffmob_draw/operators/viewport_hud.py"]}
+{"ts": "2026-10-09T17:16:25Z", "action": "T018", "status": "done", "files": ["caffmob_draw/openings/region.py"]}
+{"ts": "2026-10-09T17:16:25Z", "action": "T022", "status": "done", "files": ["caffmob_draw/openings/__init__.py"]}
+{"ts": "2026-10-09T17:16:48Z", "action": "T019", "status": "done", "files": ["caffmob_draw/operators/doors_windows.py"]}
+{"ts": "2026-10-09T17:17:04Z", "action": "T020", "status": "done", "files": ["caffmob_draw/ui/sidebar_build.py"]}
+{"ts": "2026-10-09T17:18:12Z", "action": "T023", "status": "done", "files": ["tests/blender_011_component_smoke.py", "caffmob_draw/selection/component_select.py"]}
+{"ts": "2026-10-09T17:22:11Z", "action": "T024", "status": "done", "files": ["tests/blender_011_region_smoke.py", "tests/blender_011_drag_probe.py", "caffmob_draw/openings/region.py"]}
+{"ts": "2026-10-09T17:23:08Z", "action": "T025", "status": "done", "files": ["caffmob_draw/data/translations/aggregates.json", "caffmob_draw/data/translations/openings.json", "caffmob_draw/data/translations/selection.json", "caffmob_draw/data/translations/sidebar.json", "caffmob_draw/openings/region_core.py"]}
+{"ts": "2026-10-09T17:23:38Z", "action": "T027", "status": "done", "files": ["docs/usuario/selecao-por-componente.md"]}
+{"ts": "2026-10-09T17:23:38Z", "action": "T028", "status": "done", "files": ["docs/usuario/editor-paredes-e-mover-sobre.md"]}
+{"ts": "2026-10-09T17:26:32Z", "action": "T026", "status": "done", "files": ["tests/blender_011_component_smoke.py", "_reversa_forward/011-selecao-por-componente/regression-watch.md"]}

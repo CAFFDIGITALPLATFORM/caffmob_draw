@@ -186,5 +186,13 @@
  "Vista: {}": {
   "pt_BR": "Vista: {}",
   "en_US": "View: {}"
+ },
+ "Opcional: a porta ou janela entra no tamanho exato da região": {
+  "pt_BR": "Opcional: a porta ou janela entra no tamanho exato da região",
+  "en_US": "Optional: the door or window takes the exact size of the region"
+ },
+ "Região em {}: {} × {}": {
+  "pt_BR": "Região em {}: {} × {}",
+  "en_US": "Region on {}: {} × {}"
  }
 }

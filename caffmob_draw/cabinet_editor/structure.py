@@ -86,25 +86,44 @@ def _neighbor_thickness(role, thick, states):
     return thick[role]
 
 
-def layout(width, height, depth, thick, states, back_setback=0.0):
+LATERAL, BASE = 'LATERAL', 'BASE'          # montagem (feature 012, D-09)
+
+
+def layout(width, height, depth, thick, states, back_setback=0.0, assembly=LATERAL):
     """(chapas {papel: (lo, hi)} só das presentes, vão interno (lo, hi)) do módulo `btm`.
 
     `back_setback` (feature 008, D-11): fundo "Inteiro Recuado"; o fundo anda para dentro e o vão termina nele.
+    `assembly` (feature 012, D-09): `LATERAL` (laterais do piso ao topo, base e tampo entre elas) ou `BASE` (a base
+    ocupa a largura toda e as laterais ficam em cima dela; o tampo continua entre as laterais).
     """
     w2 = width / 2.0
     t = {role: _neighbor_thickness(role, thick, states) for role in ROLES}
     x0, x1 = -w2 + t['LEFT'], w2 - t['RIGHT']
     z0, z1 = t['BOTTOM'], height - t['TOP']
+    side_z = t['BOTTOM'] if assembly == BASE else 0.0
+    bottom_x = (-w2, w2) if assembly == BASE else (x0, x1)
     boxes = {
-        'LEFT': ((-w2, -depth, 0.0), (-w2 + thick['LEFT'], 0.0, height)),
-        'RIGHT': ((w2 - thick['RIGHT'], -depth, 0.0), (w2, 0.0, height)),
-        'BOTTOM': ((x0, -depth, 0.0), (x1, 0.0, thick['BOTTOM'])),
+        'LEFT': ((-w2, -depth, side_z), (-w2 + thick['LEFT'], 0.0, height)),
+        'RIGHT': ((w2 - thick['RIGHT'], -depth, side_z), (w2, 0.0, height)),
+        'BOTTOM': ((bottom_x[0], -depth, 0.0), (bottom_x[1], 0.0, thick['BOTTOM'])),
         'TOP': ((x0, -depth, height - thick['TOP']), (x1, 0.0, height)),
         'BACK': ((x0, -thick['BACK'] - back_setback, z0), (x1, -back_setback, z1)),
     }
     present = {role: box for role, box in boxes.items() if not states.get(role, RoleState()).removed}
     inner = ((x0, -depth, z0), (x1, -t['BACK'] - (back_setback if t['BACK'] > 0.0 else 0.0), z1))
     return present, inner
+
+
+def carcass_lengths(width, height, left, right, bottom, assembly=LATERAL):
+    """Comprimento de cada chapa da caixa pela montagem (mesma unidade da entrada; feature 012, D-09).
+
+    `left`, `right`, `bottom` = espessura que as vizinhas respeitam (0 quando a chapa saiu em EXTEND/SHRINK).
+    Laterais e base no sentido da altura e da largura; o tampo fica sempre entre as laterais.
+    """
+    inner = width - left - right
+    if assembly == BASE:
+        return {'LEFT': height - bottom, 'RIGHT': height - bottom, 'BOTTOM': width, 'TOP': inner}
+    return {'LEFT': height, 'RIGHT': height, 'BOTTOM': inner, 'TOP': inner}
 
 
 def shrink_change(role, thickness):

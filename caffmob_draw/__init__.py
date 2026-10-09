@@ -40,6 +40,9 @@ from . import collision
 from . import cabinet_editor
 from . import object_library
 from . import openings
+from .selection import component_props, component_select, component_pick
+from . import legacy
+from . import library_panel
 from . import compat_identity
 from . import ui
 from . import overlays
@@ -130,6 +133,15 @@ class BTM_AddonPreferences(bpy.types.AddonPreferences):
         default=False,
     )  # type: ignore
 
+    # Feature 012 (D-01): as bibliotecas herdadas (frameless, face frame, closets) e a de molduras saem da interface;
+    # o código fica só para abrir e converter arquivos antigos. Ligar é só para suporte.
+    show_legacy_libraries: bpy.props.BoolProperty(
+        name="Mostrar bibliotecas herdadas",
+        description=("Mostra a interface das bibliotecas frameless, face frame, closets e de molduras, que foram "
+                     "substituídas pelos armários CAFFMob. Use só para suporte ou para comparar uma conversão"),
+        default=False,
+    )  # type: ignore
+
     wall_color: bpy.props.FloatVectorProperty(name="Cor das Paredes", size=4, min=0, max=1, default=(0.252832, 0.500434, 0.735662, 1.0), subtype="COLOR")  # type: ignore
     cabinet_color: bpy.props.FloatVectorProperty(name="Cor dos Armários", size=4, min=0, max=1, default=(0.0, 0.5, 0.7, 0.3), subtype="COLOR")  # type: ignore
     door_window_color: bpy.props.FloatVectorProperty(name="Cor de Portas/Janelas", size=4, min=0, max=1, default=(0.0, 0.5, 0.7, 0.1), subtype="COLOR")  # type: ignore
@@ -202,6 +214,9 @@ class BTM_AddonPreferences(bpy.types.AddonPreferences):
         layout = self.layout
         layout.prop(self, "use_viewport_hud")
         layout.prop(self, "hide_2d_drawing_panels")
+        advanced = layout.box()
+        advanced.label(text="Avançado", icon='PREFERENCES')
+        advanced.prop(self, "show_legacy_libraries")
 
         box = layout.box()
         box.label(text="Padrões do Layout 2D", icon='RENDERLAYERS')
@@ -287,6 +302,11 @@ def register():
     cabinet_editor.register()
     object_library.register()
     openings.register()
+    # Seleção por componente (feature 011)
+    for _module in (component_props, component_select, component_pick):
+        _module.register()
+    legacy.register()           # feature 012: bibliotecas herdadas fora da interface e conversão
+    library_panel.register()    # feature 012: painel BIBLIOTECA CAFFMOB
 
     # Register legacy UI
     view3d_sidebar.register()
@@ -335,6 +355,10 @@ def unregister():
     view3d_sidebar.unregister()
 
     # Unregister modern UI, operators & draw handlers
+    library_panel.unregister()
+    legacy.unregister()
+    for _module in (component_pick, component_select, component_props):
+        _module.unregister()
     openings.unregister()
     object_library.unregister()
     cabinet_editor.unregister()

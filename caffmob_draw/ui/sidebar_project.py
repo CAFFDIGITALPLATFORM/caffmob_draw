@@ -28,8 +28,14 @@ def _hide_2d(context):
     return bool(getattr(prefs, 'hide_2d_drawing_panels', False))
 
 
+LEGACY_CHILDREN = ('HOME_BUILDER_PT_molding_library',)    # feature 012 (T064, D-28): usa operadores do frameless
+
+
 def draw_drawings(layout, context):
+    from ..legacy import gate
+    legacy = gate.legacy_ui(context)
     for parent_name, children in _DRAWINGS:
+        children = tuple(c for c in children if legacy or c not in LEGACY_CHILDREN)
         parent = _cls(parent_name)
         if not sidebar_proxy.visible(parent, context):
             continue

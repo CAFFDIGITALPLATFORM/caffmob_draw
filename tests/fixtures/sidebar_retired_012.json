@@ -1,0 +1,5 @@
+{
+  "feature": "012-biblioteca-caffmob-chapas",
+  "reason": "Bibliotecas herdadas (frameless, face frame, closets) e a de molduras saem da interface (RN-12, D-01). Os operadores continuam registrados para abrir e converter arquivos antigos e voltam com a preferência de suporte show_legacy_libraries.",
+  "operator_prefixes": ["caffmob_frameless.", "caffmob_face_frame.", "caffmob_closets."]
+}

@@ -94,12 +94,21 @@ def _s():
         return 1.0
 
 
+def room_ui_visible(context):
+    """Num ambiente (fora das vistas de layout e de detalhe). Feature 012 (T052, D-03): os botões gerais (Abrir portas,
+    Mover Sobre, Seleção por componente) usam isto, e não as fiações das bibliotecas herdadas."""
+    scene = context.scene
+    return not (scene.get('IS_LAYOUT_VIEW') or scene.get('IS_DETAIL_VIEW'))
+
+
 def _product_ui_visible(context, product_tab):
     """Selection-mode widgets show only on the matching product tab and
-    only in a real room scene -- mirrors the sidebar panels' gating."""
-    scene = context.scene
-    if scene.get('IS_LAYOUT_VIEW') or scene.get('IS_DETAIL_VIEW'):
+    only in a real room scene -- mirrors the sidebar panels' gating.
+    Feature 012 (T052): only with the legacy-libraries support preference (`legacy/gate.py`)."""
+    from ..legacy import gate
+    if not room_ui_visible(context) or not gate.legacy_ui(context):
         return False
+    scene = context.scene
     hb = getattr(scene, 'home_builder', None)
     return getattr(hb, 'product_tab', 'FRAMELESS') == product_tab
 
@@ -397,6 +406,9 @@ class _InspectButton(_ModalToggleButton):
     def visible(self, context):
         if self._is_my_modal_active():
             return True
+        from ..legacy import gate
+        if not gate.legacy_ui(context):
+            return room_ui_visible(context)      # feature 012 (T052): armários CAFFMob abrem as portas também
         for wiring in (_FF_SELECTION, _FL_SELECTION, _CL_SELECTION):
             if not wiring.ui_visible(context):
                 continue
@@ -426,7 +438,7 @@ class _MoveOverButton(_ModalToggleButton):
     def visible(self, context):
         if self._is_my_modal_active():
             return True
-        return any(w.ui_visible(context) for w in (_FF_SELECTION, _FL_SELECTION, _CL_SELECTION))
+        return room_ui_visible(context)          # feature 012 (T052, D-03)
 
     def on_click(self, context, area, region):
         state = getattr(context.window_manager, 'btm_move_over', None)
@@ -441,9 +453,34 @@ _MOVE_OVER_BUTTON = _MoveOverButton(
     enable_label=N_("Mover Sobre"),
     disable_label=N_("Sair do Mover Sobre"),
 )
+
+
+class _ComponentSelectButton(_MoveOverButton):
+    """Seleção por componente (feature 011, T017; D-08): liga/desliga `Scene.btm_component_select`, com o estado
+    escrito no botão. Aparece onde aparece o "Mover Sobre"."""
+
+    def _is_my_modal_active(self):
+        return bool(getattr(bpy.context.scene, 'btm_component_select', False))
+
+    def visible(self, context):
+        return room_ui_visible(context)          # feature 012 (T052, D-03)
+
+    def on_click(self, context, area, region):
+        scene = context.scene
+        if hasattr(scene, 'btm_component_select'):
+            scene.btm_component_select = not scene.btm_component_select
+        if area is not None:
+            area.tag_redraw()
+
+
+_COMPONENT_SELECT_BUTTON = _ComponentSelectButton(
+    'caffmob.component_select_toggle', None,
+    enable_label=N_("Seleção por componente: desligada"),
+    disable_label=N_("Seleção por componente: ligada"),
+)
 _MODAL_TOGGLE_BUTTONS = [
     _GRAB_CABINET_BUTTON, _GRAB_FACE_FRAME_BUTTON, _GRAB_BAY_BUTTON,
-    _GRAB_OPENING_BUTTON, _OPEN_DOOR_BUTTON, _MOVE_OVER_BUTTON,
+    _GRAB_OPENING_BUTTON, _OPEN_DOOR_BUTTON, _MOVE_OVER_BUTTON, _COMPONENT_SELECT_BUTTON,
 ]
 
 

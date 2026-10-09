@@ -43,12 +43,24 @@ starter = types_closets.BaseClosetStarter()
 starter.create_starter("Roupeiro Teste", bay_qty=2)
 bpy.context.view_layer.update()
 
-# 3. Aplicar definição com lateral 18 mm propaga aos gabinetes existentes.
+# 3. Aplicar definição com lateral 18 mm propaga aos gabinetes existentes. Feature 012 (D-21): fora do modo de suporte,
+#    os armários herdados não são refeitos ("não aplicável" até a conversão para CAFFMob); este teste cobre a
+#    sincronização herdada, que continua no modo de suporte (preferência show_legacy_libraries).
+from caffmob_draw.legacy import gate  # noqa: E402
+_gate = gate.legacy_ui
+report = None
 draft = standards_api.begin_draft(scene, bpy.context.window_manager)
 standards_api.set_draft_value(draft, 'COZ.sheets.LAT.thickness', 18.0)
 standards_api.set_draft_value(draft, 'DOR.sheets.LAT.thickness', 18.0)
 assert len(standards_api.pending_changes(scene, draft)) == 2
-report = standards_api.apply_draft(scene, draft, include_manual=False)
+unsupported = standards_api.apply_draft(scene, draft, include_manual=False)
+assert unsupported['frameless'] == 0 and unsupported['closets'] == 0, unsupported     # herdados: não aplicável
+gate.legacy_ui = lambda context=None: True
+try:
+    standards_api.set_draft_value(draft, 'COZ.sheets.LAT.thickness', 18.0)
+    report = standards_api.apply_draft(scene, draft, include_manual=False)
+finally:
+    gate.legacy_ui = _gate
 assert report['modules_updated'] >= 2, report
 assert abs(scene.hb_frameless.default_carcass_part_thickness - 0.018) < 1e-6
 assert abs(scene.hb_closets.panel_thickness - 0.018) < 1e-6

@@ -243,7 +243,7 @@ SHELF_SETBACK = 0.02      # recuo frontal das prateleiras (m)
 MAT_CARCASS, MAT_SHELF, MAT_BACK = 0, 1, 2
 
 
-def generate_cabinet_mesh(obj, w, h, d, t, shelves=0, structure=None, back_setback=0.0):
+def generate_cabinet_mesh(obj, w, h, d, t, shelves=0, structure=None, back_setback=0.0, assembly=None):
     """Gera uma caixa de armário paramétrico (laterais, base, tampo, fundo e prateleiras) em metros.
 
     `shelves` prateleiras com vãos iguais entre a base e o tampo (feature 003, D-09). As faces recebem índices de
@@ -252,6 +252,8 @@ def generate_cabinet_mesh(obj, w, h, d, t, shelves=0, structure=None, back_setba
     `structure` (feature 006, D-08) = {PAPEL: (presente, modo, espessura)} para TOP, BOTTOM, BACK, LEFT, RIGHT; sem
     ele (ou com tudo presente e espessura `t`), a malha é a de sempre. As contas ficam em
     `cabinet_editor/structure.layout`.
+
+    `assembly` (feature 012, D-09): `LATERAL` ou `BASE`; sem ele, vale a do módulo (`btm_cabinet.assembly`).
     """
     from ..cabinet_editor import structure as st
     clear_mesh(obj)
@@ -284,7 +286,9 @@ def generate_cabinet_mesh(obj, w, h, d, t, shelves=0, structure=None, back_setba
     thick = {role: float(structure.get(role, (True, 'KEEP', t))[2] or t) for role in st.ROLES}
     states = {role: st.RoleState(removed=not present, mode=mode)
               for role, (present, mode, _th) in structure.items() if not present}
-    panels, inner = st.layout(w, h, d, thick, states, back_setback)
+    if assembly is None:
+        assembly = getattr(getattr(obj, 'btm_cabinet', None), 'assembly', st.LATERAL)
+    panels, inner = st.layout(w, h, d, thick, states, back_setback, assembly=assembly)
 
     # Laterais, base, tampo e fundo (na ordem de sempre)
     for role in ('LEFT', 'RIGHT', 'BOTTOM', 'TOP', 'BACK'):

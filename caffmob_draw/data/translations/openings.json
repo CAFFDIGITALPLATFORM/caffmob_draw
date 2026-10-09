@@ -42,5 +42,61 @@
  "Troca a dobradiça da porta de lado: inverte o giro (horário ↔ anti-horário)": {
   "en_US": "Moves the door hinge to the other side: inverts the swing (clockwise ↔ counterclockwise)",
   "pt_BR": "Troca a dobradiça da porta de lado: inverte o giro (horário ↔ anti-horário)"
+ },
+ "Marcar região": {
+  "pt_BR": "Marcar região",
+  "en_US": "Mark Region"
+ },
+ "Marca na parede, com dois cliques, a região onde a próxima porta ou janela vai entrar": {
+  "pt_BR": "Marca na parede, com dois cliques, a região onde a próxima porta ou janela vai entrar",
+  "en_US": "Marks on the wall, with two clicks, the region where the next door or window goes"
+ },
+ "Clique no primeiro canto da região numa parede": {
+  "pt_BR": "Clique no primeiro canto da região numa parede",
+  "en_US": "Click the first corner of the region on a wall"
+ },
+ "Clique no canto oposto | Shift: grade de 1 mm": {
+  "pt_BR": "Clique no canto oposto | Shift: grade de 1 mm",
+  "en_US": "Click the opposite corner | Shift: 1 mm grid"
+ },
+ "Esc: cancelar": {
+  "pt_BR": "Esc: cancelar",
+  "en_US": "Esc: cancel"
+ },
+ "Região marcada: {} × {}. Escolha a porta ou a janela": {
+  "pt_BR": "Região marcada: {} × {}. Escolha a porta ou a janela",
+  "en_US": "Region marked: {} × {}. Choose the door or the window"
+ },
+ "Limpar região": {
+  "pt_BR": "Limpar região",
+  "en_US": "Clear Region"
+ },
+ "Apaga a região marcada na parede": {
+  "pt_BR": "Apaga a região marcada na parede",
+  "en_US": "Clears the region marked on the wall"
+ },
+ "{}: a inserção segue presa ao cursor": {
+  "pt_BR": "{}: a inserção segue presa ao cursor",
+  "en_US": "{}: placement follows the cursor"
+ },
+ "Na região: {} × {} | Enter ou clique: confirmar | Esc: cancelar": {
+  "pt_BR": "Na região: {} × {} | Enter ou clique: confirmar | Esc: cancelar",
+  "en_US": "In the region: {} × {} | Enter or click: confirm | Esc: cancel"
+ },
+ "A região está vazia: clique em dois cantos opostos": {
+  "pt_BR": "A região está vazia: clique em dois cantos opostos",
+  "en_US": "The region is empty: click two opposite corners"
+ },
+ "A região passa da ponta da parede": {
+  "pt_BR": "A região passa da ponta da parede",
+  "en_US": "The region goes past the end of the wall"
+ },
+ "A região é mais alta que a parede": {
+  "pt_BR": "A região é mais alta que a parede",
+  "en_US": "The region is taller than the wall"
+ },
+ "A região encosta em outra porta ou janela": {
+  "pt_BR": "A região encosta em outra porta ou janela",
+  "en_US": "The region touches another door or window"
  }
 }

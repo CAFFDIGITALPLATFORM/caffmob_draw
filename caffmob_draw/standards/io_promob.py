@@ -58,6 +58,10 @@ def read_dimensionexport(path):
     return doc
 
 
+ASSEMBLY_ID = 'CAFF_MONTAGEM'          # feature 012 (D-27): montagem do CAFFMob, sem equivalente no Promob
+ASSEMBLY_VALUES = ('LATERAL', 'BASE')
+
+
 def _parse_number(text):
     return float(text.strip().replace(',', '.'))
 
@@ -71,15 +75,28 @@ def to_definition_data(doc):
     """
     values = {}
     raw = []
-    report = {'total': len(doc.attributes), 'mapped': 0, 'unrecognized': [], 'invalid': [], 'duplicates': [],
-              'confirmed_without_equivalent': []}
-    seen = {}
+    assembly = 'LATERAL'
+    attributes = []
+    report = {'total': 0, 'mapped': 0, 'unrecognized': [], 'invalid': [], 'duplicates': [],
+              'confirmed_without_equivalent': [], 'assembly_warning': None}
     for attr_id, text in doc.attributes:
+        if attr_id != ASSEMBLY_ID:
+            attributes.append((attr_id, text))
+            continue
+        value = (text or "").strip().upper()
+        if value in ASSEMBLY_VALUES:
+            assembly = value
+        else:
+            assembly = 'LATERAL'
+            report['assembly_warning'] = tr("Montagem desconhecida: {}; usada lateral passante").format(text)
+    report['total'] = len(attributes)
+    seen = {}
+    for attr_id, text in attributes:
         if attr_id in seen:
             report['duplicates'].append(attr_id)
         seen[attr_id] = text
 
-    for attr_id, text in doc.attributes:
+    for attr_id, text in attributes:
         key = schema.PROMOB_INDEX.get(attr_id, "")
         if key:
             param = schema.PARAMS[key]
@@ -101,7 +118,7 @@ def to_definition_data(doc):
             if schema.parse_promob_id(attr_id):
                 report['confirmed_without_equivalent'].append(attr_id)
         raw.append({'id': attr_id, 'value': text, 'key': key})
-    return {'name': doc.name, 'values': values, 'raw_attributes': raw, 'report': report}
+    return {'name': doc.name, 'values': values, 'raw_attributes': raw, 'report': report, 'assembly': assembly}
 
 
 def _format_number(value):
@@ -132,8 +149,10 @@ def build_attributes(values, raw_attributes):
     return pairs
 
 
-def write_dimensionexport(path, name, values, raw_attributes):
+def write_dimensionexport(path, name, values, raw_attributes, assembly=None):
     """Grava o DIMENSIONEXPORT (escrita atômica). `raw_attributes` define a ordem e os IDs exportados.
+
+    `assembly` (feature 012): quando dado, `CAFF_MONTAGEM` vai no fim; o Promob ignora o ID desconhecido.
 
     Para uma definição criada no BlenderToMob (sem arquivo de origem), use `attributes_from_values`.
     """
@@ -141,7 +160,10 @@ def write_dimensionexport(path, name, values, raw_attributes):
     definition = ET.SubElement(root, 'DEFINITION', DESCRIPTION=name, ISSYSTEM="False", CHANGED="True")
     attributes = ET.SubElement(definition, 'ATTRIBUTES')
     for attr_id, text in build_attributes(values, raw_attributes):
-        ET.SubElement(attributes, 'ATTRIBUTE', ID=attr_id, VALUE=text)
+        if attr_id != ASSEMBLY_ID:
+            ET.SubElement(attributes, 'ATTRIBUTE', ID=attr_id, VALUE=text)
+    if assembly in ASSEMBLY_VALUES:
+        ET.SubElement(attributes, 'ATTRIBUTE', ID=ASSEMBLY_ID, VALUE=assembly)
     ET.indent(root, space="  ")
     data = ET.tostring(root, encoding='unicode')
     directory = os.path.dirname(os.path.abspath(str(path))) or "."

@@ -85,63 +85,70 @@ class HOME_BUILDER_PT_hidden_header(bpy.types.Panel):
 
         selection_mod_box = layout.box()
 
-        if product_tab == 'FACE FRAME':
-            hb_face_frame = context.scene.hb_face_frame
-            # Header: label on the left, master enable checkbox on the right
-            header = selection_mod_box.row(align=True)
-            header.label(text="Face Frame Selection Mode")
-            header.prop(hb_face_frame, "face_frame_selection_mode_enabled",
-                        text="")
-            # Mode buttons - two aligned rows of three. Disabled (greyed)
-            # when the master toggle is off so it's clear the picks
-            # aren't doing anything.
-            modes_col = selection_mod_box.column(align=True)
-            modes_col.enabled = hb_face_frame.face_frame_selection_mode_enabled
-            row1 = modes_col.row(align=True)
-            row1.scale_y = 1.5
-            row1.prop_enum(hb_face_frame, "face_frame_selection_mode",
-                           'Cabinets', icon='MESH_CUBE')
-            row1.prop_enum(hb_face_frame, "face_frame_selection_mode",
-                           'Bays', icon='MESH_CUBE')
-            row1.prop_enum(hb_face_frame, "face_frame_selection_mode",
-                           'Openings', icon='OBJECT_DATAMODE')
-            row2 = modes_col.row(align=True)
-            row2.scale_y = 1.5
-            row2.prop_enum(hb_face_frame, "face_frame_selection_mode",
-                           'Face Frame', icon='MESH_GRID')
-            row2.prop_enum(hb_face_frame, "face_frame_selection_mode",
-                           'Interiors', icon='OBJECT_HIDDEN')
-            row2.prop_enum(hb_face_frame, "face_frame_selection_mode",
-                           'Parts', icon='EDITMODE_HLT')
-        elif product_tab == 'CLOSET':
-            hb_closets = context.scene.hb_closets
-            header = selection_mod_box.row(align=True)
-            header.label(text="Closet Selection Mode")
-            header.prop(hb_closets, "closet_selection_mode_enabled", text="")
-            modes_col = selection_mod_box.column(align=True)
-            modes_col.enabled = hb_closets.closet_selection_mode_enabled
-            row1 = modes_col.row(align=True)
-            row1.scale_y = 1.5
-            row1.prop_enum(hb_closets, "closet_selection_mode",
-                           'Starters', icon='MESH_CUBE')
-            row1.prop_enum(hb_closets, "closet_selection_mode",
-                           'Bays', icon='MESH_CUBE')
-            row2 = modes_col.row(align=True)
-            row2.scale_y = 1.5
-            row2.prop_enum(hb_closets, "closet_selection_mode",
-                           'Openings', icon='OBJECT_DATAMODE')
-            row2.prop_enum(hb_closets, "closet_selection_mode",
-                           'Parts', icon='EDITMODE_HLT')
-        else:
-            hb_frameless = context.scene.hb_frameless
-            selection_mod_box.label(text="Frameless Selection Mode")
-            row = selection_mod_box.row(align=True)
-            row.scale_y = 1.5
-            row.prop_enum(hb_frameless, "frameless_selection_mode", 'Cabinets', icon='MESH_CUBE')
-            row.prop_enum(hb_frameless, "frameless_selection_mode", 'Bays', icon='MESH_CUBE')
-            row.prop_enum(hb_frameless, "frameless_selection_mode", 'Openings', icon='OBJECT_DATAMODE')
-            row.prop_enum(hb_frameless, "frameless_selection_mode", 'Interiors', icon='OBJECT_HIDDEN')
-            row.prop_enum(hb_frameless, "frameless_selection_mode", 'Parts', icon='EDITMODE_HLT')
+        # Feature 012 (T050, D-02): os modos de seleção das bibliotecas herdadas só com a preferência de suporte.
+        from ..legacy import gate
+        if gate.legacy_ui(context):
+            if product_tab == 'FACE FRAME':
+                hb_face_frame = context.scene.hb_face_frame
+                # Header: label on the left, master enable checkbox on the right
+                header = selection_mod_box.row(align=True)
+                header.label(text="Face Frame Selection Mode")
+                header.prop(hb_face_frame, "face_frame_selection_mode_enabled",
+                            text="")
+                # Mode buttons - two aligned rows of three. Disabled (greyed)
+                # when the master toggle is off so it's clear the picks
+                # aren't doing anything.
+                modes_col = selection_mod_box.column(align=True)
+                modes_col.enabled = hb_face_frame.face_frame_selection_mode_enabled
+                row1 = modes_col.row(align=True)
+                row1.scale_y = 1.5
+                row1.prop_enum(hb_face_frame, "face_frame_selection_mode",
+                               'Cabinets', icon='MESH_CUBE')
+                row1.prop_enum(hb_face_frame, "face_frame_selection_mode",
+                               'Bays', icon='MESH_CUBE')
+                row1.prop_enum(hb_face_frame, "face_frame_selection_mode",
+                               'Openings', icon='OBJECT_DATAMODE')
+                row2 = modes_col.row(align=True)
+                row2.scale_y = 1.5
+                row2.prop_enum(hb_face_frame, "face_frame_selection_mode",
+                               'Face Frame', icon='MESH_GRID')
+                row2.prop_enum(hb_face_frame, "face_frame_selection_mode",
+                               'Interiors', icon='OBJECT_HIDDEN')
+                row2.prop_enum(hb_face_frame, "face_frame_selection_mode",
+                               'Parts', icon='EDITMODE_HLT')
+            elif product_tab == 'CLOSET':
+                hb_closets = context.scene.hb_closets
+                header = selection_mod_box.row(align=True)
+                header.label(text="Closet Selection Mode")
+                header.prop(hb_closets, "closet_selection_mode_enabled", text="")
+                modes_col = selection_mod_box.column(align=True)
+                modes_col.enabled = hb_closets.closet_selection_mode_enabled
+                row1 = modes_col.row(align=True)
+                row1.scale_y = 1.5
+                row1.prop_enum(hb_closets, "closet_selection_mode",
+                               'Starters', icon='MESH_CUBE')
+                row1.prop_enum(hb_closets, "closet_selection_mode",
+                               'Bays', icon='MESH_CUBE')
+                row2 = modes_col.row(align=True)
+                row2.scale_y = 1.5
+                row2.prop_enum(hb_closets, "closet_selection_mode",
+                               'Openings', icon='OBJECT_DATAMODE')
+                row2.prop_enum(hb_closets, "closet_selection_mode",
+                               'Parts', icon='EDITMODE_HLT')
+            else:
+                hb_frameless = context.scene.hb_frameless
+                selection_mod_box.label(text="Frameless Selection Mode")
+                row = selection_mod_box.row(align=True)
+                row.scale_y = 1.5
+                row.prop_enum(hb_frameless, "frameless_selection_mode", 'Cabinets', icon='MESH_CUBE')
+                row.prop_enum(hb_frameless, "frameless_selection_mode", 'Bays', icon='MESH_CUBE')
+                row.prop_enum(hb_frameless, "frameless_selection_mode", 'Openings', icon='OBJECT_DATAMODE')
+                row.prop_enum(hb_frameless, "frameless_selection_mode", 'Interiors', icon='OBJECT_HIDDEN')
+                row.prop_enum(hb_frameless, "frameless_selection_mode", 'Parts', icon='EDITMODE_HLT')
+
+        # Seleção por componente (feature 011, T016; D-08)
+        from ..selection import component_props
+        component_props.draw_toggle(selection_mod_box, context)
 
 # -----------------------------------------------------------------------------
 # PANEL 1: ROOMS

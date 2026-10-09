@@ -934,8 +934,73 @@ class _PlaceWallObjectBase(bpy.types.Operator, WallObjectPlacementMixin):
         self.init_two_point_state()
 
         self.create_placed_object(context)
+        self.in_region = self.place_in_region(context)
 
         context.window_manager.modal_handler_add(self)
+        return {'RUNNING_MODAL'}
+
+    # ===== Região marcada na parede (feature 011, T019; D-12, RN-11, RN-12) =====
+
+    def place_in_region(self, context):
+        """Com uma região marcada (`caffmob.wall_region`), põe o vão nela com as medidas exatas; False = modo de hoje."""
+        from ..openings import region_core, region_props
+        region, wall = region_props.region_wall(context)
+        if region is None:
+            return False
+        candidate = hb_types.GeoNodeWall(wall)
+        if not candidate.has_modifier():
+            return False
+        others = []
+        for child in wall.children:
+            if child is not self.placed_obj.obj and (child.get('IS_ENTRY_DOOR_BP') or child.get('IS_WINDOW_BP')):
+                cage = hb_types.GeoNodeCage(child)
+                x, z = child.location.x, child.location.z
+                others.append((x, x + cage.get_input('Dim X'), z, z + cage.get_input('Dim Z')))
+        fit = region_core.fit(region.x0, region.x1, region.z0, region.z1, candidate.get_input('Length'),
+                              candidate.get_input('Height'), self.OPENING_KIND, others)
+        if not fit.ok:
+            self.report({'WARNING'}, tr("{}: a inserção segue presa ao cursor").format(
+                tr(region_core.REASONS[fit.reason])))
+            return False
+        thickness = candidate.get_input('Thickness')
+        obj = self.placed_obj.obj
+        obj.parent = wall
+        obj.location = (fit.x, 0.0, fit.sill)
+        obj.rotation_euler = (0.0, 0.0, 0.0)
+        self.placed_obj.set_input('Dim X', fit.width)
+        self.placed_obj.set_input('Dim Y', thickness)
+        self.placed_obj.set_input('Dim Z', fit.height)
+        self.selected_wall = wall
+        self.wall_length = candidate.get_input('Length')
+        self.placement_x = fit.x
+        self.update_placement_dimensions(context, fit.width, fit.height, thickness, fit.sill)
+        unit = context.scene.unit_settings
+        hb_placement.draw_header_text(context, tr("Na região: {} × {} | Enter ou clique: confirmar | Esc: cancelar").format(
+            units.unit_to_string(unit, fit.width), units.unit_to_string(unit, fit.height)))
+        return True
+
+    def confirm_placement(self, context):
+        if self.placed_obj.obj in self.placement_objects:
+            self.placement_objects.remove(self.placed_obj.obj)
+        self.delete_placement_dimensions()
+        self.cut_wall(self.selected_wall, self.placed_obj.obj)
+        _sync_opening(context, self.placed_obj.obj)          # porta/janela real (feature 010)
+        hb_placement.clear_header_text(context)
+        context.window.cursor_set('DEFAULT')
+        return {'FINISHED'}
+
+    def modal_in_region(self, context, event):
+        if event.value == 'PRESS' and event.type in {'RET', 'NUMPAD_ENTER', 'LEFTMOUSE'}:
+            from ..openings import region_props
+            region_props.clear(context)
+            return self.confirm_placement(context)
+        if event.type in {'RIGHTMOUSE', 'ESC'} and event.value == 'PRESS':
+            self.delete_placement_dimensions()
+            self.cancel_placement(context)                   # a região continua marcada
+            hb_placement.clear_header_text(context)
+            return {'CANCELLED'}
+        if hb_snap.event_is_pass_through(event):
+            return {'PASS_THROUGH'}
         return {'RUNNING_MODAL'}
 
     def modal(self, context, event):
@@ -948,8 +1013,12 @@ class _PlaceWallObjectBase(bpy.types.Operator, WallObjectPlacementMixin):
         if self.HAS_SWING and event.type in {'UP_ARROW', 'DOWN_ARROW'} and event.value == 'PRESS':
             direction = 1 if event.type == 'UP_ARROW' else -1
             self.cycle_door_swing(direction)
-            self.update_header(context)
+            if not self.in_region:
+                self.update_header(context)
             return {'RUNNING_MODAL'}
+
+        if self.in_region:
+            return self.modal_in_region(context, event)
 
         # Let mixin handle typing events first; detect finish-of-WIDTH-typing
         # to lock the typed width during two-point phase 2.
@@ -1021,14 +1090,7 @@ class _PlaceWallObjectBase(bpy.types.Operator, WallObjectPlacementMixin):
             if self.selected_wall:
                 if self.handle_two_point_phase1_click():
                     return {'RUNNING_MODAL'}
-                if self.placed_obj.obj in self.placement_objects:
-                    self.placement_objects.remove(self.placed_obj.obj)
-                self.delete_placement_dimensions()
-                self.cut_wall(self.selected_wall, self.placed_obj.obj)
-                _sync_opening(context, self.placed_obj.obj)          # porta/janela real (feature 010)
-                hb_placement.clear_header_text(context)
-                context.window.cursor_set('DEFAULT')
-                return {'FINISHED'}
+                return self.confirm_placement(context)
             else:
                 self.report({'WARNING'}, tr("{} must be placed on a wall").format(tr(self.OBJECT_LABEL).capitalize()))
                 return {'RUNNING_MODAL'}
@@ -1329,24 +1391,10 @@ class home_builder_doors_windows_OT_delete_door_window(bpy.types.Operator):
         return context.object.get('IS_ENTRY_DOOR_BP') or context.object.get('IS_WINDOW_BP')
 
     def execute(self, context):
-        obj = context.object
-        wall = obj.parent
-
-        # Remove the boolean modifier from the wall if present
-        if wall and 'IS_WALL_BP' in wall:
-            # Find and remove the boolean modifier for this door/window
-            for mod in wall.modifiers:
-                if mod.type == 'BOOLEAN' and mod.object == obj:
-                    wall.modifiers.remove(mod)
-                    break
-
-        # Delete all children first
-        children_to_delete = list(obj.children)
-        for child in children_to_delete:
-            bpy.data.objects.remove(child, do_unlink=True)
-
-        # Delete the door/window object
-        bpy.data.objects.remove(obj, do_unlink=True)
+        # Feature 011 (D-06): a porta ou janela sai inteira (marco, folhas, ferragens, peças do OBJ instalado), não só
+        # os filhos diretos, e o furo da parede sai junto.
+        from ..aggregates.ops_aggregate import delete_components
+        delete_components([context.object])
 
         self.report({'INFO'}, tr("{} deleted").format(self.object_type.title()))
         return {'FINISHED'}

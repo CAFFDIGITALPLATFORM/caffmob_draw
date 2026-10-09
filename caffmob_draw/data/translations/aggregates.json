@@ -506,5 +506,13 @@
  "; {} figura(s) de escala ignorada(s)": {
   "pt_BR": "; {} figura(s) de escala ignorada(s)",
   "en_US": "; {} scale figure(s) skipped"
+ },
+ "Apaga os objetos selecionados com tudo que está abaixo deles; se tiverem agregados, pergunta se eles vão junto": {
+  "pt_BR": "Apaga os objetos selecionados com tudo que está abaixo deles; se tiverem agregados, pergunta se eles vão junto",
+  "en_US": "Deletes the selected objects with everything below them; if they have aggregates, asks whether they go too"
+ },
+ "{} malha(s) importada(s) num grupo, unidade: {}. Alt + clique seleciona uma peça; para converter, selecione as peças com Alt + Shift + clique, o pai por último": {
+  "pt_BR": "{} malha(s) importada(s) num grupo, unidade: {}. Alt + clique seleciona uma peça; para converter, selecione as peças com Alt + Shift + clique, o pai por último",
+  "en_US": "{} mesh(es) imported into a group, unit: {}. Alt + click selects one part; to convert, select the parts with Alt + Shift + click, the parent last"
  }
 }

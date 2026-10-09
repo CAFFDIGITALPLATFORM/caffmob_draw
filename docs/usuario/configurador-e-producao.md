@@ -16,7 +16,30 @@ O Padrão de Dimensões é a regra da empresa que todos os módulos seguem: medi
 
 - **Padrão Brasil** e **Padrão EUA (HB5)** vêm prontos e são somente leitura.
 - Para ajustar, use **Duplicar** (ícone de cópia). A cópia passa a ser a definição ativa.
-- O menu com o nome da definição troca a definição ativa. A troca atualiza os módulos do projeto, e o aviso mostra quantos.
+- O menu com o nome da definição troca a definição ativa. Depois da troca vêm as perguntas de **Aplicar o padrão à
+  cena** (abaixo).
+
+### Montagem: lateral passante ou base passante
+
+O padrão também define a montagem da caixa dos armários CAFFMob:
+- **Lateral passante** (padrão): as laterais vão do piso ao topo; base e tampo ficam entre elas.
+- **Base passante**: a base ocupa a largura toda e as laterais ficam em cima dela. O tampo continua entre as laterais.
+
+A montagem fica no Configurador (abaixo da árvore) e pode ser trocada em cada armário, no editor de armário (aba
+Estrutura) ou na seção Selecionado. A lista de corte segue a montagem de cada armário.
+
+### Aplicar o padrão à cena
+
+Quando o padrão global muda (Configurador, Aplicar ou troca da definição ativa), o sistema pergunta:
+1. **"Aplicar a todos os módulos existentes na cena?"**, com as contagens. **Sim** atualiza os armários CAFFMob que
+   seguem o padrão: chapas e medidas da linha de cada um (a largura fica). **Cancelar** (Não) deixa a cena como está;
+   só os armários novos usam o padrão.
+2. Se houver armários com **padrão próprio** (montagem, espessura ou medida mudadas à mão) ou criados com outro
+   padrão, vem a segunda pergunta: **"Aplicar também nos móveis que diferem do padrão global anterior?"**. **Sim**
+   leva esses também ao padrão; **Cancelar** (Não) os deixa como estão.
+
+**Não aplicável**: itens importados (SketchUp, OBJ), objetos da biblioteca de objetos e armários das bibliotecas
+antigas ainda não convertidos não mudam. Converta os antigos para CAFFMob para que eles recebam o padrão.
 
 ### Configurador
 
@@ -27,7 +50,7 @@ Em **CONFIGURAÇÕES › Padrão de Dimensões**, clique em **Abrir Configurador
 3. Digite o valor e confirme. Um valor fora da faixa aparece em vermelho e não é aceito.
 4. Use **Buscar** para filtrar por nome (ex.: "fita").
 5. Embaixo ficam as **alterações pendentes**, com o valor anterior e o novo.
-6. **Aplicar** grava a definição e atualiza os módulos já desenhados. Marque **Incluir medidas manuais** para substituir também as medidas que você alterou à mão num módulo. Sem essa opção, elas são preservadas.
+6. **Aplicar** grava a definição; em seguida vêm as perguntas de **Aplicar o padrão à cena**.
 7. Fechar sem aplicar descarta as alterações.
 
 Depois de aplicar, uma janela mostra três listas:
@@ -48,6 +71,8 @@ A fita só entra na peça quando o módulo tem fita naquela borda. A espessura v
   - O relatório mostra quantos atributos foram reconhecidos.
   - Os não reconhecidos são guardados e voltam iguais em **Exportar p/ Promob**.
   - A definição importada não vira ativa sozinha: use o menu da definição ativa.
+  - A montagem vai num atributo próprio, `CAFF_MONTAGEM` (`LATERAL` ou `BASE`), no fim do arquivo exportado. O
+    Promob ignora esse atributo; um arquivo sem ele é lido como lateral passante.
 
 ## 3. Lista de peças e plano de corte
 

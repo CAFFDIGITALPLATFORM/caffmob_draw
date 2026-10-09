@@ -77,9 +77,11 @@ class HOME_BUILDER_MT_wall_commands(bpy.types.Menu):
         layout.separator()
         layout.operator("caffmob_walls.draw_wall_cutter", text="Draw Wall Cutter", icon='MOD_BOOLEAN')
         layout.operator("caffmob_walls.add_soffit", text="Add Soffit", icon='MESH_CUBE')
-        layout.separator()
-        layout.operator("caffmob_frameless.place_snap_line", text="Place Snap Line", icon='SNAP_MIDPOINT')
-        layout.operator("caffmob_frameless.delete_all_snap_lines", text="Delete All Snap Lines", icon='TRASH')
+        from ..legacy import gate
+        if gate.legacy_ui(context):        # feature 012 (T051): linha de encaixe do frameless só para suporte
+            layout.separator()
+            layout.operator("caffmob_frameless.place_snap_line", text="Place Snap Line", icon='SNAP_MIDPOINT')
+            layout.operator("caffmob_frameless.delete_all_snap_lines", text="Delete All Snap Lines", icon='TRASH')
         layout.separator()
         layout.operator("caffmob.wall_lower", text="Rebaixar Parede", icon='TRIA_DOWN_BAR')
         layout.operator_menu_enum("caffmob.wall_visibility", "mode", text="Visibilidade", icon='HIDE_OFF')

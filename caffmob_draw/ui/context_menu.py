@@ -37,10 +37,21 @@ def item_actions(context):
     return actions
 
 
+def _legacy_menu_hidden(context, obj):
+    from ..legacy import gate
+    from ..selection import classify
+    if gate.legacy_ui(context):
+        return False
+    _root, library = classify.module_root(obj)
+    return library in gate.LEGACY_LIBRARIES
+
+
 def draw_context_menu(self, context):
     layout = self.layout
     obj = context.object
     menu_id = obj.get("MENU_ID", "") if obj is not None else ""
+    if menu_id and _legacy_menu_hidden(context, obj):
+        menu_id = ""                                   # feature 012 (T051): menu de armário herdado só para suporte
     if menu_id and hasattr(bpy.types, menu_id):
         layout.operator_context = 'INVOKE_AREA'
         layout.menu(menu_id)
