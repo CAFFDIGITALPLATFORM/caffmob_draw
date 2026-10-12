@@ -1,0 +1,33 @@
+--- /home/theleoinfo/www/BlenderToMob/caffmob_draw/hb_props.py	2026-10-09 03:46:47.597681810 -0300
++++ caffmob_draw/hb_props.py	2026-10-12 01:00:38.837017155 -0300
+@@ -815,14 +815,27 @@
+         if hasattr(bpy.types.Scene, 'home_builder'):
+             del bpy.types.Scene.home_builder
+ 
++class _DefaultPreferences:
++    """Preferências padrão do add-on quando o pacote foi registrado sem estar em `preferences.addons`."""
++
++    def __getattr__(self, name):
++        import sys
++        cls = getattr(sys.modules.get(__package__), 'BTM_AddonPreferences', None)
++        deferred = getattr(cls, '__annotations__', {}).get(name)     # o `default` declarado no bpy.props
++        if deferred is None or 'default' not in getattr(deferred, 'keywords', {}):
++            raise AttributeError(name)
++        return deferred.keywords['default']
++
++
+ class Home_Builder_Window_Manager_Props(PropertyGroup):
+ 
+     progress: FloatProperty(name="Progress",default=1.0)# type: ignore
+ 
+     def get_user_preferences(self,context):
+-        preferences = context.preferences
+-        add_on_prefs = preferences.addons[__package__].preferences
+-        return add_on_prefs
++        addon = context.preferences.addons.get(__package__)
++        if addon is not None:
++            return addon.preferences
++        return _DefaultPreferences()   # registrado sem estar habilitado (testes, scripts): valores padrão
+ 
+     @classmethod
+     def register(cls):

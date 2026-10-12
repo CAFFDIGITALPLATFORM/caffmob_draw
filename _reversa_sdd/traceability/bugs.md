@@ -1,4 +1,4 @@
-<!-- GENERATED, DO NOT EDIT: regenerado por /reversa-debugger-graph em 2026-10-12T03:59:30+00:00 a partir de 142 bugs -->
+<!-- GENERATED, DO NOT EDIT: regenerado por /reversa-debugger-graph em 2026-10-12T04:02:39+00:00 a partir de 142 bugs -->
 
 # Bugs que atingem as specs
 
@@ -217,7 +217,7 @@
 ## `_reversa_sdd/hb_core/design.md`
 
 - BUG-20261007-YIMY (resolved/fixed, P1): Porta e janela inseridas viram bloco liso com a espessura fora da parede — `_reversa_bugs/editor-de-paredes/bugs/BUG-20261007-YIMY-porta-bloco-fora-da-parede`
-- BUG-20261012-WBKI (open, P3): get_user_preferences quebra sem o add-on habilitado e a fumaça de inspeção imprime 17 tracebacks — `_reversa_bugs/plugin-caffmob-draw/bugs/BUG-20261012-WBKI-get-user-preferences-quebra-sem-o-add`
+- BUG-20261012-WBKI (resolved/fixed, P3): get_user_preferences quebra sem o add-on habilitado e a fumaça de inspeção imprime 17 tracebacks — `_reversa_bugs/plugin-caffmob-draw/bugs/BUG-20261012-WBKI-get-user-preferences-quebra-sem-o-add`
 
 ## `_reversa_sdd/hb_core/requirements.md`
 

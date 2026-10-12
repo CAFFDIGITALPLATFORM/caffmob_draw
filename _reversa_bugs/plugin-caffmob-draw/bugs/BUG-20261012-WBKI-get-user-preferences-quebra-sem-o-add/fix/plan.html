@@ -1,0 +1,19 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Plano de correção · preferências do add-on</title><style>
+body{background:#0d1117;color:#e6edf3;font:14px system-ui,sans-serif;margin:0;padding:16px;max-width:1100px}
+.meta{color:#8b949e;font-size:12px}svg{max-width:100%;height:auto}code{color:#ffa657}
+table{border-collapse:collapse;width:100%;margin-top:8px}td,th{border-bottom:1px solid #30363d;padding:6px;text-align:left;font-size:13px;vertical-align:top}
+a{color:#58a6ff}.wrap{overflow-x:auto}.risk{background:#161b22;border:1px solid #30363d;border-radius:10px;padding:10px 14px}</style></head><body>
+<h1>Plano de correção · preferências do add-on</h1>
+<p class="meta">/reversa-debugger-fix · 2026-10-11 · #142 BUG-20261012-WBKI (low/P3, hb_core)</p>
+<h2>Defeitos</h2><ul><li><a href="../bug.md">BUG-20261012-WBKI</a>: get_user_preferences quebra sem o add-on habilitado e a fumaça de inspeção imprime 17 tracebacks</li></ul>
+<h2>Causa raiz</h2><ul><li><a href="../bug.md">BUG-20261012-WBKI</a> · <b>confirmed</b>: get_user_preferences indexava preferences.addons[__package__] direto; com o pacote registrado sem estar habilitado (import + register(), como na fumaça de inspeção), levantava KeyError dentro do update do face frame, que imprimia o traceback 17 vezes.<ul></ul></li></ul>
+<h2>Estratégia</h2><p>Correção direta: addons.get(__package__); sem registro, um objeto de padrões que lê o default declarado em BTM_AddonPreferences.</p>
+<h2>Correction Change Set proposto</h2><div class="wrap"><table><tr><th>CHG</th><th>tipo</th><th>artefato</th><th>propósito</th></tr><tr><td>CHG-001</td><td>test</td><td><code>tests/blender_bug_WBKI_preferences.py</code></td><td>reprodução e regressão</td></tr><tr><td>CHG-002</td><td>code</td><td><code>caffmob_draw/hb_props.py</code></td><td>padrões sem o add-on habilitado</td></tr></table></div>
+<h2>Testes planejados</h2><div class="wrap"><table><tr><th>tipo</th><th>arquivo</th><th>o que prova</th></tr><tr><td>reprodução</td><td><code>blender_bug_WBKI_preferences.py</code></td><td>KeyError: key &quot;caffmob_draw&quot; not found ao ler as preferências e no destaque do armário.</td></tr><tr><td>regressão</td><td><code>blender_inspection_smoke.py, blender_smoke.py</code></td><td>fluxos vizinhos</td></tr></table></div>
+<h2>Riscos</h2><div class="risk"><b>change_risk: baixa</b><ul><li>instalação normal não muda (o add-on está em preferences.addons)</li><li>só testes e scripts que registram o pacote direto passam a ter os padrões</li></ul>
+<b>Fora desta correção</b><ul><li>com o _blender_env (extensão habilitada) a cor dos armários lida das preferências é (0,5, 0,5, 0,5, 1,0), não o padrão declarado; não investigado</li></ul></div>
+<h2>Mini-grafo</h2><div class="wrap"><svg viewBox="0 0 270 124" width="270" height="124"><defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#8aa"/></marker></defs><a href="../bug.md"><rect x="20" y="30" width="230" height="74" rx="10" fill="#1c2128" stroke="#58a6ff" stroke-width="3"/><text x="30" y="52" fill="#e6edf3" font-size="13" font-weight="600">#142 WBKI</text><text x="30" y="72" fill="#c9d1d9" font-size="11">get_user_preferences quebra sem o …</text><text x="30" y="90" fill="#8b949e" font-size="11">open · low</text></a></svg></div>
+<h2>Relações</h2><div class="wrap"><table><tr><th>origem</th><th>tipo</th><th>destino</th><th>estado</th></tr><tr><td colspan="4">Nenhuma.</td></tr></table></div>
+
+</body></html>
