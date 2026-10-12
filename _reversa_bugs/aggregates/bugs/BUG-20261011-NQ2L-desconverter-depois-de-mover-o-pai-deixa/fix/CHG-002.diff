@@ -1,0 +1,171 @@
+--- /dev/null	2026-10-09 20:39:19.815662691 -0300
++++ tests/blender_bug_NQ2L_aggregates.py	2026-10-11 23:11:34.374515319 -0300
+@@ -0,0 +1,168 @@
++"""Reprodução e regressão do lote de agregados: BUG-20261011-NQ2L, BUG-20261011-VPY5, BUG-20261011-I7QE,
++BUG-20261011-PON4, BUG-20261011-4OV4, BUG-20261011-MQPR, BUG-20261011-5DDZ e BUG-20261011-53DV.
++
++Run: blender --background --factory-startup --python-exit-code 1 --python tests/blender_bug_NQ2L_aggregates.py
++"""
++
++import sys
++import traceback
++from pathlib import Path
++
++import bpy
++from mathutils import Vector
++
++sys.path.insert(0, str(Path(__file__).resolve().parent))
++import _blender_env as env  # noqa: E402
++import _openings_env as oe  # noqa: E402
++from caffmob_draw import hb_types  # noqa: E402
++from caffmob_draw.aggregates import apply, collision, convert, install, leaf, ops_install  # noqa: E402
++from caffmob_draw.collision import scan  # noqa: E402
++from caffmob_draw.openings import sync  # noqa: E402
++from caffmob_draw.operators import doors_windows as dw  # noqa: E402
++from caffmob_draw.walls2d import apply as wapply, model  # noqa: E402
++
++ctx = bpy.context
++FAILURES = []
++
++
++def check(name, ok, detail=""):
++    print(("OK   " if ok else "FALHA ") + name, detail, flush=True)
++    if not ok:
++        FAILURES.append(name)
++
++
++def cube(name, loc=(0, 0, 0), size=0.2, parent=None):
++    bpy.ops.mesh.primitive_cube_add(size=size, location=loc)
++    obj = ctx.object
++    obj.name = name
++    if parent is not None:
++        obj.parent = parent
++    env.settle()
++    return obj
++
++
++def room_with(kind, x, z=0.0):
++    env.clean_scene()
++    wapply.apply_plan(ctx, model.WallPlan([model.rectangle(4.0, 3.0)]))
++    env.settle()
++    wall = sorted((o for o in ctx.scene.objects if o.get('IS_WALL_BP')), key=lambda o: o.name)[0]
++    cage = oe.make_cage(kind)
++    cage.parent = wall
++    cage.location = (x, 0.0, z)
++    dw.cut_wall(wall, cage)
++    env.settle()
++    sync.sync(ctx, cage)
++    env.settle()
++    leaves = [o for o in cage.btm_opening_real.assembly.children_recursive if leaf.pivot_of(o) is not None]
++    return wall, cage, leaves
++
++
++def unconvert_keeps_place():
++    env.clean_scene()
++    pai = cube("Pai", size=1.0)
++    item = cube("Item", loc=(0, 0, 0.6))
++    convert.convert(item, pai)
++    pai.location.x += 1.0
++    env.settle()
++    where = item.matrix_world.translation.copy()
++    convert.unconvert(item)
++    env.settle()
++    check("NQ2L: desconverter depois de mover o pai fica onde está",
++          (item.matrix_world.translation - where).length < 1e-6, f"{tuple(where)} → {tuple(item.matrix_world.translation)}")
++
++
++def exclusion_without_module():
++    env.clean_scene()
++    pai = cube("Painel", size=1.0)
++    outro = cube("Outro filho", loc=(0, 0, 2.0), parent=pai)
++    item = cube("Item", loc=(0, 0, 0.6))
++    convert.convert(item, pai)
++    names = collision._excluded(item)
++    check("VPY5: sem módulo, só o pai sai da colisão", "Painel" in names and outro.name not in names, str(sorted(names)))
++
++
++def reopen_on_change():
++    _wall, cage, leaves = room_with('DOOR', 1.0)
++    door = leaves[0]
++    door.btm_aggregate.open_value = 1.0
++    env.settle()
++    meshes = [o for o in door.children_recursive if o.type == 'MESH'] or [door]
++    corners = [o.matrix_world @ Vector(c) for o in meshes for c in o.bound_box]
++    center = sum(corners, Vector()) / len(corners)
++    local = cage.matrix_world.inverted() @ center
++    thickness = hb_types.GeoNodeCage(cage).get_input('Dim Y')
++    local.y = thickness - local.y                 # o lado para onde a folha vai depois da troca de sentido
++    cube("Obstáculo", loc=tuple(cage.matrix_world @ local), size=0.3)
++    door.btm_aggregate.swing_sign = 'IN' if door.btm_aggregate.swing_sign == 'OUT' else 'OUT'
++    env.settle()
++    check("I7QE: trocar o sentido com a folha aberta reabre pela varredura (para no obstáculo)",
++          door.btm_aggregate.open_value < 0.99 and bool(door.btm_aggregate.contact_name),
++          f"abertura={door.btm_aggregate.open_value:.2f} contato={door.btm_aggregate.contact_name!r}")
++
++
++def empty_parent_box():
++    env.clean_scene()
++    grupo = bpy.data.objects.new("Grupo", None)
++    ctx.scene.collection.objects.link(grupo)
++    cube("Peça", size=1.0, parent=grupo)
++    lo, hi = apply.local_box(grupo)
++    size = [hi[i] - lo[i] for i in range(3)]
++    check("PON4: caixa de pai Empty é a das malhas", all(abs(s - 1.0) < 1e-5 for s in size), str(size))
++
++
++def empty_frame_install():
++    env.clean_scene()
++    wapply.apply_plan(ctx, model.WallPlan([model.rectangle(4.0, 3.0)]))
++    wall = next(o for o in ctx.scene.objects if o.get('IS_WALL_BP'))
++    frame = bpy.data.objects.new("Esquadria vazia", None)
++    ctx.scene.collection.objects.link(frame)
++    frame.btm_group.is_group, frame.btm_group.kind = True, 'FRAME'
++    reason = install.can_install(frame, wall)
++    check("4OV4: esquadria sem peças é recusada com mensagem", reason is not None, repr(reason))
++
++
++def pivot_icon():
++    _wall, _cage, leaves = room_with('WINDOW', 1.0, 1.0)
++    sash = leaves[0]
++    sash.btm_aggregate.motion = 'SWING'
++    env.settle()
++    check("MQPR: o ícone do pivô segue o movimento", leaf.pivot_of(sash).empty_display_type == 'SINGLE_ARROW',
++          leaf.pivot_of(sash).empty_display_type)
++
++
++def non_hb_wall_message():
++    env.clean_scene()
++    wall = cube("Parede BTM", size=1.0)
++    wall.btm_plane.object_kind = 'WALL'
++    frame = bpy.data.objects.new("Esquadria", None)
++    ctx.scene.collection.objects.link(frame)
++    cube("Peça da esquadria", parent=frame)
++    frame.btm_group.is_group, frame.btm_group.kind = True, 'FRAME'
++    for obj in ctx.view_layer.objects:
++        obj.select_set(False)
++    wall.select_set(True)
++    frame.select_set(True)
++    _frame, found = ops_install._selection(ctx)
++    reason = install.can_install(install.frame_of(frame) or frame, found)
++    check("5DDZ: parede não HB recebe o aviso de converter", found == wall and reason == install.tr(install.NOT_HB_WALL),
++          f"parede={found.name if found else None} motivo={reason!r}")
++
++
++def door_leaf_collision():
++    _wall, _cage, leaves = room_with('DOOR', 0.3)
++    leaves[0].btm_aggregate.open_value = 1.0
++    env.settle()
++    found = scan.check_all(ctx, 'ALL') or []
++    bad = [(c.kind, c.name_a, c.name_b) for c in found if leaves[0].name in (c.name_a, c.name_b)]
++    check("53DV: folha aberta não colide com a própria caixa nem com a parede dela", not bad, str(bad))
++
++
++for step in (unconvert_keeps_place, exclusion_without_module, reopen_on_change, empty_parent_box,
++             empty_frame_install, pivot_icon, non_hb_wall_message, door_leaf_collision):
++    try:
++        step()
++    except Exception:
++        traceback.print_exc()
++        FAILURES.append(f"exceção em {step.__name__}")
++print(f"blender_bug_NQ2L_aggregates: {'OK' if not FAILURES else 'FALHAS: ' + ', '.join(FAILURES)}")
++sys.exit(1 if FAILURES else 0)

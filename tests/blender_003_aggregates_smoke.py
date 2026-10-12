@@ -86,10 +86,12 @@ payload = json_exporter.build_global_payload(project={"name": "Smoke", "uid": "P
 cuts = [c for p in payload["parts"] for c in p["machining"]]
 assert len(cuts) == 1 and cuts[0]["kind"] == "POCKET" and abs(cuts[0]["depth_mm"] - 10.0) < 0.2, cuts
 assert json_exporter.validate_global_json(payload) == []
+now = nicho.matrix_world.copy()
 assert convert.unconvert(nicho)
 assert not any(m.type == 'BOOLEAN' for m in side.modifiers)
 assert side.modifiers.get(machining.AGGREGATE_PREFIX + nicho.name) is None
-assert max_diff(nicho.matrix_world, before) < 1e-6 and nicho.parent is None
+# BUG-20261011-NQ2L (questions.md, pergunta 27): desconverter fica onde está, não volta à posição de antes da conversão.
+assert max_diff(nicho.matrix_world, now) < 1e-6 and nicho.parent is None
 
 # 3. Folha de porta: giro de 180° batendo na parede a 30 cm da dobradiça.
 env.clean_scene()

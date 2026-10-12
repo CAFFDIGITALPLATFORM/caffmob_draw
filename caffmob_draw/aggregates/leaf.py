@@ -148,11 +148,11 @@ def rebuild_pivot(obj):
     pivot = pivot_of(obj)
     if pivot is None:
         pivot = bpy.data.objects.new(obj.name + PIVOT_SUFFIX, None)
-        pivot.empty_display_type = 'SINGLE_ARROW' if agg.motion == 'SWING' else 'PLAIN_AXES'
         pivot.empty_display_size = 0.1
         for collection in obj.users_collection or parent.users_collection:
             collection.objects.link(pivot)
         agg.pivot = pivot
+    pivot.empty_display_type = 'SINGLE_ARROW' if agg.motion == 'SWING' else 'PLAIN_AXES'   # segue o movimento (RN-11)
     pivot['btm_leaf'] = obj.name
     pivot['btm_leaf_base'] = list(base)
     pivot.parent = parent

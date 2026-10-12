@@ -1,0 +1,15 @@
+--- /home/theleoinfo/www/BlenderToMob/caffmob_draw/aggregates/ops_install.py	2026-10-08 16:55:41.496660349 -0300
++++ caffmob_draw/aggregates/ops_install.py	2026-10-11 23:07:26.616899882 -0300
+@@ -12,9 +12,10 @@
+ 
+ def _selection(context):
+     frame, wall = None, None
++    from ..selection import classify
+     for obj in context.selected_objects:
+-        if obj.get(install.WALL_FLAG):
+-            wall = obj
++        if obj.get(install.WALL_FLAG) or classify.classify(obj).kind == classify.WALL:
++            wall = obj                              # parede não HB chega a can_install e recebe o aviso (RN-22)
+         elif frame is None:
+             frame = install.frame_of(obj)
+     return frame, wall

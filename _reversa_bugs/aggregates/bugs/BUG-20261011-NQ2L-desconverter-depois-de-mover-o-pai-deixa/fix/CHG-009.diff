@@ -1,0 +1,36 @@
+--- /home/theleoinfo/www/BlenderToMob/caffmob_draw/aggregates/props.py	2026-10-08 16:50:24.047925406 -0300
++++ caffmob_draw/aggregates/props.py	2026-10-11 23:07:26.615899814 -0300
+@@ -56,12 +56,20 @@
+     leaf.update_open(obj, context)
+ 
+ 
++def _reopen(obj, context):
++    """Sentido, ângulo ou curso mudou com a folha aberta: fecha e reabre pela varredura (questions.md, pergunta 30)."""
++    from . import leaf
++    if leaf.pivot_of(obj) is not None and leaf.current_fraction(obj) > 0.0:
++        leaf.apply_fraction(obj, 0.0)
++    leaf.update_open(obj, context)
++
++
+ def _travel(obj, context):
+     agg = obj.btm_aggregate
+     if agg.free_travel > 0.0 and agg.travel > agg.free_travel + 1e-6:
+         from . import apply
+         apply._write(obj, 'travel', agg.free_travel)          # não passa da esquadria (RN-07)
+-    _open(obj, context)
++    _reopen(obj, context)
+ 
+ 
+ def _leaf_setup(obj, context):
+@@ -104,9 +112,9 @@
+     hinge: bpy.props.EnumProperty(name="Eixo", items=HINGE_ITEMS, default='LEFT',
+                                   update=_guarded('hinge', _leaf_setup))  # type: ignore
+     swing_sign: bpy.props.EnumProperty(name="Sentido", items=SWING_ITEMS, default='OUT',
+-                                       update=_guarded('swing_sign', _open))  # type: ignore
++                                       update=_guarded('swing_sign', _reopen))  # type: ignore
+     max_angle: bpy.props.FloatProperty(name="Ângulo máximo", default=90.0, min=1.0, max=180.0,
+-                                       update=_guarded('max_angle', _open))  # type: ignore
++                                       update=_guarded('max_angle', _reopen))  # type: ignore
+     slide_dir: bpy.props.EnumProperty(name="Sentido", items=SLIDE_ITEMS, default='POS_X',
+                                       update=_guarded('slide_dir', _leaf_setup))  # type: ignore
+     travel: bpy.props.FloatProperty(name="Curso", default=0.5, min=0.001, subtype='DISTANCE', unit='LENGTH',

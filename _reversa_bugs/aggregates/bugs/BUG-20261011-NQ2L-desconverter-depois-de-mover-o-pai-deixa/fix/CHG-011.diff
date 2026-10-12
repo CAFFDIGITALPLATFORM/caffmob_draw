@@ -1,0 +1,12 @@
+--- /home/theleoinfo/www/BlenderToMob/caffmob_draw/data/translations/aggregates.json	2026-10-11 22:24:28.761549448 -0300
++++ caffmob_draw/data/translations/aggregates.json	2026-10-11 23:07:26.617899951 -0300
+@@ -538,5 +538,9 @@
+  "Base (−Z)": {
+   "pt_BR": "Base (−Z)",
+   "en_US": "Bottom (−Z)"
++ },
++ "A esquadria não tem peças para instalar": {
++  "pt_BR": "A esquadria não tem peças para instalar",
++  "en_US": "The frame has no parts to install"
+  }
+ }

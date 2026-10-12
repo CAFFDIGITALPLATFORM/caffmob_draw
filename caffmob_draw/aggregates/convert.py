@@ -74,7 +74,12 @@ def unconvert(obj):
         apply._write(obj, 'production_part', False)
         from . import production
         production.sync(obj)
-    world = Matrix([agg.orig_matrix[i * 4:(i + 1) * 4] for i in range(4)])
+    # Fica onde está, mesmo com o pai movido (questions.md, pergunta 27). Calculado das matrizes, não de matrix_world:
+    # a folha acabou de ser fechada por remove_pivot e o matrix_world só se atualiza na próxima avaliação.
+    current = obj.parent
+    world = obj.matrix_basis.copy()
+    if current is not None:
+        world = current.matrix_world @ obj.matrix_parent_inverse @ world
     obj.parent = agg.orig_parent
     obj.matrix_parent_inverse = Matrix.Identity(4)
     obj.matrix_world = world

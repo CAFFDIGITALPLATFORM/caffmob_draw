@@ -46,6 +46,8 @@ def can_install(frame, wall):
         return tr("Selecione também a parede")
     if not wall.get(WALL_FLAG):
         return tr(NOT_HB_WALL)
+    if group.group_box(frame) is None:              # esquadria sem peças (EC-10)
+        return tr("A esquadria não tem peças para instalar")
     return None
 
 

@@ -65,9 +65,10 @@ def _excluded(obj):
         names.add(parent.name)
         return names
     if parent is not None:
-        root = fronts.module_root_of(parent) or parent
-        names.add(root.name)
-        names.update(c.name for c in root.children_recursive)
+        root = fronts.module_root_of(parent)
+        if root is not None:                       # pai fora de módulo: só o pai sai (questions.md, pergunta 29)
+            names.add(root.name)
+            names.update(c.name for c in root.children_recursive)
         names.add(parent.name)
     return names
 

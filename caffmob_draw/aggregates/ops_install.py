@@ -12,9 +12,10 @@ from . import install
 
 def _selection(context):
     frame, wall = None, None
+    from ..selection import classify
     for obj in context.selected_objects:
-        if obj.get(install.WALL_FLAG):
-            wall = obj
+        if obj.get(install.WALL_FLAG) or classify.classify(obj).kind == classify.WALL:
+            wall = obj                              # parede não HB chega a can_install e recebe o aviso (RN-22)
         elif frame is None:
             frame = install.frame_of(obj)
     return frame, wall

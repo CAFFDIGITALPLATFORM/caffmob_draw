@@ -1,0 +1,11 @@
+--- /home/theleoinfo/www/BlenderToMob/caffmob_draw/aggregates/install.py	2026-10-08 16:55:41.492660356 -0300
++++ caffmob_draw/aggregates/install.py	2026-10-11 23:07:26.616899882 -0300
+@@ -46,6 +46,8 @@
+         return tr("Selecione também a parede")
+     if not wall.get(WALL_FLAG):
+         return tr(NOT_HB_WALL)
++    if group.group_box(frame) is None:              # esquadria sem peças (EC-10)
++        return tr("A esquadria não tem peças para instalar")
+     return None
+ 
+ 

@@ -1,4 +1,4 @@
-<!-- GENERATED, DO NOT EDIT: regenerado por /reversa-debugger-graph em 2026-10-12T02:05:16+00:00 a partir de 137 bugs -->
+<!-- GENERATED, DO NOT EDIT: regenerado por /reversa-debugger-graph em 2026-10-12T02:13:03+00:00 a partir de 137 bugs -->
 
 # Bugs que atingem as specs
 
@@ -60,25 +60,25 @@
 ## `_reversa_sdd/aggregates/edge-cases.md`
 
 - BUG-20261011-3VD7 (resolved/fixed, P1): Geometria livre convertida em agregado sai duplicada na produção com o mesmo uid — `_reversa_bugs/aggregates/bugs/BUG-20261011-3VD7-geometria-livre-convertida-em-agregado-sai-duplicada`
-- BUG-20261011-4OV4 (open, P3): install.install levanta TypeError numa esquadria sem membros — `_reversa_bugs/aggregates/bugs/BUG-20261011-4OV4-install-install-levanta-typeerror-numa-esquadria-sem`
+- BUG-20261011-4OV4 (resolved/fixed, P3): install.install levanta TypeError numa esquadria sem membros — `_reversa_bugs/aggregates/bugs/BUG-20261011-4OV4-install-install-levanta-typeerror-numa-esquadria-sem`
 - BUG-20261011-DXOV (resolved/fixed, P0): Apagar parede com 'Apagar também os agregados' ligado não apaga os agregados dos módulos — `_reversa_bugs/aggregates/bugs/BUG-20261011-DXOV-apagar-parede-com-apagar-tambem-os-agregados`
-- BUG-20261011-NQ2L (open, P2): Desconverter depois de mover o pai deixa o objeto na posição errada — `_reversa_bugs/aggregates/bugs/BUG-20261011-NQ2L-desconverter-depois-de-mover-o-pai-deixa`
+- BUG-20261011-NQ2L (resolved/fixed, P2): Desconverter depois de mover o pai deixa o objeto na posição errada — `_reversa_bugs/aggregates/bugs/BUG-20261011-NQ2L-desconverter-depois-de-mover-o-pai-deixa`
 - BUG-20261011-TUWO (resolved/fixed, P0): Apagar parede sem 'Apagar também os agregados' solta os agregados dos módulos que ficam — `_reversa_bugs/selection/bugs/BUG-20261011-TUWO-apagar-parede-sem-apagar-tambem-os-agregados`
 - BUG-20261011-WOPM (resolved/fixed, P1): Renomear agregado com furo real deixa furo fantasma na usinagem — `_reversa_bugs/aggregates/bugs/BUG-20261011-WOPM-renomear-agregado-com-furo-real-deixa-furo`
 
 ## `_reversa_sdd/aggregates/requirements.md`
 
-- BUG-20261011-5DDZ (open, P3): Mensagem 'Converta a parede pelo editor de paredes' nunca aparece — `_reversa_bugs/aggregates/bugs/BUG-20261011-5DDZ-mensagem-converta-a-parede-pelo-editor-de`
-- BUG-20261011-MQPR (open, P3): Ícone do pivô não atualiza quando o movimento muda — `_reversa_bugs/aggregates/bugs/BUG-20261011-MQPR-icone-do-pivo-nao-atualiza-quando-o`
+- BUG-20261011-5DDZ (resolved/fixed, P3): Mensagem 'Converta a parede pelo editor de paredes' nunca aparece — `_reversa_bugs/aggregates/bugs/BUG-20261011-5DDZ-mensagem-converta-a-parede-pelo-editor-de`
+- BUG-20261011-MQPR (resolved/fixed, P3): Ícone do pivô não atualiza quando o movimento muda — `_reversa_bugs/aggregates/bugs/BUG-20261011-MQPR-icone-do-pivo-nao-atualiza-quando-o`
 - BUG-20261011-ZKQ7 (resolved/fixed, P0): Checagem de descendência invertida em can_convert permite ciclo de parentesco — `_reversa_bugs/aggregates/bugs/BUG-20261011-ZKQ7-checagem-de-descendencia-invertida-em-can-convert`
 
 ## `_reversa_sdd/aggregates/tasks.md`
 
 - BUG-20261011-3VD7 (resolved/fixed, P1): Geometria livre convertida em agregado sai duplicada na produção com o mesmo uid — `_reversa_bugs/aggregates/bugs/BUG-20261011-3VD7-geometria-livre-convertida-em-agregado-sai-duplicada`
-- BUG-20261011-I7QE (open, P2): Folha aberta fica fora do lugar depois de mudar parâmetros — `_reversa_bugs/aggregates/bugs/BUG-20261011-I7QE-folha-aberta-fica-fora-do-lugar-depois`
-- BUG-20261011-NQ2L (open, P2): Desconverter depois de mover o pai deixa o objeto na posição errada — `_reversa_bugs/aggregates/bugs/BUG-20261011-NQ2L-desconverter-depois-de-mover-o-pai-deixa`
-- BUG-20261011-PON4 (open, P2): Caixa local errada quando o pai é Empty ou grupo — `_reversa_bugs/aggregates/bugs/BUG-20261011-PON4-caixa-local-errada-quando-o-pai-e`
-- BUG-20261011-VPY5 (open, P2): Exclusão de colisão larga demais em folha sem módulo — `_reversa_bugs/aggregates/bugs/BUG-20261011-VPY5-exclusao-de-colisao-larga-demais-em-folha`
+- BUG-20261011-I7QE (resolved/fixed, P2): Folha aberta fica fora do lugar depois de mudar parâmetros — `_reversa_bugs/aggregates/bugs/BUG-20261011-I7QE-folha-aberta-fica-fora-do-lugar-depois`
+- BUG-20261011-NQ2L (resolved/fixed, P2): Desconverter depois de mover o pai deixa o objeto na posição errada — `_reversa_bugs/aggregates/bugs/BUG-20261011-NQ2L-desconverter-depois-de-mover-o-pai-deixa`
+- BUG-20261011-PON4 (resolved/fixed, P2): Caixa local errada quando o pai é Empty ou grupo — `_reversa_bugs/aggregates/bugs/BUG-20261011-PON4-caixa-local-errada-quando-o-pai-e`
+- BUG-20261011-VPY5 (resolved/fixed, P2): Exclusão de colisão larga demais em folha sem módulo — `_reversa_bugs/aggregates/bugs/BUG-20261011-VPY5-exclusao-de-colisao-larga-demais-em-folha`
 - BUG-20261011-ZKQ7 (resolved/fixed, P0): Checagem de descendência invertida em can_convert permite ciclo de parentesco — `_reversa_bugs/aggregates/bugs/BUG-20261011-ZKQ7-checagem-de-descendencia-invertida-em-can-convert`
 
 ## `_reversa_sdd/architecture.md`
@@ -126,7 +126,7 @@
 
 ## `_reversa_sdd/collision/edge-cases.md`
 
-- BUG-20261011-53DV (open, P2): Colisão falsa entre folha e caixa da porta/janela ou parede (a confirmar) — `_reversa_bugs/collision/bugs/BUG-20261011-53DV-colisao-falsa-entre-folha-e-caixa-da`
+- BUG-20261011-53DV (resolved/fixed, P2): Colisão falsa entre folha e caixa da porta/janela ou parede (a confirmar) — `_reversa_bugs/collision/bugs/BUG-20261011-53DV-colisao-falsa-entre-folha-e-caixa-da`
 - BUG-20261011-7GRY (open, P2): check_moved deixa a lista desordenada e o erro antigo — `_reversa_bugs/collision/bugs/BUG-20261011-7GRY-check-moved-deixa-a-lista-desordenada-e`
 - BUG-20261011-EWKD (open, P2): Contenção total em objeto fino pode passar sem detecção (a confirmar) — `_reversa_bugs/collision/bugs/BUG-20261011-EWKD-contencao-total-em-objeto-fino-pode-passar`
 - BUG-20261011-SRPV (open, P2): Tolerância de 1,0 mm instável por arredondamento de float — `_reversa_bugs/collision/bugs/BUG-20261011-SRPV-tolerancia-de-1-0-mm-instavel-por`
@@ -139,7 +139,7 @@
 
 ## `_reversa_sdd/collision/tasks.md`
 
-- BUG-20261011-53DV (open, P2): Colisão falsa entre folha e caixa da porta/janela ou parede (a confirmar) — `_reversa_bugs/collision/bugs/BUG-20261011-53DV-colisao-falsa-entre-folha-e-caixa-da`
+- BUG-20261011-53DV (resolved/fixed, P2): Colisão falsa entre folha e caixa da porta/janela ou parede (a confirmar) — `_reversa_bugs/collision/bugs/BUG-20261011-53DV-colisao-falsa-entre-folha-e-caixa-da`
 - BUG-20261011-7GRY (open, P2): check_moved deixa a lista desordenada e o erro antigo — `_reversa_bugs/collision/bugs/BUG-20261011-7GRY-check-moved-deixa-a-lista-desordenada-e`
 - BUG-20261011-EWKD (open, P2): Contenção total em objeto fino pode passar sem detecção (a confirmar) — `_reversa_bugs/collision/bugs/BUG-20261011-EWKD-contencao-total-em-objeto-fino-pode-passar`
 - BUG-20261011-JUJZ (open, P2): Override de colisão no painel de agregado edita a raiz do módulo — `_reversa_bugs/collision/bugs/BUG-20261011-JUJZ-override-de-colisao-no-painel-de-agregado`

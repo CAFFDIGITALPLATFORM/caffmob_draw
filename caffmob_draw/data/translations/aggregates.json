@@ -538,5 +538,9 @@
  "Base (−Z)": {
   "pt_BR": "Base (−Z)",
   "en_US": "Bottom (−Z)"
+ },
+ "A esquadria não tem peças para instalar": {
+  "pt_BR": "A esquadria não tem peças para instalar",
+  "en_US": "The frame has no parts to install"
  }
 }

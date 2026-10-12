@@ -70,6 +70,13 @@ def _links(obj):
     agg = getattr(obj, 'btm_aggregate', None)
     if agg is not None and agg.is_aggregate and agg.parent_ref is not None:
         names.update({agg.parent_ref.name, _root_name(agg.parent_ref)})
+    if agg is not None and agg.is_aggregate and agg.kind == 'LEAF':
+        for node in classify._ancestors(obj):     # folha de porta/janela: a caixa e a parede dela (questions.md, 68)
+            if node.get('IS_ENTRY_DOOR_BP') or node.get('IS_WINDOW_BP'):
+                names.add(node.name)
+                if node.parent is not None:
+                    names.add(node.parent.name)
+                break
     st = getattr(obj, 'btm_stick', None)
     if st is not None and st.is_stuck and st.host is not None:
         names.update({st.host.name, _root_name(st.host)})

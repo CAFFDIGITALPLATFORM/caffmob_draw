@@ -3,8 +3,8 @@ schema_version: 1
 id: BUG-20261011-PON4
 display_number: 38
 title: "Caixa local errada quando o pai é Empty ou grupo"
-status: open
-phase: triaging
+status: resolved
+phase: delivering
 severity: medium
 priority: P2
 created: 2026-10-11
@@ -19,12 +19,16 @@ module: aggregates
 feature: unclassified
 labels: ["revisao-specs-2026-10", "a-confirmar"]
 
+change_risk:
+  classification: média
+  reasons: ["desconverter muda de comportamento (fica no lugar)", "colisão das folhas de porta/janela real", "smoke 003 ajustado para a decisão da pergunta 27"]
+
 visibility: normal
 security_suspected: false
 
 reproduction:
-  classification: unknown
-  rate: "não executado (a confirmar com sonda)"
+  classification: deterministic
+  rate: "1/1"
   suspected_triggers: []
 
 blocking: []
@@ -34,18 +38,81 @@ relationships: []
 traceability:
   specs: ["_reversa_sdd/aggregates/tasks.md#DT-03"]
   affected_code: ["caffmob_draw/aggregates/apply.py"]
-  root_cause: null
-  reproduction_tests: []
-  regression_tests: []
+  root_cause:
+    state: confirmed
+    hypothesis: "local_box usa o bound_box do objeto; o de um Empty é nulo no Blender 5.2."
+    causal_path:
+      - "aggregates/apply.py local_box: obj.evaluated_get().bound_box"
+    evidence:
+      - ref: evidence/reproduction.md
+        observation: "teste vermelho no projeto e na cópia isolada (Blender 5.2)"
+    code_refs:
+      - {file: caffmob_draw/aggregates/apply.py, symbol: local_box, commit: 4431333}
+  reproduction_tests: ["tests/blender_bug_NQ2L_aggregates.py", "tests/blender_003_aggregates_smoke.py"]
+  regression_tests: ["tests/blender_bug_NQ2L_aggregates.py", "tests/blender_003_aggregates_smoke.py", "tests/blender_007_window_smoke.py", "tests/blender_004_collision_smoke.py"]
 
-spec_verdict: null
+spec_verdict: spec-correta
 
-change_set: []
-
+change_set:
+  - id: CHG-001
+    kind: test
+    artifact: tests/blender_003_aggregates_smoke.py
+    purpose: "desconverter fica onde está (pergunta 27)"
+    diff: _reversa_bugs/aggregates/bugs/BUG-20261011-NQ2L-desconverter-depois-de-mover-o-pai-deixa/fix/CHG-001.diff
+  - id: CHG-002
+    kind: test
+    artifact: tests/blender_bug_NQ2L_aggregates.py
+    purpose: "reprodução e regressão"
+    diff: _reversa_bugs/aggregates/bugs/BUG-20261011-NQ2L-desconverter-depois-de-mover-o-pai-deixa/fix/CHG-002.diff
+  - id: CHG-003
+    kind: code
+    artifact: caffmob_draw/aggregates/apply.py
+    purpose: "caixa de pai Empty"
+    diff: _reversa_bugs/aggregates/bugs/BUG-20261011-NQ2L-desconverter-depois-de-mover-o-pai-deixa/fix/CHG-003.diff
+  - id: CHG-004
+    kind: code
+    artifact: caffmob_draw/aggregates/collision.py
+    purpose: "exclusão sem módulo"
+    diff: _reversa_bugs/aggregates/bugs/BUG-20261011-NQ2L-desconverter-depois-de-mover-o-pai-deixa/fix/CHG-004.diff
+  - id: CHG-005
+    kind: code
+    artifact: caffmob_draw/aggregates/convert.py
+    purpose: "unconvert mantém a posição atual"
+    diff: _reversa_bugs/aggregates/bugs/BUG-20261011-NQ2L-desconverter-depois-de-mover-o-pai-deixa/fix/CHG-005.diff
+  - id: CHG-006
+    kind: code
+    artifact: caffmob_draw/aggregates/install.py
+    purpose: "esquadria sem peças"
+    diff: _reversa_bugs/aggregates/bugs/BUG-20261011-NQ2L-desconverter-depois-de-mover-o-pai-deixa/fix/CHG-006.diff
+  - id: CHG-007
+    kind: code
+    artifact: caffmob_draw/aggregates/leaf.py
+    purpose: "ícone do pivô"
+    diff: _reversa_bugs/aggregates/bugs/BUG-20261011-NQ2L-desconverter-depois-de-mover-o-pai-deixa/fix/CHG-007.diff
+  - id: CHG-008
+    kind: code
+    artifact: caffmob_draw/aggregates/ops_install.py
+    purpose: "parede BTM chega ao aviso"
+    diff: _reversa_bugs/aggregates/bugs/BUG-20261011-NQ2L-desconverter-depois-de-mover-o-pai-deixa/fix/CHG-008.diff
+  - id: CHG-009
+    kind: code
+    artifact: caffmob_draw/aggregates/props.py
+    purpose: "fecha e reabre pela varredura"
+    diff: _reversa_bugs/aggregates/bugs/BUG-20261011-NQ2L-desconverter-depois-de-mover-o-pai-deixa/fix/CHG-009.diff
+  - id: CHG-010
+    kind: code
+    artifact: caffmob_draw/collision/scan.py
+    purpose: "folha ligada à abertura e à parede"
+    diff: _reversa_bugs/aggregates/bugs/BUG-20261011-NQ2L-desconverter-depois-de-mover-o-pai-deixa/fix/CHG-010.diff
+  - id: CHG-011
+    kind: code
+    artifact: caffmob_draw/data/translations/aggregates.json
+    purpose: "mensagem da esquadria vazia"
+    diff: _reversa_bugs/aggregates/bugs/BUG-20261011-NQ2L-desconverter-depois-de-mover-o-pai-deixa/fix/CHG-011.diff
 closure:
   policy: local-software
-  satisfied: false
-resolution_kind: null
+  satisfied: true
+resolution_kind: fixed
 ---
 
 # Caixa local errada quando o pai é Empty ou grupo
@@ -92,7 +159,30 @@ A confirmar. Pelo relato, rodar uma sonda no Blender 5.2 (`xvfb-run /opt/blender
 
 ## Resolution
 
-_Pendente._
+- **Lote:** 21 (agregados e folhas) (BUG-20261011-NQ2L, BUG-20261011-VPY5, BUG-20261011-I7QE, BUG-20261011-PON4, BUG-20261011-4OV4, BUG-20261011-MQPR, BUG-20261011-5DDZ, BUG-20261011-53DV); plano em `_reversa_bugs/aggregates/bugs/BUG-20261011-NQ2L-desconverter-depois-de-mover-o-pai-deixa/fix/plan.html`, diffs no mesmo `fix/`.
+- **Causa raiz (confirmed):** local_box usa o bound_box do objeto; o de um Empty é nulo no Blender 5.2.
+- **Veredito de spec (aprovado por Leonardo Lima em 2026-10-11):** `spec-correta`: questions.md pergunta 28 e aggregates DT-03 (bound_box de Empty confirmado nulo no 5.2).
+- **resolution_kind:** fixed
+
+| CHG | tipo | artefato | propósito | diff |
+|---|---|---|---|---|
+| CHG-001 | test | `tests/blender_003_aggregates_smoke.py` | desconverter fica onde está (pergunta 27) | `CHG-001.diff` |
+| CHG-002 | test | `tests/blender_bug_NQ2L_aggregates.py` | reprodução e regressão | `CHG-002.diff` |
+| CHG-003 | code | `caffmob_draw/aggregates/apply.py` | caixa de pai Empty | `CHG-003.diff` |
+| CHG-004 | code | `caffmob_draw/aggregates/collision.py` | exclusão sem módulo | `CHG-004.diff` |
+| CHG-005 | code | `caffmob_draw/aggregates/convert.py` | unconvert mantém a posição atual | `CHG-005.diff` |
+| CHG-006 | code | `caffmob_draw/aggregates/install.py` | esquadria sem peças | `CHG-006.diff` |
+| CHG-007 | code | `caffmob_draw/aggregates/leaf.py` | ícone do pivô | `CHG-007.diff` |
+| CHG-008 | code | `caffmob_draw/aggregates/ops_install.py` | parede BTM chega ao aviso | `CHG-008.diff` |
+| CHG-009 | code | `caffmob_draw/aggregates/props.py` | fecha e reabre pela varredura | `CHG-009.diff` |
+| CHG-010 | code | `caffmob_draw/collision/scan.py` | folha ligada à abertura e à parede | `CHG-010.diff` |
+| CHG-011 | code | `caffmob_draw/data/translations/aggregates.json` | mensagem da esquadria vazia | `CHG-011.diff` |
+
+**Vermelho (antes da correção):** oito cenários falham: posição ao desconverter, exclusão larga, folha que atravessa obstáculo, caixa de Empty nula, TypeError na esquadria vazia, ícone do pivô, mensagem da parede, colisão falsa da folha.
+
+**Verde (depois):** `blender_bug_NQ2L_aggregates.py` OK, `blender_003_aggregates_smoke.py` OK; na cópia isolada também `blender_004_collision_smoke`, `blender_007_window_smoke`, `blender_bug_MMVI_opening_sync`, `blender_bug_7DHT_wall_delete`, `blender_012_convert_smoke`, `blender_012_groups_smoke`, `blender_004_stick_smoke`, `blender_009_skp_smoke`, `blender_010_skp_tree_smoke`, `test_collision_rules`; `ruff` limpo; `check_api.py` OK.
+
+- **Reprodução:** `tests/blender_bug_NQ2L_aggregates.py`, `tests/blender_003_aggregates_smoke.py`. **Regressão:** `tests/blender_bug_NQ2L_aggregates.py`, `tests/blender_003_aggregates_smoke.py`, `tests/blender_007_window_smoke.py`, `tests/blender_004_collision_smoke.py`.
 
 ## Agent Notes
 

@@ -12,9 +12,11 @@ from . import limits, props
 
 
 def local_box(obj):
-    """Caixa do objeto avaliado no espaço local dele (com modificadores)."""
+    """Caixa do objeto avaliado no espaço local dele (com modificadores). Pai Empty ou grupo (bound_box nulo no 5.2):
+    a união das malhas dentro dele (questions.md, pergunta 28)."""
+    from . import group
     depsgraph = bpy.context.evaluated_depsgraph_get()
-    corners = [Vector(c) for c in obj.evaluated_get(depsgraph).bound_box]
+    corners = group.object_corners(obj, depsgraph)
     return (tuple(min(c[i] for c in corners) for i in range(3)), tuple(max(c[i] for c in corners) for i in range(3)))
 
 
