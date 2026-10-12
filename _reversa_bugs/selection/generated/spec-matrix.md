@@ -1,4 +1,4 @@
-<!-- GENERATED, DO NOT EDIT: regenerado por /reversa-debugger-graph em 2026-10-12T02:50:20+00:00 a partir de 3 bugs -->
+<!-- GENERATED, DO NOT EDIT: regenerado por /reversa-debugger-graph em 2026-10-12T02:54:38+00:00 a partir de 3 bugs -->
 
 # Bugs × specs · selection
 
@@ -6,14 +6,14 @@
 |---|---|---|---|
 | `_reversa_sdd/aggregates/edge-cases.md#EC-16` | — | — | BUG-20261011-TUWO |
 | `_reversa_sdd/questions.md#pergunta-2` | — | — | BUG-20261011-TUWO |
-| `_reversa_sdd/questions.md#pergunta-21` | BUG-20261011-CHWX | — | — |
+| `_reversa_sdd/questions.md#pergunta-21` | — | — | BUG-20261011-CHWX |
 | `_reversa_sdd/questions.md#pergunta-4` | — | — | BUG-20261011-TUWO |
 | `_reversa_sdd/questions.md#pergunta-5` | — | — | BUG-20261011-7DHT |
 | `_reversa_sdd/selection/edge-cases.md#EC-07` | — | — | BUG-20261011-TUWO |
-| `_reversa_sdd/selection/edge-cases.md#EC-10` | BUG-20261011-CHWX | — | — |
+| `_reversa_sdd/selection/edge-cases.md#EC-10` | — | — | BUG-20261011-CHWX |
 | `_reversa_sdd/selection/edge-cases.md#EC-18` | — | — | BUG-20261011-7DHT |
 | `_reversa_sdd/selection/tasks.md#DT-01` | — | — | BUG-20261011-TUWO |
-| `_reversa_sdd/selection/tasks.md#DT-03` | BUG-20261011-CHWX | — | — |
+| `_reversa_sdd/selection/tasks.md#DT-03` | — | — | BUG-20261011-CHWX |
 | `_reversa_sdd/selection/tasks.md#DT-05` | — | — | BUG-20261011-7DHT |
 | **spec-gap** | — | — | — |
 

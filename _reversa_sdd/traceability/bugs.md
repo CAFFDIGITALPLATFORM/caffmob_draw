@@ -1,4 +1,4 @@
-<!-- GENERATED, DO NOT EDIT: regenerado por /reversa-debugger-graph em 2026-10-12T02:50:20+00:00 a partir de 137 bugs -->
+<!-- GENERATED, DO NOT EDIT: regenerado por /reversa-debugger-graph em 2026-10-12T02:54:38+00:00 a partir de 137 bugs -->
 
 # Bugs que atingem as specs
 
@@ -325,8 +325,8 @@
 
 ## `_reversa_sdd/openings/tasks.md`
 
-- BUG-20261011-7SNG (open, P2): Porta inserida em região do lado de trás abre invertida — `_reversa_bugs/openings/bugs/BUG-20261011-7SNG-porta-inserida-em-regiao-do-lado-de`
-- BUG-20261011-D3GC (open, P2): draw_regions escreve dados durante o desenho — `_reversa_bugs/openings/bugs/BUG-20261011-D3GC-draw-regions-escreve-dados-durante-o-desenho`
+- BUG-20261011-7SNG (resolved/fixed, P2): Porta inserida em região do lado de trás abre invertida — `_reversa_bugs/openings/bugs/BUG-20261011-7SNG-porta-inserida-em-regiao-do-lado-de`
+- BUG-20261011-D3GC (resolved/fixed, P2): draw_regions escreve dados durante o desenho — `_reversa_bugs/openings/bugs/BUG-20261011-D3GC-draw-regions-escreve-dados-durante-o-desenho`
 - BUG-20261011-MMVI (resolved/fixed, P1): Reconstruir a porta apaga objetos do usuário parentados nela — `_reversa_bugs/openings/bugs/BUG-20261011-MMVI-reconstruir-a-porta-apaga-objetos-do-usuario`
 - BUG-20261011-SX4T (resolved/fixed, P2): _swing pega o filho errado como símbolo de abertura — `_reversa_bugs/openings/bugs/BUG-20261011-SX4T-swing-pega-o-filho-errado-como-simbolo`
 - BUG-20261011-UV6S (resolved/fixed, P2): Trocar porta simples para dupla não refaz a porta real — `_reversa_bugs/openings/bugs/BUG-20261011-UV6S-trocar-porta-simples-para-dupla-nao-refaz`
@@ -347,8 +347,8 @@
 - BUG-20261011-624G (resolved/fixed, P2): Soltar o mouse na barra da lupa trava o arraste — `_reversa_bugs/walls2d/bugs/BUG-20261011-624G-soltar-o-mouse-na-barra-da-lupa`
 - BUG-20261011-6JIM (resolved/fixed, P2): Cancelar não desfaz a Montagem — `_reversa_bugs/cabinet_editor/bugs/BUG-20261011-6JIM-cancelar-nao-desfaz-a-montagem`
 - BUG-20261011-7DHT (resolved/fixed, P0): X/Delete numa parede faz os filhos não grudados pularem de lugar — `_reversa_bugs/selection/bugs/BUG-20261011-7DHT-x-delete-numa-parede-faz-os-filhos`
-- BUG-20261011-7SNG (open, P2): Porta inserida em região do lado de trás abre invertida — `_reversa_bugs/openings/bugs/BUG-20261011-7SNG-porta-inserida-em-regiao-do-lado-de`
-- BUG-20261011-CHWX (open, P2): Redimensionar janela BTM sempre falha com erro em inglês — `_reversa_bugs/selection/bugs/BUG-20261011-CHWX-redimensionar-janela-btm-sempre-falha-com-erro`
+- BUG-20261011-7SNG (resolved/fixed, P2): Porta inserida em região do lado de trás abre invertida — `_reversa_bugs/openings/bugs/BUG-20261011-7SNG-porta-inserida-em-regiao-do-lado-de`
+- BUG-20261011-CHWX (resolved/fixed, P2): Redimensionar janela BTM sempre falha com erro em inglês — `_reversa_bugs/selection/bugs/BUG-20261011-CHWX-redimensionar-janela-btm-sempre-falha-com-erro`
 - BUG-20261011-CKVJ (resolved/fixed, P2): Tab na janela de Mover Sobre vai para o campo errado — `_reversa_bugs/move_over/bugs/BUG-20261011-CKVJ-tab-na-janela-de-mover-sobre-vai`
 - BUG-20261011-DXOV (resolved/fixed, P0): Apagar parede com 'Apagar também os agregados' ligado não apaga os agregados dos módulos — `_reversa_bugs/aggregates/bugs/BUG-20261011-DXOV-apagar-parede-com-apagar-tambem-os-agregados`
 - BUG-20261011-IDPP (resolved/fixed, P2): Porta real não acompanha largura e altura editadas pelo painel — `_reversa_bugs/openings/bugs/BUG-20261011-IDPP-porta-real-nao-acompanha-largura-e-altura`
@@ -372,13 +372,13 @@
 ## `_reversa_sdd/selection/edge-cases.md`
 
 - BUG-20261011-7DHT (resolved/fixed, P0): X/Delete numa parede faz os filhos não grudados pularem de lugar — `_reversa_bugs/selection/bugs/BUG-20261011-7DHT-x-delete-numa-parede-faz-os-filhos`
-- BUG-20261011-CHWX (open, P2): Redimensionar janela BTM sempre falha com erro em inglês — `_reversa_bugs/selection/bugs/BUG-20261011-CHWX-redimensionar-janela-btm-sempre-falha-com-erro`
+- BUG-20261011-CHWX (resolved/fixed, P2): Redimensionar janela BTM sempre falha com erro em inglês — `_reversa_bugs/selection/bugs/BUG-20261011-CHWX-redimensionar-janela-btm-sempre-falha-com-erro`
 - BUG-20261011-TUWO (resolved/fixed, P0): Apagar parede sem 'Apagar também os agregados' solta os agregados dos módulos que ficam — `_reversa_bugs/selection/bugs/BUG-20261011-TUWO-apagar-parede-sem-apagar-tambem-os-agregados`
 
 ## `_reversa_sdd/selection/tasks.md`
 
 - BUG-20261011-7DHT (resolved/fixed, P0): X/Delete numa parede faz os filhos não grudados pularem de lugar — `_reversa_bugs/selection/bugs/BUG-20261011-7DHT-x-delete-numa-parede-faz-os-filhos`
-- BUG-20261011-CHWX (open, P2): Redimensionar janela BTM sempre falha com erro em inglês — `_reversa_bugs/selection/bugs/BUG-20261011-CHWX-redimensionar-janela-btm-sempre-falha-com-erro`
+- BUG-20261011-CHWX (resolved/fixed, P2): Redimensionar janela BTM sempre falha com erro em inglês — `_reversa_bugs/selection/bugs/BUG-20261011-CHWX-redimensionar-janela-btm-sempre-falha-com-erro`
 - BUG-20261011-DXOV (resolved/fixed, P0): Apagar parede com 'Apagar também os agregados' ligado não apaga os agregados dos módulos — `_reversa_bugs/aggregates/bugs/BUG-20261011-DXOV-apagar-parede-com-apagar-tambem-os-agregados`
 - BUG-20261011-IDPP (resolved/fixed, P2): Porta real não acompanha largura e altura editadas pelo painel — `_reversa_bugs/openings/bugs/BUG-20261011-IDPP-porta-real-nao-acompanha-largura-e-altura`
 - BUG-20261011-TUWO (resolved/fixed, P0): Apagar parede sem 'Apagar também os agregados' solta os agregados dos módulos que ficam — `_reversa_bugs/selection/bugs/BUG-20261011-TUWO-apagar-parede-sem-apagar-tambem-os-agregados`

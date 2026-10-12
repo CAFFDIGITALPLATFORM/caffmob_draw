@@ -1,0 +1,35 @@
+--- /home/theleoinfo/www/BlenderToMob/caffmob_draw/operators/doors_windows.py	2026-10-11 23:54:18.289065991 -0300
++++ caffmob_draw/operators/doors_windows.py	2026-10-11 23:52:30.514148454 -0300
+@@ -17,6 +17,15 @@
+     (N_('Outside Right'), {'Swing Inside': False, 'Is Left': False, 'Is Double': False}),
+ ]
+ 
++def _set_back_face(op, back):
++    """Inserção numa região da face de trás: o sentido do giro passa a abrir para ela (questions.md, pergunta 22)."""
++    if getattr(op, '_back_face', False) == back:
++        return
++    op._back_face = back
++    if getattr(op, 'HAS_SWING', False) and getattr(op, 'swing_obj', None) is not None:
++        op.apply_door_swing_type()
++
++
+ # Double door swing options: (label, {geo node inputs})
+ DOUBLE_DOOR_SWINGS = [
+     (N_('Inside'),  {'Swing Inside': True,  'Is Double': True}),
+@@ -754,6 +763,8 @@
+             return
+         swing_label, inputs = self.SWING_LIST[self.door_swing_index]
+         for input_name, value in inputs.items():
++            if input_name == 'Swing Inside' and getattr(self, '_back_face', False):
++                value = not value             # região na face de trás: abre para essa face (011 RN-11)
+             self.swing_obj.set_input(input_name, value)
+ 
+     def cycle_door_swing(self, direction: int):
+@@ -963,6 +974,7 @@
+                 tr(region_core.REASONS[fit.reason])))
+             return False
+         thickness = candidate.get_input('Thickness')
++        _set_back_face(self, region.side == 'BACK')
+         obj = self.placed_obj.obj
+         obj.parent = wall
+         obj.location = (fit.x, 0.0, fit.sill)

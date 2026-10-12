@@ -23,14 +23,18 @@ class BTM_PG_WallRegion(bpy.types.PropertyGroup):
 classes = (BTM_PG_WallRegion,)
 
 
-def region_wall(context):
-    """(região, parede) se há uma região marcada numa parede que ainda existe; senão (None, None)."""
+def region_wall(context, invalidate=True):
+    """(região, parede) se há uma região marcada numa parede que ainda existe; senão (None, None).
+
+    Parede que sumiu desliga a região, menos com `invalidate=False` (o desenho não grava dados, DT-04).
+    """
     region = getattr(context.window_manager, 'btm_wall_region', None)
     if region is None or not region.active:
         return None, None
     wall = bpy.data.objects.get(region.wall)
     if wall is None or not wall.get('IS_WALL_BP'):
-        region.active = False
+        if invalidate:
+            region.active = False
         return None, None
     return region, wall
 

@@ -1,0 +1,137 @@
+"""Reprodução e regressão de BUG-20261011-7SNG, BUG-20261011-D3GC (regiões de porta/janela) e BUG-20261011-CHWX
+(redimensionar janela BTM).
+
+Run: blender --background --factory-startup --python-exit-code 1 --python tests/blender_bug_7SNG_openings.py
+
+- porta inserida numa região da face de trás abre para essa face (questions.md, pergunta 22; 011 RN-11);
+- o desenho das regiões não grava dados (pergunta 25);
+- janela BTM não oferece Redimensionar (pergunta 21).
+"""
+
+import sys
+import traceback
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import _blender_env as env  # noqa: E402
+import bpy  # noqa: E402
+from caffmob_draw import hb_types  # noqa: E402
+from caffmob_draw.geometry.mesh_gen import generate_opening_tool_mesh  # noqa: E402
+from caffmob_draw.openings import region, region_props  # noqa: E402
+from caffmob_draw.operators import doors_windows as dw  # noqa: E402
+from caffmob_draw.selection import element_size, resize  # noqa: E402
+from caffmob_draw.walls2d import apply, model  # noqa: E402
+
+ctx = bpy.context
+FAILURES = []
+Base = dw._PlaceWallObjectBase
+dw.hb_placement.draw_header_text = lambda *_args: None      # sem janela não há cabeçalho de área
+dw.hb_placement.clear_header_text = lambda *_args: None
+
+
+def check(name, ok, detail=""):
+    print(("OK   " if ok else "FALHA ") + name, detail, flush=True)
+    if not ok:
+        FAILURES.append(name)
+
+
+class Placement:
+    """O que `place_in_region` usa do operador de inserção, com o símbolo de giro da porta simples."""
+    OPENING_KIND = 'DOOR'
+    HAS_SWING = True
+    SWING_LIST = dw.SINGLE_DOOR_SWINGS
+
+    def __init__(self):
+        self.placed_obj = hb_types.GeoNodeCage()
+        self.placed_obj.create("Door")
+        self.placed_obj.obj['IS_ENTRY_DOOR_BP'] = True
+        self.placed_obj.obj.btm_opening_real.kind = 'DOOR'
+        self.placed_obj.set_input('Dim X', 0.9)
+        self.placed_obj.set_input('Dim Z', 2.0)
+        self.swing_obj = hb_types.GeoNodeDoorSwing()
+        self.swing_obj.create('Door Swing Annotation')
+        self.swing_obj.obj.parent = self.placed_obj.obj
+        self.door_swing_index = 0                      # Inside Left
+        self.apply_door_swing_type()
+        self.reports = []
+
+    def apply_door_swing_type(self):
+        Base.apply_door_swing_type(self)
+
+    def report(self, level, message):
+        self.reports.append((level, message))
+
+    def update_placement_dimensions(self, *_args):
+        pass
+
+
+def mark(wall, side, x0, x1, z0, z1):
+    reg = ctx.window_manager.btm_wall_region
+    reg.wall, reg.side = wall.name, side
+    reg.x0, reg.x1, reg.z0, reg.z1 = x0, x1, z0, z1
+    reg.active = True
+
+
+def back_face_swing():
+    env.clean_scene()
+    apply.apply_plan(ctx, model.WallPlan([model.rectangle(4.0, 3.0)]))
+    env.settle()
+    wall = max((o for o in ctx.scene.objects if o.get('IS_WALL_BP')),
+               key=lambda o: hb_types.GeoNodeWall(o).get_input('Length'))
+    mark(wall, 'FRONT', 0.5, 1.32, 0.0, 2.12)
+    front = Placement()
+    placed = Base.place_in_region(front, ctx)
+    check("7SNG: na face da frente o giro fica como escolhido", placed
+          and bool(front.swing_obj.get_input('Swing Inside')) is True, str(front.reports))
+    mark(wall, 'BACK', 2.0, 2.82, 0.0, 2.12)
+    back = Placement()
+    placed = Base.place_in_region(back, ctx)
+    check("7SNG: na face de trás a porta abre para ela", placed
+          and bool(back.swing_obj.get_input('Swing Inside')) is False, str(back.reports))
+    back.door_swing_index = 2                          # Outside Left: o espelho continua valendo
+    back.apply_door_swing_type()
+    check("7SNG: trocar o giro na face de trás mantém o espelho", bool(back.swing_obj.get_input('Swing Inside')))
+    region_props.clear(ctx)
+
+
+def draw_does_not_write():
+    reg = ctx.window_manager.btm_wall_region
+    reg.wall, reg.active = "parede que não existe", True
+    region.draw_regions()
+    check("D3GC: o desenho não desliga a região", reg.active is True)
+    region_props.region_wall(ctx)
+    check("D3GC: a leitura dos operadores ainda desliga a região sem parede", reg.active is False)
+
+
+def btm_window_not_resizable():
+    """A janela BTM como `_confirm_insertion` a deixa: malha de corte com `btm_plane OPENING`, sem Geometry Nodes."""
+    env.clean_scene()
+    wall = bpy.data.objects.new("ParedeNova", bpy.data.meshes.new("ParedeNova"))
+    ctx.collection.objects.link(wall)
+    wall.btm_plane.object_kind = 'WALL'
+    window = bpy.data.objects.new("BTM_Janela_Cut", bpy.data.meshes.new("BTM_Janela_Cut_Mesh"))
+    ctx.collection.objects.link(window)
+    generate_opening_tool_mesh(window, 1.2, 1.0, 0.45)
+    window.parent = wall
+    window.btm_plane.object_kind = 'OPENING'
+    window.btm_plane.parent_plane = wall
+    window.btm_opening.opening_type = 'WINDOW'
+    window.btm_opening.width, window.btm_opening.height, window.btm_opening.sill_height = 1.2, 1.0, 1.0
+    window.btm_opening.parent_wall = wall
+    ctx.view_layer.update()
+    check("CHWX: janela BTM não pode ser redimensionada", not resize.can_resize(element_size.element(window)))
+
+
+def main():
+    back_face_swing()
+    draw_does_not_write()
+    btm_window_not_resizable()
+
+
+try:
+    main()
+except Exception:
+    traceback.print_exc()
+    FAILURES.append("exceção no roteiro")
+print(f"blender_bug_7SNG_openings: {'OK' if not FAILURES else 'FALHAS: ' + ', '.join(FAILURES)}")
+sys.exit(1 if FAILURES else 0)

@@ -1,0 +1,11 @@
+--- /home/theleoinfo/www/BlenderToMob/caffmob_draw/selection/resize.py	2026-10-11 23:54:18.290066051 -0300
++++ caffmob_draw/selection/resize.py	2026-10-11 23:52:30.515148522 -0300
+@@ -30,6 +30,8 @@
+         return 'width' in editing.editable_dimensions(el.info)
+     if kind in (classify.FLOOR, classify.CEILING):
+         return False
++    if classify.btm_kind(el.info.obj) == 'OPENING':
++        return False                          # janela BTM: sem caminho próprio de redimensionar (pergunta 21)
+     return True
+ 
+ 

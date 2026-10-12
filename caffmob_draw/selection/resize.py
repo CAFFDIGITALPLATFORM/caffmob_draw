@@ -30,6 +30,8 @@ def can_resize(el):
         return 'width' in editing.editable_dimensions(el.info)
     if kind in (classify.FLOOR, classify.CEILING):
         return False
+    if classify.btm_kind(el.info.obj) == 'OPENING':
+        return False                          # janela BTM: sem caminho próprio de redimensionar (pergunta 21)
     return True
 
 

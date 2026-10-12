@@ -1,0 +1,11 @@
+--- /home/theleoinfo/www/BlenderToMob/caffmob_draw/openings/region.py	2026-10-11 23:54:18.287065871 -0300
++++ caffmob_draw/openings/region.py	2026-10-11 23:52:30.513148385 -0300
+@@ -79,7 +79,7 @@
+             (ax, az), (bx, bz) = _live['a'], _live['b']
+             _draw_rect(context, wall, _live['side'], ax, bx, az, bz)
+         return
+-    region, wall = region_props.region_wall(context)
++    region, wall = region_props.region_wall(context, invalidate=False)
+     if region is not None:
+         _draw_rect(context, wall, region.side, region.x0, region.x1, region.z0, region.z1)
+ 

@@ -79,7 +79,7 @@ def draw_regions():
             (ax, az), (bx, bz) = _live['a'], _live['b']
             _draw_rect(context, wall, _live['side'], ax, bx, az, bz)
         return
-    region, wall = region_props.region_wall(context)
+    region, wall = region_props.region_wall(context, invalidate=False)
     if region is not None:
         _draw_rect(context, wall, region.side, region.x0, region.x1, region.z0, region.z1)
 
