@@ -21,13 +21,16 @@ def is_own(overrides, assembly, origin_assembly, role_thickness):
     return bool(overrides) or assembly != origin_assembly or any(t > 0.0 for t in role_thickness)
 
 
-def plan(modules, previous_uid):
+def plan(modules, previous_uid, current_uid=None):
+    """`current_uid`: o padrão global novo; quem já está nele sem padrão próprio sai das duas listas (2ª pergunta)."""
     follow, differ, not_applicable, legacy = [], [], [], []
     for module in modules:
         if module.kind != CAFFMOB:
             not_applicable.append(module.name)
             if module.kind == LEGACY:
                 legacy.append(module.name)
+        elif current_uid and not module.own and module.standard_uid == current_uid:
+            continue                                    # já recebeu o padrão novo (pergunta 50)
         elif module.own or (module.standard_uid and module.standard_uid != previous_uid):
             differ.append(module.name)
         else:

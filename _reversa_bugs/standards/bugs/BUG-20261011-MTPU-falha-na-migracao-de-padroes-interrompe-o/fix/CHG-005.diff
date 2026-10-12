@@ -1,0 +1,27 @@
+--- /home/theleoinfo/www/BlenderToMob/caffmob_draw/standards/migration.py	2026-10-09 18:12:01.348310596 -0300
++++ caffmob_draw/standards/migration.py	2026-10-11 23:30:26.495673632 -0300
+@@ -79,8 +79,11 @@
+     return valid
+ 
+ 
++LEGACY_TAGS = (sync.FRAMELESS_TAG, sync.CLOSET_TAG, 'IS_FACE_FRAME_CABINET_CAGE')   # face frame também (pergunta 52)
++
++
+ def _has_legacy_cabinets(scene):
+-    return any(o.get(sync.FRAMELESS_TAG) or o.get(sync.CLOSET_TAG) for o in scene.objects)
++    return any(o.get(tag) for o in scene.objects for tag in LEGACY_TAGS)
+ 
+ 
+ def migrate_scene(scene):
+@@ -135,6 +138,11 @@
+     except api.StandardsError as exc:
+         print(f"CAFFMob Draw: migração do Padrão de Dimensões não aplicada: {exc}")
+         return []
++    except Exception:                       # o resto do load_file_post precisa continuar (EC-14)
++        import traceback
++        print("CAFFMob Draw: falha inesperada na migração do Padrão de Dimensões")
++        traceback.print_exc()
++        return []
+ 
+ 
+ def _startup_timer():

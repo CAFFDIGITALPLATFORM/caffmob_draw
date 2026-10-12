@@ -1,4 +1,4 @@
-<!-- GENERATED, DO NOT EDIT: regenerado por /reversa-debugger-graph em 2026-10-12T02:27:42+00:00 a partir de 137 bugs -->
+<!-- GENERATED, DO NOT EDIT: regenerado por /reversa-debugger-graph em 2026-10-12T02:32:31+00:00 a partir de 137 bugs -->
 
 # Bugs que atingem as specs
 
@@ -390,8 +390,8 @@
 ## `_reversa_sdd/standards/edge-cases.md`
 
 - BUG-20261011-3HN6 (resolved/fixed, P2): Documento de padrões malformado quebra o operador — `_reversa_bugs/standards/bugs/BUG-20261011-3HN6-documento-de-padroes-malformado-quebra-o-operador`
-- BUG-20261011-MTPU (open, P2): Falha na migração de padrões interrompe o carregamento do arquivo — `_reversa_bugs/standards/bugs/BUG-20261011-MTPU-falha-na-migracao-de-padroes-interrompe-o`
-- BUG-20261011-ZATR (open, P3): Import com 'replace' desloca a definição ativa sem aviso — `_reversa_bugs/standards/bugs/BUG-20261011-ZATR-import-com-replace-desloca-a-definicao-ativa`
+- BUG-20261011-MTPU (resolved/fixed, P2): Falha na migração de padrões interrompe o carregamento do arquivo — `_reversa_bugs/standards/bugs/BUG-20261011-MTPU-falha-na-migracao-de-padroes-interrompe-o`
+- BUG-20261011-ZATR (resolved/fixed, P3): Import com 'replace' desloca a definição ativa sem aviso — `_reversa_bugs/standards/bugs/BUG-20261011-ZATR-import-com-replace-desloca-a-definicao-ativa`
 
 ## `_reversa_sdd/standards/requirements.md`
 
@@ -399,9 +399,9 @@
 
 ## `_reversa_sdd/standards/tasks.md`
 
-- BUG-20261011-64UD (open, P2): Projeto só com face frame não ativa 'Padrão EUA (HB5)' — `_reversa_bugs/standards/bugs/BUG-20261011-64UD-projeto-so-com-face-frame-nao-ativa`
+- BUG-20261011-64UD (resolved/fixed, P2): Projeto só com face frame não ativa 'Padrão EUA (HB5)' — `_reversa_bugs/standards/bugs/BUG-20261011-64UD-projeto-so-com-face-frame-nao-ativa`
 - BUG-20261011-KVDM (resolved/fixed, P2): A Montagem se perde na ida e volta do .btmdim.json — `_reversa_bugs/standards/bugs/BUG-20261011-KVDM-a-montagem-se-perde-na-ida-e`
-- BUG-20261011-QO2H (open, P2): A segunda pergunta de Definir ativa repete módulos já aplicados — `_reversa_bugs/standards/bugs/BUG-20261011-QO2H-a-segunda-pergunta-de-definir-ativa-repete`
+- BUG-20261011-QO2H (resolved/fixed, P2): A segunda pergunta de Definir ativa repete módulos já aplicados — `_reversa_bugs/standards/bugs/BUG-20261011-QO2H-a-segunda-pergunta-de-definir-ativa-repete`
 - BUG-20261011-ZK42 (resolved/fixed, P2): validate dos padrões aceita NaN e inf — `_reversa_bugs/standards/bugs/BUG-20261011-ZK42-validate-dos-padroes-aceita-nan-e-inf`
 
 ## `_reversa_sdd/stick/edge-cases.md`
@@ -447,7 +447,7 @@
 
 ## `caffmob_draw/__init__.py`
 
-- BUG-20261011-MTPU (open, P2): Falha na migração de padrões interrompe o carregamento do arquivo — `_reversa_bugs/standards/bugs/BUG-20261011-MTPU-falha-na-migracao-de-padroes-interrompe-o`
+- BUG-20261011-MTPU (resolved/fixed, P2): Falha na migração de padrões interrompe o carregamento do arquivo — `_reversa_bugs/standards/bugs/BUG-20261011-MTPU-falha-na-migracao-de-padroes-interrompe-o`
 
 ## `caffmob_draw/aggregates/convert.py`
 

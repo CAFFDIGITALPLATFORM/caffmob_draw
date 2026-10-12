@@ -136,7 +136,8 @@ def remove_definition(scene, definition):
     for index, item in enumerate(data.definitions):
         if item.as_pointer() == definition.as_pointer():
             data.definitions.remove(index)
-            data.active_index = min(data.active_index, max(len(data.definitions) - 1, 0))
+            active = data.active_index - 1 if index < data.active_index else data.active_index   # a ativa fica (EC-06)
+            data.active_index = min(active, max(len(data.definitions) - 1, 0))
             return
     raise StandardsError(tr("Definição não encontrada."))
 

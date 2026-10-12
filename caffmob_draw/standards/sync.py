@@ -222,10 +222,11 @@ def scene_modules(scene, context=None):
     return out
 
 
-def plan_for(scene, previous_uid, context=None):
+def plan_for(scene, previous_uid, context=None, current_uid=None):
     from . import apply_core
     modules = scene_modules(scene, context)
-    return apply_core.plan([info for _obj, info in modules], previous_uid), {obj.name: obj for obj, _i in modules}
+    the_plan = apply_core.plan([info for _obj, info in modules], previous_uid, current_uid)
+    return the_plan, {obj.name: obj for obj, _i in modules}
 
 
 def apply_to_module(context, obj, definition, values):

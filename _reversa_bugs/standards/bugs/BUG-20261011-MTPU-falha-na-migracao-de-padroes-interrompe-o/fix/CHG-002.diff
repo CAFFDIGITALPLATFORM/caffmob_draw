@@ -1,0 +1,33 @@
+--- /home/theleoinfo/www/BlenderToMob/caffmob_draw/operators/ops_standards.py	2026-10-09 18:12:01.346310591 -0300
++++ caffmob_draw/operators/ops_standards.py	2026-10-11 23:30:26.496673640 -0300
+@@ -558,6 +558,12 @@
+         return {'FINISHED'}
+ 
+ 
++def _pending_differ(context, previous_uid):
++    """Plano da 2ª pergunta: sem os módulos que a 1ª já levou ao padrão global novo (DT-03)."""
++    definition = api.active_definition(context.scene)
++    return sync.plan_for(context.scene, previous_uid, context, definition.uid if definition is not None else None)
++
++
+ class BTM_OT_StandardsApplyDiffer(bpy.types.Operator):
+     """Aplica o padrão global também aos módulos com padrão próprio ou de outro padrão"""
+     bl_idname = "caffmob.standards_apply_differ"
+@@ -571,7 +577,7 @@
+             self, title=tr("Aplicar também nos móveis que diferem do padrão global anterior?"), confirm_text=tr("Sim"))
+ 
+     def draw(self, context):
+-        the_plan, _objects = sync.plan_for(context.scene, self.previous_uid, context)
++        the_plan, _objects = _pending_differ(context, self.previous_uid)
+         col = self.layout.column(align=True)
+         for name in the_plan.differ[:6]:
+             col.label(text=name, icon='MODIFIER')
+@@ -582,7 +588,7 @@
+         hint.label(text=tr("Cancelar = Não: esses ficam como estão"))
+ 
+     def execute(self, context):
+-        the_plan, objects = sync.plan_for(context.scene, self.previous_uid, context)
++        the_plan, objects = _pending_differ(context, self.previous_uid)
+         count = _apply_names(context, the_plan.differ, objects)
+         self.report({'INFO'}, tr("{} módulo(s) atualizados").format(count))
+         return {'FINISHED'}

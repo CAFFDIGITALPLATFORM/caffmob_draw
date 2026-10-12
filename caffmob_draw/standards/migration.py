@@ -79,8 +79,11 @@ def legacy_values(settings):
     return valid
 
 
+LEGACY_TAGS = (sync.FRAMELESS_TAG, sync.CLOSET_TAG, 'IS_FACE_FRAME_CABINET_CAGE')   # face frame também (pergunta 52)
+
+
 def _has_legacy_cabinets(scene):
-    return any(o.get(sync.FRAMELESS_TAG) or o.get(sync.CLOSET_TAG) for o in scene.objects)
+    return any(o.get(tag) for o in scene.objects for tag in LEGACY_TAGS)
 
 
 def migrate_scene(scene):
@@ -134,6 +137,11 @@ def run(scene=None):
         return applied
     except api.StandardsError as exc:
         print(f"CAFFMob Draw: migração do Padrão de Dimensões não aplicada: {exc}")
+        return []
+    except Exception:                       # o resto do load_file_post precisa continuar (EC-14)
+        import traceback
+        print("CAFFMob Draw: falha inesperada na migração do Padrão de Dimensões")
+        traceback.print_exc()
         return []
 
 
