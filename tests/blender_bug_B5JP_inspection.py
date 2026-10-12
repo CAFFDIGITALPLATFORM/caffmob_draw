@@ -1,0 +1,169 @@
+"""Reprodução e regressão do lote da inspeção de frentes: BUG-20261011-B5JP, BUG-20261011-NWRA, BUG-20261011-UURX,
+BUG-20261011-6AX3 e BUG-20261011-B54S.
+
+Run: blender --background --factory-startup --python-exit-code 1 --python tests/blender_bug_B5JP_inspection.py
+
+- salvar no meio da animação conclui os tweens e o pendente do gizmo antes de fechar (questions.md, pergunta 63);
+- desligar a extensão com a inspeção ativa encerra a sessão (pergunta 92);
+- o overlay devolve o teste de profundidade como estava (inspection EC-17);
+- a mensagem de abrir frentes conta só as que mudaram (EC-14);
+- "Abrir tudo" usa o ângulo de abertura escolhido.
+"""
+
+import os
+import sys
+import tempfile
+import traceback
+import types
+from pathlib import Path
+
+import bpy
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import _blender_env as env  # noqa: E402
+from caffmob_draw import hb_utils  # noqa: E402
+from caffmob_draw.inspection import fronts, gizmo, ops_inspect, overlay, save_guard  # noqa: E402
+from caffmob_draw.product_libraries.frameless import types_frameless as tf  # noqa: E402
+
+ctx = bpy.context
+FAILURES = []
+
+
+def check(name, ok, detail=""):
+    print(("OK   " if ok else "FALHA ") + name, detail, flush=True)
+    if not ok:
+        FAILURES.append(name)
+
+
+def module_fronts():
+    env.clean_scene()
+    cab = tf.BaseCabinet()
+    cab.default_exterior = 'Doors'
+    cab.create("Balcao")
+    hb_utils.run_calc_fix_until_stable(ctx, cab.obj)
+    env.settle()
+    found = [f for f in fronts.fronts_of(cab.obj, ctx.scene) if f.hinged]
+    assert len(found) >= 2, found
+    for front in found:
+        front.commit(0.0)
+    return found
+
+
+def save_mid_animation():
+    door, other = module_fronts()[:2]
+    door.apply(20.0)                                     # pose intermediária da animação, alvo 90°
+    ops_inspect._active = types.SimpleNamespace(
+        _tweens={door.key: {'front': door, 'start': 0.0, 'target': 90.0, 'open': 90.0, 't0': 0.0}},
+        _commit_tweens=lambda: None)
+    real = ops_inspect.BTM_OT_InspectFronts._commit_tweens if hasattr(ops_inspect.BTM_OT_InspectFronts,
+                                                                      '_commit_tweens') else None
+    if real is not None:
+        ops_inspect._active._commit_tweens = lambda: real(ops_inspect._active)
+    gizmo._state.update(pending=45.0, pending_front=other)
+    try:
+        save_guard.save_pre(None)
+        closed = (round(door.get(), 3), round(other.get(), 3))
+        save_guard.save_post(None)
+    finally:
+        ops_inspect._active = None
+        gizmo._state.update(pending=None, pending_front=None)
+    check("B5JP: o arquivo é gravado com as frentes fechadas", closed == (0.0, 0.0), str(closed))
+    check("B5JP: a frente em animação volta no alvo (90°)", abs(door.get() - 90.0) < 0.5, f"{door.get():.1f}")
+    check("B5JP: o pendente do gizmo foi gravado (45°)", abs(other.get() - 45.0) < 0.5, f"{other.get():.1f}")
+
+
+def unregister_ends_session():
+    calls = []
+    ops_inspect._active = types.SimpleNamespace(_finish=lambda context: calls.append(context))
+    try:
+        ops_inspect.unregister()
+    finally:
+        ops_inspect._active = None
+        ops_inspect.register()
+    check("NWRA: o unregister encerra a sessão ativa", len(calls) == 1, str(calls))
+
+
+class _State:
+    def __init__(self):
+        self.depth = 'LESS_EQUAL'
+
+    def depth_test_get(self):
+        return self.depth
+
+    def depth_test_set(self, value):
+        self.depth = value
+
+    def blend_set(self, _value):
+        pass
+
+
+def overlay_restores_depth():
+    shader = types.SimpleNamespace(bind=lambda: None, uniform_float=lambda *_a: None)
+    state = _State()
+    saved = (overlay.gpu, overlay.batch_for_shader, overlay._items, overlay.bpy)
+    overlay.gpu = types.SimpleNamespace(state=state, shader=types.SimpleNamespace(from_builtin=lambda _n: shader))
+    overlay.batch_for_shader = lambda *_a, **_k: types.SimpleNamespace(draw=lambda _s: None)
+    overlay._items = lambda: [types.SimpleNamespace(location=(0.0, 0.0, 0.0))]
+    overlay.bpy = types.SimpleNamespace(context=types.SimpleNamespace(region=types.SimpleNamespace(width=10, height=10)))
+    try:
+        overlay._draw_3d()
+    finally:
+        overlay.gpu, overlay.batch_for_shader, overlay._items, overlay.bpy = saved
+    check("UURX: o teste de profundidade volta ao anterior", state.depth == 'LESS_EQUAL', state.depth)
+
+
+def count_and_default_angle():
+    found = module_fronts()
+
+    class Gone:
+        key, hinged = "sumiu", True
+
+        def open_value(self, degrees):
+            return degrees
+
+        def commit(self, _value):
+            raise ReferenceError("objeto removido")
+    original_scope = ops_inspect.scope_fronts
+    ops_inspect.scope_fronts = lambda context, scope: list(found) + [Gone()]
+    saved, sink = os.dup(1), tempfile.TemporaryFile()
+    sys.stdout.flush()
+    os.dup2(sink.fileno(), 1)                            # o report sai no stdout do Blender (segundo plano)
+    try:
+        bpy.ops.caffmob.fronts_set_open(scope='ALL', mode='OPEN_90')
+    finally:
+        sys.stdout.flush()
+        os.dup2(saved, 1)
+        os.close(saved)
+        ops_inspect.scope_fronts = original_scope
+    sink.seek(0)
+    messages = [ln for ln in sink.read().decode("utf-8", "replace").splitlines() if "frente(s)" in ln]
+    check("6AX3: a mensagem conta só as frentes alteradas", bool(messages) and f" {len(found)} frente(s)" in messages[-1],
+          str(messages))
+    for front in found:
+        front.commit(0.0)
+    ctx.window_manager.btm_inspection.default_angle = '45'
+    try:
+        bpy.ops.caffmob.fronts_set_open(scope='ALL', mode='OPEN_DEFAULT')
+        angles = [round(f.get(), 1) for f in found]
+    except TypeError as exc:
+        angles = repr(exc)
+    finally:
+        ctx.window_manager.btm_inspection.default_angle = '90'
+    check("B54S: 'Abrir tudo' usa o ângulo de abertura (45°)", isinstance(angles, list)
+          and all(abs(a - 45.0) < 0.5 for a in angles), str(angles))
+
+
+def main():
+    save_mid_animation()
+    unregister_ends_session()
+    overlay_restores_depth()
+    count_and_default_angle()
+
+
+try:
+    main()
+except Exception:
+    traceback.print_exc()
+    FAILURES.append("exceção no roteiro")
+print(f"blender_bug_B5JP_inspection: {'OK' if not FAILURES else 'FALHAS: ' + ', '.join(FAILURES)}")
+sys.exit(1 if FAILURES else 0)

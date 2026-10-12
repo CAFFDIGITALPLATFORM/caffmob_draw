@@ -1,4 +1,4 @@
-<!-- GENERATED, DO NOT EDIT: regenerado por /reversa-debugger-graph em 2026-10-12T02:46:19+00:00 a partir de 3 bugs -->
+<!-- GENERATED, DO NOT EDIT: regenerado por /reversa-debugger-graph em 2026-10-12T02:50:20+00:00 a partir de 3 bugs -->
 
 # Relações · selection
 

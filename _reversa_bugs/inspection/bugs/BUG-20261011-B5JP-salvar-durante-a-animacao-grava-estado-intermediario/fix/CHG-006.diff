@@ -1,0 +1,11 @@
+--- /home/theleoinfo/www/BlenderToMob/caffmob_draw/ui/context_menu.py	2026-10-11 23:20:57.661133689 -0300
++++ caffmob_draw/ui/context_menu.py	2026-10-11 23:48:04.436450509 -0300
+@@ -29,7 +29,7 @@
+     if info.kind in (classify.MODULE, classify.FRONT, classify.PART):
+         from ..inspection import fronts
+         if fronts.fronts_of(info.root, context.scene):
+-            actions.append(('FRONTS_OPEN', {'scope': 'ACTIVE_MODULE', 'mode': 'OPEN_90'}))
++            actions.append(('FRONTS_OPEN', {'scope': 'ACTIVE_MODULE', 'mode': 'OPEN_DEFAULT'}))
+             actions.append(('FRONTS_CLOSE', {'scope': 'ACTIVE_MODULE', 'mode': 'CLOSE'}))
+     return actions
+ 

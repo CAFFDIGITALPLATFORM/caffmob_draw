@@ -1,0 +1,77 @@
+--- /home/theleoinfo/www/BlenderToMob/caffmob_draw/inspection/ops_inspect.py	2026-10-07 15:34:54.377791851 -0300
++++ caffmob_draw/inspection/ops_inspect.py	2026-10-11 23:48:04.435450412 -0300
+@@ -70,7 +70,8 @@
+     mode: bpy.props.EnumProperty(
+         name="Ação",
+         items=[('CLOSE', "Fechar", "Fecha tudo"), ('OPEN_45', "Abrir 45°", "Portas a 45°, gavetas pela metade"),
+-               ('OPEN_90', "Abrir 90°", "Portas a 90°, gavetas no curso total")],
++               ('OPEN_90', "Abrir 90°", "Portas a 90°, gavetas no curso total"),
++               ('OPEN_DEFAULT', "Abrir", "Portas no ângulo de abertura escolhido, gavetas no curso total")],
+         default='OPEN_90')  # type: ignore
+ 
+     def execute(self, context):
+@@ -78,15 +79,20 @@
+         if not targets:
+             self.report({'WARNING'}, "Nenhuma porta, basculante ou gaveta encontrada.")
+             return {'CANCELLED'}
+-        degrees = {'CLOSE': 0.0, 'OPEN_45': 45.0, 'OPEN_90': 90.0}[self.mode]
++        degrees = {'CLOSE': 0.0, 'OPEN_45': 45.0, 'OPEN_90': 90.0}.get(self.mode)
++        if degrees is None:                   # "Abrir tudo" segue o ângulo de abertura escolhido
++            degrees = default_angle(context)
++        changed = 0
+         for front in targets:
+-            value = front.open_value(degrees) if front.hinged else degrees / 90.0
++            drawer = 0.0 if self.mode == 'CLOSE' else (0.5 if self.mode == 'OPEN_45' else 1.0)
++            value = front.open_value(degrees) if front.hinged else drawer
+             try:
+                 front.commit(value)
+             except ReferenceError:
+                 continue
++            changed += 1                      # só as que mudaram entram na mensagem (EC-14)
+         verb = "fechadas" if self.mode == 'CLOSE' else "abertas"
+-        self.report({'INFO'}, tr("{} frente(s) {}.").format(len(targets), verb))
++        self.report({'INFO'}, tr("{} frente(s) {}.").format(changed, verb))
+         return {'FINISHED'}
+ 
+ 
+@@ -200,14 +206,18 @@
+             context.area.tag_redraw()
+ 
+     # Saída -------------------------------------------------------------------------------------------------
+-    def _finish(self, context):
+-        global _active
++    def _commit_tweens(self):
++        """Leva as frentes em animação ao alvo final (sair do modo e salvar o arquivo, DT-03)."""
+         for tween in (self._tweens or {}).values():
+             try:
+                 tween['front'].commit(tween['target'])
+             except (ReferenceError, AttributeError):
+                 pass
+         self._tweens = {}
++
++    def _finish(self, context):
++        global _active
++        self._commit_tweens()
+         wm = context.window_manager
+         for timer in (self._timer, self._exit_timer):
+             if timer is not None:
+@@ -262,8 +272,19 @@
+         bpy.utils.register_class(cls)
+ 
+ 
++def settle_running():
++    """Antes de salvar: conclui as animações da sessão de inspeção em execução."""
++    if _active is not None:
++        _active._commit_tweens()
++
++
+ def unregister():
+     global _active
++    if _active is not None:                 # sessão aberta: timers, modal e HUD saem com ela (DT-04)
++        try:
++            _active._finish(bpy.context)
++        except Exception as exc:
++            print("CAFFMob Draw: inspeção não encerrada no unregister:", exc)
+     _active = None
+     for cls in reversed(classes):
+         bpy.utils.unregister_class(cls)

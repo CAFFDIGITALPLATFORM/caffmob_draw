@@ -1,0 +1,18 @@
+--- /home/theleoinfo/www/BlenderToMob/caffmob_draw/inspection/overlay.py	2026-10-03 00:08:24.182344555 -0300
++++ caffmob_draw/inspection/overlay.py	2026-10-11 23:48:04.435450412 -0300
+@@ -36,6 +36,7 @@
+             coords.extend((p - axis, p + axis))
+     shader = gpu.shader.from_builtin('POLYLINE_UNIFORM_COLOR')
+     batch = batch_for_shader(shader, 'LINES', {"pos": coords})
++    depth = gpu.state.depth_test_get()
+     gpu.state.depth_test_set('NONE')
+     gpu.state.blend_set('ALPHA')
+     shader.bind()
+@@ -44,6 +45,7 @@
+     shader.uniform_float("viewportSize", (region.width, region.height))
+     batch.draw(shader)
+     gpu.state.blend_set('NONE')
++    gpu.state.depth_test_set(depth)          # os outros handlers recebem o estado como estava (EC-17)
+ 
+ 
+ def _draw_2d():

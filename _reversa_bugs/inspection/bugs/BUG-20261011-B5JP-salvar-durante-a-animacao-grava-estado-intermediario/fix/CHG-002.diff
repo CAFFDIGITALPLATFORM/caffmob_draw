@@ -1,0 +1,16 @@
+--- /home/theleoinfo/www/BlenderToMob/caffmob_draw/data/translations/inspection.json	2026-10-07 15:10:02.812462711 -0300
++++ caffmob_draw/data/translations/inspection.json	2026-10-11 23:48:31.902069671 -0300
+@@ -106,5 +106,13 @@
+  "Ângulo usado pelo clique no modo de inspeção e por \"Abrir tudo\"": {
+   "pt_BR": "Ângulo usado pelo clique no modo de inspeção e por \"Abrir tudo\"",
+   "en_US": "Angle used by clicking in inspection mode and by \"Open all\""
++ },
++ "Abrir tudo {}°": {
++  "pt_BR": "Abrir tudo {}°",
++  "en_US": "Open all {}°"
++ },
++ "Portas no ângulo de abertura escolhido, gavetas no curso total": {
++  "pt_BR": "Portas no ângulo de abertura escolhido, gavetas no curso total",
++  "en_US": "Doors at the chosen opening angle, drawers fully out"
+  }
+ }

@@ -61,8 +61,17 @@ def reopen_after_save():
     return reopened
 
 
+def _settle_animations():
+    """Tweens do modo de inspeção e o valor pendente do gizmo vão ao alvo antes de fechar (questions.md, 63)."""
+    from . import gizmo, ops_inspect
+    ops_inspect.settle_running()
+    if gizmo._state.get('pending') is not None:
+        gizmo._commit_pending()
+
+
 @persistent
 def save_pre(_filepath):
+    _settle_animations()
     close_for_save()
 
 

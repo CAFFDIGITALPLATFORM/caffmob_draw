@@ -83,10 +83,12 @@ def draw_inspection_box(layout, context):
     row.operator("caffmob.inspect_fronts", text="Sair do Modo de Abrir" if state.active else "Abrir Portas e Gavetas",
                  icon='CANCEL' if state.active else 'RESTRICT_SELECT_OFF', depress=state.active)
     row = box.row(align=True)
-    op = row.operator("caffmob.fronts_set_open", text="Abrir tudo 90°", icon='TRIA_RIGHT_BAR')
-    op.scope, op.mode = 'ALL', 'OPEN_90'
-    op = row.operator("caffmob.fronts_set_open", text="45°")
-    op.scope, op.mode = 'ALL', 'OPEN_45'
+    other = '45' if state.default_angle == '90' else '90'      # "Abrir tudo" segue o ângulo de abertura
+    op = row.operator("caffmob.fronts_set_open", text=tr("Abrir tudo {}°").format(state.default_angle),
+                      icon='TRIA_RIGHT_BAR')
+    op.scope, op.mode = 'ALL', 'OPEN_DEFAULT'
+    op = row.operator("caffmob.fronts_set_open", text=f"{other}°")
+    op.scope, op.mode = 'ALL', 'OPEN_' + other
     op = row.operator("caffmob.fronts_set_open", text="Fechar tudo", icon='TRIA_LEFT_BAR')
     op.scope, op.mode = 'ALL', 'CLOSE'
     col = box.column(align=True)

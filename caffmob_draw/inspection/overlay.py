@@ -36,6 +36,7 @@ def _draw_3d():
             coords.extend((p - axis, p + axis))
     shader = gpu.shader.from_builtin('POLYLINE_UNIFORM_COLOR')
     batch = batch_for_shader(shader, 'LINES', {"pos": coords})
+    depth = gpu.state.depth_test_get()
     gpu.state.depth_test_set('NONE')
     gpu.state.blend_set('ALPHA')
     shader.bind()
@@ -44,6 +45,7 @@ def _draw_3d():
     shader.uniform_float("viewportSize", (region.width, region.height))
     batch.draw(shader)
     gpu.state.blend_set('NONE')
+    gpu.state.depth_test_set(depth)          # os outros handlers recebem o estado como estava (EC-17)
 
 
 def _draw_2d():

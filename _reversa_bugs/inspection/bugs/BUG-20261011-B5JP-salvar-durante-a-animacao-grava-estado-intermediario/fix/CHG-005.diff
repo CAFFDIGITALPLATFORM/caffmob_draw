@@ -1,0 +1,20 @@
+--- /home/theleoinfo/www/BlenderToMob/caffmob_draw/inspection/save_guard.py	2026-10-03 00:07:22.432243984 -0300
++++ caffmob_draw/inspection/save_guard.py	2026-10-11 23:48:04.435450412 -0300
+@@ -61,8 +61,17 @@
+     return reopened
+ 
+ 
++def _settle_animations():
++    """Tweens do modo de inspeção e o valor pendente do gizmo vão ao alvo antes de fechar (questions.md, 63)."""
++    from . import gizmo, ops_inspect
++    ops_inspect.settle_running()
++    if gizmo._state.get('pending') is not None:
++        gizmo._commit_pending()
++
++
+ @persistent
+ def save_pre(_filepath):
++    _settle_animations()
+     close_for_save()
+ 
+ 

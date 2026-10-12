@@ -1,4 +1,4 @@
-<!-- GENERATED, DO NOT EDIT: regenerado por /reversa-debugger-graph em 2026-10-12T02:46:19+00:00 a partir de 137 bugs -->
+<!-- GENERATED, DO NOT EDIT: regenerado por /reversa-debugger-graph em 2026-10-12T02:50:20+00:00 a partir de 137 bugs -->
 
 # Bugs que atingem as specs
 
@@ -217,21 +217,21 @@
 
 ## `_reversa_sdd/inspection/edge-cases.md`
 
-- BUG-20261011-6AX3 (open, P3): Contagem errada na mensagem de abrir frentes — `_reversa_bugs/inspection/bugs/BUG-20261011-6AX3-contagem-errada-na-mensagem-de-abrir-frentes`
+- BUG-20261011-6AX3 (resolved/fixed, P3): Contagem errada na mensagem de abrir frentes — `_reversa_bugs/inspection/bugs/BUG-20261011-6AX3-contagem-errada-na-mensagem-de-abrir-frentes`
 - BUG-20261011-PGMI (resolved/fixed, P2): Valor pendente do gizmo descartado sem commit — `_reversa_bugs/inspection/bugs/BUG-20261011-PGMI-valor-pendente-do-gizmo-descartado-sem-commit`
-- BUG-20261011-UURX (open, P3): depth_test_set('NONE') não é restaurado no overlay — `_reversa_bugs/inspection/bugs/BUG-20261011-UURX-depth-test-set-none-nao-e-restaurado`
+- BUG-20261011-UURX (resolved/fixed, P3): depth_test_set('NONE') não é restaurado no overlay — `_reversa_bugs/inspection/bugs/BUG-20261011-UURX-depth-test-set-none-nao-e-restaurado`
 
 ## `_reversa_sdd/inspection/requirements.md`
 
-- BUG-20261011-B54S (open, P3): default_angle não é usado pelo 'Abrir tudo' — `_reversa_bugs/inspection/bugs/BUG-20261011-B54S-default-angle-nao-e-usado-pelo-abrir`
+- BUG-20261011-B54S (resolved/fixed, P3): default_angle não é usado pelo 'Abrir tudo' — `_reversa_bugs/inspection/bugs/BUG-20261011-B54S-default-angle-nao-e-usado-pelo-abrir`
 
 ## `_reversa_sdd/inspection/tasks.md`
 
 - BUG-20261011-5EX7 (resolved/fixed, P2): Gizmo quebra numa folha de correr convertida — `_reversa_bugs/inspection/bugs/BUG-20261011-5EX7-gizmo-quebra-numa-folha-de-correr-convertida`
-- BUG-20261011-B5JP (open, P2): Salvar durante a animação grava estado intermediário — `_reversa_bugs/inspection/bugs/BUG-20261011-B5JP-salvar-durante-a-animacao-grava-estado-intermediario`
+- BUG-20261011-B5JP (resolved/fixed, P2): Salvar durante a animação grava estado intermediário — `_reversa_bugs/inspection/bugs/BUG-20261011-B5JP-salvar-durante-a-animacao-grava-estado-intermediario`
 - BUG-20261011-FVQI (resolved/fixed, P2): Interferência desatualizada sem aviso — `_reversa_bugs/inspection/bugs/BUG-20261011-FVQI-interferencia-desatualizada-sem-aviso`
 - BUG-20261011-GBPG (resolved/fixed, P2): Dial do gizmo tem teto fixo de 90° — `_reversa_bugs/inspection/bugs/BUG-20261011-GBPG-dial-do-gizmo-tem-teto-fixo-de`
-- BUG-20261011-NWRA (open, P2): Desligar o addon com a inspeção ativa deixa resíduos — `_reversa_bugs/inspection/bugs/BUG-20261011-NWRA-desligar-o-addon-com-a-inspecao-ativa`
+- BUG-20261011-NWRA (resolved/fixed, P2): Desligar o addon com a inspeção ativa deixa resíduos — `_reversa_bugs/inspection/bugs/BUG-20261011-NWRA-desligar-o-addon-com-a-inspecao-ativa`
 
 ## `_reversa_sdd/legacy/edge-cases.md`
 

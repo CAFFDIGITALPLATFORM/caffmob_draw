@@ -29,7 +29,7 @@ def item_actions(context):
     if info.kind in (classify.MODULE, classify.FRONT, classify.PART):
         from ..inspection import fronts
         if fronts.fronts_of(info.root, context.scene):
-            actions.append(('FRONTS_OPEN', {'scope': 'ACTIVE_MODULE', 'mode': 'OPEN_90'}))
+            actions.append(('FRONTS_OPEN', {'scope': 'ACTIVE_MODULE', 'mode': 'OPEN_DEFAULT'}))
             actions.append(('FRONTS_CLOSE', {'scope': 'ACTIVE_MODULE', 'mode': 'CLOSE'}))
     return actions
 
