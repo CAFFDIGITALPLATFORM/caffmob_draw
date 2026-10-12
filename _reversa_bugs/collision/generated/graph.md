@@ -1,4 +1,4 @@
-<!-- GENERATED, DO NOT EDIT: regenerado por /reversa-debugger-graph em 2026-10-12T03:01:13+00:00 a partir de 9 bugs -->
+<!-- GENERATED, DO NOT EDIT: regenerado por /reversa-debugger-graph em 2026-10-12T03:55:35+00:00 a partir de 10 bugs -->
 
 # Grafo · collision
 
@@ -12,8 +12,10 @@ graph LR
   BUG_20261011_7GRY["#47 check_moved deixa a lista desordenada e…"]
   BUG_20261011_53DV["#48 Colisão falsa entre folha e caixa da po…"]
   BUG_20261011_EWKD["#49 Contenção total em objeto fino pode pas…"]
+  BUG_20261012_PFY2["#140 Malhas sobrepostas com faces coplanares…"]
   BUG_20261011_ZEN6["#50 Só o cabeçalho fica vermelho no painel …"]
   BUG_20261011_53DV -.->|related-to| BUG_20261011_VPY5
+  BUG_20261012_PFY2 -.->|related-to| BUG_20261011_EWKD
   BUG_20261011_FVQI -->|related-to| BUG_20261011_TIPN
 ```
 
@@ -22,6 +24,7 @@ graph LR
 - `caffmob_draw/collision/ops_collision.py`: 3 bugs (BUG-20261011-KX3O, BUG-20261011-TIPN, BUG-20261011-7GRY)
 - `caffmob_draw/collision/rules.py`: 2 bugs (BUG-20261011-SRPV, BUG-20261011-53DV)
 - `caffmob_draw/collision/obb.py`: 2 bugs (BUG-20261011-SRPV, BUG-20261011-EWKD)
+- `caffmob_draw/collision/scan.py`: 2 bugs (BUG-20261011-L5ML, BUG-20261012-PFY2)
 - `caffmob_draw/collision/panels.py`: 2 bugs (BUG-20261011-JUJZ, BUG-20261011-ZEN6)
 
 Leitura: 3 bugs convergem em `caffmob_draw/collision/ops_collision.py`, o maior ponto de convergência do contexto; vale corrigi-los numa mesma passada.

@@ -1,4 +1,4 @@
-<!-- GENERATED, DO NOT EDIT: regenerado por /reversa-debugger-graph em 2026-10-12T03:01:13+00:00 a partir de 7 bugs -->
+<!-- GENERATED, DO NOT EDIT: regenerado por /reversa-debugger-graph em 2026-10-12T03:55:35+00:00 a partir de 7 bugs -->
 
 # Grafo · geometry_free
 
@@ -11,6 +11,7 @@ graph LR
   BUG_20261011_TLCT["#114 Interromper o modal de criar geometria …"]
   BUG_20261011_NOAU["#115 Medida digitada com arraste negativo de…"]
   BUG_20261011_DLHX["#117 Rótulos e nomes de chapas da geometria …"]
+  BUG_20261012_YUDY -.->|related-to| BUG_20261011_SKDL
   BUG_20261011_DLHX -->|related-to| BUG_20261011_JKLK
   BUG_20261011_GUHQ -->|related-to| BUG_20261011_ELOZ
   BUG_20261011_GUHQ -->|related-to| BUG_20261011_7DHT

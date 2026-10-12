@@ -1,4 +1,4 @@
-<!-- GENERATED, DO NOT EDIT: regenerado por /reversa-debugger-graph em 2026-10-12T03:01:13+00:00 a partir de 4 bugs -->
+<!-- GENERATED, DO NOT EDIT: regenerado por /reversa-debugger-graph em 2026-10-12T03:55:35+00:00 a partir de 6 bugs -->
 
 # Bugs · plugin-caffmob-draw
 
@@ -6,17 +6,21 @@
 
 | status | qtd |
 |---|---|
+| open | 2 |
 | resolved | 4 |
 
 | phase | qtd |
 |---|---|
 | delivering | 1 |
 | patching | 3 |
+| triaging | 2 |
 
 ## Abertos / ativos
 
 | # | ID | prioridade | severidade | area/module/feature | título | caminho | bloqueado |
 |---|---|---|---|---|---|---|---|
+| 139 | BUG-20261012-RCOU | P2 | low | plugin/ui/unclassified | test_identity falha: btm.door_invert_hand e btm.resize_width fogem do prefixo caffmob | `bugs/BUG-20261012-RCOU-test-identity-falha-btm-door-invert-hand` | não |
+| 142 | BUG-20261012-WBKI | P3 | low | plugin/hb_core/unclassified | get_user_preferences quebra sem o add-on habilitado e a fumaça de inspeção imprime 17 tracebacks | `bugs/BUG-20261012-WBKI-get-user-preferences-quebra-sem-o-add` | não |
 
 ## Resolvidos
 

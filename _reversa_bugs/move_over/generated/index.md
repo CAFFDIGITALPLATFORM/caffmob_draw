@@ -1,4 +1,4 @@
-<!-- GENERATED, DO NOT EDIT: regenerado por /reversa-debugger-graph em 2026-10-12T03:01:13+00:00 a partir de 6 bugs -->
+<!-- GENERATED, DO NOT EDIT: regenerado por /reversa-debugger-graph em 2026-10-12T03:55:35+00:00 a partir de 7 bugs -->
 
 # Bugs · move_over
 
@@ -6,16 +6,19 @@
 
 | status | qtd |
 |---|---|
+| open | 1 |
 | resolved | 6 |
 
 | phase | qtd |
 |---|---|
 | delivering | 6 |
+| triaging | 1 |
 
 ## Abertos / ativos
 
 | # | ID | prioridade | severidade | area/module/feature | título | caminho | bloqueado |
 |---|---|---|---|---|---|---|---|
+| 141 | BUG-20261012-DWPO | P2 | medium | modulos/move_over/unclassified | Substituir conta peças vazias do módulo antigo e a caixa vai até a origem do mundo | `bugs/BUG-20261012-DWPO-substituir-conta-pecas-vazias-do-modulo-antigo` | não |
 
 ## Resolvidos
 

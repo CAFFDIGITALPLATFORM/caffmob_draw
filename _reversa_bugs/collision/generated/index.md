@@ -1,4 +1,4 @@
-<!-- GENERATED, DO NOT EDIT: regenerado por /reversa-debugger-graph em 2026-10-12T03:01:13+00:00 a partir de 9 bugs -->
+<!-- GENERATED, DO NOT EDIT: regenerado por /reversa-debugger-graph em 2026-10-12T03:55:35+00:00 a partir de 10 bugs -->
 
 # Bugs · collision
 
@@ -6,16 +6,19 @@
 
 | status | qtd |
 |---|---|
+| open | 1 |
 | resolved | 9 |
 
 | phase | qtd |
 |---|---|
 | delivering | 9 |
+| triaging | 1 |
 
 ## Abertos / ativos
 
 | # | ID | prioridade | severidade | area/module/feature | título | caminho | bloqueado |
 |---|---|---|---|---|---|---|---|
+| 140 | BUG-20261012-PFY2 | P2 | medium | modulos/collision/unclassified | Malhas sobrepostas com faces coplanares não são confirmadas pela BVH da colisão | `bugs/BUG-20261012-PFY2-malhas-sobrepostas-com-faces-coplanares-nao-sao` | não |
 
 ## Resolvidos
 

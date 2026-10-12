@@ -1,4 +1,4 @@
-<!-- GENERATED, DO NOT EDIT: regenerado por /reversa-debugger-graph em 2026-10-12T03:01:13+00:00 a partir de 137 bugs -->
+<!-- GENERATED, DO NOT EDIT: regenerado por /reversa-debugger-graph em 2026-10-12T03:55:35+00:00 a partir de 142 bugs -->
 
 # Bugs que atingem as specs
 
@@ -85,6 +85,7 @@
 
 - BUG-20261006-NO4Q (resolved/fixed, P0): Interface legada Home Builder aparece separada do plugin — `_reversa_bugs/plugin-caffmob-draw/bugs/BUG-20261006-NO4Q-interface-home-builder-separada`
 - BUG-20261006-QAVK (resolved/fixed, P0): Nome e identificador do plugin devem ser CAFFMob Draw — `_reversa_bugs/plugin-caffmob-draw/bugs/BUG-20261006-QAVK-nome-e-identificador-caffmob-draw`
+- BUG-20261012-RCOU (open, P2): test_identity falha: btm.door_invert_hand e btm.resize_width fogem do prefixo caffmob — `_reversa_bugs/plugin-caffmob-draw/bugs/BUG-20261012-RCOU-test-identity-falha-btm-door-invert-hand`
 
 ## `_reversa_sdd/cabinet_editor/design.md`
 
@@ -136,6 +137,7 @@
 
 - BUG-20261011-SRPV (resolved/fixed, P2): Tolerância de 1,0 mm instável por arredondamento de float — `_reversa_bugs/collision/bugs/BUG-20261011-SRPV-tolerancia-de-1-0-mm-instavel-por`
 - BUG-20261011-ZEN6 (resolved/fixed, P3): Só o cabeçalho fica vermelho no painel de colisão — `_reversa_bugs/collision/bugs/BUG-20261011-ZEN6-so-o-cabecalho-fica-vermelho-no-painel`
+- BUG-20261012-PFY2 (open, P2): Malhas sobrepostas com faces coplanares não são confirmadas pela BVH da colisão — `_reversa_bugs/collision/bugs/BUG-20261012-PFY2-malhas-sobrepostas-com-faces-coplanares-nao-sao`
 
 ## `_reversa_sdd/collision/tasks.md`
 
@@ -168,6 +170,10 @@
 
 - BUG-20261011-UJ5Q (resolved/fixed, P1): Trocar para 2 a 4 gavetas no frameless perde a personalização — `_reversa_bugs/customize/bugs/BUG-20261011-UJ5Q-trocar-para-2-a-4-gavetas-no`
 
+## `_reversa_sdd/cutting/requirements.md`
+
+- BUG-20261012-YUDY (resolved/fixed, P2): Shift+D num módulo repete o btm_uid e as peças dos dois módulos ficam com o mesmo uid — `_reversa_bugs/cutting/bugs/BUG-20261012-YUDY-shift-d-num-modulo-repete-o-btm`
+
 ## `_reversa_sdd/data/requirements.md`
 
 - BUG-20261007-TBY3 (resolved/fixed, P2): Todo objeto é tratado como parede (object_kind padrão WALL) — `_reversa_bugs/editor-de-paredes/bugs/BUG-20261007-TBY3-todo-objeto-vira-parede`
@@ -195,6 +201,7 @@
 - BUG-20261011-NOAU (resolved/fixed, P2): Medida digitada com arraste negativo desloca a origem — `_reversa_bugs/geometry_free/bugs/BUG-20261011-NOAU-medida-digitada-com-arraste-negativo-desloca-a`
 - BUG-20261011-SKDL (resolved/fixed, P1): Shift+D nativo copia btm_uid — `_reversa_bugs/geometry_free/bugs/BUG-20261011-SKDL-shift-d-nativo-copia-btm-uid`
 - BUG-20261011-TLCT (resolved/fixed, P2): Interromper o modal de criar geometria deixa resíduos — `_reversa_bugs/geometry_free/bugs/BUG-20261011-TLCT-interromper-o-modal-de-criar-geometria-deixa`
+- BUG-20261012-YUDY (resolved/fixed, P2): Shift+D num módulo repete o btm_uid e as peças dos dois módulos ficam com o mesmo uid — `_reversa_bugs/cutting/bugs/BUG-20261012-YUDY-shift-d-num-modulo-repete-o-btm`
 
 ## `_reversa_sdd/geometry_free/requirements.md`
 
@@ -210,6 +217,7 @@
 ## `_reversa_sdd/hb_core/design.md`
 
 - BUG-20261007-YIMY (resolved/fixed, P1): Porta e janela inseridas viram bloco liso com a espessura fora da parede — `_reversa_bugs/editor-de-paredes/bugs/BUG-20261007-YIMY-porta-bloco-fora-da-parede`
+- BUG-20261012-WBKI (open, P3): get_user_preferences quebra sem o add-on habilitado e a fumaça de inspeção imprime 17 tracebacks — `_reversa_bugs/plugin-caffmob-draw/bugs/BUG-20261012-WBKI-get-user-preferences-quebra-sem-o-add`
 
 ## `_reversa_sdd/hb_core/requirements.md`
 
@@ -289,6 +297,10 @@
 - BUG-20261011-CNTL (resolved/fixed, P3): Rotação inválida mostra o erro cru do float() em inglês — `_reversa_bugs/move_over/bugs/BUG-20261011-CNTL-rotacao-invalida-mostra-o-erro-cru-do`
 - BUG-20261011-J2NY (resolved/fixed, P0): Inserir um .blend sem .json quebra a inserção com UnboundLocalError — `_reversa_bugs/customize/bugs/BUG-20261011-J2NY-inserir-um-blend-sem-json-quebra-a`
 
+## `_reversa_sdd/move_over/requirements.md`
+
+- BUG-20261012-DWPO (open, P2): Substituir conta peças vazias do módulo antigo e a caixa vai até a origem do mundo — `_reversa_bugs/move_over/bugs/BUG-20261012-DWPO-substituir-conta-pecas-vazias-do-modulo-antigo`
+
 ## `_reversa_sdd/move_over/tasks.md`
 
 - BUG-20261011-3T7M (resolved/fixed, P2): Interromper os modais de Mover na Parede e Plano de inserção deixa resíduos — `_reversa_bugs/move_over/bugs/BUG-20261011-3T7M-interromper-os-modais-de-mover-na-parede`
@@ -296,6 +308,7 @@
 - BUG-20261011-JMDR (resolved/fixed, P2): O segundo Confirmar salva sem rever a sobreposição — `_reversa_bugs/move_over/bugs/BUG-20261011-JMDR-o-segundo-confirmar-salva-sem-rever-a`
 - BUG-20261011-LWF6 (resolved/fixed, P2): Alinhamento e sobreposição usam só a caixa da raiz — `_reversa_bugs/move_over/bugs/BUG-20261011-LWF6-alinhamento-e-sobreposicao-usam-so-a-caixa`
 - BUG-20261011-X5OS (resolved/fixed, P2): O Substituir herda a escala do módulo antigo — `_reversa_bugs/move_over/bugs/BUG-20261011-X5OS-o-substituir-herda-a-escala-do-modulo`
+- BUG-20261012-DWPO (open, P2): Substituir conta peças vazias do módulo antigo e a caixa vai até a origem do mundo — `_reversa_bugs/move_over/bugs/BUG-20261012-DWPO-substituir-conta-pecas-vazias-do-modulo-antigo`
 
 ## `_reversa_sdd/object_library/design.md`
 
@@ -368,6 +381,7 @@
 - BUG-20261011-XMZM (resolved/fixed, P2): O segundo OK aplica sem rever os avisos depois de mudar o rascunho — `_reversa_bugs/walls2d/bugs/BUG-20261011-XMZM-o-segundo-ok-aplica-sem-rever-os`
 - BUG-20261011-XPD2 (resolved/fixed, P2): Vínculo de grudar órfão quando o pai é trocado à mão — `_reversa_bugs/stick/bugs/BUG-20261011-XPD2-vinculo-de-grudar-orfao-quando-o-pai`
 - BUG-20261011-ZKQ7 (resolved/fixed, P0): Checagem de descendência invertida em can_convert permite ciclo de parentesco — `_reversa_bugs/aggregates/bugs/BUG-20261011-ZKQ7-checagem-de-descendencia-invertida-em-can-convert`
+- BUG-20261012-DWPO (open, P2): Substituir conta peças vazias do módulo antigo e a caixa vai até a origem do mundo — `_reversa_bugs/move_over/bugs/BUG-20261012-DWPO-substituir-conta-pecas-vazias-do-modulo-antigo`
 
 ## `_reversa_sdd/selection/edge-cases.md`
 
@@ -422,6 +436,7 @@
 
 - BUG-20261006-NO4Q (resolved/fixed, P0): Interface legada Home Builder aparece separada do plugin — `_reversa_bugs/plugin-caffmob-draw/bugs/BUG-20261006-NO4Q-interface-home-builder-separada`
 - BUG-20261007-FLZO (resolved/fixed, P2): Interface metade em português e metade em inglês — `_reversa_bugs/plugin-caffmob-draw/bugs/BUG-20261007-FLZO-traducao-pela-metade`
+- BUG-20261012-RCOU (open, P2): test_identity falha: btm.door_invert_hand e btm.resize_width fogem do prefixo caffmob — `_reversa_bugs/plugin-caffmob-draw/bugs/BUG-20261012-RCOU-test-identity-falha-btm-door-invert-hand`
 
 ## `_reversa_sdd/wall_editor/requirements.md`
 

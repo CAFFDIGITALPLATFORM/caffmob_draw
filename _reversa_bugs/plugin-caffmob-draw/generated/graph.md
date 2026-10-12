@@ -1,4 +1,4 @@
-<!-- GENERATED, DO NOT EDIT: regenerado por /reversa-debugger-graph em 2026-10-12T03:01:13+00:00 a partir de 4 bugs -->
+<!-- GENERATED, DO NOT EDIT: regenerado por /reversa-debugger-graph em 2026-10-12T03:55:35+00:00 a partir de 6 bugs -->
 
 # Grafo · plugin-caffmob-draw
 
@@ -8,11 +8,14 @@ graph LR
   BUG_20261006_QAVK["#2 Nome e identificador do plugin devem se…"]
   BUG_20261006_SCVF["#3 Cópia antiga do plugin na raiz do repos…"]
   BUG_20261007_FLZO["#11 Interface metade em português e metade …"]
+  BUG_20261012_RCOU["#139 test_identity falha: btm.door_invert_ha…"]
+  BUG_20261012_WBKI["#142 get_user_preferences quebra sem o add-o…"]
   BUG_20261011_35HE -.->|related-to| BUG_20261007_FLZO
   BUG_20261006_KFAR -.->|caused-by| BUG_20261006_SCVF
   BUG_20261006_QAVK -->|related-to| BUG_20261006_NO4Q
   BUG_20261006_SCVF -.->|related-to| BUG_20261006_NO4Q
   BUG_20261007_FLZO -.->|related-to| BUG_20261006_QAVK
+  BUG_20261012_RCOU -.->|regression-of| BUG_20261006_NO4Q
 ```
 
 ## Clusters

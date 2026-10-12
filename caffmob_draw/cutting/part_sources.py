@@ -89,7 +89,7 @@ def iter_modules(scene, ensure_uid=True):
 
     `ensure_uid=False` só lê (para o `draw` da interface, que não pode gravar): sem `btm_uid`, usa o nome.
     """
-    modules = []
+    modules, seen = [], set()
     for obj in scene.objects:
         if obj.get(FRAMELESS_TAG):
             library, line, kind = "FRAMELESS", obj.get(LINE_PROP) or "COZ", obj.get('CABINET_TYPE', '')
@@ -101,7 +101,7 @@ def iter_modules(scene, ensure_uid=True):
             library, line, kind = "BTM", obj.get(LINE_PROP) or "COZ", "MODULE"
         else:
             continue
-        uid = ensure_module_uid(obj) if ensure_uid else str(obj.get(UID_PROP) or obj.name)
+        uid = _unique_uid(obj, seen) if ensure_uid else str(obj.get(UID_PROP) or obj.name)   # Shift+D: uid novo
         modules.append(ModuleRecord(uid, obj.name, str(line), library, str(kind), obj))
     modules.sort(key=lambda m: m.uid)
     return modules

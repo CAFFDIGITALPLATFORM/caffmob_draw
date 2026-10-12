@@ -1,4 +1,4 @@
-<!-- GENERATED, DO NOT EDIT: regenerado por /reversa-debugger-graph em 2026-10-12T03:01:13+00:00 a partir de 9 bugs -->
+<!-- GENERATED, DO NOT EDIT: regenerado por /reversa-debugger-graph em 2026-10-12T03:55:35+00:00 a partir de 10 bugs -->
 
 # Bugs × specs · collision
 
@@ -13,6 +13,7 @@
 | `_reversa_sdd/collision/requirements.md` | — | — | BUG-20261011-ZEN6 |
 | `_reversa_sdd/collision/requirements.md#CA-04` | — | — | BUG-20261011-SRPV |
 | `_reversa_sdd/collision/requirements.md#RN-01` | — | — | BUG-20261011-SRPV |
+| `_reversa_sdd/collision/requirements.md#RN-09` | BUG-20261012-PFY2 | — | — |
 | `_reversa_sdd/collision/tasks.md#DT-01` | — | — | BUG-20261011-SRPV |
 | `_reversa_sdd/collision/tasks.md#DT-02` | — | — | BUG-20261011-KX3O |
 | `_reversa_sdd/collision/tasks.md#DT-03` | — | — | BUG-20261011-EWKD |
