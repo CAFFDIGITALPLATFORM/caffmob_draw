@@ -47,7 +47,7 @@ def draw_collisions(layout, context):
     col.alert = not state.stale
     col.label(text=tr("{} colisão(ões):").format(len(state.items)), icon='ERROR')
     for index, item in enumerate(state.items[:MAX_ROWS]):
-        line = layout.row(align=True)
+        line = col.row(align=True)                # na coluna em alerta: as linhas também ficam em destaque
         line.label(text="{}: {} × {} ({:.0f} mm)".format(tr(_LABELS.get(item.kind, item.kind)), item.name_a,
                                                         item.name_b, item.depth * 1000.0))
         line.operator("caffmob.collision_goto", text="", icon='VIEWZOOM').index = index
@@ -92,6 +92,10 @@ class BTM_PT_ItemCollision(bpy.types.Panel):
 
     def draw(self, context):
         item = _item(context)
+        active = context.active_object
+        agg = getattr(active, 'btm_aggregate', None)
+        if agg is not None and agg.is_aggregate:      # agregado: o override é dele, não do módulo (pergunta 35)
+            item = active
         layout = self.layout
         layout.prop(item.btm_plane, "collision_override", text=tr("Colisão"))
         state = context.window_manager.btm_collision

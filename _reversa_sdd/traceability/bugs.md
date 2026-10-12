@@ -1,4 +1,4 @@
-<!-- GENERATED, DO NOT EDIT: regenerado por /reversa-debugger-graph em 2026-10-12T02:13:03+00:00 a partir de 137 bugs -->
+<!-- GENERATED, DO NOT EDIT: regenerado por /reversa-debugger-graph em 2026-10-12T02:16:58+00:00 a partir de 137 bugs -->
 
 # Bugs que atingem as specs
 
@@ -127,25 +127,25 @@
 ## `_reversa_sdd/collision/edge-cases.md`
 
 - BUG-20261011-53DV (resolved/fixed, P2): Colisão falsa entre folha e caixa da porta/janela ou parede (a confirmar) — `_reversa_bugs/collision/bugs/BUG-20261011-53DV-colisao-falsa-entre-folha-e-caixa-da`
-- BUG-20261011-7GRY (open, P2): check_moved deixa a lista desordenada e o erro antigo — `_reversa_bugs/collision/bugs/BUG-20261011-7GRY-check-moved-deixa-a-lista-desordenada-e`
-- BUG-20261011-EWKD (open, P2): Contenção total em objeto fino pode passar sem detecção (a confirmar) — `_reversa_bugs/collision/bugs/BUG-20261011-EWKD-contencao-total-em-objeto-fino-pode-passar`
-- BUG-20261011-SRPV (open, P2): Tolerância de 1,0 mm instável por arredondamento de float — `_reversa_bugs/collision/bugs/BUG-20261011-SRPV-tolerancia-de-1-0-mm-instavel-por`
+- BUG-20261011-7GRY (resolved/fixed, P2): check_moved deixa a lista desordenada e o erro antigo — `_reversa_bugs/collision/bugs/BUG-20261011-7GRY-check-moved-deixa-a-lista-desordenada-e`
+- BUG-20261011-EWKD (resolved/fixed, P2): Contenção total em objeto fino pode passar sem detecção (a confirmar) — `_reversa_bugs/collision/bugs/BUG-20261011-EWKD-contencao-total-em-objeto-fino-pode-passar`
+- BUG-20261011-SRPV (resolved/fixed, P2): Tolerância de 1,0 mm instável por arredondamento de float — `_reversa_bugs/collision/bugs/BUG-20261011-SRPV-tolerancia-de-1-0-mm-instavel-por`
 - BUG-20261011-TIPN (resolved/fixed, P2): Resultado da colisão não fica desatualizado com objeto novo, apagado ou renomeado — `_reversa_bugs/collision/bugs/BUG-20261011-TIPN-resultado-da-colisao-nao-fica-desatualizado-com`
 
 ## `_reversa_sdd/collision/requirements.md`
 
-- BUG-20261011-SRPV (open, P2): Tolerância de 1,0 mm instável por arredondamento de float — `_reversa_bugs/collision/bugs/BUG-20261011-SRPV-tolerancia-de-1-0-mm-instavel-por`
-- BUG-20261011-ZEN6 (open, P3): Só o cabeçalho fica vermelho no painel de colisão — `_reversa_bugs/collision/bugs/BUG-20261011-ZEN6-so-o-cabecalho-fica-vermelho-no-painel`
+- BUG-20261011-SRPV (resolved/fixed, P2): Tolerância de 1,0 mm instável por arredondamento de float — `_reversa_bugs/collision/bugs/BUG-20261011-SRPV-tolerancia-de-1-0-mm-instavel-por`
+- BUG-20261011-ZEN6 (resolved/fixed, P3): Só o cabeçalho fica vermelho no painel de colisão — `_reversa_bugs/collision/bugs/BUG-20261011-ZEN6-so-o-cabecalho-fica-vermelho-no-painel`
 
 ## `_reversa_sdd/collision/tasks.md`
 
 - BUG-20261011-53DV (resolved/fixed, P2): Colisão falsa entre folha e caixa da porta/janela ou parede (a confirmar) — `_reversa_bugs/collision/bugs/BUG-20261011-53DV-colisao-falsa-entre-folha-e-caixa-da`
-- BUG-20261011-7GRY (open, P2): check_moved deixa a lista desordenada e o erro antigo — `_reversa_bugs/collision/bugs/BUG-20261011-7GRY-check-moved-deixa-a-lista-desordenada-e`
-- BUG-20261011-EWKD (open, P2): Contenção total em objeto fino pode passar sem detecção (a confirmar) — `_reversa_bugs/collision/bugs/BUG-20261011-EWKD-contencao-total-em-objeto-fino-pode-passar`
-- BUG-20261011-JUJZ (open, P2): Override de colisão no painel de agregado edita a raiz do módulo — `_reversa_bugs/collision/bugs/BUG-20261011-JUJZ-override-de-colisao-no-painel-de-agregado`
-- BUG-20261011-KX3O (open, P2): Afastar move o item errado e aceita resultado desatualizado — `_reversa_bugs/collision/bugs/BUG-20261011-KX3O-afastar-move-o-item-errado-e-aceita`
-- BUG-20261011-L5ML (open, P2): Grupos soltos (SketchUp, biblioteca de objetos) ficam fora da colisão — `_reversa_bugs/collision/bugs/BUG-20261011-L5ML-grupos-soltos-sketchup-biblioteca-de-objetos-ficam`
-- BUG-20261011-SRPV (open, P2): Tolerância de 1,0 mm instável por arredondamento de float — `_reversa_bugs/collision/bugs/BUG-20261011-SRPV-tolerancia-de-1-0-mm-instavel-por`
+- BUG-20261011-7GRY (resolved/fixed, P2): check_moved deixa a lista desordenada e o erro antigo — `_reversa_bugs/collision/bugs/BUG-20261011-7GRY-check-moved-deixa-a-lista-desordenada-e`
+- BUG-20261011-EWKD (resolved/fixed, P2): Contenção total em objeto fino pode passar sem detecção (a confirmar) — `_reversa_bugs/collision/bugs/BUG-20261011-EWKD-contencao-total-em-objeto-fino-pode-passar`
+- BUG-20261011-JUJZ (resolved/fixed, P2): Override de colisão no painel de agregado edita a raiz do módulo — `_reversa_bugs/collision/bugs/BUG-20261011-JUJZ-override-de-colisao-no-painel-de-agregado`
+- BUG-20261011-KX3O (resolved/fixed, P2): Afastar move o item errado e aceita resultado desatualizado — `_reversa_bugs/collision/bugs/BUG-20261011-KX3O-afastar-move-o-item-errado-e-aceita`
+- BUG-20261011-L5ML (resolved/fixed, P2): Grupos soltos (SketchUp, biblioteca de objetos) ficam fora da colisão — `_reversa_bugs/collision/bugs/BUG-20261011-L5ML-grupos-soltos-sketchup-biblioteca-de-objetos-ficam`
+- BUG-20261011-SRPV (resolved/fixed, P2): Tolerância de 1,0 mm instável por arredondamento de float — `_reversa_bugs/collision/bugs/BUG-20261011-SRPV-tolerancia-de-1-0-mm-instavel-por`
 - BUG-20261011-TIPN (resolved/fixed, P2): Resultado da colisão não fica desatualizado com objeto novo, apagado ou renomeado — `_reversa_bugs/collision/bugs/BUG-20261011-TIPN-resultado-da-colisao-nao-fica-desatualizado-com`
 
 ## `_reversa_sdd/customize/edge-cases.md`
@@ -353,7 +353,7 @@
 - BUG-20261011-DXOV (resolved/fixed, P0): Apagar parede com 'Apagar também os agregados' ligado não apaga os agregados dos módulos — `_reversa_bugs/aggregates/bugs/BUG-20261011-DXOV-apagar-parede-com-apagar-tambem-os-agregados`
 - BUG-20261011-IDPP (resolved/fixed, P2): Porta real não acompanha largura e altura editadas pelo painel — `_reversa_bugs/openings/bugs/BUG-20261011-IDPP-porta-real-nao-acompanha-largura-e-altura`
 - BUG-20261011-JMDR (resolved/fixed, P2): O segundo Confirmar salva sem rever a sobreposição — `_reversa_bugs/move_over/bugs/BUG-20261011-JMDR-o-segundo-confirmar-salva-sem-rever-a`
-- BUG-20261011-L5ML (open, P2): Grupos soltos (SketchUp, biblioteca de objetos) ficam fora da colisão — `_reversa_bugs/collision/bugs/BUG-20261011-L5ML-grupos-soltos-sketchup-biblioteca-de-objetos-ficam`
+- BUG-20261011-L5ML (resolved/fixed, P2): Grupos soltos (SketchUp, biblioteca de objetos) ficam fora da colisão — `_reversa_bugs/collision/bugs/BUG-20261011-L5ML-grupos-soltos-sketchup-biblioteca-de-objetos-ficam`
 - BUG-20261011-LM42 (open, P2): Fechar o editor com uma janela só deixa a área sem cabeçalho — `_reversa_bugs/canvas2d/bugs/BUG-20261011-LM42-fechar-o-editor-com-uma-janela-so`
 - BUG-20261011-LT3C (resolved/fixed, P2): O 'Não' da pergunta de fechar a sala não impede o fechamento — `_reversa_bugs/walls2d/bugs/BUG-20261011-LT3C-o-nao-da-pergunta-de-fechar-a`
 - BUG-20261011-LWF6 (open, P2): Alinhamento e sobreposição usam só a caixa da raiz — `_reversa_bugs/move_over/bugs/BUG-20261011-LWF6-alinhamento-e-sobreposicao-usam-so-a-caixa`
@@ -459,7 +459,7 @@
 
 ## `caffmob_draw/collision/panels.py`
 
-- BUG-20261011-ZEN6 (open, P3): Só o cabeçalho fica vermelho no painel de colisão — `_reversa_bugs/collision/bugs/BUG-20261011-ZEN6-so-o-cabecalho-fica-vermelho-no-painel`
+- BUG-20261011-ZEN6 (resolved/fixed, P3): Só o cabeçalho fica vermelho no painel de colisão — `_reversa_bugs/collision/bugs/BUG-20261011-ZEN6-so-o-cabecalho-fica-vermelho-no-painel`
 
 ## `caffmob_draw/move_over/ops_dialog.py`
 

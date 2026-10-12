@@ -103,7 +103,7 @@ def candidate_pairs(items, only=None):
 def evaluate(a, b):
     """Ocorrência do par, ou None quando só encostam ou não se tocam."""
     result = _obb.overlap(a.box, b.box)
-    if result is None or result['depth'] <= TOLERANCE:
+    if result is None or result['depth'] <= TOLERANCE + 1e-9:     # 1,0 mm estável como encostar (pergunta 31)
         return None
     first, second, push = a, b, result['push']
     if (first.static and not second.static) or (first.static == second.static and second.name < first.name):

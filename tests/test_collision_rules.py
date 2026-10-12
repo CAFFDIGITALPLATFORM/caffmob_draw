@@ -84,5 +84,14 @@ class CollisionRulesTest(unittest.TestCase):
         self.assertEqual({(x.name_a, x.name_b) for x in only}, {('A', 'C'), ('B', 'C')})
 
 
+    def test_tolerancia_de_1_mm_estavel(self):
+        # BUG-20261011-SRPV (pergunta 31): 1,0 mm de sobreposição nunca conta, em qualquer posição; 1,1 mm conta.
+        for edge in (0.999, 0.599, 3.7):
+            a = item('A', (edge - 0.8, -0.55, 0.0), (edge, 0.0, 0.72))
+            b = item('B', (edge - 0.001, -0.55, 0.0), (edge + 0.8, 0.0, 0.72))
+            self.assertEqual(rules.conflicts([a, b]), [], edge)
+            b = item('B', (edge - 0.0011, -0.55, 0.0), (edge + 0.8, 0.0, 0.72))
+            self.assertEqual(len(rules.conflicts([a, b])), 1, edge)
+
 if __name__ == "__main__":
     unittest.main()

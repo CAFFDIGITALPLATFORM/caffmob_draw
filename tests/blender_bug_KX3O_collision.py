@@ -1,0 +1,170 @@
+"""Reprodução e regressão do lote de colisão: BUG-20261011-KX3O, BUG-20261011-L5ML, BUG-20261011-JUJZ,
+BUG-20261011-7GRY, BUG-20261011-EWKD e BUG-20261011-ZEN6 (SRPV está em tests/test_collision_rules.py).
+
+Run: blender --background --factory-startup --python-exit-code 1 --python tests/blender_bug_KX3O_collision.py
+"""
+
+import sys
+import traceback
+import types
+from pathlib import Path
+
+import bpy
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import _blender_env as env  # noqa: E402
+from caffmob_draw.aggregates import convert  # noqa: E402
+from caffmob_draw.collision import panels, rules, scan  # noqa: E402
+
+ctx = bpy.context
+FAILURES = []
+
+
+def check(name, ok, detail=""):
+    print(("OK   " if ok else "FALHA ") + name, detail, flush=True)
+    if not ok:
+        FAILURES.append(name)
+
+
+def cube(name, loc, size=0.5, parent=None):
+    bpy.ops.mesh.primitive_cube_add(size=size, location=loc)
+    obj = ctx.object
+    obj.name = name
+    if parent is not None:
+        obj.parent = parent
+    env.settle()
+    return obj
+
+
+def select(*objs):
+    for obj in ctx.view_layer.objects:
+        obj.select_set(False)
+    for obj in objs:
+        obj.select_set(True)
+    ctx.view_layer.objects.active = objs[0]
+
+
+def state():
+    return ctx.window_manager.btm_collision
+
+
+def push_selected():
+    env.clean_scene()
+    a, b = cube("A", (0, 0, 0.25)), cube("B", (0.3, 0.05, 0.3))
+    scan.check_all(ctx, 'ALL')
+    row = state().items[0]
+    second = bpy.data.objects[row.name_b]
+    first = bpy.data.objects[row.name_a]
+    where = first.matrix_world.translation.copy()
+    select(second)
+    bpy.ops.caffmob.collision_push_out(index=0)
+    env.settle()
+    check("KX3O: Afastar move o selecionado (o segundo do par)", (first.matrix_world.translation - where).length < 1e-6
+          and not state().items, f"primeiro andou {(first.matrix_world.translation - where).length:.3f} m")
+    scan.check_all(ctx, 'ALL')
+    a.location.x = 0.1
+    b.location.x = 0.4
+    env.settle()
+    scan.check_all(ctx, 'ALL')
+    a.location.x = 0.25
+    env.settle()
+    result = bpy.ops.caffmob.collision_push_out(index=0) if state().items else None
+    check("KX3O: com resultado desatualizado, recusa", state().stale and result == {'CANCELLED'}, str(result))
+
+
+def loose_group():
+    env.clean_scene()
+    group = bpy.data.objects.new("Grupo SKP", None)
+    ctx.scene.collection.objects.link(group)
+    group.btm_group.is_group = True
+    cube("Peça do grupo", (0, 0, 0.25), parent=group)
+    cube("Caixa solta", (0.2, 0, 0.25))
+    found = scan.check_all(ctx, 'ALL') or []
+    check("L5ML: grupo solto entra na colisão", any("Grupo SKP" in (c.name_a, c.name_b) for c in found),
+          str([(c.name_a, c.name_b) for c in found]))
+
+
+class Layout:
+    def __init__(self, record, parent=None):
+        self.record, self.parent, self.alert, self.enabled = record, parent, False, True
+
+    def _child(self, *args, **kwargs):
+        return Layout(self.record, self)
+
+    row = column = box = split = _child
+
+    def _alert(self):
+        node, on = self, False
+        while node is not None:
+            on = on or node.alert
+            node = node.parent
+        return on
+
+    def prop(self, data, name, **kwargs):
+        self.record.append(('prop', data.id_data.name, name))
+
+    def label(self, text="", **kwargs):
+        self.record.append(('label', text, self._alert()))
+
+    def operator(self, *args, **kwargs):
+        return types.SimpleNamespace()
+
+
+def aggregate_override():
+    env.clean_scene()
+    assert bpy.ops.caffmob.cabinet_builder(width=0.6) == {'FINISHED'}
+    module = ctx.object
+    item = cube("Fruteira", (0, -0.4, 0.5), size=0.2)
+    convert.convert(item, module)
+    select(item)
+    record = []
+    panels.BTM_PT_ItemCollision.draw(types.SimpleNamespace(layout=Layout(record)), ctx)
+    props = [r for r in record if r[0] == 'prop']
+    check("JUJZ: o painel do agregado edita o próprio agregado", props and props[0][1] == "Fruteira", str(props))
+
+
+def moved_order_and_error():
+    env.clean_scene()
+    cube("A", (0, 0, 0.25))
+    cube("B", (0.3, 0.05, 0.3))
+    cube("C", (3, 0, 0.25))
+    d = cube("D", (3.45, 0.05, 0.3))
+    scan.check_all(ctx, 'ALL')
+    d.location.x = 3.2                                  # C × D fica mais fundo que A × B
+    state().error = "erro antigo"
+    env.settle()
+    scan.check_moved([d])
+    keys = [rules.sort_key(rules.Conflict(r.kind, r.name_a, r.name_b, r.depth, tuple(r.push), tuple(r.location)))
+            for r in state().items]
+    check("7GRY: check_moved deixa a lista na ordem", keys == sorted(keys), str([(r.name_a, round(r.depth, 3))
+                                                                                for r in state().items]))
+    check("7GRY: e limpa o erro antigo", state().error == "", repr(state().error))
+
+
+def containment():
+    env.clean_scene()
+    cube("Caixa grande", (0, 0, 0.5), size=1.0)
+    cube("Peça dentro", (0, 0, 0.5), size=0.1)
+    found = scan.check_all(ctx, 'ALL') or []
+    check("EWKD: peça inteira dentro de outra é colisão", len(found) == 1, str([(c.name_a, c.name_b) for c in found]))
+
+
+def panel_rows_alert():
+    env.clean_scene()
+    cube("A", (0, 0, 0.25))
+    cube("B", (0.3, 0.05, 0.3))
+    scan.check_all(ctx, 'ALL')
+    record = []
+    panels.draw_collisions(Layout(record), ctx)
+    rows = [r for r in record if r[0] == 'label' and " × " in r[1]]
+    check("ZEN6: as linhas de ocorrência ficam em alerta", rows and all(r[2] for r in rows), str(rows))
+
+
+for step in (push_selected, loose_group, aggregate_override, moved_order_and_error, containment, panel_rows_alert):
+    try:
+        step()
+    except Exception:
+        traceback.print_exc()
+        FAILURES.append(f"exceção em {step.__name__}")
+print(f"blender_bug_KX3O_collision: {'OK' if not FAILURES else 'FALHAS: ' + ', '.join(FAILURES)}")
+sys.exit(1 if FAILURES else 0)

@@ -1,4 +1,4 @@
-<!-- GENERATED, DO NOT EDIT: regenerado por /reversa-debugger-graph em 2026-10-12T02:13:03+00:00 a partir de 1 bugs -->
+<!-- GENERATED, DO NOT EDIT: regenerado por /reversa-debugger-graph em 2026-10-12T02:16:58+00:00 a partir de 1 bugs -->
 
 # Bugs × specs · modulos-personalizaveis
 

@@ -1,0 +1,62 @@
+--- /home/theleoinfo/www/BlenderToMob/caffmob_draw/collision/scan.py	2026-10-11 23:12:58.530912667 -0300
++++ caffmob_draw/collision/scan.py	2026-10-11 23:14:35.506247939 -0300
+@@ -96,6 +96,8 @@
+         return rules.ITEM, '', True
+     if obj.get('IS_APPLIANCE'):
+         return rules.ITEM, obj.name, False
++    if obj.type == 'EMPTY' and classify.free_group(obj) is obj:
++        return rules.ITEM, obj.name, True          # grupo solto (SketchUp, biblioteca de objetos; pergunta 35)
+     info = classify.classify(obj)
+     if info is None or info.obj is not obj:
+         return None
+@@ -169,13 +171,30 @@
+         return BVHTree.FromPolygons(corners, faces)
+ 
+ 
++def _inside(tree, point):
++    """O ponto está dentro da malha fechada? Paridade dos cruzamentos de um raio em +X."""
++    direction, origin, hits = Vector((1.0, 0.0, 0.0)), Vector(point), 0
++    for _ in range(256):
++        location, _normal, _index, _distance = tree.ray_cast(origin, direction)
++        if location is None:
++            break
++        hits += 1
++        origin = location + direction * 1e-5
++    return hits % 2 == 1
++
++
+ def _confirm(by_name, meshes):
+     def confirm(a, b):
+         ea, eb = by_name[a.name], by_name[b.name]
+         if not (ea.fine or eb.fine):
+             return True
+         ta, tb = meshes.tree(ea), meshes.tree(eb)
+-        return bool(ta.overlap(tb)) if ta is not None and tb is not None else True
++        if ta is None or tb is None:
++            return True
++        if ta.overlap(tb):
++            return True
++        # Sem cruzamento de faces: um pode estar inteiro dentro do outro (contenção total, pergunta 33).
++        return _inside(tb, a.box.center) or _inside(ta, b.box.center)
+     return confirm
+ 
+ 
+@@ -252,14 +271,14 @@
+     state = context.window_manager.btm_collision
+     keep = [(r.kind, r.name_a, r.name_b, r.depth, tuple(r.push), tuple(r.location)) for r in state.items
+             if r.name_a not in names and r.name_b not in names]
++    rows = [rules.Conflict(*entry) for entry in keep] + list(found)
++    rows.sort(key=rules.sort_key)                  # a mesma ordem da verificação completa (pergunta 81)
+     state.items.clear()
+-    for kind, a, b, depth, push, location in keep:
+-        row = state.items.add()
+-        row.kind, row.name_a, row.name_b, row.depth, row.push, row.location = kind, a, b, depth, push, location
+-    for c in found:
++    for c in rows:
+         row = state.items.add()
+         row.kind, row.name_a, row.name_b = c.kind, c.name_a, c.name_b
+         row.depth, row.push, row.location = c.depth, c.push, c.location
++    state.error = ""
+     if state.checked < 0:                  # sem "Verificar" antes: estes itens passam a ser os verificados (EC-04)
+         state.checked = len(roots)
+         state.checked_names = "\n".join(sorted(roots))

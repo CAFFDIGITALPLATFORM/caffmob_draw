@@ -7,6 +7,13 @@ from ..data.i18n import tr
 from . import scan
 
 
+def _ancestors(obj):
+    current = obj.parent
+    while current is not None:
+        yield current
+        current = current.parent
+
+
 def _state(context):
     return context.window_manager.btm_collision
 
@@ -106,11 +113,17 @@ class BTM_OT_CollisionPushOut(bpy.types.Operator):
         state = _state(context)
         if not (0 <= self.index < len(state.items)):
             return {'CANCELLED'}
+        if state.stale:                   # o resultado não vale mais (pergunta 32)
+            self.report({'WARNING'}, tr("Desatualizado, verifique de novo"))
+            return {'CANCELLED'}
         row = state.items[self.index]
-        obj = bpy.data.objects.get(row.name_a)
+        name, push = row.name_a, Vector(row.push)
+        chosen = {o.name for sel in context.selected_objects for o in [sel] + list(_ancestors(sel))}
+        if row.name_b in chosen and row.name_a not in chosen:
+            name, push = row.name_b, -push        # o selecionado é o segundo do par: ele é que sai
+        obj = bpy.data.objects.get(name)
         if obj is None:
             return {'CANCELLED'}
-        push = Vector(row.push)
         from ..stick import apply as stick_apply
         if stick_apply.linked(obj):
             st = obj.btm_stick
