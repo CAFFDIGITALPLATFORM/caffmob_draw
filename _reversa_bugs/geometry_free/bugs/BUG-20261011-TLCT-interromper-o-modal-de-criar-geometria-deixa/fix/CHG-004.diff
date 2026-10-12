@@ -1,0 +1,19 @@
+--- caffmob_draw/move_over/insertion_plane.py	2026-10-08 00:14:45.741483250 -0300
++++ caffmob_draw/move_over/insertion_plane.py	2026-10-11 20:42:41.398961670 -0300
+@@ -34,8 +34,14 @@
+         return {'RUNNING_MODAL'}
+ 
+     def _end(self, context):
+-        context.workspace.status_text_set(None)
+-        context.window.cursor_set('DEFAULT')
++        if context.workspace is not None:
++            context.workspace.status_text_set(None)
++        if context.window is not None:
++            context.window.cursor_set('DEFAULT')
++
++    def cancel(self, context):
++        """O Blender interrompeu o modal: a barra de status e o cursor voltam (questions.md, pergunta 17)."""
++        self._end(context)
+ 
+     def modal(self, context, event):
+         if event.type == 'LEFTMOUSE' and event.value == 'PRESS':

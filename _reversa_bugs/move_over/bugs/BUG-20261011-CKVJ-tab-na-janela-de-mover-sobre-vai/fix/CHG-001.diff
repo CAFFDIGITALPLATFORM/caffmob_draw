@@ -1,0 +1,88 @@
+--- /dev/null	2026-10-09 20:39:19.815662691 -0300
++++ tests/blender_bug_CKVJ_move_over_dialog.py	2026-10-11 22:08:06.193870949 -0300
+@@ -0,0 +1,85 @@
++"""Reprodução e regressão do lote da janela Mover Sobre: BUG-20261011-CKVJ, BUG-20261011-JMDR e BUG-20261011-CNTL.
++
++Run: blender --background --factory-startup --python-exit-code 1 --python tests/blender_bug_CKVJ_move_over_dialog.py
++
++O modal é exercitado sem janela: um objeto falso recebe os métodos da classe e um MoveOver falso registra as chamadas.
++- Tab grava e vai ao próximo campo; inválido fica no campo com o aviso (questions.md, pergunta 15);
++- setas e Page Up/Down depois do aviso de sobreposição zeram o aviso (pergunta 18);
++- rotação inválida mostra mensagem traduzida, não o erro do float() (move_over EC-08).
++"""
++
++import sys
++import traceback
++import types
++from pathlib import Path
++
++sys.path.insert(0, str(Path(__file__).resolve().parent))
++import _blender_env  # noqa: E402,F401
++from caffmob_draw.move_over import ops_dialog  # noqa: E402
++
++FAILURES = []
++CTX = types.SimpleNamespace(area=types.SimpleNamespace(tag_redraw=lambda: None))
++
++
++def check(name, ok, detail=""):
++    print(("OK   " if ok else "FALHA ") + name, detail, flush=True)
++    if not ok:
++        FAILURES.append(name)
++
++
++def dialog():
++    methods = {k: v for k, v in vars(ops_dialog.BTM_OT_MoveOverDialog).items() if callable(v)}
++    fake = type('Dialog', (), methods)()
++    calls = []
++    fake.mo = types.SimpleNamespace(set_world=lambda *a: calls.append(('world',) + a),
++                                    set_gap=lambda *a: calls.append(('gap',) + a),
++                                    set_rotation=lambda *a: calls.append(('rot',) + a),
++                                    nudge=lambda *a: calls.append(('nudge',) + a))
++    fake.state = types.SimpleNamespace(step=0.01, show_relative=False)
++    fake.panel = (0, 0, 0, 0)
++    fake.typing, fake.buffer, fake.warning, fake.warned = None, "", "", False
++    fake._fit_views = lambda: None
++    return fake, calls
++
++
++def press(fake, kind, char=""):
++    event = types.SimpleNamespace(type=kind, value='PRESS', unicode=char, mouse_region_x=-1, mouse_region_y=-1)
++    return fake.modal(CTX, event)
++
++
++def tab_moves_on():
++    fake, calls = dialog()
++    fake.typing, fake.buffer = 0, "0.5"
++    press(fake, 'TAB')
++    check("CKVJ: Tab com valor válido grava e vai ao próximo campo", fake.typing == 1 and calls
++          and calls[0][0] == 'world', f"campo={fake.typing} chamadas={calls}")
++    fake, calls = dialog()
++    fake.typing, fake.buffer = 1, "abc"
++    press(fake, 'TAB')
++    check("CKVJ: Tab com valor inválido fica no campo com o aviso", fake.typing == 1 and fake.buffer == "abc"
++          and bool(fake.warning), f"campo={fake.typing} texto={fake.buffer!r} aviso={fake.warning!r}")
++
++
++def arrows_reset_warning():
++    fake, _calls = dialog()
++    fake.warned, fake.warning = True, "Sobrepõe: X"
++    press(fake, 'RIGHT_ARROW')
++    check("JMDR: seta depois do aviso zera o aviso", fake.warned is False, f"warned={fake.warned}")
++
++
++def rotation_message():
++    fake, _calls = dialog()
++    fake.typing, fake.buffer = ops_dialog.ROTATION, "1.2.3"
++    fake._commit_typing()
++    check("CNTL: rotação inválida mostra mensagem traduzida", fake.warning.startswith("Valor Inválido")
++          and "could not convert" not in fake.warning, repr(fake.warning))
++
++
++for step in (tab_moves_on, arrows_reset_warning, rotation_message):
++    try:
++        step()
++    except Exception:
++        traceback.print_exc()
++        FAILURES.append(f"exceção em {step.__name__}")
++print(f"blender_bug_CKVJ_move_over_dialog: {'OK' if not FAILURES else 'FALHAS: ' + ', '.join(FAILURES)}")
++sys.exit(1 if FAILURES else 0)

@@ -1,0 +1,39 @@
+--- caffmob_draw/measure/cotas.py	2026-10-07 15:36:57.024001190 -0300
++++ caffmob_draw/measure/cotas.py	2026-10-11 22:26:39.821755396 -0300
+@@ -56,14 +56,19 @@
+ def apply(field, value, placement, obstacles, wall_length, ceiling_height):
+     """Nova `Placement` com a cota `field` = `value`, mantendo as dimensões (RN-04).
+ 
+-    Levanta ValueError com mensagem "Valor Inválido" para valor negativo ou que tire o módulo da parede.
++    Levanta ValueError com mensagem "Valor Inválido" para valor negativo, que tire o módulo da parede, que o ponha sobre
++    o vizinho do outro lado ou acima do teto (questions.md, pergunta 12).
+     """
++    if field not in LABELS:
++        raise ValueError(tr("Cota desconhecida: {}").format(field))
+     if value < 0:
+         raise ValueError(tr("Valor Inválido: {} não pode ser negativa.").format(tr(LABELS[field])))
+     p = placement
+     if field == 'afastamento':
+         return p._replace(back_y=-value)
+     if field == 'inferior':
++        if value + p.height > ceiling_height + 1e-9:
++            raise ValueError(tr("Valor Inválido: {} põe o módulo acima do teto.").format(tr(LABELS[field])))
+         return p._replace(z0=value)
+     if field == 'superior':
+         z0 = ceiling_height - value - p.height
+@@ -73,12 +78,12 @@
+     left, right = limits(p, obstacles, wall_length)
+     if field == 'anterior':
+         x0 = left + value
+-    elif field == 'posterior':
+-        x0 = right - value - p.width
+     else:
+-        raise ValueError(f"Cota desconhecida: {field}")
++        x0 = right - value - p.width
+     if x0 < 0 or x0 + p.width > wall_length + 1e-9:
+         raise ValueError(tr("Valor Inválido: {} tira o módulo da parede.").format(tr(LABELS[field])))
++    if x0 < left - 1e-9 or x0 + p.width > right + 1e-9:
++        raise ValueError(tr("Valor Inválido: {} põe o módulo sobre o vizinho do outro lado.").format(tr(LABELS[field])))
+     return p._replace(x0=x0)
+ 
+ 

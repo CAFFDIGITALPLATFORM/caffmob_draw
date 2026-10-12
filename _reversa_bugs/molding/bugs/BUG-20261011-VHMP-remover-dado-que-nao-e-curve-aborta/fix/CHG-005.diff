@@ -1,0 +1,24 @@
+--- caffmob_draw/selection/component.py	2026-10-11 11:21:15.335562977 -0300
++++ caffmob_draw/selection/component.py	2026-10-11 12:36:41.355368561 -0300
+@@ -121,8 +121,8 @@
+ def delete_plan(targets, keep_aggregates=False):
+     """O que apagar ao excluir `targets`: a subárvore inteira, filhos antes dos pais, sem repetir.
+ 
+-    Itens grudados nunca entram (são soltos no lugar); com `keep_aggregates`, os agregados próprios e as peças deles
+-    também ficam. Parede, piso e teto saem sozinhos (`deletes_subtree`). `openings` lista os vãos de porta e janela que saem, para tirar o furo da parede.
++    Itens grudados e molduras da corrida nunca entram (são soltos no lugar); com `keep_aggregates`, os agregados
++    próprios e as peças deles também ficam. Parede, piso e teto saem sozinhos (`deletes_subtree`). `openings` lista os vãos de porta e janela que saem, para tirar o furo da parede.
+     """
+     keep = set()
+     for target in targets:
+@@ -133,8 +133,8 @@
+     def walk(node, is_target):
+         if id(node) in seen:
+             return
+-        if not is_target and (_is_stuck(node) or id(node) in keep):
+-            return
++        if not is_target and (_is_stuck(node) or id(node) in keep or node.get('IS_HB_MOLDING_SWEEP')):
++            return                              # moldura é da corrida, não do armário: fica no lugar
+         seen.add(id(node))
+         if not is_target or deletes_subtree(node):
+             for child in list(node.children):

@@ -1,0 +1,77 @@
+--- /dev/null	2026-10-09 20:39:19.815662691 -0300
++++ tests/blender_bug_ZKQ7_parent_cycle.py	2026-10-11 11:24:14.673537545 -0300
+@@ -0,0 +1,74 @@
++"""Reprodução e regressão do lote de checagem de descendência: BUG-20261011-ZKQ7 e BUG-20261011-VVEJ.
++
++Run: blender --background --factory-startup --python-exit-code 1 --python tests/blender_bug_ZKQ7_parent_cycle.py
++
++- `aggregates.convert.can_convert` recusa pai descendente do objeto (RN-05, questions.md pergunta 3) e aceita objeto que
++  já é filho do pai; antes, o teste estava invertido e a conversão gravava um agregado sem o pai.
++- `stick.link.release` não devolve o item a um pai que virou descendente dele (EC-09); antes, o item saltava de lugar.
++"""
++
++import sys
++import traceback
++from pathlib import Path
++
++sys.path.insert(0, str(Path(__file__).resolve().parent))
++import _blender_env as env  # noqa: E402
++import bpy  # noqa: E402
++from caffmob_draw.aggregates import convert  # noqa: E402
++from caffmob_draw.stick import link  # noqa: E402
++
++FAILURES = []
++
++
++def check(name, ok, detail=""):
++    print(("OK   " if ok else "FALHA ") + name, detail, flush=True)
++    if not ok:
++        FAILURES.append(name)
++
++
++def mesh(name, parent=None, loc=(0.0, 0.0, 0.0)):
++    obj = bpy.data.objects.new(name, bpy.data.meshes.new(name))
++    bpy.context.scene.collection.objects.link(obj)
++    obj.parent = parent
++    obj.location = loc
++    env.settle()
++    return obj
++
++
++def can_convert():
++    env.clean_scene()
++    caixa = mesh("Caixa")
++    peca = mesh("Peca", caixa, (1.0, 0.0, 0.0))
++    check("ZKQ7: peça que já é filha do pai pode ser convertida", convert.can_convert(peca, caixa) is None,
++          repr(convert.can_convert(peca, caixa)))
++    obj = mesh("Obj", None, (3.0, 0.0, 0.0))
++    filho = mesh("Filho", obj, (0.0, 1.0, 0.0))
++    check("ZKQ7: pai descendente do objeto é recusado", convert.can_convert(obj, filho) is not None)
++    face = convert.convert(peca, caixa)
++    check("ZKQ7: a peça vira agregado da caixa", face is not None and peca.btm_aggregate.is_aggregate
++          and peca.parent == caixa, f"face={face} pai={peca.parent.name if peca.parent else None}")
++
++
++def release():
++    env.clean_scene()
++    item = mesh("Item", None, (2.0, 0.0, 0.0))
++    desc = mesh("Desc", item, (0.0, 0.0, 1.0))
++    item.btm_stick.is_stuck = True
++    item.btm_stick.orig_parent = desc
++    env.settle()
++    link.release(item)
++    env.settle()
++    where = tuple(round(v, 6) for v in item.matrix_world.translation)
++    check("VVEJ: desgrudar com pai anterior descendente fica no lugar", where == (2.0, 0.0, 0.0), str(where))
++    check("VVEJ: e sem pai (não volta para o descendente)", item.parent is None and desc.parent == item)
++    check("VVEJ: vínculo desfeito", not item.btm_stick.is_stuck)
++
++
++try:
++    can_convert()
++    release()
++except Exception:
++    traceback.print_exc()
++    FAILURES.append("exceção no roteiro")
++print(f"blender_bug_ZKQ7_parent_cycle: {'OK' if not FAILURES else 'FALHAS: ' + ', '.join(FAILURES)}")
++sys.exit(1 if FAILURES else 0)

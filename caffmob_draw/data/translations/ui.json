@@ -1135,6 +1135,10 @@
   "pt_BR": "Total de peças: {}",
   "en_US": "Total parts: {}"
  },
+ "Uma medida da placa é menor que a espessura": {
+  "pt_BR": "Uma medida da placa é menor que a espessura",
+  "en_US": "A board side is smaller than its thickness"
+ },
  "Unidade & Precisão": {
   "pt_BR": "Unidade & Precisão",
   "en_US": "Unit & Precision"

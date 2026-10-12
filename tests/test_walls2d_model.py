@@ -70,7 +70,8 @@ class ModeloTest(unittest.TestCase):
         k = aberta.split(0, (1.5, 0.2))
         self.assertEqual(aberta.segment_count(), 2)
         self.assertAlmostEqual(aberta.length(0) + aberta.length(1), 3.9)
-        aberta.remove_node(k)
+        removido = aberta.remove_node(k)
+        self.assertIsInstance(removido, m.Segment)       # BUG-20261011-TLPN: o chamador registra o source dele
         self.assertEqual(aberta.segment_count(), 1)
         self.assertAlmostEqual(aberta.length(0), 3.9)
         outer = aberta.outer_line(0)

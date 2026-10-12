@@ -64,6 +64,7 @@ class Chain:
         self.segments = list(segments)
         self.closed = closed
         self.side = side
+        self.keep_open = False            # o "Não" da pergunta de fechar: o OK não fecha (questions.md, pergunta 8)
 
     # Topologia ---------------------------------------------------------------------------------------------
     def segment_count(self):
@@ -259,16 +260,15 @@ class Chain:
 
     def remove_node(self, k):
         """Remove o nó `k`, unindo os dois trechos vizinhos (o de antes continua). Ponta de cadeia aberta: remove o
-        trecho da ponta."""
+        trecho da ponta. Devolve o trecho eliminado (o `source` dele sai da cena no OK, como no Delete)."""
         n = len(self.nodes)
         if len(self.segments) <= 1:
             raise ValueError(tr("Uma cadeia precisa de pelo menos um trecho."))
         if not self.closed and k in (0, n - 1):
             del self.nodes[k]
-            del self.segments[0 if k == 0 else -1]
-            return
+            return self.segments.pop(0 if k == 0 else -1)
         del self.nodes[k]
-        del self.segments[k if k < len(self.segments) else 0]
+        return self.segments.pop(k if k < len(self.segments) else 0)
 
     def invert(self):
         """Inverte o sentido da cadeia mantendo a parede no lugar: os nós e trechos trocam de ordem e a Direção troca,

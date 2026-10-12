@@ -1,0 +1,21 @@
+--- caffmob_draw/cabinet_editor/bridge.py	2026-10-09 18:12:01.341310579 -0300
++++ caffmob_draw/cabinet_editor/bridge.py	2026-10-11 21:53:14.440369202 -0300
+@@ -65,7 +65,8 @@
+     return _state.EditorState(dims, data, structure, scene_divisions.read(root),
+                               extras=holder.extras_dict() if holder is not None else {},
+                               slides=scene_slides.state_of(root), interiors=scene_interiors.entries(root),
+-                              backs=holder.backs_dict() if holder is not None else {})
++                              backs=holder.backs_dict() if holder is not None else {},
++                              assembly=root.btm_cabinet.assembly if is_caffmob_module(root) else "")
+ 
+ 
+ def library_limits(root, library):
+@@ -97,6 +98,8 @@
+     for index, field in enumerate(('width', 'height', 'depth')):
+         if abs(current.dimensions[index] - target.dimensions[index]) > 1e-7:
+             set_dimension(context, root, field, target.dimensions[index])
++    if target.assembly and target.assembly != current.assembly:
++        messages += set_assembly(context, root, {'assembly': target.assembly})
+     if adapter is None:
+         return messages
+     wanted = spec.from_dict(target.spec)

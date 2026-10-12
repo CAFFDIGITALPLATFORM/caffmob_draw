@@ -1,0 +1,11 @@
+--- caffmob_draw/aggregates/ops_aggregate.py	2026-10-11 11:21:15.338563017 -0300
++++ caffmob_draw/aggregates/ops_aggregate.py	2026-10-11 22:10:52.130814495 -0300
+@@ -50,7 +50,7 @@
+                 self.report({'WARNING'}, f"{obj.name}: {reason}")
+                 continue
+             face = convert.convert(obj, parent, None if self.face == 'AUTO' else self.face)
+-            done.append(f"{obj.name} ({limits.FACE_LABELS[face]})")
++            done.append(f"{obj.name} ({tr(limits.FACE_LABELS[face])})")
+         if not done:
+             return {'CANCELLED'}
+         for obj in context.selected_objects:

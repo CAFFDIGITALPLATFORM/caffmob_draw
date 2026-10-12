@@ -11,6 +11,10 @@
   "pt_BR": "Espaçador reto com um perfil de moldura em cima",
   "en_US": "Flat-stock spacer with a crown profile on top"
  },
+ "Molding not rebuilt: {}": {
+  "pt_BR": "Molduras não reconstruídas: {}",
+  "en_US": "Molding not rebuilt: {}"
+ },
  "No molding": {
   "pt_BR": "Sem moldura",
   "en_US": "No molding"

@@ -1,0 +1,19 @@
+--- caffmob_draw/cabinet_editor/bridge.py	2026-10-11 21:57:10.139951327 -0300
++++ caffmob_draw/cabinet_editor/bridge.py	2026-10-11 22:10:52.131814524 -0300
+@@ -654,8 +654,15 @@
+                                                   "invert": bool(data.get('invert'))})
+     out = []
+     for warning in warnings:
+-        if isinstance(warning, tuple) and warning[0] == 'BLOCKED':
++        kind = warning[0] if isinstance(warning, tuple) else None
++        if kind == 'BLOCKED':
+             out.append(common.tr("{} não corre: esbarra em {}").format(warning[1], warning[2] or "—"))
++        elif kind == 'NO_SPACE':                       # não é falta de profundidade (EC-09)
++            out.append(common.tr("Sem vão interno para os deslizantes"))
++        elif kind == 'DEPTH':
++            from ..data import units
++            depth = units.format_length(warning[1], units.get_scene_length_unit(context.scene))
++            out.append(common.tr("Os trilhos precisam de mais profundidade ({})").format(depth))
+         else:
+             out.append(common.tr("Os trilhos precisam de mais profundidade ({})").format(warning))
+     return out

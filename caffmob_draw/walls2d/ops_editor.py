@@ -8,6 +8,11 @@
     clique no ponto inicial pergunta se deve fechar;
   - Inverter Sentido, Adicionar Vértice e Remover Vértice por clique; Delete remove o trecho selecionado;
   - botão do meio arrasta a vista, a roda aproxima, Home enquadra tudo.
+- Feature 013 (RN-01 a RN-07; D-04 a D-10): pinça no touchpad (`TRACKPADZOOM`) dá zoom ancorado no cursor e o
+  arraste com dois dedos (`TRACKPADPAN`) move a vista, em qualquer ferramenta ou estado; a roda e o Ctrl + roda
+  obedecem à preferência `PreferencesInput.invert_zoom_wheel`; a conta fica em `canvas2d/gestures.py` e a leitura do
+  delta em `compat.trackpad_delta`. Barra superior desenhada em GPU com a lupa com quadrado (zoom janela): marcar um
+  retângulo enquadra, Esc cancela só o modo. Navegar não refaz o encaixe da mira nem grava passo de desfazer.
 - Feature 009 (RN-01 a RN-07): mira em cruz que trava por alinhamento X/Y com os vértices (8 px na tela; Shift
   desliga), cadeia única de travas (`resolve_point`), medida com conta (`data/expr.py`) e direção travada no lápis:
   o Enter segue a direção atual, que só muda por clique ou pelas setas do teclado.
@@ -19,7 +24,8 @@ import math
 
 import bpy  # type: ignore
 
-from ..canvas2d import draw
+from .. import compat
+from ..canvas2d import draw, gestures
 from ..canvas2d.view import View2D, distance_point_point, distance_point_segment, ortho_snap, snap_to_grid
 from ..data import expr, units
 from ..data.i18n import N_, tr
@@ -34,6 +40,8 @@ ALIGN_PX = 8                # mira: alinhamento X/Y com os vértices a até 8 px
 TYPING_CHARS = "0123456789,.+-*/() "
 UNIT_CHARS = "mMcC"         # sufixo de unidade: só depois de um dígito (009, R-05)
 TIMER_STEP = 0.1
+TOOLBAR_HEIGHT = 32         # barra superior da planta, em pixels a 100% (013, D-07); escala com `ui_scale`
+NAVIGATION_EVENTS = {'TRACKPADZOOM', 'TRACKPADPAN', 'WHEELUPMOUSE', 'WHEELDOWNMOUSE', 'MIDDLEMOUSE'}   # 013, D-06
 
 COLORS = {
     'background': (0.12, 0.12, 0.13, 1.0),
@@ -53,9 +61,32 @@ def _state(context):
     return context.window_manager.btm_wall_editor
 
 
+def _ui_scale():
+    try:
+        scale = float(bpy.context.preferences.system.ui_scale)
+    except AttributeError:
+        return 1.0
+    return scale if scale > 0 else 1.0        # em segundo plano o Blender devolve 0
+
+
+def _invert_zoom_wheel(context):
+    """Preferência do Blender "inverter o zoom pela roda" (013, D-05; corpus `PreferencesInput.invert_zoom_wheel`)."""
+    try:
+        return bool(context.preferences.inputs.invert_zoom_wheel)
+    except AttributeError:
+        return False
+
+
+def toolbar_height():
+    """Altura da barra superior na tela, em pixels."""
+    return TOOLBAR_HEIGHT * _ui_scale()
+
+
 def _region_rect(region, area=None):
+    """Retângulo da vista: a região menos o painel lateral e menos a barra superior, para que enquadrar, Home e a lupa
+    não deixem paredes atrás da barra (013, D-08)."""
     width = window.visible_width(area, region) if area is not None else float(region.width)
-    return (0.0, 0.0, width, float(region.height))
+    return (0.0, 0.0, width, max(1.0, float(region.height) - toolbar_height()))
 
 
 def ensure_view(region, area=None):
@@ -156,9 +187,99 @@ def draw_plan(context):
     draw.text(12, 12, hint, draw.COLORS['muted'])
     if s.error:
         draw.text(12, 32, s.error, draw.COLORS['warning'])
+    _draw_toolbar(sh, view, s)
     if s.prompt in PROMPTS:
         _draw_prompt(sh, region, PROMPTS[s.prompt])
     draw.end()
+
+
+# Barra superior (013, RN-07, D-07) ----------------------------------------------------------------------------
+
+ZOOM_WINDOW_HINT = N_("Zoom janela: marque um retângulo para enquadrar")
+
+
+def _toolbar_rects(view):
+    """(faixa da barra, botão da lupa) em pixels da região; a barra fica logo acima do retângulo da vista."""
+    top, width, h = view.rect[3], view.rect[2], toolbar_height()
+    side = h - 8
+    return (0.0, top, width, h), (8.0, top + 4, side, side)
+
+
+def _mouse_pixel(view, s):
+    return view.to_screen(s.cursor) if s.cursor is not None else None
+
+
+def _draw_magnifier(sh, r, color):
+    """Lupa com quadrado desenhada em linhas: anel, cabo e o quadrado da janela dentro do anel."""
+    x, y, w, h = r
+    cx, cy, rad = x + w * 0.44, y + h * 0.56, min(w, h) * 0.26
+    ring = [(cx + rad * math.cos(t * math.pi / 8), cy + rad * math.sin(t * math.pi / 8)) for t in range(17)]
+    pts = [p for k in range(16) for p in (ring[k], ring[k + 1])]
+    d = rad * math.cos(math.pi / 4)
+    pts += [(cx + d, cy - d), (cx + d + rad * 0.95, cy - d - rad * 0.95)]          # cabo a 45°
+    q = rad * 0.5
+    pts += [(cx - q, cy - q), (cx + q, cy - q), (cx + q, cy - q), (cx + q, cy + q),
+            (cx + q, cy + q), (cx - q, cy + q), (cx - q, cy + q), (cx - q, cy - q)]
+    draw.lines(sh, pts, color)
+
+
+def _draw_toolbar(sh, view, s):
+    from ..hb_gpu_draw import point_in_rect
+    bar, lupa = _toolbar_rects(view)
+    mouse = _mouse_pixel(view, s)
+    hot = mouse is not None and point_in_rect(mouse[0], mouse[1], lupa)
+    armed = s.zoom_window is not None
+    draw.rect(sh, bar, draw.COLORS['panel'])
+    draw.lines(sh, [(bar[0], bar[1]), (bar[0] + bar[2], bar[1])], draw.COLORS['border'])
+    draw.rect(sh, lupa, draw.COLORS['button_primary'] if armed else (draw.COLORS['button_hot'] if hot
+                                                                     else draw.COLORS['button']))
+    draw.outline(sh, lupa, draw.COLORS['border'])
+    _draw_magnifier(sh, lupa, draw.COLORS['text'])
+    if hot or armed:                                   # dica ao passar o mouse e enquanto o modo está ligado
+        draw.text(lupa[0] + lupa[2] + 10, bar[1] + (bar[3] - draw.FONT_SIZE) / 2.0 + 1, ZOOM_WINDOW_HINT,
+                  draw.COLORS['text'] if armed else draw.COLORS['muted'])
+    if isinstance(s.zoom_window, tuple) and s.zoom_box_end is not None:     # retângulo elástico
+        (x0, y0), (x1, y1) = s.zoom_window, s.zoom_box_end
+        corners = [(x0, y0), (x1, y0), (x1, y1), (x0, y1)]
+        pts = []
+        for k in range(4):
+            pts += draw.dashed(corners[k], corners[(k + 1) % 4])
+        draw.lines(sh, pts, COLORS['selected'])
+
+
+def handle_zoom_window(event, s, view, pixel):
+    """Barra superior e lupa com quadrado (013, RN-07, D-10). Devolve True quando consumiu o evento.
+
+    Função de módulo, não método: as fumaças ligam ao modal falso só a lista de métodos que conhecem."""
+    from ..hb_gpu_draw import point_in_rect
+    bar, lupa = _toolbar_rects(view)
+    press = event.value == 'PRESS'
+    if event.type == 'LEFTMOUSE' and press and point_in_rect(pixel[0], pixel[1], lupa):
+        s.zoom_window = None if s.zoom_window is not None else 'ARMED'      # liga; segundo clique cancela
+        s.zoom_box_end = None
+        return True
+    if event.type == 'LEFTMOUSE' and press and point_in_rect(pixel[0], pixel[1], bar):
+        return True                                   # clique no resto da barra não chega às ferramentas
+    # Soltar sobre a barra segue: conclui o arraste de vértice ou o retângulo da lupa (questions.md, pergunta 9).
+    if s.zoom_window is None:
+        return False
+    if event.type == 'ESC' and press:                 # cancela só o modo: a vista e o desenho ficam como estão
+        s.zoom_window, s.zoom_box_end = None, None
+        return True
+    if event.type == 'LEFTMOUSE' and press:
+        s.zoom_window, s.zoom_box_end = pixel, pixel
+        return True
+    if isinstance(s.zoom_window, tuple):
+        if event.type == 'MOUSEMOVE':
+            s.zoom_box_end = pixel
+            return True
+        if event.type == 'LEFTMOUSE' and event.value == 'RELEASE':
+            bounds = gestures.zoom_window_bounds(view, s.zoom_window, pixel)
+            if bounds is not None:
+                view.fit(bounds, margin=0)
+            s.zoom_window, s.zoom_box_end = None, None
+            return True
+    return False
 
 
 def _draw_crosshair(sh, view, region, s):
@@ -167,7 +288,7 @@ def _draw_crosshair(sh, view, region, s):
     point = (s.snap_point or (s.cursor, 'free'))[0]
     p = view.to_screen(point)
     draw.lines(sh, [(0, p[1]), (region.width, p[1])], COLORS['selected'] if s.lock_y else COLORS['grid_axis'])
-    draw.lines(sh, [(p[0], 0), (p[0], region.height)], COLORS['selected'] if s.lock_x else COLORS['grid_axis'])
+    draw.lines(sh, [(p[0], 0), (p[0], view.rect[3])], COLORS['selected'] if s.lock_x else COLORS['grid_axis'])
     for lock in (s.lock_x, s.lock_y):
         if lock is None:
             continue
@@ -318,6 +439,7 @@ def remove_segment(s, ci, i):
     seg = chain.segments[i]
     if seg.source:
         s.plan.removed_sources.append(seg.source)
+    s.selected = None
     n = len(chain.nodes)
     if chain.closed:
         order = [(i + 1 + k) % n for k in range(n)]
@@ -329,6 +451,13 @@ def remove_segment(s, ci, i):
     right = model.Chain(chain.nodes[i + 1:], chain.segments[i + 1:], False, chain.side)
     parts = [c for c in (left, right) if c.segment_count() > 0]
     s.plan.chains[ci:ci + 1] = parts   # a primeira parede da direita fica solta no OK (aplicador)
+
+
+def remove_node(s, ci, k):
+    """Remove o nó `k` da cadeia `ci`; a parede do trecho eliminado sai da cena no OK (questions.md, pergunta 1)."""
+    seg = s.plan.chains[ci].remove_node(k)
+    if seg.source:
+        s.plan.removed_sources.append(seg.source)
     s.selected = None
 
 
@@ -448,6 +577,9 @@ class BTM_OT_WallEditorModal(bpy.types.Operator):
             closed = tr(", {} sala(s) fechada(s) no OK").format(report['closed']) if report.get('closed') else ""
             self.report({'INFO'}, tr("Paredes aplicadas: {} nova(s), {} atualizada(s), {} removida(s){}.").format(
                 len(report['created']), len(report['updated']), len(report['removed']), closed))
+            if report.get('opening_errors'):
+                self.report({'WARNING'}, tr("Não foi possível montar a porta ou janela real de: {}").format(
+                    ", ".join(report['opening_errors'])))
             return {'FINISHED'}
         if s.request == 'cancel':
             self._end(context, False)
@@ -469,12 +601,17 @@ class BTM_OT_WallEditorModal(bpy.types.Operator):
         view = ensure_view(region, area)
         s.cursor = view.to_world(pixel)
         self.shift = event.shift
-        self._update_snap(context, s, view)
+        if not self._is_navigation(event):
+            self._update_snap(context, s, view)   # navegar não refaz o encaixe: o touchpad manda dezenas de eventos
         handled = self._handle(context, event, s, view, pixel)
         if handled and self.dragging is None:
             s.checkpoint()                    # um passo por ação concluída; o arraste grava ao soltar
         s.redraw()
         return {'RUNNING_MODAL'} if handled else {'PASS_THROUGH'}
+
+    def _is_navigation(self, event):
+        """Evento que só move a vista (013, D-06): pinça, arraste com dois dedos, roda, botão do meio e o arraste dele."""
+        return event.type in NAVIGATION_EVENTS or (event.type == 'MOUSEMOVE' and self.panning is not None)
 
     def _update_snap(self, context, s, view):
         """Ponto travado da mira para o desenho e para o próximo clique (009, D-02)."""
@@ -509,6 +646,8 @@ class BTM_OT_WallEditorModal(bpy.types.Operator):
     # Eventos ------------------------------------------------------------------------------------------------
     def _handle(self, context, event, s, view, pixel):
         state = _state(context)
+        if handle_zoom_window(event, s, view, pixel):
+            return True
         if event.type == 'MIDDLEMOUSE':
             self.panning = pixel if event.value == 'PRESS' else None
             return True
@@ -516,12 +655,20 @@ class BTM_OT_WallEditorModal(bpy.types.Operator):
             view.pan(pixel[0] - self.panning[0], pixel[1] - self.panning[1])
             self.panning = pixel
             return True
-        if event.type in {'WHEELUPMOUSE', 'WHEELDOWNMOUSE'}:
-            view.zoom(1.15 if event.type == 'WHEELUPMOUSE' else 1 / 1.15, pixel)
+        if event.type in {'WHEELUPMOUSE', 'WHEELDOWNMOUSE'}:        # roda e Ctrl + roda (013, RN-04, D-05)
+            view.zoom(gestures.wheel_factor(event.type == 'WHEELUPMOUSE', _invert_zoom_wheel(context)), pixel)
+            return True
+        if event.type == 'TRACKPADZOOM':                              # pinça no touchpad (013, RN-01, D-04)
+            view.zoom(gestures.pinch_factor(compat.pinch_delta(event)), pixel)
+            return True
+        if event.type == 'TRACKPADPAN':                               # arraste com dois dedos (013, RN-03)
+            view.pan(*compat.trackpad_delta(event))
             return True
         if event.type == 'HOME' and event.value == 'PRESS':
             view.fit(s.plan.bounds(), margin=0.15)
             return True
+        if s.zoom_window is not None:
+            return True                       # com a lupa ligada, só navegação e Ctrl+Z passam (D-10)
         if s.prompt in PROMPTS:
             return self._handle_prompt(context, event, s, pixel)
         if state.tool == 'DRAW':
@@ -584,7 +731,7 @@ class BTM_OT_WallEditorModal(bpy.types.Operator):
             node = hit_node(s, pixel)
             if node is not None:
                 try:
-                    s.plan.chains[node[0]].remove_node(node[1])
+                    remove_node(s, *node)
                 except ValueError as exc:
                     s.error = str(exc)
                 s.selected = None
@@ -703,6 +850,9 @@ class BTM_OT_WallEditorModal(bpy.types.Operator):
     def _answer_no(self, context, s):
         if s.prompt == 'close' and getattr(s, 'pending_point', None) is not None and s.drawing is not None:
             self._append(s, _state(context), s.pending_point)
+            s.drawing.keep_open = True
+        if s.prompt == 'close_existing' and s.prompt_chain is not None and s.prompt_chain < len(s.plan.chains):
+            s.plan.chains[s.prompt_chain].keep_open = True
         s.prompt, s.pending_point = None, None
 
     def _handle_prompt(self, context, event, s, pixel):
@@ -749,11 +899,21 @@ class BTM_OT_WallEditorOk(bpy.types.Operator):
         missing = apply.items_that_do_not_fit(s.plan)
         modules = apply.modules_of_removed(s.plan)
         mismatched = apply.height_mismatches(s.plan, s.project_height)
+        if s.equalize_height:
+            try:
+                model.validate('height', s.project_height)
+            except ValueError as exc:
+                s.error = str(exc)
+                self.report({'ERROR'}, s.error)
+                return {'CANCELLED'}
+        signature = (model.plan_signature(s.plan), s.project_height, s.equalize_height)
+        if s.confirm_pending and s.confirm_signature != signature:
+            s.confirm_pending = False     # o rascunho mudou depois do 1º aviso: os avisos são refeitos (DT-04)
         if (missing or modules or mismatched) and not s.confirm_pending:
             s.warnings = [tr("{} não cabe em {}").format(item, wall) for wall, item in missing]
             s.removed_modules = [tr("{} (em {})").format(item, wall) for wall, item in modules]
             s.height_mismatches = mismatched
-            s.confirm_pending = True
+            s.confirm_pending, s.confirm_signature = True, signature
             self.report({'WARNING'}, "Confira os avisos no painel e clique OK de novo para aplicar.")
             return {'CANCELLED'}
         s.request = 'ok'

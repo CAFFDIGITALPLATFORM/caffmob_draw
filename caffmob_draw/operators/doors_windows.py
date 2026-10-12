@@ -1372,6 +1372,10 @@ class home_builder_doors_windows_OT_toggle_double_door(bpy.types.Operator):
                     self.report({'INFO'}, tr("Door set to {}").format(status))
                 except Exception:
                     self.report({'WARNING'}, "Could not find Is Double input")
+                    break
+                # Feature 010 (questions.md, pergunta 24): a porta real acompanha a troca simples ↔ dupla.
+                door_obj.btm_opening_real.kind = 'DOOR' if current else 'DOUBLE_DOOR'
+                _sync_opening(context, door_obj)
                 break
         return {'FINISHED'}
 

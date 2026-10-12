@@ -154,8 +154,7 @@ def save(context, root, name, category, thumbnail=True):
         with os.fdopen(fd, "w", encoding="utf-8") as handle:
             handle.write(manifest.dumps(data))
         written.append(tmp_json)
-        os.replace(tmp_blend, paths["blend"])
-        os.replace(tmp_json, paths["json"])
+        _replace_pair(folder, tmp_blend, tmp_json, paths)
         written = []
     except (OSError, RuntimeError) as exc:
         for path in written:
@@ -165,6 +164,26 @@ def save(context, root, name, category, thumbnail=True):
     if thumbnail:
         _thumbnail(context, _tree(root), paths["png"])
     return paths, []
+
+
+def _replace_pair(folder, tmp_blend, tmp_json, paths):
+    """Troca `.blend` e `.json` juntos: se o segundo `os.replace` falha, o `.blend` anterior volta (RN-15)."""
+    backup = None
+    if os.path.exists(paths["blend"]):
+        fd, backup = tempfile.mkstemp(suffix=".blend", dir=folder)
+        os.close(fd)
+        os.replace(paths["blend"], backup)
+    try:
+        os.replace(tmp_blend, paths["blend"])
+        os.replace(tmp_json, paths["json"])
+    except OSError:
+        if backup is not None:
+            os.replace(backup, paths["blend"])
+        elif os.path.exists(paths["blend"]):
+            os.remove(paths["blend"])
+        raise
+    if backup is not None:
+        os.remove(backup)
 
 
 # Inserção -------------------------------------------------------------------------------------------------------
@@ -186,25 +205,18 @@ def _geo_node_refs(objects):
 
 
 def _missing_styles(data):
-    from .. import hb_project
+    """Estilos do manifesto que a biblioteca não conhece neste arquivo (`style_names` do adaptador, EC-02)."""
     library = data.get("library")
     wanted = set((data.get("styles") or {}).get("door_styles", []))
-    if not wanted:
+    adapter = next((a for a in adapters._adapters() if a.LIBRARY == library), None)
+    if not wanted or adapter is None:
         return []
-    main = hb_project.get_main_scene()
-    if library == 'FRAMELESS':
-        existing = {s.name for s in main.hb_frameless.door_styles}
-    elif library == 'FACE_FRAME':
-        props = main.hb_face_frame
-        existing = {s.name for s in props.door_styles} | {s.name for s in getattr(props, 'drawer_front_styles', [])}
-    else:
-        existing = set()
-    return sorted(wanted - existing)
+    return sorted(wanted - set(adapter.style_names()))
 
 
 def load(context, entry):
     """Anexa o módulo; devolve (raiz, objetos carregados, avisos). Sem raiz → (None, objetos, avisos)."""
-    warnings, data = [], None
+    warnings, data, missing = [], None, []
     if entry.get("has_manifest"):
         with open(entry["json"], encoding="utf-8") as handle:
             data, _spec, errors = manifest.loads(handle.read())
@@ -232,9 +244,10 @@ def load(context, entry):
     elif root is None:
         warnings.append(tr("Nenhum módulo encontrado no arquivo"))
     if missing:
-        # O aviso geral de estilos ausentes substitui o aviso por estilo dos adaptadores (prefixo na língua atual).
-        prefix = tr("Estilo '{}' não existe neste arquivo").split("{}")[0]
-        warnings = [w for w in warnings if not w.startswith(prefix)]
+        # O aviso geral de estilos ausentes substitui o aviso por estilo dos adaptadores, só desses estilos.
+        repeated = ({tr("Estilo '{}' não existe neste arquivo").format(name) for name in missing}
+                    | {tr("Estilo '{}' não existe no closets").format(name) for name in missing})
+        warnings = [w for w in warnings if w not in repeated]
     return root, loaded, common.unique(warnings)
 
 

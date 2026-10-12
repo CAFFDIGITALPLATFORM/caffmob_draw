@@ -1,0 +1,102 @@
+--- caffmob_draw/molding/ops.py	2026-10-07 15:02:11.118912191 -0300
++++ caffmob_draw/molding/ops.py	2026-10-11 12:39:12.366813939 -0300
+@@ -24,24 +24,39 @@
+ )
+ 
+ 
++def scene_molding(scene, molding_type=None):
++    """Package sweeps and their hidden profiles in the scene, optionally
++    scoped to one molding type. Unscoped, it also picks up profiles left
++    behind by a sweep the user deleted by hand."""
++    found = []
++    for obj in scene.objects:
++        if obj.get(MOLDING_TAG):
++            if molding_type and obj.get(MOLDING_TYPE) != molding_type:
++                continue
++            found.append(obj)
++            bevel = obj.data.bevel_object if obj.type == 'CURVE' else None
++            if bevel is not None and bevel.get('IS_HB_MOLDING_PROFILE'):
++                found.append(bevel)
++        elif (molding_type is None and obj.get('IS_HB_MOLDING_PROFILE')
++              and (obj.parent is None or not obj.parent.get(MOLDING_TAG))):
++            found.append(obj)
++    return list(dict.fromkeys(found))
++
++
++def _remove(objs):
++    for obj in objs:
++        try:
++            alive = obj.name in bpy.data.objects
++        except ReferenceError:
++            continue
++        if alive:
++            packages.free_object(obj)
++
++
+ def clear_scene_molding(scene, molding_type=None):
+     """Remove package sweeps (and their hidden profiles) from the
+     scene, optionally scoped to one molding type."""
+-    doomed = []
+-    for obj in list(scene.objects):
+-        if not obj.get(MOLDING_TAG):
+-            continue
+-        if molding_type and obj.get(MOLDING_TYPE) != molding_type:
+-            continue
+-        bevel = obj.data.bevel_object if obj.type == 'CURVE' else None
+-        doomed.append(obj)
+-        if bevel is not None and bevel.get('IS_HB_MOLDING_PROFILE'):
+-            doomed.append(bevel)
+-    for obj in doomed:
+-        data = obj.data
+-        bpy.data.objects.remove(obj, do_unlink=True)
+-        if data is not None and data.users == 0:
+-            bpy.data.curves.remove(data)
++    _remove(scene_molding(scene, molding_type))
+ 
+ 
+ def _resolve_stack(stack, opts):
+@@ -173,8 +188,7 @@
+         spline.use_cyclic_u = cyclic
+         wrote += 1
+     if wrote == 0:
+-        bpy.data.objects.remove(sweep, do_unlink=True)
+-        bpy.data.objects.remove(profile, do_unlink=True)
++        _remove([sweep, profile])
+         return None
+ 
+     # Moldings take the run's cabinet finish: the style material of the
+@@ -252,8 +266,20 @@
+         return 0
+     if scene.get('IS_LAYOUT_VIEW') or scene.get('IS_DETAIL_VIEW'):
+         return 0
+-    clear_scene_molding(scene)
++    # The old sweeps leave only after the new ones are built: a failure
++    # midway removes what was built and keeps the room as it was.
++    old = scene_molding(scene)
++    try:
++        made = _build_all(scene, hb)
++    except Exception:
++        known = {obj.as_pointer() for obj in old}
++        _remove([obj for obj in scene_molding(scene) if obj.as_pointer() not in known])
++        raise
++    _remove(old)
++    return made
++
+ 
++def _build_all(scene, hb):
+     def _override(prop_name):
+         value = getattr(hb, prop_name, 'DEFAULT')
+         return None if value in ('DEFAULT', '') else value
+@@ -315,7 +341,11 @@
+     bl_options = {'UNDO'}
+ 
+     def execute(self, context):
+-        made = apply_scene_packages(context.scene)
++        try:
++            made = apply_scene_packages(context.scene)
++        except Exception as ex:
++            self.report({'ERROR'}, tr("Molding not rebuilt: {}").format(ex))
++            return {'CANCELLED'}
+         self.report({'INFO'}, tr("Rebuilt {} molding run(s)").format(made))
+         return {'FINISHED'}
+ 

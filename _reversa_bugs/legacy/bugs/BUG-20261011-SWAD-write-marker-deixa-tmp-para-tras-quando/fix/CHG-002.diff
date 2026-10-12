@@ -1,0 +1,20 @@
+--- caffmob_draw/legacy/groups.py	2026-10-09 18:04:02.690057981 -0300
++++ caffmob_draw/legacy/groups.py	2026-10-11 21:02:05.480564705 -0300
+@@ -52,9 +52,14 @@
+ def write_marker(marker):
+     path = _marker_path()
+     fd, tmp = tempfile.mkstemp(dir=os.path.dirname(path), suffix=".tmp")
+-    with os.fdopen(fd, 'w', encoding='utf-8') as handle:
+-        handle.write(groups_core.dump_marker(marker))
+-    os.replace(tmp, path)
++    try:
++        with os.fdopen(fd, 'w', encoding='utf-8') as handle:
++            handle.write(groups_core.dump_marker(marker))
++        os.replace(tmp, path)
++    except Exception:
++        if os.path.exists(tmp):             # o marcador antigo continua valendo; o temporário não fica (EC-09)
++            os.remove(tmp)
++        raise
+     invalidate()
+ 
+ 

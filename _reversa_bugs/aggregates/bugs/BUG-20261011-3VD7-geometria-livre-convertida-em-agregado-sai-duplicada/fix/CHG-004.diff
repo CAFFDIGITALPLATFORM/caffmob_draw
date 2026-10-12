@@ -1,0 +1,12 @@
+--- caffmob_draw/ui/object_properties.py	2026-10-08 00:12:40.690983172 -0300
++++ caffmob_draw/ui/object_properties.py	2026-10-11 12:17:59.676252501 -0300
+@@ -263,6 +263,9 @@
+             continue
+         col.prop(g, field)
+     col.prop(g, 'thickness')
++    from ..geometry_free import mesh
++    if mesh.thinner_than_thickness(g.kind, g.plane, g.width, g.depth, g.height, g.thickness):
++        col.label(text="Uma medida da placa é menor que a espessura", icon='ERROR')
+     col.prop(info.obj, 'location', text="Posição")
+     fab = layout.box()
+     fab.prop(g, 'fabrication')

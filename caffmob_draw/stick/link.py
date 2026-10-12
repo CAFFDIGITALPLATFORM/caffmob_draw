@@ -147,7 +147,7 @@ def release(item):
         return False
     world = item.matrix_world.copy()
     parent = st.orig_parent
-    if parent is not None and parent.name not in item.children_recursive and parent != item:
+    if parent is not None and parent not in item.children_recursive and parent != item:
         item.parent = parent
         item.matrix_parent_inverse = Matrix.Identity(4)
         item.matrix_basis = parent.matrix_world.inverted_safe() @ world

@@ -50,7 +50,7 @@ class BTM_OT_AggregateConvert(bpy.types.Operator):
                 self.report({'WARNING'}, f"{obj.name}: {reason}")
                 continue
             face = convert.convert(obj, parent, None if self.face == 'AUTO' else self.face)
-            done.append(f"{obj.name} ({limits.FACE_LABELS[face]})")
+            done.append(f"{obj.name} ({tr(limits.FACE_LABELS[face])})")
         if not done:
             return {'CANCELLED'}
         for obj in context.selected_objects:
@@ -210,12 +210,12 @@ class BTM_OT_DeleteWithAggregates(bpy.types.Operator):
 
     @classmethod
     def poll(cls, context):
-        # Feature 011 (D-05): também quando algum selecionado tem descendentes, para apagar o componente inteiro;
-        # parede, piso e teto seguem no Delete do Blender.
+        # Feature 011 (D-05): também quando algum selecionado tem descendentes, para apagar o componente inteiro.
+        # Parede HB é sempre daqui (remove_wall, questions.md pergunta 5); piso e teto seguem no Delete do Blender.
         from ..selection import component
         return context.mode == 'OBJECT' and any(
-            (o.children and component.deletes_subtree(o)) or _children_aggregates(o) or _stuck_children(o)
-            for o in context.selected_objects)
+            o.get('IS_WALL_BP') or (o.children and component.deletes_subtree(o)) or _children_aggregates(o)
+            or _stuck_children(o) for o in context.selected_objects)
 
     def invoke(self, context, event):
         if not any(_children_aggregates(o) for o in context.selected_objects):
@@ -236,10 +236,13 @@ def delete_components(targets, keep_aggregates=False):
     """Apaga `targets` com a subárvore inteira, de baixo para cima (feature 011, D-05 e D-06).
 
     Itens grudados são soltos no lugar; com `keep_aggregates`, os agregados próprios voltam a ser objetos soltos.
-    Vãos de porta e janela tiram o furo (booleano) da parede; recortes de agregados saem junto.
+    Vãos de porta e janela tiram o furo (booleano) da parede; recortes de agregados saem junto. O que fica e era
+    filho de algo que sai é solto com a matriz de mundo preservada. Parede HB sai por `remove_wall` (pergunta 5).
     """
     from ..selection import component
     _release_stuck_children(targets)
+    walls = [t.name for t in targets if t.get('IS_WALL_BP')]
+    targets = [t for t in targets if not t.get('IS_WALL_BP')]
     plan = component.delete_plan(targets, keep_aggregates=keep_aggregates)
     if keep_aggregates:
         for target in targets:
@@ -257,7 +260,31 @@ def delete_components(targets, keep_aggregates=False):
             bpy.data.objects.remove(cutter, do_unlink=True)
     alive = [obj for obj in plan.remove if obj.name in bpy.data.objects]
     if alive:
+        _keep_children_in_place(alive)
         bpy.data.batch_remove(alive)      # feature 012: em lote; um a um custava segundos com centenas de peças
+    _remove_walls(walls)
+
+
+def _keep_children_in_place(removing):
+    """Filho que fica de um objeto que sai é solto na mesma posição (BUG-20261011-7DHT)."""
+    names = {obj.name for obj in removing}
+    for obj in removing:
+        for child in list(obj.children):
+            if child.name not in names:
+                matrix = child.matrix_world.copy()
+                child.parent = None
+                child.matrix_world = matrix
+
+
+def _remove_walls(names):
+    """Parede HB pelo `remove_wall` (filhos no lugar, `KEEP_WITH_WALL` sai junto) e remitra das vizinhas."""
+    from ..operators import ops_wall_extras
+    neighbors = set()
+    for name in names:
+        wall = bpy.data.objects.get(name)
+        if wall is not None:
+            neighbors.update(ops_wall_extras.remove_wall(wall))
+    ops_wall_extras._remiter(neighbors - set(names))
 
 
 def _stuck_children(obj):

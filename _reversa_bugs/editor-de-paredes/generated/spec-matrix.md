@@ -1,4 +1,4 @@
-<!-- GENERATED, DO NOT EDIT: regenerado por /reversa-debugger-graph em 2026-10-07T19:54:45+00:00 a partir de 6 bugs -->
+<!-- GENERATED, DO NOT EDIT: regenerado por /reversa-debugger-graph em 2026-10-12T01:54:02+00:00 a partir de 6 bugs -->
 
 # Bugs × specs · editor-de-paredes
 
@@ -20,10 +20,10 @@
 | `_reversa_sdd/geometry/requirements.md` | — | — | BUG-20261007-A2G7 |
 | `_reversa_sdd/hb_core/design.md` | — | — | BUG-20261007-YIMY |
 | `_reversa_sdd/operators/edge-cases.md#1.2` | — | — | BUG-20261007-A2G7 |
-| `_reversa_sdd/wall_editor/requirements.md` | — | — | BUG-20261006-KFAR, BUG-20261007-VQ72, BUG-20261007-YIMY, BUG-20261007-ZZUK |
+| `_reversa_sdd/wall_editor/requirements.md` | — | — | BUG-20261006-KFAR, BUG-20261007-YIMY, BUG-20261007-ZZUK, BUG-20261007-VQ72 |
 | **spec-gap** | BUG-20261007-ZZUK | — | — |
 
-## Adendos vigentes
+## Adendos de bug vigentes
 
 - `_reversa_sdd/addenda/bug-BUG-20261006-KFAR-v001.md`
 - `_reversa_sdd/addenda/bug-BUG-20261007-A2G7-v001.md`

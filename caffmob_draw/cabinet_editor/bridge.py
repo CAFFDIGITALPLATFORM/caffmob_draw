@@ -65,7 +65,8 @@ def read_state(root):
     return _state.EditorState(dims, data, structure, scene_divisions.read(root),
                               extras=holder.extras_dict() if holder is not None else {},
                               slides=scene_slides.state_of(root), interiors=scene_interiors.entries(root),
-                              backs=holder.backs_dict() if holder is not None else {})
+                              backs=holder.backs_dict() if holder is not None else {},
+                              assembly=root.btm_cabinet.assembly if is_caffmob_module(root) else "")
 
 
 def library_limits(root, library):
@@ -97,6 +98,8 @@ def apply_state(context, root, target):
     for index, field in enumerate(('width', 'height', 'depth')):
         if abs(current.dimensions[index] - target.dimensions[index]) > 1e-7:
             set_dimension(context, root, field, target.dimensions[index])
+    if target.assembly and target.assembly != current.assembly:
+        messages += set_assembly(context, root, {'assembly': target.assembly})
     if adapter is None:
         return messages
     wanted = spec.from_dict(target.spec)
@@ -651,8 +654,15 @@ def insert_slides(context, root, data):
                                                   "invert": bool(data.get('invert'))})
     out = []
     for warning in warnings:
-        if isinstance(warning, tuple) and warning[0] == 'BLOCKED':
+        kind = warning[0] if isinstance(warning, tuple) else None
+        if kind == 'BLOCKED':
             out.append(common.tr("{} não corre: esbarra em {}").format(warning[1], warning[2] or "—"))
+        elif kind == 'NO_SPACE':                       # não é falta de profundidade (EC-09)
+            out.append(common.tr("Sem vão interno para os deslizantes"))
+        elif kind == 'DEPTH':
+            from ..data import units
+            depth = units.format_length(warning[1], units.get_scene_length_unit(context.scene))
+            out.append(common.tr("Os trilhos precisam de mais profundidade ({})").format(depth))
         else:
             out.append(common.tr("Os trilhos precisam de mais profundidade ({})").format(warning))
     return out

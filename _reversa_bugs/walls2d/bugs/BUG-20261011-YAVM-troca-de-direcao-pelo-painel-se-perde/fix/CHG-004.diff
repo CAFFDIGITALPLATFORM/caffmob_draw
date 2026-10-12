@@ -1,0 +1,19 @@
+--- caffmob_draw/walls2d/apply.py	2026-10-11 12:33:13.445813238 -0300
++++ caffmob_draw/walls2d/apply.py	2026-10-11 21:46:50.579387820 -0300
+@@ -100,12 +100,14 @@
+     paredes de altura cheia passam a esse pé-direito (D-37). Contornos abertos com o fim no início são fechados (D-35).
+     """
+     from ..operators import walls as walls_ops
+-    from . import heights
++    from . import heights, model
++    if project_height is not None:
++        model.validate('height', project_height)        # antes de mexer em qualquer parede (EC-13)
+     report = {'created': [], 'updated': [], 'removed': [], 'closed': 0}
+     used = set()
+     for chain in plan.chains:
+         # Rede de segurança: contorno aberto com o fim no início é fechado antes de aplicar (D-35).
+-        if chain.close_if_touching():
++        if not chain.keep_open and chain.close_if_touching():
+             if not any(sg.source for sg in chain.segments):
+                 chain.side = chain.outward_side()
+             report['closed'] += 1

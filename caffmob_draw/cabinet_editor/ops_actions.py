@@ -216,6 +216,19 @@ class _SessionOperator:
         return props.session() is not None and props.session().root() is not None
 
 
+class BTM_OT_CabinetEditorAssembly(_SessionOperator, bpy.types.Operator):
+    """Troca a montagem do armário pelo rascunho do editor (Ctrl+Z, Cancelar e Aplicar a tratam)"""
+    bl_idname = "caffmob.cabinet_editor_assembly"
+    bl_label = "Montagem"
+
+    assembly: bpy.props.EnumProperty(name="Montagem", items=[('LATERAL', "Lateral passante", ""),
+                                                            ('BASE', "Base passante", "")])  # type: ignore
+
+    def execute(self, context):
+        _push('SET_ASSEMBLY', {'assembly': self.assembly})
+        return {'FINISHED'}
+
+
 class BTM_OT_CabinetEditorDivisionAdd(_SessionOperator, bpy.types.Operator):
     """Adiciona uma chapa de divisão no vão escolhido, com a orientação e os recuos marcados"""
     bl_idname = "caffmob.cabinet_editor_division_add"
@@ -534,7 +547,7 @@ classes = (BTM_OT_CabinetEditorEdit, BTM_OT_CabinetEditorHistory, BTM_OT_Cabinet
            BTM_OT_CabinetEditorDivisionAdd, BTM_OT_CabinetEditorDivisionEdit, BTM_OT_CabinetEditorDivisionRemove,
            BTM_OT_CabinetEditorPartRemove, BTM_OT_CabinetEditorPartRestore, BTM_OT_CabinetEditorPartEdit,
            BTM_OT_CabinetEditorInsert, BTM_OT_CabinetEditorApply, BTM_OT_CabinetEditorPick,
-           BTM_OT_CabinetEditorRemoveItem)
+           BTM_OT_CabinetEditorRemoveItem, BTM_OT_CabinetEditorAssembly)
 
 
 def register():

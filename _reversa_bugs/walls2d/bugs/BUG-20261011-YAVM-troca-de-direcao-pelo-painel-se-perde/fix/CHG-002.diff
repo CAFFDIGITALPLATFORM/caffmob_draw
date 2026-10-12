@@ -1,0 +1,19 @@
+--- caffmob_draw/walls2d/props.py	2026-10-10 04:29:46.141254221 -0300
++++ caffmob_draw/walls2d/props.py	2026-10-11 21:46:42.622586733 -0300
+@@ -36,6 +36,7 @@
+         self.removed_modules = []         # módulos de trechos apagados (D-21)
+         self.remove_modules = False       # "Remover os módulos junto?" (padrão: não)
+         self.confirm_pending = False
++        self.confirm_signature = None     # rascunho e pé-direito do 1º aviso do OK (DT-04)
+         self.request = None               # 'ok' | 'cancel'
+         self.signature = model.plan_signature(plan)   # rascunho na abertura (confirmação do Cancelar, D-30)
+         self.prompt_chain = None          # cadeia da pergunta de fechamento por arraste (D-34)
+@@ -190,7 +191,7 @@
+     chain, i = s.segment() if s else (None, None)
+     if chain is None:
+         return
+-    chain.side = model.SIDES[value]
++    _guard(lambda: setattr(chain, 'side', model.SIDES[value]))      # um passo de desfazer, como os outros campos
+     if any(seg.source for seg in chain.segments):
+         s.error = N_("Direção trocada em paredes existentes: no OK elas mudam de sentido; portas e janelas acompanham "
+                      "e os módulos ficam onde estão.")

@@ -100,12 +100,14 @@ def apply_plan(context, plan, remove_modules=False, project_height=None):
     paredes de altura cheia passam a esse pé-direito (D-37). Contornos abertos com o fim no início são fechados (D-35).
     """
     from ..operators import walls as walls_ops
-    from . import heights
+    from . import heights, model
+    if project_height is not None:
+        model.validate('height', project_height)        # antes de mexer em qualquer parede (EC-13)
     report = {'created': [], 'updated': [], 'removed': [], 'closed': 0}
     used = set()
     for chain in plan.chains:
         # Rede de segurança: contorno aberto com o fim no início é fechado antes de aplicar (D-35).
-        if chain.close_if_touching():
+        if not chain.keep_open and chain.close_if_touching():
             if not any(sg.source for sg in chain.segments):
                 chain.side = chain.outward_side()
             report['closed'] += 1
@@ -174,8 +176,8 @@ def apply_plan(context, plan, remove_modules=False, project_height=None):
     report['floors'], report['ceilings'] = refresh_floors_and_ceilings(context)
     from ..openings import sync as openings_sync        # feature 010: portas e janelas reais acompanham a parede
     context.view_layer.update()
-    report['openings'] = sum(1 for cage in openings_sync.openings(context.scene)
-                             if cage.btm_opening_real.assembly is not None and openings_sync.sync(context, cage))
+    report['openings'], report['opening_errors'] = openings_sync.sync_each(
+        context, [cage for cage in openings_sync.openings(context.scene) if cage.btm_opening_real.assembly is not None])
     return report
 
 

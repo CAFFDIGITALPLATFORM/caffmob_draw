@@ -30,3 +30,22 @@ Para evitar vazamentos de memória e corrupção de malhas no Blender (uma vez q
 * **Mutação de Geometria de Parede (R-11)**: Apenas permitida via chamadas síncronas em update callbacks ou durante a finalização do operador modal.
 * **Mutação de Aberturas (R-12)**: Feita de forma não-destrutiva via modificadores `Boolean` vinculados. O add-on não remove vértices da parede manualmente durante a inserção da porta, garantindo que o histórico da malha e integridade de renderização sejam mantidos.
 * **Cálculo de Nesting (R-13)**: Lógica isolada em puro Python que não modifica objetos na cena 3D. Garante estabilidade operacional mesmo sob grandes volumes de peças.
+
+
+## Re-extração 2026-10-10 — permissões e capacidades atuais
+
+🟢 Não foi identificado RBAC/ACL interno nos módulos analisados. Preferência de biblioteca legada, `poll`, visibilidade de objetos e capacidade de adaptadores são filtros de funcionalidade/contexto, não fronteiras de autorização. Permissões de arquivo são herdadas do processo Blender e do sistema operacional.
+
+| Grupo | Cena / UI | Disco | Restrição relevante |
+|---|---|---|---|
+| canvas2d, walls2d, cabinet_editor | Editor, handlers, rascunho e aplicação | Persistência no blend | Tipo de área, sessão e objeto compatível |
+| selection, measure, move_over, stick | Leitura e alteração de objetos | No `.blend`: `Object.btm_stick` (vínculo do grudar), `Scene.btm_saved_positions` (posições salvas do Mover Sobre) e `Scene.btm_component_select`; estado de sessão em `WindowManager` (`btm_move_over`, `btm_insertion_plane`, `btm_component_exempt`); measure sem propriedade própria _(Revisão cruzada 2026-10-10: stick/props.py:65, move_over/props.py:54-57, selection/component_props.py:35-39)_ | Modo/contexto e plano elegível |
+| collision, inspection | Checagem, overlay e estado de frentes | Save handlers do blend | Escopo de itens; não segregação por usuário |
+| aggregates, customize | Conversão, reconstrução e filhos | Bibliotecas e importações | Formatos/capacidades suportados |
+| standards | Definições e sincronização | JSON/XML e migração | BR/US protegidos na API; USER editável |
+| legacy | UI e conversão | Leitura de arquivos/grupos e marcador | show_legacy_libraries controla UI |
+| library_panel | POST_PIXEL e popover | Categorias/modelos do usuário | Catálogo fixo e categorias próprias |
+| object_library | Salvar/inserir/retexturar | Raiz embutida e raiz do usuário | Embutida somente leitura na UI/fluxo |
+| molding, geometry_free | Criar/reconstruir malhas/curvas | Perfis blend; dados no projeto | Molding restrito a bibliotecas legadas |
+
+A descrição antiga de cutting como inteiramente independente de bpy só se aplica ao núcleo de cálculo: a extração de PartRecord atual lê a cena em `cutting/part_sources.py`. Escrita da biblioteca não é sandbox de segurança; arquivo externo requer validação de formato, não ganha confiança só por estar em uma pasta conhecida.

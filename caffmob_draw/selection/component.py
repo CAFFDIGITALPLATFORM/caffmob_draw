@@ -88,20 +88,21 @@ def collapse(objs, modes=None):
 def own_aggregates(target):
     """Agregados que são componentes próprios abaixo de `target` (os da pergunta "levar os agregados junto?").
 
-    A folha da porta, da janela ou da esquadria é peça delas, não entra.
+    A folha da porta, da janela ou da esquadria é peça delas, não entra. Para em raízes de módulo e não desce em
+    parede, piso e teto: os agregados de lá são de outro componente (questions.md, perguntas 2 e 4).
     """
     found = []
 
     def walk(node):
         for child in node.children:
-            if is_opening_root(child):
+            if is_opening_root(child) or classify.module_library(child):
                 continue
             if _is_own_aggregate(child) and component_root(child) is child:
                 found.append(child)
                 continue
             walk(child)
 
-    if not is_opening_root(target) and not _is_frame_group(target):
+    if not is_opening_root(target) and not _is_frame_group(target) and deletes_subtree(target):
         walk(target)
     return found
 
@@ -120,8 +121,8 @@ def deletes_subtree(obj):
 def delete_plan(targets, keep_aggregates=False):
     """O que apagar ao excluir `targets`: a subárvore inteira, filhos antes dos pais, sem repetir.
 
-    Itens grudados nunca entram (são soltos no lugar); com `keep_aggregates`, os agregados próprios e as peças deles
-    também ficam. Parede, piso e teto saem sozinhos (`deletes_subtree`). `openings` lista os vãos de porta e janela que saem, para tirar o furo da parede.
+    Itens grudados e molduras da corrida nunca entram (são soltos no lugar); com `keep_aggregates`, os agregados
+    próprios e as peças deles também ficam. Parede, piso e teto saem sozinhos (`deletes_subtree`). `openings` lista os vãos de porta e janela que saem, para tirar o furo da parede.
     """
     keep = set()
     for target in targets:
@@ -132,8 +133,8 @@ def delete_plan(targets, keep_aggregates=False):
     def walk(node, is_target):
         if id(node) in seen:
             return
-        if not is_target and (_is_stuck(node) or id(node) in keep):
-            return
+        if not is_target and (_is_stuck(node) or id(node) in keep or node.get('IS_HB_MOLDING_SWEEP')):
+            return                              # moldura é da corrida, não do armário: fica no lugar
         seen.add(id(node))
         if not is_target or deletes_subtree(node):
             for child in list(node.children):

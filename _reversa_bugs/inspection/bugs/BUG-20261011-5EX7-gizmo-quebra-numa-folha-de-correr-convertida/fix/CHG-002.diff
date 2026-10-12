@@ -1,0 +1,15 @@
+--- tests/test_inspection_math.py	2026-10-07 02:15:39.548756244 -0300
++++ tests/test_inspection_math.py	2026-10-11 22:06:07.599765166 -0300
+@@ -44,6 +44,12 @@
+         euler, _loc = pm.pose_for(hinge, 120.0)
+         self.assertAlmostEqual(abs(euler[2]), math.radians(90.0))
+ 
++    def test_encaixe_com_maximo_da_folha(self):
++        # BUG-20261011-GBPG (questions.md, pergunta 62): o dial vai até o máximo da folha, não até 90.
++        self.assertEqual(pm.snap_angle(105.0, maximum=110.0), 105.0)
++        self.assertEqual(pm.snap_angle(130.0, maximum=110.0), 110.0)
++        self.assertEqual(pm.snap_angle(88.0, maximum=110.0), 90.0)
++
+     def test_conversoes_entre_linhas(self):
+         self.assertAlmostEqual(pm.degrees_to_fraction(90, pm.FACE_FRAME_MAX_ANGLE), 0.9)
+         self.assertAlmostEqual(pm.degrees_to_fraction(90, pm.CLOSETS_MAX_ANGLE), 90 / 110)

@@ -1,0 +1,46 @@
+--- caffmob_draw/walls2d/ops_editor.py	2026-10-11 12:33:13.445813238 -0300
++++ caffmob_draw/walls2d/ops_editor.py	2026-10-11 21:46:42.624586683 -0300
+@@ -258,8 +258,9 @@
+         s.zoom_window = None if s.zoom_window is not None else 'ARMED'      # liga; segundo clique cancela
+         s.zoom_box_end = None
+         return True
+-    if event.type == 'LEFTMOUSE' and point_in_rect(pixel[0], pixel[1], bar):
++    if event.type == 'LEFTMOUSE' and press and point_in_rect(pixel[0], pixel[1], bar):
+         return True                                   # clique no resto da barra não chega às ferramentas
++    # Soltar sobre a barra segue: conclui o arraste de vértice ou o retângulo da lupa (questions.md, pergunta 9).
+     if s.zoom_window is None:
+         return False
+     if event.type == 'ESC' and press:                 # cancela só o modo: a vista e o desenho ficam como estão
+@@ -849,6 +850,9 @@
+     def _answer_no(self, context, s):
+         if s.prompt == 'close' and getattr(s, 'pending_point', None) is not None and s.drawing is not None:
+             self._append(s, _state(context), s.pending_point)
++            s.drawing.keep_open = True
++        if s.prompt == 'close_existing' and s.prompt_chain is not None and s.prompt_chain < len(s.plan.chains):
++            s.plan.chains[s.prompt_chain].keep_open = True
+         s.prompt, s.pending_point = None, None
+ 
+     def _handle_prompt(self, context, event, s, pixel):
+@@ -895,11 +899,21 @@
+         missing = apply.items_that_do_not_fit(s.plan)
+         modules = apply.modules_of_removed(s.plan)
+         mismatched = apply.height_mismatches(s.plan, s.project_height)
++        if s.equalize_height:
++            try:
++                model.validate('height', s.project_height)
++            except ValueError as exc:
++                s.error = str(exc)
++                self.report({'ERROR'}, s.error)
++                return {'CANCELLED'}
++        signature = (model.plan_signature(s.plan), s.project_height, s.equalize_height)
++        if s.confirm_pending and s.confirm_signature != signature:
++            s.confirm_pending = False     # o rascunho mudou depois do 1º aviso: os avisos são refeitos (DT-04)
+         if (missing or modules or mismatched) and not s.confirm_pending:
+             s.warnings = [tr("{} não cabe em {}").format(item, wall) for wall, item in missing]
+             s.removed_modules = [tr("{} (em {})").format(item, wall) for wall, item in modules]
+             s.height_mismatches = mismatched
+-            s.confirm_pending = True
++            s.confirm_pending, s.confirm_signature = True, signature
+             self.report({'WARNING'}, "Confira os avisos no painel e clique OK de novo para aplicar.")
+             return {'CANCELLED'}
+         s.request = 'ok'

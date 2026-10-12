@@ -1,0 +1,13 @@
+--- caffmob_draw/data/translations/standards.json	2026-10-07 15:10:02.811462708 -0300
++++ caffmob_draw/data/translations/standards.json	2026-10-11 21:59:12.714531003 -0300
+@@ -67,6 +67,10 @@
+   "pt_BR": "Embutida",
+   "en_US": "Built-in"
+  },
++ "Estrutura do arquivo inválida em {}.": {
++  "pt_BR": "Estrutura do arquivo inválida em {}.",
++  "en_US": "Invalid file structure at {}."
++ },
+  "Filtra parâmetros e componentes pelo nome": {
+   "pt_BR": "Filtra parâmetros e componentes pelo nome",
+   "en_US": "Filters parameters and components by name"

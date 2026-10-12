@@ -15,6 +15,19 @@
 
 ## Histórico de re-extrações
 
+### Re-extração 2026-10-10 18:26
+
+| ID | Veredito | Observação |
+|----|----------|------------|
+| W001 | 🟢 verde | preservada em `_reversa_sdd/stick/requirements.md` RN-20 |
+| W002 | 🟢 verde | preservada em `_reversa_sdd/stick/requirements.md` RN-11/RN-12 e `walls2d/requirements.md` RN-20 (`Dim Y` = espessura); tolerância 0,1 mm não citada literalmente |
+| W003 | 🟢 verde | preservada em `_reversa_sdd/aggregates/requirements.md` RN-29 e `aggregates/design.md` (`_release_stuck_children`) |
+| W004 | 🟡 amarelo | chave global preservada (`collision/requirements.md` RN-10), mas RN-11 diz que só `OFF` age e `ON` equivale a `INHERIT`: equivalência parcial com "Herdar/Ativa/Desativada por item"; aguarda julgamento |
+| W005 | 🟢 verde | preservada em `_reversa_sdd/collision/requirements.md` RN-01 e `inspection/design.md` (`TOLERANCE` 0,001 m, mesma de `collision/rules.py`) |
+| W006 | 🟢 verde | preservada em `_reversa_sdd/canvas2d/requirements.md` (telas 2D dos editores de paredes e armários; RN-14 a RN-16) |
+| W007 | 🟢 verde | preservada em `_reversa_sdd/walls2d/requirements.md` RN-11 e `walls2d/design.md` (`history.py`, assinatura injetável) |
+| W008 | 🟢 verde | preservada em `_reversa_sdd/collision/requirements.md` RF-12/CA-23 (`_collision_note`); verificação é depois do fato, sem bloqueio |
+
 <!-- Preenchido pelo agente reverso em cada `/reversa` futuro: data, veredito 🟢/🟡/🔴 por item. -->
 
 ## Arquivadas

@@ -1,0 +1,13 @@
+--- caffmob_draw/walls2d/apply.py	2026-10-09 03:46:56.101797221 -0300
++++ caffmob_draw/walls2d/apply.py	2026-10-11 12:26:48.992870067 -0300
+@@ -174,8 +174,8 @@
+     report['floors'], report['ceilings'] = refresh_floors_and_ceilings(context)
+     from ..openings import sync as openings_sync        # feature 010: portas e janelas reais acompanham a parede
+     context.view_layer.update()
+-    report['openings'] = sum(1 for cage in openings_sync.openings(context.scene)
+-                             if cage.btm_opening_real.assembly is not None and openings_sync.sync(context, cage))
++    report['openings'], report['opening_errors'] = openings_sync.sync_each(
++        context, [cage for cage in openings_sync.openings(context.scene) if cage.btm_opening_real.assembly is not None])
+     return report
+ 
+ 

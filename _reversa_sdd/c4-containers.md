@@ -32,3 +32,26 @@ C4Container
     Rel(blender, fs, "Salva arquivos .blend e extensões", "Local IO")
     Rel(nesting, fs, "Grava plano de corte e estatísticas", "JSON / TXT")
 ```
+
+
+## Re-extração 2026-10-10 — arquitetura atual
+
+🟢 Um único processo de execução hospeda a extensão. Os containers do diagrama histórico eram componentes internos; não representam serviços separados.
+
+```mermaid
+C4Container
+    title CAFFMob Draw — processos e armazenamento
+    Person(projetista, "Projetista", "Usa Blender")
+    System_Boundary(sistema, "Instalação local") {
+        Container(blender, "Blender com CAFFMob Draw", "Blender 5.2 / Python", "UI, modais, geometria, verificação e produção")
+        ContainerDb(projeto, "Projetos", "Arquivos blend", "Cena, objetos e parâmetros persistidos")
+        ContainerDb(biblioteca, "Biblioteca de usuário", "blend / JSON / PNG", "Módulos e objetos próprios")
+        ContainerDb(padroes, "Padrões e exports", "JSON / XML / CSV", "Configuração e contratos produtivos")
+    }
+    Rel(projetista, blender, "Interage", "UI")
+    Rel(blender, projeto, "Salva e abre", "I/O local")
+    Rel(blender, biblioteca, "Salva e insere", "I/O local")
+    Rel(blender, padroes, "Importa e exporta", "I/O local")
+```
+
+Os armazenamentos são diretórios/arquivos; ContainerDb é notação C4, não declaração de SQL. Cache de previews, métricas e sessões reside em memória no mesmo processo.

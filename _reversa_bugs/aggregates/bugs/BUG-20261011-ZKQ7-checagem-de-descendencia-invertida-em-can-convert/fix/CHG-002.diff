@@ -1,0 +1,11 @@
+--- caffmob_draw/aggregates/convert.py	2026-10-08 16:54:06.090809254 -0300
++++ caffmob_draw/aggregates/convert.py	2026-10-11 11:24:14.667537491 -0300
+@@ -20,7 +20,7 @@
+         return tr("Selecione um objeto de malha para converter")
+     if parent is None:
+         return tr("Selecione também o elemento pai (por último, como ativo)")
+-    if parent == obj or obj in parent.children_recursive:
++    if parent == obj or parent in obj.children_recursive:
+         return tr("O pai não pode ser o próprio objeto nem um filho dele")
+     stick = getattr(obj, 'btm_stick', None)
+     if stick is not None and stick.is_stuck:

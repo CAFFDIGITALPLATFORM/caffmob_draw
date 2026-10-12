@@ -1,0 +1,13 @@
+--- caffmob_draw/object_library/item_io.py	2026-10-09 00:54:34.872877938 -0300
++++ caffmob_draw/object_library/item_io.py	2026-10-11 21:02:05.480564705 -0300
+@@ -107,9 +107,9 @@
+         written.append(tmp_blend)
+         bpy.data.libraries.write(tmp_blend, set(objs), path_remap='RELATIVE_ALL', fake_user=True)
+         fd, tmp_json = tempfile.mkstemp(suffix=".json", dir=os.path.dirname(paths["json"]))
++        written.append(tmp_json)            # antes de escrever: uma falha no dump também apaga o temporário
+         with os.fdopen(fd, "w", encoding="utf-8") as handle:
+             json.dump(catalog.to_manifest(entry), handle, ensure_ascii=False, indent=1)
+-        written.append(tmp_json)
+         os.replace(tmp_blend, paths["blend"])
+         os.replace(tmp_json, paths["json"])
+         written = []

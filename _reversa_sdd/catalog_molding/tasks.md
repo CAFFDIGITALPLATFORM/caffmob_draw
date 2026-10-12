@@ -1,5 +1,7 @@
 # catalog_molding — Tarefas de Implementação
 
+> 🟢 **Decisão do titular (2026-10-10, questions.md#pergunta-98):** unit **histórica por inteiro**: `caffmob_draw/catalog/` não é importado pelo add-on (nenhum `from .catalog`/`import catalog` fora da própria pasta aponta para ele) e não será religado; a parte molduras vale em `_reversa_sdd/molding/`. Não use esta unit como contrato vivo.
+
 > Unit legada (fork do Home Builder 5). Gerado pelo **Writer** (Reversa) em 2026-10-01, nível **detalhado**.
 > Sequência para reimplementar a unit a partir do legado, na API do **Blender 5.2**. Ver [`requirements.md`](requirements.md)
 > e [`design.md`](design.md). Escala: 🟢 CONFIRMADO · 🟡 INFERIDO · 🔴 LACUNA. Caminhos relativos a `blendertomob/`.

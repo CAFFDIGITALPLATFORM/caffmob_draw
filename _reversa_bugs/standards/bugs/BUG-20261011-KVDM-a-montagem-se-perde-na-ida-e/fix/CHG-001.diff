@@ -1,0 +1,105 @@
+--- /dev/null	2026-10-09 20:39:19.815662691 -0300
++++ tests/blender_bug_KVDM_standards.py	2026-10-11 22:00:10.194469408 -0300
+@@ -0,0 +1,102 @@
++"""Reprodução e regressão do lote dos padrões dimensionais: BUG-20261011-KVDM, BUG-20261011-ZK42,
++BUG-20261011-3HN6 e BUG-20261011-EKM7.
++
++Run: blender --background --factory-startup --python-exit-code 1 --python tests/blender_bug_KVDM_standards.py
++
++- a Montagem vai e volta no .btmdim.json; arquivo antigo, sem ela, entra como LATERAL (questions.md, pergunta 48);
++- NaN e inf são recusados (pergunta 49);
++- documento com forma interna errada é recusado com mensagem, sem erro Python (standards EC-05);
++- negativo e não numérico mostram a faixa e o valor recebido, como fora da faixa.
++"""
++
++import json
++import os
++import sys
++import tempfile
++import traceback
++from pathlib import Path
++
++import bpy
++
++sys.path.insert(0, str(Path(__file__).resolve().parent))
++import _blender_env  # noqa: E402,F401
++from caffmob_draw.data import dimension_schema as ds  # noqa: E402
++from caffmob_draw.standards import api, io_json  # noqa: E402
++
++ctx = bpy.context
++FAILURES = []
++THICK = ds.PARAMS['COZ.sheets.LAT.thickness']
++
++
++def check(name, ok, detail=""):
++    print(("OK   " if ok else "FALHA ") + name, detail, flush=True)
++    if not ok:
++        FAILURES.append(name)
++
++
++def assembly_round_trip():
++    api.ensure_ready(ctx.scene)
++    source = api.duplicate_definition(ctx.scene, api.active_definition(ctx.scene), name="Base passante teste")
++    source.assembly = 'BASE'
++    path = os.path.join(tempfile.mkdtemp(), "base.btmdim.json")
++    io_json.export_definition(path, source)
++    imported, _warnings = io_json.import_definition(ctx.scene, path)
++    check("KVDM: a Montagem volta do .btmdim.json", imported.assembly == 'BASE', imported.assembly)
++    with open(path, encoding="utf-8") as handle:
++        data = json.load(handle)
++    data.pop("assembly", None)
++    with open(path, "w", encoding="utf-8") as handle:
++        json.dump(data, handle)
++    old, _warnings = io_json.import_definition(ctx.scene, path)
++    check("KVDM: arquivo antigo, sem a Montagem, entra como LATERAL", old.assembly == 'LATERAL', old.assembly)
++
++
++def non_finite():
++    for value in (float('nan'), float('inf'), "nan"):
++        ok, msg = ds.validate(THICK, value)
++        check(f"ZK42: {value!r} é recusado", not ok and msg.startswith("Valor Inválido"), msg)
++
++
++def malformed():
++    base = {"schema": io_json.FORMAT, "schema_version": 1, "unit": "mm"}
++    line = next(iter(ds.LINE_CODES))
++    cases = {"lines lista": dict(base, lines={line: []}),
++             "edges inteiro": dict(base, lines={line: {"sheets": {"LAT": {"edges": 5}}}}),
++             "schema_version booleano": dict(base, schema_version=True)}
++    for name, document in cases.items():
++        try:
++            io_json.document_to_values(document)
++            outcome = "aceito"
++        except io_json.StandardFileError as exc:
++            outcome = "recusado: " + str(exc)
++        except Exception as exc:
++            outcome = f"erro Python {type(exc).__name__}"
++        check(f"3HN6: {name} é recusado com mensagem", outcome.startswith("recusado"), outcome)
++    path = os.path.join(tempfile.mkdtemp(), "torto.btmdim.json")
++    with open(path, "w", encoding="utf-8") as handle:
++        json.dump(cases["lines lista"], handle)
++    try:
++        result = bpy.ops.caffmob.standards_import_json(filepath=path)
++        ok = result == {'CANCELLED'}
++    except RuntimeError as exc:              # em --background, report ERROR chega como RuntimeError com a mensagem
++        result = str(exc)
++        ok = "Traceback" not in result and "Estrutura do arquivo" in result
++    check("3HN6: Importar Definição recusa sem erro Python", ok, result.splitlines()[-1] if isinstance(result, str)
++          else str(result))
++
++
++def messages():
++    for value in (-1, "abc"):
++        ok, msg = ds.validate(THICK, value)
++        check(f"EKM7: {value!r} mostra a faixa e o valor recebido", not ok and "3" in msg and "60" in msg
++              and "mm" in msg and "recebido" in msg, msg)
++
++
++for step in (assembly_round_trip, non_finite, malformed, messages):
++    try:
++        step()
++    except Exception:
++        traceback.print_exc()
++        FAILURES.append(f"exceção em {step.__name__}")
++print(f"blender_bug_KVDM_standards: {'OK' if not FAILURES else 'FALHAS: ' + ', '.join(FAILURES)}")
++sys.exit(1 if FAILURES else 0)

@@ -74,8 +74,12 @@ classes = (BTM_OT_CheckFrontInterference, BTM_OT_InterferenceGoto)
 def register():
     for cls in classes:
         bpy.utils.register_class(cls)
+    if interference.on_depsgraph_update not in bpy.app.handlers.depsgraph_update_post:
+        bpy.app.handlers.depsgraph_update_post.append(interference.on_depsgraph_update)
 
 
 def unregister():
+    if interference.on_depsgraph_update in bpy.app.handlers.depsgraph_update_post:
+        bpy.app.handlers.depsgraph_update_post.remove(interference.on_depsgraph_update)
     for cls in reversed(classes):
         bpy.utils.unregister_class(cls)

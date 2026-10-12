@@ -1,0 +1,87 @@
+--- /dev/null	2026-10-09 20:39:19.815662691 -0300
++++ tests/blender_bug_SWAD_temp_files.py	2026-10-11 21:02:05.484564678 -0300
+@@ -0,0 +1,84 @@
++"""Reprodução e regressão do lote dos temporários: BUG-20261011-SWAD e BUG-20261011-5JLF.
++
++Run: blender --background --factory-startup --python-exit-code 1 --python tests/blender_bug_SWAD_temp_files.py
++
++- `legacy.groups.write_marker` que falha não deixa o `.tmp` na pasta (legacy EC-09);
++- `object_library.item_io.save` que falha durante o `json.dump` não deixa o `.json` temporário.
++"""
++
++import json
++import os
++import sys
++import tempfile
++import traceback
++from pathlib import Path
++
++import bpy
++
++sys.path.insert(0, str(Path(__file__).resolve().parent))
++import _blender_env as env  # noqa: E402
++from caffmob_draw.legacy import groups  # noqa: E402
++from caffmob_draw.object_library import item_io  # noqa: E402
++
++FAILURES = []
++
++
++def check(name, ok, detail=""):
++    print(("OK   " if ok else "FALHA ") + name, detail, flush=True)
++    if not ok:
++        FAILURES.append(name)
++
++
++def leftovers(folder):
++    return sorted(name for root, _dirs, files in os.walk(folder) for name in files if name.startswith("tmp"))
++
++
++def marker():
++    folder = os.path.dirname(groups._marker_path())
++    os.makedirs(folder, exist_ok=True)
++    original = os.replace
++
++    def flaky(src, dst, *args, **kwargs):
++        raise OSError("falha simulada ao gravar o marcador")
++
++    os.replace = flaky
++    try:
++        try:
++            groups.write_marker(groups.read_marker())
++            raised = False
++        except OSError:
++            raised = True
++    finally:
++        os.replace = original
++    check("SWAD: a falha do marcador continua avisada", raised)
++    check("SWAD: sem .tmp na pasta do marcador", not [n for n in os.listdir(folder) if n.endswith(".tmp")],
++          str(os.listdir(folder)))
++
++
++def item_save():
++    env.clean_scene()
++    root = bpy.data.objects.new("Vaso", bpy.data.meshes.new("Vaso"))
++    bpy.context.scene.collection.objects.link(root)
++    folder = tempfile.mkdtemp(prefix="caffmob_items_")
++    original = json.dump
++
++    def flaky(*args, **kwargs):
++        raise OSError("disco cheio (simulado)")
++
++    json.dump = flaky
++    try:
++        item, errors = item_io.save(bpy.context, root, "Vaso", "DECOR", thumb=False, folder=folder)
++    finally:
++        json.dump = original
++    check("5JLF: a falha é avisada", item is None and bool(errors), str(errors))
++    check("5JLF: sem temporários na pasta", not leftovers(folder), str(leftovers(folder)))
++
++
++for step in (marker, item_save):
++    try:
++        step()
++    except Exception:
++        traceback.print_exc()
++        FAILURES.append(f"exceção em {step.__name__}")
++print(f"blender_bug_SWAD_temp_files: {'OK' if not FAILURES else 'FALHAS: ' + ', '.join(FAILURES)}")
++sys.exit(1 if FAILURES else 0)

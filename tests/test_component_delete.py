@@ -4,7 +4,7 @@ import unittest
 
 import _bootstrap  # noqa: F401
 from caffmob_draw.selection import component as c
-from test_component_core import agregado, balcao, esquadria, folha, macaneta, piso, porta, wall
+from test_component_core import Obj, agregado, balcao, esquadria, folha, macaneta, piso, porta, wall
 
 
 class DeleteTest(unittest.TestCase):
@@ -46,6 +46,24 @@ class DeleteTest(unittest.TestCase):
         self.assertEqual(c.own_aggregates(balcao), [agregado])
         self.assertEqual(c.own_aggregates(porta), [])        # folha da porta é peça da porta, sem pergunta
         self.assertEqual(c.own_aggregates(esquadria), [])
+
+    def test_moldura_da_corrida_fica(self):
+        # BUG-20261011-XP5E: o sweep de moldura fica pendurado no 1º armário da corrida, mas é da corrida.
+        armario = Obj("Balcao 3", IS_FRAMELESS_CABINET_CAGE=True)
+        Obj("MoldingSweep", armario, IS_HB_MOLDING_SWEEP=True)
+        self.assertEqual(self.names(c.delete_plan([armario]).remove), ["Balcao 3"])
+
+    def test_agregados_param_em_parede_e_modulo(self):
+        # BUG-20261011-TUWO/DXOV (perguntas 2 e 4): parede, piso e teto não levam a subárvore, e os agregados de um
+        # módulo filho são do módulo; nenhum entra na pergunta nem é desconvertido.
+        self.assertEqual(c.own_aggregates(wall), [])
+        self.assertEqual(c.own_aggregates(piso), [])
+        self.assertEqual(self.names(c.delete_plan([wall], keep_aggregates=True).remove), ["Parede"])
+        caixa = Obj("Caixa")
+        modulo = Obj("Balcao 2", caixa, IS_FRAMELESS_CABINET_CAGE=True)
+        fruteira = Obj("Fruteira 2", modulo, aggregate='AGGREGATE')
+        self.assertEqual(c.own_aggregates(caixa), [])
+        self.assertEqual(c.own_aggregates(modulo), [fruteira])
 
 
 if __name__ == "__main__":

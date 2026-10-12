@@ -20,7 +20,7 @@ def can_convert(obj, parent):
         return tr("Selecione um objeto de malha para converter")
     if parent is None:
         return tr("Selecione também o elemento pai (por último, como ativo)")
-    if parent == obj or obj in parent.children_recursive:
+    if parent == obj or parent in obj.children_recursive:
         return tr("O pai não pode ser o próprio objeto nem um filho dele")
     stick = getattr(obj, 'btm_stick', None)
     if stick is not None and stick.is_stuck:

@@ -1,0 +1,22 @@
+--- tests/test_cotas.py	2026-10-06 23:57:26.215526683 -0300
++++ tests/test_cotas.py	2026-10-11 22:26:39.821755396 -0300
+@@ -53,5 +53,19 @@
+         self.assertAlmostEqual(c.slide(BALCAO, OBST, WALL, 0.0, avoid=False), 0.0)
+ 
+ 
++    def test_vizinho_oposto_e_teto(self):
++        # BUG-20261011-3W52 (questions.md, pergunta 12): sobrepor o vizinho do outro lado ou passar do teto é recusado.
++        with self.assertRaises(ValueError):
++            c.apply('posterior', 2.0, BALCAO, OBST, WALL, CEILING)        # x0 = 0,4: em cima do vizinho 0,2–0,8
++        with self.assertRaises(ValueError):
++            c.apply('inferior', 3.0, BALCAO, OBST, WALL, CEILING)         # 3,0 + 0,72 > 2,6
++        self.assertAlmostEqual(c.apply('inferior', 1.88, BALCAO, OBST, WALL, CEILING).z0, 1.88)   # encostar no teto vale
++
++    def test_campo_desconhecido(self):
++        # BUG-20261011-WJHO (EC-07): campo desconhecido é ValueError também com valor negativo.
++        for value in (-1.0, 1.0):
++            with self.assertRaises(ValueError):
++                c.apply('lateral', value, BALCAO, OBST, WALL, CEILING)
++
+ if __name__ == "__main__":
+     unittest.main()

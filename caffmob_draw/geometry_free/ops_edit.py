@@ -4,11 +4,13 @@ As medidas, a forma, a fabricação e o material são editados na janela de prop
 grupo "Geometria"), direto em `btm_geometry`. Aqui ficam as ações, todas com desfazer:
 - Duplicar: cópia com malha própria, ao lado (+X local);
 - Espelhar: passa a peça para o outro lado do ponto de origem no X local (a origem continua no mesmo lugar);
-- Excluir: remove a geometria.
+- Excluir: remove a geometria; os filhos ficam onde estavam.
+
+Com pai (parede, grupo), tudo é calculado no espaço da própria peça (questions.md, pergunta 65).
 """
 
 import bpy  # type: ignore
-from mathutils import Vector  # type: ignore
+from mathutils import Matrix  # type: ignore
 
 from . import mesh
 
@@ -39,8 +41,7 @@ class BTM_OT_GeometryDuplicate(_GeometryAction, bpy.types.Operator):
             collection.objects.link(copy)
         x = mesh.size(*(getattr(obj.btm_geometry, k) for k in ('kind', 'plane', 'width', 'depth', 'height',
                                                                    'thickness')))[0]
-        copy.matrix_world = obj.matrix_world.copy()
-        copy.location = obj.matrix_world @ Vector((x, 0.0, 0.0))
+        copy.matrix_world = obj.matrix_world @ Matrix.Translation((x, 0.0, 0.0))
         if 'btm_uid' in copy:
             del copy['btm_uid']
         obj.select_set(False)
@@ -58,12 +59,11 @@ class BTM_OT_GeometryMirror(_GeometryAction, bpy.types.Operator):
         obj = _active_geometry(context)
         x = mesh.size(*(getattr(obj.btm_geometry, k) for k in ('kind', 'plane', 'width', 'depth', 'height',
                                                                    'thickness')))[0]
-        offset = obj.matrix_world.to_3x3() @ Vector((x, 0.0, 0.0))
         if obj.get('btm_mirrored'):
-            obj.location += offset
+            obj.matrix_world = obj.matrix_world @ Matrix.Translation((x, 0.0, 0.0))
             del obj['btm_mirrored']
         else:
-            obj.location -= offset
+            obj.matrix_world = obj.matrix_world @ Matrix.Translation((-x, 0.0, 0.0))
             obj['btm_mirrored'] = True
         return {'FINISHED'}
 
@@ -75,6 +75,10 @@ class BTM_OT_GeometryDelete(_GeometryAction, bpy.types.Operator):
 
     def execute(self, context):
         obj = _active_geometry(context)
+        for child in list(obj.children):
+            matrix = child.matrix_world.copy()
+            child.parent = None
+            child.matrix_world = matrix
         data = obj.data
         bpy.data.objects.remove(obj, do_unlink=True)
         if data.users == 0:

@@ -11,3 +11,24 @@ C4Context
     Rel(blendertomob, blender, "Executa scripts bpy/bmesh e renderiza overlays via GPU", "Blender Python API")
     Rel(blendertomob, filesystem, "Lê/escreve propriedades customizadas e exporta plano de corte", "JSON / ZIP")
 ```
+
+
+## Re-extração 2026-10-10 — arquitetura atual
+
+🟢 Contexto atual. Integrações por arquivo não são APIs de servidores externos.
+
+```mermaid
+C4Context
+    title CAFFMob Draw — contexto atual
+    Person(projetista, "Projetista / marceneiro", "Modela ambientes e prepara peças")
+    System(ext, "CAFFMob Draw", "Extensão local de marcenaria paramétrica")
+    System_Ext(host, "Blender 5.2", "Hospeda UI, cena e API Python")
+    System_Ext(arquivos, "Arquivos locais", "Projetos, bibliotecas, padrões e produção")
+    System_Ext(promob, "Ferramenta compatível com XML Promob", "Origem/destino de padrão dimensional")
+    System_Ext(conteudo, "Fontes de conteúdo 3D", "Arquivos OBJ e SKP do usuário")
+    Rel(projetista, ext, "Edita, posiciona, inspeciona e exporta", "Mouse / teclado / UI")
+    Rel(ext, host, "Registra tipos e altera cena", "API Python / handlers")
+    Rel(ext, arquivos, "Lê e grava", "blend / JSON / PNG / CSV")
+    Rel(ext, promob, "Importa e reexporta padrões", "Arquivo XML local")
+    Rel(ext, conteudo, "Importa conteúdo", "OBJ / SKP local")
+```

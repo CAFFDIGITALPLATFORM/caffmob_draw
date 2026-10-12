@@ -183,3 +183,25 @@ def get_builtin_shader(name_3d='UNIFORM_COLOR', name_2d='2D_UNIFORM_COLOR'):
         except Exception:
             return gpu.shader.from_builtin('UNIFORM_COLOR')
 
+
+
+def trackpad_delta(event):
+    """Deslocamento (dx, dy) de um evento de touchpad `TRACKPADZOOM`/`TRACKPADPAN`, em pixels (013, D-03).
+
+    O Blender guarda o delta do gesto no próprio evento: `mouse_x/y` é a posição atual e `mouse_prev_x/y` é a posição
+    menos o delta (corpus 5.2: `bpy.types.Event.mouse_prev_x`, `mouse_prev_y`). A prova D-02 (`tests/
+    blender_013_trackpad_probe.py`) confirmou que o modal recebe os dois tipos com esse delta. Se uma versão do
+    Blender mudar a codificação, o ajuste fica só aqui.
+    """
+    return (event.mouse_x - event.mouse_prev_x, event.mouse_y - event.mouse_prev_y)
+
+
+def pinch_delta(event):
+    """Tamanho da pinça de um `TRACKPADZOOM`: > 0 quando os dedos se afastam (aproximar), < 0 quando se juntam.
+
+    Convenção do Blender (`wm_event_system`, gesto Magnify): o delta vem no eixo X (macOS e Wayland), negado, de modo
+    que aproximar é `mouse_prev_x > mouse_x`. Soma os dois eixos para cobrir uma plataforma que use o Y. O sentido
+    real está anotado em `_reversa_forward/013-touchpad-editor-parede/investigation.md` §6 (prova à mão).
+    """
+    dx, dy = trackpad_delta(event)
+    return -(dx + dy)

@@ -24,6 +24,7 @@ from . import build, door_core, props, window_core
 
 DOOR_FLAG, WINDOW_FLAG = 'IS_ENTRY_DOOR_BP', 'IS_WINDOW_BP'
 SWING_MAX = 90.0
+PART_PROP = 'btm_opening_part'       # objeto criado pela montagem (os demais são do usuário e ficam, DT-05)
 
 
 def is_opening(obj):
@@ -31,10 +32,13 @@ def is_opening(obj):
 
 
 def _swing(cage):
-    """(objeto do símbolo 2D, Is Left, Swing Inside, Is Double) ou Nones."""
+    """(objeto do símbolo 2D, Is Left, Swing Inside, Is Double) ou Nones. Só o símbolo de giro conta: cota ou texto
+    2D pendurado na caixa não (questions.md, pergunta 23)."""
     for child in cage.children:
         if child.get('IS_2D_ANNOTATION'):
             swing = hb_types.GeoNodeObject(child)
+            if not (swing.has_modifier() and swing.has_input('Swing Inside')):
+                continue
             try:
                 return (child, bool(swing.get_input('Is Left')), bool(swing.get_input('Swing Inside')),
                         bool(swing.get_input('Is Double')))
@@ -47,12 +51,12 @@ def kind_of(cage):
     if cage.get(WINDOW_FLAG):
         return 'WINDOW'
     data = cage.btm_opening_real
-    if data.kind != 'NONE':
-        return data.kind
     swing, _left, _inside, double = _swing(cage)
+    if data.kind not in ('NONE', 'DOOR', 'DOUBLE_DOOR'):
+        return data.kind
     if swing is None:
-        return 'OPEN_DOOR'
-    return 'DOUBLE_DOOR' if double else 'DOOR'
+        return 'OPEN_DOOR' if data.kind == 'NONE' else data.kind
+    return 'DOUBLE_DOOR' if double else 'DOOR'      # simples ou dupla segue o símbolo (Toggle Double Door, DT-03)
 
 
 def _dims(cage):
@@ -93,11 +97,26 @@ def _remember(assembly):
     return opens, production
 
 
+def _created(assembly, cage):
+    """Objetos criados pela montagem; montagem antiga, sem a marca: os de nome da caixa (todos começam por ele)."""
+    tree = [assembly] + list(assembly.children_recursive)
+    if any(obj.get(PART_PROP) for obj in tree):
+        return [obj for obj in tree if obj.get(PART_PROP)]
+    base = cage.name.split(".")[0]
+    return [obj for obj in tree if obj.name.startswith(base)]
+
+
 def clear(cage):
+    """Apaga a montagem; o que o usuário pendurou nela fica, filho da caixa, no mesmo lugar (questions.md, pergunta 26)."""
     assembly = cage.btm_opening_real.assembly
     if assembly is None or assembly.name not in bpy.data.objects:
         return
-    for obj in list(assembly.children_recursive) + [assembly]:
+    created = _created(assembly, cage)
+    names = {obj.name for obj in created}
+    for obj in list(assembly.children_recursive):
+        if obj.name not in names and obj.parent is not None and obj.parent.name in names:
+            _parent_keep(obj, cage)
+    for obj in created:
         if obj.name in bpy.data.objects:
             data = obj.data if obj.type == 'MESH' else None
             bpy.data.objects.remove(obj, do_unlink=True)
@@ -194,12 +213,26 @@ def sync(context, cage, force=False):
             sash.btm_aggregate.open_value = opens[base]
         if base in production:
             sash.btm_aggregate.production_part = True
+    for obj in [frame] + list(frame.children_recursive):
+        obj[PART_PROP] = True
     data.kind = kind
     data.assembly = frame
     data.signature = sig
     data.model_version = props.MODEL_VERSION
     _style_cage(context, cage)
     return True
+
+
+def sync_each(context, cages, force=False):
+    """`sync` em cada caixa; a falha de uma não impede as outras (EC-11). Devolve (montadas, nomes que falharam)."""
+    done, failed = 0, []
+    for cage in cages:
+        try:
+            done += bool(sync(context, cage, force=force))
+        except Exception as exc:
+            print(f"CAFFMob Draw: porta/janela real não montada em {cage.name} ({exc})")
+            failed.append(cage.name)
+    return done, failed
 
 
 def openings(scene):

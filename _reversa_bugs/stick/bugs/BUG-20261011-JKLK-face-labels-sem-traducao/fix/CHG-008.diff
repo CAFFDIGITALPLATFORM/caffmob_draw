@@ -1,0 +1,13 @@
+--- caffmob_draw/data/translations/geometry_free.json	2026-10-07 15:10:02.813462715 -0300
++++ caffmob_draw/data/translations/geometry_free.json	2026-10-11 22:10:52.133814583 -0300
+@@ -51,6 +51,10 @@
+   "pt_BR": "Passa a geometria para o outro lado do ponto de origem (X local)",
+   "en_US": "Moves the geometry to the other side of the origin (local X)"
+  },
++ "Trás": {
++  "pt_BR": "Trás",
++  "en_US": "Back"
++ },
+  "Uma caixa fechada de seis chapas": {
+   "pt_BR": "Uma caixa fechada de seis chapas",
+   "en_US": "A closed box of six sheets"

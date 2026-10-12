@@ -1,0 +1,13 @@
+--- caffmob_draw/inspection/fronts.py	2026-10-07 15:05:53.615652161 -0300
++++ caffmob_draw/inspection/fronts.py	2026-10-11 22:05:40.061020430 -0300
+@@ -43,6 +43,10 @@
+     def max_value(self):
+         return pivot_math.MAX_ANGLE if self.hinged else 1.0
+ 
++    def travel(self):
++        """Curso de correr em metros; 0 = sem curso (o gizmo esconde a seta). Os adaptadores de gaveta sobrescrevem."""
++        return 0.0
++
+     @property
+     def label(self):
+         return f"{KIND_LABELS.get(self.kind, self.kind)} — {self.obj.name}"

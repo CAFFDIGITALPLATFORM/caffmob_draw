@@ -1,0 +1,13 @@
+--- caffmob_draw/inspection/adapters/aggregate_leaf.py	2026-10-07 15:05:53.614652158 -0300
++++ caffmob_draw/inspection/adapters/aggregate_leaf.py	2026-10-11 22:05:40.062020496 -0300
+@@ -76,6 +76,10 @@
+                 reference = Vector((0.0, 0.0, -1.0 if agg.hinge == 'TOP' else 1.0))
+         return world @ base, (rot @ axis).normalized(), (rot @ reference).normalized()
+ 
++    def travel(self):
++        """Curso da folha de correr (questions.md, pergunta 61); a de giro não tem curso."""
++        return 0.0 if self.hinged else float(self.obj.btm_aggregate.travel)
++
+     def objects(self):
+         return [self.obj] + list(self.obj.children_recursive)
+ 

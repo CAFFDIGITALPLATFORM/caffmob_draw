@@ -14,6 +14,7 @@ O Promob numera 1 = topo, 2 = base, 3 = direita, 4 = esquerda numa lateral em p�
 `PROMOB_EDGE_TO_SIDE` converte entre as duas numerações.
 """
 
+import math
 from dataclasses import dataclass
 
 INCH_MM = 25.4
@@ -311,12 +312,16 @@ def validate(param, value):
             return True, ""
         return False, (f"Valor Inválido: {param.label_pt} deve ser um de "
                        f"{', '.join(param.enum_items)} (recebido: {value}).")
+    span = f"entre {_fmt(param.min)} e {_fmt(param.max)} {param.unit}"
     try:
         number = float(value)
     except (TypeError, ValueError):
-        return False, f"Valor Inválido: {param.label_pt} precisa ser numérico (recebido: {value})."
+        return False, f"Valor Inválido: {param.label_pt} precisa ser numérico, {span} (recebido: {value})."
+    if not math.isfinite(number):                  # NaN e inf passavam por todas as comparações (EC-04)
+        return False, f"Valor Inválido: {param.label_pt} precisa ser um número finito, {span} (recebido: {value})."
     if number < 0 and not param.negative_allowed:
-        return False, f"Valor Inválido: {param.label_pt} não aceita valor negativo."
+        return False, (f"Valor Inválido: {param.label_pt} não aceita valor negativo: deve estar {span} "
+                       f"(recebido: {_fmt(number)} {param.unit}).")
     if number < param.min or number > param.max:
         return False, (f"Valor Inválido: {param.label_pt} deve estar entre {_fmt(param.min)} e "
                        f"{_fmt(param.max)} {param.unit} (recebido: {_fmt(number)} {param.unit}).")

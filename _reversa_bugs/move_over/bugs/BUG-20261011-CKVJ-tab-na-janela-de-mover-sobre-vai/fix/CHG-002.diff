@@ -1,0 +1,39 @@
+--- caffmob_draw/move_over/ops_dialog.py	2026-10-07 15:34:54.418791919 -0300
++++ caffmob_draw/move_over/ops_dialog.py	2026-10-11 22:08:06.187870688 -0300
+@@ -263,7 +263,12 @@
+     def _commit_typing(self):
+         try:
+             if self.typing == ROTATION:
+-                value = float(self.buffer.replace(",", ".").replace("°", "").strip() or 0.0)
++                text = self.buffer.replace(",", ".").replace("°", "").strip() or "0"
++                try:
++                    value = float(text)
++                except ValueError:          # sem a mensagem crua do Python, em inglês (EC-08)
++                    raise ValueError(tr("Valor Inválido: a rotação precisa ser um número em graus (recebido: {}).")
++                                     .format(self.buffer)) from None
+             else:
+                 value = units.parse_length(self.buffer, units.get_scene_length_unit(),
+                                            allow_negative=self.typing != STEP, allow_zero=self.typing != STEP)
+@@ -314,9 +319,11 @@
+             elif event.type == 'ESC':
+                 self.typing, self.buffer = None, ""
+             elif event.type == 'TAB':
+-                if self.buffer:
+-                    self._commit_typing()
+-                self.typing = 0 if self.typing is None else (self.typing + 1) % FIELD_COUNT
++                # Grava e vai ao próximo campo; valor inválido fica no campo com o aviso (questions.md, pergunta 15).
++                current = self.typing
++                if self.buffer and not self._commit_typing():
++                    return {'RUNNING_MODAL'}
++                self.typing, self.buffer = (current + 1) % FIELD_COUNT, ""
+             elif event.type == 'BACK_SPACE':
+                 self.buffer = self.buffer[:-1]
+             elif event.unicode and event.unicode in "0123456789,.-mc °":
+@@ -358,6 +365,7 @@
+                 delta = reposition.step_delta(event.type, self.state.step)
+                 if delta is not None:
+                     self.mo.nudge(delta)
++                    self.warned, self.warning = False, ""      # o próximo Confirmar verifica de novo (pergunta 18)
+                     self._fit_views()
+         return {'RUNNING_MODAL'}
+ 

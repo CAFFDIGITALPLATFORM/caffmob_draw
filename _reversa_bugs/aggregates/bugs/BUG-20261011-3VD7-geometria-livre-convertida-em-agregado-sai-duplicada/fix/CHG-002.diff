@@ -1,0 +1,56 @@
+--- caffmob_draw/cutting/part_sources.py	2026-10-09 18:12:01.342310581 -0300
++++ caffmob_draw/cutting/part_sources.py	2026-10-11 12:17:59.676252501 -0300
+@@ -69,6 +69,16 @@
+     return str(uid)
+ 
+ 
++def _unique_uid(obj, seen):
++    """`btm_uid` de uma peça solta; a cópia nativa (Shift+D) que trouxe o uid de outra ganha um novo (EC-12)."""
++    uid = ensure_module_uid(obj)
++    if uid in seen:
++        del obj[UID_PROP]
++        uid = ensure_module_uid(obj)
++    seen.add(uid)
++    return uid
++
++
+ def _is_btm_module(obj):
+     plane = getattr(obj, 'btm_plane', None)
+     return plane is not None and getattr(plane, 'object_kind', '') == 'MODULE'
+@@ -278,12 +288,13 @@
+     fica vazia para a matéria-prima digitada valer (sem fitas e sem limite de chapa do padrão).
+     """
+     from ..geometry_free import mesh
+-    records = []
+-    for obj in scene.objects:
++    records, seen = [], set()
++    objects = sorted(scene.objects, key=lambda o: o.name)      # a cópia ("Placa.001") cede o uid ao original
++    for obj in objects:
+         if not mesh.is_geometry(obj) or not obj.btm_geometry.fabrication or not _visible(obj):
+             continue
+         g = obj.btm_geometry
+-        uid = ensure_module_uid(obj)
++        uid = _unique_uid(obj, seen)
+         for index, (name, length, width, thickness) in enumerate(
+                 mesh.sheets(g.kind, g.plane, g.width, g.depth, g.height, g.thickness)):
+             records.append(PartRecord(
+@@ -292,14 +303,17 @@
+                 length=length * 1000.0, width=width * 1000.0, thickness=thickness * 1000.0,
+                 finish=g.finish, source="FREE_GEOMETRY", material=g.material))
+     # Agregados marcados como peça de produção (feature 003, RN-13): uma placa com as medidas da caixa deles.
++    # Geometria livre convertida em agregado já saiu como geometria (questions.md, pergunta 67).
+     from ..aggregates import production
+-    for obj in scene.objects:
++    for obj in objects:
++        if mesh.is_geometry(obj):
++            continue
+         sheet = production.sheet(obj) if getattr(obj, 'btm_aggregate', None) is not None else None
+         if sheet is None or not _visible(obj):
+             continue
+         g = obj.btm_geometry
+         name, length, width, thickness = sheet
+-        uid = ensure_module_uid(obj)
++        uid = _unique_uid(obj, seen)
+         records.append(PartRecord(
+             uid=f"{uid}/{g.component}/0", module_uid=None, module_name=name, line="", name=name,
+             component=g.component, length=length * 1000.0, width=width * 1000.0, thickness=thickness * 1000.0,

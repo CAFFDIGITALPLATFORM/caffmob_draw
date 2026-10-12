@@ -1,0 +1,17 @@
+--- caffmob_draw/ui/object_properties.py	2026-10-11 12:24:07.415383583 -0300
++++ caffmob_draw/ui/object_properties.py	2026-10-11 22:26:39.821755396 -0300
+@@ -78,10 +78,11 @@
+ def _cota_getter(field):
+     def get(_self):
+         obj = bpy.context.active_object
+-        mc = scene_cotas.for_object(obj, bpy.context.scene) if obj else None
+-        if mc is None:
++        try:
++            mc = scene_cotas.for_object(obj, bpy.context.scene) if obj else None
++            value = getattr(mc.compute(), field) if mc is not None else None
++        except ValueError:                # parede sem o modificador ou o input Length: o desenho segue (EC-08)
+             return 0.0
+-        value = getattr(mc.compute(), field)
+         return 0.0 if value is None else float(value)
+     return get
+ 

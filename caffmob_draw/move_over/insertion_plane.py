@@ -34,8 +34,14 @@ class BTM_OT_SetInsertionPlane(bpy.types.Operator):
         return {'RUNNING_MODAL'}
 
     def _end(self, context):
-        context.workspace.status_text_set(None)
-        context.window.cursor_set('DEFAULT')
+        if context.workspace is not None:
+            context.workspace.status_text_set(None)
+        if context.window is not None:
+            context.window.cursor_set('DEFAULT')
+
+    def cancel(self, context):
+        """O Blender interrompeu o modal: a barra de status e o cursor voltam (questions.md, pergunta 17)."""
+        self._end(context)
 
     def modal(self, context, event):
         if event.type == 'LEFTMOUSE' and event.value == 'PRESS':

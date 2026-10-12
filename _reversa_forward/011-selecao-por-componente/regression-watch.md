@@ -33,4 +33,10 @@ Comportamentos novos ou alterados que não vinham como regra 🟢 do legado:
 
 ## Histórico de re-extrações
 
+### Re-extração 2026-10-10 18:26
+
+| ID | Veredito | Observação |
+|----|----------|------------|
+| — | — | nenhum watch item na tabela principal; nada a verificar |
+
 ## Arquivadas

@@ -1,0 +1,35 @@
+--- caffmob_draw/geometry_free/mesh.py	2026-10-05 04:12:05.752450446 -0300
++++ caffmob_draw/geometry_free/mesh.py	2026-10-11 12:17:59.676252501 -0300
+@@ -23,12 +23,12 @@
+ def sheets(kind, plane, width, depth, height, thickness):
+     """[(nome, comprimento, largura, espessura)] em metros.
+ 
+-    Placa: uma chapa com comprimento e largura pelas duas maiores medidas e espessura pela menor.
+-    Caixa: fundo e tampo inteiros; laterais entre eles; frente e trás entre as laterais.
++    Placa: uma chapa com espessura `thickness` e comprimento e largura pelas duas medidas do plano, maior primeiro
++    (questions.md, pergunta 66). Caixa: fundo e tampo inteiros; laterais entre eles; frente e trás entre as laterais.
+     """
+     if kind == 'PLACA':
+-        a, b, c = sorted(size(kind, plane, width, depth, height, thickness), reverse=True)
+-        return [("Placa", a, b, c)]
++        a, b = sorted(_plane_sides(plane, width, depth, height), reverse=True)
++        return [("Placa", a, b, thickness)]
+     t = thickness
+     inner_h = max(0.001, height - 2 * t)
+     inner_w = max(0.001, width - 2 * t)
+@@ -39,6 +39,15 @@
+     ]
+ 
+ 
++def _plane_sides(plane, width, depth, height):
++    return {'XY': (width, depth), 'XZ': (width, height)}.get(plane, (depth, height))
++
++
++def thinner_than_thickness(kind, plane, width, depth, height, thickness):
++    """Placa com uma medida do plano menor que a espessura (aviso no painel, pergunta 66)."""
++    return kind == 'PLACA' and min(_plane_sides(plane, width, depth, height)) < thickness
++
++
+ def _props(obj):
+     g = obj.btm_geometry
+     return g.kind, g.plane, g.width, g.depth, g.height, g.thickness

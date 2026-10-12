@@ -11,6 +11,15 @@
 
 ## Histórico de re-extrações
 
+### Re-extração 2026-10-10 18:26
+
+| ID | Veredito | Observação |
+|----|----------|------------|
+| W001 | 🟡 amarelo | evidência só em artefato não regenerado nesta extração: `ui/` (2026-07) não regenerada (`gaps.md` lista `ui/object_properties` como lacuna); artefatos novos citam `ui/object_properties` como consumidor (`selection/design.md`); código sem `BTM_PT_ContextProperties` |
+| W002 | 🟢 verde | preservada em `_reversa_sdd/measure/design.md` (`BTM_PG_SelectionEdit`: afastamento, anterior, posterior, inferior, superior; caixa "Cotas") |
+| W003 | 🟢 verde | preservada em `_reversa_sdd/geometry_free/requirements.md` RN-15 e CA (placa = 1, caixa = 6 `PartRecord` sem `module_uid`) |
+| W004 | 🟡 amarelo | grupo Geometria preservado em `geometry_free/design.md` (painel `_draw_geometry`); operações de parede (Rebaixar, Visibilidade, Remover Parede…) sem unit nova (`gaps.md`: proposta unit `wall_extras`), evidência só em artefato não regenerado nesta extração; código conforme (`ui/object_properties.py:243-247`) |
+
 <!-- Preenchido pelo agente reverso em cada `/reversa` futuro: data, veredito 🟢/🟡/🔴 por item. -->
 
 ## Arquivadas

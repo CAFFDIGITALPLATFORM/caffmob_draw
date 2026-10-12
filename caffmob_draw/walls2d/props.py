@@ -36,6 +36,7 @@ class Session:
         self.removed_modules = []         # módulos de trechos apagados (D-21)
         self.remove_modules = False       # "Remover os módulos junto?" (padrão: não)
         self.confirm_pending = False
+        self.confirm_signature = None     # rascunho e pé-direito do 1º aviso do OK (DT-04)
         self.request = None               # 'ok' | 'cancel'
         self.signature = model.plan_signature(plan)   # rascunho na abertura (confirmação do Cancelar, D-30)
         self.prompt_chain = None          # cadeia da pergunta de fechamento por arraste (D-34)
@@ -53,6 +54,10 @@ class Session:
         self.inference_index = None       # índice do alinhamento; refeito quando o plano muda
         self.inference_signature = None
         self.snap_point = None            # (ponto travado, tipo da trava) da mira para o próximo clique
+        # Feature 013 (D-09): lupa com quadrado (zoom janela). Estado só da vista: fora do histórico de desfazer
+        # (`history._sign` assina só o rascunho) e sem mexer na ferramenta do painel.
+        self.zoom_window = None           # None = desligado; 'ARMED' = lupa apertada; (x, y) px = início do retângulo
+        self.zoom_box_end = None          # canto atual do retângulo elástico, em pixels
 
     def reset_direction(self):
         self.direction, self.direction_locked = None, False
@@ -186,7 +191,7 @@ def _side_set(_self, value):
     chain, i = s.segment() if s else (None, None)
     if chain is None:
         return
-    chain.side = model.SIDES[value]
+    _guard(lambda: setattr(chain, 'side', model.SIDES[value]))      # um passo de desfazer, como os outros campos
     if any(seg.source for seg in chain.segments):
         s.error = N_("Direção trocada em paredes existentes: no OK elas mudam de sentido; portas e janelas acompanham "
                      "e os módulos ficam onde estão.")

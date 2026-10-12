@@ -98,5 +98,9 @@
  "A região encosta em outra porta ou janela": {
   "pt_BR": "A região encosta em outra porta ou janela",
   "en_US": "The region touches another door or window"
+ },
+ "Não foi possível montar a porta ou janela real de: {}": {
+  "pt_BR": "Não foi possível montar a porta ou janela real de: {}",
+  "en_US": "Could not build the real door or window of: {}"
  }
 }

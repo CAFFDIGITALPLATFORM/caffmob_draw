@@ -31,6 +31,7 @@ class BTM_PG_InspectionState(bpy.types.PropertyGroup):
     checked_fronts: bpy.props.IntProperty(
         name="Frentes verificadas", description="Frentes verificadas na última checagem (-1 = nunca)",
         default=-1)  # type: ignore
+    stale: bpy.props.BoolProperty(name="Desatualizado", default=False)  # type: ignore
 
 
 classes = (BTM_PG_Interference, BTM_PG_InspectionState)

@@ -33,3 +33,33 @@ C4Component
     Rel(open_op, cota_draw, "Desenha cota até quinas", "POST_VIEW registration")
     Rel(viewport, grid_draw, "Renderiza linhas", "Viewport Draw")
 ```
+
+
+## Re-extração 2026-10-10 — arquitetura atual
+
+🟢 Agrupamento dos componentes no processo Blender. Relações são consumo/orquestração; o mapa detalhado de imports está na matriz de impacto.
+
+```mermaid
+flowchart TD
+    UI[ui e library_panel] --> SEL[selection e measure]
+    UI --> WALL[walls2d e canvas2d]
+    UI --> EDIT[cabinet_editor]
+    UI --> LIB[object_library e legacy]
+    WALL --> OPEN[openings]
+    EDIT --> STD[standards]
+    EDIT --> CUSTOM[customize e adaptadores]
+    EDIT --> AGG[aggregates]
+    SEL --> MOVE[move_over e stick]
+    MOVE --> COL[collision]
+    AGG --> INS[inspection e adaptadores]
+    OPEN --> INS
+    CUSTOM --> PROD[cutting e PartRecord]
+    AGG --> PROD
+    FREE[geometry_free] --> PROD
+    MOLD[molding] --> LEG[face_frame e frameless]
+    STD --> LEG
+    CUSTOM --> LEG
+    INS --> LEG
+```
+
+Há dependências bidirecionais e imports locais, principalmente seleção/agregados, personalização/editor e grudar/colisão. O desenho por camadas é visão funcional, não prova de grafo acíclico.

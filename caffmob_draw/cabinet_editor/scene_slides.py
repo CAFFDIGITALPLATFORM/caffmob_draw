@@ -68,12 +68,12 @@ def apply(context, root, wanted):
         return []
     spaces = scene_divisions.roots(context, root)
     if not spaces:
-        return ["sem vão interno"]
+        return [('NO_SPACE',)]
     space = spaces[min(spaces)]
     leaves_n = int(wanted.get("leaves", 2))
     need = sl.missing_depth(space, leaves_n)
     if need is not None:
-        return [f"profundidade {need:.3f}"]
+        return [('DEPTH', need)]
     lay = sl.layout(space, leaves_n, wanted["item"], bool(wanted.get("invert")))
     tracks = [scene_parts.make_box(root, TRACK_NAMES[i], t.box, 'SLIDE_TRACK', hardware=TRACK_CODES[i],
                                    catalog_id=wanted["item"]) for i, t in enumerate(lay.tracks)]

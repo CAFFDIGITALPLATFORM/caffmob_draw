@@ -1,0 +1,13 @@
+--- caffmob_draw/data/translations/cabinet_editor.json	2026-10-11 21:57:10.140951295 -0300
++++ caffmob_draw/data/translations/cabinet_editor.json	2026-10-11 22:10:52.134814613 -0300
+@@ -1011,6 +1011,10 @@
+   "en_US": "No inner space",
+   "pt_BR": "Sem vão interno"
+  },
++ "Sem vão interno para os deslizantes": {
++  "pt_BR": "Sem vão interno para os deslizantes",
++  "en_US": "No inner space for the sliding doors"
++ },
+  "Setas movem a divisória selecionada": {
+   "en_US": "Arrows move the selected divider",
+   "pt_BR": "Setas movem a divisória selecionada"

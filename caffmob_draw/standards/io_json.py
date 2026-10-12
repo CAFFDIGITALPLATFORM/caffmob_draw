@@ -32,7 +32,16 @@ def user_folder():
 # Conversão valores ↔ estrutura do arquivo
 # ----------------------------------------------------------------------------------------------------------------
 
-def values_to_document(name, uid, market, source, version, updated_at, values, raw_attributes=()):
+ASSEMBLIES = ('LATERAL', 'BASE')
+
+
+def document_assembly(document):
+    """Montagem do arquivo; ausente ou desconhecida (arquivo antigo) → LATERAL (questions.md, pergunta 48)."""
+    value = document.get("assembly") if isinstance(document, dict) else None
+    return value if value in ASSEMBLIES else 'LATERAL'
+
+
+def values_to_document(name, uid, market, source, version, updated_at, values, raw_attributes=(), assembly='LATERAL'):
     """Monta o dicionário do arquivo a partir de valores planos (chave → valor em mm ou texto)."""
     lines = {}
     max_measures = {}
@@ -64,6 +73,7 @@ def values_to_document(name, uid, market, source, version, updated_at, values, r
         "version": version,
         "updated_at": updated_at,
         "unit": "mm",
+        "assembly": assembly,
         "max_measures": max_measures,
         "lines": lines,
         "raw_attributes": [{"id": r['id'], "value": r['value'], "key": r.get('key', '')} for r in raw_attributes],
@@ -75,7 +85,7 @@ def document_to_values(document):
     if not isinstance(document, dict) or document.get("schema") not in ACCEPTED_FORMATS:
         raise StandardFileError(tr("O arquivo não é uma definição de dimensões do CAFFMob Draw."))
     version = document.get("schema_version")
-    if not isinstance(version, int):
+    if not isinstance(version, int) or isinstance(version, bool):
         raise StandardFileError(tr("Versão do formato ausente."))
     if version > SCHEMA_VERSION:
         raise StandardFileError(tr("Arquivo criado por uma versão mais nova da extensão: atualize o CAFFMob Draw."))
@@ -94,18 +104,30 @@ def document_to_values(document):
         else:
             errors.append(message)
 
-    for fname, value in (document.get("max_measures") or {}).items():
+    def table(value, where):
+        """Bloco do arquivo que precisa ser um objeto JSON; forma errada vira erro do arquivo (EC-05)."""
+        if value is None:
+            return {}
+        if not isinstance(value, dict):
+            raise StandardFileError(tr("Estrutura do arquivo inválida em {}.").format(where))
+        return value
+
+    for fname, value in table(document.get("max_measures"), "max_measures").items():
         put(schema.max_key(fname), value)
-    for line, data in (document.get("lines") or {}).items():
+    for line, data in table(document.get("lines"), "lines").items():
         if line not in schema.LINE_CODES:
             warnings.append(tr("Linha desconhecida ignorada: {}").format(line))
             continue
-        for fname, value in (data.get("external") or {}).items():
+        data = table(data, f"lines.{line}")
+        for fname, value in table(data.get("external"), f"lines.{line}.external").items():
             put(schema.external_key(line, fname), value)
         for bucket in ("sheets", "components"):
-            for comp, entry in (data.get(bucket) or {}).items():
-                for fname, value in entry.items():
+            for comp, entry in table(data.get(bucket), f"lines.{line}.{bucket}").items():
+                for fname, value in table(entry, f"lines.{line}.{bucket}.{comp}").items():
                     if fname == 'edges':
+                        if value is not None and not isinstance(value, list):
+                            raise StandardFileError(tr("Estrutura do arquivo inválida em {}.").format(
+                                f"lines.{line}.{bucket}.{comp}.edges"))
                         for side, edge in enumerate(value or [], start=1):
                             put(schema.sheet_key(line, comp, f"edge_{side}"), edge)
                     else:
@@ -153,7 +175,8 @@ def export_definition(path, definition):
     values = api.definition_values(definition)
     raw = [{"id": r.attr_id, "value": r.value, "key": r.key} for r in definition.raw_attributes]
     document = values_to_document(definition.name, definition.uid, definition.market, definition.source,
-                                  definition.version, definition.updated_at, values, raw)
+                                  definition.version, definition.updated_at, values, raw,
+                                  assembly=getattr(definition, 'assembly', 'LATERAL'))
     write_document(path, document)
     return document
 
@@ -178,6 +201,7 @@ def import_definition(scene, path, on_conflict='rename'):
     definition.version = int(document.get("version") or 1)
     definition.updated_at = str(document.get("updated_at") or builtin.now_iso())
     builtin.fill_from_schema(definition, definition.market)
+    definition.assembly = document_assembly(document)
     for key, value in values.items():
         api.set_value(definition, key, value)
     for raw in document.get("raw_attributes") or []:

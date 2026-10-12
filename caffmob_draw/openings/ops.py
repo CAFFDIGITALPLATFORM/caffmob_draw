@@ -26,8 +26,10 @@ class BTM_OT_OpeningsUpdate(bpy.types.Operator):
 
     def execute(self, context):
         cages = sync.outdated(context.scene)
-        done = sum(1 for cage in cages if sync.sync(context, cage, force=True))
-        if not cages:
+        done, failed = sync.sync_each(context, cages, force=True)
+        if failed:
+            self.report({'WARNING'}, tr("Não foi possível montar a porta ou janela real de: {}").format(", ".join(failed)))
+        elif not cages:
             self.report({'INFO'}, tr("Todas as portas e janelas já estão atualizadas"))
         else:
             self.report({'INFO'}, tr("{} porta(s) e janela(s) atualizada(s)").format(done))

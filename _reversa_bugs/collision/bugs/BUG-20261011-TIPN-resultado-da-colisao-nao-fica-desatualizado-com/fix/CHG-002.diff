@@ -1,0 +1,36 @@
+--- caffmob_draw/collision/stale.py	2026-10-07 19:49:31.765072176 -0300
++++ caffmob_draw/collision/stale.py	2026-10-11 22:03:00.277251677 -0300
+@@ -3,7 +3,8 @@
+ Handler `depsgraph_update_post` (`@persistent`), no padrão de `cutting/stale.py`: quando um item verificado (ou
+ qualquer objeto dentro dele) muda de posição ou de geometria depois da verificação, liga `btm_collision.stale`.
+ A verificação dos itens que acabaram de se mover (assentar do grudar) tira esses itens da conta; se nada mais mudou,
+-o resultado volta a estar em dia.
++o resultado volta a estar em dia. Objeto novo (que a colisão verificaria), apagado ou renomeado também deixa o
++resultado desatualizado (questions.md, pergunta 34).
+ """
+ 
+ import bpy  # type: ignore
+@@ -43,14 +44,19 @@
+     names = set(state.checked_names.split("\n")) if state.checked_names else set()
+     names.update(r.name_a for r in state.items)
+     names.update(r.name_b for r in state.items)
++    names.discard("")
++    _changed.update(name for name in names if name not in bpy.data.objects)      # apagado ou renomeado
++    from .scan import _kind_of
+     for update in depsgraph.updates:
+-        if not (update.is_updated_geometry or update.is_updated_transform):
+-            continue
+         if not isinstance(update.id, bpy.types.Object):
+             continue
+-        root = _checked_root(update.id.original, names)
++        obj = update.id.original
++        root = _checked_root(obj, names)
+         if root is not None:
+-            _changed.add(root)
++            if update.is_updated_geometry or update.is_updated_transform:
++                _changed.add(root)
++        elif obj.name in scene.objects and _kind_of(obj) is not None:
++            _changed.add(obj.name)                     # item novo, ou com o nome novo, fora da verificação
+     if _changed and not state.stale:
+         state.stale = True
+ 

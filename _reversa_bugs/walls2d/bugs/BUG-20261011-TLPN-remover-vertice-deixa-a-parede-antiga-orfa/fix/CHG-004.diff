@@ -1,0 +1,33 @@
+--- caffmob_draw/walls2d/ops_editor.py	2026-10-10 04:38:52.796257402 -0300
++++ caffmob_draw/walls2d/ops_editor.py	2026-10-11 11:43:43.967561256 -0300
+@@ -438,6 +438,7 @@
+     seg = chain.segments[i]
+     if seg.source:
+         s.plan.removed_sources.append(seg.source)
++    s.selected = None
+     n = len(chain.nodes)
+     if chain.closed:
+         order = [(i + 1 + k) % n for k in range(n)]
+@@ -449,6 +450,13 @@
+     right = model.Chain(chain.nodes[i + 1:], chain.segments[i + 1:], False, chain.side)
+     parts = [c for c in (left, right) if c.segment_count() > 0]
+     s.plan.chains[ci:ci + 1] = parts   # a primeira parede da direita fica solta no OK (aplicador)
++
++
++def remove_node(s, ci, k):
++    """Remove o nó `k` da cadeia `ci`; a parede do trecho eliminado sai da cena no OK (questions.md, pergunta 1)."""
++    seg = s.plan.chains[ci].remove_node(k)
++    if seg.source:
++        s.plan.removed_sources.append(seg.source)
+     s.selected = None
+ 
+ 
+@@ -719,7 +727,7 @@
+             node = hit_node(s, pixel)
+             if node is not None:
+                 try:
+-                    s.plan.chains[node[0]].remove_node(node[1])
++                    remove_node(s, *node)
+                 except ValueError as exc:
+                     s.error = str(exc)
+                 s.selected = None

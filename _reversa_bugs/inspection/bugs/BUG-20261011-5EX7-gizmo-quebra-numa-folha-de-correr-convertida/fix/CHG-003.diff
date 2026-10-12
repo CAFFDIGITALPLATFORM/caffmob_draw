@@ -1,0 +1,79 @@
+--- caffmob_draw/inspection/gizmo.py	2026-10-05 15:31:58.171577105 -0300
++++ caffmob_draw/inspection/gizmo.py	2026-10-11 22:05:40.063020562 -0300
+@@ -16,7 +16,7 @@
+ 
+ from . import fronts, pivot_math
+ 
+-_state = {'front': None, 'pending': None, 'pointer': 0}
++_state = {'front': None, 'pending': None, 'pending_front': None, 'pointer': 0}
+ 
+ 
+ def _active_front(context):
+@@ -26,6 +26,8 @@
+     cached = _state['front']
+     if cached is not None and _state['pointer'] == obj.as_pointer() and cached.is_valid():
+         return cached
++    if _state['pending'] is not None:     # trocou de ativo antes do timer: grava na frente certa (EC-18)
++        _commit_pending()
+     front = fronts.front_for_object(obj, context.scene)
+     _state['front'] = front
+     _state['pointer'] = obj.as_pointer() if front is not None else 0
+@@ -40,16 +42,16 @@
+     return Matrix(((x.x, y.x, z.x, point.x), (x.y, y.y, z.y, point.y), (x.z, y.z, z.z, point.z), (0, 0, 0, 1)))
+ 
+ 
+-def _snap(context, degrees):
++def _snap(context, degrees, maximum=pivot_math.MAX_ANGLE):
+     state = getattr(context.window_manager, 'btm_inspection', None)
+     if state is not None and state.snap_stops:
+-        return pivot_math.snap_angle(degrees)
+-    return pivot_math.clamp_angle(degrees)
++        return pivot_math.snap_angle(degrees, maximum=maximum)
++    return pivot_math.clamp_angle(degrees, maximum)
+ 
+ 
+ def _commit_pending():
+-    front, value = _state['front'], _state['pending']
+-    _state['pending'] = None
++    front, value = _state['pending_front'] or _state['front'], _state['pending']
++    _state['pending'], _state['pending_front'] = None, None
+     if front is not None and value is not None:
+         try:
+             front.commit(value)
+@@ -81,9 +83,9 @@
+         front = _state['front']
+         if front is None:
+             return
+-        degrees = _snap(bpy.context, math.degrees(value))
++        degrees = _snap(bpy.context, math.degrees(value), front.max_value)     # teto da frente (pergunta 62)
+         front.apply(degrees)
+-        _state['pending'] = degrees
++        _state['pending'], _state['pending_front'] = degrees, front
+ 
+     def _arrow_get(self):
+         front = _state['front']
+@@ -98,7 +100,7 @@
+             return
+         fraction = pivot_math.clamp_fraction(value / max(front.travel(), 1e-6))
+         front.apply(fraction)
+-        _state['pending'] = fraction
++        _state['pending'], _state['pending_front'] = fraction, front
+ 
+     # Ciclo do grupo ----------------------------------------------------------------------------------------
+     def setup(self, context):
+@@ -148,7 +150,7 @@
+             return
+         matrix = _frame_matrix(Vector(point), axis, ref)
+         self.dial.hide = not front.hinged
+-        self.arrow.hide = front.hinged
++        self.arrow.hide = front.hinged or front.travel() <= 0.0     # sem curso, sem seta (pergunta 61)
+         if front.hinged:
+             self.dial.matrix_basis = matrix
+         else:
+@@ -162,5 +164,5 @@
+ def unregister():
+     if bpy.app.timers.is_registered(_commit_pending):
+         bpy.app.timers.unregister(_commit_pending)
+-    _state.update(front=None, pending=None, pointer=0)
++    _state.update(front=None, pending=None, pending_front=None, pointer=0)
+     bpy.utils.unregister_class(BTM_GGT_front_open)

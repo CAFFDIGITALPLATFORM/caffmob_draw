@@ -31,9 +31,10 @@ def clamp_fraction(fraction):
     return max(0.0, min(1.0, float(fraction)))
 
 
-def snap_angle(degrees, stops=SNAP_STOPS, tolerance=SNAP_TOLERANCE):
-    """Encaixa na parada mais próxima quando estiver a até `tolerance` graus; senão devolve o valor limitado."""
-    value = clamp_angle(degrees)
+def snap_angle(degrees, stops=SNAP_STOPS, tolerance=SNAP_TOLERANCE, maximum=MAX_ANGLE):
+    """Encaixa na parada mais próxima quando estiver a até `tolerance` graus; senão devolve o valor limitado a
+    [0, `maximum`] (folha convertida passa o próprio máximo, questions.md pergunta 62)."""
+    value = clamp_angle(degrees, maximum)
     nearest = min(stops, key=lambda stop: abs(stop - value))
     return float(nearest) if abs(nearest - value) <= tolerance else value
 

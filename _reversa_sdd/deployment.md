@@ -41,3 +41,8 @@ Para implantar e testar o add-on gerado:
 2. Pressione a tecla **N** para abrir a barra lateral (Sidebar).
 3. Verifique se a aba **BlenderToMob** está visível.
 4. Clique no painel **Criador de Ambientes** e clique em **Construir Parede** para verificar se o loop modal de desenho e os overlays da GPU funcionam corretamente.
+
+
+## Re-extração 2026-10-10 — arquitetura atual
+
+🟢 Implantação atual: extensão ZIP local gerada por `python3 build.py`, instalada no Blender 5.2. Fonte: build.py e blender_manifest.toml. Nenhum Dockerfile, compose ou configuração Terraform foi localizado na busca; não há novo diagrama de cloud a gerar. Build/instalação não foram executados nesta extração documental. A validação de distribuição requer wheels e ativos blend/texturas/biblioteca presentes; referência ADR 0007.

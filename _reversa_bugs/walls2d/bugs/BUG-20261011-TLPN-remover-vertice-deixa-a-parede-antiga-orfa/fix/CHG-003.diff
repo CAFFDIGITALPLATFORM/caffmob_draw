@@ -1,0 +1,22 @@
+--- caffmob_draw/walls2d/model.py	2026-10-07 14:48:28.266839116 -0300
++++ caffmob_draw/walls2d/model.py	2026-10-11 11:43:43.966561224 -0300
+@@ -259,16 +259,15 @@
+ 
+     def remove_node(self, k):
+         """Remove o nó `k`, unindo os dois trechos vizinhos (o de antes continua). Ponta de cadeia aberta: remove o
+-        trecho da ponta."""
++        trecho da ponta. Devolve o trecho eliminado (o `source` dele sai da cena no OK, como no Delete)."""
+         n = len(self.nodes)
+         if len(self.segments) <= 1:
+             raise ValueError(tr("Uma cadeia precisa de pelo menos um trecho."))
+         if not self.closed and k in (0, n - 1):
+             del self.nodes[k]
+-            del self.segments[0 if k == 0 else -1]
+-            return
++            return self.segments.pop(0 if k == 0 else -1)
+         del self.nodes[k]
+-        del self.segments[k if k < len(self.segments) else 0]
++        return self.segments.pop(k if k < len(self.segments) else 0)
+ 
+     def invert(self):
+         """Inverte o sentido da cadeia mantendo a parede no lugar: os nós e trechos trocam de ordem e a Direção troca,

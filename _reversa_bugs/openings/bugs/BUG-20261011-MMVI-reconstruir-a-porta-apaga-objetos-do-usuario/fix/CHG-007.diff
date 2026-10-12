@@ -1,0 +1,51 @@
+--- caffmob_draw/selection/editing.py	2026-10-07 15:36:57.025001192 -0300
++++ caffmob_draw/selection/editing.py	2026-10-11 12:26:48.994870028 -0300
+@@ -65,9 +65,11 @@
+             return getattr(obj.btm_cabinet, field)
+     if getattr(obj, 'home_builder', None) is not None and obj.home_builder.mod_name and field in GN_DIM:
+         try:
+-            return _geo(obj).get_input(GN_DIM[field])
++            value = _geo(obj).get_input(GN_DIM[field])
+         except Exception:
+-            pass
++            value = None
++        if value is not None:
++            return _door_leaf(info, field, value, to_hole=False)
+     d = obj.dimensions
+     return {'width': d.x, 'depth': d.y, 'height': d.z}[field]
+ 
+@@ -83,6 +85,12 @@
+         setattr(obj.hb_closet_starter, field, value)
+     elif info.kind == classify.MODULE and info.library == 'BTM':
+         setattr(obj.btm_cabinet, field, value)
++    elif _is_hb_opening(info):
++        # Porta/janela HB: o mesmo caminho do Redimensionar (questions.md, perguntas 20 e 69): a medida é a da
++        # folha, a caixa ganha marco e folga, e a porta real é refeita.
++        from ..operators import doors_windows as dw
++        _geo(obj).set_input(GN_DIM[field], _door_leaf(info, field, value, to_hole=True))
++        dw._sync_opening(context, obj)
+     else:
+         _geo(obj).set_input(GN_DIM[field], value)
+         if info.kind == classify.MODULE:
+@@ -92,6 +100,21 @@
+             hb_utils.run_calc_fix(context, obj)
+ 
+ 
++def _is_hb_opening(info):
++    return info.kind in (classify.ROOM_DOOR, classify.WINDOW) and info.library == 'HB'
++
++
++def _door_leaf(info, field, value, to_hole):
++    """Porta HB: medida da caixa ↔ da folha (largura em X, altura em Z); janela e demais: a própria medida."""
++    if info.kind != classify.ROOM_DOOR or info.library != 'HB' or field not in ('width', 'height'):
++        return value
++    from ..operators import doors_windows as dw
++    from . import element_size
++    axis = 'X' if field == 'width' else 'Z'
++    convert = dw._leaf_to_hole if to_hole else dw._hole_to_leaf
++    return convert(element_size._door_kind(info.obj), axis, value)
++
++
+ # Peitoril (porta/janela de ambiente) ------------------------------------------------------------------------
+ 
+ def get_sill(info):

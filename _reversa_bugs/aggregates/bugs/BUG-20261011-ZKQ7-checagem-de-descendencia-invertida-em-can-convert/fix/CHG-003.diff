@@ -1,0 +1,11 @@
+--- caffmob_draw/stick/link.py	2026-10-08 00:15:36.834675610 -0300
++++ caffmob_draw/stick/link.py	2026-10-11 11:24:14.671537527 -0300
+@@ -147,7 +147,7 @@
+         return False
+     world = item.matrix_world.copy()
+     parent = st.orig_parent
+-    if parent is not None and parent.name not in item.children_recursive and parent != item:
++    if parent is not None and parent not in item.children_recursive and parent != item:
+         item.parent = parent
+         item.matrix_parent_inverse = Matrix.Identity(4)
+         item.matrix_basis = parent.matrix_world.inverted_safe() @ world

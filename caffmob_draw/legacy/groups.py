@@ -52,9 +52,14 @@ def read_marker():
 def write_marker(marker):
     path = _marker_path()
     fd, tmp = tempfile.mkstemp(dir=os.path.dirname(path), suffix=".tmp")
-    with os.fdopen(fd, 'w', encoding='utf-8') as handle:
-        handle.write(groups_core.dump_marker(marker))
-    os.replace(tmp, path)
+    try:
+        with os.fdopen(fd, 'w', encoding='utf-8') as handle:
+            handle.write(groups_core.dump_marker(marker))
+        os.replace(tmp, path)
+    except Exception:
+        if os.path.exists(tmp):             # o marcador antigo continua valendo; o temporário não fica (EC-09)
+            os.remove(tmp)
+        raise
     invalidate()
 
 

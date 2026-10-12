@@ -514,5 +514,29 @@
  "{} malha(s) importada(s) num grupo, unidade: {}. Alt + clique seleciona uma peça; para converter, selecione as peças com Alt + Shift + clique, o pai por último": {
   "pt_BR": "{} malha(s) importada(s) num grupo, unidade: {}. Alt + clique seleciona uma peça; para converter, selecione as peças com Alt + Shift + clique, o pai por último",
   "en_US": "{} mesh(es) imported into a group, unit: {}. Alt + click selects one part; to convert, select the parts with Alt + Shift + click, the parent last"
+ },
+ "Direita (+X)": {
+  "pt_BR": "Direita (+X)",
+  "en_US": "Right (+X)"
+ },
+ "Esquerda (−X)": {
+  "pt_BR": "Esquerda (−X)",
+  "en_US": "Left (−X)"
+ },
+ "Fundo (+Y)": {
+  "pt_BR": "Fundo (+Y)",
+  "en_US": "Back (+Y)"
+ },
+ "Frente (−Y)": {
+  "pt_BR": "Frente (−Y)",
+  "en_US": "Front (−Y)"
+ },
+ "Topo (+Z)": {
+  "pt_BR": "Topo (+Z)",
+  "en_US": "Top (+Z)"
+ },
+ "Base (−Z)": {
+  "pt_BR": "Base (−Z)",
+  "en_US": "Bottom (−Z)"
  }
 }

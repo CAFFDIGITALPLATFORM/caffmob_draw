@@ -1,0 +1,20 @@
+--- caffmob_draw/collision/scan.py	2026-10-07 19:52:11.916581247 -0300
++++ caffmob_draw/collision/scan.py	2026-10-11 22:03:54.573756017 -0300
+@@ -235,6 +235,7 @@
+     names = {o.name for o in objs if o.name in bpy.data.objects}
+     if not names:
+         return []
++    roots = set(names)
+     for obj in objs:                      # o que se move junto (agregados, itens grudados) também é verificado
+         names.update(c.name for c in obj.children_recursive)
+     try:
+@@ -252,6 +253,9 @@
+         row = state.items.add()
+         row.kind, row.name_a, row.name_b = c.kind, c.name_a, c.name_b
+         row.depth, row.push, row.location = c.depth, c.push, c.location
++    if state.checked < 0:                  # sem "Verificar" antes: estes itens passam a ser os verificados (EC-04)
++        state.checked = len(roots)
++        state.checked_names = "\n".join(sorted(roots))
+     from . import stale
+     stale.rechecked(names)
+     if found:

@@ -30,6 +30,8 @@ Todo o resto da camada legada (49 arquivos, 37 em `product_libraries/`) depende 
 - Oferecer operadores gerais: configurações recomendadas, render, câmera com backplate, estilo de anotação, escala de
   imagem de referência por dois pontos. 🟢
 
+- 🟢 `Home_Builder_Scene_Props` também declara as 14 propriedades `molding_*` (pacotes, perfis e medidas de molduras da sala, com `min`/`soft_min` nos floats) e o callback `update_molding_package` (`hb_props.py:177-221,509-599`), que chama `molding.ops.on_package_changed`; o contrato está descrito em `_reversa_sdd/molding/design.md` › Propriedades da sala _(Revisão cruzada 2026-10-10: esta unit não as citava; molding/requirements.md:22 as atribui ao núcleo legado)_
+
 ## Regras de Negócio
 
 Todas as regras vêm de `code-analysis-legacy.md` (IDs `HB_CORE-Rnn`).

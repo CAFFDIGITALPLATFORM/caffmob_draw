@@ -1,0 +1,10 @@
+--- caffmob_draw/inspection/props.py	2026-10-03 00:00:33.539170395 -0300
++++ caffmob_draw/inspection/props.py	2026-10-11 22:02:28.207490854 -0300
+@@ -31,6 +31,7 @@
+     checked_fronts: bpy.props.IntProperty(
+         name="Frentes verificadas", description="Frentes verificadas na última checagem (-1 = nunca)",
+         default=-1)  # type: ignore
++    stale: bpy.props.BoolProperty(name="Desatualizado", default=False)  # type: ignore
+ 
+ 
+ classes = (BTM_PG_Interference, BTM_PG_InspectionState)

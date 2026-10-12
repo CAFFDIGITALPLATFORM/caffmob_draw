@@ -13,6 +13,17 @@
 
 ## Histórico de re-extrações
 
+### Re-extração 2026-10-10 18:26
+
+| ID | Veredito | Observação |
+|----|----------|------------|
+| W001 | 🟡 amarelo | evidência só em artefato não regenerado nesta extração: `ui/` (2026-07) não regenerada (`gaps.md`); `code-analysis.md` confirma a "barra lateral única da 005" e painéis com `classes = ()`, sem detalhar as 5 seções; código conforme (`ui/sidebar.py`, `sidebar_vocab.SECTIONS`) |
+| W002 | 🟡 amarelo | evidência só em artefato não regenerado nesta extração: nenhuma unit nova descreve a seção Construir; código conforme (`ui/sidebar_build.py:NO_WALL`) |
+| W003 | 🟡 amarelo | evidência só em artefato não regenerado nesta extração: nenhuma unit nova descreve a seção Selecionado; código conforme (`ui/sidebar_selected.py`, `sidebar_props.py`) |
+| W004 | 🟢 verde | `tests/blender_005_sidebar_inventory.py` executado no Blender 5.2.0 LTS (`/opt/blender/blender --background`): `OK`, exit 0, nenhuma "capacidade perdida" |
+| W005 | 🟢 verde | mesmo teste executado: `OK`, exit 0, nenhum operador "repetido" |
+| W006 | 🟢 verde | preservada em `_reversa_sdd/stick/requirements.md` RN-17 e RF-13 |
+
 <!-- Preenchido pelo agente reverso em cada `/reversa` futuro: data, veredito 🟢/🟡/🔴 por item. -->
 
 ## Arquivadas

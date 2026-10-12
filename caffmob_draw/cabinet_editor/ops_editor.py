@@ -187,6 +187,7 @@ def process(context, s):
         root = s.root()
         if root is None:
             return changed
+        s.error = ""                      # limpa antes: o erro que a ação definir fica visível (DT-08)
         try:
             if kind == 'dimension':
                 field, value = data
@@ -211,7 +212,6 @@ def process(context, s):
                 s.dim_messages.clear()
                 refresh(context, s, bridge.apply_state(context, root, target), checkpoint=False)
                 s.draft.current = target
-            s.error = ""
         except (ValueError, RuntimeError) as exc:
             s.error = str(exc)
         changed = True
@@ -387,13 +387,15 @@ class BTM_OT_CabinetEditorModal(bpy.types.Operator):
                 from ..ui import save_feedback
                 save_feedback.show(tr("Editor fechado: alterações descartadas"))
             return {'CANCELLED'}
+        if s.request == 'cancel':
+            s.requests.clear()            # o que estava na fila não roda depois do Cancelar (DT-02)
+            self._end(context, False)
+            return {'CANCELLED'}
         if s.request == 'ok':
+            process(context, s)           # o último botão antes do OK também vale (DT-02)
             self._end(context, True)
             self.report({'INFO'}, tr("Armário atualizado: {}").format(s.root_name))
             return {'FINISHED'}
-        if s.request == 'cancel':
-            self._end(context, False)
-            return {'CANCELLED'}
         if process(context, s):
             return {'RUNNING_MODAL'}
         if event.type == 'TIMER':

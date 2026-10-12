@@ -1011,6 +1011,10 @@
   "en_US": "No inner space",
   "pt_BR": "Sem vão interno"
  },
+ "Sem vão interno para os deslizantes": {
+  "pt_BR": "Sem vão interno para os deslizantes",
+  "en_US": "No inner space for the sliding doors"
+ },
  "Setas movem a divisória selecionada": {
   "en_US": "Arrows move the selected divider",
   "pt_BR": "Setas movem a divisória selecionada"
@@ -1042,6 +1046,10 @@
  "Torralba — Pux Integrados": {
   "en_US": "Torralba — Integrated pulls",
   "pt_BR": "Torralba — Pux Integrados"
+ },
+ "Troca a montagem do armário pelo rascunho do editor (Ctrl+Z, Cancelar e Aplicar a tratam)": {
+  "pt_BR": "Troca a montagem do armário pelo rascunho do editor (Ctrl+Z, Cancelar e Aplicar a tratam)",
+  "en_US": "Changes the cabinet assembly through the editor draft (Ctrl+Z, Cancel and Apply handle it)"
  },
  "Uma porta no vão": {
   "en_US": "One door in the opening",

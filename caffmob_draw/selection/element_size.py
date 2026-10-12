@@ -52,10 +52,6 @@ def size(el):
     if info.kind == classify.WALL and info.library == 'HB':
         return editing.get_wall(info, 'length'), editing.get_wall(info, 'height'), editing.get_wall(info, 'thickness')
     if info.kind in _GN_KINDS:
-        width, height, depth = (editing.get_dimension(info, f) for f in ('width', 'height', 'depth'))
-        if info.kind == classify.ROOM_DOOR:
-            from ..operators import doors_windows as dw
-            kind = _door_kind(info.obj)
-            width, height = dw._hole_to_leaf(kind, 'X', width), dw._hole_to_leaf(kind, 'Z', height)
-        return width, height, depth
+        # Porta HB: `get_dimension` já devolve a medida da folha (BUG-20261011-IDPP).
+        return tuple(editing.get_dimension(info, f) for f in ('width', 'height', 'depth'))
     return box_size(el.obj)

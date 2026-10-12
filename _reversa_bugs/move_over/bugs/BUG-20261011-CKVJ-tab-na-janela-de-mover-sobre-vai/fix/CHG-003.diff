@@ -1,0 +1,13 @@
+--- caffmob_draw/data/translations/move_over.json	2026-10-07 15:10:02.811462708 -0300
++++ caffmob_draw/data/translations/move_over.json	2026-10-11 22:08:06.188870732 -0300
+@@ -163,6 +163,10 @@
+   "pt_BR": "Use com o botão direito sobre uma face",
+   "en_US": "Use with the right button over a face"
+  },
++ "Valor Inválido: a rotação precisa ser um número em graus (recebido: {}).": {
++  "pt_BR": "Valor Inválido: a rotação precisa ser um número em graus (recebido: {}).",
++  "en_US": "Invalid Value: the rotation must be a number in degrees (received: {})."
++ },
+  "Valor inválido": {
+   "pt_BR": "Valor inválido",
+   "en_US": "Invalid value"

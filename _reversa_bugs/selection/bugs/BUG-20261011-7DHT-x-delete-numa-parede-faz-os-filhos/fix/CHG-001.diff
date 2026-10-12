@@ -1,0 +1,30 @@
+--- tests/test_component_delete.py	2026-10-09 14:12:50.957707049 -0300
++++ /tmp/claude-1000/-home-theleoinfo-www-BlenderToMob/3c1b1bea-b90f-4d1a-859e-4776b9a7ea92/scratchpad/stage/tests/test_component_delete.py	2026-10-11 11:10:29.938657434 -0300
+@@ -4,7 +4,7 @@
+ 
+ import _bootstrap  # noqa: F401
+ from caffmob_draw.selection import component as c
+-from test_component_core import agregado, balcao, esquadria, folha, macaneta, piso, porta, wall
++from test_component_core import Obj, agregado, balcao, esquadria, folha, macaneta, piso, porta, wall
+ 
+ 
+ class DeleteTest(unittest.TestCase):
+@@ -47,6 +47,18 @@
+         self.assertEqual(c.own_aggregates(porta), [])        # folha da porta é peça da porta, sem pergunta
+         self.assertEqual(c.own_aggregates(esquadria), [])
+ 
++    def test_agregados_param_em_parede_e_modulo(self):
++        # BUG-20261011-TUWO/DXOV (perguntas 2 e 4): parede, piso e teto não levam a subárvore, e os agregados de um
++        # módulo filho são do módulo; nenhum entra na pergunta nem é desconvertido.
++        self.assertEqual(c.own_aggregates(wall), [])
++        self.assertEqual(c.own_aggregates(piso), [])
++        self.assertEqual(self.names(c.delete_plan([wall], keep_aggregates=True).remove), ["Parede"])
++        caixa = Obj("Caixa")
++        modulo = Obj("Balcao 2", caixa, IS_FRAMELESS_CABINET_CAGE=True)
++        fruteira = Obj("Fruteira 2", modulo, aggregate='AGGREGATE')
++        self.assertEqual(c.own_aggregates(caixa), [])
++        self.assertEqual(c.own_aggregates(modulo), [fruteira])
++
+ 
+ if __name__ == "__main__":
+     unittest.main()

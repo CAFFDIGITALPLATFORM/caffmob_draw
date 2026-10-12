@@ -23,6 +23,26 @@
 
 ## Histórico de re-extrações
 
+### Re-extração 2026-10-10 18:26
+
+| ID | Veredito | Observação |
+|----|----------|------------|
+| W001 | 🟡 amarelo | evidência só em artefato não regenerado nesta extração: `hb_placement/requirements.md` RN-05 (2026-09-29, anterior à mudança) ainda descreve frações e notação imperial; código conforme (`caffmob_draw/hb_placement.py:parse_typed_distance` → `data/units.parse_length`, sem frações) |
+| W002 | 🟡 amarelo | evidência só em artefato não regenerado nesta extração: `hb_placement/requirements.md` RN-06 ainda cita `length_unit`; regra equivalente nos artefatos novos só para outros consumidores de `parse_length` (`walls2d/requirements.md` RN-15, `code-analysis.md` move_over); código conforme |
+| W003 | 🟡 amarelo | evidência só em artefato não regenerado nesta extração: `hb_core/requirements.md` RN-18 (texto antigo) não cita `btm_unit`; só `hb_core/tasks.md` Q-08/T-16 registra a decisão; código conforme (`hb_types.py:get_unit_type` e reaplicação em `hb_types.py:667-675`) |
+| W004 | 🟡 amarelo | evidência só em artefato não regenerado nesta extração: `hb_core/design.md`/`legacy-mapping.md` ainda descrevem `get_gn_input` duplicado em `hb_utils`; `code-analysis.md` novo só cita uso de `compat` sem o cache; código conforme (`hb_utils.py:17-25` reexporta, `compat.py:_cache_key` usa `session_uid`) |
+| W005 | 🟡 amarelo | evidência só em artefato não regenerado nesta extração: unit `cutting/` (2026-07) não descreve o agrupamento; código conforme (`cutting/nesting.py:154`, chave com `finish`) |
+| W006 | 🟡 amarelo | evidência só em artefato não regenerado nesta extração: unit `cutting/` (2026-07) não descreve o JSON; código exporta `SCHEMA_VERSION = 2.2.0` (evolução deliberada das features 003 e 008, superconjunto de 2.0.0) e converte v1 na leitura (`cutting/json_exporter.py:21,374`) |
+| W007 | 🟡 amarelo | evidência só em artefato não regenerado nesta extração: unit `cutting/` (2026-07) não cobre `part_sources`; artefatos novos cobrem só a origem `FREE_GEOMETRY` (`geometry_free/requirements.md` RN-15); código conforme (`cutting/part_sources.py` CUTPART/SYNTHETIC) |
+| W008 | 🟡 amarelo | evidência só em artefato não regenerado nesta extração: `frameless/requirements.md`/`design.md` (2026-09-30) ainda listam `ops_defaults.py` sem `UNDO`; o filtro de medidas manuais está nos artefatos novos (`standards/requirements.md` RN-17/RN-19); código conforme (`ops_defaults.py` com `('REGISTER', 'UNDO')` e parâmetro `skip`) |
+| W009 | 🟢 verde | preservada em `_reversa_sdd/inspection/tasks.md` TM-01 e `code-analysis.md` (adaptador closets fracionário); `data-dictionary-legacy.md` (não regenerado) ainda diz `int` |
+| W010 | 🟢 verde | preservada em `_reversa_sdd/collision/requirements.md` RN-10 e `data-dictionary.md` (§ idprops lidas, `btm_settings.collision_global`) |
+| W011 | 🟢 verde | preservada em `_reversa_sdd/inspection/design.md` (pose do frameless em `delta_*`, preservando drivers) e `inspection/requirements.md` RN-16 |
+| W012 | 🟢 verde | preservada em `_reversa_sdd/inspection/requirements.md` RN-10 e `state-machines.md` (Snapshot/Fechadas/Redescobertas) |
+| W013 | 🟡 amarelo | evidência só em artefato não regenerado nesta extração: `hb_placement/requirements.md` RN-09 (texto antigo) descreve todos os filhos como obstáculos; artefatos novos só citam `PlacementMixin.avoid_overlap` (`move_over/design.md`, `collision/requirements.md`); código conforme (`hb_placement.py:832-880`) |
+| W014 | 🟡 amarelo | evidência só em artefato não regenerado nesta extração: `hb_placement/requirements.md` RN-14 (texto antigo) descreve-os como obstáculos incondicionais; código conforme (`hb_placement.py:avoid_overlap`) |
+| W015 | 🟢 verde | preservada em `_reversa_sdd/inspection/design.md` (operadores legados delegam a `caffmob.inspect_fronts('INVOKE_DEFAULT')`); `closets/design.md` (não regenerado) ainda cita timer próprio |
+
 <!-- Preenchido pelo agente reverso em cada `/reversa` futuro: data, veredito 🟢/🟡/🔴 por item. -->
 
 ## Arquivadas

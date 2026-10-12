@@ -1,0 +1,13 @@
+--- caffmob_draw/data/translations/molding.json	2026-10-07 15:10:02.813462715 -0300
++++ caffmob_draw/data/translations/molding.json	2026-10-11 12:37:17.165985667 -0300
+@@ -11,6 +11,10 @@
+   "pt_BR": "Espaçador reto com um perfil de moldura em cima",
+   "en_US": "Flat-stock spacer with a crown profile on top"
+  },
++ "Molding not rebuilt: {}": {
++  "pt_BR": "Molduras não reconstruídas: {}",
++  "en_US": "Molding not rebuilt: {}"
++ },
+  "No molding": {
+   "pt_BR": "Sem moldura",
+   "en_US": "No molding"

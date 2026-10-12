@@ -43,6 +43,10 @@ class Front:
     def max_value(self):
         return pivot_math.MAX_ANGLE if self.hinged else 1.0
 
+    def travel(self):
+        """Curso de correr em metros; 0 = sem curso (o gizmo esconde a seta). Os adaptadores de gaveta sobrescrevem."""
+        return 0.0
+
     @property
     def label(self):
         return f"{KIND_LABELS.get(self.kind, self.kind)} — {self.obj.name}"

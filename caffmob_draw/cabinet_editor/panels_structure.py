@@ -40,7 +40,11 @@ def draw_assembly(layout, context):
     box = layout.box()
     row = box.row(align=True)
     row.label(text=tr("Montagem"))
-    row.prop(root.btm_cabinet, "assembly", expand=True)
+    # Pela fila do editor, não direto na propriedade: entra no rascunho (questions.md, pergunta 42).
+    current = s.draft.current.assembly or root.btm_cabinet.assembly
+    for value, label in (('LATERAL', "Lateral passante"), ('BASE', "Base passante")):
+        op = row.operator("caffmob.cabinet_editor_assembly", text=tr(label), depress=current == value)
+        op.assembly = value
     if bridge.is_own_standard(context, root):
         note = box.row()
         note.active = False

@@ -1,0 +1,30 @@
+--- caffmob_draw/geometry_free/mesh.py	2026-10-11 12:24:07.413383631 -0300
++++ caffmob_draw/geometry_free/mesh.py	2026-10-11 22:10:52.130814495 -0300
+@@ -6,6 +6,8 @@
+ import bmesh  # type: ignore
+ import bpy  # type: ignore
+ 
++from ..data.i18n import N_
++
+ GEOMETRY_FLAG = 'IS_BTM_GEOMETRY'
+ 
+ 
+@@ -28,14 +30,14 @@
+     """
+     if kind == 'PLACA':
+         a, b = sorted(_plane_sides(plane, width, depth, height), reverse=True)
+-        return [("Placa", a, b, thickness)]
++        return [(N_("Placa"), a, b, thickness)]
+     t = thickness
+     inner_h = max(0.001, height - 2 * t)
+     inner_w = max(0.001, width - 2 * t)
+     return [
+-        ("Fundo", width, depth, t), ("Tampo", width, depth, t),
+-        ("Lateral esquerda", inner_h, depth, t), ("Lateral direita", inner_h, depth, t),
+-        ("Frente", inner_w, inner_h, t), ("Trás", inner_w, inner_h, t),
++        (N_("Fundo"), width, depth, t), (N_("Tampo"), width, depth, t),
++        (N_("Lateral esquerda"), inner_h, depth, t), (N_("Lateral direita"), inner_h, depth, t),
++        (N_("Frente"), inner_w, inner_h, t), (N_("Trás"), inner_w, inner_h, t),
+     ]
+ 
+ 

@@ -1,0 +1,12 @@
+--- caffmob_draw/walls2d/ops_editor.py	2026-10-11 12:07:28.800049915 -0300
++++ caffmob_draw/walls2d/ops_editor.py	2026-10-11 12:26:48.993870047 -0300
+@@ -576,6 +576,9 @@
+             closed = tr(", {} sala(s) fechada(s) no OK").format(report['closed']) if report.get('closed') else ""
+             self.report({'INFO'}, tr("Paredes aplicadas: {} nova(s), {} atualizada(s), {} removida(s){}.").format(
+                 len(report['created']), len(report['updated']), len(report['removed']), closed))
++            if report.get('opening_errors'):
++                self.report({'WARNING'}, tr("Não foi possível montar a porta ou janela real de: {}").format(
++                    ", ".join(report['opening_errors'])))
+             return {'FINISHED'}
+         if s.request == 'cancel':
+             self._end(context, False)

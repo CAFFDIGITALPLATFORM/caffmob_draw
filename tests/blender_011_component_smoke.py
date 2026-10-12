@@ -168,10 +168,15 @@ def delete_part():
     check("a parede fica sem booleano de porta", not any(m.type == 'BOOLEAN' for m in wall.modifiers),
           str([m.name for m in wall.modifiers]))
 
+    # BUG-20261011-7DHT (pergunta 5): X numa parede é do plugin e usa remove_wall; o que está nela fica no lugar.
     cabinet = next(o for o in scene.objects if o.get('IS_FRAMELESS_CABINET_CAGE'))
+    where = cabinet.matrix_world.translation.copy()
     with bpy.context.temp_override(selected_objects=[wall], active_object=wall, object=wall):
         poll = bpy.ops.caffmob.delete_with_aggregates.poll()
-    check("X numa parede segue no Delete do Blender", not poll and cabinet.name in bpy.data.objects)
+        result = bpy.ops.caffmob.delete_with_aggregates('EXEC_DEFAULT') if poll else None
+    check("X numa parede usa o caminho do plugin", poll and result == {'FINISHED'}, str(result))
+    check("e o balcão fica onde estava", cabinet.name in bpy.data.objects
+          and (cabinet.matrix_world.translation - where).length < 1e-6)
 
 
 try:

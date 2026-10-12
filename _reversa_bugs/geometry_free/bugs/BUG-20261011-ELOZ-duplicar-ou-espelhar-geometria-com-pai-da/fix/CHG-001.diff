@@ -1,0 +1,99 @@
+--- /dev/null	2026-10-09 20:39:19.815662691 -0300
++++ tests/blender_bug_ELOZ_geometry_parent.py	2026-10-11 20:40:07.325182790 -0300
+@@ -0,0 +1,96 @@
++"""Reprodução e regressão do lote da geometria livre com pai e filhos: BUG-20261011-ELOZ e BUG-20261011-GUHQ.
++
++Run: blender --background --factory-startup --python-exit-code 1 --python tests/blender_bug_ELOZ_geometry_parent.py
++
++Decisão do titular (questions.md, pergunta 65): duplicar e espelhar calculam no espaço da peça (vale com pai girado);
++excluir mantém os filhos na posição mundial (geometry_free EC-09, EC-14).
++"""
++
++import math
++import sys
++import traceback
++from pathlib import Path
++
++import bpy
++from mathutils import Vector
++
++sys.path.insert(0, str(Path(__file__).resolve().parent))
++import _blender_env as env  # noqa: E402
++from caffmob_draw.geometry_free import mesh  # noqa: E402
++
++ctx = bpy.context
++FAILURES = []
++
++
++def check(name, ok, detail=""):
++    print(("OK   " if ok else "FALHA ") + name, detail, flush=True)
++    if not ok:
++        FAILURES.append(name)
++
++
++def near(a, b):
++    return (Vector(a) - Vector(b)).length < 1e-5
++
++
++def fmt(v):
++    return tuple(round(c, 4) for c in v)
++
++
++def board_on_rotated_parent():
++    env.clean_scene()
++    parent = bpy.data.objects.new("Pai", None)
++    ctx.scene.collection.objects.link(parent)
++    parent.location = (2.0, 0.0, 0.0)
++    parent.rotation_euler.z = math.radians(90)
++    placa = mesh.create_object(ctx, 'PLACA')
++    placa.btm_geometry.width, placa.btm_geometry.depth = 0.5, 0.4
++    placa.parent = parent
++    env.settle()
++    return placa
++
++
++def duplicate_and_mirror():
++    placa = board_on_rotated_parent()
++    with ctx.temp_override(active_object=placa, selected_objects=[placa]):
++        bpy.ops.caffmob.geometry_duplicate()
++    env.settle()
++    copy = ctx.view_layer.objects.active
++    check("ELOZ: duplicar com pai girado põe a cópia ao lado", near(copy.matrix_world.translation, (2.0, 0.5, 0.0)),
++          str(fmt(copy.matrix_world.translation)))
++    with ctx.temp_override(active_object=placa):
++        bpy.ops.caffmob.geometry_mirror()
++    env.settle()
++    check("ELOZ: espelhar com pai girado passa para o outro lado", near(placa.matrix_world.translation, (2.0, -0.5, 0.0)),
++          str(fmt(placa.matrix_world.translation)))
++    with ctx.temp_override(active_object=placa):
++        bpy.ops.caffmob.geometry_mirror()
++    env.settle()
++    check("ELOZ: espelhar de novo volta", near(placa.matrix_world.translation, (2.0, 0.0, 0.0)),
++          str(fmt(placa.matrix_world.translation)))
++
++
++def delete_with_child():
++    env.clean_scene()
++    placa = mesh.create_object(ctx, 'PLACA')
++    placa.location = (5.0, 0.0, 0.0)
++    child = bpy.data.objects.new("Cota", None)
++    ctx.scene.collection.objects.link(child)
++    child.parent = placa
++    child.location = (1.0, 0.0, 0.0)
++    env.settle()
++    where = child.matrix_world.translation.copy()
++    with ctx.temp_override(active_object=placa):
++        bpy.ops.caffmob.geometry_delete()
++    env.settle()
++    check("GUHQ: excluir mantém o filho onde estava", near(child.matrix_world.translation, where) and child.parent is None,
++          f"{fmt(where)} → {fmt(child.matrix_world.translation)}")
++
++
++for step in (duplicate_and_mirror, delete_with_child):
++    try:
++        step()
++    except Exception:
++        traceback.print_exc()
++        FAILURES.append(f"exceção em {step.__name__}")
++print(f"blender_bug_ELOZ_geometry_parent: {'OK' if not FAILURES else 'FALHAS: ' + ', '.join(FAILURES)}")
++sys.exit(1 if FAILURES else 0)

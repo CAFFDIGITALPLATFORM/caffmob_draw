@@ -113,17 +113,24 @@ class BTM_OT_ObjectInsert(bpy.types.Operator):
             self.report({'INFO'}, tr("{} inserido").format(self._name))
             return {'FINISHED'}
         if event.type in {'ESC', 'RIGHTMOUSE'} and event.value == 'PRESS':
-            self._end(context)
-            for obj in reversed(self._loaded):
-                if obj.name in bpy.data.objects:
-                    bpy.data.objects.remove(obj, do_unlink=True)
+            self._discard(context)
             return {'CANCELLED'}
         if event.type in {'MIDDLEMOUSE', 'WHEELUPMOUSE', 'WHEELDOWNMOUSE'}:
             return {'PASS_THROUGH'}             # girar e aproximar a vista continua funcionando
         return {'RUNNING_MODAL'}
 
-    def cancel(self, context):
+    def _discard(self, context):
         self._end(context)
+        for obj in reversed(self._loaded):
+            try:
+                if obj.name in bpy.data.objects:
+                    bpy.data.objects.remove(obj, do_unlink=True)
+            except ReferenceError:
+                pass
+
+    def cancel(self, context):
+        """O Blender interrompeu o modal: sai como no Esc, sem deixar os objetos carregados (DT-03)."""
+        self._discard(context)
 
 
 class BTM_OT_ObjectLibraryRemove(bpy.types.Operator):

@@ -1,5 +1,7 @@
 # Mapeamento legado — `catalog_molding`
 
+> 🟢 **Decisão do titular (2026-10-10, questions.md#pergunta-98):** unit **histórica por inteiro**: `caffmob_draw/catalog/` não é importado pelo add-on (nenhum `from .catalog`/`import catalog` fora da própria pasta aponta para ele) e não será religado; a parte molduras vale em `_reversa_sdd/molding/`. Não use esta unit como contrato vivo.
+
 > Camada legada herdada do Home Builder 5. Legenda: 🟢 CONFIRMADO · 🟡 INFERIDO · 🔴 LACUNA
 
 ## Estado de integração

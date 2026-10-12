@@ -100,8 +100,17 @@ class BTM_OT_MoveOnWall(bpy.types.Operator):
             tr("Anterior {} | Posterior {} | Inferior {} | Shift: altura | Clique confirma | Esc cancela").format(fmt(values.anterior), fmt(values.posterior), fmt(values.inferior)))
 
     def _end(self, context, result):
-        context.area.header_text_set(None)
+        if context.area is not None:
+            context.area.header_text_set(None)
         return result
+
+    def cancel(self, context):
+        """O Blender interrompeu o modal: o módulo volta para onde estava e o cabeçalho sai (questions.md, pergunta 17)."""
+        try:
+            self.mc.root.location = self.original
+        except ReferenceError:
+            pass
+        self._end(context, {'CANCELLED'})
 
 
 classes = (BTM_OT_MoveOnWall,)

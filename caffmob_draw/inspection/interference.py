@@ -10,6 +10,8 @@ outros objetos visíveis. O próprio módulo da frente fica de fora (inclui as f
 """
 
 import bmesh  # type: ignore
+import bpy  # type: ignore
+from bpy.app.handlers import persistent  # type: ignore
 from mathutils import Vector  # type: ignore
 from mathutils.bvhtree import BVHTree  # type: ignore
 
@@ -216,4 +218,21 @@ def store_results(window_manager, results, checked):
         entry.kind = item['kind']
     state.interference_index = 0
     state.checked_fronts = checked
+    state.stale = False
+
+
+@persistent
+def on_depsgraph_update(scene, depsgraph):
+    """Malha ou curva que se move depois da verificação deixa o resultado desatualizado (questions.md, pergunta 93)."""
+    try:
+        state = bpy.context.window_manager.btm_inspection
+    except AttributeError:
+        return
+    if state.checked_fronts < 0 or state.stale:
+        return
+    for update in depsgraph.updates:
+        if (update.is_updated_transform and isinstance(update.id, bpy.types.Object)
+                and update.id.type in {'MESH', 'CURVE'}):
+            state.stale = True
+            return
 

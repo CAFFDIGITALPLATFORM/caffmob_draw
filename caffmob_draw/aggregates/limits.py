@@ -7,9 +7,12 @@ O agregado fica preso a uma face do pai (`POS_X`, `NEG_X`, ..., `NEG_Z`):
 O agregado nunca sai do contorno da face (RN-08) e afunda no máximo a espessura do pai nesse eixo (RN-09).
 """
 
+from ..data.i18n import N_
+
 FACES = ('POS_X', 'NEG_X', 'POS_Y', 'NEG_Y', 'POS_Z', 'NEG_Z')
-FACE_LABELS = {'POS_X': "Direita (+X)", 'NEG_X': "Esquerda (−X)", 'POS_Y': "Fundo (+Y)", 'NEG_Y': "Frente (−Y)",
-               'POS_Z': "Topo (+Z)", 'NEG_Z': "Base (−Z)"}
+# Rótulos marcados para o catálogo (`aggregates.json`); quem desenha traduz (stick T-15).
+FACE_LABELS = {'POS_X': N_("Direita (+X)"), 'NEG_X': N_("Esquerda (−X)"), 'POS_Y': N_("Fundo (+Y)"),
+               'NEG_Y': N_("Frente (−Y)"), 'POS_Z': N_("Topo (+Z)"), 'NEG_Z': N_("Base (−Z)")}
 _AXIS = {'X': 0, 'Y': 1, 'Z': 2}
 
 

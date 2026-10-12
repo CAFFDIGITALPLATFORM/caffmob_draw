@@ -179,12 +179,20 @@ class BTM_OT_GeometryCreate(bpy.types.Operator):
         return {'FINISHED'}
 
     def _cancel(self, context):
-        context.area.header_text_set(None)
-        data = self.obj.data
-        bpy.data.objects.remove(self.obj, do_unlink=True)
+        if context.area is not None:
+            context.area.header_text_set(None)
+        try:
+            data = self.obj.data
+            bpy.data.objects.remove(self.obj, do_unlink=True)
+        except ReferenceError:              # o arquivo já foi trocado: o provisório saiu com ele
+            return {'CANCELLED'}
         if data.users == 0:
             bpy.data.meshes.remove(data)
         return {'CANCELLED'}
+
+    def cancel(self, context):
+        """O Blender interrompeu o modal (abrir arquivo, fechar janela): o provisório e o cabeçalho não ficam (EC-01)."""
+        self._cancel(context)
 
 
 classes = (BTM_OT_GeometryCreate,)

@@ -1,0 +1,102 @@
+"""Reprodução e regressão do lote das traduções: BUG-20261011-35HE, BUG-20261011-JKLK, BUG-20261011-DLHX e
+BUG-20261011-FGTR.
+
+Run: blender --background --factory-startup --python-exit-code 1 --python tests/blender_bug_35HE_i18n.py
+
+- o aviso da personalização já sai em inglês pela tradução do Blender (35HE fecha como invalid);
+- rótulos das faces (aggregates/limits.FACE_LABELS) traduzidos (stick T-15);
+- nomes das chapas da geometria livre no catálogo;
+- deslizantes sem vão interno não viram "falta profundidade", e a profundidade sai na unidade da cena (cabinet_editor
+  EC-09).
+"""
+
+import sys
+import traceback
+from pathlib import Path
+
+import bpy
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import _blender_env  # noqa: E402,F401
+from caffmob_draw.aggregates import limits  # noqa: E402
+from caffmob_draw.cabinet_editor import bridge, scene_slides  # noqa: E402
+from caffmob_draw.cabinet_editor import slides as sl  # noqa: E402
+from caffmob_draw.data.i18n import tr  # noqa: E402
+from caffmob_draw.geometry_free import mesh  # noqa: E402
+
+ctx = bpy.context
+view = ctx.preferences.view
+FAILURES = []
+
+
+def check(name, ok, detail=""):
+    print(("OK   " if ok else "FALHA ") + name, detail, flush=True)
+    if not ok:
+        FAILURES.append(name)
+
+
+def language(code):
+    view.language = code
+    view.use_translate_interface = view.use_translate_tooltips = view.use_translate_reports = True
+
+
+def module():
+    for obj in list(ctx.scene.objects):
+        bpy.data.objects.remove(obj, do_unlink=True)
+    assert bpy.ops.caffmob.cabinet_builder(width=0.6) == {'FINISHED'}
+    return ctx.object
+
+
+
+
+def customize_english():
+    root = module()
+    language('en_US')
+    try:
+        with ctx.temp_override(active_object=root, object=root):
+            bpy.ops.caffmob.module_save(module_name="   ", category="Testes", thumbnail=False)
+        message = "(sem erro)"
+    except RuntimeError as exc:
+        message = str(exc)
+    # O Blender traduz o texto do report (e o text= do layout) pelo catálogo: o aviso já sai em inglês sem tr().
+    check("35HE: aviso do Salvar como módulo em inglês (tradução do Blender)", "Digite" not in message
+          and "name" in message.lower(), message.splitlines()[-1])
+    language('pt_BR')
+
+
+def labels_english():
+    language('en_US')
+    check("JKLK: rótulos das faces em inglês", tr(limits.FACE_LABELS['POS_X']) == "Right (+X)"
+          and tr(limits.FACE_LABELS['NEG_Z']) == "Bottom (−Z)", tr(limits.FACE_LABELS['POS_X']))
+    names = [s[0] for s in mesh.sheets('CAIXA', 'XY', 0.6, 0.5, 0.7, 0.018)] + [mesh.sheets('PLACA', 'XY', 1, 1, 0, 0.02)[0][0]]
+    untranslated = [n for n in names if tr(n) == n]
+    check("DLHX: nomes das chapas têm tradução", not untranslated, str(untranslated))
+    language('pt_BR')
+
+
+def slides_messages():
+    root = module()
+    original_roots, original_need = scene_slides.scene_divisions.roots, sl.missing_depth
+    try:
+        scene_slides.scene_divisions.roots = lambda context, root: {}
+        msgs = bridge.insert_slides(ctx, root, {'item': 'X', 'leaves': 2})
+        check("FGTR: sem vão interno não vira falta de profundidade", msgs == ["Sem vão interno para os deslizantes"],
+              str(msgs))
+        scene_slides.scene_divisions.roots = lambda context, root: {0: object()}
+        sl.missing_depth = lambda space, leaves: 0.09
+        msgs = bridge.insert_slides(ctx, root, {'item': 'X', 'leaves': 2})
+        check("FGTR: profundidade na unidade da cena", len(msgs) == 1 and "0.090" not in msgs[0] and "mm" in msgs[0],
+              str(msgs))
+    finally:
+        scene_slides.scene_divisions.roots, sl.missing_depth = original_roots, original_need
+
+
+for step in (customize_english, labels_english, slides_messages):
+    try:
+        step()
+    except Exception:
+        traceback.print_exc()
+        FAILURES.append(f"exceção em {step.__name__}")
+language('pt_BR')
+print(f"blender_bug_35HE_i18n: {'OK' if not FAILURES else 'FALHAS: ' + ', '.join(FAILURES)}")
+sys.exit(1 if FAILURES else 0)

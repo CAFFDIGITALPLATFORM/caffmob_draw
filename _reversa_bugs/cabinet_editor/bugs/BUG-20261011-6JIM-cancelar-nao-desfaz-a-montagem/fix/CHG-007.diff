@@ -1,0 +1,13 @@
+--- caffmob_draw/data/translations/cabinet_editor.json	2026-10-08 21:01:31.464271214 -0300
++++ caffmob_draw/data/translations/cabinet_editor.json	2026-10-11 21:53:28.669928899 -0300
+@@ -1043,6 +1043,10 @@
+   "en_US": "Torralba — Integrated pulls",
+   "pt_BR": "Torralba — Pux Integrados"
+  },
++ "Troca a montagem do armário pelo rascunho do editor (Ctrl+Z, Cancelar e Aplicar a tratam)": {
++  "pt_BR": "Troca a montagem do armário pelo rascunho do editor (Ctrl+Z, Cancelar e Aplicar a tratam)",
++  "en_US": "Changes the cabinet assembly through the editor draft (Ctrl+Z, Cancel and Apply handle it)"
++ },
+  "Uma porta no vão": {
+   "en_US": "One door in the opening",
+   "pt_BR": "Uma porta no vão"

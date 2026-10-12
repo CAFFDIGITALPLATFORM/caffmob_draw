@@ -1,0 +1,157 @@
+"""Reprodução e regressão do lote da porta real (`openings/sync.py`): BUG-20261011-MMVI, BUG-20261011-A2Z4,
+BUG-20261011-IDPP, BUG-20261011-UV6S e BUG-20261011-SX4T.
+
+Run: blender --background --factory-startup --python-exit-code 1 --python tests/blender_bug_MMVI_opening_sync.py
+
+- refazer a porta não apaga objetos do usuário pendurados na montagem (questions.md, pergunta 26);
+- uma caixa com erro não interrompe "Atualizar portas e janelas" nem o OK do Editor de Paredes (EC-11);
+- largura e altura pelo painel são as da folha e refazem a porta real (perguntas 20 e 69);
+- Toggle Double Door refaz a porta real (pergunta 24);
+- cota 2D pendurada na caixa não é tomada pelo símbolo de giro (pergunta 23).
+"""
+
+import sys
+import traceback
+from pathlib import Path
+
+import bpy
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import _blender_env as env  # noqa: E402
+import _openings_env as oe  # noqa: E402
+from caffmob_draw.openings import sync  # noqa: E402
+from caffmob_draw.operators import doors_windows as dw  # noqa: E402
+from caffmob_draw.selection import classify, editing  # noqa: E402
+from caffmob_draw.walls2d import apply, model  # noqa: E402
+
+ctx = bpy.context
+FAILURES = []
+
+
+def check(name, ok, detail=""):
+    print(("OK   " if ok else "FALHA ") + name, detail, flush=True)
+    if not ok:
+        FAILURES.append(name)
+
+
+def room():
+    env.clean_scene()
+    apply.apply_plan(ctx, model.WallPlan([model.rectangle(4.0, 3.0)]))
+    env.settle()
+    return sorted((o for o in ctx.scene.objects if o.get('IS_WALL_BP')), key=lambda o: o.name)[0]
+
+
+def door_on(wall, x, kind='DOOR'):
+    door = oe.make_cage(kind)
+    door.parent = wall
+    door.location = (x, 0.0, 0.0)
+    dw.cut_wall(wall, door)
+    env.settle()
+    sync.sync(ctx, door)
+    env.settle()
+    return door
+
+
+def leaves(door):
+    assembly = door.btm_opening_real.assembly
+    return [o for o in assembly.children_recursive if getattr(o, 'btm_aggregate', None) is not None
+            and o.btm_aggregate.is_aggregate and o.btm_aggregate.kind == 'LEAF']
+
+
+def user_objects_survive():
+    door = door_on(room(), 1.0)
+    assembly = door.btm_opening_real.assembly
+    mine = bpy.data.objects.new("Puxador do usuário", bpy.data.meshes.new("Puxador do usuário"))
+    ctx.scene.collection.objects.link(mine)
+    mine.parent = assembly
+    mine.location = (0.3, 0.0, 1.0)
+    env.settle()
+    where = mine.matrix_world.translation.copy()
+    sync.sync(ctx, door, force=True)
+    env.settle()
+    alive = "Puxador do usuário" in bpy.data.objects
+    check("MMVI: refazer a porta mantém o objeto do usuário", alive)
+    if alive:
+        check("MMVI: no mesmo lugar, filho da caixa", (mine.matrix_world.translation - where).length < 1e-6
+              and mine.parent == door, f"pai={mine.parent.name if mine.parent else None}")
+    check("MMVI: a montagem nova tem as folhas", len(leaves(door)) == 1)
+
+
+def one_bad_cage():
+    wall = room()
+    good = door_on(wall, 1.0)
+    bad = door_on(wall, 2.6)
+    original = sync.signature
+
+    def flaky(cage):
+        if cage == bad:
+            raise RuntimeError("caixa com defeito simulado")
+        return original(cage)
+
+    sync.signature = flaky
+    try:
+        for cage in (good, bad):
+            cage.btm_opening_real.model_version = 0          # as duas ficam "desatualizadas"
+        try:
+            result = bpy.ops.caffmob.openings_update()
+        except RuntimeError as exc:
+            result = repr(exc)
+        check("A2Z4: Atualizar segue com uma caixa com erro", result == {'FINISHED'}, str(result))
+        check("A2Z4: a caixa boa foi atualizada", good.btm_opening_real.model_version > 0)
+        good.btm_opening_real.signature = ""                 # o OK do editor refaz quem mudou
+        try:
+            report = apply.apply_plan(ctx, model.WallPlan([]))
+            ok, detail = bad.name in report.get('opening_errors', []), str(report.get('opening_errors'))
+        except RuntimeError as exc:
+            ok, detail = False, repr(exc)
+        check("A2Z4: o OK do Editor de Paredes segue e lista a caixa com erro", ok, detail)
+    finally:
+        sync.signature = original
+
+
+def panel_size():
+    door = door_on(room(), 1.0)
+    info = classify.classify(door)
+    editing.set_dimension(ctx, info, 'width', 0.9)
+    env.settle()
+    check("IDPP: o painel mostra a largura da folha", abs(editing.get_dimension(info, 'width') - 0.9) < 1e-6,
+          f"{editing.get_dimension(info, 'width'):.4f}")
+    hole = sync._dims(door)[0]
+    check("IDPP: a caixa ganha marco e folga", abs(hole - dw._leaf_to_hole('DOOR', 'X', 0.9)) < 1e-6 and hole > 0.9,
+          f"{hole:.4f}")
+    check("IDPP: a porta real foi refeita", door.btm_opening_real.signature == sync.signature(door))
+
+
+def toggle_double():
+    door = door_on(room(), 1.0)
+    with ctx.temp_override(object=door, active_object=door):
+        bpy.ops.caffmob_doors_windows.toggle_double_door()
+    env.settle()
+    check("UV6S: Toggle Double Door refaz como dupla", door.btm_opening_real.kind == 'DOUBLE_DOOR'
+          and len(leaves(door)) == 2, f"{door.btm_opening_real.kind}, {len(leaves(door))} folha(s)")
+
+
+def annotation_child():
+    door = door_on(room(), 1.0)
+    cota = bpy.data.objects.new("A cota", bpy.data.meshes.new("A cota"))
+    ctx.scene.collection.objects.link(cota)
+    cota['IS_2D_ANNOTATION'] = True
+    cota.parent = door
+    env.settle()
+    swing = sync._swing(door)[0]
+    check("SX4T: o símbolo de giro é o Door Swing, não a cota", swing is not None and swing.name.startswith("Door Swing"),
+          swing.name if swing else None)
+
+
+try:
+    for step in (user_objects_survive, one_bad_cage, panel_size, toggle_double, annotation_child):
+        try:
+            step()
+        except Exception:
+            traceback.print_exc()
+            FAILURES.append(f"exceção em {step.__name__}")
+except Exception:
+    traceback.print_exc()
+    FAILURES.append("exceção no roteiro")
+print(f"blender_bug_MMVI_opening_sync: {'OK' if not FAILURES else 'FALHAS: ' + ', '.join(FAILURES)}")
+sys.exit(1 if FAILURES else 0)

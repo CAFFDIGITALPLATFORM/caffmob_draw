@@ -230,5 +230,9 @@
  "… e mais {}": {
   "pt_BR": "… e mais {}",
   "en_US": "… and {} more"
+ },
+ "Zoom janela: marque um retângulo para enquadrar": {
+  "pt_BR": "Zoom janela: marque um retângulo para enquadrar",
+  "en_US": "Zoom window: drag a rectangle to frame it"
  }
 }

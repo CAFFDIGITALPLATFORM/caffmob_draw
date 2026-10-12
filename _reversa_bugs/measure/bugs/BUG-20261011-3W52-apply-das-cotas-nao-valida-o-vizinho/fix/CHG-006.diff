@@ -1,0 +1,26 @@
+--- caffmob_draw/data/translations/measure.json	2026-10-07 15:42:16.174591306 -0300
++++ caffmob_draw/data/translations/measure.json	2026-10-11 22:26:39.821755396 -0300
+@@ -1,4 +1,8 @@
+ {
++ "Cota desconhecida: {}": {
++  "pt_BR": "Cota desconhecida: {}",
++  "en_US": "Unknown dimension: {}"
++ },
+  "Valor Inválido: módulo livre (sem parede) não tem cota anterior, posterior ou afastamento.": {
+   "pt_BR": "Valor Inválido: módulo livre (sem parede) não tem cota anterior, posterior ou afastamento.",
+   "en_US": "Invalid Value: a free module (no wall) has no left, right or wall offset dimension."
+@@ -11,6 +15,14 @@
+   "pt_BR": "Valor Inválido: {} não pode ser negativa.",
+   "en_US": "Invalid Value: {} cannot be negative."
+  },
++ "Valor Inválido: {} põe o módulo acima do teto.": {
++  "pt_BR": "Valor Inválido: {} põe o módulo acima do teto.",
++  "en_US": "Invalid Value: {} puts the module above the ceiling."
++ },
++ "Valor Inválido: {} põe o módulo sobre o vizinho do outro lado.": {
++  "pt_BR": "Valor Inválido: {} põe o módulo sobre o vizinho do outro lado.",
++  "en_US": "Invalid Value: {} puts the module over the neighbor on the other side."
++ },
+  "Valor Inválido: {} tira o módulo da parede.": {
+   "pt_BR": "Valor Inválido: {} tira o módulo da parede.",
+   "en_US": "Invalid Value: {} moves the module off the wall."

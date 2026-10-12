@@ -6,6 +6,8 @@ Python puro nas funções de medida (`size`, `sheets`); só `update`/`create_obj
 import bmesh  # type: ignore
 import bpy  # type: ignore
 
+from ..data.i18n import N_
+
 GEOMETRY_FLAG = 'IS_BTM_GEOMETRY'
 
 
@@ -23,20 +25,29 @@ def size(kind, plane, width, depth, height, thickness):
 def sheets(kind, plane, width, depth, height, thickness):
     """[(nome, comprimento, largura, espessura)] em metros.
 
-    Placa: uma chapa com comprimento e largura pelas duas maiores medidas e espessura pela menor.
-    Caixa: fundo e tampo inteiros; laterais entre eles; frente e trás entre as laterais.
+    Placa: uma chapa com espessura `thickness` e comprimento e largura pelas duas medidas do plano, maior primeiro
+    (questions.md, pergunta 66). Caixa: fundo e tampo inteiros; laterais entre eles; frente e trás entre as laterais.
     """
     if kind == 'PLACA':
-        a, b, c = sorted(size(kind, plane, width, depth, height, thickness), reverse=True)
-        return [("Placa", a, b, c)]
+        a, b = sorted(_plane_sides(plane, width, depth, height), reverse=True)
+        return [(N_("Placa"), a, b, thickness)]
     t = thickness
     inner_h = max(0.001, height - 2 * t)
     inner_w = max(0.001, width - 2 * t)
     return [
-        ("Fundo", width, depth, t), ("Tampo", width, depth, t),
-        ("Lateral esquerda", inner_h, depth, t), ("Lateral direita", inner_h, depth, t),
-        ("Frente", inner_w, inner_h, t), ("Trás", inner_w, inner_h, t),
+        (N_("Fundo"), width, depth, t), (N_("Tampo"), width, depth, t),
+        (N_("Lateral esquerda"), inner_h, depth, t), (N_("Lateral direita"), inner_h, depth, t),
+        (N_("Frente"), inner_w, inner_h, t), (N_("Trás"), inner_w, inner_h, t),
     ]
+
+
+def _plane_sides(plane, width, depth, height):
+    return {'XY': (width, depth), 'XZ': (width, height)}.get(plane, (depth, height))
+
+
+def thinner_than_thickness(kind, plane, width, depth, height, thickness):
+    """Placa com uma medida do plano menor que a espessura (aviso no painel, pergunta 66)."""
+    return kind == 'PLACA' and min(_plane_sides(plane, width, depth, height)) < thickness
 
 
 def _props(obj):

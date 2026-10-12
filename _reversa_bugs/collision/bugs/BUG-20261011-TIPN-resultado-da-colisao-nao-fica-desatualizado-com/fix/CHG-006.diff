@@ -1,0 +1,15 @@
+--- caffmob_draw/inspection/ops_interference.py	2026-10-07 15:02:11.117912188 -0300
++++ caffmob_draw/inspection/ops_interference.py	2026-10-11 22:02:39.624877513 -0300
+@@ -74,8 +74,12 @@
+ def register():
+     for cls in classes:
+         bpy.utils.register_class(cls)
++    if interference.on_depsgraph_update not in bpy.app.handlers.depsgraph_update_post:
++        bpy.app.handlers.depsgraph_update_post.append(interference.on_depsgraph_update)
+ 
+ 
+ def unregister():
++    if interference.on_depsgraph_update in bpy.app.handlers.depsgraph_update_post:
++        bpy.app.handlers.depsgraph_update_post.remove(interference.on_depsgraph_update)
+     for cls in reversed(classes):
+         bpy.utils.unregister_class(cls)

@@ -76,6 +76,10 @@ class AggregateLeafFront(fronts.Front):
                 reference = Vector((0.0, 0.0, -1.0 if agg.hinge == 'TOP' else 1.0))
         return world @ base, (rot @ axis).normalized(), (rot @ reference).normalized()
 
+    def travel(self):
+        """Curso da folha de correr (questions.md, pergunta 61); a de giro não tem curso."""
+        return 0.0 if self.hinged else float(self.obj.btm_aggregate.travel)
+
     def objects(self):
         return [self.obj] + list(self.obj.children_recursive)
 

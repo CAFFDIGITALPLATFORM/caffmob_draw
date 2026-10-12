@@ -235,6 +235,7 @@ def check_moved(objs):
     names = {o.name for o in objs if o.name in bpy.data.objects}
     if not names:
         return []
+    roots = set(names)
     for obj in objs:                      # o que se move junto (agregados, itens grudados) também é verificado
         names.update(c.name for c in obj.children_recursive)
     try:
@@ -252,6 +253,9 @@ def check_moved(objs):
         row = state.items.add()
         row.kind, row.name_a, row.name_b = c.kind, c.name_a, c.name_b
         row.depth, row.push, row.location = c.depth, c.push, c.location
+    if state.checked < 0:                  # sem "Verificar" antes: estes itens passam a ser os verificados (EC-04)
+        state.checked = len(roots)
+        state.checked_names = "\n".join(sorted(roots))
     from . import stale
     stale.rechecked(names)
     if found:

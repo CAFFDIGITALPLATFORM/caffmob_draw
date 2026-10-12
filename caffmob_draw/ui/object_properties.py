@@ -78,10 +78,11 @@ def _dim_setter(field):
 def _cota_getter(field):
     def get(_self):
         obj = bpy.context.active_object
-        mc = scene_cotas.for_object(obj, bpy.context.scene) if obj else None
-        if mc is None:
+        try:
+            mc = scene_cotas.for_object(obj, bpy.context.scene) if obj else None
+            value = getattr(mc.compute(), field) if mc is not None else None
+        except ValueError:                # parede sem o modificador ou o input Length: o desenho segue (EC-08)
             return 0.0
-        value = getattr(mc.compute(), field)
         return 0.0 if value is None else float(value)
     return get
 
@@ -263,6 +264,9 @@ def _draw_geometry(layout, info):
             continue
         col.prop(g, field)
     col.prop(g, 'thickness')
+    from ..geometry_free import mesh
+    if mesh.thinner_than_thickness(g.kind, g.plane, g.width, g.depth, g.height, g.thickness):
+        col.label(text="Uma medida da placa é menor que a espessura", icon='ERROR')
     col.prop(info.obj, 'location', text="Posição")
     fab = layout.box()
     fab.prop(g, 'fabrication')

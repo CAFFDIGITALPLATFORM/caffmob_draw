@@ -1,5 +1,9 @@
 # catalog_molding — Design Técnico
 
+> 🟢 **Decisão do titular (2026-10-10, questions.md#pergunta-98):** unit **histórica por inteiro**: `caffmob_draw/catalog/` não é importado pelo add-on (nenhum `from .catalog`/`import catalog` fora da própria pasta aponta para ele) e não será religado; a parte molduras vale em `_reversa_sdd/molding/`. Não use esta unit como contrato vivo.
+
+> ⚠️ **Parte molduras histórica** _(Revisão cruzada 2026-10-10: a pasta `caffmob_draw/molding/` passou à unit [`molding/`](../molding/requirements.md), re-extraída em 2026-10-10; esta unit descreve o motor no caminho antigo `blendertomob/molding/` e as decisões Q-02..Q-05 não implementadas)_: para `molding/*.py` vale `_reversa_sdd/molding/`. A parte `catalog/` (não registrada pelo add-on) continua descrita só aqui.
+
 > Unit legada (fork do Home Builder 5). Gerado pelo **Writer** (Reversa) em 2026-10-01, nível **detalhado**.
 > Complementa [`requirements.md`](requirements.md). Dados completos em [`data-dictionary-legacy.md#catalog_molding`](../data-dictionary-legacy.md).
 > Escala: 🟢 CONFIRMADO · 🟡 INFERIDO · 🔴 LACUNA. Caminhos relativos a `blendertomob/`.

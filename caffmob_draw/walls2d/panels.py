@@ -45,7 +45,7 @@ class BTM_PT_WallEditorSegment(_EditorPanel, bpy.types.Panel):
         layout = self.layout
         state = context.window_manager.btm_wall_editor
         s = props.session()
-        chain, _i = s.segment() if s else (None, None)
+        chain, i = s.segment() if s else (None, None)
         if chain is None:
             layout.label(text="Selecione um trecho na planta.", icon='INFO')
             return
@@ -53,8 +53,10 @@ class BTM_PT_WallEditorSegment(_EditorPanel, bpy.types.Panel):
         layout.use_property_decorate = False
         layout.prop(state, "line")
         layout.prop(state, "length_text")
-        layout.prop(state, "angle_abs")
-        layout.prop(state, "angle_rel")
+        angles = layout.column()
+        angles.enabled = not chain.segments[i].lock_angle      # com a trava, o ângulo não muda (questions.md, pergunta 11)
+        angles.prop(state, "angle_abs")
+        angles.prop(state, "angle_rel")
         row = layout.row()
         row.enabled = False
         row.label(text="Ângulo do Arco: paredes curvas não são suportadas")

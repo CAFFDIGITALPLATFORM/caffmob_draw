@@ -22,6 +22,23 @@ module:
   - hb_layouts
   - data
   - inspection          # feature 001, incremento 3
+  - selection           # unit de _reversa_sdd/selection/ (acrescentado em 2026-10-11)
+  - walls2d             # unit de _reversa_sdd/walls2d/ (acrescentado em 2026-10-11)
+  - customize           # unit de _reversa_sdd/customize/ (acrescentado em 2026-10-11)
+  - aggregates          # unit de _reversa_sdd/aggregates/ (acrescentado em 2026-10-11)
+  - collision           # unit de _reversa_sdd/collision/ (acrescentado em 2026-10-11)
+  - stick               # unit de _reversa_sdd/stick/ (acrescentado em 2026-10-11)
+  - cabinet_editor      # unit de _reversa_sdd/cabinet_editor/ (acrescentado em 2026-10-11)
+  - standards           # unit de _reversa_sdd/standards/ (acrescentado em 2026-10-11)
+  - legacy              # unit de _reversa_sdd/legacy/ (acrescentado em 2026-10-11)
+  - library_panel       # unit de _reversa_sdd/library_panel/ (acrescentado em 2026-10-11)
+  - object_library      # unit de _reversa_sdd/object_library/ (acrescentado em 2026-10-11)
+  - molding             # unit de _reversa_sdd/molding/ (acrescentado em 2026-10-11)
+  - geometry_free       # unit de _reversa_sdd/geometry_free/ (acrescentado em 2026-10-11)
+  - openings            # unit de _reversa_sdd/openings/ (acrescentado em 2026-10-11)
+  - move_over           # unit de _reversa_sdd/move_over/ (acrescentado em 2026-10-11)
+  - measure             # unit de _reversa_sdd/measure/ (acrescentado em 2026-10-11)
+  - canvas2d            # unit de _reversa_sdd/canvas2d/ (acrescentado em 2026-10-11)
 feature:
   - 001-addon-moveis-planejados
   - 002-editor-parede-mover-sobre

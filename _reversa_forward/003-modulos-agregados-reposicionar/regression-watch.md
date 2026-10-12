@@ -13,6 +13,17 @@
 
 ## Histórico de re-extrações
 
+### Re-extração 2026-10-10 18:26
+
+| ID | Veredito | Observação |
+|----|----------|------------|
+| W001 | 🟢 verde | preservada em `_reversa_sdd/customize/requirements.md` (CA com `.blend` + `.json` em `modules/<categoria>/`) e `erd-complete.md` (manifesto `caffmob_draw.user-module`) |
+| W002 | 🟢 verde | preservada em `_reversa_sdd/move_over/requirements.md` RF-11/CA-14 e `code-analysis.md` (consumo em `hb_snap.py` substitui o piso Z = 0) |
+| W003 | 🟡 amarelo | evidência só em artefato não regenerado nesta extração: unit `cutting/` (2026-07) não cita `machining`; só `addenda/bug-BUG-20261006-OG3P` menciona 2.1.0; código exporta 2.2.0 (superconjunto deliberado da 008) com `machining` por peça e lê 2.x |
+| W004 | 🟢 verde | preservada em `_reversa_sdd/domain.md` RN-INSPECTION-01 e `data-dictionary.md` (`max_angle` 1–180) |
+| W005 | 🟢 verde | preservada em `_reversa_sdd/customize/requirements.md` (gancho `after_rebuild` chamado pelas bibliotecas, RN-12) |
+| W006 | 🟡 amarelo | parte por nome preservada em `customize/requirements.md`/`design.md` (`DOOR_STYLE_NAME`); vínculo por índice só em `frameless/requirements.md` RN-29, evidência só em artefato não regenerado nesta extração |
+
 <!-- Preenchido pelo agente reverso em cada `/reversa` futuro: data, veredito 🟢/🟡/🔴 por item. -->
 
 ## Arquivadas

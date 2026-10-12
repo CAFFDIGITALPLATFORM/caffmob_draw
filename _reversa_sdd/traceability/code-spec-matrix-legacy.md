@@ -22,6 +22,8 @@
 
 Cobertura estimada: **99%** dos arquivos legados mapeados a uma unit (108 completos, 1 parcial). O único `n/a` é `compat.py`, que pertence à camada moderna e é o ponto oficial de diferenças de versão (as units legadas ainda usam os helpers duplicados de `hb_utils` — ver T3 de [`code-analysis-legacy.md`](../code-analysis-legacy.md)).
 
+- 🟡 _(Revisão cruzada 2026-10-10)_: os 5 arquivos `molding/*.py` passaram à unit `molding` da re-extração 2026-10 (linhas marcadas abaixo); `catalog_molding` fica histórica para eles e segue válida para os 7 de `catalog/` (pacote não importado por `caffmob_draw/__init__.py`). As contagens de linhas desta matriz são de 2026-10-01 e divergem do disco em vários arquivos (ex.: `hb_props.py` 976 → 992, `hb_placement.py` 1.856 → 1.784, `face_frame/operators/op_open_mode.py` 329 → 122, `frameless/operators/ops_defaults.py` 193 → 275); a cobertura por arquivo não muda.
+
 ## 2. Matriz por arquivo
 
 ### hb_core
@@ -166,11 +168,11 @@ Cobertura estimada: **99%** dos arquivos legados mapeados a uma unit (108 comple
 | `catalog/props_catalog.py` | `catalog_molding` | 154 | 🟢 |
 | `catalog/render_thumbnails.py` | `catalog_molding` | 198 | 🟢 |
 | `catalog/ui_catalog.py` | `catalog_molding` | 314 | 🟢 |
-| `molding/__init__.py` | `catalog_molding` | 25 | 🟢 |
-| `molding/adapters.py` | `catalog_molding` | 230 | 🟢 |
-| `molding/engine.py` | `catalog_molding` | 736 | 🟢 |
-| `molding/ops.py` | `catalog_molding` | 348 | 🟢 |
-| `molding/packages.py` | `catalog_molding` | 347 | 🟢 |
+| `molding/__init__.py` | `molding` (re-extração 2026-10; `catalog_molding` histórica) | 25 | 🟢 _(Revisão cruzada 2026-10-10)_ |
+| `molding/adapters.py` | `molding` (re-extração 2026-10; `catalog_molding` histórica) | 230 | 🟢 _(Revisão cruzada 2026-10-10)_ |
+| `molding/engine.py` | `molding` (re-extração 2026-10; `catalog_molding` histórica) | 736 | 🟢 _(Revisão cruzada 2026-10-10)_ |
+| `molding/ops.py` | `molding` (re-extração 2026-10; `catalog_molding` histórica) | 348 | 🟢 _(Revisão cruzada 2026-10-10)_ |
+| `molding/packages.py` | `molding` (re-extração 2026-10; `catalog_molding` histórica) | 347 | 🟢 _(Revisão cruzada 2026-10-10)_ |
 
 ### hb_core (transversal)
 

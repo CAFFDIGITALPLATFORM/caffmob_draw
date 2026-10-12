@@ -100,6 +100,10 @@ def draw_inspection_box(layout, context):
         sub.label(text="Ainda não verificado.", icon='INFO')
     elif state.checked_fronts == 0:
         sub.label(text="Nenhuma frente verificada.", icon='INFO')
+    elif state.stale:                     # algo se moveu depois da verificação (questions.md, pergunta 93)
+        warn = sub.row()
+        warn.alert = True
+        warn.label(text=tr("Desatualizado, verifique de novo"), icon='ERROR')
     elif not state.interferences:
         sub.label(text=tr("Sem interferência em {} frente(s).").format(state.checked_fronts), icon='CHECKMARK')
     else:

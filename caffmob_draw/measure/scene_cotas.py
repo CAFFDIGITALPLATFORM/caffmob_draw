@@ -88,14 +88,22 @@ class ModuleCotas:
         self.depth = depth
 
     def obstacles(self):
+        """Vizinhos na parede pela largura e altura reais (Geometry Nodes, `btm_cabinet` ou caixa, como `_dims`):
+        módulo rápido e objeto importado não viram um ponto na origem (questions.md, pergunta 13)."""
         if not self.on_wall:
             return []
-        from ..hb_placement import PlacementMixin
-        found = PlacementMixin().get_wall_children_sorted(
-            self.wall, exclude_obj=self.root, object_z_start=self.placement.z0, object_height=self.placement.height)
+        from ..operators.ops_wall_extras import LOWERED_PROXY
         z0, z1 = self.placement.z0, self.placement.z0 + self.placement.height
-        return [(x0, x1, z0, z1) for x0, x1, obj in found
-                if obj is not None and not obj.get('IS_2D_ANNOTATION') and not obj.get('IS_SNAP_LINE')]
+        found = []
+        for child in self.wall.children:
+            if child == self.root or any(child.get(tag) for tag in ('obj_x', 'IS_2D_ANNOTATION', 'IS_SNAP_LINE',
+                                                                   LOWERED_PROXY)):
+                continue
+            width, _depth, height = _dims(child)
+            cx0, cz0 = child.location.x, child.location.z
+            if z0 < cz0 + height and cz0 < z1:             # mesma faixa de altura (sobreposição estrita)
+                found.append((cx0, cx0 + width, z0, z1))
+        return sorted(found)
 
     def compute(self):
         if self.on_wall:

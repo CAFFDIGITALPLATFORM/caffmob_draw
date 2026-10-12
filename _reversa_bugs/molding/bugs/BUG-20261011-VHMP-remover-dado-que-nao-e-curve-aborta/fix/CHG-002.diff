@@ -1,0 +1,15 @@
+--- tests/test_component_delete.py	2026-10-11 11:14:41.260464412 -0300
++++ tests/test_component_delete.py	2026-10-11 12:36:41.355368561 -0300
+@@ -47,6 +47,12 @@
+         self.assertEqual(c.own_aggregates(porta), [])        # folha da porta é peça da porta, sem pergunta
+         self.assertEqual(c.own_aggregates(esquadria), [])
+ 
++    def test_moldura_da_corrida_fica(self):
++        # BUG-20261011-XP5E: o sweep de moldura fica pendurado no 1º armário da corrida, mas é da corrida.
++        armario = Obj("Balcao 3", IS_FRAMELESS_CABINET_CAGE=True)
++        Obj("MoldingSweep", armario, IS_HB_MOLDING_SWEEP=True)
++        self.assertEqual(self.names(c.delete_plan([armario]).remove), ["Balcao 3"])
++
+     def test_agregados_param_em_parede_e_modulo(self):
+         # BUG-20261011-TUWO/DXOV (perguntas 2 e 4): parede, piso e teto não levam a subárvore, e os agregados de um
+         # módulo filho são do módulo; nenhum entra na pergunta nem é desconvertido.

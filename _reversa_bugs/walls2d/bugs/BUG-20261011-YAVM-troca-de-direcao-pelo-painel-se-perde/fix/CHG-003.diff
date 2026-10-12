@@ -1,0 +1,10 @@
+--- caffmob_draw/walls2d/model.py	2026-10-11 12:07:28.800049915 -0300
++++ caffmob_draw/walls2d/model.py	2026-10-11 21:46:42.622586733 -0300
+@@ -64,6 +64,7 @@
+         self.segments = list(segments)
+         self.closed = closed
+         self.side = side
++        self.keep_open = False            # o "Não" da pergunta de fechar: o OK não fecha (questions.md, pergunta 8)
+ 
+     # Topologia ---------------------------------------------------------------------------------------------
+     def segment_count(self):

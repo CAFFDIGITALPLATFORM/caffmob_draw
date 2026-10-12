@@ -1,0 +1,13 @@
+--- caffmob_draw/data/translations/ui.json	2026-10-07 14:54:52.734371603 -0300
++++ caffmob_draw/data/translations/ui.json	2026-10-11 12:18:10.984776292 -0300
+@@ -1135,6 +1135,10 @@
+   "pt_BR": "Total de peças: {}",
+   "en_US": "Total parts: {}"
+  },
++ "Uma medida da placa é menor que a espessura": {
++  "pt_BR": "Uma medida da placa é menor que a espessura",
++  "en_US": "A board side is smaller than its thickness"
++ },
+  "Unidade & Precisão": {
+   "pt_BR": "Unidade & Precisão",
+   "en_US": "Unit & Precision"

@@ -275,6 +275,19 @@ def _curve_metrics(obj):
     return (max(ys), max(xs) - min(xs))
 
 
+def free_object(obj):
+    """Remove the object and its data when nothing else uses it. The data
+    may be a mesh (a pack profile, or a sweep the user converted)."""
+    data = obj.data
+    bpy.data.objects.remove(obj, do_unlink=True)
+    if data is None or data.users:
+        return
+    if isinstance(data, bpy.types.Curve):
+        bpy.data.curves.remove(data)
+    elif isinstance(data, bpy.types.Mesh):
+        bpy.data.meshes.remove(data)
+
+
 def _profile_metrics(profile_ref, fallback_key):
     if profile_ref in _profile_height_cache:
         return _profile_height_cache[profile_ref]
@@ -296,10 +309,7 @@ def _profile_metrics(profile_ref, fallback_key):
         obj = data_to.objects[0]
         if obj.type == 'CURVE':
             metrics = _curve_metrics(obj)
-        data = obj.data
-        bpy.data.objects.remove(obj, do_unlink=True)
-        if data is not None and data.users == 0:
-            bpy.data.curves.remove(data)
+        free_object(obj)
         if metrics is not None:
             break
     if metrics is None:

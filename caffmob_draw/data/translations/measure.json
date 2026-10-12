@@ -1,4 +1,8 @@
 {
+ "Cota desconhecida: {}": {
+  "pt_BR": "Cota desconhecida: {}",
+  "en_US": "Unknown dimension: {}"
+ },
  "Valor Inválido: módulo livre (sem parede) não tem cota anterior, posterior ou afastamento.": {
   "pt_BR": "Valor Inválido: módulo livre (sem parede) não tem cota anterior, posterior ou afastamento.",
   "en_US": "Invalid Value: a free module (no wall) has no left, right or wall offset dimension."
@@ -10,6 +14,14 @@
  "Valor Inválido: {} não pode ser negativa.": {
   "pt_BR": "Valor Inválido: {} não pode ser negativa.",
   "en_US": "Invalid Value: {} cannot be negative."
+ },
+ "Valor Inválido: {} põe o módulo acima do teto.": {
+  "pt_BR": "Valor Inválido: {} põe o módulo acima do teto.",
+  "en_US": "Invalid Value: {} puts the module above the ceiling."
+ },
+ "Valor Inválido: {} põe o módulo sobre o vizinho do outro lado.": {
+  "pt_BR": "Valor Inválido: {} põe o módulo sobre o vizinho do outro lado.",
+  "en_US": "Invalid Value: {} puts the module over the neighbor on the other side."
  },
  "Valor Inválido: {} tira o módulo da parede.": {
   "pt_BR": "Valor Inválido: {} tira o módulo da parede.",
