@@ -48,7 +48,7 @@ def door_of(obj):
 
 class BTM_OT_DoorInvertHand(bpy.types.Operator):
     """Troca a dobradiça da porta de lado: inverte o giro (horário ↔ anti-horário)"""
-    bl_idname = "btm.door_invert_hand"
+    bl_idname = "caffmob.door_invert_hand"
     bl_label = "Inverter giro da porta"
     bl_options = {'REGISTER', 'UNDO'}
 

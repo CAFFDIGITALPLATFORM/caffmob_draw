@@ -17,7 +17,7 @@ def _element(context):
 
 class BTM_OT_ResizeWidth(bpy.types.Operator):
     """Muda a largura do elemento selecionado; os agregados dele se adaptam à nova largura"""
-    bl_idname = "btm.resize_width"
+    bl_idname = "caffmob.resize_width"
     bl_label = "Redimensionar"
     bl_options = {'REGISTER', 'UNDO'}
 

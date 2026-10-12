@@ -1,0 +1,50 @@
+--- /home/theleoinfo/www/BlenderToMob/tests/blender_toast_resize_invert.py	2026-10-09 10:37:47.974775458 -0300
++++ tests/blender_toast_resize_invert.py	2026-10-12 00:58:25.644326430 -0300
+@@ -96,20 +96,20 @@
+     hinge_before = sash.btm_aggregate.hinge
+     select(body)
+     check("I: atalho registrado no Object Mode",
+-          any(kmi.idname == 'btm.door_invert_hand' and kmi.type == 'I' for _km, kmi in openings_ops._addon_keymaps))
+-    check("I: poll com a folha selecionada", bpy.ops.btm.door_invert_hand.poll())
+-    bpy.ops.btm.door_invert_hand()
++          any(kmi.idname == 'caffmob.door_invert_hand' and kmi.type == 'I' for _km, kmi in openings_ops._addon_keymaps))
++    check("I: poll com a folha selecionada", bpy.ops.caffmob.door_invert_hand.poll())
++    bpy.ops.caffmob.door_invert_hand()
+     env.settle()
+     sash, body = leaf_body(door)
+     check("I: dobradiça trocou de lado", sash.btm_aggregate.hinge != hinge_before,
+           (hinge_before, sash.btm_aggregate.hinge))
+     check("I: continua com uma peça da porta ativa", ctx.view_layer.objects.active is not None
+           and openings_ops.door_of(ctx.view_layer.objects.active) == door)
+-    bpy.ops.btm.door_invert_hand()
++    bpy.ops.caffmob.door_invert_hand()
+     env.settle()
+     check("I: de novo volta ao lado original", leaf_body(door)[0].btm_aggregate.hinge == hinge_before)
+     select(cab)
+-    check("I: sem porta, o I fica com o Blender", not bpy.ops.btm.door_invert_hand.poll())
++    check("I: sem porta, o I fica com o Blender", not bpy.ops.caffmob.door_invert_hand.poll())
+ 
+     # Redimensionar: porta ----------------------------------------------------------------------------------------
+     resize.resize(ctx, element_size.element(door), 0.90)
+@@ -128,8 +128,8 @@
+     agg = handle.btm_aggregate
+     u0, size0 = agg.u, agg.size[0]
+     select(cab)
+-    check("redimensionar: poll no módulo", bpy.ops.btm.resize_width.poll())
+-    bpy.ops.btm.resize_width(width=cw * 2.0)
++    check("redimensionar: poll no módulo", bpy.ops.caffmob.resize_width.poll())
++    bpy.ops.caffmob.resize_width(width=cw * 2.0)
+     env.settle()
+     cw2 = element_size.size(element_size.element(cab))[0]
+     check("redimensionar: módulo com a largura nova", close(cw2, cw * 2.0), (cw, cw2))
+@@ -141,8 +141,8 @@
+ 
+     # Redimensionar: grupo de peças (SketchUp) --------------------------------------------------------------------
+     select(part)
+-    check("redimensionar: poll no grupo", bpy.ops.btm.resize_width.poll())
+-    bpy.ops.btm.resize_width(width=1.5)
++    check("redimensionar: poll no grupo", bpy.ops.caffmob.resize_width.poll())
++    bpy.ops.caffmob.resize_width(width=1.5)
+     env.settle()
+     gw = element_size.size(element_size.element(part))[0]
+     check("redimensionar: grupo esticado em X", close(gw, 1.5) and skp.scale.x > 1.0, (gw, tuple(skp.scale)))

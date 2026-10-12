@@ -20,7 +20,7 @@ ACTIONS = {
     'STICK': ("caffmob.stick_to_face", N_("Grudar"), 'SNAP_FACE'),
     'RELEASE': ("caffmob.stick_release", N_("Desgrudar"), 'UNLINKED'),
     'STICK_MOVE': ("caffmob.stick_move", N_("Mover no plano"), 'SNAP_FACE'),
-    'RESIZE': ("btm.resize_width", N_("Redimensionar"), 'FULLSCREEN_ENTER'),
+    'RESIZE': ("caffmob.resize_width", N_("Redimensionar"), 'FULLSCREEN_ENTER'),
     'MOVE_OVER': ("caffmob.move_over_toggle", N_("Mover Sobre"), 'ORIENTATION_VIEW'),
     'CABINET_EDITOR': ("caffmob.cabinet_editor", N_("Abrir editor de armário"), 'MOD_BUILD'),
     'CHECK_ITEM': ("caffmob.check_collisions", N_("Verificar colisões"), 'MOD_PHYSICS'),

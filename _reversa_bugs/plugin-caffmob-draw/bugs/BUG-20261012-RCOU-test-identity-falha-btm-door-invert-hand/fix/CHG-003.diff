@@ -1,0 +1,11 @@
+--- /home/theleoinfo/www/BlenderToMob/caffmob_draw/ui/ops_resize.py	2026-10-09 10:48:40.305541667 -0300
++++ caffmob_draw/ui/ops_resize.py	2026-10-12 00:58:25.641326508 -0300
+@@ -17,7 +17,7 @@
+ 
+ class BTM_OT_ResizeWidth(bpy.types.Operator):
+     """Muda a largura do elemento selecionado; os agregados dele se adaptam à nova largura"""
+-    bl_idname = "btm.resize_width"
++    bl_idname = "caffmob.resize_width"
+     bl_label = "Redimensionar"
+     bl_options = {'REGISTER', 'UNDO'}
+ 

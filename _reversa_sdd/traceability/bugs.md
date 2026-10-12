@@ -1,4 +1,4 @@
-<!-- GENERATED, DO NOT EDIT: regenerado por /reversa-debugger-graph em 2026-10-12T03:58:01+00:00 a partir de 142 bugs -->
+<!-- GENERATED, DO NOT EDIT: regenerado por /reversa-debugger-graph em 2026-10-12T03:59:30+00:00 a partir de 142 bugs -->
 
 # Bugs que atingem as specs
 
@@ -85,7 +85,7 @@
 
 - BUG-20261006-NO4Q (resolved/fixed, P0): Interface legada Home Builder aparece separada do plugin — `_reversa_bugs/plugin-caffmob-draw/bugs/BUG-20261006-NO4Q-interface-home-builder-separada`
 - BUG-20261006-QAVK (resolved/fixed, P0): Nome e identificador do plugin devem ser CAFFMob Draw — `_reversa_bugs/plugin-caffmob-draw/bugs/BUG-20261006-QAVK-nome-e-identificador-caffmob-draw`
-- BUG-20261012-RCOU (open, P2): test_identity falha: btm.door_invert_hand e btm.resize_width fogem do prefixo caffmob — `_reversa_bugs/plugin-caffmob-draw/bugs/BUG-20261012-RCOU-test-identity-falha-btm-door-invert-hand`
+- BUG-20261012-RCOU (resolved/fixed, P2): test_identity falha: btm.door_invert_hand e btm.resize_width fogem do prefixo caffmob — `_reversa_bugs/plugin-caffmob-draw/bugs/BUG-20261012-RCOU-test-identity-falha-btm-door-invert-hand`
 
 ## `_reversa_sdd/cabinet_editor/design.md`
 
@@ -436,7 +436,7 @@
 
 - BUG-20261006-NO4Q (resolved/fixed, P0): Interface legada Home Builder aparece separada do plugin — `_reversa_bugs/plugin-caffmob-draw/bugs/BUG-20261006-NO4Q-interface-home-builder-separada`
 - BUG-20261007-FLZO (resolved/fixed, P2): Interface metade em português e metade em inglês — `_reversa_bugs/plugin-caffmob-draw/bugs/BUG-20261007-FLZO-traducao-pela-metade`
-- BUG-20261012-RCOU (open, P2): test_identity falha: btm.door_invert_hand e btm.resize_width fogem do prefixo caffmob — `_reversa_bugs/plugin-caffmob-draw/bugs/BUG-20261012-RCOU-test-identity-falha-btm-door-invert-hand`
+- BUG-20261012-RCOU (resolved/fixed, P2): test_identity falha: btm.door_invert_hand e btm.resize_width fogem do prefixo caffmob — `_reversa_bugs/plugin-caffmob-draw/bugs/BUG-20261012-RCOU-test-identity-falha-btm-door-invert-hand`
 
 ## `_reversa_sdd/wall_editor/requirements.md`
 

@@ -1,0 +1,11 @@
+--- /home/theleoinfo/www/BlenderToMob/caffmob_draw/openings/ops.py	2026-10-11 12:33:13.444813251 -0300
++++ caffmob_draw/openings/ops.py	2026-10-12 00:58:25.636326637 -0300
+@@ -48,7 +48,7 @@
+ 
+ class BTM_OT_DoorInvertHand(bpy.types.Operator):
+     """Troca a dobradiça da porta de lado: inverte o giro (horário ↔ anti-horário)"""
+-    bl_idname = "btm.door_invert_hand"
++    bl_idname = "caffmob.door_invert_hand"
+     bl_label = "Inverter giro da porta"
+     bl_options = {'REGISTER', 'UNDO'}
+ 
