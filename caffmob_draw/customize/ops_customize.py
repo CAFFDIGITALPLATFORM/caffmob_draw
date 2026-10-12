@@ -226,9 +226,10 @@ class BTM_OT_CustomizeSetInterior(_OpeningOperator, bpy.types.Operator):
             return {'CANCELLED'}
         inner = spec.Interior(self.shelves, self.dividers, self.drawers, heights)
         messages = adapter.set_interior(context, root, opening, inner)
-        if not messages:
-            messages = reapply.reapply(context, root)
-        _report(self, messages, tr("Divisões internas atualizadas"))
+        if messages:                      # recusado: nada mudou, sem passo de desfazer vazio (EC-20)
+            self.report({'WARNING'}, " | ".join(messages))
+            return {'CANCELLED'}
+        _report(self, reapply.reapply(context, root), tr("Divisões internas atualizadas"))
         return {'FINISHED'}
 
 

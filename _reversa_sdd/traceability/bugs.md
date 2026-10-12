@@ -1,4 +1,4 @@
-<!-- GENERATED, DO NOT EDIT: regenerado por /reversa-debugger-graph em 2026-10-12T02:01:54+00:00 a partir de 137 bugs -->
+<!-- GENERATED, DO NOT EDIT: regenerado por /reversa-debugger-graph em 2026-10-12T02:05:16+00:00 a partir de 137 bugs -->
 
 # Bugs que atingem as specs
 
@@ -150,23 +150,23 @@
 
 ## `_reversa_sdd/customize/edge-cases.md`
 
-- BUG-20261011-GL62 (open, P3): R na inserção gira só a raiz do módulo — `_reversa_bugs/customize/bugs/BUG-20261011-GL62-r-na-insercao-gira-so-a-raiz`
+- BUG-20261011-GL62 (resolved/fixed, P3): R na inserção gira só a raiz do módulo — `_reversa_bugs/customize/bugs/BUG-20261011-GL62-r-na-insercao-gira-so-a-raiz`
 - BUG-20261011-J2NY (resolved/fixed, P0): Inserir um .blend sem .json quebra a inserção com UnboundLocalError — `_reversa_bugs/customize/bugs/BUG-20261011-J2NY-inserir-um-blend-sem-json-quebra-a`
-- BUG-20261011-MNX3 (open, P2): Interior com valor não numérico quebra o módulo — `_reversa_bugs/customize/bugs/BUG-20261011-MNX3-interior-com-valor-nao-numerico-quebra-o`
+- BUG-20261011-MNX3 (resolved/fixed, P2): Interior com valor não numérico quebra o módulo — `_reversa_bugs/customize/bugs/BUG-20261011-MNX3-interior-com-valor-nao-numerico-quebra-o`
 - BUG-20261011-MRZC (resolved/fixed, P2): Estilos válidos do closets aparecem como ausentes — `_reversa_bugs/customize/bugs/BUG-20261011-MRZC-estilos-validos-do-closets-aparecem-como-ausentes`
-- BUG-20261011-ODY2 (open, P3): set_interior inválido devolve FINISHED e cria passo de desfazer vazio — `_reversa_bugs/customize/bugs/BUG-20261011-ODY2-set-interior-invalido-devolve-finished-e-cria`
-- BUG-20261011-UJ5Q (open, P1): Trocar para 2 a 4 gavetas no frameless perde a personalização — `_reversa_bugs/customize/bugs/BUG-20261011-UJ5Q-trocar-para-2-a-4-gavetas-no`
-- BUG-20261011-XMUG (open, P2): Estilo de gaveta não é editável pelo painel — `_reversa_bugs/customize/bugs/BUG-20261011-XMUG-estilo-de-gaveta-nao-e-editavel-pelo`
+- BUG-20261011-ODY2 (resolved/fixed, P3): set_interior inválido devolve FINISHED e cria passo de desfazer vazio — `_reversa_bugs/customize/bugs/BUG-20261011-ODY2-set-interior-invalido-devolve-finished-e-cria`
+- BUG-20261011-UJ5Q (resolved/fixed, P1): Trocar para 2 a 4 gavetas no frameless perde a personalização — `_reversa_bugs/customize/bugs/BUG-20261011-UJ5Q-trocar-para-2-a-4-gavetas-no`
+- BUG-20261011-XMUG (resolved/fixed, P2): Estilo de gaveta não é editável pelo painel — `_reversa_bugs/customize/bugs/BUG-20261011-XMUG-estilo-de-gaveta-nao-e-editavel-pelo`
 
 ## `_reversa_sdd/customize/requirements.md`
 
 - BUG-20261011-35HE (resolved/invalid, P3): Textos em português no en_US (customize) — `_reversa_bugs/customize/bugs/BUG-20261011-35HE-textos-em-portugues-no-en-us-customize`
 - BUG-20261011-OJBL (resolved/fixed, P3): Gravação da biblioteca própria não é atômica entre .blend e .json — `_reversa_bugs/customize/bugs/BUG-20261011-OJBL-gravacao-da-biblioteca-propria-nao-e-atomica`
-- BUG-20261011-XMUG (open, P2): Estilo de gaveta não é editável pelo painel — `_reversa_bugs/customize/bugs/BUG-20261011-XMUG-estilo-de-gaveta-nao-e-editavel-pelo`
+- BUG-20261011-XMUG (resolved/fixed, P2): Estilo de gaveta não é editável pelo painel — `_reversa_bugs/customize/bugs/BUG-20261011-XMUG-estilo-de-gaveta-nao-e-editavel-pelo`
 
 ## `_reversa_sdd/customize/tasks.md`
 
-- BUG-20261011-UJ5Q (open, P1): Trocar para 2 a 4 gavetas no frameless perde a personalização — `_reversa_bugs/customize/bugs/BUG-20261011-UJ5Q-trocar-para-2-a-4-gavetas-no`
+- BUG-20261011-UJ5Q (resolved/fixed, P1): Trocar para 2 a 4 gavetas no frameless perde a personalização — `_reversa_bugs/customize/bugs/BUG-20261011-UJ5Q-trocar-para-2-a-4-gavetas-no`
 
 ## `_reversa_sdd/data/requirements.md`
 
@@ -362,7 +362,7 @@
 - BUG-20261011-SX4T (resolved/fixed, P2): _swing pega o filho errado como símbolo de abertura — `_reversa_bugs/openings/bugs/BUG-20261011-SX4T-swing-pega-o-filho-errado-como-simbolo`
 - BUG-20261011-TLPN (resolved/fixed, P0): Remover Vértice deixa a parede antiga órfã na cena — `_reversa_bugs/walls2d/bugs/BUG-20261011-TLPN-remover-vertice-deixa-a-parede-antiga-orfa`
 - BUG-20261011-TUWO (resolved/fixed, P0): Apagar parede sem 'Apagar também os agregados' solta os agregados dos módulos que ficam — `_reversa_bugs/selection/bugs/BUG-20261011-TUWO-apagar-parede-sem-apagar-tambem-os-agregados`
-- BUG-20261011-UJ5Q (open, P1): Trocar para 2 a 4 gavetas no frameless perde a personalização — `_reversa_bugs/customize/bugs/BUG-20261011-UJ5Q-trocar-para-2-a-4-gavetas-no`
+- BUG-20261011-UJ5Q (resolved/fixed, P1): Trocar para 2 a 4 gavetas no frameless perde a personalização — `_reversa_bugs/customize/bugs/BUG-20261011-UJ5Q-trocar-para-2-a-4-gavetas-no`
 - BUG-20261011-UV6S (resolved/fixed, P2): Trocar porta simples para dupla não refaz a porta real — `_reversa_bugs/openings/bugs/BUG-20261011-UV6S-trocar-porta-simples-para-dupla-nao-refaz`
 - BUG-20261011-X5OS (open, P2): O Substituir herda a escala do módulo antigo — `_reversa_bugs/move_over/bugs/BUG-20261011-X5OS-o-substituir-herda-a-escala-do-modulo`
 - BUG-20261011-XMZM (resolved/fixed, P2): O segundo OK aplica sem rever os avisos depois de mudar o rascunho — `_reversa_bugs/walls2d/bugs/BUG-20261011-XMZM-o-segundo-ok-aplica-sem-rever-os`

@@ -140,9 +140,14 @@ def set_front(context, root, opening, front, drawer_count=1):
             return [tr("Mais de uma gaveta só num vão que ocupa o compartimento inteiro")]
         count = min(int(drawer_count), MAX_STACKED_DRAWERS)
         preset = 'SINGLE_DRAWER' if count == 1 else f"{count}_DRAWER_STACK"
+        bay_name, kept = opening.parent.name, _custom_of(opening)
         result = common.run_operator(context, bpy.ops.caffmob_frameless.change_bay_opening, opening.parent,
                                      opening_type=preset)
         messages = [] if 'FINISHED' in result else [tr("A biblioteca recusou a troca das gavetas")]
+        bay = bpy.data.objects.get(bay_name)
+        if not messages and bay is not None:              # os vãos novos herdam a personalização (pergunta 41)
+            for new in _stable_openings(bay):
+                _set_custom(new, kept)
         if int(drawer_count) > MAX_STACKED_DRAWERS:
             messages.append(tr("O frameless empilha no máximo {} gavetas").format(MAX_STACKED_DRAWERS))
         return messages
@@ -152,6 +157,20 @@ def set_front(context, root, opening, front, drawer_count=1):
     result = common.run_operator(context, bpy.ops.caffmob_frameless.change_opening_type, opening,
                                  opening_type=opening_type)
     return [] if 'FINISHED' in result else [tr("A biblioteca recusou a troca da frente")]
+
+
+_KEPT_FIELDS = ('door_style', 'drawer_style', 'pull_model', 'pull_position', 'pull_all_fronts', 'front_material',
+                'material', 'slide_kind')                 # tudo do btm_custom menos o interior
+
+
+def _custom_of(opening):
+    custom = opening.btm_custom
+    return {name: getattr(custom, name) for name in _KEPT_FIELDS}
+
+
+def _set_custom(opening, values):
+    for name, value in values.items():
+        setattr(opening.btm_custom, name, value)
 
 
 def _remove_tree(obj):

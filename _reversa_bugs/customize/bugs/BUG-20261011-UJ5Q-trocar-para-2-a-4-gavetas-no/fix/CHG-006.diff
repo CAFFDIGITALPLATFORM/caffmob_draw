@@ -1,0 +1,14 @@
+--- /home/theleoinfo/www/BlenderToMob/caffmob_draw/customize/spec.py	2026-10-07 15:05:53.613652155 -0300
++++ caffmob_draw/customize/spec.py	2026-10-11 23:03:34.233078124 -0300
+@@ -184,8 +184,8 @@
+         return None
+     try:
+         data = json.loads(text)
+-    except ValueError:
++        return Interior(shelves=int(data.get("shelves", 0)), dividers=int(data.get("dividers", 0)),
++                        drawers=int(data.get("drawers", 0)), heights=[float(h) for h in data.get("heights", [])])
++    except (ValueError, TypeError, AttributeError):      # valor torto: como se não houvesse interior (EC-09)
+         return None
+-    return Interior(shelves=int(data.get("shelves", 0)), dividers=int(data.get("dividers", 0)),
+-                    drawers=int(data.get("drawers", 0)), heights=[float(h) for h in data.get("heights", [])])
+ 

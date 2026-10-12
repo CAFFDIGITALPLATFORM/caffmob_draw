@@ -50,8 +50,12 @@ def draw_customize(layout, context):
         row.enabled = caps.get('FRONTS') is None
         row.operator_menu_enum("caffmob.customize_set_front", "front", text="Frente").path = item.path
         if caps.get('FRONTS') is None and caps.get('STYLES') is None:
-            row.operator_menu_enum("caffmob.customize_set_style", "style",
-                                   text=item.door_style or "Estilo").path = item.path
+            op = row.operator_menu_enum("caffmob.customize_set_style", "style", text=item.door_style or "Estilo")
+            op.path, op.kind = item.path, 'DOOR'
+            if item.front == 'DRAWERS':               # estilo de gaveta pelo painel (RF-03, EC-06)
+                op = row.operator_menu_enum("caffmob.customize_set_style", "style",
+                                            text=item.drawer_style or tr("Estilo da gaveta"))
+                op.path, op.kind = item.path, 'DRAWER'
         row = col.row(align=True)
         row.enabled = caps.get('PULLS') is None
         op = row.operator("caffmob.customize_set_pull", text=tr("Puxador: {}").format(item.pull_model or tr("do projeto")),

@@ -6,7 +6,7 @@ import platform
 import subprocess
 
 import bpy  # type: ignore
-from mathutils import Vector  # type: ignore
+from mathutils import Matrix, Vector  # type: ignore
 
 from ..data.i18n import tr
 from .. import hb_placement, hb_snap
@@ -142,7 +142,13 @@ class BTM_OT_ModuleInsert(bpy.types.Operator, hb_placement.PlacementMixin):
             context.window.cursor_set('DEFAULT')
             return {'FINISHED'}
         if event.type == 'R' and event.value == 'PRESS':
+            # Gira o conjunto em torno da raiz: os outros objetos soltos e os offsets deles também (EC-12).
+            turn = Matrix.Rotation(math.radians(90), 3, 'Z')
             self.root.rotation_euler.z += math.radians(90)
+            for obj in list(self.others):
+                obj.rotation_euler.z += math.radians(90)
+                self.others[obj] = turn @ self.others[obj]
+                obj.location = self.root.location + self.others[obj]
             return {'RUNNING_MODAL'}
         if event.type in {'RIGHTMOUSE', 'ESC'} and event.value == 'PRESS':
             self.cancel_placement(context)

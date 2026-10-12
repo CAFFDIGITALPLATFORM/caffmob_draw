@@ -184,8 +184,8 @@ def interior_from_json(text):
         return None
     try:
         data = json.loads(text)
-    except ValueError:
+        return Interior(shelves=int(data.get("shelves", 0)), dividers=int(data.get("dividers", 0)),
+                        drawers=int(data.get("drawers", 0)), heights=[float(h) for h in data.get("heights", [])])
+    except (ValueError, TypeError, AttributeError):      # valor torto: como se não houvesse interior (EC-09)
         return None
-    return Interior(shelves=int(data.get("shelves", 0)), dividers=int(data.get("dividers", 0)),
-                    drawers=int(data.get("drawers", 0)), heights=[float(h) for h in data.get("heights", [])])
 
