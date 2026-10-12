@@ -1,4 +1,4 @@
-<!-- GENERATED, DO NOT EDIT: regenerado por /reversa-debugger-graph em 2026-10-12T03:00:55+00:00 a partir de 5 bugs -->
+<!-- GENERATED, DO NOT EDIT: regenerado por /reversa-debugger-graph em 2026-10-12T03:01:13+00:00 a partir de 5 bugs -->
 
 # Bugs × specs · molding
 
