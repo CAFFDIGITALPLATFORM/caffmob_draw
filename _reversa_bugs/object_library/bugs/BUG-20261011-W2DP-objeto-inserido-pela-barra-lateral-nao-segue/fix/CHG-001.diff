@@ -1,0 +1,72 @@
+--- /dev/null	2026-10-09 20:39:19.815662691 -0300
++++ tests/blender_bug_QZSO_object_library.py	2026-10-11 23:44:56.558392854 -0300
+@@ -0,0 +1,69 @@
++"""Reprodução e regressão de BUG-20261011-QZSO e BUG-20261011-JKZJ (salvar item na biblioteca de objetos).
++
++Run: blender --background --factory-startup --python-exit-code 1 --python tests/blender_bug_QZSO_object_library.py
++
++- salvar peças que têm pai: só a raiz e os descendentes vão para o .blend; a raiz continua filha do pai na cena (EC-08);
++- a imagem de textura própria é empacotada no .blend do item (questions.md, pergunta 60).
++"""
++
++import os
++import sys
++import tempfile
++import traceback
++from pathlib import Path
++
++sys.path.insert(0, str(Path(__file__).resolve().parent))
++import _blender_env as env  # noqa: E402
++import bpy  # noqa: E402
++from caffmob_draw.object_library import item_io, retexture  # noqa: E402
++
++ctx = bpy.context
++FAILURES = []
++
++
++def check(name, ok, detail=""):
++    print(("OK   " if ok else "FALHA ") + name, detail, flush=True)
++    if not ok:
++        FAILURES.append(name)
++
++
++def main():
++    env.clean_scene()
++    parent = bpy.data.objects.new("PaiX", None)
++    ctx.scene.collection.objects.link(parent)
++    parent.location = (2.0, 1.0, 0.0)
++    bpy.ops.mesh.primitive_cube_add(size=0.4, location=(2.5, 1.0, 0.2))
++    cube = ctx.active_object
++    cube.parent = parent
++    cube.matrix_parent_inverse = parent.matrix_world.inverted()
++    image = bpy.data.images.new("madeira_qzso", 8, 8)
++    path = os.path.join(tempfile.mkdtemp(), "madeira_qzso.png")
++    image.filepath_raw = path
++    image.file_format = 'PNG'
++    image.save()
++    retexture.apply_image([cube], path, 600.0)
++    ctx.view_layer.update()
++    root = item_io.prepare_root([cube], "Peça com pai")
++    world = root.matrix_world.copy()
++    folder = tempfile.mkdtemp()
++    item, errors = item_io.save(ctx, root, "Peça com pai", 'DECOR', folder=folder, thumb=False)
++    check("item gravado", item is not None and not errors, str(errors))
++    with bpy.data.libraries.load(item.blend, link=False) as (data_from, _data_to):
++        names = list(data_from.objects)
++    check("QZSO: o pai não vai para o .blend", "PaiX" not in names, str(names))
++    check("QZSO: a raiz continua filha do pai na cena", root.parent == parent
++          and (root.matrix_world.translation - world.translation).length < 1e-6)
++    loaded_root, loaded = item_io.insert(ctx, item)
++    images = {node.image for o in loaded if o.type == 'MESH' for m in o.data.materials if m and m.node_tree
++              for node in m.node_tree.nodes if getattr(node, 'image', None) is not None}
++    check("JKZJ: a textura própria chega empacotada", bool(images) and all(i.packed_file is not None for i in images),
++          str([(i.name, i.packed_file is not None) for i in images]))
++
++
++try:
++    main()
++except Exception:
++    traceback.print_exc()
++    FAILURES.append("exceção no roteiro")
++print(f"blender_bug_QZSO_object_library: {'OK' if not FAILURES else 'FALHAS: ' + ', '.join(FAILURES)}")
++sys.exit(1 if FAILURES else 0)

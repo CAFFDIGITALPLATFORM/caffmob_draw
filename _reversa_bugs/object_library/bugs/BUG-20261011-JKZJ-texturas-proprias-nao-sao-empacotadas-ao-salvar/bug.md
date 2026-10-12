@@ -3,8 +3,8 @@ schema_version: 1
 id: BUG-20261011-JKZJ
 display_number: 92
 title: "Texturas próprias não são empacotadas ao salvar o item"
-status: open
-phase: triaging
+status: resolved
+phase: delivering
 severity: medium
 priority: P2
 created: 2026-10-11
@@ -19,12 +19,16 @@ module: object_library
 feature: unclassified
 labels: ["revisao-specs-2026-10"]
 
+change_risk:
+  classification: baixa
+  reasons: ["gravação mexe no pai só durante o write e restaura", "imagens de textura própria passam a ficar empacotadas também no projeto"]
+
 visibility: normal
 security_suspected: false
 
 reproduction:
-  classification: unknown
-  rate: "não executado (confirmado por leitura do código)"
+  classification: deterministic
+  rate: "1/1"
   suspected_triggers: []
 
 blocking: []
@@ -34,18 +38,62 @@ relationships: []
 traceability:
   specs: ["_reversa_sdd/object_library/tasks.md#DT-02"]
   affected_code: ["caffmob_draw/object_library/item_io.py"]
-  root_cause: null
-  reproduction_tests: []
-  regression_tests: []
+  root_cause:
+    state: confirmed
+    hypothesis: "item_io.save gravava com RELATIVE_ALL sem empacotar: a textura própria dependia do arquivo original."
+    causal_path:
+      - "object_library/item_io.py save"
+      - "object_library/retexture.py image_material"
+    evidence:
+      - ref: evidence/reproduction.md
+        observation: "teste vermelho no projeto e na cópia isolada (Blender 5.2)"
+    code_refs:
+      - {file: caffmob_draw/object_library/item_io.py, symbol: _pack_own_images, commit: c989c10}
+  reproduction_tests: ["tests/test_object_library.py", "tests/blender_bug_QZSO_object_library.py", "tests/blender_bug_W2DP_object_insert.py"]
+  regression_tests: ["tests/test_object_library.py", "tests/blender_bug_QZSO_object_library.py", "tests/blender_bug_W2DP_object_insert.py", "tests/blender_009_library_smoke.py"]
 
-spec_verdict: null
+spec_verdict: spec-correta
 
-change_set: []
-
+change_set:
+  - id: CHG-001
+    kind: test
+    artifact: tests/blender_bug_QZSO_object_library.py
+    purpose: "pai fora do .blend e textura empacotada"
+    diff: _reversa_bugs/object_library/bugs/BUG-20261011-W2DP-objeto-inserido-pela-barra-lateral-nao-segue/fix/CHG-001.diff
+  - id: CHG-002
+    kind: test
+    artifact: tests/blender_bug_W2DP_object_insert.py
+    purpose: "seguir o mouse pela barra lateral"
+    diff: _reversa_bugs/object_library/bugs/BUG-20261011-W2DP-objeto-inserido-pela-barra-lateral-nao-segue/fix/CHG-002.diff
+  - id: CHG-003
+    kind: test
+    artifact: tests/test_object_library.py
+    purpose: "item_id e manifesto de tipo inesperado"
+    diff: _reversa_bugs/object_library/bugs/BUG-20261011-W2DP-objeto-inserido-pela-barra-lateral-nao-segue/fix/CHG-003.diff
+  - id: CHG-004
+    kind: code
+    artifact: caffmob_draw/object_library/catalog.py
+    purpose: "fullmatch"
+    diff: _reversa_bugs/object_library/bugs/BUG-20261011-W2DP-objeto-inserido-pela-barra-lateral-nao-segue/fix/CHG-004.diff
+  - id: CHG-005
+    kind: code
+    artifact: caffmob_draw/object_library/item_io.py
+    purpose: "gravar sem o pai e empacotar"
+    diff: _reversa_bugs/object_library/bugs/BUG-20261011-W2DP-objeto-inserido-pela-barra-lateral-nao-segue/fix/CHG-005.diff
+  - id: CHG-006
+    kind: code
+    artifact: caffmob_draw/object_library/ops.py
+    purpose: "região WINDOW no _follow"
+    diff: _reversa_bugs/object_library/bugs/BUG-20261011-W2DP-objeto-inserido-pela-barra-lateral-nao-segue/fix/CHG-006.diff
+  - id: CHG-007
+    kind: code
+    artifact: caffmob_draw/object_library/store.py
+    purpose: "TypeError vira aviso"
+    diff: _reversa_bugs/object_library/bugs/BUG-20261011-W2DP-objeto-inserido-pela-barra-lateral-nao-segue/fix/CHG-007.diff
 closure:
   policy: local-software
-  satisfied: false
-resolution_kind: null
+  satisfied: true
+resolution_kind: fixed
 ---
 
 # Texturas próprias não são empacotadas ao salvar o item
@@ -92,7 +140,26 @@ Confirmado por leitura do código, sem reprodução executada. Montar o cenário
 
 ## Resolution
 
-_Pendente._
+- **Lote:** 28 (biblioteca de objetos) (BUG-20261011-W2DP, BUG-20261011-KKHH, BUG-20261011-QZSO, BUG-20261011-JKZJ, BUG-20261011-EVT6); plano em `_reversa_bugs/object_library/bugs/BUG-20261011-W2DP-objeto-inserido-pela-barra-lateral-nao-segue/fix/plan.html`, diffs no mesmo `fix/`.
+- **Causa raiz (confirmed):** item_io.save gravava com RELATIVE_ALL sem empacotar: a textura própria dependia do arquivo original.
+- **Veredito de spec (aprovado por Leonardo Lima em 2026-10-11):** `spec-correta`: questions.md pergunta 60 e object_library DT-02.
+- **resolution_kind:** fixed
+
+| CHG | tipo | artefato | propósito | diff |
+|---|---|---|---|---|
+| CHG-001 | test | `tests/blender_bug_QZSO_object_library.py` | pai fora do .blend e textura empacotada | `CHG-001.diff` |
+| CHG-002 | test | `tests/blender_bug_W2DP_object_insert.py` | seguir o mouse pela barra lateral | `CHG-002.diff` |
+| CHG-003 | test | `tests/test_object_library.py` | item_id e manifesto de tipo inesperado | `CHG-003.diff` |
+| CHG-004 | code | `caffmob_draw/object_library/catalog.py` | fullmatch | `CHG-004.diff` |
+| CHG-005 | code | `caffmob_draw/object_library/item_io.py` | gravar sem o pai e empacotar | `CHG-005.diff` |
+| CHG-006 | code | `caffmob_draw/object_library/ops.py` | região WINDOW no _follow | `CHG-006.diff` |
+| CHG-007 | code | `caffmob_draw/object_library/store.py` | TypeError vira aviso | `CHG-007.diff` |
+
+**Vermelho (antes da correção):** raiz parada em (0,0,0) pela barra lateral; TypeError na listagem; 'PaiX' no .blend do item; textura não empacotada; item_id com '\n' aceito.
+
+**Verde (depois):** `test_object_library.py` OK, `blender_bug_QZSO_object_library.py` OK, `blender_bug_W2DP_object_insert.py` OK; na cópia isolada também `blender_009_library_smoke` e `blender_011_component_smoke`; W2DP com janela (xvfb); `ruff` limpo; `check_api.py` OK.
+
+- **Reprodução:** `tests/test_object_library.py`, `tests/blender_bug_QZSO_object_library.py`, `tests/blender_bug_W2DP_object_insert.py`. **Regressão:** `tests/test_object_library.py`, `tests/blender_bug_QZSO_object_library.py`, `tests/blender_bug_W2DP_object_insert.py`, `tests/blender_009_library_smoke.py`.
 
 ## Agent Notes
 

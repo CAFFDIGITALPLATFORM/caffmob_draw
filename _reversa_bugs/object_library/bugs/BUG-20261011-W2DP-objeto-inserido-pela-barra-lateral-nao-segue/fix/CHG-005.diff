@@ -1,0 +1,86 @@
+--- /home/theleoinfo/www/BlenderToMob/caffmob_draw/object_library/item_io.py	2026-10-11 21:44:48.584196247 -0300
++++ caffmob_draw/object_library/item_io.py	2026-10-11 23:44:34.997567291 -0300
+@@ -84,6 +84,72 @@
+     return [i.entry.name for i in items if i.user and i.entry.category == category]
+ 
+ 
++_REF_GROUPS = ('btm_aggregate', 'btm_stick')
++
++
++def _outside_refs(objs):
++    """[(dono, propriedade)] dos ponteiros de objeto das conversões que apontam para fora do item."""
++    inside = {o.as_pointer() for o in objs}
++    owners = []
++    for obj in objs:
++        owners += [g for g in (getattr(obj, name, None) for name in _REF_GROUPS) if g is not None]
++        grp = getattr(obj, 'btm_group', None)
++        if grp is not None:
++            owners += list(grp.members)
++    found = []
++    for owner in owners:
++        for prop in owner.bl_rna.properties:
++            if prop.type == 'POINTER' and getattr(prop, 'fixed_type', None) == bpy.types.Object.bl_rna:
++                value = getattr(owner, prop.identifier)
++                if value is not None and value.as_pointer() not in inside:
++                    found.append((owner, prop.identifier, value))
++    return found
++
++
++class _detached:
++    """Sem o pai (nem ponteiros para fora) durante a gravação: `libraries.write` expande as referências e levaria o
++    pai junto (EC-08)."""
++
++    def __init__(self, root, objs):
++        self.root, self.objs = root, objs
++
++    def __enter__(self):
++        root = self.root
++        self.parent, self.inverse, self.basis = root.parent, root.matrix_parent_inverse.copy(), root.matrix_basis.copy()
++        if self.parent is not None:
++            world = root.matrix_world.copy()
++            root.parent = None
++            root.matrix_world = world
++        self.refs = _outside_refs(self.objs)
++        for owner, name, _value in self.refs:
++            setattr(owner, name, None)
++        return root
++
++    def __exit__(self, *_exc):
++        for owner, name, value in self.refs:
++            setattr(owner, name, value)
++        if self.parent is not None:
++            self.root.parent = self.parent
++            self.root.matrix_parent_inverse = self.inverse
++            self.root.matrix_basis = self.basis
++        return False
++
++
++def _pack_own_images(objs):
++    """Empacota as imagens de textura própria: o item fica portátil (questions.md, pergunta 60)."""
++    from .retexture import PATH_PROP
++    for obj in objs:
++        if obj.type != 'MESH':
++            continue
++        for mat in obj.data.materials:
++            if mat is None or not mat.get(PATH_PROP) or mat.node_tree is None:
++                continue
++            for node in mat.node_tree.nodes:
++                image = getattr(node, 'image', None)
++                if image is not None and image.source == 'FILE' and image.packed_file is None:
++                    image.pack()
++
++
+ def save(context, root, name, category, source="", license_text="", author="", replace_id=None, thumb=True,
+          folder=None, item_id=None):
+     """Grava o item (na pasta do usuário, ou em `folder`). Devolve (store.Item ou None, mensagens de erro)."""
+@@ -105,7 +171,9 @@
+         fd, tmp_blend = tempfile.mkstemp(suffix=".blend", dir=os.path.dirname(paths["blend"]))
+         os.close(fd)
+         written.append(tmp_blend)
+-        bpy.data.libraries.write(tmp_blend, set(objs), path_remap='RELATIVE_ALL', fake_user=True)
++        _pack_own_images(objs)
++        with _detached(root, objs):
++            bpy.data.libraries.write(tmp_blend, set(objs), path_remap='RELATIVE_ALL', fake_user=True)
+         fd, tmp_json = tempfile.mkstemp(suffix=".json", dir=os.path.dirname(paths["json"]))
+         written.append(tmp_json)            # antes de escrever: uma falha no dump também apaga o temporário
+         with os.fdopen(fd, "w", encoding="utf-8") as handle:

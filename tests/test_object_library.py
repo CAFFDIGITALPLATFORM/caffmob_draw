@@ -52,6 +52,11 @@ class CatalogTest(unittest.TestCase):
             with self.subTest(bad=bad), self.assertRaises(catalog.ManifestError):
                 catalog.read_manifest(bad)
 
+    def test_id_com_quebra_de_linha(self):
+        """BUG-20261011-EVT6: "\n" final no item_id é recusado."""
+        with self.assertRaises(catalog.ManifestError):
+            catalog.read_manifest(manifest(item_id="porta-lisa-80\n"))
+
     def test_categoria_desconhecida_vira_outros(self):
         self.assertEqual(catalog.read_manifest(manifest(category="XYZ")).category, 'OTHER')
 
@@ -73,6 +78,16 @@ class StoreTest(unittest.TestCase):
                              [("porta-lisa-80-a1b2c3", False, True), ("mesa-1", True, False)])
             self.assertEqual(len(warnings), 1)
             self.assertEqual([i.entry.item_id for i in store.by_category(items, 'TABLES')], ["mesa-1"])
+
+    def test_manifesto_com_tipo_inesperado(self):
+        """BUG-20261011-KKHH: tipo inesperado vira aviso e o item é pulado; a listagem continua (EC-01)."""
+        with tempfile.TemporaryDirectory() as bundled, tempfile.TemporaryDirectory() as user:
+            write_item(bundled, manifest())
+            for i, bad in enumerate(({"features": 5}, {"materials": 5}, {"size_mm": [None, 0, 0]})):
+                write_item(user, manifest(item_id=f"ruim-{i}", **bad))
+            items, warnings = store.list_items(bundled, user)
+            self.assertEqual([i.entry.item_id for i in items], ["porta-lisa-80-a1b2c3"])
+            self.assertEqual(len(warnings), 3)
 
     def test_nome_repetido(self):
         self.assertEqual(store.unique_name(["Mesa", "Mesa 2"], "Mesa"), "Mesa 3")

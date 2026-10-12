@@ -1,4 +1,4 @@
-<!-- GENERATED, DO NOT EDIT: regenerado por /reversa-debugger-graph em 2026-10-12T02:39:10+00:00 a partir de 137 bugs -->
+<!-- GENERATED, DO NOT EDIT: regenerado por /reversa-debugger-graph em 2026-10-12T02:45:55+00:00 a partir de 137 bugs -->
 
 # Bugs que atingem as specs
 
@@ -299,24 +299,24 @@
 
 ## `_reversa_sdd/object_library/design.md`
 
-- BUG-20261011-EVT6 (open, P3): item_id com quebra de linha final é aceito — `_reversa_bugs/object_library/bugs/BUG-20261011-EVT6-item-id-com-quebra-de-linha-final`
+- BUG-20261011-EVT6 (resolved/fixed, P3): item_id com quebra de linha final é aceito — `_reversa_bugs/object_library/bugs/BUG-20261011-EVT6-item-id-com-quebra-de-linha-final`
 
 ## `_reversa_sdd/object_library/edge-cases.md`
 
-- BUG-20261011-KKHH (open, P2): Manifesto com tipo inesperado derruba a seção Inserir › Objetos — `_reversa_bugs/object_library/bugs/BUG-20261011-KKHH-manifesto-com-tipo-inesperado-derruba-a-secao`
+- BUG-20261011-KKHH (resolved/fixed, P2): Manifesto com tipo inesperado derruba a seção Inserir › Objetos — `_reversa_bugs/object_library/bugs/BUG-20261011-KKHH-manifesto-com-tipo-inesperado-derruba-a-secao`
 - BUG-20261011-QP4R (open, P2): Malhas e materiais inseridos somem ao recarregar — `_reversa_bugs/object_library/bugs/BUG-20261011-QP4R-malhas-e-materiais-inseridos-somem-ao-recarregar`
-- BUG-20261011-QZSO (open, P2): O pai da raiz é salvo junto no .blend do item — `_reversa_bugs/object_library/bugs/BUG-20261011-QZSO-o-pai-da-raiz-e-salvo-junto`
+- BUG-20261011-QZSO (resolved/fixed, P2): O pai da raiz é salvo junto no .blend do item — `_reversa_bugs/object_library/bugs/BUG-20261011-QZSO-o-pai-da-raiz-e-salvo-junto`
 
 ## `_reversa_sdd/object_library/requirements.md`
 
 - BUG-20261011-5JLF (resolved/fixed, P3): item_io.save deixa .json temporário quando json.dump falha — `_reversa_bugs/object_library/bugs/BUG-20261011-5JLF-item-io-save-deixa-json-temporario-quando`
-- BUG-20261011-W2DP (open, P2): Objeto inserido pela barra lateral não segue o mouse — `_reversa_bugs/object_library/bugs/BUG-20261011-W2DP-objeto-inserido-pela-barra-lateral-nao-segue`
+- BUG-20261011-W2DP (resolved/fixed, P2): Objeto inserido pela barra lateral não segue o mouse — `_reversa_bugs/object_library/bugs/BUG-20261011-W2DP-objeto-inserido-pela-barra-lateral-nao-segue`
 
 ## `_reversa_sdd/object_library/tasks.md`
 
 - BUG-20261011-JDYP (resolved/fixed, P3): cancel() da inserção não remove os objetos carregados — `_reversa_bugs/object_library/bugs/BUG-20261011-JDYP-cancel-da-insercao-nao-remove-os-objetos`
-- BUG-20261011-JKZJ (open, P2): Texturas próprias não são empacotadas ao salvar o item — `_reversa_bugs/object_library/bugs/BUG-20261011-JKZJ-texturas-proprias-nao-sao-empacotadas-ao-salvar`
-- BUG-20261011-W2DP (open, P2): Objeto inserido pela barra lateral não segue o mouse — `_reversa_bugs/object_library/bugs/BUG-20261011-W2DP-objeto-inserido-pela-barra-lateral-nao-segue`
+- BUG-20261011-JKZJ (resolved/fixed, P2): Texturas próprias não são empacotadas ao salvar o item — `_reversa_bugs/object_library/bugs/BUG-20261011-JKZJ-texturas-proprias-nao-sao-empacotadas-ao-salvar`
+- BUG-20261011-W2DP (resolved/fixed, P2): Objeto inserido pela barra lateral não segue o mouse — `_reversa_bugs/object_library/bugs/BUG-20261011-W2DP-objeto-inserido-pela-barra-lateral-nao-segue`
 
 ## `_reversa_sdd/openings/edge-cases.md`
 

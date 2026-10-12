@@ -70,7 +70,7 @@ def read_manifest(data):
     for key in ("item_id", "name", "root"):
         if not isinstance(data.get(key), str) or not data[key].strip():
             raise ManifestError("campo obrigatório ausente: " + key)
-    if not _ID.match(data["item_id"]):
+    if not _ID.fullmatch(data["item_id"]):       # "$" aceitaria um "\n" final
         raise ManifestError("item_id inválido: " + data["item_id"])
     category = data.get("category") if data.get("category") in CATEGORY_KEYS else 'OTHER'
     size = [float(v) for v in (data.get("size_mm") or [0.0, 0.0, 0.0])][:3]

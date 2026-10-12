@@ -1,0 +1,11 @@
+--- /home/theleoinfo/www/BlenderToMob/caffmob_draw/object_library/store.py	2026-10-09 00:51:02.744449976 -0300
++++ caffmob_draw/object_library/store.py	2026-10-11 23:41:04.442146496 -0300
+@@ -42,7 +42,7 @@
+             try:
+                 with open(path, encoding="utf-8") as handle:
+                     entry = catalog.read_manifest(json.load(handle))
+-            except (OSError, ValueError) as exc:
++            except (OSError, ValueError, TypeError, KeyError, AttributeError) as exc:   # tipo inesperado (EC-01)
+                 warnings.append("{}: {}".format(path, exc))
+                 continue
+             paths = paths_for(folder, category, entry.item_id)

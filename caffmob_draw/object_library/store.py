@@ -42,7 +42,7 @@ def _scan(folder, user, warnings):
             try:
                 with open(path, encoding="utf-8") as handle:
                     entry = catalog.read_manifest(json.load(handle))
-            except (OSError, ValueError) as exc:
+            except (OSError, ValueError, TypeError, KeyError, AttributeError) as exc:   # tipo inesperado (EC-01)
                 warnings.append("{}: {}".format(path, exc))
                 continue
             paths = paths_for(folder, category, entry.item_id)

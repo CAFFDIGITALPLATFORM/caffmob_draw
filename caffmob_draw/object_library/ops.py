@@ -26,6 +26,13 @@ def item_key(item):
     return "{}:{}:{}".format('U' if item.user else 'B', item.entry.category, item.entry.item_id)
 
 
+def _window_region(area, x, y):
+    """Região WINDOW da área sob o mouse (na vista quádrupla, a que contém o ponto); senão a maior."""
+    regions = [r for r in area.regions if r.type == 'WINDOW']
+    inside = [r for r in regions if r.x <= x < r.x + r.width and r.y <= y < r.y + r.height]
+    return (inside or sorted(regions, key=lambda r: r.width * r.height, reverse=True) or [None])[0]
+
+
 def find_item(key):
     items, _warnings = item_io.all_items()
     return next((i for i in items if item_key(i) == key), None)
@@ -90,9 +97,14 @@ class BTM_OT_ObjectInsert(bpy.types.Operator):
 
     def _follow(self, context, event):
         region, rv3d = context.region, context.region_data
+        coord = (event.mouse_region_x, event.mouse_region_y)
+        if rv3d is None and context.area is not None:      # invocado pela barra lateral: a região da vista (DT-01)
+            region = _window_region(context.area, event.mouse_x, event.mouse_y)
+            rv3d = region.data if region is not None else None
+            if region is not None:
+                coord = (event.mouse_x - region.x, event.mouse_y - region.y)
         if region is None or rv3d is None:
             return
-        coord = (event.mouse_region_x, event.mouse_region_y)
         origin = view3d_utils.region_2d_to_origin_3d(region, rv3d, coord)
         direction = view3d_utils.region_2d_to_vector_3d(region, rv3d, coord)
         hit = geometry.intersect_line_plane(origin, origin + direction * 1000.0, Vector((0, 0, self._plane_z)),
