@@ -1,4 +1,4 @@
-<!-- GENERATED, DO NOT EDIT: regenerado por /reversa-debugger-graph em 2026-10-12T02:45:55+00:00 a partir de 137 bugs -->
+<!-- GENERATED, DO NOT EDIT: regenerado por /reversa-debugger-graph em 2026-10-12T02:46:19+00:00 a partir de 137 bugs -->
 
 # Bugs que atingem as specs
 
@@ -304,7 +304,7 @@
 ## `_reversa_sdd/object_library/edge-cases.md`
 
 - BUG-20261011-KKHH (resolved/fixed, P2): Manifesto com tipo inesperado derruba a seção Inserir › Objetos — `_reversa_bugs/object_library/bugs/BUG-20261011-KKHH-manifesto-com-tipo-inesperado-derruba-a-secao`
-- BUG-20261011-QP4R (open, P2): Malhas e materiais inseridos somem ao recarregar — `_reversa_bugs/object_library/bugs/BUG-20261011-QP4R-malhas-e-materiais-inseridos-somem-ao-recarregar`
+- BUG-20261011-QP4R (resolved/invalid, P2): Malhas e materiais inseridos somem ao recarregar — `_reversa_bugs/object_library/bugs/BUG-20261011-QP4R-malhas-e-materiais-inseridos-somem-ao-recarregar`
 - BUG-20261011-QZSO (resolved/fixed, P2): O pai da raiz é salvo junto no .blend do item — `_reversa_bugs/object_library/bugs/BUG-20261011-QZSO-o-pai-da-raiz-e-salvo-junto`
 
 ## `_reversa_sdd/object_library/requirements.md`

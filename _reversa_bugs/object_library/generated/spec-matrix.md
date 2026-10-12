@@ -1,4 +1,4 @@
-<!-- GENERATED, DO NOT EDIT: regenerado por /reversa-debugger-graph em 2026-10-12T02:45:55+00:00 a partir de 8 bugs -->
+<!-- GENERATED, DO NOT EDIT: regenerado por /reversa-debugger-graph em 2026-10-12T02:46:19+00:00 a partir de 8 bugs -->
 
 # Bugs × specs · object_library
 
@@ -6,7 +6,7 @@
 |---|---|---|---|
 | `_reversa_sdd/object_library/design.md` | — | — | BUG-20261011-EVT6 |
 | `_reversa_sdd/object_library/edge-cases.md#EC-01` | — | — | BUG-20261011-KKHH |
-| `_reversa_sdd/object_library/edge-cases.md#EC-07` | BUG-20261011-QP4R | — | — |
+| `_reversa_sdd/object_library/edge-cases.md#EC-07` | — | — | BUG-20261011-QP4R |
 | `_reversa_sdd/object_library/edge-cases.md#EC-08` | — | — | BUG-20261011-QZSO |
 | `_reversa_sdd/object_library/requirements.md` | — | — | BUG-20261011-5JLF |
 | `_reversa_sdd/object_library/requirements.md#RN-14` | — | — | BUG-20261011-W2DP |
