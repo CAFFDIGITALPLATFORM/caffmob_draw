@@ -1,0 +1,137 @@
+--- /dev/null	2026-10-09 20:39:19.815662691 -0300
++++ tests/blender_bug_LWF6_move_over.py	2026-10-12 00:00:25.099584698 -0300
+@@ -0,0 +1,134 @@
++"""Reprodução e regressão de BUG-20261011-LWF6, BUG-20261011-X5OS (Mover Sobre) e BUG-20261011-NOAU (geometria livre).
++
++Run: blender --background --factory-startup --python-exit-code 1 --python tests/blender_bug_LWF6_move_over.py
++
++- caixas de A e B e a sobreposição usam a árvore de malhas visíveis, como o Substituir (questions.md, pergunta 16);
++- o Substituir dá ao módulo novo posição e rotação de A, sem a escala (pergunta 19);
++- medida digitada com arraste negativo mantém o canto clicado e respeita o limite de 10 m (geometry_free EC-06, EC-07).
++"""
++
++import sys
++import traceback
++import types
++from pathlib import Path
++
++sys.path.insert(0, str(Path(__file__).resolve().parent))
++import _blender_env as env  # noqa: E402
++import bpy  # noqa: E402
++from mathutils import Vector  # noqa: E402
++from caffmob_draw import hb_utils  # noqa: E402
++from caffmob_draw.customize import library_io  # noqa: E402
++from caffmob_draw.geometry_free import mesh, ops_create  # noqa: E402
++from caffmob_draw.move_over import ops_substitute  # noqa: E402
++from caffmob_draw.move_over.scene import MoveOver, _frame  # noqa: E402
++from caffmob_draw.product_libraries.frameless import types_frameless as tf  # noqa: E402
++
++ctx = bpy.context
++FAILURES = []
++
++
++def check(name, ok, detail=""):
++    print(("OK   " if ok else "FALHA ") + name, detail, flush=True)
++    if not ok:
++        FAILURES.append(name)
++
++
++def close(a, b, tol=1e-4):
++    return all(abs(x - y) < tol for x, y in zip(a, b))
++
++
++def module(x, door='LEFT'):
++    assert bpy.ops.caffmob.cabinet_builder(cabinet_type='BASE', width=0.6, door_swing=door) == {'FINISHED'}
++    obj = ctx.view_layer.objects.active
++    obj.location.x = x
++    return obj
++
++
++def tree_boxes():
++    env.clean_scene()
++    a, b = module(3.0), module(0.0)
++    env.settle()
++    tree = ops_substitute._tree_box(_frame(a).inverted(), a)
++    mo = MoveOver(ctx, a, b)
++    check("LWF6: a caixa de A inclui a porta", close(mo.a_local_box[0], tree[0]) and close(mo.a_local_box[1], tree[1]),
++          f"{mo.a_local_box} × {tree}")
++    tree_b = ops_substitute._tree_box(_frame(b).inverted(), b)
++    check("LWF6: a caixa de B inclui a porta", close(mo.box_b[1], tree_b[1]), f"{mo.box_b} × {tree_b}")
++    door = next(o for o in a.children_recursive if o.type == 'MESH')
++    door_max_y = max((door.matrix_world @ Vector(c)).y for c in door.bound_box)
++    lo, _hi = mo.a_local_box
++    mo.delta = Vector((b.location.x - a.location.x, 0.0, 0.0))
++    mo.delta.y = (b.matrix_world.translation.y + tree_b[1][1] - 0.01) - (a.matrix_world.translation.y + lo[1])
++    mo.preview()
++    over = [o.name for o in mo.overlapping()]
++    mo.restore()
++    check("LWF6: a sobreposição conta a porta que sai da caixa", b.name in over, f"{over} porta até y={door_max_y:.3f}")
++
++
++def substitute_without_scale():
++    env.clean_scene()
++    b = module(0.0)
++    a = module(2.0)
++    a.scale = (1.5, 1.0, 1.0)
++    saved = tf.UpperCabinet()
++    saved.create("Aereo LWF6")
++    saved.obj.location.x = 6.0
++    hb_utils.run_calc_fix_until_stable(ctx, saved.obj)
++    env.settle()
++    ctx.view_layer.objects.active = saved.obj
++    with ctx.temp_override(active_object=saved.obj, object=saved.obj):
++        assert bpy.ops.caffmob.module_save(module_name="Aéreo X5OS", category="Testes", thumbnail=False) == {'FINISHED'}
++    entry = next(e for e in library_io.list_modules() if e["name"] == "Aéreo X5OS")
++    new, _warnings = ops_substitute.substitute(ctx, a, b, entry)
++    env.settle()
++    scale = tuple(round(s, 4) for s in new.matrix_world.to_scale())
++    check("X5OS: o módulo novo não herda a escala do antigo", scale == (1.0, 1.0, 1.0), str(scale))
++
++
++def typed_with_negative_drag():
++    env.clean_scene()
++    obj = mesh.create_object(ctx, 'PLACA')
++    stub = types.SimpleNamespace(obj=obj, corner=Vector((1.0, 1.0, 0.0)), typed_width=None, typed="", step=1,
++                                 kind='PLACA', reports=[])
++    for name, fn in vars(ops_create.BTM_OT_GeometryCreate).items():
++        if isinstance(fn, types.FunctionType):
++            setattr(stub, name, types.MethodType(fn, stub))
++    stub.report = lambda level, text: stub.reports.append(text)
++    stub._header = lambda context: None
++    stub._advance = lambda context: {'RUNNING_MODAL'}
++    original = ops_create.units.parse_length
++    ops_create.units.parse_length = lambda text, unit, allow_zero=False: float(text)
++    try:
++        stub._update_footprint(Vector((0.5, 0.6, 0.0)))          # arraste para −X e −Y
++        stub.typed = "0.3"
++        stub._typed_value(ctx)
++        check("NOAU: largura digitada mantém o canto em X", abs(obj.location.x - 0.7) < 1e-6, f"{obj.location.x:.4f}")
++        stub.typed = "15"
++        stub._typed_value(ctx)
++        check("NOAU: profundidade digitada mantém o canto em Y (limitada a 10 m)",
++              abs(obj.btm_geometry.depth - 10.0) < 1e-6 and abs(obj.location.y - (1.0 - 10.0)) < 1e-6,
++              f"{obj.btm_geometry.depth:.3f} {obj.location.y:.4f}")
++        stub.typed_width = None
++        stub.typed = "15"
++        stub._typed_value(ctx)
++        stub._update_footprint(Vector((0.5, 0.6, 0.0)))
++        check("NOAU: largura fora do limite fica em 10 m e o canto não se afasta",
++              abs(stub.typed_width - 10.0) < 1e-6 and abs(obj.location.x - (1.0 - 10.0)) < 1e-6,
++              f"{stub.typed_width} {obj.location.x:.4f}")
++    finally:
++        ops_create.units.parse_length = original
++
++
++def main():
++    tree_boxes()
++    substitute_without_scale()
++    typed_with_negative_drag()
++
++
++try:
++    main()
++except Exception:
++    traceback.print_exc()
++    FAILURES.append("exceção no roteiro")
++print(f"blender_bug_LWF6_move_over: {'OK' if not FAILURES else 'FALHAS: ' + ', '.join(FAILURES)}")
++sys.exit(1 if FAILURES else 0)

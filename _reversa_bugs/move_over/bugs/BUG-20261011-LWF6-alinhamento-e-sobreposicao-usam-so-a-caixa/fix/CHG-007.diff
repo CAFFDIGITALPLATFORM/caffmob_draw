@@ -1,0 +1,17 @@
+--- /home/theleoinfo/www/BlenderToMob/caffmob_draw/move_over/ops_substitute.py	2026-10-07 15:05:53.615652161 -0300
++++ caffmob_draw/move_over/ops_substitute.py	2026-10-11 23:56:43.957201914 -0300
+@@ -45,11 +45,12 @@
+         return None, warnings
+     frame = _frame(b)
+     frame_inv = frame.inverted()
+-    root.matrix_world = a.matrix_world.copy()
++    place = _frame(a)                       # posição e rotação de A, sem a escala (questions.md, pergunta 19)
++    root.matrix_world = place
+     root.parent = a.parent
+     if a.parent is not None:
+         root.matrix_parent_inverse = a.matrix_parent_inverse.copy()
+-        root.matrix_world = a.matrix_world.copy()
++        root.matrix_world = place
+     context.view_layer.update()
+     box_a, box_b, box_new = _tree_box(frame_inv, a), _local_box(b, context.evaluated_depsgraph_get()), \
+         _tree_box(frame_inv, root)

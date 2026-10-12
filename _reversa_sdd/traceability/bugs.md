@@ -1,4 +1,4 @@
-<!-- GENERATED, DO NOT EDIT: regenerado por /reversa-debugger-graph em 2026-10-12T02:54:38+00:00 a partir de 137 bugs -->
+<!-- GENERATED, DO NOT EDIT: regenerado por /reversa-debugger-graph em 2026-10-12T03:00:55+00:00 a partir de 137 bugs -->
 
 # Bugs que atingem as specs
 
@@ -114,15 +114,15 @@
 
 ## `_reversa_sdd/canvas2d/edge-cases.md`
 
-- BUG-20261011-LM42 (open, P2): Fechar o editor com uma janela só deixa a área sem cabeçalho — `_reversa_bugs/canvas2d/bugs/BUG-20261011-LM42-fechar-o-editor-com-uma-janela-so`
+- BUG-20261011-LM42 (resolved/fixed, P2): Fechar o editor com uma janela só deixa a área sem cabeçalho — `_reversa_bugs/canvas2d/bugs/BUG-20261011-LM42-fechar-o-editor-com-uma-janela-so`
 
 ## `_reversa_sdd/canvas2d/requirements.md`
 
-- BUG-20261011-S6I6 (open, P2): View2D sem guarda contra escala zero — `_reversa_bugs/canvas2d/bugs/BUG-20261011-S6I6-view2d-sem-guarda-contra-escala-zero`
+- BUG-20261011-S6I6 (resolved/fixed, P2): View2D sem guarda contra escala zero — `_reversa_bugs/canvas2d/bugs/BUG-20261011-S6I6-view2d-sem-guarda-contra-escala-zero`
 
 ## `_reversa_sdd/canvas2d/tasks.md`
 
-- BUG-20261011-LM42 (open, P2): Fechar o editor com uma janela só deixa a área sem cabeçalho — `_reversa_bugs/canvas2d/bugs/BUG-20261011-LM42-fechar-o-editor-com-uma-janela-so`
+- BUG-20261011-LM42 (resolved/fixed, P2): Fechar o editor com uma janela só deixa a área sem cabeçalho — `_reversa_bugs/canvas2d/bugs/BUG-20261011-LM42-fechar-o-editor-com-uma-janela-so`
 
 ## `_reversa_sdd/collision/edge-cases.md`
 
@@ -192,7 +192,7 @@
 
 ## `_reversa_sdd/geometry_free/edge-cases.md`
 
-- BUG-20261011-NOAU (open, P2): Medida digitada com arraste negativo desloca a origem — `_reversa_bugs/geometry_free/bugs/BUG-20261011-NOAU-medida-digitada-com-arraste-negativo-desloca-a`
+- BUG-20261011-NOAU (resolved/fixed, P2): Medida digitada com arraste negativo desloca a origem — `_reversa_bugs/geometry_free/bugs/BUG-20261011-NOAU-medida-digitada-com-arraste-negativo-desloca-a`
 - BUG-20261011-SKDL (resolved/fixed, P1): Shift+D nativo copia btm_uid — `_reversa_bugs/geometry_free/bugs/BUG-20261011-SKDL-shift-d-nativo-copia-btm-uid`
 - BUG-20261011-TLCT (resolved/fixed, P2): Interromper o modal de criar geometria deixa resíduos — `_reversa_bugs/geometry_free/bugs/BUG-20261011-TLCT-interromper-o-modal-de-criar-geometria-deixa`
 
@@ -294,8 +294,8 @@
 - BUG-20261011-3T7M (resolved/fixed, P2): Interromper os modais de Mover na Parede e Plano de inserção deixa resíduos — `_reversa_bugs/move_over/bugs/BUG-20261011-3T7M-interromper-os-modais-de-mover-na-parede`
 - BUG-20261011-CKVJ (resolved/fixed, P2): Tab na janela de Mover Sobre vai para o campo errado — `_reversa_bugs/move_over/bugs/BUG-20261011-CKVJ-tab-na-janela-de-mover-sobre-vai`
 - BUG-20261011-JMDR (resolved/fixed, P2): O segundo Confirmar salva sem rever a sobreposição — `_reversa_bugs/move_over/bugs/BUG-20261011-JMDR-o-segundo-confirmar-salva-sem-rever-a`
-- BUG-20261011-LWF6 (open, P2): Alinhamento e sobreposição usam só a caixa da raiz — `_reversa_bugs/move_over/bugs/BUG-20261011-LWF6-alinhamento-e-sobreposicao-usam-so-a-caixa`
-- BUG-20261011-X5OS (open, P2): O Substituir herda a escala do módulo antigo — `_reversa_bugs/move_over/bugs/BUG-20261011-X5OS-o-substituir-herda-a-escala-do-modulo`
+- BUG-20261011-LWF6 (resolved/fixed, P2): Alinhamento e sobreposição usam só a caixa da raiz — `_reversa_bugs/move_over/bugs/BUG-20261011-LWF6-alinhamento-e-sobreposicao-usam-so-a-caixa`
+- BUG-20261011-X5OS (resolved/fixed, P2): O Substituir herda a escala do módulo antigo — `_reversa_bugs/move_over/bugs/BUG-20261011-X5OS-o-substituir-herda-a-escala-do-modulo`
 
 ## `_reversa_sdd/object_library/design.md`
 
@@ -354,9 +354,9 @@
 - BUG-20261011-IDPP (resolved/fixed, P2): Porta real não acompanha largura e altura editadas pelo painel — `_reversa_bugs/openings/bugs/BUG-20261011-IDPP-porta-real-nao-acompanha-largura-e-altura`
 - BUG-20261011-JMDR (resolved/fixed, P2): O segundo Confirmar salva sem rever a sobreposição — `_reversa_bugs/move_over/bugs/BUG-20261011-JMDR-o-segundo-confirmar-salva-sem-rever-a`
 - BUG-20261011-L5ML (resolved/fixed, P2): Grupos soltos (SketchUp, biblioteca de objetos) ficam fora da colisão — `_reversa_bugs/collision/bugs/BUG-20261011-L5ML-grupos-soltos-sketchup-biblioteca-de-objetos-ficam`
-- BUG-20261011-LM42 (open, P2): Fechar o editor com uma janela só deixa a área sem cabeçalho — `_reversa_bugs/canvas2d/bugs/BUG-20261011-LM42-fechar-o-editor-com-uma-janela-so`
+- BUG-20261011-LM42 (resolved/fixed, P2): Fechar o editor com uma janela só deixa a área sem cabeçalho — `_reversa_bugs/canvas2d/bugs/BUG-20261011-LM42-fechar-o-editor-com-uma-janela-so`
 - BUG-20261011-LT3C (resolved/fixed, P2): O 'Não' da pergunta de fechar a sala não impede o fechamento — `_reversa_bugs/walls2d/bugs/BUG-20261011-LT3C-o-nao-da-pergunta-de-fechar-a`
-- BUG-20261011-LWF6 (open, P2): Alinhamento e sobreposição usam só a caixa da raiz — `_reversa_bugs/move_over/bugs/BUG-20261011-LWF6-alinhamento-e-sobreposicao-usam-so-a-caixa`
+- BUG-20261011-LWF6 (resolved/fixed, P2): Alinhamento e sobreposição usam só a caixa da raiz — `_reversa_bugs/move_over/bugs/BUG-20261011-LWF6-alinhamento-e-sobreposicao-usam-so-a-caixa`
 - BUG-20261011-NBKB (resolved/fixed, P2): Vizinho sem Geometry Nodes vira obstáculo de largura zero — `_reversa_bugs/measure/bugs/BUG-20261011-NBKB-vizinho-sem-geometry-nodes-vira-obstaculo-de`
 - BUG-20261011-PJJU (resolved/fixed, P3): Ângulo editável com a trava de ângulo ligada — `_reversa_bugs/walls2d/bugs/BUG-20261011-PJJU-angulo-editavel-com-a-trava-de-angulo`
 - BUG-20261011-SX4T (resolved/fixed, P2): _swing pega o filho errado como símbolo de abertura — `_reversa_bugs/openings/bugs/BUG-20261011-SX4T-swing-pega-o-filho-errado-como-simbolo`
@@ -364,7 +364,7 @@
 - BUG-20261011-TUWO (resolved/fixed, P0): Apagar parede sem 'Apagar também os agregados' solta os agregados dos módulos que ficam — `_reversa_bugs/selection/bugs/BUG-20261011-TUWO-apagar-parede-sem-apagar-tambem-os-agregados`
 - BUG-20261011-UJ5Q (resolved/fixed, P1): Trocar para 2 a 4 gavetas no frameless perde a personalização — `_reversa_bugs/customize/bugs/BUG-20261011-UJ5Q-trocar-para-2-a-4-gavetas-no`
 - BUG-20261011-UV6S (resolved/fixed, P2): Trocar porta simples para dupla não refaz a porta real — `_reversa_bugs/openings/bugs/BUG-20261011-UV6S-trocar-porta-simples-para-dupla-nao-refaz`
-- BUG-20261011-X5OS (open, P2): O Substituir herda a escala do módulo antigo — `_reversa_bugs/move_over/bugs/BUG-20261011-X5OS-o-substituir-herda-a-escala-do-modulo`
+- BUG-20261011-X5OS (resolved/fixed, P2): O Substituir herda a escala do módulo antigo — `_reversa_bugs/move_over/bugs/BUG-20261011-X5OS-o-substituir-herda-a-escala-do-modulo`
 - BUG-20261011-XMZM (resolved/fixed, P2): O segundo OK aplica sem rever os avisos depois de mudar o rascunho — `_reversa_bugs/walls2d/bugs/BUG-20261011-XMZM-o-segundo-ok-aplica-sem-rever-os`
 - BUG-20261011-XPD2 (resolved/fixed, P2): Vínculo de grudar órfão quando o pai é trocado à mão — `_reversa_bugs/stick/bugs/BUG-20261011-XPD2-vinculo-de-grudar-orfao-quando-o-pai`
 - BUG-20261011-ZKQ7 (resolved/fixed, P0): Checagem de descendência invertida em can_convert permite ciclo de parentesco — `_reversa_bugs/aggregates/bugs/BUG-20261011-ZKQ7-checagem-de-descendencia-invertida-em-can-convert`

@@ -1,0 +1,37 @@
+--- /home/theleoinfo/www/BlenderToMob/caffmob_draw/geometry_free/ops_create.py	2026-10-11 21:01:03.613994724 -0300
++++ caffmob_draw/geometry_free/ops_create.py	2026-10-11 23:56:43.956201862 -0300
+@@ -69,10 +69,16 @@
+     def _update_footprint(self, point):
+         g = self.obj.btm_geometry
+         dx, dy = point.x - self.corner.x, point.y - self.corner.y
+-        width = self.typed_width if self.typed_width is not None else max(MIN_SIZE, abs(dx))
+-        depth = max(MIN_SIZE, abs(dy))
+-        g.width, g.depth = width, depth
+-        self.obj.location = (self.corner.x - (width if dx < 0 else 0.0), self.corner.y - (depth if dy < 0 else 0.0),
++        g.width = self.typed_width if self.typed_width is not None else max(MIN_SIZE, abs(dx))
++        g.depth = max(MIN_SIZE, abs(dy))
++        self.negative = (dx < 0, dy < 0)
++        self._place_from_corner()
++
++    def _place_from_corner(self):
++        """O canto clicado continua canto da peça, com as medidas já limitadas pela propriedade (EC-06, EC-07)."""
++        g = self.obj.btm_geometry
++        neg_x, neg_y = getattr(self, 'negative', (False, False))
++        self.obj.location = (self.corner.x - (g.width if neg_x else 0.0), self.corner.y - (g.depth if neg_y else 0.0),
+                              self.corner.z)
+ 
+     def _update_height(self):
+@@ -144,10 +150,12 @@
+         self.typed = ""
+         g = self.obj.btm_geometry
+         if self.step == 1 and self.typed_width is None:
+-            self.typed_width = value
+             g.width = value
++            self.typed_width = g.width                  # já no limite de 0,001 a 10 m
++            self._place_from_corner()
+         elif self.step == 1:
+             g.depth = value
++            self._place_from_corner()
+             return self._advance(context)
+         else:
+             g.height = value

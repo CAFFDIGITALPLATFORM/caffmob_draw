@@ -1,0 +1,63 @@
+--- /dev/null	2026-10-09 20:39:19.815662691 -0300
++++ tests/blender_bug_LM42_canvas2d.py	2026-10-11 23:57:54.298726617 -0300
+@@ -0,0 +1,60 @@
++"""Reprodução e regressão de BUG-20261011-LM42: fechar o editor 2D com uma janela só devolve a vista 3D com cabeçalho e
++menus (questions.md, pergunta 6; canvas2d DT-01).
++
++Precisa de janela (não roda em --background):
++    blender --factory-startup --python tests/blender_bug_LM42_canvas2d.py
++"""
++
++import os
++import sys
++import traceback
++from pathlib import Path
++
++import bpy
++
++ROOT = Path(__file__).resolve().parents[1]
++sys.path.insert(0, str(ROOT))
++sys.path.insert(0, str(ROOT / "tests"))
++import _blender_env  # noqa: E402,F401  (registra a extensão)
++
++from caffmob_draw.canvas2d import window  # noqa: E402
++
++FAILURES = []
++
++
++def check(name, ok, detail=""):
++    print(("OK   " if ok else "FALHA ") + name, detail, flush=True)
++    if not ok:
++        FAILURES.append(name)
++
++
++def script():
++    wm = bpy.context.window_manager
++    win = wm.windows[0]
++    area = next(a for a in win.screen.areas if a.type == 'VIEW_3D')
++    area.type = 'IMAGE_EDITOR'                 # o editor 2D usa a área como Image Editor sem cabeçalho
++    area.show_menus = False
++    area.spaces.active.show_region_header = False
++    yield 0.2
++    window._close(win.as_pointer(), area.as_pointer(), None)
++    yield 0.2
++    check("LM42: a área volta a ser a vista 3D", area.type == 'VIEW_3D', area.type)
++    check("LM42: com cabeçalho e menus", area.show_menus and area.spaces.active.show_region_header)
++
++
++_gen = script()
++
++
++def tick():
++    try:
++        return next(_gen)
++    except StopIteration:
++        pass
++    except Exception:
++        traceback.print_exc()
++        FAILURES.append("exceção no roteiro")
++    print(f"blender_bug_LM42_canvas2d: {'OK' if not FAILURES else 'FALHAS: ' + ', '.join(FAILURES)}", flush=True)
++    os._exit(1 if FAILURES else 0)
++
++
++bpy.app.timers.register(tick, first_interval=2.0)

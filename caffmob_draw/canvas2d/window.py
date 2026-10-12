@@ -102,6 +102,12 @@ def open_window(context, s, missing_window_message):
     return window, area, region
 
 
+def _back_to_3d(area):
+    area.type = 'VIEW_3D'
+    area.show_menus = True
+    area.spaces.active.show_region_header = True
+
+
 def _close(window_ptr, area_ptr, restore_area_type):
     wm = bpy.context.window_manager
     for win in wm.windows:
@@ -117,7 +123,9 @@ def _close(window_ptr, area_ptr, restore_area_type):
                     with bpy.context.temp_override(window=win):
                         bpy.ops.wm.window_close()
                 except RuntimeError:
-                    area.type = 'VIEW_3D'
+                    _back_to_3d(area)
+            else:                             # janela única (ou outra janela): a área volta a ser a vista 3D (DT-01)
+                _back_to_3d(area)
             return None
     return None
 

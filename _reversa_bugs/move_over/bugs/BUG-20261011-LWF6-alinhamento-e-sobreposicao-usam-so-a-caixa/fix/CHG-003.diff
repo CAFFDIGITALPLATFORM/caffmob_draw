@@ -1,0 +1,16 @@
+--- /home/theleoinfo/www/BlenderToMob/tests/test_canvas2d_view.py	2026-10-06 23:57:27.696523607 -0300
++++ tests/test_canvas2d_view.py	2026-10-11 23:57:54.293726375 -0300
+@@ -53,5 +53,13 @@
+         self.assertIn(-2.0, ys)
+ 
+ 
++    def test_enquadrar_com_area_sem_lado(self):
++        """BUG-20261011-S6I6: área de largura 0 não zera a escala; to_world segue sem ZeroDivisionError (RN-04)."""
++        view = v.View2D((0, 0, 0, 300))
++        view.fit(((0.0, 0.0), (2.0, 1.0)))
++        self.assertEqual(view.scale, 1e-6)
++        view.to_world((10.0, 10.0))
++
++
+ if __name__ == "__main__":
+     unittest.main()

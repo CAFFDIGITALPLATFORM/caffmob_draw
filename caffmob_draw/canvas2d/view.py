@@ -51,7 +51,7 @@ class View2D:
         (x0, y0), (x1, y1) = bounds
         w_world = max(x1 - x0, 1e-6) * (1.0 + 2 * margin)
         h_world = max(y1 - y0, 1e-6) * (1.0 + 2 * margin)
-        self.scale = min(self.rect[2] / w_world, self.rect[3] / h_world)
+        self.scale = max(1e-6, min(self.rect[2] / w_world, self.rect[3] / h_world))   # o piso do zoom (RN-04)
         self.center = ((x0 + x1) / 2.0, (y0 + y1) / 2.0)
 
     # Grade e encaixe --------------------------------------------------------------------------------------

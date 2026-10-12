@@ -1,0 +1,68 @@
+--- /home/theleoinfo/www/BlenderToMob/caffmob_draw/move_over/scene.py	2026-10-09 10:34:48.408154209 -0300
++++ caffmob_draw/move_over/scene.py	2026-10-12 00:00:15.044153184 -0300
+@@ -23,13 +23,31 @@
+     return Matrix.LocRotScale(loc, rot, None)
+ 
+ 
+-def _local_box(obj, depsgraph):
+-    """Caixa do objeto no seu espaço local, já com a escala do objeto."""
+-    _loc, _rot, scale = obj.matrix_world.decompose()
+-    corners = [Vector((c[0] * scale.x, c[1] * scale.y, c[2] * scale.z)) for c in group.object_corners(obj, depsgraph)]
++def tree_corners(obj, depsgraph):
++    """Cantos (mundo) da árvore de malhas visíveis do objeto: frentes e puxadores contam, como no Substituir
++    (questions.md, pergunta 16). Parede usa a própria caixa; item grudado num filho tem a caixa dele; peça vazia
++    (tampo ou avental desligados, caixa num ponto só) não conta."""
++    corners, stack = [], [obj]
++    while stack and not obj.get('IS_WALL_BP'):
++        node = stack.pop()
++        if node.type == 'MESH' and not node.hide_get() and node.display_type not in {'WIRE', 'BOUNDS'}:
++            local = [Vector(c) for c in node.evaluated_get(depsgraph).bound_box]
++            if (local[6] - local[0]).length > 1e-9:          # diagonal da caixa (canto mín. → máx.)
++                corners += [node.matrix_world @ c for c in local]
++        stack += [c for c in node.children if not getattr(getattr(c, 'btm_stick', None), 'is_stuck', False)]
++    return corners or [obj.matrix_world @ c for c in group.object_corners(obj, depsgraph)]
++
++
++def _box(corners):
+     return (tuple(min(c[i] for c in corners) for i in range(3)), tuple(max(c[i] for c in corners) for i in range(3)))
+ 
+ 
++def _local_box(obj, depsgraph):
++    """Caixa da árvore visível do objeto no seu espaço (posição e rotação), já com a escala do objeto."""
++    to_frame = _frame(obj).inverted()
++    return _box([to_frame @ c for c in tree_corners(obj, depsgraph)])
++
++
+ def _wall_of(obj):
+     parent = obj.parent
+     return parent if parent is not None and parent.get('IS_WALL_BP') else None
+@@ -72,8 +90,8 @@
+     def original_box_a(self):
+         """Caixa de A como está antes de mexer (rotação original), no referencial de B — para a tela inicial."""
+         depsgraph = self.context.evaluated_depsgraph_get()
+-        corners = [self.b_frame_inv @ (self.original_matrix @ c) for c in group.object_corners(self.a, depsgraph)]
+-        return (tuple(min(c[i] for c in corners) for i in range(3)), tuple(max(c[i] for c in corners) for i in range(3)))
++        to_original = self.original_matrix @ self.a.matrix_world.inverted_safe()     # A pode já estar em prévia
++        return _box([self.b_frame_inv @ (to_original @ c) for c in tree_corners(self.a, depsgraph)])
+ 
+     # Alinhar --------------------------------------------------------------------------------------------
+     def align_to(self, targets):
+@@ -161,15 +179,12 @@
+     def overlapping(self):
+         """Módulos (fora A) cuja caixa no mundo cruza a de A na posição atual (RN-11)."""
+         depsgraph = self.context.evaluated_depsgraph_get()
+-        corners = [self._target_matrix() @ c for c in group.object_corners(self.a, depsgraph)]
+-        box = (tuple(min(c[i] for c in corners) for i in range(3)), tuple(max(c[i] for c in corners) for i in range(3)))
++        to_target = self._target_matrix() @ self.a.matrix_world.inverted_safe()
++        box = _box([to_target @ c for c in tree_corners(self.a, depsgraph)])
+         found = []
+         for obj in self.context.scene.objects:
+             if obj == self.a or not classify.module_library(obj):
+                 continue
+-            ev = obj.evaluated_get(depsgraph)
+-            oc = [obj.matrix_world @ Vector(c) for c in ev.bound_box]
+-            other = (tuple(min(c[i] for c in oc) for i in range(3)), tuple(max(c[i] for c in oc) for i in range(3)))
+-            if align.overlaps(box, other, tolerance=1e-3):
++            if align.overlaps(box, _box(tree_corners(obj, depsgraph)), tolerance=1e-3):
+                 found.append(obj)
+         return found
