@@ -31,13 +31,23 @@ def parse(text):
         if item.get('cabinet_type') not in CABINET_TYPES:
             warnings.append(tr("Modelo {}: tipo desconhecido").format(item['id']))
             continue
-        if item.get('door_swing', 'NONE') not in DOOR_SWINGS:
+        swing = item.get('door_swing') or 'NONE'          # null = ausente (F-06)
+        if swing not in DOOR_SWINGS:
             warnings.append(tr("Modelo {}: frente desconhecida").format(item['id']))
             continue
-        models.append(Model(str(item['id']), str(item.get('label', item['id'])), item['cabinet_type'],
-                            max(0, int(item.get('width_mm', 0) or 0)), item.get('door_swing', 'NONE'),
-                            max(0, int(item.get('shelves', 0) or 0))))
+        width, shelves = _count(item, 'width_mm', warnings), _count(item, 'shelves', warnings)
+        models.append(Model(str(item['id']), str(item.get('label') or item['id']), item['cabinet_type'],
+                            width, swing, shelves))
     return models, warnings
+
+
+def _count(item, key, warnings):
+    """Inteiro ≥ 0; valor não numérico vale 0, com aviso, e o catálogo continua (EC-07)."""
+    try:
+        return max(0, int(item.get(key) or 0))
+    except (TypeError, ValueError):
+        warnings.append(tr("Modelo {}: {} não numérico ignorado").format(item['id'], key))
+        return 0
 
 
 def load_default():

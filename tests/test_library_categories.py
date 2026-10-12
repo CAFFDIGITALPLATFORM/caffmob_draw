@@ -24,6 +24,18 @@ class CategoriesTest(unittest.TestCase):
         self.assertEqual(cc.validate_name("a/b", user), cc.INVALID_CHAR)
         self.assertEqual(cc.validate_name("a\\b", user), cc.INVALID_CHAR)
 
+    def test_nome_com_caractere_trocado_na_pasta(self):
+        """BUG-20261011-3UWR: o que `file_stem` troca (e ponto final) é recusado (questions.md, pergunta 57)."""
+        for name in ("Pia: Lavabo", "Lavanderia.", 'a"b', "a<b", "a>b", "a|b", "a?b", "a*b", "a\tb"):
+            self.assertEqual(cc.validate_name(name, []), cc.INVALID_CHAR, name)
+        self.assertIsNone(cc.validate_name("Área de serviço 2", []))
+
+    def test_nome_null(self):
+        """BUG-20261011-NCPI: `"name": null` é categoria sem nome, nunca "None" (F-06)."""
+        categories, warnings = cc.parse(json.dumps({"categories": [{"name": None, "line": "DOR"}]}))
+        self.assertEqual(categories, [])
+        self.assertEqual(len(warnings), 1)
+
     def test_json(self):
         text = cc.dump([cc.Category("Lavanderia", 'DOR', False)])
         self.assertEqual(json.loads(text)['categories'], [{"name": "Lavanderia", "line": "DOR"}])

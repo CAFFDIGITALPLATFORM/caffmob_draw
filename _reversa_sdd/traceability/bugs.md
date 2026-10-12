@@ -1,4 +1,4 @@
-<!-- GENERATED, DO NOT EDIT: regenerado por /reversa-debugger-graph em 2026-10-12T02:36:45+00:00 a partir de 137 bugs -->
+<!-- GENERATED, DO NOT EDIT: regenerado por /reversa-debugger-graph em 2026-10-12T02:39:10+00:00 a partir de 137 bugs -->
 
 # Bugs que atingem as specs
 
@@ -249,17 +249,17 @@
 
 ## `_reversa_sdd/library_panel/design.md`
 
-- BUG-20261011-NCPI (open, P3): null no JSON da biblioteca vira o texto 'None' — `_reversa_bugs/library_panel/bugs/BUG-20261011-NCPI-null-no-json-da-biblioteca-vira-o`
+- BUG-20261011-NCPI (resolved/fixed, P3): null no JSON da biblioteca vira o texto 'None' — `_reversa_bugs/library_panel/bugs/BUG-20261011-NCPI-null-no-json-da-biblioteca-vira-o`
 
 ## `_reversa_sdd/library_panel/edge-cases.md`
 
-- BUG-20261011-2HDG (open, P2): Valor não numérico quebra o popover da biblioteca — `_reversa_bugs/library_panel/bugs/BUG-20261011-2HDG-valor-nao-numerico-quebra-o-popover-da`
-- BUG-20261011-3UWR (open, P2): ':' no nome da categoria grava o módulo na pasta errada — `_reversa_bugs/library_panel/bugs/BUG-20261011-3UWR-no-nome-da-categoria-grava-o-modulo`
+- BUG-20261011-2HDG (resolved/fixed, P2): Valor não numérico quebra o popover da biblioteca — `_reversa_bugs/library_panel/bugs/BUG-20261011-2HDG-valor-nao-numerico-quebra-o-popover-da`
+- BUG-20261011-3UWR (resolved/fixed, P2): ':' no nome da categoria grava o módulo na pasta errada — `_reversa_bugs/library_panel/bugs/BUG-20261011-3UWR-no-nome-da-categoria-grava-o-modulo`
 
 ## `_reversa_sdd/library_panel/tasks.md`
 
-- BUG-20261011-3UWR (open, P2): ':' no nome da categoria grava o módulo na pasta errada — `_reversa_bugs/library_panel/bugs/BUG-20261011-3UWR-no-nome-da-categoria-grava-o-modulo`
-- BUG-20261011-C7IK (open, P2): categories.json inválido é sobrescrito sem backup — `_reversa_bugs/library_panel/bugs/BUG-20261011-C7IK-categories-json-invalido-e-sobrescrito-sem-backup`
+- BUG-20261011-3UWR (resolved/fixed, P2): ':' no nome da categoria grava o módulo na pasta errada — `_reversa_bugs/library_panel/bugs/BUG-20261011-3UWR-no-nome-da-categoria-grava-o-modulo`
+- BUG-20261011-C7IK (resolved/fixed, P2): categories.json inválido é sobrescrito sem backup — `_reversa_bugs/library_panel/bugs/BUG-20261011-C7IK-categories-json-invalido-e-sobrescrito-sem-backup`
 
 ## `_reversa_sdd/measure/edge-cases.md`
 

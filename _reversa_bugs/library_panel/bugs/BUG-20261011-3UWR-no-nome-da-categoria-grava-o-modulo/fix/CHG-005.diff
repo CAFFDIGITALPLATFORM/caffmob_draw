@@ -1,0 +1,49 @@
+--- /home/theleoinfo/www/BlenderToMob/caffmob_draw/library_panel/categories.py	2026-10-09 17:51:30.153987490 -0300
++++ caffmob_draw/library_panel/categories.py	2026-10-11 23:37:50.513511908 -0300
+@@ -9,10 +9,12 @@
+ import tempfile
+ 
+ from ..customize import library_io
++from ..data.i18n import tr
+ from . import categories_core as cc
+ 
+ FILE_NAME = "categories.json"
+ _cache = [None]          # (categorias, avisos): o desenho do painel não lê o disco a cada quadro (princípio IX)
++_broken = [False]        # a última leitura achou o arquivo inválido: guardar cópia antes de regravar (pergunta 58)
+ 
+ 
+ def invalidate():
+@@ -42,6 +44,7 @@
+     except OSError as exc:
+         return [], [str(exc)]
+     user, warnings = cc.parse(text)
++    _broken[0] = tr(cc.INVALID_FILE) in warnings
+     merged = cc.merge_folders(user, _folders(library_io.modules_root()))
+     if merged != user and not warnings:
+         save(merged)
+@@ -53,6 +56,10 @@
+     path = _path()
+     directory = os.path.dirname(path)
+     os.makedirs(directory, exist_ok=True)
++    if _broken[0] and os.path.exists(path):
++        os.replace(path, path + ".bak")
++        _broken[0] = False
++        _feedback(tr("Arquivo de categorias inválido guardado como {}.bak").format(FILE_NAME))
+     fd, tmp = tempfile.mkstemp(dir=directory, suffix=".tmp")
+     try:
+         with os.fdopen(fd, 'w', encoding='utf-8') as handle:
+@@ -65,6 +72,14 @@
+         raise
+ 
+ 
++def _feedback(text):
++    try:
++        from ..ui import save_feedback
++        save_feedback.show(text)
++    except (ImportError, AttributeError, RuntimeError):
++        print("CAFFMob Draw:", text)
++
++
+ def create(name, line):
+     """Cria a categoria (e a pasta). Devolve None ou o motivo da recusa."""
+     user, _warnings = load()

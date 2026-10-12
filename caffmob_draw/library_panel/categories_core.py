@@ -8,6 +8,7 @@ categoria é também uma pasta de módulos de `customize/library_io` (pastas que
 import json
 from collections import namedtuple
 
+from ..customize import manifest
 from ..data.i18n import N_, tr
 
 Category = namedtuple('Category', 'name line fixed')
@@ -26,7 +27,8 @@ SCHEMA_VERSION = 1
 
 EMPTY = N_("Digite um nome para a categoria")
 REPEATED = N_("Já existe uma categoria com esse nome")
-INVALID_CHAR = N_("O nome não pode ter / nem \\")
+INVALID_CHAR = N_("O nome não pode ter < > : \" / \\ | ? * nem terminar em ponto")
+INVALID_FILE = N_("Arquivo de categorias inválido; as categorias do usuário foram ignoradas")
 
 
 def all_categories(user):
@@ -43,7 +45,7 @@ def validate_name(name, user):
     clean = (name or "").strip()
     if not clean:
         return EMPTY
-    if '/' in clean or '\\' in clean:
+    if manifest.file_stem(clean) != clean:          # a pasta da categoria tem de ser a do módulo salvo (pergunta 57)
         return INVALID_CHAR
     if _key(clean) in {_key(c.name) for c in all_categories(user)}:
         return REPEATED
@@ -57,12 +59,12 @@ def parse(text):
     try:
         data = json.loads(text)
     except ValueError:
-        return [], [tr("Arquivo de categorias inválido; as categorias do usuário foram ignoradas")]
+        return [], [tr(INVALID_FILE)]
     items = data.get('categories', []) if isinstance(data, dict) else []
     categories, warnings = [], []
     fixed = {_key(c.name) for c in FIXED}
     for item in items:
-        if not isinstance(item, dict) or not str(item.get('name', "")).strip():
+        if not isinstance(item, dict) or not str(item.get('name') or "").strip():      # null = ausente (F-06)
             warnings.append(tr("Categoria sem nome ignorada"))
             continue
         name = str(item['name']).strip()

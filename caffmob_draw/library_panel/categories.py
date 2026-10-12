@@ -9,10 +9,12 @@ import os
 import tempfile
 
 from ..customize import library_io
+from ..data.i18n import tr
 from . import categories_core as cc
 
 FILE_NAME = "categories.json"
 _cache = [None]          # (categorias, avisos): o desenho do painel não lê o disco a cada quadro (princípio IX)
+_broken = [False]        # a última leitura achou o arquivo inválido: guardar cópia antes de regravar (pergunta 58)
 
 
 def invalidate():
@@ -42,6 +44,7 @@ def load():
     except OSError as exc:
         return [], [str(exc)]
     user, warnings = cc.parse(text)
+    _broken[0] = tr(cc.INVALID_FILE) in warnings
     merged = cc.merge_folders(user, _folders(library_io.modules_root()))
     if merged != user and not warnings:
         save(merged)
@@ -53,6 +56,10 @@ def save(user):
     path = _path()
     directory = os.path.dirname(path)
     os.makedirs(directory, exist_ok=True)
+    if _broken[0] and os.path.exists(path):
+        os.replace(path, path + ".bak")
+        _broken[0] = False
+        _feedback(tr("Arquivo de categorias inválido guardado como {}.bak").format(FILE_NAME))
     fd, tmp = tempfile.mkstemp(dir=directory, suffix=".tmp")
     try:
         with os.fdopen(fd, 'w', encoding='utf-8') as handle:
@@ -63,6 +70,14 @@ def save(user):
         if os.path.exists(tmp):
             os.unlink(tmp)
         raise
+
+
+def _feedback(text):
+    try:
+        from ..ui import save_feedback
+        save_feedback.show(text)
+    except (ImportError, AttributeError, RuntimeError):
+        print("CAFFMob Draw:", text)
 
 
 def create(name, line):

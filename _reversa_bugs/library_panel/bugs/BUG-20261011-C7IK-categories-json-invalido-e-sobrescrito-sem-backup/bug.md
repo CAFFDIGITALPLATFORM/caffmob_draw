@@ -3,8 +3,8 @@ schema_version: 1
 id: BUG-20261011-C7IK
 display_number: 86
 title: "categories.json inválido é sobrescrito sem backup"
-status: open
-phase: triaging
+status: resolved
+phase: delivering
 severity: medium
 priority: P2
 created: 2026-10-11
@@ -19,12 +19,16 @@ module: library_panel
 feature: unclassified
 labels: ["revisao-specs-2026-10"]
 
+change_risk:
+  classification: baixa
+  reasons: ["validação de nome mais estrita só para nomes novos", "categorias existentes com ':' continuam listadas"]
+
 visibility: normal
 security_suspected: false
 
 reproduction:
-  classification: unknown
-  rate: "não executado (confirmado por leitura do código)"
+  classification: deterministic
+  rate: "1/1"
   suspected_triggers: []
 
 blocking: []
@@ -34,18 +38,61 @@ relationships: []
 traceability:
   specs: ["_reversa_sdd/library_panel/tasks.md#DT-02"]
   affected_code: ["caffmob_draw/library_panel/categories.py"]
-  root_cause: null
-  reproduction_tests: []
-  regression_tests: []
+  root_cause:
+    state: confirmed
+    hypothesis: "load não regravava com aviso, mas create/set_line chamavam save, que sobrescrevia o arquivo inválido sem cópia."
+    causal_path:
+      - "library_panel/categories.py load/create/save"
+    evidence:
+      - ref: evidence/reproduction.md
+        observation: "teste vermelho no projeto e na cópia isolada (Blender 5.2)"
+    code_refs:
+      - {file: caffmob_draw/library_panel/categories.py, symbol: save, commit: 20d7f0a}
+  reproduction_tests: ["tests/test_library_categories.py", "tests/test_library_models.py", "tests/blender_bug_C7IK_library_panel.py"]
+  regression_tests: ["tests/test_library_categories.py", "tests/test_library_models.py", "tests/blender_bug_C7IK_library_panel.py", "tests/blender_009_library_smoke.py"]
 
-spec_verdict: null
+spec_verdict: spec-correta
 
-change_set: []
-
+change_set:
+  - id: CHG-001
+    kind: test
+    artifact: tests/blender_bug_C7IK_library_panel.py
+    purpose: "backup do arquivo inválido e recusa no create"
+    diff: _reversa_bugs/library_panel/bugs/BUG-20261011-3UWR-no-nome-da-categoria-grava-o-modulo/fix/CHG-001.diff
+  - id: CHG-002
+    kind: test
+    artifact: tests/test_library_categories.py
+    purpose: "nome com caractere trocado e name null"
+    diff: _reversa_bugs/library_panel/bugs/BUG-20261011-3UWR-no-nome-da-categoria-grava-o-modulo/fix/CHG-002.diff
+  - id: CHG-003
+    kind: test
+    artifact: tests/test_library_models.py
+    purpose: "não numérico e null"
+    diff: _reversa_bugs/library_panel/bugs/BUG-20261011-3UWR-no-nome-da-categoria-grava-o-modulo/fix/CHG-003.diff
+  - id: CHG-004
+    kind: code
+    artifact: caffmob_draw/data/translations/library.json
+    purpose: "mensagens novas"
+    diff: _reversa_bugs/library_panel/bugs/BUG-20261011-3UWR-no-nome-da-categoria-grava-o-modulo/fix/CHG-004.diff
+  - id: CHG-005
+    kind: code
+    artifact: caffmob_draw/library_panel/categories.py
+    purpose: "categories.json.bak"
+    diff: _reversa_bugs/library_panel/bugs/BUG-20261011-3UWR-no-nome-da-categoria-grava-o-modulo/fix/CHG-005.diff
+  - id: CHG-006
+    kind: code
+    artifact: caffmob_draw/library_panel/categories_core.py
+    purpose: "nome igual ao file_stem e null"
+    diff: _reversa_bugs/library_panel/bugs/BUG-20261011-3UWR-no-nome-da-categoria-grava-o-modulo/fix/CHG-006.diff
+  - id: CHG-007
+    kind: code
+    artifact: caffmob_draw/library_panel/models_core.py
+    purpose: "_count e null"
+    diff: _reversa_bugs/library_panel/bugs/BUG-20261011-3UWR-no-nome-da-categoria-grava-o-modulo/fix/CHG-007.diff
 closure:
   policy: local-software
-  satisfied: false
-resolution_kind: null
+  satisfied: true
+resolution_kind: fixed
 ---
 
 # categories.json inválido é sobrescrito sem backup
@@ -92,7 +139,26 @@ Confirmado por leitura do código, sem reprodução executada. Montar o cenário
 
 ## Resolution
 
-_Pendente._
+- **Lote:** 27 (painel da biblioteca) (BUG-20261011-3UWR, BUG-20261011-C7IK, BUG-20261011-2HDG, BUG-20261011-NCPI); plano em `_reversa_bugs/library_panel/bugs/BUG-20261011-3UWR-no-nome-da-categoria-grava-o-modulo/fix/plan.html`, diffs no mesmo `fix/`.
+- **Causa raiz (confirmed):** load não regravava com aviso, mas create/set_line chamavam save, que sobrescrevia o arquivo inválido sem cópia.
+- **Veredito de spec (aprovado por Leonardo Lima em 2026-10-11):** `spec-correta`: questions.md pergunta 58 e library_panel DT-02.
+- **resolution_kind:** fixed
+
+| CHG | tipo | artefato | propósito | diff |
+|---|---|---|---|---|
+| CHG-001 | test | `tests/blender_bug_C7IK_library_panel.py` | backup do arquivo inválido e recusa no create | `CHG-001.diff` |
+| CHG-002 | test | `tests/test_library_categories.py` | nome com caractere trocado e name null | `CHG-002.diff` |
+| CHG-003 | test | `tests/test_library_models.py` | não numérico e null | `CHG-003.diff` |
+| CHG-004 | code | `caffmob_draw/data/translations/library.json` | mensagens novas | `CHG-004.diff` |
+| CHG-005 | code | `caffmob_draw/library_panel/categories.py` | categories.json.bak | `CHG-005.diff` |
+| CHG-006 | code | `caffmob_draw/library_panel/categories_core.py` | nome igual ao file_stem e null | `CHG-006.diff` |
+| CHG-007 | code | `caffmob_draw/library_panel/models_core.py` | _count e null | `CHG-007.diff` |
+
+**Vermelho (antes da correção):** 'Pia: Lavabo' aceita e pasta criada; arquivo inválido sobrescrito sem .bak; ValueError com 'abc'; label 'None' e door_swing null recusado; categoria 'None'.
+
+**Verde (depois):** `test_library_categories.py` OK, `test_library_models.py` OK, `blender_bug_C7IK_library_panel.py` OK; na cópia isolada também `blender_009_library_smoke`, `test_i18n_coverage` e `blender_bug_J2NY_library_io`; `ruff` limpo; `check_api.py` OK.
+
+- **Reprodução:** `tests/test_library_categories.py`, `tests/test_library_models.py`, `tests/blender_bug_C7IK_library_panel.py`. **Regressão:** `tests/test_library_categories.py`, `tests/test_library_models.py`, `tests/blender_bug_C7IK_library_panel.py`, `tests/blender_009_library_smoke.py`.
 
 ## Agent Notes
 

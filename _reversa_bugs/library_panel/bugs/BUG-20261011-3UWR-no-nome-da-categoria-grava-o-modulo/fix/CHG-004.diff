@@ -1,0 +1,31 @@
+--- /home/theleoinfo/www/BlenderToMob/caffmob_draw/data/translations/library.json	2026-10-11 23:36:43.090145753 -0300
++++ caffmob_draw/data/translations/library.json	2026-10-11 23:37:42.189467631 -0300
+@@ -171,10 +171,6 @@
+   "pt_BR": "Já existe uma categoria com esse nome",
+   "en_US": "A category with this name already exists"
+  },
+- "O nome não pode ter / nem \\": {
+-  "pt_BR": "O nome não pode ter / nem \\",
+-  "en_US": "The name cannot contain / or \\"
+- },
+  "Arquivo de categorias inválido; as categorias do usuário foram ignoradas": {
+   "pt_BR": "Arquivo de categorias inválido; as categorias do usuário foram ignoradas",
+   "en_US": "Invalid categories file; user categories were ignored"
+@@ -438,5 +434,17 @@
+  "Não foi possível converter {}: {}": {
+   "pt_BR": "Não foi possível converter {}: {}",
+   "en_US": "Could not convert {}: {}"
++ },
++ "O nome não pode ter < > : \" / \\ | ? * nem terminar em ponto": {
++  "pt_BR": "O nome não pode ter < > : \" / \\ | ? * nem terminar em ponto",
++  "en_US": "The name cannot contain < > : \" / \\ | ? * or end with a period"
++ },
++ "Arquivo de categorias inválido guardado como {}.bak": {
++  "pt_BR": "Arquivo de categorias inválido guardado como {}.bak",
++  "en_US": "Invalid categories file kept as {}.bak"
++ },
++ "Modelo {}: {} não numérico ignorado": {
++  "pt_BR": "Modelo {}: {} não numérico ignorado",
++  "en_US": "Model {}: non-numeric {} ignored"
+  }
+ }

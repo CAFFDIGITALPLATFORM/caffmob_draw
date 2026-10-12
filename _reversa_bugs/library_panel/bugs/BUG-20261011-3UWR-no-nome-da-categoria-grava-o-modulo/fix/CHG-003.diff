@@ -1,0 +1,26 @@
+--- /home/theleoinfo/www/BlenderToMob/tests/test_library_models.py	2026-10-09 17:45:33.367391760 -0300
++++ tests/test_library_models.py	2026-10-11 23:38:09.143610110 -0300
+@@ -27,6 +27,23 @@
+         self.assertEqual(len(warnings), 3)
+         self.assertEqual(mc.parse("nada")[0], [])
+ 
++    def test_valor_nao_numerico(self):
++        """BUG-20261011-2HDG: "abc" em width_mm ou shelves vale 0 com aviso; o catálogo continua (EC-07)."""
++        text = json.dumps({"models": [
++            {"id": "a", "label": "A", "cabinet_type": "BASE", "width_mm": "abc", "door_swing": "LEFT", "shelves": 1},
++            {"id": "b", "label": "B", "cabinet_type": "WALL", "width_mm": 600, "shelves": [2]},
++        ]})
++        models, warnings = mc.parse(text)
++        self.assertEqual([(m.id, m.width_mm, m.shelves) for m in models], [("a", 0, 1), ("b", 600, 0)])
++        self.assertEqual(len(warnings), 2)
++
++    def test_null_e_ausente(self):
++        """BUG-20261011-NCPI: label e door_swing null valem como ausentes (F-06)."""
++        text = json.dumps({"models": [{"id": "x", "label": None, "cabinet_type": "BASE", "door_swing": None}]})
++        models, warnings = mc.parse(text)
++        self.assertEqual(warnings, [])
++        self.assertEqual([(m.label, m.door_swing) for m in models], [("x", "NONE")])
++
+ 
+ if __name__ == "__main__":
+     unittest.main()
