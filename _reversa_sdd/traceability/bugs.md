@@ -1,4 +1,4 @@
-<!-- GENERATED, DO NOT EDIT: regenerado por /reversa-debugger-graph em 2026-10-12T03:56:34+00:00 a partir de 142 bugs -->
+<!-- GENERATED, DO NOT EDIT: regenerado por /reversa-debugger-graph em 2026-10-12T03:58:01+00:00 a partir de 142 bugs -->
 
 # Bugs que atingem as specs
 
@@ -299,7 +299,7 @@
 
 ## `_reversa_sdd/move_over/requirements.md`
 
-- BUG-20261012-DWPO (open, P2): Substituir conta peças vazias do módulo antigo e a caixa vai até a origem do mundo — `_reversa_bugs/move_over/bugs/BUG-20261012-DWPO-substituir-conta-pecas-vazias-do-modulo-antigo`
+- BUG-20261012-DWPO (resolved/fixed, P2): Substituir conta peças vazias do módulo antigo e a caixa vai até a origem do mundo — `_reversa_bugs/move_over/bugs/BUG-20261012-DWPO-substituir-conta-pecas-vazias-do-modulo-antigo`
 
 ## `_reversa_sdd/move_over/tasks.md`
 
@@ -308,7 +308,7 @@
 - BUG-20261011-JMDR (resolved/fixed, P2): O segundo Confirmar salva sem rever a sobreposição — `_reversa_bugs/move_over/bugs/BUG-20261011-JMDR-o-segundo-confirmar-salva-sem-rever-a`
 - BUG-20261011-LWF6 (resolved/fixed, P2): Alinhamento e sobreposição usam só a caixa da raiz — `_reversa_bugs/move_over/bugs/BUG-20261011-LWF6-alinhamento-e-sobreposicao-usam-so-a-caixa`
 - BUG-20261011-X5OS (resolved/fixed, P2): O Substituir herda a escala do módulo antigo — `_reversa_bugs/move_over/bugs/BUG-20261011-X5OS-o-substituir-herda-a-escala-do-modulo`
-- BUG-20261012-DWPO (open, P2): Substituir conta peças vazias do módulo antigo e a caixa vai até a origem do mundo — `_reversa_bugs/move_over/bugs/BUG-20261012-DWPO-substituir-conta-pecas-vazias-do-modulo-antigo`
+- BUG-20261012-DWPO (resolved/fixed, P2): Substituir conta peças vazias do módulo antigo e a caixa vai até a origem do mundo — `_reversa_bugs/move_over/bugs/BUG-20261012-DWPO-substituir-conta-pecas-vazias-do-modulo-antigo`
 
 ## `_reversa_sdd/object_library/design.md`
 
@@ -381,7 +381,7 @@
 - BUG-20261011-XMZM (resolved/fixed, P2): O segundo OK aplica sem rever os avisos depois de mudar o rascunho — `_reversa_bugs/walls2d/bugs/BUG-20261011-XMZM-o-segundo-ok-aplica-sem-rever-os`
 - BUG-20261011-XPD2 (resolved/fixed, P2): Vínculo de grudar órfão quando o pai é trocado à mão — `_reversa_bugs/stick/bugs/BUG-20261011-XPD2-vinculo-de-grudar-orfao-quando-o-pai`
 - BUG-20261011-ZKQ7 (resolved/fixed, P0): Checagem de descendência invertida em can_convert permite ciclo de parentesco — `_reversa_bugs/aggregates/bugs/BUG-20261011-ZKQ7-checagem-de-descendencia-invertida-em-can-convert`
-- BUG-20261012-DWPO (open, P2): Substituir conta peças vazias do módulo antigo e a caixa vai até a origem do mundo — `_reversa_bugs/move_over/bugs/BUG-20261012-DWPO-substituir-conta-pecas-vazias-do-modulo-antigo`
+- BUG-20261012-DWPO (resolved/fixed, P2): Substituir conta peças vazias do módulo antigo e a caixa vai até a origem do mundo — `_reversa_bugs/move_over/bugs/BUG-20261012-DWPO-substituir-conta-pecas-vazias-do-modulo-antigo`
 
 ## `_reversa_sdd/selection/edge-cases.md`
 

@@ -1,0 +1,32 @@
+--- /home/theleoinfo/www/BlenderToMob/caffmob_draw/move_over/ops_substitute.py	2026-10-12 00:00:49.310610227 -0300
++++ caffmob_draw/move_over/ops_substitute.py	2026-10-12 00:57:15.977174312 -0300
+@@ -11,7 +11,7 @@
+ from ..data.i18n import N_, tr
+ from ..customize import library_io
+ from . import reposition
+-from .scene import _frame, _local_box
++from .scene import _frame, _local_box, tree_corners
+ 
+ _ITEMS = []
+ 
+@@ -22,17 +22,10 @@
+     return _ITEMS or [("", N_("Nenhum módulo salvo"), "")]
+ 
+ 
+-def _box_in(frame_inv, obj):
+-    depsgraph = bpy.context.evaluated_depsgraph_get()
+-    corners = [frame_inv @ (obj.matrix_world @ Vector(c)) for c in obj.evaluated_get(depsgraph).bound_box]
+-    return (tuple(min(c[i] for c in corners) for i in range(3)), tuple(max(c[i] for c in corners) for i in range(3)))
+-
+-
+ def _tree_box(frame_inv, root):
+-    boxes = [_box_in(frame_inv, o) for o in [root] + list(root.children_recursive)
+-             if o.type == 'MESH' and not o.hide_get() and o.display_type not in {'WIRE', 'BOUNDS'}] \
+-        or [_box_in(frame_inv, root)]
+-    return (tuple(min(b[0][i] for b in boxes) for i in range(3)), tuple(max(b[1][i] for b in boxes) for i in range(3)))
++    """Caixa da árvore visível no referencial dado: a mesma do Mover Sobre, sem peças vazias (pergunta 16)."""
++    corners = [frame_inv @ c for c in tree_corners(root, bpy.context.evaluated_depsgraph_get())]
++    return (tuple(min(c[i] for c in corners) for i in range(3)), tuple(max(c[i] for c in corners) for i in range(3)))
+ 
+ 
+ def substitute(context, a, b, entry):
