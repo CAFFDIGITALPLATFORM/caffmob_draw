@@ -28,12 +28,24 @@ def invalidate():
 
 
 def group_items():
-    """[(nome, caminho)] dos grupos salvos nas bibliotecas herdadas."""
+    """[(nome, caminho)] dos grupos salvos nas bibliotecas herdadas, raiz e subpastas.
+
+    Todos os arquivos entram, também os homônimos de outra pasta: nenhum grupo some sem aviso; o nome do módulo
+    salvo já desempata com " (2)" (`groups_core.target_name`).
+    """
     from ..product_libraries.frameless.operators import ops_library
+    items = []
     try:
-        return [(item['name'], item['filepath']) for item in ops_library.get_user_library_items()]
+        for library_path in ops_library.get_all_cabinet_group_paths():
+            if not os.path.isdir(library_path):
+                continue
+            folders = [library_path] + [os.path.join(library_path, n) for n in sorted(os.listdir(library_path))
+                                        if os.path.isdir(os.path.join(library_path, n))]
+            for folder in folders:
+                items += [(n[:-6], os.path.join(folder, n)) for n in sorted(os.listdir(folder)) if n.endswith('.blend')]
     except OSError:
         return []
+    return items
 
 
 def _marker_path():

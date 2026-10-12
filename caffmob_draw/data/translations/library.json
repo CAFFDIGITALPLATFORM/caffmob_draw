@@ -430,5 +430,13 @@
  "Aéreo 2 portas": {
   "pt_BR": "Aéreo 2 portas",
   "en_US": "Wall 2 doors"
+ },
+ "Frentes não lidas": {
+  "pt_BR": "Frentes não lidas",
+  "en_US": "Fronts not read"
+ },
+ "Não foi possível converter {}: {}": {
+  "pt_BR": "Não foi possível converter {}: {}",
+  "en_US": "Could not convert {}: {}"
  }
 }

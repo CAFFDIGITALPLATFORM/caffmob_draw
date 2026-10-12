@@ -1,0 +1,33 @@
+--- /home/theleoinfo/www/BlenderToMob/caffmob_draw/legacy/convert_core.py	2026-10-09 17:47:30.697628039 -0300
++++ caffmob_draw/legacy/convert_core.py	2026-10-11 23:35:06.265586655 -0300
+@@ -28,18 +28,21 @@
+     openings: list = field(default_factory=list)
+     shelves: int = 0
+     other_fronts: list = field(default_factory=list)    # frentes sem equivalente lidas fora da especificação
++    unread: bool = False                                # o leitor da biblioteca falhou: frentes não lidas
+ 
+ 
+ LINES = ('COZ', 'DOR', 'BAN', 'SAL', 'ESC')
+ TALL_FROM = 1.2          # m: tipos sem equivalente viram torre a partir desta altura
+ 
+ TYPE_APPROX, DRAWERS, PANEL, SPECIAL_FRONT, EXTRA_DOORS = 'TYPE_APPROX', 'DRAWERS', 'PANEL', 'SPECIAL', 'EXTRA_DOORS'
++UNREAD = 'UNREAD'
+ LOSS_LABELS = {
+     TYPE_APPROX: N_("Tipo de armário aproximado"),
+     DRAWERS: N_("Gavetas"),
+     PANEL: N_("Painéis fixos"),
+     SPECIAL_FRONT: N_("Frentes especiais (basculante de puxar, painel embutido, eletrodoméstico)"),
+     EXTRA_DOORS: N_("Portas além de duas"),
++    UNREAD: N_("Frentes não lidas"),
+ }
+ _TYPES = {'BASE': 'BASE', 'UPPER': 'WALL', 'WALL': 'WALL', 'TALL': 'TALL'}
+ _DOORS = {'DOOR_LEFT': 1, 'DOOR_RIGHT': 1, 'DOUBLE_DOORS': 2}
+@@ -69,6 +72,8 @@
+     cabinet_type, approx = _type(cabinet)
+     if approx:
+         lose(TYPE_APPROX)
++    if cabinet.unread:
++        lose(UNREAD)
+     doors, sides, flip = 0, [], False
+     shelves = int(cabinet.shelves or 0)
+     for opening in cabinet.openings:

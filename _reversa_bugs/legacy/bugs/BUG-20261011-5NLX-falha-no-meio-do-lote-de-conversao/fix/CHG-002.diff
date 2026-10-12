@@ -1,0 +1,16 @@
+--- /home/theleoinfo/www/BlenderToMob/caffmob_draw/data/translations/library.json	2026-10-09 18:08:50.741970566 -0300
++++ caffmob_draw/data/translations/library.json	2026-10-11 23:35:06.270586685 -0300
+@@ -430,5 +430,13 @@
+  "Aéreo 2 portas": {
+   "pt_BR": "Aéreo 2 portas",
+   "en_US": "Wall 2 doors"
++ },
++ "Frentes não lidas": {
++  "pt_BR": "Frentes não lidas",
++  "en_US": "Fronts not read"
++ },
++ "Não foi possível converter {}: {}": {
++  "pt_BR": "Não foi possível converter {}: {}",
++  "en_US": "Could not convert {}: {}"
+  }
+ }

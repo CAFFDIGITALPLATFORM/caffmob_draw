@@ -1,4 +1,4 @@
-<!-- GENERATED, DO NOT EDIT: regenerado por /reversa-debugger-graph em 2026-10-12T02:32:31+00:00 a partir de 137 bugs -->
+<!-- GENERATED, DO NOT EDIT: regenerado por /reversa-debugger-graph em 2026-10-12T02:36:45+00:00 a partir de 137 bugs -->
 
 # Bugs que atingem as specs
 
@@ -239,13 +239,13 @@
 
 ## `_reversa_sdd/legacy/requirements.md`
 
-- BUG-20261011-ORRG (open, P2): Grupo homônimo em outra pasta descartado sem aviso — `_reversa_bugs/legacy/bugs/BUG-20261011-ORRG-grupo-homonimo-em-outra-pasta-descartado-sem`
+- BUG-20261011-ORRG (resolved/fixed, P2): Grupo homônimo em outra pasta descartado sem aviso — `_reversa_bugs/legacy/bugs/BUG-20261011-ORRG-grupo-homonimo-em-outra-pasta-descartado-sem`
 
 ## `_reversa_sdd/legacy/tasks.md`
 
-- BUG-20261011-5NLX (open, P2): Falha no meio do lote de conversão deixa lixo na cena — `_reversa_bugs/legacy/bugs/BUG-20261011-5NLX-falha-no-meio-do-lote-de-conversao`
-- BUG-20261011-HUWF (open, P2): Relatório diz 'sem perdas' quando as frentes não foram lidas — `_reversa_bugs/legacy/bugs/BUG-20261011-HUWF-relatorio-diz-sem-perdas-quando-as-frentes`
-- BUG-20261011-NTM3 (open, P2): Dupla contagem de frentes no face frame — `_reversa_bugs/legacy/bugs/BUG-20261011-NTM3-dupla-contagem-de-frentes-no-face-frame`
+- BUG-20261011-5NLX (resolved/fixed, P2): Falha no meio do lote de conversão deixa lixo na cena — `_reversa_bugs/legacy/bugs/BUG-20261011-5NLX-falha-no-meio-do-lote-de-conversao`
+- BUG-20261011-HUWF (resolved/fixed, P2): Relatório diz 'sem perdas' quando as frentes não foram lidas — `_reversa_bugs/legacy/bugs/BUG-20261011-HUWF-relatorio-diz-sem-perdas-quando-as-frentes`
+- BUG-20261011-NTM3 (resolved/fixed, P2): Dupla contagem de frentes no face frame — `_reversa_bugs/legacy/bugs/BUG-20261011-NTM3-dupla-contagem-de-frentes-no-face-frame`
 
 ## `_reversa_sdd/library_panel/design.md`
 

@@ -63,7 +63,11 @@ class BTM_OT_LegacyConvert(bpy.types.Operator):
                 self.report({'WARNING'}, tr("Selecione um armário de biblioteca antiga"))
                 return {'CANCELLED'}
             roots = [root]
-        results = convert.convert_scene(context, roots)
+        try:
+            results = convert.convert_scene(context, roots)
+        except convert.ConvertError as exc:
+            self.report({'ERROR'}, str(exc))
+            return {'CANCELLED'}
         lost = sum(1 for result in results if result.losses)
         self.report({'INFO'}, tr("{} armário(s) convertidos; {} com perdas").format(len(results), lost))
         _show_report(context, tr("Conversão para CAFFMob"), convert.report_lines(results))

@@ -1,0 +1,88 @@
+--- /home/theleoinfo/www/BlenderToMob/caffmob_draw/legacy/convert.py	2026-10-09 18:03:02.880203980 -0300
++++ caffmob_draw/legacy/convert.py	2026-10-11 23:35:06.259586619 -0300
+@@ -22,6 +22,10 @@
+ 
+ Result = namedtuple('Result', 'legacy_name library module_name losses')
+ 
++
++class ConvertError(RuntimeError):
++    """Falha num armário do lote: os módulos já criados saíram (pergunta 54)."""
++
+ LIBRARY_LABELS = {'FRAMELESS': N_("Frameless"), 'FACE_FRAME': N_("Face frame"), 'CLOSETS': N_("Closets")}
+ AGGREGATES = 'AGGREGATES'
+ convert_core.LOSS_LABELS.setdefault(AGGREGATES, N_("Agregados presos ao armário"))
+@@ -48,28 +52,33 @@
+ 
+ 
+ def _openings(root):
++    """(vãos lidos, leitura feita?); a falha do leitor vira a perda "frentes não lidas" (pergunta 56)."""
+     from ..customize import adapters
+     _root, adapter = adapters.for_object(root)
+     if adapter is None:
+-        return []
++        return [], True
+     try:
+         spec = adapter.read(root)
+     except Exception:         # leitor herdado com dado inesperado: converte sem frentes
+-        return []
++        return [], False
+     openings = []
+     for item in spec.openings:
+         shelves = item.interior.shelves if item.interior is not None else 0
+         openings.append(convert_core.LegacyOpening(item.front or 'OPEN', item.drawer_count or 0, shelves))
+-    return openings
++    return openings, True
+ 
+ 
+-def _other_fronts(root, library):
++def _other_fronts(root, library, read):
++    """Frentes especiais do face frame fora da especificação; as gaiolas folha lidas pelo adaptador já contaram."""
+     if library != 'FACE_FRAME':
+         return []
++    from ..customize.adapters import face_frame
++    leaves = {o.as_pointer() for _path, o in face_frame.openings(root)} if read else set()
+     found = []
+     for obj in root.children_recursive:
+         opening = getattr(obj, 'face_frame_opening', None)
+-        if obj.get('IS_FACE_FRAME_OPENING_CAGE') and opening is not None and opening.front_type in SPECIAL_FACE_FRAME:
++        if obj.get('IS_FACE_FRAME_OPENING_CAGE') and opening is not None and opening.front_type in SPECIAL_FACE_FRAME \
++                and obj.as_pointer() not in leaves:          # sem contar de novo (pergunta 55)
+             found.append(opening.front_type)
+     return found
+ 
+@@ -86,10 +95,11 @@
+         info = classify.classify(root)
+         width, height, depth = (editing.get_dimension(info, f) for f in ('width', 'height', 'depth'))
+         lo, hi = Vector((0.0, -depth, 0.0)), Vector((width, 0.0, height))
++    openings, read = _openings(root)
+     cabinet = convert_core.LegacyCabinet(
+         library=library, cabinet_type=_cabinet_type(root, library), width=width, height=height, depth=depth,
+-        line=str(root.get('btm_line', "")), openings=_openings(root),
+-        other_fronts=_other_fronts(root, library))
++        line=str(root.get('btm_line', "")), openings=openings,
++        other_fronts=_other_fronts(root, library, read), unread=not read)
+     return cabinet, (lo, hi)
+ 
+ 
+@@ -135,8 +145,19 @@
+     from ..aggregates.ops_aggregate import delete_components
+     roots = list(roots) if roots is not None else gate.legacy_roots(context.scene)
+     roots = [root for root in roots if root.name in bpy.data.objects and gate.is_legacy(root)]
+-    readings = [_read(context, root) for root in roots]
+-    built = [_build(context, reading) for reading in readings]
++    before = set(bpy.data.objects)
++    readings, built, current = [], [], ""
++    try:
++        for root in roots:
++            current = root.name
++            readings.append(_read(context, root))
++        for reading in readings:
++            current = reading.name
++            built.append(_build(context, reading))
++    except Exception as exc:             # nada pela metade na cena: sai tudo o que o lote criou (EC-05)
++        for obj in [o for o in bpy.data.objects if o not in before]:
++            bpy.data.objects.remove(obj, do_unlink=True)
++        raise ConvertError(tr("Não foi possível converter {}: {}").format(current, exc)) from exc
+     delete_components(roots, keep_aggregates=False)
+     results = []
+     for reading, (obj, losses) in zip(readings, built):
