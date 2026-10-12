@@ -1,4 +1,4 @@
-<!-- GENERATED, DO NOT EDIT: regenerado por /reversa-debugger-graph em 2026-10-12T03:55:35+00:00 a partir de 142 bugs -->
+<!-- GENERATED, DO NOT EDIT: regenerado por /reversa-debugger-graph em 2026-10-12T03:56:34+00:00 a partir de 142 bugs -->
 
 # Bugs que atingem as specs
 
@@ -137,7 +137,7 @@
 
 - BUG-20261011-SRPV (resolved/fixed, P2): Tolerância de 1,0 mm instável por arredondamento de float — `_reversa_bugs/collision/bugs/BUG-20261011-SRPV-tolerancia-de-1-0-mm-instavel-por`
 - BUG-20261011-ZEN6 (resolved/fixed, P3): Só o cabeçalho fica vermelho no painel de colisão — `_reversa_bugs/collision/bugs/BUG-20261011-ZEN6-so-o-cabecalho-fica-vermelho-no-painel`
-- BUG-20261012-PFY2 (open, P2): Malhas sobrepostas com faces coplanares não são confirmadas pela BVH da colisão — `_reversa_bugs/collision/bugs/BUG-20261012-PFY2-malhas-sobrepostas-com-faces-coplanares-nao-sao`
+- BUG-20261012-PFY2 (resolved/fixed, P2): Malhas sobrepostas com faces coplanares não são confirmadas pela BVH da colisão — `_reversa_bugs/collision/bugs/BUG-20261012-PFY2-malhas-sobrepostas-com-faces-coplanares-nao-sao`
 
 ## `_reversa_sdd/collision/tasks.md`
 

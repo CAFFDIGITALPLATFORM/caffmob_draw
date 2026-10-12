@@ -1,4 +1,4 @@
-<!-- GENERATED, DO NOT EDIT: regenerado por /reversa-debugger-graph em 2026-10-12T03:55:35+00:00 a partir de 10 bugs -->
+<!-- GENERATED, DO NOT EDIT: regenerado por /reversa-debugger-graph em 2026-10-12T03:56:34+00:00 a partir de 10 bugs -->
 
 # Bugs · collision
 
@@ -6,25 +6,22 @@
 
 | status | qtd |
 |---|---|
-| open | 1 |
-| resolved | 9 |
+| resolved | 10 |
 
 | phase | qtd |
 |---|---|
-| delivering | 9 |
-| triaging | 1 |
+| delivering | 10 |
 
 ## Abertos / ativos
 
 | # | ID | prioridade | severidade | area/module/feature | título | caminho | bloqueado |
 |---|---|---|---|---|---|---|---|
-| 140 | BUG-20261012-PFY2 | P2 | medium | modulos/collision/unclassified | Malhas sobrepostas com faces coplanares não são confirmadas pela BVH da colisão | `bugs/BUG-20261012-PFY2-malhas-sobrepostas-com-faces-coplanares-nao-sao` | não |
 
 ## Resolvidos
 
 | resolution_kind | qtd |
 |---|---|
-| fixed | 9 |
+| fixed | 10 |
 
 - #48 BUG-20261011-53DV (fixed) · travado: Colisão falsa entre folha e caixa da porta/janela ou parede (a confirmar)
 - #47 BUG-20261011-7GRY (fixed) · travado: check_moved deixa a lista desordenada e o erro antigo
@@ -35,3 +32,4 @@
 - #42 BUG-20261011-SRPV (fixed) · travado: Tolerância de 1,0 mm instável por arredondamento de float
 - #44 BUG-20261011-TIPN (fixed) · travado: Resultado da colisão não fica desatualizado com objeto novo, apagado ou renomeado
 - #50 BUG-20261011-ZEN6 (fixed) · travado: Só o cabeçalho fica vermelho no painel de colisão
+- #140 BUG-20261012-PFY2 (fixed) · travado: Malhas sobrepostas com faces coplanares não são confirmadas pela BVH da colisão

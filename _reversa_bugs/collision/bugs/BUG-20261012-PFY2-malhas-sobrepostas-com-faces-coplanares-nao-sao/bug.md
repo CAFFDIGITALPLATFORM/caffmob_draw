@@ -3,8 +3,8 @@ schema_version: 1
 id: BUG-20261012-PFY2
 display_number: 140
 title: "Malhas sobrepostas com faces coplanares não são confirmadas pela BVH da colisão"
-status: open
-phase: triaging
+status: resolved
+phase: delivering
 severity: medium
 priority: P2
 created: 2026-10-12
@@ -18,6 +18,10 @@ area: modulos
 module: collision
 feature: unclassified
 labels: ["achado-lateral-fix-2026-10", "reproduzido"]
+
+change_risk:
+  classification: baixa
+  reasons: ["mesma confirmação, com triângulos em vez de quads", "encostado continua sem colisão (coberto no teste)"]
 
 visibility: normal
 security_suspected: false
@@ -38,18 +42,37 @@ relationships:
 traceability:
   specs: ["_reversa_sdd/collision/requirements.md#RN-09"]
   affected_code: ["caffmob_draw/collision/scan.py"]
-  root_cause: null
-  reproduction_tests: []
-  regression_tests: []
+  root_cause:
+    state: confirmed
+    hypothesis: "_Meshes._build montava a BVH por BVHTree.FromPolygons com os quads da malha; com faces coplanares sobrepostas, overlap() não acha pares entre quads, embora ache entre os triângulos (BVHTree.FromObject triangula)."
+    causal_path:
+      - "collision/scan.py _Meshes._build"
+      - "collision/scan.py _confirm (ta.overlap(tb))"
+    evidence:
+      - ref: evidence/reproduction.md
+        observation: "teste vermelho no projeto e na cópia isolada (Blender 5.2)"
+    code_refs:
+      - {file: caffmob_draw/collision/scan.py, symbol: _Meshes._build, commit: cde31ac}
+  reproduction_tests: ["tests/blender_bug_PFY2_collision.py"]
+  regression_tests: ["tests/blender_bug_PFY2_collision.py", "tests/blender_004_collision_smoke.py", "tests/test_collision_rules.py"]
 
-spec_verdict: null
+spec_verdict: spec-correta
 
-change_set: []
-
+change_set:
+  - id: CHG-001
+    kind: test
+    artifact: tests/blender_bug_PFY2_collision.py
+    purpose: "reprodução e regressão"
+    diff: _reversa_bugs/collision/bugs/BUG-20261012-PFY2-malhas-sobrepostas-com-faces-coplanares-nao-sao/fix/CHG-001.diff
+  - id: CHG-002
+    kind: code
+    artifact: caffmob_draw/collision/scan.py
+    purpose: "BVH por triângulos"
+    diff: _reversa_bugs/collision/bugs/BUG-20261012-PFY2-malhas-sobrepostas-com-faces-coplanares-nao-sao/fix/CHG-002.diff
 closure:
   policy: local-software
-  satisfied: false
-resolution_kind: null
+  satisfied: true
+resolution_kind: fixed
 ---
 
 # Malhas sobrepostas com faces coplanares não são confirmadas pela BVH da colisão
@@ -96,7 +119,21 @@ Roteiro e saída em `evidence/sonda.md`; o `/reversa-debugger-fix` converte a so
 
 ## Resolution
 
-_Pendente._
+- **Lote:** 33 (colisão coplanar) (BUG-20261012-PFY2); plano em `_reversa_bugs/collision/bugs/BUG-20261012-PFY2-malhas-sobrepostas-com-faces-coplanares-nao-sao/fix/plan.html`, diffs no mesmo `fix/`.
+- **Causa raiz (confirmed):** _Meshes._build montava a BVH por BVHTree.FromPolygons com os quads da malha; com faces coplanares sobrepostas, overlap() não acha pares entre quads, embora ache entre os triângulos (BVHTree.FromObject triangula).
+- **Veredito de spec (aprovado por Leonardo Lima em 2026-10-12):** `spec-correta`: collision RN-09 (par fino que se sobrepõe vira ocorrência).
+- **resolution_kind:** fixed
+
+| CHG | tipo | artefato | propósito | diff |
+|---|---|---|---|---|
+| CHG-001 | test | `tests/blender_bug_PFY2_collision.py` | reprodução e regressão | `CHG-001.diff` |
+| CHG-002 | code | `caffmob_draw/collision/scan.py` | BVH por triângulos | `CHG-002.diff` |
+
+**Vermelho (antes da correção):** sobreposições de 0,20, 0,10 e 0,05 m entre cubos com faces coplanares não viraram colisão.
+
+**Verde (depois):** `blender_bug_PFY2_collision.py` OK; na cópia isolada também `blender_bug_KX3O_collision`, `test_collision_rules` e `blender_004_collision_smoke`; `ruff` limpo; `check_api.py` OK.
+
+- **Reprodução:** `tests/blender_bug_PFY2_collision.py`. **Regressão:** `tests/blender_bug_PFY2_collision.py`, `tests/blender_004_collision_smoke.py`, `tests/test_collision_rules.py`.
 
 ## Agent Notes
 

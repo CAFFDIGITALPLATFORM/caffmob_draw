@@ -1,0 +1,55 @@
+"""Reprodução e regressão de BUG-20261012-PFY2: malhas sobrepostas com faces coplanares são confirmadas pela BVH.
+
+Run: blender --background --factory-startup --python-exit-code 1 --python tests/blender_bug_PFY2_collision.py
+
+Dois cubos de 1 m soltos (confirmação pela malha real, collision RN-09), mesma altura e profundidade, sobrepostos em
+X por 0,5, 0,2, 0,1 e 0,05 m: todos viram colisão; encostados (sobreposição 0) e afastados, não.
+"""
+
+import sys
+import traceback
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import _blender_env as env  # noqa: E402
+import bpy  # noqa: E402
+from caffmob_draw.collision import scan  # noqa: E402
+
+ctx = bpy.context
+FAILURES = []
+
+
+def check(name, ok, detail=""):
+    print(("OK   " if ok else "FALHA ") + name, detail, flush=True)
+    if not ok:
+        FAILURES.append(name)
+
+
+def pair(dx):
+    env.clean_scene()
+    bpy.ops.mesh.primitive_cube_add(size=1.0, location=(0.0, 0.0, 0.5))
+    ctx.active_object.name = "A"
+    bpy.ops.mesh.primitive_cube_add(size=1.0, location=(dx, 0.0, 0.5))
+    ctx.active_object.name = "B"
+    env.settle()
+    found, _entries = scan.find(ctx)
+    return [(c.name_a, c.name_b) for c in found]
+
+
+def main():
+    for dx in (0.5, 0.8, 0.9, 0.95):
+        found = pair(dx)
+        check(f"PFY2: sobreposição de {1.0 - dx:.2f} m com faces coplanares é colisão", found == [("A", "B")],
+              str(found))
+    for dx in (1.0, 1.5):
+        found = pair(dx)
+        check(f"PFY2: a {dx - 1.0:.1f} m (encostado ou afastado) não é colisão", found == [], str(found))
+
+
+try:
+    main()
+except Exception:
+    traceback.print_exc()
+    FAILURES.append("exceção no roteiro")
+print(f"blender_bug_PFY2_collision: {'OK' if not FAILURES else 'FALHAS: ' + ', '.join(FAILURES)}")
+sys.exit(1 if FAILURES else 0)

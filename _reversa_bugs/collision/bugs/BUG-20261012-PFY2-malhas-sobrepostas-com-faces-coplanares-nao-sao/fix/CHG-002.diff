@@ -1,0 +1,20 @@
+--- /home/theleoinfo/www/BlenderToMob/caffmob_draw/collision/scan.py	2026-10-11 23:16:56.074187406 -0300
++++ caffmob_draw/collision/scan.py	2026-10-12 00:55:57.529370413 -0300
+@@ -161,13 +161,15 @@
+                 try:
+                     matrix = evaluated.matrix_world
+                     verts = [matrix @ v.co for v in mesh.vertices]
+-                    polys = [tuple(p.vertices) for p in mesh.polygons]
++                    mesh.calc_loop_triangles()     # triângulos: com quads, faces coplanares sobrepostas escapam
++                    polys = [tuple(t.vertices) for t in mesh.loop_triangles]
+                 finally:
+                     evaluated.to_mesh_clear()
+                 if verts and polys:
+                     return BVHTree.FromPolygons(verts, polys)
+         corners = [Vector(c) for c in entry.item.box.corners()]
+-        faces = ((0, 1, 3, 2), (4, 6, 7, 5), (0, 4, 5, 1), (2, 3, 7, 6), (0, 2, 6, 4), (1, 5, 7, 3))
++        quads = ((0, 1, 3, 2), (4, 6, 7, 5), (0, 4, 5, 1), (2, 3, 7, 6), (0, 2, 6, 4), (1, 5, 7, 3))
++        faces = [tri for a, b, c, d in quads for tri in ((a, b, c), (a, c, d))]
+         return BVHTree.FromPolygons(corners, faces)
+ 
+ 
