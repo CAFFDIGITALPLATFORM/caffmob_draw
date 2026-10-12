@@ -1,0 +1,10 @@
+--- /home/theleoinfo/www/BlenderToMob/caffmob_draw/stick/props.py	2026-10-07 19:23:14.342000722 -0300
++++ caffmob_draw/stick/props.py	2026-10-11 23:18:46.166682680 -0300
+@@ -53,6 +53,7 @@
+     applied_spin: bpy.props.FloatProperty(subtype='ANGLE')  # type: ignore
+     out_of_face: bpy.props.BoolProperty(name="Fora da face", default=False)  # type: ignore
+     orig_parent: bpy.props.PointerProperty(type=bpy.types.Object)  # type: ignore
++    opt_out: bpy.props.BoolProperty(default=False)  # type: ignore   # desgrudado da parede à mão: a carga não regruda
+     last_world: bpy.props.FloatVectorProperty(size=16, default=IDENTITY)  # type: ignore
+ 
+ 

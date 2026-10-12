@@ -1,0 +1,106 @@
+--- /home/theleoinfo/www/BlenderToMob/caffmob_draw/stick/apply.py	2026-10-07 19:43:39.595451820 -0300
++++ caffmob_draw/stick/apply.py	2026-10-11 23:20:19.328471139 -0300
+@@ -131,14 +131,30 @@
+         return False
+     st = item.btm_stick
+     depsgraph = depsgraph or _depsgraph()
+-    _flip_if_across(item, depsgraph)
++    flipped = _flip_if_across(item, depsgraph)
+     fr, _extent = face_of(item, depsgraph)
++    if not flipped:                       # trocar de lado (parede invertida) não é giro livre: a pose fica
++        _restore_orientation(item, fr)
+     u, v, _d = frame.params(fr, item_corners(item, st.host, depsgraph))
+     if abs(u - st.u) > 1e-9:
+         write(item, 'u', u)
+     if abs(v - st.v) > 1e-9:
+         write(item, 'v', v)
+-    return update_position(item, depsgraph)
++    moved = update_position(item, depsgraph)
++    if abs(st.spin - st.applied_spin) > 1e-9:
++        update_spin(item)
++    return moved
++
++
++def _restore_orientation(item, fr):
++    """Depois de um giro livre, o item volta a encostar na face; em face de pé o giro em torno da normal volta ao
++    `spin` gravado (questions.md, pergunta 82)."""
++    from .link import oriented_matrix
++    normal = (item.btm_stick.host.matrix_world.to_3x3() @ Vector(fr[3])).normalized()
++    target = oriented_matrix(item.matrix_world, normal)
++    if frame.contact_axis(tuple(normal)) == 'BACK':
++        write(item, 'applied_spin', 0.0)       # update_spin reaplica o spin a partir da pose sem giro
++    item.matrix_world = target
+ 
+ 
+ _OPPOSITE = {'POS_X': 'NEG_X', 'NEG_X': 'POS_X', 'POS_Y': 'NEG_Y', 'NEG_Y': 'POS_Y', 'POS_Z': 'NEG_Z', 'NEG_Z': 'POS_Z'}
+@@ -222,19 +238,36 @@
+     _index_ok[0] = False
+ 
+ 
++def _host_key(host):
++    return host.as_pointer() if host is not None else ''
++
++
+ def index():
++    """Hospedeiro (pelo ponteiro, que sobrevive a renomear) → nomes dos itens; refeito quando um item some, é
++    renomeado ou perde o hospedeiro (questions.md, pergunta 37)."""
++    if _index_ok[0] and not _index_valid():
++        _index_ok[0] = False
+     if not _index_ok[0]:
+         _index.clear()
+         for obj in bpy.data.objects:
+             st = getattr(obj, 'btm_stick', None)
+             if st is not None and st.is_stuck:
+-                _index.setdefault(st.host.name if st.host is not None else '', []).append(obj.name)
++                _index.setdefault(_host_key(st.host), []).append(obj.name)
+         _index_ok[0] = True
+     return _index
+ 
+ 
++def _index_valid():
++    for key, names in _index.items():
++        for name in names:
++            item = bpy.data.objects.get(name)
++            if item is None or not item.btm_stick.is_stuck or _host_key(item.btm_stick.host) != key:
++                return False
++    return True
++
++
+ def stuck_items(host):
+-    return [bpy.data.objects[n] for n in index().get(host.name, ()) if n in bpy.data.objects]
++    return [bpy.data.objects[n] for n in index().get(_host_key(host), ()) if n in bpy.data.objects]
+ 
+ 
+ # Handler e temporizador --------------------------------------------------------------------------------------
+@@ -256,7 +289,7 @@
+                 continue
+             obj = update.id.original
+             name = obj.name
+-            if update.is_updated_geometry and name in idx:
++            if update.is_updated_geometry and obj.as_pointer() in idx:
+                 box = host_box(obj, depsgraph)
+                 if _last_box.get(name) != box:
+                     _last_box[name] = box
+@@ -268,6 +301,11 @@
+             item = bpy.data.objects.get(name)
+             if item is not None:
+                 lose_link(item)
++        for key, names in list(idx.items()):     # pai trocado fora do plugin (Ctrl+P): vínculo perdido (pergunta 36)
++            for name in list(names):
++                item = bpy.data.objects.get(name)
++                if item is not None and key != '' and item.parent != item.btm_stick.host:
++                    lose_link(item)
+         if _pending and not bpy.app.timers.is_registered(_settle_timer):
+             bpy.app.timers.register(_settle_timer, first_interval=SETTLE_SECONDS)
+     except ReferenceError:
+@@ -301,6 +339,10 @@
+         settle.run(names)
+     except ReferenceError:
+         pass
++    except Exception:                     # erro inesperado vai para o log, com os itens do lote (EC-15)
++        import traceback
++        print(f"CAFFMob Draw: assentar dos itens grudados falhou para {sorted(names)}")
++        traceback.print_exc()
+     finally:
+         _busy[0] = False
+     return None

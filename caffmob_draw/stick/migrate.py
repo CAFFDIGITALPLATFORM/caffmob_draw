@@ -35,7 +35,7 @@ def run(scene):
     count = 0
     for obj in scene.objects:
         st = getattr(obj, 'btm_stick', None)
-        if st is None or st.is_stuck:
+        if st is None or st.is_stuck or st.opt_out:
             continue
         info = classify.classify(obj)
         if info is None or info.kind != classify.MODULE or info.root is not obj:

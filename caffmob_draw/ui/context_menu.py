@@ -10,16 +10,13 @@ import bpy  # type: ignore
 from ..selection import classify
 from .sidebar_vocab import draw_action
 
-_ITEM_KINDS = (classify.MODULE, classify.FRONT, classify.PART, classify.GEOMETRY, classify.OBSTACLE, classify.OTHER)
-
-
 def item_actions(context):
     """[(chave do vocabulário, argumentos)] das ações frequentes do objeto ativo, em ordem de uso."""
     obj = context.active_object
-    info = classify.classify(obj) if obj is not None else None
-    if info is None or info.kind not in _ITEM_KINDS or (info.kind == classify.OTHER and obj.type != 'MESH'):
+    from ..stick.ops_stick import item_of, stickable
+    if not stickable(obj):
         return []
-    from ..stick.ops_stick import item_of
+    info = classify.classify(obj)
     item = item_of(obj)
     stuck = item is not None and item.btm_stick.is_stuck
     actions = [('RELEASE', {}), ('STICK_MOVE', {})] if stuck else [('STICK', {})]

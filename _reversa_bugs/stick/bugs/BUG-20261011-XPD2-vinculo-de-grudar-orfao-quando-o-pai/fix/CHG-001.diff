@@ -1,0 +1,143 @@
+--- /dev/null	2026-10-09 20:39:19.815662691 -0300
++++ tests/blender_bug_XPD2_stick.py	2026-10-11 23:19:11.116188168 -0300
+@@ -0,0 +1,140 @@
++"""Reprodução e regressão do lote de grudar: BUG-20261011-XPD2, BUG-20261011-XF4S, BUG-20261011-73SM,
++BUG-20261011-EE4E, BUG-20261011-I3I3 e BUG-20261011-TNY3.
++
++Run: blender --background --factory-startup --python-exit-code 1 --python tests/blender_bug_XPD2_stick.py
++"""
++
++import math
++import sys
++import traceback
++from pathlib import Path
++
++import bpy
++from mathutils import Matrix, Vector
++
++sys.path.insert(0, str(Path(__file__).resolve().parent))
++import _blender_env as env  # noqa: E402
++from caffmob_draw import hb_utils  # noqa: E402
++from caffmob_draw.stick import apply, link, migrate, panels, settle  # noqa: E402
++from caffmob_draw.product_libraries.frameless import types_frameless as tf  # noqa: E402
++from caffmob_draw.walls2d import apply as wapply, model  # noqa: E402
++
++ctx = bpy.context
++FAILURES = []
++
++
++def check(name, ok, detail=""):
++    print(("OK   " if ok else "FALHA ") + name, detail, flush=True)
++    if not ok:
++        FAILURES.append(name)
++
++
++def cube(name, loc, size=1.0):
++    bpy.ops.mesh.primitive_cube_add(size=size, location=loc)
++    obj = ctx.object
++    obj.name = name
++    env.settle()
++    return obj
++
++
++def stuck_pair():
++    env.clean_scene()
++    host = cube("Hospedeiro", (0, 0, 0.5))
++    item = cube("Item", (2, 0, 0.5), size=0.2)
++    link.stick(item, host, (0.5, 0.0, 0.5), (1.0, 0.0, 0.0))
++    env.settle()
++    apply.invalidate()
++    return host, item
++
++
++def parent_changed():
++    _host, item = stuck_pair()
++    other = cube("Outro pai", (5, 0, 0))
++    world = item.matrix_world.copy()
++    item.parent = other
++    item.matrix_parent_inverse = other.matrix_world.inverted()
++    item.matrix_world = world
++    env.settle()
++    check("XPD2: trocar o pai à mão desfaz o vínculo", not item.btm_stick.is_stuck)
++
++
++def renamed_and_deleted_host():
++    host, item = stuck_pair()
++    apply.index()
++    host.name = "Hospedeiro renomeado"
++    env.settle()
++    check("XF4S: hospedeiro renomeado continua achando o item", item in apply.stuck_items(host),
++          str([o.name for o in apply.stuck_items(host)]))
++    bpy.data.objects.remove(host, do_unlink=True)
++    env.settle()
++    check("XF4S: apagar o hospedeiro desfaz o vínculo", not item.btm_stick.is_stuck)
++
++
++def released_from_wall():
++    env.clean_scene()
++    wapply.apply_plan(ctx, model.WallPlan([model.Chain([(0, 0), (4, 0)], [model.Segment()])]))
++    wall = next(o for o in ctx.scene.objects if o.get('IS_WALL_BP'))
++    base = tf.BaseCabinet()
++    base.create("Balcao")
++    hb_utils.run_calc_fix_until_stable(ctx, base.obj)
++    base.obj.parent = wall
++    base.obj.location = (1.0, 0.0, 0.0)
++    env.settle()
++    link.link_in_place(base.obj, wall, 'NEG_Y')
++    link.release(base.obj)
++    env.settle()
++    settle.run([base.obj.name])
++    migrate.run(ctx.scene)
++    check("73SM: desgrudado da parede não é regrudado na carga", not base.obj.btm_stick.is_stuck)
++
++
++def same_filter():
++    env.clean_scene()
++    wapply.apply_plan(ctx, model.WallPlan([model.Chain([(0, 0), (4, 0)], [model.Segment()])]))
++    wall = next(o for o in ctx.scene.objects if o.get('IS_WALL_BP'))
++    for obj in ctx.view_layer.objects:
++        obj.select_set(False)
++    wall.select_set(True)
++    ctx.view_layer.objects.active = wall
++    check("EE4E: o painel Grudar não aparece para parede", not panels.BTM_PT_Stick.poll(ctx))
++
++
++def free_rotation():
++    _host, item = stuck_pair()
++    item.matrix_world = item.matrix_world @ Matrix.Rotation(math.radians(30), 4, 'X')
++    env.settle()
++    apply.project(item)
++    env.settle()
++    back = -(item.matrix_world.to_3x3() @ Vector((0.0, 1.0, 0.0))).normalized()
++    check("I3I3: depois de giro livre o item volta a encostar na face", back.dot(Vector((1.0, 0.0, 0.0))) > 0.999,
++          f"{tuple(round(c, 3) for c in back)}")
++
++
++def settle_error_logged():
++    original = settle.run
++
++    def broken(names):
++        raise RuntimeError("falha simulada no assentar")
++
++    settle.run = broken
++    apply._pending.add("Item")
++    try:
++        try:
++            apply._settle_timer()
++            ok, detail = True, ""
++        except RuntimeError as exc:
++            ok, detail = False, repr(exc)
++    finally:
++        settle.run = original
++    check("TNY3: erro no assentar vai para o log, sem derrubar o temporizador", ok, detail)
++
++
++for step in (parent_changed, renamed_and_deleted_host, released_from_wall, same_filter, free_rotation,
++             settle_error_logged):
++    try:
++        step()
++    except Exception:
++        traceback.print_exc()
++        FAILURES.append(f"exceção em {step.__name__}")
++print(f"blender_bug_XPD2_stick: {'OK' if not FAILURES else 'FALHAS: ' + ', '.join(FAILURES)}")
++sys.exit(1 if FAILURES else 0)

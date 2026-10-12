@@ -1,4 +1,4 @@
-<!-- GENERATED, DO NOT EDIT: regenerado por /reversa-debugger-graph em 2026-10-12T02:16:58+00:00 a partir de 137 bugs -->
+<!-- GENERATED, DO NOT EDIT: regenerado por /reversa-debugger-graph em 2026-10-12T02:21:02+00:00 a partir de 137 bugs -->
 
 # Bugs que atingem as specs
 
@@ -366,7 +366,7 @@
 - BUG-20261011-UV6S (resolved/fixed, P2): Trocar porta simples para dupla não refaz a porta real — `_reversa_bugs/openings/bugs/BUG-20261011-UV6S-trocar-porta-simples-para-dupla-nao-refaz`
 - BUG-20261011-X5OS (open, P2): O Substituir herda a escala do módulo antigo — `_reversa_bugs/move_over/bugs/BUG-20261011-X5OS-o-substituir-herda-a-escala-do-modulo`
 - BUG-20261011-XMZM (resolved/fixed, P2): O segundo OK aplica sem rever os avisos depois de mudar o rascunho — `_reversa_bugs/walls2d/bugs/BUG-20261011-XMZM-o-segundo-ok-aplica-sem-rever-os`
-- BUG-20261011-XPD2 (open, P2): Vínculo de grudar órfão quando o pai é trocado à mão — `_reversa_bugs/stick/bugs/BUG-20261011-XPD2-vinculo-de-grudar-orfao-quando-o-pai`
+- BUG-20261011-XPD2 (resolved/fixed, P2): Vínculo de grudar órfão quando o pai é trocado à mão — `_reversa_bugs/stick/bugs/BUG-20261011-XPD2-vinculo-de-grudar-orfao-quando-o-pai`
 - BUG-20261011-ZKQ7 (resolved/fixed, P0): Checagem de descendência invertida em can_convert permite ciclo de parentesco — `_reversa_bugs/aggregates/bugs/BUG-20261011-ZKQ7-checagem-de-descendencia-invertida-em-can-convert`
 
 ## `_reversa_sdd/selection/edge-cases.md`
@@ -406,17 +406,17 @@
 
 ## `_reversa_sdd/stick/edge-cases.md`
 
-- BUG-20261011-TNY3 (open, P3): Erro silencioso em settle.run descarta o lote pendente — `_reversa_bugs/stick/bugs/BUG-20261011-TNY3-erro-silencioso-em-settle-run-descarta-o`
+- BUG-20261011-TNY3 (resolved/fixed, P3): Erro silencioso em settle.run descarta o lote pendente — `_reversa_bugs/stick/bugs/BUG-20261011-TNY3-erro-silencioso-em-settle-run-descarta-o`
 - BUG-20261011-VVEJ (resolved/fixed, P1): Checagem de descendente em link.release nunca barra nada — `_reversa_bugs/stick/bugs/BUG-20261011-VVEJ-checagem-de-descendente-em-link-release-nunca`
 
 ## `_reversa_sdd/stick/tasks.md`
 
-- BUG-20261011-73SM (open, P2): Item desgrudado de parede é regrudado na carga — `_reversa_bugs/stick/bugs/BUG-20261011-73SM-item-desgrudado-de-parede-e-regrudado-na`
-- BUG-20261011-EE4E (open, P2): Grudar disponível em tipos diferentes conforme o lugar — `_reversa_bugs/stick/bugs/BUG-20261011-EE4E-grudar-disponivel-em-tipos-diferentes-conforme-o`
-- BUG-20261011-I3I3 (open, P3): Orientação em relação à face perdida depois de giro livre — `_reversa_bugs/stick/bugs/BUG-20261011-I3I3-orientacao-em-relacao-a-face-perdida-depois`
+- BUG-20261011-73SM (resolved/fixed, P2): Item desgrudado de parede é regrudado na carga — `_reversa_bugs/stick/bugs/BUG-20261011-73SM-item-desgrudado-de-parede-e-regrudado-na`
+- BUG-20261011-EE4E (resolved/fixed, P2): Grudar disponível em tipos diferentes conforme o lugar — `_reversa_bugs/stick/bugs/BUG-20261011-EE4E-grudar-disponivel-em-tipos-diferentes-conforme-o`
+- BUG-20261011-I3I3 (resolved/fixed, P3): Orientação em relação à face perdida depois de giro livre — `_reversa_bugs/stick/bugs/BUG-20261011-I3I3-orientacao-em-relacao-a-face-perdida-depois`
 - BUG-20261011-JKLK (resolved/fixed, P3): FACE_LABELS sem tradução — `_reversa_bugs/stick/bugs/BUG-20261011-JKLK-face-labels-sem-traducao`
-- BUG-20261011-XF4S (open, P2): Índice de hospedeiros desatualizado ao apagar ou renomear — `_reversa_bugs/stick/bugs/BUG-20261011-XF4S-indice-de-hospedeiros-desatualizado-ao-apagar-ou`
-- BUG-20261011-XPD2 (open, P2): Vínculo de grudar órfão quando o pai é trocado à mão — `_reversa_bugs/stick/bugs/BUG-20261011-XPD2-vinculo-de-grudar-orfao-quando-o-pai`
+- BUG-20261011-XF4S (resolved/fixed, P2): Índice de hospedeiros desatualizado ao apagar ou renomear — `_reversa_bugs/stick/bugs/BUG-20261011-XF4S-indice-de-hospedeiros-desatualizado-ao-apagar-ou`
+- BUG-20261011-XPD2 (resolved/fixed, P2): Vínculo de grudar órfão quando o pai é trocado à mão — `_reversa_bugs/stick/bugs/BUG-20261011-XPD2-vinculo-de-grudar-orfao-quando-o-pai`
 
 ## `_reversa_sdd/ui/requirements.md`
 

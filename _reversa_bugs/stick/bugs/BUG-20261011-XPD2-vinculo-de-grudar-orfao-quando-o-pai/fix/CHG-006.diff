@@ -1,0 +1,20 @@
+--- /home/theleoinfo/www/BlenderToMob/caffmob_draw/stick/panels.py	2026-10-08 00:12:29.585479044 -0300
++++ caffmob_draw/stick/panels.py	2026-10-11 23:18:46.170682763 -0300
+@@ -9,7 +9,7 @@
+ 
+ from ..data.i18n import tr
+ from . import apply, link
+-from .ops_stick import item_of
++from .ops_stick import item_of, stickable
+ 
+ 
+ class BTM_PT_Stick(bpy.types.Panel):
+@@ -22,7 +22,7 @@
+ 
+     @classmethod
+     def poll(cls, context):
+-        return item_of(context.active_object) is not None
++        return stickable(context.active_object)
+ 
+     def draw(self, context):
+         layout = self.layout

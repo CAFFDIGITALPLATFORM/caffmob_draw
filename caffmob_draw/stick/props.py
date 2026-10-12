@@ -53,6 +53,7 @@ class BTM_PG_Stick(bpy.types.PropertyGroup):
     applied_spin: bpy.props.FloatProperty(subtype='ANGLE')  # type: ignore
     out_of_face: bpy.props.BoolProperty(name="Fora da face", default=False)  # type: ignore
     orig_parent: bpy.props.PointerProperty(type=bpy.types.Object)  # type: ignore
+    opt_out: bpy.props.BoolProperty(default=False)  # type: ignore   # desgrudado da parede à mão: a carga não regruda
     last_world: bpy.props.FloatVectorProperty(size=16, default=IDENTITY)  # type: ignore
 
 

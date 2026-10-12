@@ -18,6 +18,15 @@ _STICK_FIELDS = ('is_stuck', 'host', 'face_kind', 'face', 'plane', 'u', 'v', 'di
                  'out_of_face', 'orig_parent', 'last_world')
 
 
+ITEM_KINDS = (classify.MODULE, classify.FRONT, classify.PART, classify.GEOMETRY, classify.OBSTACLE, classify.OTHER)
+
+
+def stickable(obj):
+    """O que pode ser grudado: o mesmo filtro em todo lugar (menu, operador e painel; questions.md, pergunta 39)."""
+    info = classify.classify(obj) if obj is not None else None
+    return info is not None and info.kind in ITEM_KINDS and not (info.kind == classify.OTHER and obj.type != 'MESH')
+
+
 def item_of(obj):
     """O que se gruda: a raiz do módulo para peça ou frente; o próprio objeto nos demais casos."""
     if obj is None:
@@ -77,7 +86,7 @@ class BTM_OT_StickToFace(bpy.types.Operator):
     @classmethod
     def poll(cls, context):
         return (context.area is not None and context.area.type == 'VIEW_3D'
-                and item_of(context.active_object) is not None)
+                and stickable(context.active_object))
 
     def invoke(self, context, event):
         self.item = item_of(context.active_object)

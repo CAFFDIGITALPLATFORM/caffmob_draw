@@ -1,0 +1,11 @@
+--- /home/theleoinfo/www/BlenderToMob/caffmob_draw/stick/migrate.py	2026-10-07 19:37:43.159886983 -0300
++++ caffmob_draw/stick/migrate.py	2026-10-11 23:18:46.166682680 -0300
+@@ -35,7 +35,7 @@
+     count = 0
+     for obj in scene.objects:
+         st = getattr(obj, 'btm_stick', None)
+-        if st is None or st.is_stuck:
++        if st is None or st.is_stuck or st.opt_out:
+             continue
+         info = classify.classify(obj)
+         if info is None or info.kind != classify.MODULE or info.root is not obj:

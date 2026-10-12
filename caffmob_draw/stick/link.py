@@ -88,7 +88,7 @@ def _attach(item, host):
 def _record(item, host, kind, face, plane_values, u, v, distance):
     for name, value in (('host', host), ('face_kind', kind), ('face', face or 'NEG_Y'), ('plane', plane_values),
                         ('u', u), ('v', v), ('distance', distance), ('spin', 0.0), ('applied_spin', 0.0),
-                        ('out_of_face', False), ('is_stuck', True)):
+                        ('out_of_face', False), ('opt_out', False), ('is_stuck', True)):
         apply.write(item, name, value)
     apply.invalidate()
 
@@ -147,6 +147,8 @@ def release(item):
         return False
     world = item.matrix_world.copy()
     parent = st.orig_parent
+    if parent is not None and (parent.get('IS_WALL_BP') or classify.classify(parent).kind == classify.WALL):
+        apply.write(item, 'opt_out', True)        # desgrudar da parede é durável (questions.md, pergunta 38)
     if parent is not None and parent not in item.children_recursive and parent != item:
         item.parent = parent
         item.matrix_parent_inverse = Matrix.Identity(4)

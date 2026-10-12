@@ -9,7 +9,7 @@ import bpy  # type: ignore
 
 from ..data.i18n import tr
 from . import apply, link
-from .ops_stick import item_of
+from .ops_stick import item_of, stickable
 
 
 class BTM_PT_Stick(bpy.types.Panel):
@@ -22,7 +22,7 @@ class BTM_PT_Stick(bpy.types.Panel):
 
     @classmethod
     def poll(cls, context):
-        return item_of(context.active_object) is not None
+        return stickable(context.active_object)
 
     def draw(self, context):
         layout = self.layout

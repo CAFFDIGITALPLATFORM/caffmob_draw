@@ -71,8 +71,8 @@ def run(names):
             apply.project(obj)
             moved_roots.append(obj)
             continue
-        if obj.btm_stick.is_stuck:
-            continue                         # vínculo quebrado: o handler já trata
+        if obj.btm_stick.is_stuck or obj.btm_stick.opt_out:
+            continue                         # vínculo quebrado (o handler trata) ou desgrudado à mão da parede
         info = classify.classify(obj)
         if info is None or info.root is not obj or info.kind not in _MAGNET_KINDS:
             continue
