@@ -52,7 +52,8 @@ class CatalogTest(unittest.TestCase):
     def test_cabe(self):
         oven = cat.get('PANEL_OVEN_EXT')
         self.assertIsNone(oven.too_small((700.0, 700.0, 560.0)))
-        self.assertEqual(oven.too_small((700.0, 340.0, 560.0)), (615.0, 615.0, 0.0))
+        self.assertEqual(oven.too_small((700.0, 340.0, 560.0)), (615.0, 615.0, 560.0))
+        self.assertEqual(oven.too_small((700.0, 700.0, 350.0)), (615.0, 615.0, 560.0))   # profundidade (EC-15)
 
 
 if __name__ == '__main__':

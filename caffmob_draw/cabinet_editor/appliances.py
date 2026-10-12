@@ -54,7 +54,7 @@ def layout(space, item_id, thickness):
             h = sum(catalog.APPLIANCE_SIZE_MM[c][1] for c in codes) * MM
         cutout = ((cx - w / 2.0, py0, cz - h / 2.0), (cx + w / 2.0, py1, cz + h / 2.0))
         bottom = cz - h / 2.0
-        for code in reversed(codes):                     # de baixo para cima: forno embaixo, micro em cima
+        for code in codes:                               # de baixo para cima na ordem da tupla: forno embaixo (F-12)
             aw, ah, ad = (v * MM for v in catalog.APPLIANCE_SIZE_MM[code])
             appliances.append((code, ((cx - aw / 2.0, py1, bottom), (cx + aw / 2.0, py1 + ad, bottom + ah))))
             bottom += ah

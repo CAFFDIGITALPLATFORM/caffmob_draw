@@ -28,11 +28,18 @@ class AppliancesTest(unittest.TestCase):
         lay = ap.layout(SPACE.__class__((0.015, 0.0, 0.5), (0.785, 0.535, 1.6)), 'PANEL_OVEN_MICRO_EXT', T)
         self.assertEqual(len(lay.appliances), 2)
         self.assertAlmostEqual(lay.cutout[1][2] - lay.cutout[0][2], 0.985)
+        # BUG-20261011-HVYM (F-12): forno embaixo, micro em cima.
+        (low, low_box), (high, high_box) = lay.appliances
+        self.assertEqual((low, high), ('OVEN', 'MICRO'))
+        self.assertLess(low_box[0][2], high_box[0][2])
 
     def test_nao_cabe(self):
         small = dv.Box((0.0, 0.0, 0.0), (0.77, 0.535, 0.34))
-        self.assertEqual(ap.missing(small, 'PANEL_OVEN_EXT'), (615.0, 615.0, 0.0))
-        self.assertIsNone(ap.missing(SPACE, 'PANEL_OVEN_EXT'))
+        self.assertEqual(ap.missing(small, 'PANEL_OVEN_EXT'), (615.0, 615.0, 560.0))
+        deep = dv.Box((0.015, 0.0, 1.0), (0.785, 0.58, 1.8))
+        self.assertIsNone(ap.missing(deep, 'PANEL_OVEN_EXT'))
+        # BUG-20261011-TFC7 (EC-15): forno de 560 mm num vão de 535 mm de profundidade não cabe.
+        self.assertEqual(ap.missing(SPACE, 'PANEL_OVEN_EXT')[2], 560.0)
 
     def test_apoio_abaixo_do_eletro(self):
         lay = ap.layout(SPACE, 'PANEL_OVEN_EXT', T)

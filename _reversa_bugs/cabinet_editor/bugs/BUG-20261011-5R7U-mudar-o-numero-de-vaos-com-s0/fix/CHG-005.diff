@@ -1,0 +1,61 @@
+--- /home/theleoinfo/www/BlenderToMob/caffmob_draw/cabinet_editor/bridge.py	2026-10-11 22:24:28.759549514 -0300
++++ caffmob_draw/cabinet_editor/bridge.py	2026-10-11 23:22:58.008977846 -0300
+@@ -144,11 +144,16 @@
+         scene_divisions.apply(context, root, target.divisions)
+     else:
+         scene_divisions.reflow(context, root, force=True)
++    # Internos, extras e deslizantes só são refeitos quando a parte deles ou a geometria mudou (DT-09).
++    geometry = (target.dimensions != current.dimensions or target.structure != current.structure
++                or target.divisions != current.divisions or target.backs != current.backs)
+     if target.extras != current.extras:
+         root.btm_structure.extras_from_dict(target.extras)
+-    scene_extras.sync(context, root)
+-    scene_interiors.apply(context, root, target.interiors)
+-    if _slides_key(target.slides) != _slides_key(current.slides) or target.slides:
++    if geometry or target.extras != current.extras:
++        scene_extras.sync(context, root)
++    if geometry or target.interiors != current.interiors:
++        scene_interiors.apply(context, root, target.interiors)
++    if _slides_key(target.slides) != _slides_key(current.slides) or (geometry and target.slides):
+         scene_slides.apply(context, root, target.slides)
+     return messages
+ 
+@@ -506,6 +511,9 @@
+ 
+ def set_bays(context, root, data):
+     roots, core, raw, _names = division_context(context, root)
++    if int(data['count']) != _bays.count(core) and any(d.space == _bays.ROOT and not d.bay for d in core):
++        # s0 já cortado por divisória comum: recusa em vez de quebrar o layout (questions.md, pergunta 44)
++        raise ValueError(common.tr("Tire a divisória que corta o vão inteiro antes de mudar o Número de vãos"))
+     _material, thickness = scene_divisions.configured(context.scene, root)
+     new = _bays.apply(roots, core, int(data['count']), thickness)
+     by_uid = {d['uid']: d for d in raw}
+@@ -557,6 +565,8 @@
+     _rest, removed = dv.remove_in_space(core, data['space'])
+     if not removed:
+         return [common.tr("Este vão não tem divisória para remover")]
++    if any(d.bay for d in core if d.uid in removed):      # divisória de vão: só pelo Número de vãos (EC-20)
++        return [common.tr("Esta divisória separa os vãos do armário: mude o Número de vãos")]
+     scene_divisions.apply(context, root, [d for d in raw if d['uid'] not in removed])
+     reflow_all(context, root)
+     return []
+@@ -635,6 +645,9 @@
+         return [common.tr("Escolha um vão livre")]
+     from . import appliances
+     need = appliances.missing(box, item.id)
++    if need is not None and need[2] > 0:
++        return [common.tr("{} precisa de um vão de {:.0f} × {:.0f} mm e {:.0f} mm de profundidade").format(
++            item.label, need[0], need[1], need[2])]
+     if need is not None:
+         return [common.tr("{} precisa de um vão de {:.0f} × {:.0f} mm").format(item.label, need[0], need[1])]
+     current = scene_interiors.entries(root)
+@@ -650,6 +663,9 @@
+ 
+ 
+ def insert_slides(context, root, data):
++    _roots, core, _raw, _names = division_context(context, root)
++    if _bays.count(core) > 1:                      # ocupariam o 1º vão-raiz inteiro (questions.md, pergunta 45)
++        return [common.tr("Deslizantes não vão em armário com mais de um vão: deixe o Número de vãos em 1")]
+     warnings = scene_slides.apply(context, root, {"item": data['item'], "leaves": int(data.get('leaves', 2)),
+                                                   "invert": bool(data.get('invert'))})
+     out = []

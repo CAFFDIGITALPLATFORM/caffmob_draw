@@ -413,7 +413,8 @@ def insert_reason(context, tab):
     if tab in ('DRAWERS', 'DOORS') and not s.library_path:
         return tr(NO_LIBRARY)
     ui = context.window_manager.btm_cabinet_editor
-    if tab in ('INTERIOR', 'SLIDING') and not catalog.get(ui.catalog_item):
+    item = catalog.get(ui.catalog_item)
+    if tab in ('INTERIOR', 'SLIDING') and (item is None or item.tab != tab):     # item de outra aba (EC-05)
         return tr("Escolha um item do catálogo")
     return None
 
@@ -432,6 +433,8 @@ def _division_payload(ui, s):
                                 'thickness': item.param('thickness') / 1000.0, 'follow': bool(item.param('follow'))}
     if item is not None and item.group == 'RECESS':
         base.update(use_front=item.param('front') > 0, front=item.param('front') / 1000.0 or ui.new_front)
+        if item.param('back'):                     # "Tras 15mm" (questions.md, pergunta 46)
+            base.update(use_back=True, back=item.param('back') / 1000.0)
     kind = dv.MOVABLE if ui.div_kind == 'MOVABLE' else dv.FIXED
     if ui.div_mode == 'MULTIPLE':
         return 'ADD_MANY', dict(base, orientation=ui.new_orientation, count=ui.div_count, kind=kind)

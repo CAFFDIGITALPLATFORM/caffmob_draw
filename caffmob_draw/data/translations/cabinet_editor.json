@@ -227,6 +227,10 @@
   "en_US": "Sliding",
   "pt_BR": "Deslizantes"
  },
+ "Deslizantes não vão em armário com mais de um vão: deixe o Número de vãos em 1": {
+  "pt_BR": "Deslizantes não vão em armário com mais de um vão: deixe o Número de vãos em 1",
+  "en_US": "Sliding doors do not fit a cabinet with more than one bay: set the Number of bays to 1"
+ },
  "Devolve o componente removido (e desfaz o ajuste de medidas do modo usado)": {
   "en_US": "Brings the removed part back (and undoes the size change of the mode used)",
   "pt_BR": "Devolve o componente removido (e desfaz o ajuste de medidas do modo usado)"
@@ -354,6 +358,10 @@
  "Esta biblioteca não tem gavetas": {
   "en_US": "This library has no drawers",
   "pt_BR": "Esta biblioteca não tem gavetas"
+ },
+ "Esta divisória separa os vãos do armário: mude o Número de vãos": {
+  "pt_BR": "Esta divisória separa os vãos do armário: mude o Número de vãos",
+  "en_US": "This division separates the cabinet bays: change the Number of bays"
  },
  "Este armário não tem fundo": {
   "en_US": "This cabinet has no back",
@@ -1043,6 +1051,10 @@
   "en_US": "Type: {}",
   "pt_BR": "Tipo: {}"
  },
+ "Tire a divisória que corta o vão inteiro antes de mudar o Número de vãos": {
+  "pt_BR": "Tire a divisória que corta o vão inteiro antes de mudar o Número de vãos",
+  "en_US": "Remove the division that cuts the whole space before changing the Number of bays"
+ },
  "Torralba — Pux Integrados": {
   "en_US": "Torralba — Integrated pulls",
   "pt_BR": "Torralba — Pux Integrados"
@@ -1158,5 +1170,9 @@
  "{} precisa de um vão de {:.0f} × {:.0f} mm": {
   "en_US": "{} needs an opening of {:.0f} × {:.0f} mm",
   "pt_BR": "{} precisa de um vão de {:.0f} × {:.0f} mm"
+ },
+ "{} precisa de um vão de {:.0f} × {:.0f} mm e {:.0f} mm de profundidade": {
+  "pt_BR": "{} precisa de um vão de {:.0f} × {:.0f} mm e {:.0f} mm de profundidade",
+  "en_US": "{} needs a {:.0f} × {:.0f} mm space and {:.0f} mm of depth"
  }
 }

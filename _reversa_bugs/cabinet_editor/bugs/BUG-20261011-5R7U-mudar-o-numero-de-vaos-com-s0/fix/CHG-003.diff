@@ -1,0 +1,12 @@
+--- /home/theleoinfo/www/BlenderToMob/tests/test_cabinet_catalog.py	2026-10-08 19:40:03.874079679 -0300
++++ tests/test_cabinet_catalog.py	2026-10-11 23:23:33.885466592 -0300
+@@ -52,7 +52,8 @@
+     def test_cabe(self):
+         oven = cat.get('PANEL_OVEN_EXT')
+         self.assertIsNone(oven.too_small((700.0, 700.0, 560.0)))
+-        self.assertEqual(oven.too_small((700.0, 340.0, 560.0)), (615.0, 615.0, 0.0))
++        self.assertEqual(oven.too_small((700.0, 340.0, 560.0)), (615.0, 615.0, 560.0))
++        self.assertEqual(oven.too_small((700.0, 700.0, 350.0)), (615.0, 615.0, 560.0))   # profundidade (EC-15)
+ 
+ 
+ if __name__ == '__main__':

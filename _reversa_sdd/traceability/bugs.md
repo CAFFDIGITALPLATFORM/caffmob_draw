@@ -1,4 +1,4 @@
-<!-- GENERATED, DO NOT EDIT: regenerado por /reversa-debugger-graph em 2026-10-12T02:21:02+00:00 a partir de 137 bugs -->
+<!-- GENERATED, DO NOT EDIT: regenerado por /reversa-debugger-graph em 2026-10-12T02:27:42+00:00 a partir de 137 bugs -->
 
 # Bugs que atingem as specs
 
@@ -88,14 +88,14 @@
 
 ## `_reversa_sdd/cabinet_editor/design.md`
 
-- BUG-20261011-HVYM (open, P2): Forno e micro empilhados na ordem errada — `_reversa_bugs/cabinet_editor/bugs/BUG-20261011-HVYM-forno-e-micro-empilhados-na-ordem-errada`
+- BUG-20261011-HVYM (resolved/fixed, P2): Forno e micro empilhados na ordem errada — `_reversa_bugs/cabinet_editor/bugs/BUG-20261011-HVYM-forno-e-micro-empilhados-na-ordem-errada`
 
 ## `_reversa_sdd/cabinet_editor/edge-cases.md`
 
 - BUG-20261011-FGTR (resolved/fixed, P3): Mensagem enganosa de trilhos quando não há vão interno — `_reversa_bugs/cabinet_editor/bugs/BUG-20261011-FGTR-mensagem-enganosa-de-trilhos-quando-nao-ha`
-- BUG-20261011-FYXD (open, P3): 'Sem Divisória' num subvão de bay remove a bay sem aviso — `_reversa_bugs/cabinet_editor/bugs/BUG-20261011-FYXD-sem-divisoria-num-subvao-de-bay-remove`
-- BUG-20261011-HR3U (open, P2): Item de catálogo aceito em qualquer aba do editor de armário — `_reversa_bugs/cabinet_editor/bugs/BUG-20261011-HR3U-item-de-catalogo-aceito-em-qualquer-aba`
-- BUG-20261011-TFC7 (open, P2): Eletro mais profundo que o vão não gera aviso — `_reversa_bugs/cabinet_editor/bugs/BUG-20261011-TFC7-eletro-mais-profundo-que-o-vao-nao`
+- BUG-20261011-FYXD (resolved/fixed, P3): 'Sem Divisória' num subvão de bay remove a bay sem aviso — `_reversa_bugs/cabinet_editor/bugs/BUG-20261011-FYXD-sem-divisoria-num-subvao-de-bay-remove`
+- BUG-20261011-HR3U (resolved/fixed, P2): Item de catálogo aceito em qualquer aba do editor de armário — `_reversa_bugs/cabinet_editor/bugs/BUG-20261011-HR3U-item-de-catalogo-aceito-em-qualquer-aba`
+- BUG-20261011-TFC7 (resolved/fixed, P2): Eletro mais profundo que o vão não gera aviso — `_reversa_bugs/cabinet_editor/bugs/BUG-20261011-TFC7-eletro-mais-profundo-que-o-vao-nao`
 
 ## `_reversa_sdd/cabinet_editor/requirements.md`
 
@@ -103,13 +103,13 @@
 
 ## `_reversa_sdd/cabinet_editor/tasks.md`
 
-- BUG-20261011-5R7U (open, P2): Mudar o Número de vãos com s0 cortado por divisória comum quebra o layout — `_reversa_bugs/cabinet_editor/bugs/BUG-20261011-5R7U-mudar-o-numero-de-vaos-com-s0`
+- BUG-20261011-5R7U (resolved/fixed, P2): Mudar o Número de vãos com s0 cortado por divisória comum quebra o layout — `_reversa_bugs/cabinet_editor/bugs/BUG-20261011-5R7U-mudar-o-numero-de-vaos-com-s0`
 - BUG-20261011-6JIM (resolved/fixed, P2): Cancelar não desfaz a Montagem — `_reversa_bugs/cabinet_editor/bugs/BUG-20261011-6JIM-cancelar-nao-desfaz-a-montagem`
 - BUG-20261011-E33D (resolved/fixed, P3): Erro da ação do editor de armário apagado por process — `_reversa_bugs/cabinet_editor/bugs/BUG-20261011-E33D-erro-da-acao-do-editor-de-armario`
-- BUG-20261011-FHQN (open, P2): Deslizantes usam o vão errado num armário com bays — `_reversa_bugs/cabinet_editor/bugs/BUG-20261011-FHQN-deslizantes-usam-o-vao-errado-num-armario`
-- BUG-20261011-HF2J (open, P2): Recuo traseiro de 15 mm ignorado nas divisórias com recuo — `_reversa_bugs/cabinet_editor/bugs/BUG-20261011-HF2J-recuo-traseiro-de-15-mm-ignorado-nas`
-- BUG-20261011-HLV6 (open, P3): apply_state recria internos, extras e deslizantes sem mudança — `_reversa_bugs/cabinet_editor/bugs/BUG-20261011-HLV6-apply-state-recria-internos-extras-e-deslizantes`
-- BUG-20261011-HVYM (open, P2): Forno e micro empilhados na ordem errada — `_reversa_bugs/cabinet_editor/bugs/BUG-20261011-HVYM-forno-e-micro-empilhados-na-ordem-errada`
+- BUG-20261011-FHQN (resolved/fixed, P2): Deslizantes usam o vão errado num armário com bays — `_reversa_bugs/cabinet_editor/bugs/BUG-20261011-FHQN-deslizantes-usam-o-vao-errado-num-armario`
+- BUG-20261011-HF2J (resolved/fixed, P2): Recuo traseiro de 15 mm ignorado nas divisórias com recuo — `_reversa_bugs/cabinet_editor/bugs/BUG-20261011-HF2J-recuo-traseiro-de-15-mm-ignorado-nas`
+- BUG-20261011-HLV6 (resolved/fixed, P3): apply_state recria internos, extras e deslizantes sem mudança — `_reversa_bugs/cabinet_editor/bugs/BUG-20261011-HLV6-apply-state-recria-internos-extras-e-deslizantes`
+- BUG-20261011-HVYM (resolved/fixed, P2): Forno e micro empilhados na ordem errada — `_reversa_bugs/cabinet_editor/bugs/BUG-20261011-HVYM-forno-e-micro-empilhados-na-ordem-errada`
 - BUG-20261011-N2D4 (resolved/fixed, P2): OK e Cancelar ignoram a fila pendente do editor de armário — `_reversa_bugs/cabinet_editor/bugs/BUG-20261011-N2D4-ok-e-cancelar-ignoram-a-fila-pendente`
 
 ## `_reversa_sdd/canvas2d/edge-cases.md`

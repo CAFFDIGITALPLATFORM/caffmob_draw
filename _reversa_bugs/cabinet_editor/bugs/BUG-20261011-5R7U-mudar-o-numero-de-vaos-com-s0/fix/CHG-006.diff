@@ -1,0 +1,16 @@
+--- /home/theleoinfo/www/BlenderToMob/caffmob_draw/cabinet_editor/catalog.py	2026-10-08 19:49:30.983041122 -0300
++++ caffmob_draw/cabinet_editor/catalog.py	2026-10-11 23:22:58.004977790 -0300
+@@ -38,8 +38,11 @@
+         """None se cabe no vão (largura, altura, profundidade em mm); senão a medida mínima (0 = sem exigência)."""
+         if not self.size_mm:
+             return None
+-        need = (self.size_mm[0] + 2 * self.margin_mm, self.size_mm[1] + 2 * self.margin_mm, 0.0)
+-        if space_mm[0] + 1e-6 >= need[0] and space_mm[1] + 1e-6 >= need[1]:
++        depth = max([self.size_mm[2]] + [APPLIANCE_SIZE_MM[c][2] for c in (self.param('appliances') or ())
++                                         if c in APPLIANCE_SIZE_MM])      # o eletro atrás do painel também (EC-15)
++        need = (self.size_mm[0] + 2 * self.margin_mm, self.size_mm[1] + 2 * self.margin_mm, depth)
++        if (space_mm[0] + 1e-6 >= need[0] and space_mm[1] + 1e-6 >= need[1]
++                and (depth <= 0.0 or space_mm[2] + 1e-6 >= depth)):
+             return None
+         return need
+ 
