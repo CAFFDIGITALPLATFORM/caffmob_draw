@@ -3,8 +3,8 @@ schema_version: 1
 id: BUG-20261011-WOPM
 display_number: 34
 title: "Renomear agregado com furo real deixa furo fantasma na usinagem"
-status: open
-phase: triaging
+status: resolved
+phase: delivering
 severity: high
 priority: P1
 created: 2026-10-11
@@ -19,12 +19,16 @@ module: aggregates
 feature: unclassified
 labels: ["revisao-specs-2026-10"]
 
+change_risk:
+  classification: baixa
+  reasons: ["só renomeia modificadores existentes", "arquivo antigo coberto pelo fallback"]
+
 visibility: normal
 security_suspected: false
 
 reproduction:
-  classification: unknown
-  rate: "não executado (confirmado por leitura do código)"
+  classification: deterministic
+  rate: "1/1"
   suspected_triggers: []
 
 blocking: []
@@ -34,18 +38,37 @@ relationships: []
 traceability:
   specs: ["_reversa_sdd/aggregates/edge-cases.md#EC-09"]
   affected_code: ["caffmob_draw/aggregates/perforate.py"]
-  root_cause: null
-  reproduction_tests: []
-  regression_tests: []
+  root_cause:
+    state: confirmed
+    hypothesis: "BOOLEAN e CPM_CUTOUT eram achados pelo nome atual do agregado: depois de renomear, sync criava outros e os antigos ficavam no pai e na usinagem."
+    causal_path:
+      - "aggregates/perforate.py _sync_boolean/_sync_cutout: parent.modifiers.get(PREFIX + obj.name)"
+      - "cutting/machining: exporta todo CPM_CUTOUT 'Agregado: …'"
+    evidence:
+      - ref: evidence/reproduction.md
+        observation: "teste vermelho no projeto e na cópia isolada (Blender 5.2)"
+    code_refs:
+      - {file: caffmob_draw/aggregates/perforate.py, symbol: sync, commit: a67387a}
+  reproduction_tests: ["tests/blender_bug_WOPM_perforate_rename.py"]
+  regression_tests: ["tests/blender_bug_WOPM_perforate_rename.py", "tests/blender_003_aggregates_smoke.py", "tests/blender_012_apply_smoke.py", "tests/test_cut_plan_machining.py"]
 
-spec_verdict: null
+spec_verdict: spec-correta
 
-change_set: []
-
+change_set:
+  - id: CHG-001
+    kind: test
+    artifact: tests/blender_bug_WOPM_perforate_rename.py
+    purpose: "reprodução e regressão"
+    diff: _reversa_bugs/aggregates/bugs/BUG-20261011-WOPM-renomear-agregado-com-furo-real-deixa-furo/fix/CHG-001.diff
+  - id: CHG-002
+    kind: code
+    artifact: caffmob_draw/aggregates/perforate.py
+    purpose: "modificadores do furo seguem o nome do agregado"
+    diff: _reversa_bugs/aggregates/bugs/BUG-20261011-WOPM-renomear-agregado-com-furo-real-deixa-furo/fix/CHG-002.diff
 closure:
   policy: local-software
-  satisfied: false
-resolution_kind: null
+  satisfied: true
+resolution_kind: fixed
 ---
 
 # Renomear agregado com furo real deixa furo fantasma na usinagem
@@ -92,7 +115,21 @@ Confirmado por leitura do código, sem reprodução executada. Montar o cenário
 
 ## Resolution
 
-_Pendente._
+- **Lote:** 19 (furo fantasma ao renomear agregado) (BUG-20261011-WOPM); plano em `_reversa_bugs/aggregates/bugs/BUG-20261011-WOPM-renomear-agregado-com-furo-real-deixa-furo/fix/plan.html`, diffs no mesmo `fix/`.
+- **Causa raiz (confirmed):** BOOLEAN e CPM_CUTOUT eram achados pelo nome atual do agregado: depois de renomear, sync criava outros e os antigos ficavam no pai e na usinagem.
+- **Veredito de spec (aprovado por Leonardo Lima em 2026-10-11):** `spec-correta`: aggregates EC-09 descreve o furo fantasma como defeito.
+- **resolution_kind:** fixed
+
+| CHG | tipo | artefato | propósito | diff |
+|---|---|---|---|---|
+| CHG-001 | test | `tests/blender_bug_WOPM_perforate_rename.py` | reprodução e regressão | `CHG-001.diff` |
+| CHG-002 | code | `caffmob_draw/aggregates/perforate.py` | modificadores do furo seguem o nome do agregado | `CHG-002.diff` |
+
+**Vermelho (antes da correção):** dois BOOLEAN e dois CPM_CUTOUT depois de renomear; a usinagem exporta 2 furos; desligar Perfurar deixa os antigos (arquivo novo e antigo).
+
+**Verde (depois):** `blender_bug_WOPM_perforate_rename.py` OK; na cópia isolada também `blender_003_aggregates_smoke`, `blender_012_apply_smoke` e `test_cut_plan_machining`; `ruff` limpo; `check_api.py` OK.
+
+- **Reprodução:** `tests/blender_bug_WOPM_perforate_rename.py`. **Regressão:** `tests/blender_bug_WOPM_perforate_rename.py`, `tests/blender_003_aggregates_smoke.py`, `tests/blender_012_apply_smoke.py`, `tests/test_cut_plan_machining.py`.
 
 ## Agent Notes
 

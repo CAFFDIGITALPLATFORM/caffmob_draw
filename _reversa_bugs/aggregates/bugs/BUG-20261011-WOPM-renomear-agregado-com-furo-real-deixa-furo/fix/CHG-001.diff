@@ -1,0 +1,101 @@
+--- /dev/null	2026-10-09 20:39:19.815662691 -0300
++++ tests/blender_bug_WOPM_perforate_rename.py	2026-10-11 23:00:45.748824681 -0300
+@@ -0,0 +1,98 @@
++"""Reprodução e regressão do BUG-20261011-WOPM: renomear agregado com furo real deixava furo fantasma.
++
++Run: blender --background --factory-startup --python-exit-code 1 --python tests/blender_bug_WOPM_perforate_rename.py
++
++Renomear um agregado perfurado e com furo real mantém um só BOOLEAN e um só CPM_CUTOUT no pai, com o nome novo, e a
++usinagem exporta um furo só (aggregates EC-09). Vale também para arquivo antigo, sem o nome gravado no agregado.
++"""
++
++import sys
++import traceback
++from pathlib import Path
++
++import bpy
++from mathutils import Matrix, Vector
++
++sys.path.insert(0, str(Path(__file__).resolve().parent))
++import _blender_env as env  # noqa: E402
++from caffmob_draw import hb_utils  # noqa: E402
++from caffmob_draw.aggregates import apply, convert, perforate  # noqa: E402
++from caffmob_draw.cutting import json_exporter, machining, part_extractor  # noqa: E402
++from caffmob_draw.product_libraries.frameless import types_frameless as tf  # noqa: E402
++
++ctx = bpy.context
++FAILURES = []
++
++
++def check(name, ok, detail=""):
++    print(("OK   " if ok else "FALHA ") + name, detail, flush=True)
++    if not ok:
++        FAILURES.append(name)
++
++
++def holed_aggregate():
++    env.clean_scene()
++    base = tf.BaseCabinet()
++    base.create("Balcao")
++    hb_utils.run_calc_fix_until_stable(ctx, base.obj)
++    side = next(o for o in base.obj.children_recursive if o.name.startswith("Left Side"))
++    bpy.ops.mesh.primitive_cube_add(size=1.0)
++    nicho = ctx.object
++    nicho.name = "Nicho"
++    nicho.scale = (0.2, 0.1, 0.05)
++    bpy.ops.object.transform_apply(location=False, rotation=False, scale=True)
++    lo, hi = apply.local_box(side)
++    center = Vector(((lo[0] + hi[0]) / 2, (lo[1] + hi[1]) / 2, hi[2] + 0.03))
++    nicho.matrix_world = side.matrix_world.normalized() @ Matrix.Translation(center)
++    env.settle()
++    convert.convert(nicho, side, 'POS_Z')
++    agg = nicho.btm_aggregate
++    agg.offset = -0.010
++    agg.perforate = True
++    agg.real_hole = True
++    env.settle()
++    return side, nicho
++
++
++def holes(side):
++    bools = [m.name for m in side.modifiers if m.type == 'BOOLEAN' and m.name.startswith(perforate.BOOL_PREFIX)]
++    cuts = [m.name for m in side.modifiers if m.name.startswith(machining.AGGREGATE_PREFIX)]
++    return bools, cuts
++
++
++def exported_cuts():
++    parts, _bad = part_extractor.extract_production_parts(ctx)
++    payload = json_exporter.build_global_payload(project={"name": "WOPM", "uid": "P", "rooms": []}, standard={},
++                                                 parts=parts, modules=part_extractor.module_entries(ctx.scene))
++    return [c for p in payload["parts"] for c in p["machining"]]
++
++
++def rename(legacy):
++    side, nicho = holed_aggregate()
++    if legacy:                                   # arquivo de antes da correção: sem o nome gravado
++        for key in ('btm_perforate_bool', 'btm_perforate_cutout'):
++            if key in nicho:
++                del nicho[key]
++    nicho.name = "Nicho renomeado"
++    nicho.btm_aggregate.offset = -0.012          # qualquer edição refaz o furo
++    env.settle()
++    bools, cuts = holes(side)
++    tag = "arquivo antigo" if legacy else "arquivo novo"
++    check(f"WOPM ({tag}): um BOOLEAN e um CPM_CUTOUT, com o nome novo",
++          bools == [perforate.BOOL_PREFIX + nicho.name] and cuts == [machining.AGGREGATE_PREFIX + nicho.name],
++          f"{bools} {cuts}")
++    check(f"WOPM ({tag}): a usinagem exporta um furo só", len(exported_cuts()) == 1, str(len(exported_cuts())))
++    nicho.btm_aggregate.perforate = False
++    env.settle()
++    bools, cuts = holes(side)
++    check(f"WOPM ({tag}): desligar Perfurar remove tudo", not bools and not cuts, f"{bools} {cuts}")
++
++
++for legacy in (False, True):
++    try:
++        rename(legacy)
++    except Exception:
++        traceback.print_exc()
++        FAILURES.append(f"exceção (legacy={legacy})")
++print(f"blender_bug_WOPM_perforate_rename: {'OK' if not FAILURES else 'FALHAS: ' + ', '.join(FAILURES)}")
++sys.exit(1 if FAILURES else 0)

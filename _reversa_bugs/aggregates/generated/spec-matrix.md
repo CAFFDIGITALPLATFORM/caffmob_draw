@@ -1,11 +1,11 @@
-<!-- GENERATED, DO NOT EDIT: regenerado por /reversa-debugger-graph em 2026-10-12T01:54:02+00:00 a partir de 11 bugs -->
+<!-- GENERATED, DO NOT EDIT: regenerado por /reversa-debugger-graph em 2026-10-12T02:01:54+00:00 a partir de 11 bugs -->
 
 # Bugs × specs · aggregates
 
 | spec | open | active | resolved |
 |---|---|---|---|
 | `_reversa_sdd/aggregates/edge-cases.md#EC-02` | BUG-20261011-NQ2L | — | — |
-| `_reversa_sdd/aggregates/edge-cases.md#EC-09` | BUG-20261011-WOPM | — | — |
+| `_reversa_sdd/aggregates/edge-cases.md#EC-09` | — | — | BUG-20261011-WOPM |
 | `_reversa_sdd/aggregates/edge-cases.md#EC-10` | BUG-20261011-4OV4 | — | — |
 | `_reversa_sdd/aggregates/edge-cases.md#EC-16` | — | — | BUG-20261011-DXOV |
 | `_reversa_sdd/aggregates/edge-cases.md#EC-23` | — | — | BUG-20261011-3VD7 |

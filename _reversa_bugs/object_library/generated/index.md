@@ -1,4 +1,4 @@
-<!-- GENERATED, DO NOT EDIT: regenerado por /reversa-debugger-graph em 2026-10-12T01:54:02+00:00 a partir de 8 bugs -->
+<!-- GENERATED, DO NOT EDIT: regenerado por /reversa-debugger-graph em 2026-10-12T02:01:54+00:00 a partir de 8 bugs -->
 
 # Bugs · object_library
 

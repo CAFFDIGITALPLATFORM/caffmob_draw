@@ -1,0 +1,57 @@
+--- /home/theleoinfo/www/BlenderToMob/caffmob_draw/aggregates/perforate.py	2026-10-07 15:05:53.603652122 -0300
++++ caffmob_draw/aggregates/perforate.py	2026-10-11 23:00:45.744824723 -0300
+@@ -17,6 +17,7 @@
+ 
+ BOOL_PREFIX = "Agregado (furo): "
+ CUTTER_SUFFIX = " - Recorte"
++BOOL_KEY, CUTOUT_KEY = 'btm_perforate_bool', 'btm_perforate_cutout'    # nome com que cada modificador foi criado
+ EPSILON = 0.001       # o cortador passa 1 mm além da face, para não ficar coplanar
+ 
+ 
+@@ -142,12 +143,46 @@
+         mod.show_viewport = mod.show_render = True
+ 
+ 
++def _old_boolean(obj, parent):
++    old = parent.modifiers.get(obj.get(BOOL_KEY, ""))
++    if old is None and obj.btm_aggregate.cutter is not None:      # arquivo antigo: o modificador do mesmo cortador
++        old = next((m for m in parent.modifiers if m.type == 'BOOLEAN' and m.name.startswith(BOOL_PREFIX)
++                    and m.object == obj.btm_aggregate.cutter), None)
++    return old
++
++
++def _old_cutout(obj, parent):
++    old = parent.modifiers.get(obj.get(CUTOUT_KEY, ""))
++    if old is None:                       # arquivo antigo: o único recorte de agregado cujo nome não é de objeto algum
++        orphans = [m for m in parent.modifiers if m.name.startswith(machining.AGGREGATE_PREFIX)
++                   and m.name[len(machining.AGGREGATE_PREFIX):] not in bpy.data.objects]
++        old = orphans[0] if len(orphans) == 1 else None
++    return old
++
++
++def _follow_rename(obj, parent):
++    """Agregado renomeado: os modificadores do furo passam a ter o nome novo, em vez de nascer outros e o antigo
++    continuar no pai e na usinagem (EC-09)."""
++    for find, prefix, key in ((_old_boolean, BOOL_PREFIX, BOOL_KEY), (_old_cutout, machining.AGGREGATE_PREFIX,
++                                                                      CUTOUT_KEY)):
++        new = prefix + obj.name
++        old = find(obj, parent)
++        if old is not None and old.name != new and parent.modifiers.get(new) is None:
++            old.name = new
++        if parent.modifiers.get(new) is not None:
++            obj[key] = new
++    cutter = obj.btm_aggregate.cutter
++    if cutter is not None and cutter.name != obj.name + CUTTER_SUFFIX:
++        cutter.name = obj.name + CUTTER_SUFFIX
++
++
+ def sync(obj):
+     """Deixa recorte 3D e furo real de acordo com `perforate`/`real_hole` e a posição atual."""
+     agg = obj.btm_aggregate
+     parent = agg.parent_ref
+     if parent is None:
+         return
++    _follow_rename(obj, parent)
+     parent_box = apply.local_box(parent)
+     sunk = limits.sunk_box(parent_box, apply.current_box(obj), agg.face) if agg.perforate else None
+     if sunk is None:

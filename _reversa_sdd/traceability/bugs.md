@@ -1,4 +1,4 @@
-<!-- GENERATED, DO NOT EDIT: regenerado por /reversa-debugger-graph em 2026-10-12T01:54:02+00:00 a partir de 137 bugs -->
+<!-- GENERATED, DO NOT EDIT: regenerado por /reversa-debugger-graph em 2026-10-12T02:01:54+00:00 a partir de 137 bugs -->
 
 # Bugs que atingem as specs
 
@@ -64,7 +64,7 @@
 - BUG-20261011-DXOV (resolved/fixed, P0): Apagar parede com 'Apagar também os agregados' ligado não apaga os agregados dos módulos — `_reversa_bugs/aggregates/bugs/BUG-20261011-DXOV-apagar-parede-com-apagar-tambem-os-agregados`
 - BUG-20261011-NQ2L (open, P2): Desconverter depois de mover o pai deixa o objeto na posição errada — `_reversa_bugs/aggregates/bugs/BUG-20261011-NQ2L-desconverter-depois-de-mover-o-pai-deixa`
 - BUG-20261011-TUWO (resolved/fixed, P0): Apagar parede sem 'Apagar também os agregados' solta os agregados dos módulos que ficam — `_reversa_bugs/selection/bugs/BUG-20261011-TUWO-apagar-parede-sem-apagar-tambem-os-agregados`
-- BUG-20261011-WOPM (open, P1): Renomear agregado com furo real deixa furo fantasma na usinagem — `_reversa_bugs/aggregates/bugs/BUG-20261011-WOPM-renomear-agregado-com-furo-real-deixa-furo`
+- BUG-20261011-WOPM (resolved/fixed, P1): Renomear agregado com furo real deixa furo fantasma na usinagem — `_reversa_bugs/aggregates/bugs/BUG-20261011-WOPM-renomear-agregado-com-furo-real-deixa-furo`
 
 ## `_reversa_sdd/aggregates/requirements.md`
 

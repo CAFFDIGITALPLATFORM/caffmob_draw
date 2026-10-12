@@ -1,4 +1,4 @@
-<!-- GENERATED, DO NOT EDIT: regenerado por /reversa-debugger-graph em 2026-10-12T01:54:02+00:00 a partir de 11 bugs -->
+<!-- GENERATED, DO NOT EDIT: regenerado por /reversa-debugger-graph em 2026-10-12T02:01:54+00:00 a partir de 11 bugs -->
 
 # Bugs · aggregates
 
@@ -6,19 +6,18 @@
 
 | status | qtd |
 |---|---|
-| open | 8 |
-| resolved | 3 |
+| open | 7 |
+| resolved | 4 |
 
 | phase | qtd |
 |---|---|
-| delivering | 3 |
-| triaging | 8 |
+| delivering | 4 |
+| triaging | 7 |
 
 ## Abertos / ativos
 
 | # | ID | prioridade | severidade | area/module/feature | título | caminho | bloqueado |
 |---|---|---|---|---|---|---|---|
-| 34 | BUG-20261011-WOPM | P1 | high | producao/aggregates/unclassified | Renomear agregado com furo real deixa furo fantasma na usinagem | `bugs/BUG-20261011-WOPM-renomear-agregado-com-furo-real-deixa-furo` | não |
 | 35 | BUG-20261011-NQ2L | P2 | medium | modulos/aggregates/unclassified | Desconverter depois de mover o pai deixa o objeto na posição errada | `bugs/BUG-20261011-NQ2L-desconverter-depois-de-mover-o-pai-deixa` | não |
 | 36 | BUG-20261011-VPY5 | P2 | medium | modulos/aggregates/unclassified | Exclusão de colisão larga demais em folha sem módulo | `bugs/BUG-20261011-VPY5-exclusao-de-colisao-larga-demais-em-folha` | não |
 | 37 | BUG-20261011-I7QE | P2 | medium | modulos/aggregates/unclassified | Folha aberta fica fora do lugar depois de mudar parâmetros | `bugs/BUG-20261011-I7QE-folha-aberta-fica-fora-do-lugar-depois` | não |
@@ -31,8 +30,9 @@
 
 | resolution_kind | qtd |
 |---|---|
-| fixed | 3 |
+| fixed | 4 |
 
 - #33 BUG-20261011-3VD7 (fixed) · travado: Geometria livre convertida em agregado sai duplicada na produção com o mesmo uid
 - #14 BUG-20261011-DXOV (fixed) · travado: Apagar parede com 'Apagar também os agregados' ligado não apaga os agregados dos módulos
+- #34 BUG-20261011-WOPM (fixed) · travado: Renomear agregado com furo real deixa furo fantasma na usinagem
 - #32 BUG-20261011-ZKQ7 (fixed) · travado: Checagem de descendência invertida em can_convert permite ciclo de parentesco
