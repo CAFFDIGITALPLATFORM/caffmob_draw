@@ -701,6 +701,28 @@ def click_hits_widget(context, area, region_x, region_y):
     return False
 
 
+def occupied_rects(context, area):
+    """Retângulos de tela ocupados pelo plugin na região WINDOW da área, em pixels da região: os botões do HUD, o
+    navegador de cenas fixado e o aviso de medidas. A BIBLIOTECA CAFFMOB se posiciona fora deles (feature 014, T029).
+    As cotas de seleção acompanham os objetos na vista e ficam de fora: o retângulo se moveria a cada giro."""
+    from ..overlays import element_toast
+    rects = []
+    region = next((r for r in area.regions if r.type == 'WINDOW'), None) if area else None
+    if region is None:
+        return rects
+    if _hud_enabled():
+        rects += [tuple(rect) for _widget, rect in compute_layout(context, area)]
+        if scene_navigator.is_pinned():
+            ax, atop = _nav_anchor(context, area)
+            layout = scene_navigator.build_pinned_layout(context, area, region, ax, atop)
+            if layout:
+                rects.append(tuple(layout[0]))
+    toast = element_toast.rect(context, region)
+    if toast:
+        rects.append(tuple(toast))
+    return rects
+
+
 # ---- Draw handler -----------------------------------------------------------
 
 def _nav_anchor(context, area):

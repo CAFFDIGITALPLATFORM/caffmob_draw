@@ -446,5 +446,345 @@
  "Modelo {}: {} não numérico ignorado": {
   "pt_BR": "Modelo {}: {} não numérico ignorado",
   "en_US": "Model {}: non-numeric {} ignored"
+ },
+ "Blocos": {
+  "pt_BR": "Blocos",
+  "en_US": "Blocks"
+ },
+ "Texturas": {
+  "pt_BR": "Texturas",
+  "en_US": "Textures"
+ },
+ "Entrar com a conta CAFF Mob": {
+  "pt_BR": "Entrar com a conta CAFF Mob",
+  "en_US": "Sign in with your CAFF Mob account"
+ },
+ "Buscar acabamento…": {
+  "pt_BR": "Buscar acabamento…",
+  "en_US": "Search finish…"
+ },
+ "Fabricantes": {
+  "pt_BR": "Fabricantes",
+  "en_US": "Manufacturers"
+ },
+ "Baixada": {
+  "pt_BR": "Baixada",
+  "en_US": "Downloaded"
+ },
+ "Não baixada": {
+  "pt_BR": "Não baixada",
+  "en_US": "Not downloaded"
+ },
+ "Arraste para aplicar": {
+  "pt_BR": "Arraste para aplicar",
+  "en_US": "Drag to apply"
+ },
+ "Baixando {}%": {
+  "pt_BR": "Baixando {}%",
+  "en_US": "Downloading {}%"
+ },
+ "Falhou · tentar de novo": {
+  "pt_BR": "Falhou · tentar de novo",
+  "en_US": "Failed · try again"
+ },
+ "Nenhum resultado para “{}”": {
+  "pt_BR": "Nenhum resultado para “{}”",
+  "en_US": "No results for “{}”"
+ },
+ "Confira a escrita ou busque em todos os fabricantes.": {
+  "pt_BR": "Confira a escrita ou busque em todos os fabricantes.",
+  "en_US": "Check the spelling or search all manufacturers."
+ },
+ "Os blocos da categoria aparecem aqui.": {
+  "pt_BR": "Os blocos da categoria aparecem aqui.",
+  "en_US": "The category's blocks appear here."
+ },
+ "Baixando {} de {} · {} de {} MB": {
+  "pt_BR": "Baixando {} de {} · {} de {} MB",
+  "en_US": "Downloading {} of {} · {} of {} MB"
+ },
+ "Texturas não instaladas": {
+  "pt_BR": "Texturas não instaladas",
+  "en_US": "Textures not installed"
+ },
+ "Catálogo de texturas inválido": {
+  "pt_BR": "Catálogo de texturas inválido",
+  "en_US": "Invalid texture catalog"
+ },
+ "Imagem ilegível ignorada: {}": {
+  "pt_BR": "Imagem ilegível ignorada: {}",
+  "en_US": "Unreadable image skipped: {}"
+ },
+ "Textura com o mesmo nome na coleção, renomeada: {}": {
+  "pt_BR": "Textura com o mesmo nome na coleção, renomeada: {}",
+  "en_US": "Texture with the same name in the collection, renamed: {}"
+ },
+ "Minimizado": {
+  "pt_BR": "Minimizado",
+  "en_US": "Minimized"
+ },
+ "Só o rótulo BIBLIOTECA CAFFMOB": {
+  "pt_BR": "Só o rótulo BIBLIOTECA CAFFMOB",
+  "en_US": "Only the BIBLIOTECA CAFFMOB label"
+ },
+ "Aberto": {
+  "pt_BR": "Aberto",
+  "en_US": "Open"
+ },
+ "Coluna de categorias": {
+  "pt_BR": "Coluna de categorias",
+  "en_US": "Category column"
+ },
+ "Maximizado": {
+  "pt_BR": "Maximizado",
+  "en_US": "Maximized"
+ },
+ "Retângulo com a grade": {
+  "pt_BR": "Retângulo com a grade",
+  "en_US": "Rectangle with the grid"
+ },
+ "Solte a textura sobre uma peça, frente, módulo ou objeto": {
+  "pt_BR": "Solte a textura sobre uma peça, frente, módulo ou objeto",
+  "en_US": "Drop the texture on a part, front, module or object"
+ },
+ "Textura fora do catálogo": {
+  "pt_BR": "Textura fora do catálogo",
+  "en_US": "Texture not in the catalog"
+ },
+ "Textura {} aplicada em {} peça(s)": {
+  "pt_BR": "Textura {} aplicada em {} peça(s)",
+  "en_US": "Texture {} applied to {} part(s)"
+ },
+ "Textura {} não aplicada: {}": {
+  "pt_BR": "Textura {} não aplicada: {}",
+  "en_US": "Texture {} not applied: {}"
+ },
+ "Baixando {}… a textura entra quando o download terminar": {
+  "pt_BR": "Baixando {}… a textura entra quando o download terminar",
+  "en_US": "Downloading {}… the texture is applied when the download finishes"
+ },
+ "Aplicar textura": {
+  "pt_BR": "Aplicar textura",
+  "en_US": "Apply texture"
+ },
+ "O acesso foi recusado no navegador": {
+  "pt_BR": "O acesso foi recusado no navegador",
+  "en_US": "Access was denied in the browser"
+ },
+ "O código venceu antes da confirmação. Entre de novo": {
+  "pt_BR": "O código venceu antes da confirmação. Entre de novo",
+  "en_US": "The code expired before confirmation. Sign in again"
+ },
+ "Não foi possível entrar com a conta CAF Mob": {
+  "pt_BR": "Não foi possível entrar com a conta CAF Mob",
+  "en_US": "Could not sign in with the CAF Mob account"
+ },
+ "Arquivo baixado não confere com o catálogo": {
+  "pt_BR": "Arquivo baixado não confere com o catálogo",
+  "en_US": "Downloaded file does not match the catalog"
+ },
+ "O acesso à internet do Blender está desligado (Preferências › Sistema › Rede)": {
+  "pt_BR": "O acesso à internet do Blender está desligado (Preferências › Sistema › Rede)",
+  "en_US": "Blender's internet access is off (Preferences › System › Network)"
+ },
+ "Servidor de texturas não configurado nas preferências do CAFFMob Draw": {
+  "pt_BR": "Servidor de texturas não configurado nas preferências do CAFFMob Draw",
+  "en_US": "Texture server not set in the CAFFMob Draw preferences"
+ },
+ "Textura não disponível no servidor": {
+  "pt_BR": "Textura não disponível no servidor",
+  "en_US": "Texture not available on the server"
+ },
+ "Entre com a sua conta CAF Mob para baixar texturas": {
+  "pt_BR": "Entre com a sua conta CAF Mob para baixar texturas",
+  "en_US": "Sign in with your CAF Mob account to download textures"
+ },
+ "Sem resposta do servidor de texturas": {
+  "pt_BR": "Sem resposta do servidor de texturas",
+  "en_US": "No response from the texture server"
+ },
+ "{} textura(s) deste projeto não estão no catálogo instalado: {}": {
+  "pt_BR": "{} textura(s) deste projeto não estão no catálogo instalado: {}",
+  "en_US": "{} texture(s) in this project are not in the installed catalog: {}"
+ },
+ "Código {}: confirme no navegador que abriu": {
+  "pt_BR": "Código {}: confirme no navegador que abriu",
+  "en_US": "Code {}: confirm it in the browser that opened"
+ },
+ "Conta CAF Mob conectada: {}": {
+  "pt_BR": "Conta CAF Mob conectada: {}",
+  "en_US": "CAF Mob account connected: {}"
+ },
+ "Você saiu da conta CAF Mob": {
+  "pt_BR": "Você saiu da conta CAF Mob",
+  "en_US": "You signed out of the CAF Mob account"
+ },
+ "Sua conta não tem permissão para baixar todas as texturas": {
+  "pt_BR": "Sua conta não tem permissão para baixar todas as texturas",
+  "en_US": "Your account is not allowed to download all textures"
+ },
+ "Todas as texturas baixadas": {
+  "pt_BR": "Todas as texturas baixadas",
+  "en_US": "All textures downloaded"
+ },
+ "Baixando {} texturas ({:.0f} MB)": {
+  "pt_BR": "Baixando {} texturas ({:.0f} MB)",
+  "en_US": "Downloading {} textures ({:.0f} MB)"
+ },
+ "Baixar todas as texturas que faltam (cerca de {:.0f} MB)?": {
+  "pt_BR": "Baixar todas as texturas que faltam (cerca de {:.0f} MB)?",
+  "en_US": "Download all missing textures (about {:.0f} MB)?"
+ },
+ "Entrar com a conta CAF Mob": {
+  "pt_BR": "Entrar com a conta CAF Mob",
+  "en_US": "Sign in with the CAF Mob account"
+ },
+ "Entrar com a conta CAF Mob (abre o navegador; a senha não passa pelo Blender)": {
+  "pt_BR": "Entrar com a conta CAF Mob (abre o navegador; a senha não passa pelo Blender)",
+  "en_US": "Sign in with the CAF Mob account (opens the browser; the password never goes through Blender)"
+ },
+ "Sair da conta CAF Mob": {
+  "pt_BR": "Sair da conta CAF Mob",
+  "en_US": "Sign out of the CAF Mob account"
+ },
+ "Sair da conta CAF Mob neste computador (apaga a sessão guardada)": {
+  "pt_BR": "Sair da conta CAF Mob neste computador (apaga a sessão guardada)",
+  "en_US": "Sign out of the CAF Mob account on this computer (deletes the saved session)"
+ },
+ "Baixar todas as texturas": {
+  "pt_BR": "Baixar todas as texturas",
+  "en_US": "Download all textures"
+ },
+ "Baixa todas as texturas para usar sem internet (só para contas com essa permissão)": {
+  "pt_BR": "Baixa todas as texturas para usar sem internet (só para contas com essa permissão)",
+  "en_US": "Downloads all textures to use offline (only for accounts with this permission)"
+ },
+ "Baixar": {
+  "pt_BR": "Baixar",
+  "en_US": "Download"
+ },
+ "Cancelar downloads": {
+  "pt_BR": "Cancelar downloads",
+  "en_US": "Cancel downloads"
+ },
+ "Cancela os downloads de textura em andamento (o que já baixou fica)": {
+  "pt_BR": "Cancela os downloads de textura em andamento (o que já baixou fica)",
+  "en_US": "Cancels the texture downloads in progress (what was already downloaded stays)"
+ },
+ "Conta CAF Mob": {
+  "pt_BR": "Conta CAF Mob",
+  "en_US": "CAF Mob account"
+ },
+ "Conta CAF Mob e downloads de textura": {
+  "pt_BR": "Conta CAF Mob e downloads de textura",
+  "en_US": "CAF Mob account and texture downloads"
+ },
+ "O objeto ativo não tem textura de imagem": {
+  "pt_BR": "O objeto ativo não tem textura de imagem",
+  "en_US": "The active object has no image texture"
+ },
+ "Aplica a textura do catálogo à seleção (baixa antes, se precisar)": {
+  "pt_BR": "Aplica a textura do catálogo à seleção (baixa antes, se precisar)",
+  "en_US": "Applies the catalog texture to the selection (downloads it first if needed)"
+ },
+ "{} peça(s) com a textura": {
+  "pt_BR": "{} peça(s) com a textura",
+  "en_US": "{} part(s) with the texture"
+ },
+ "Tamanho real da textura": {
+  "pt_BR": "Tamanho real da textura",
+  "en_US": "Real texture size"
+ },
+ "Muda quanto a textura mede de verdade (largura e altura em mm) nas peças selecionadas": {
+  "pt_BR": "Muda quanto a textura mede de verdade (largura e altura em mm) nas peças selecionadas",
+  "en_US": "Changes how big the texture really is (width and height in mm) on the selected parts"
+ },
+ "Largura (mm)": {
+  "pt_BR": "Largura (mm)",
+  "en_US": "Width (mm)"
+ },
+ "Altura (mm)": {
+  "pt_BR": "Altura (mm)",
+  "en_US": "Height (mm)"
+ },
+ "Manter a proporção": {
+  "pt_BR": "Manter a proporção",
+  "en_US": "Keep proportions"
+ },
+ "{} peça(s) com a textura em {:g} × {:g} mm": {
+  "pt_BR": "{} peça(s) com a textura em {:g} × {:g} mm",
+  "en_US": "{} part(s) with the texture at {:g} × {:g} mm"
+ },
+ "Escolha uma categoria": {
+  "pt_BR": "Escolha uma categoria",
+  "en_US": "Choose a category"
+ },
+ "Os modelos prontos e os seus módulos salvos aparecem aqui.": {
+  "pt_BR": "Os modelos prontos e os seus módulos salvos aparecem aqui.",
+  "en_US": "Ready-made models and your saved modules appear here."
+ },
+ "Categorias": {
+  "pt_BR": "Categorias",
+  "en_US": "Categories"
+ },
+ "Modelo pronto": {
+  "pt_BR": "Modelo pronto",
+  "en_US": "Ready-made model"
+ },
+ "Meu módulo": {
+  "pt_BR": "Meu módulo",
+  "en_US": "My module"
+ },
+ "Arraste para a cena": {
+  "pt_BR": "Arraste para a cena",
+  "en_US": "Drag into the scene"
+ },
+ "Rolar biblioteca": {
+  "pt_BR": "Rolar biblioteca",
+  "en_US": "Scroll library"
+ },
+ "Rola a grade da BIBLIOTECA CAFFMOB pela roda do mouse": {
+  "pt_BR": "Rola a grade da BIBLIOTECA CAFFMOB pela roda do mouse",
+  "en_US": "Scrolls the BIBLIOTECA CAFFMOB grid with the mouse wheel"
+ },
+ "Solte sobre uma peça, frente, módulo ou objeto": {
+  "pt_BR": "Solte sobre uma peça, frente, módulo ou objeto",
+  "en_US": "Drop on a part, front, module or object"
+ },
+ "Solte na cena para inserir": {
+  "pt_BR": "Solte na cena para inserir",
+  "en_US": "Drop in the scene to insert"
+ },
+ "Solte sobre a peça para aplicar a textura": {
+  "pt_BR": "Solte sobre a peça para aplicar a textura",
+  "en_US": "Drop on the part to apply the texture"
+ },
+ "Arrastar da biblioteca": {
+  "pt_BR": "Arrastar da biblioteca",
+  "en_US": "Drag from the library"
+ },
+ "Arraste uma textura ou um bloco da biblioteca para a cena": {
+  "pt_BR": "Arraste uma textura ou um bloco da biblioteca para a cena",
+  "en_US": "Drag a texture or a block from the library into the scene"
+ },
+ "Buscar na biblioteca": {
+  "pt_BR": "Buscar na biblioteca",
+  "en_US": "Search the library"
+ },
+ "Digitar a busca da biblioteca": {
+  "pt_BR": "Digitar a busca da biblioteca",
+  "en_US": "Type the library search"
+ },
+ "Servidor de texturas": {
+  "pt_BR": "Servidor de texturas",
+  "en_US": "Texture server"
+ },
+ "Endereço do servidor de texturas da CAF Mob (sem o /v1 do final)": {
+  "pt_BR": "Endereço do servidor de texturas da CAF Mob (sem o /v1 do final)",
+  "en_US": "Address of the CAF Mob texture server (without the trailing /v1)"
+ },
+ "{}  ·  Esc: cancelar": {
+  "pt_BR": "{}  ·  Esc: cancelar",
+  "en_US": "{}  ·  Esc: cancel"
  }
 }

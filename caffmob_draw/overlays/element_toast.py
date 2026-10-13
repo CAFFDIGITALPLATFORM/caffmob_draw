@@ -49,6 +49,32 @@ def message(obj):
         tr(el.label), el.obj.name, units.format_value(width), units.format_value(height), units.format_value(depth))
 
 
+def _layout(context, region):
+    """(retângulo, texto) do aviso visível na região, em pixels da região; None sem aviso."""
+    obj = context.active_object
+    if obj is None or not obj.select_get() or obj.name != _state['name']:
+        return None
+    if time.monotonic() - _state['shown_at'] > DURATION:
+        return None
+    try:
+        text = message(obj)
+    except Exception:              # medida que não dá para ler (objeto sendo refeito): sem aviso neste desenho
+        return None
+    if not text:
+        return None
+    from ..canvas2d import draw
+    w = draw.text_width(text)
+    h = draw.FONT_SIZE + 2 * PAD_Y
+    x = (region.width - w) / 2.0 - PAD_X
+    return (x, MARGIN, w + 2 * PAD_X, h), text
+
+
+def rect(context, region):
+    """Retângulo ocupado pelo aviso na região, ou None (a biblioteca não o cobre, feature 014 T029)."""
+    layout = _layout(context, region)
+    return layout[0] if layout else None
+
+
 def _draw():
     context = bpy.context
     obj = context.active_object
@@ -57,24 +83,15 @@ def _draw():
         return
     if obj.name != _state['name']:
         show(obj)
-    if time.monotonic() - _state['shown_at'] > DURATION:
-        return
-    try:
-        text = message(obj)
-    except Exception:              # medida que não dá para ler (objeto sendo refeito): sem aviso neste desenho
-        return
-    if not text:
+    layout = _layout(context, context.region)
+    if layout is None:
         return
     from ..canvas2d import draw
-    region = context.region
-    w = draw.text_width(text)
-    h = draw.FONT_SIZE + 2 * PAD_Y
-    x = (region.width - w) / 2.0 - PAD_X
-    rect = (x, MARGIN, w + 2 * PAD_X, h)
+    rect_, text = layout
     sh = draw.begin()
-    draw.rect(sh, rect, draw.COLORS['panel'])
-    draw.outline(sh, rect, draw.COLORS['border'])
-    draw.text(x + PAD_X, MARGIN + PAD_Y + 2, text)
+    draw.rect(sh, rect_, draw.COLORS['panel'])
+    draw.outline(sh, rect_, draw.COLORS['border'])
+    draw.text(rect_[0] + PAD_X, MARGIN + PAD_Y + 2, text)
     draw.end()
 
 

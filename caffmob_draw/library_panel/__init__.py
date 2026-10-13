@@ -4,13 +4,14 @@
 - `categories_core`, `categories`: categorias fixas e do usuário;
 - `models_core`: modelos prontos (catálogo em `data/library_models.json`);
 - `layout_core`, `draw`, `ops_click`: painel desenhado sempre e clique por keymap;
-- `popover`: conteúdo da categoria; `ops_categories`: Criar categoria; `ops_cabinet`: Criar armário.
+- `ops_search`, `ops_drag`: busca digitada e arraste de textura ou bloco para a cena (feature 014);
+- `popover`: conteúdo da categoria (reserva desde a feature 014, T040); `ops_categories`: Criar categoria; `ops_cabinet`: Criar armário.
 """
 
 
 def _modules():
-    from . import draw, ops_cabinet, ops_categories, ops_click, popover, props
-    return (props, popover, ops_categories, ops_cabinet, ops_click, draw)
+    from . import draw, ops_cabinet, ops_categories, ops_click, ops_drag, ops_search, popover, props
+    return (props, popover, ops_categories, ops_cabinet, ops_click, ops_search, ops_drag, draw)
 
 
 def register():

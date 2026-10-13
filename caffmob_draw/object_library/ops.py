@@ -60,6 +60,8 @@ class BTM_OT_ObjectInsert(bpy.types.Operator):
     bl_options = {'REGISTER', 'UNDO'}
 
     key: bpy.props.StringProperty(options={'HIDDEN'})  # type: ignore
+    # Feature 014 (T033): vindo do arraste da biblioteca, o botão já está pressionado e a soltura confirma.
+    from_drag: bpy.props.BoolProperty(default=False, options={'HIDDEN', 'SKIP_SAVE'})  # type: ignore
 
     def _load(self, context):
         item = find_item(self.key)
@@ -120,7 +122,7 @@ class BTM_OT_ObjectInsert(bpy.types.Operator):
         if event.type == 'MOUSEMOVE':
             self._follow(context, event)
             return {'RUNNING_MODAL'}
-        if event.type == 'LEFTMOUSE' and event.value == 'PRESS':
+        if event.type == 'LEFTMOUSE' and (event.value == 'PRESS' or (self.from_drag and event.value == 'RELEASE')):
             self._end(context)
             self.report({'INFO'}, tr("{} inserido").format(self._name))
             return {'FINISHED'}

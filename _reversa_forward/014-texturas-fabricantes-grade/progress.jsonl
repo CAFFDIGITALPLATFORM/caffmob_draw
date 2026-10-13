@@ -1,0 +1,47 @@
+{"ts": "2026-10-12T21:46:43-03:00", "action": "T007", "status": "done", "files": [".gitignore"]}
+{"ts": "2026-10-12T21:46:43-03:00", "action": "T008", "status": "done", "files": ["caffmob_draw/blender_manifest.toml"]}
+{"ts": "2026-10-12T21:48:30-03:00", "action": "T003", "status": "done", "files": ["tests/fake_texture_server.py"]}
+{"ts": "2026-10-12T21:49:45-03:00", "action": "T009", "status": "done", "files": ["tests/test_texture_catalog.py", "tests/_bootstrap.py"]}
+{"ts": "2026-10-12T21:49:45-03:00", "action": "T013", "status": "done", "files": ["caffmob_draw/texture_library/catalog_core.py"]}
+{"ts": "2026-10-12T21:51:16-03:00", "action": "T010", "status": "done", "files": ["tests/test_library_grid.py"]}
+{"ts": "2026-10-12T21:51:16-03:00", "action": "T017", "status": "done", "files": ["caffmob_draw/library_panel/grid_core.py"]}
+{"ts": "2026-10-12T21:52:33-03:00", "action": "T011", "status": "done", "files": ["tests/test_texture_download.py"]}
+{"ts": "2026-10-12T21:52:33-03:00", "action": "T019", "status": "done", "files": ["caffmob_draw/texture_library/download_core.py"]}
+{"ts": "2026-10-12T21:52:54-03:00", "action": "T012", "status": "done", "files": ["tests/test_texture_auth.py"]}
+{"ts": "2026-10-12T21:52:54-03:00", "action": "T022", "status": "done", "files": ["caffmob_draw/texture_library/auth_core.py"]}
+{"ts": "2026-10-12T21:54:39-03:00", "action": "T024", "status": "done", "files": ["caffmob_draw/object_library/retexture.py", "tests/blender_014_image_material.py"]}
+{"ts": "2026-10-12T21:56:43-03:00", "action": "T001", "status": "done", "files": ["tests/blender_014_thumb_probe.py"]}
+{"ts": "2026-10-12T21:56:43-03:00", "action": "T002", "status": "done", "files": ["tests/blender_014_drag_probe.py"]}
+{"ts": "2026-10-12T22:00:21-03:00", "action": "T014", "status": "done", "files": ["tools/texturas_importar.py"]}
+{"ts": "2026-10-12T22:00:21-03:00", "action": "T016", "status": "done", "files": ["caffmob_draw/texture_library/catalog.py"]}
+{"ts": "2026-10-12T22:02:06-03:00", "action": "T004", "status": "done", "files": ["tests/blender_014_net_probe.py"]}
+{"ts": "2026-10-12T22:02:17-03:00", "action": "T005", "status": "done", "files": ["_reversa_forward/014-texturas-fabricantes-grade/investigation.md"]}
+{"ts": "2026-10-12T22:03:37-03:00", "action": "T015", "status": "done", "files": ["caffmob_draw/textures/catalog.json", "caffmob_draw/textures/thumbs"]}
+{"ts": "2026-10-12T22:22:02-03:00", "action": "T006", "status": "done", "files": ["_reversa_forward/014-texturas-fabricantes-grade/design-direction.md", "_reversa_forward/014-texturas-fabricantes-grade/mocks", "tools/biblioteca_mocks.py", "caffmob_draw/library_panel/grid_core.py"]}
+{"ts": "2026-10-12T22:31:19-03:00", "action": "T018", "status": "done", "files": ["caffmob_draw/library_panel/layout_core.py", "caffmob_draw/library_panel/style.py", "tests/test_library_max_layout.py"]}
+{"ts": "2026-10-12T22:54:31-03:00", "action": "T026", "status": "done", "files": ["caffmob_draw/library_panel/props.py", "tests/blender_014_library_state.py"]}
+{"ts": "2026-10-12T22:57:53-03:00", "action": "T027", "status": "done", "files": ["caffmob_draw/library_panel/thumbs_gpu.py", "tests/blender_014_thumbs_gpu.py"]}
+{"ts": "2026-10-12T23:07:14-03:00", "action": "T028", "status": "done", "files": ["caffmob_draw/library_panel/draw.py", "caffmob_draw/library_panel/draw_kit.py", "caffmob_draw/library_panel/layout_core.py", "caffmob_draw/library_panel/grid_core.py", "caffmob_draw/library_panel/style.py", "caffmob_draw/assets/caffmobi_draw_icon.png", "caffmob_draw/assets/caffmobi_draw_icon.svg", "caffmob_draw/assets/fonts/Sora-SemiBold.ttf", "caffmob_draw/assets/fonts/OFL.txt", "caffmob_draw/data/translations/library.json", "tests/blender_014_library_draw.py", "tests/test_library_max_layout.py"]}
+{"ts": "2026-10-12T23:14:01-03:00", "action": "T029", "status": "done", "files": ["caffmob_draw/operators/viewport_hud.py", "caffmob_draw/overlays/element_toast.py", "caffmob_draw/library_panel/draw.py", "tests/blender_014_hud_rects.py"]}
+{"ts": "2026-10-12T23:23:31-03:00", "action": "T020", "status": "done", "files": ["caffmob_draw/texture_library/downloader.py", "tests/test_texture_downloader.py"]}
+{"ts": "2026-10-12T23:23:31-03:00", "action": "T021", "status": "done", "files": ["caffmob_draw/texture_library/downloads.py", "tests/blender_014_textures_net.py"]}
+{"ts": "2026-10-12T23:23:31-03:00", "action": "T023", "status": "done", "files": ["caffmob_draw/texture_library/auth.py", "tests/blender_014_textures_net.py"]}
+{"ts": "2026-10-12T23:27:21-03:00", "action": "T025", "status": "done", "files": ["caffmob_draw/texture_library/apply.py", "tests/blender_014_apply.py"]}
+{"ts": "2026-10-12T23:36:13-03:00", "action": "T039", "status": "done", "files": ["build.py", "tests/test_build_textures.py"]}
+{"ts": "2026-10-12T23:37:41-03:00", "action": "T030", "status": "done", "files": ["caffmob_draw/library_panel/ops_click.py", "caffmob_draw/library_panel/draw.py", "tests/blender_014_panel_smoke.py"]}
+{"ts": "2026-10-12T23:37:41-03:00", "action": "T031", "status": "done", "files": ["caffmob_draw/library_panel/ops_search.py", "caffmob_draw/library_panel/draw.py", "caffmob_draw/library_panel/__init__.py"]}
+{"ts": "2026-10-12T23:37:41-03:00", "action": "T042", "status": "done", "files": ["tests/blender_014_panel_smoke.py"]}
+{"ts": "2026-10-12T23:40:06-03:00", "action": "T032", "status": "done", "files": ["caffmob_draw/library_panel/ops_drag.py", "tests/blender_014_drag_smoke.py"]}
+{"ts": "2026-10-12T23:40:06-03:00", "action": "T033", "status": "done", "files": ["caffmob_draw/customize/ops_library.py", "caffmob_draw/object_library/ops.py"]}
+{"ts": "2026-10-12T23:40:06-03:00", "action": "T034", "status": "done", "files": ["caffmob_draw/library_panel/ops_drag.py"]}
+{"ts": "2026-10-12T23:40:06-03:00", "action": "T040", "status": "done", "files": ["caffmob_draw/library_panel/draw.py", "caffmob_draw/library_panel/ops_click.py", "tests/blender_012_library_ui.py"]}
+{"ts": "2026-10-12T23:40:06-03:00", "action": "T043", "status": "done", "files": ["tests/blender_014_drag_smoke.py"]}
+{"ts": "2026-10-12T23:41:18-03:00", "action": "T035", "status": "done", "files": ["caffmob_draw/texture_library/ops_account.py"]}
+{"ts": "2026-10-12T23:41:18-03:00", "action": "T036", "status": "done", "files": ["caffmob_draw/__init__.py"]}
+{"ts": "2026-10-12T23:41:19-03:00", "action": "T037", "status": "done", "files": ["caffmob_draw/texture_library/handlers.py", "tests/blender_014_register.py"]}
+{"ts": "2026-10-12T23:41:19-03:00", "action": "T038", "status": "done", "files": ["caffmob_draw/texture_library/__init__.py", "caffmob_draw/__init__.py", "tests/blender_014_register.py"]}
+{"ts": "2026-10-12T23:41:19-03:00", "action": "T044", "status": "done", "files": ["tests/blender_014_textures_net.py"]}
+{"ts": "2026-10-12T23:41:19-03:00", "action": "T046", "status": "done", "files": ["caffmob_draw/texture_library/ops_apply.py", "tests/blender_014_apply.py"]}
+{"ts": "2026-10-12T23:43:45-03:00", "action": "T041", "status": "done", "files": ["caffmob_draw/data/translations/library.json", "caffmob_draw/library_panel/ops_drag.py"]}
+{"ts": "2026-10-12T23:43:45-03:00", "action": "T045", "status": "done", "files": ["caffmob_draw/texture_library/bump.py", "caffmob_draw/texture_library/apply.py", "caffmob_draw/texture_library/downloads.py", "tools/texturas_importar.py", "tests/blender_014_apply.py"]}
+{"ts": "2026-10-12T23:44:50-03:00", "action": "T047", "status": "done", "files": ["_reversa_forward/014-texturas-fabricantes-grade/interfaces/servidor-texturas.md"]}

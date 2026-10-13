@@ -187,3 +187,14 @@ docs/porta_realista_080x210/*
 !docs/porta_realista_080x210/gerar_porta.py
 !docs/porta_realista_080x210/LEIA-ME.md
 docs/porta_realista_080x210_OBJ.zip
+
+# Texturas dos fabricantes (feature 014): só o catálogo e as miniaturas entram no git e no pacote;
+# as imagens em tamanho real vão para o servidor da CAF Mob (dist/texturas-servidor/)
+dist/texturas-servidor/
+caffmob_draw/textures/**/*.jpg
+caffmob_draw/textures/**/*.jpeg
+caffmob_draw/textures/**/*.JPG
+caffmob_draw/textures/**/*.JPEG
+caffmob_draw/textures/**/*.png
+caffmob_draw/textures/**/*.PNG
+!caffmob_draw/textures/thumbs/**

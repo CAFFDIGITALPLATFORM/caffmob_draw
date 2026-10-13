@@ -43,6 +43,7 @@ from . import openings
 from .selection import component_props, component_select, component_pick
 from . import legacy
 from . import library_panel
+from . import texture_library
 from . import compat_identity
 from . import ui
 from . import overlays
@@ -114,6 +115,13 @@ def _update_use_viewport_hud(self, context):
                 for area in window.screen.areas:
                     if area.type == 'VIEW_3D':
                         area.tag_redraw()
+
+
+def _update_textures_server(self, context):
+    """Servidor trocado: encerra a rede e relê a sessão (ela vale só para o servidor em que foi feita)."""
+    from .texture_library import auth, downloads
+    downloads.shutdown()
+    auth.reload()
 
 
 class BTM_AddonPreferences(bpy.types.AddonPreferences):
@@ -207,6 +215,14 @@ class BTM_AddonPreferences(bpy.types.AddonPreferences):
         default=0.05, min=0.001, max=0.5, subtype='DISTANCE', unit='LENGTH',
     )  # type: ignore
 
+    # Feature 014 (data-delta §5): base do contrato do servidor de texturas; o endereço oficial entra na publicação.
+    textures_server_url: bpy.props.StringProperty(
+        name="Servidor de texturas",
+        description="Endereço do servidor de texturas da CAF Mob (sem o /v1 do final)",
+        default="",
+        update=_update_textures_server,
+    )  # type: ignore
+
     asset_libraries: bpy.props.CollectionProperty(type=hb_assets.BTM_AssetLibraryEntry)  # type: ignore
     asset_libraries_index: bpy.props.IntProperty(name="Biblioteca Ativa", default=0)  # type: ignore
 
@@ -233,6 +249,12 @@ class BTM_AddonPreferences(bpy.types.AddonPreferences):
         sub = row.row(align=True)
         sub.active = self.stick_magnet
         sub.prop(self, "stick_magnet_distance")
+
+        box = layout.box()
+        box.label(text="Conta CAF Mob", icon='USER')
+        box.prop(self, "textures_server_url")
+        from .texture_library import ops_account
+        ops_account.draw_account(box.column())
 
         layout.separator()
 
@@ -307,6 +329,7 @@ def register():
         _module.register()
     legacy.register()           # feature 012: bibliotecas herdadas fora da interface e conversão
     library_panel.register()    # feature 012: painel BIBLIOTECA CAFFMOB
+    texture_library.register()  # feature 014: texturas dos fabricantes, conta CAF Mob e download
 
     # Register legacy UI
     view3d_sidebar.register()
@@ -355,6 +378,7 @@ def unregister():
     view3d_sidebar.unregister()
 
     # Unregister modern UI, operators & draw handlers
+    texture_library.unregister()
     library_panel.unregister()
     legacy.unregister()
     for _module in (component_pick, component_select, component_props):

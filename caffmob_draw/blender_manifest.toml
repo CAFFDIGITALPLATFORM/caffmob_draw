@@ -34,3 +34,4 @@ wheels = [
 
 [permissions]
 files = "Save projects and export cut plans, PDFs and layouts"
+network = "Download manufacturer textures from the CAF Mob server"

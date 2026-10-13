@@ -11,8 +11,10 @@ O projetista passa a escolher o acabamento real das chapas (MDF, MDP e laminados
 numa área de **Texturas** da Biblioteca CAFFMob, em vez de procurar arquivo de imagem no disco a cada peça. A
 biblioteca mostra seus itens (blocos e texturas) em **grade com miniatura**, pode ser **maximizada** num retângulo
 maior que fica **fixo** enquanto ele trabalha, e aceita **arrastar** um bloco para a cena ou uma textura para uma
-peça. Resolve três dores do legado: a biblioteca só lista botões sem imagem, não existe catálogo de acabamentos de
-fabricante e não existe arrastar da biblioteca para a cena.
+peça. O catálogo e as miniaturas vêm no plugin; as imagens em tamanho real vêm do servidor da CAF Mob, com a conta do
+projetista, sob demanda ou todas de uma vez para trabalhar offline. Resolve três dores do legado: a biblioteca só
+lista botões sem imagem, não existe catálogo de acabamentos de fabricante e não existe arrastar da biblioteca para a
+cena.
 
 ## 2. Contexto a partir do legado
 
@@ -73,12 +75,37 @@ fabricante e não existe arrastar da biblioteca para a cena.
 6. **RN-06 Veio:** textura de madeira aplicada a uma peça segue o sentido do veio da peça, com a mesma convenção já
    usada para o veio na personalização (`_reversa_sdd/customize/requirements.md#RN-13`). 🟡
    - Tipo: nova
-7. **RN-07 Onde as texturas ficam:** as texturas dos 12 fabricantes vão **dentro do pacote da extensão**, como conteúdo
-   embutido da biblioteca: o projetista instala o plugin e já encontra a área Texturas pronta, sem importar nada. Elas
-   são trazidas uma vez da pasta do titular para o pacote, com o filtro de RN-01 e RN-03; o pacote cresce cerca de
-   576 MB. O titular declara ter o direito de redistribuir essas imagens (decisão de 2026-10-12), o que afasta, para
-   este conteúdo, a restrição de terceiros de `_reversa_sdd/object_library/requirements.md#RN-09`. 🟢
+7. **RN-07 Onde as texturas ficam (híbrido):** o pacote da extensão leva só o **catálogo** e as **miniaturas** dos 12
+   fabricantes (cerca de 25 MB). Assim, a grade de Texturas aparece completa logo depois de instalar, mesmo sem
+   internet. As **imagens em tamanho real** (cerca de 576 MB) ficam no **servidor da CAF Mob** e são baixadas para a
+   pasta do usuário da extensão (RN-12). O plugin só pode ser publicado na plataforma de extensões do Blender se não
+   levar as imagens dos fabricantes, que não são conteúdo GPL. O titular declara ter o direito de distribuir essas
+   imagens pelo servidor da CAF Mob (decisões de 2026-10-12). 🟢
    - Tipo: nova
+11. **RN-11 Conta CAF Mob:** baixar imagens exige entrar com uma conta CAF Mob no plugin. O projetista entra uma vez;
+    a sessão fica guardada na pasta do usuário da extensão e é renovada sem pedir a senha de novo, até ele sair ou a
+    sessão expirar. A senha nunca é gravada em disco. Sem conta, o projetista vê a grade e as miniaturas, e o plugin
+    pede o login quando ele tenta usar uma textura ainda não baixada. 🟢 (decisão do titular, 2026-10-12)
+    - Tipo: nova
+12. **RN-12 Quando as imagens são baixadas:** há dois modos.
+    - **Sob demanda (padrão):** ao aplicar ou soltar uma textura cuja imagem ainda não está no computador, o plugin
+      baixa só essa imagem, mostra o progresso e aplica a textura quando o download termina. A imagem fica guardada e
+      não é baixada de novo.
+    - **100% offline:** o projetista pode escolher baixar **todas** as imagens de uma vez (cerca de 576 MB), se a conta
+      dele tiver permissão para isso. Depois disso, as texturas funcionam sem internet.
+    O download continua de onde parou depois de uma queda, nunca deixa imagem pela metade no lugar da definitiva e
+    pode ser cancelado. 🟢 (decisão do titular, 2026-10-12)
+    - Tipo: nova
+13. **RN-13 Sem internet:** quando o acesso à internet do Blender está desligado ou o servidor não responde, a grade
+    continua mostrando o catálogo e as miniaturas. Texturas já baixadas funcionam normalmente; as outras aparecem
+    marcadas como "não baixada" e, ao tentar usá-las, o plugin mostra um aviso claro, sem erro Python e sem travar a
+    interface. 🟢
+    - Tipo: nova
+14. **RN-14 Contrato com o servidor:** esta feature define o contrato que o servidor da CAF Mob vai atender: login e
+    renovação de sessão, catálogo com versão, endereço de cada imagem, permissão de "baixar tudo" e os erros. O
+    endereço do servidor fica nas preferências do plugin. Enquanto o site não publica o serviço, o contrato pode ser
+    atendido por um servidor provisório com o mesmo formato. 🟡 (decisão do titular, 2026-10-12)
+    - Tipo: nova
 8. **RN-08 Grade:** a Biblioteca CAFFMob mostra os itens de cada categoria em grade, cada célula com miniatura e nome:
    modelos prontos, módulos salvos, objetos e texturas. A miniatura da textura é a própria imagem reduzida; a do bloco
    é a miniatura que já é gerada ao salvar. 🟢
@@ -109,7 +136,7 @@ fabricante e não existe arrastar da biblioteca para a cena.
 
 | ID | Requisito | Prioridade | Critério de aceite | Confidência |
 |----|-----------|------------|--------------------|-------------|
-| RF-01 | Trazer as texturas dos 12 fabricantes de chapas da pasta do titular para o conteúdo embutido do pacote (RN-01, RN-07) | Must | Numa instalação nova do plugin, Texturas mostra os 12 fabricantes com as 1.209 texturas, sem importar nada, e nenhum fabricante de fora de RN-01 aparece | 🟢 |
+| RF-01 | Gerar, a partir da pasta do titular, o catálogo e as miniaturas que vão no pacote e o conjunto de imagens que vai para o servidor (RN-01, RN-07) | Must | Numa instalação nova, sem internet, Texturas mostra os 12 fabricantes com as 1.209 miniaturas, e nenhum fabricante de fora de RN-01 aparece; o pacote não contém nenhuma imagem em tamanho real | 🟢 |
 | RF-02 | Organizar as texturas por fabricante e coleção, com o nome legível (RN-02) | Must | "fabrica/duratex/Design/Carvalho_Avela_Design.jpg" aparece como "Carvalho Avela Design" em Duratex › Design | 🟢 |
 | RF-03 | Filtrar o que não é textura e avisar arquivo ruim sem parar (RN-03) | Must | Nenhum `.bump` vira célula; um JPG corrompido gera um aviso com o caminho e os demais carregam | 🟢 |
 | RF-04 | Mostrar a área Texturas em grade com miniatura, filtro por fabricante e coleção e busca por nome (RN-08) | Must | Buscar "carvalho" mostra só as texturas com "carvalho" no nome, de todos os fabricantes | 🟡 |
@@ -121,6 +148,12 @@ fabricante e não existe arrastar da biblioteca para a cena.
 | RF-10 | Fixar e soltar o retângulo maximizado (RN-09) | Must | Fixo, ele continua aberto depois de clicar na cena e girar a vista; solto, fecha com Esc ou clique fora | 🟢 |
 | RF-15 | Minimizar a biblioteca ao rótulo "BIBLIOTECA CAFFMOB" e mover ou redimensionar o retângulo maximizado (RN-09) | Must | Minimizada, só o rótulo aparece; maximizada, arrastar a borda muda o tamanho e arrastar o topo muda o lugar | 🟢 |
 | RF-16 | Não sobrepor o HUD, os botões de navegação, os avisos e as cotas de tela do plugin (RN-09) | Must | Com o HUD ligado, nenhum botão do HUD fica coberto pelo retângulo em nenhum estado nem posição | 🟡 |
+| RF-17 | Entrar e sair com a conta CAF Mob no plugin (RN-11) | Must | Depois de entrar, fechar e abrir o Blender não pede a senha de novo; nenhum arquivo da pasta do usuário contém a senha | 🟢 |
+| RF-18 | Baixar sob demanda a imagem da textura usada, com progresso e cancelamento (RN-12) | Must | Soltar uma textura não baixada numa peça mostra o progresso e aplica a textura ao terminar; a segunda vez não baixa de novo | 🟢 |
+| RF-19 | Baixar todas as imagens para uso 100% offline, quando a conta tiver permissão (RN-12) | Must | Com permissão, "Baixar tudo" deixa as 1.209 imagens no computador e, com a internet desligada, qualquer textura é aplicada; sem permissão, a opção aparece indisponível com o motivo | 🟢 |
+| RF-20 | Funcionar sem internet com o que já foi baixado e avisar o resto (RN-13) | Must | Com o acesso à internet do Blender desligado, a grade abre, as baixadas funcionam e uma não baixada mostra o aviso, sem erro | 🟢 |
+| RF-21 | Retomar um download interrompido sem deixar imagem pela metade (RN-12) | Should | Cortar a rede no meio de um download e religar: o download continua e o arquivo final confere com o tamanho do servidor | 🟡 |
+| RF-22 | Endereço do servidor configurável nas preferências (RN-14) | Must | Trocar o endereço nas preferências faz o catálogo e os downloads seguirem o novo servidor | 🟡 |
 | RF-11 | Arrastar um bloco da grade para a cena (RN-10) | Must | Arrastar "Balcão 2 portas" e soltar no piso insere o armário naquele ponto; Ctrl+Z remove de uma vez | 🟡 |
 | RF-12 | Arrastar uma textura da grade até uma peça (RN-10, RN-05) | Must | Soltar "Carvalho Avela Design" sobre a frente do balcão aplica a textura só naquela frente | 🟡 |
 | RF-13 | Soltar no vazio ou cancelar o arraste sem efeito (RN-10) | Must | Soltar uma textura no céu da vista não muda nenhum material e mostra o aviso; Esc durante o arraste não insere nada | 🟡 |
@@ -132,21 +165,47 @@ fabricante e não existe arrastar da biblioteca para a cena.
 |------|-----------|----------------------------|-------------|
 | Desempenho | Depois da primeira indexação, abrir Texturas com as 1.209 texturas leva menos de 1 s; as miniaturas carregam sob demanda e a listagem não relê o disco a cada redesenho | O legado relê pastas e manifestos a cada redesenho (`_reversa_sdd/object_library/requirements.md`, RNF de desempenho); princípio IX (`.reversa/principles.md`) | 🟡 |
 | Desempenho | Miniaturas de no máximo 256 px, geradas uma vez e reaproveitadas (no pacote ou em cache na pasta do usuário), para não carregar imagens de até 2.750 px na grade | Imagens medidas na pasta do titular (365 a 2.750 px) | 🟡 |
-| Tamanho do pacote | O pacote cresce cerca de 576 MB com as texturas; a instalação e a primeira abertura da biblioteca continuam funcionando sem travar a interface | Decisão do titular (RN-07); `_reversa_sdd/architecture.md#Integrações e distribuição` | 🟡 |
+| Tamanho do pacote | O pacote cresce no máximo cerca de 25 MB (catálogo e miniaturas) e continua dentro do limite da plataforma de extensões do Blender (cerca de 200 MB, número levantado em 2026-10-12, sem documento oficial) | RN-07; levantamento de 2026-10-12 | 🟡 |
+| Segurança | Comunicação com o servidor só por HTTPS; a senha nunca é gravada; a sessão fica na pasta do usuário da extensão com acesso restrito ao usuário; nenhum segredo vai para o arquivo do projeto nem para os logs | RN-11 | 🟢 |
+| Rede | O plugin declara a permissão de rede no manifesto e não faz nenhum acesso quando o acesso à internet do Blender está desligado (`bpy.app.online_access`); downloads nunca travam a interface | RN-13; `docs/rag/blender-api/corpus/bpy.app.md#bpy.app.online_access` | 🟢 |
 | Usabilidade | Telas limpas: a grade mostra imagem e nome; termos internos não aparecem. A direção visual da grade e do retângulo maximizado é definida com o fluxo `/impeccable` antes do plano | Princípio I (`.reversa/principles.md`); pedido do titular | 🟢 |
 | Usabilidade | Textos de tela em português, traduzíveis | Regra do repositório (`CLAUDE.md`, "Textos de UI") | 🟢 |
 | Robustez | Pasta ausente, fabricante vazio ou imagem ilegível viram aviso claro, nunca erro Python | Princípio VIII (`.reversa/principles.md`) | 🟢 |
 | Portabilidade | O projeto salvo continua mostrando as texturas em outro computador que tenha o plugin instalado, e a regra de empacotar a imagem ao salvar item segue valendo | `_reversa_sdd/questions.md#pergunta-60` | 🟡 |
-| Licença | Só entram no pacote as imagens dos 12 fabricantes de RN-01, sob a declaração de direito de redistribuição do titular (RN-07) | Decisão do titular, 2026-10-12 | 🟢 |
+| Licença | Nenhuma imagem em tamanho real dos fabricantes entra no pacote; elas são servidas pelo servidor da CAF Mob, sob a declaração de direito de distribuição do titular (RN-07) | Decisão do titular, 2026-10-12; plataforma de extensões só aceita conteúdo GPL | 🟢 |
 
 ## 7. Critérios de Aceitação
 
 ```gherkin
-Cenário: Texturas dos fabricantes já vêm no plugin
-  Dado uma instalação nova do plugin
+Cenário: Catálogo e miniaturas já vêm no plugin
+  Dado uma instalação nova do plugin, sem internet
   Quando o projetista abre a área Texturas da biblioteca
-  Então aparecem os 12 fabricantes de chapas de RN-01 organizados por coleção
+  Então aparecem os 12 fabricantes de chapas de RN-01 organizados por coleção, com miniaturas
   E nenhum fabricante de eletrodoméstico, vidro ou puxador aparece
+
+Cenário: Baixar sob demanda ao usar a textura
+  Dado o projetista com a conta CAF Mob conectada e uma textura ainda não baixada
+  Quando ele solta a textura sobre uma frente de balcão
+  Então o plugin mostra o progresso do download
+  E aplica a textura na frente quando o download termina
+
+Cenário: Usar uma textura sem estar conectado
+  Dado o projetista sem a conta CAF Mob conectada
+  Quando ele tenta aplicar uma textura ainda não baixada
+  Então o plugin pede para entrar com a conta
+  E nenhum material muda
+
+Cenário: Baixar tudo para uso offline
+  Dado uma conta CAF Mob com permissão para baixar tudo
+  Quando o projetista escolhe usar as texturas 100% offline
+  Então as 1.209 imagens ficam no computador
+  E, com a internet desligada, qualquer textura é aplicada
+
+Cenário: Sem internet
+  Dado o acesso à internet do Blender desligado
+  Quando o projetista aplica uma textura não baixada
+  Então aparece um aviso claro
+  E a interface continua respondendo
 
 Cenário: Arquivo de textura corrompido
   Dado um fabricante com um JPG ilegível
@@ -207,6 +266,8 @@ Cenário: Cancelar o arraste
 | RF-04, RF-05 | Must | Escolher e aplicar o acabamento real é o objetivo da primeira parte do pedido |
 | RF-08, RF-09, RF-10, RF-15, RF-16 | Must | Grade, minimizar, maximizar, fixar e não cobrir o plugin são pedidos explícitos do titular |
 | RF-11, RF-12, RF-13 | Must | Arrastar para a cena é pedido explícito; o caso negativo protege a cena |
+| RF-17, RF-18, RF-19, RF-20, RF-22 | Must | Sem conta, download e modo offline as texturas híbridas não funcionam |
+| RF-21 | Should | Retomar o download protege conexões instáveis, mas o download do zero ainda atende |
 | RF-06, RF-07 | Should | Escala ajustável e veio elevam o realismo, mas a textura já serve com o padrão |
 | RF-14 | Could | Só parte das texturas tem relevo (Eucatex 19, Formica 24) |
 | RNF de desempenho | Should | Com 1.209 texturas, ler tudo a cada redesenho trava a viewport (princípio IX) |
@@ -229,10 +290,28 @@ Cenário: Cancelar o arraste
 - **Q:** Qual o tamanho real padrão de uma textura que não tem tamanho de chapa inteira?
   **R:** 600 mm no maior lado, ajustável por textura. Confirmado em RN-04.
 
+### Sessão 2026-10-12 (2): armazenamento online
+
+- **Q:** Onde ficam as texturas, sabendo que a plataforma de extensões do Blender não aceita o pacote de ~600 MB nem
+  conteúdo não GPL?
+  **R:** Híbrido: catálogo e miniaturas no pacote; imagens em tamanho real no servidor da CAF Mob, baixadas quando
+  usadas. Substitui a resposta anterior ("dentro do pacote"). Atualizado em RN-07, RF-01, no cenário de instalação e
+  nos RNF de tamanho do pacote e licença.
+- **Q:** Em que estado está o site da CAF Mob para servir as texturas?
+  **R:** Esta feature define o contrato; o endereço do servidor fica configurável. Nova RN-14 e RF-22.
+- **Q:** Quem pode baixar as texturas?
+  **R:** Quem entra com uma conta CAF Mob. Nova RN-11, RF-17 e RNF de segurança.
+- **Q:** Quando as imagens grandes são baixadas?
+  **R:** Ao usar a textura, com a opção de usar as texturas 100% offline baixando tudo do servidor, quando a conta
+  tiver permissão. Novas RN-12 e RN-13, RF-18 a RF-21 e RNF de rede.
+
 ## 10. Lacunas
 
-- Nenhuma lacuna aberta. Ponto de atenção para o plano (não é dúvida): as 1.209 imagens (~576 MB) no pacote pedem
-  decidir como ficam no repositório, já que o `CLAUDE.md` versiona os `.blend` do pacote mas não os artefatos grandes.
+- Nenhuma lacuna aberta. Pontos de atenção para o plano (não são dúvidas):
+  - o formato do login da conta CAF Mob (por exemplo, código de autorização aberto no navegador ou usuário e senha
+    no plugin) é decisão técnica do contrato de RN-14;
+  - onde as imagens originais ficam no repositório e como chegam ao servidor (o pacote leva só catálogo e
+    miniaturas).
 
 ## 11. Histórico de alterações
 
@@ -240,3 +319,4 @@ Cenário: Cancelar o arraste
 |------|-----------|-------|
 | 2026-10-12 | Versão inicial gerada por `/reversa-requirements` | reversa |
 | 2026-10-12 | Sessão de esclarecimentos: 4 respostas integradas (RN-01, RN-04, RN-07, RN-09; RF-15 e RF-16 novos) | reversa-clarify |
+| 2026-10-12 | Segunda sessão: armazenamento híbrido com servidor CAF Mob (RN-07 reescrita; RN-11 a RN-14 e RF-17 a RF-22 novos) | reversa-clarify |

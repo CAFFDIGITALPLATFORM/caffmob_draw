@@ -77,6 +77,49 @@ Observações:
 - `SpaceView3D.draw_handler_add`: `docs/rag/blender-api/corpus/bpy.types.SpaceView3D.md#bpy.types.SpaceView3D.draw_handler_add`.
 - `AssetShelf` (avaliado e descartado): `docs/rag/blender-api/corpus/bpy.types.AssetShelf.md`.
 
+- `bpy.app.online_access`: `docs/rag/blender-api/corpus/bpy.app.md#bpy.app.online_access` (D-14).
+- `bpy.app.timers.register(function, *, first_interval=0, persistent=False)`:
+  `docs/rag/blender-api/corpus/bpy.app.timers.md#bpy.app.timers.register` (ponte do subprocesso, D-11).
+- Threads: `docs/rag/project/04_armadilhas.md#Threads`. Thread Python com Blender rodando derruba o programa;
+  trabalho independente vai para subprocesso com JSON, e o resultado é aplicado no thread principal. Isso decide D-11.
+
+## 4.1 Onde guardar as texturas (revisão 2, 2026-10-12)
+
+Levantamento sobre a plataforma de extensões do Blender (extensions.blender.org):
+- O limite de upload começou em 10 MB, em 2024, e foi aumentado. A referência mais recente aponta cerca de 200 MB,
+  e pacotes de 213 MB e de 750 MB foram rejeitados com o erro 413. Não há documento oficial com o número.
+- A plataforma só aceita conteúdo compatível com a GPL. As imagens dos fabricantes não são GPL, então não podem ir no
+  pacote publicado lá, seja qual for o tamanho.
+- O ZIP instalado por "Install from Disk" não tem esse limite. Mas um pacote de 600 MB obrigaria o usuário a baixar
+  tudo de novo a cada atualização de código.
+
+Fontes:
+- https://projects.blender.org/infrastructure/extensions-website/pulls/8
+- https://projects.blender.org/infrastructure/extensions-website/issues/130
+- https://projects.blender.org/infrastructure/extensions-website/issues/222
+- https://projects.blender.org/infrastructure/extensions-website/issues/328
+- https://extensions.blender.org/about/
+
+Decisão do titular: modelo híbrido (RN-07). Catálogo e miniaturas no pacote; imagens no servidor da CAF Mob.
+
+## 4.2 Login da conta CAF Mob
+
+| Alternativa | Senha passa pelo Blender | Suporta login social e 2FA do site | Complexidade no plugin | Escolha |
+|-------------|--------------------------|-------------------------------------|------------------------|---------|
+| **Código de dispositivo (OAuth 2.0 Device Authorization Grant, RFC 8628)** | Não | Sim, tudo acontece no navegador | Baixa: pedir código, abrir navegador, consultar | D-12 |
+| Usuário e senha no plugin | Sim (campo de propriedade, histórico de desfazer, memória) | Não | Baixa | Descartada (RNF de segurança) |
+| Redirecionamento para um servidor local (loopback, `127.0.0.1:<porta>`) | Não | Sim | Média: servidor HTTP local dentro do Blender e porta livre | Reserva, se o site não suportar o código de dispositivo |
+
+Referência: RFC 8628, https://www.rfc-editor.org/rfc/rfc8628.
+
+## 4.3 Rede sem travar o Blender
+
+| Alternativa | Toca `bpy` fora do thread principal | Dependência nova | Escolha |
+|-------------|--------------------------------------|------------------|---------|
+| **Subprocesso com o Python do Blender (`sys.executable`), `urllib.request`, JSON por linha, timer lendo o pipe** | Não | Nenhuma | D-11 |
+| Thread Python com `urllib` | Risco (guia do projeto proíbe thread viva com Blender) | Nenhuma | Descartada |
+| `requests` em wheel | Não, mas pede subprocesso do mesmo jeito | Wheel a mais | Descartada |
+
 ## 5. Provas a executar (princípio II)
 
 1. **Prova de D-05, miniatura na GPU.** Carregar 40 miniaturas pela coleção de previews, converter
@@ -87,7 +130,73 @@ Observações:
 2. **Prova de D-07, arraste.** Com `--enable-event-simulate`: pressionar numa célula, mover 20 px e soltar sobre um
    cubo. Para textura, conferir que o material muda só no cubo. Para bloco, conferir que a inserção existente assume
    o mouse e confirma na soltura. Registrar a sequência de eventos recebida pelo modal.
+3. **Prova de D-11 e D-12, conta e download.** Com o servidor falso (`tests/fake_texture_server.py`):
+   - código de dispositivo até a sessão gravada em 0600;
+   - download de uma imagem pelo subprocesso, com o timer aplicando o resultado e a interface respondendo durante o
+     download (redesenho a cada 0,1 s);
+   - corte da conexão no meio do download e retomada com `Range`;
+   - fechar o Blender com o download em andamento sem deixar processo órfão.
+   Registrar aqui os tempos e o comportamento.
 
-## 6. Resultado das provas
+## 6. Resultado das provas (2026-10-12, Blender 5.2.0 LTS, `xvfb-run`)
 
-_Pendente: preenchido pelas ações de prova do `actions.md`._
+### Prova de D-05, miniatura na GPU (`tests/blender_014_thumb_probe.py`, T001): confirmada
+
+`PROVA_D05 {'A': {'prontas': 40, 'vazias_no_1o_acesso': 0, 'redesenhos': 1, 'ms_por_miniatura': 23.69,
+'tamanho': (256, 256), 'images_em_bpy_data': 0}, 'B': {'prontas': 40, 'ms_por_miniatura': 1.86,
+'images_em_bpy_data': 40}}`
+
+- **Caminho A (escolhido):** `bpy.utils.previews` → `image_pixels_float` → `GPUTexture`. As 40 miniaturas ficam
+  prontas logo no primeiro acesso, sem pixels vazios, e nenhum `Image` é criado em `bpy.data`. D-05 está mantida.
+- **Custo:** cerca de 24 ms por miniatura, quase tudo na cópia dos pixels para o `Buffer` em Python. A reserva (B) é
+  mais rápida (1,9 ms), mas cria 40 imagens no arquivo do usuário.
+- **Consequência para a T027:**
+  - carregar no máximo um orçamento de cerca de 8 ms por quadro (2 ou 3 miniaturas) e redesenhar até completar as
+    visíveis;
+  - copiar os pixels com `foreach_get` num `array('f')` em vez de fatiar a lista, para reduzir o custo;
+  - nada de carregar as 1.209 de uma vez.
+
+### Refinamento de D-05 na T027 (`tests/blender_014_thumbs_gpu.py`)
+
+A medição com as miniaturas reais (256 px) mostrou duas coisas:
+- pelos previews, o custo é de cerca de 25 ms por miniatura, mesmo com `foreach_get`: o peso está na decodificação,
+  não na cópia;
+- carregando a `Image` com `bpy.data.images.load`, copiando os pixels para um `GPUTexture` próprio e removendo a
+  `Image` na mesma conversão, o custo cai para cerca de 9 ms, e nenhuma `Image` fica no arquivo.
+
+A T027 usa essa segunda via. Como criar e remover data-blocks dentro do callback de desenho não é seguro, a conversão
+roda num timer fora do desenho, com orçamento de 8 ms por chamada, e pede o redesenho. Resultado: 40 miniaturas em
+0,96 s, e cada chamada fica em 11 ms.
+
+### Prova de D-07, arraste (`tests/blender_014_drag_probe.py`, T002): confirmada
+
+`PROVA_D07 {'textura': {'atingido': 'Cube', 'eventos': 7, 'release_recebido': True, 'cor_aplicada': True},
+'bloco': {'insert_invocado': True, 'mousemove_no_insert': 2, 'release_no_insert': True, ...}}`
+
+- **Textura:** o modal que nasce no retângulo recebe os `MOUSEMOVE` e a soltura (`LEFTMOUSE RELEASE`); o ray-cast na
+  soltura acerta o objeto sob o mouse.
+- **Bloco:** um segundo modal chamado em `INVOKE_DEFAULT` de dentro do primeiro, que termina em seguida, recebe os
+  `MOUSEMOVE` seguintes e a soltura do mesmo botão. A passagem para a inserção existente (D-07) funciona.
+- **Cuidado para a T033:** o `event` que chega no `invoke` do segundo modal não é o evento corrente (veio como
+  `LEFTMOUSE RELEASE`). A inserção iniciada por arraste não deve ler o evento do `invoke`; ela confirma no primeiro
+  `LEFTMOUSE RELEASE` recebido no `modal`.
+
+### Prova de D-11 e D-12, conta e download em subprocesso (`tests/blender_014_net_probe.py`, T004): confirmada
+
+`PROVA_D11 {'login': True, 'retomada': True, 'hash_ok': True, 'redesenhos': 38, 'maior_intervalo_s': 0.066,
+'tempo_total_s': 1.87, 'sai_ao_fechar_stdin': True}`
+
+- **Login:** o código de dispositivo funciona contra o servidor falso (`tests/fake_texture_server.py`).
+- **Download:** 4 MB, com corte da conexão na metade. A retomada com `Range` completa o arquivo, e o sha256 confere
+  antes do rename.
+- **Interface:** enquanto o subprocesso baixa, a vista redesenha a cada 0,05 s, com no máximo 0,066 s entre quadros.
+  O timer no thread principal não trava. D-11 está mantida.
+- **Sem processo órfão:** o subprocesso termina sozinho quando o stdin fecha, que é o que acontece quando o Blender
+  sai.
+- **Duas lições para T020 e T021:**
+  - quando o servidor corta a conexão, o `read` devolve fim de arquivo sem exceção. O worker precisa comparar o
+    tamanho baixado com o esperado e tratar a diferença como queda (retomar);
+  - depois que o subprocesso termina, a ponte precisa esvaziar o pipe numa leitura final, senão as últimas mensagens
+    (como `done`) se perdem.
+- **Ambiente:** a primeira execução da prova travou no `xvfb-run` antes de qualquer subprocesso (colisão de display
+  virtual). As execuções seguintes rodaram normalmente. Não é efeito do código.

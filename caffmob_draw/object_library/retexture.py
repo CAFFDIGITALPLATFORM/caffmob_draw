@@ -10,6 +10,7 @@
 A troca vale para a cópia na cena: salvar de novo na biblioteca é opcional.
 """
 
+import math
 import os
 
 import bpy  # type: ignore
@@ -22,6 +23,8 @@ LIBRARIES = ("product_libraries/frameless/frameless_assets/materials/cabinet_mat
              "product_libraries/closets/assets/materials/library.blend")
 PATH_PROP = 'btm_texture_path'
 SIZE_PROP = 'btm_texture_size_mm'
+ROTATED_PROP = 'btm_texture_rotated'
+TEXTURE_ID_PROP = 'btm_texture_id'
 _names_cache = {}
 
 
@@ -68,15 +71,46 @@ def apply_finish(objs, name):
     return sum(1 for obj in targets(objs) if common.set_cutpart_material(obj, mat))
 
 
-def image_material(path, size_mm):
-    """Material de textura com escala real; reaproveita um igual (mesmo arquivo e tamanho)."""
+def _size_of(mat):
+    """(largura, altura) em mm gravados no material: float (imagem própria quadrada) ou par (feature 014)."""
+    raw = mat.get(SIZE_PROP, 0.0)
+    try:
+        width, height = float(raw[0]), float(raw[1])
+    except (TypeError, IndexError, KeyError):
+        width = height = float(raw)
+    return width, height
+
+
+def material_name(path, width_mm, height_mm, rotated=False):
+    size = "{:g} mm".format(width_mm) if abs(width_mm - height_mm) < 1e-6 else \
+        "{:g} × {:g} mm".format(width_mm, height_mm)
+    name = "Textura: {} {}".format(os.path.basename(path), size)
+    return name + " ROTATED" if rotated else name      # convenção do veio girado ('<nome> ROTATED', common.rotated)
+
+
+def image_material(path, size_mm, height_mm=None, rotated=False, texture_id=""):
+    """Material de textura com escala real; reaproveita um igual (mesmo arquivo, tamanho e veio).
+
+    `size_mm` é a largura (e a altura, se `height_mm` faltar); chapa retangular escala cada eixo pelo seu lado
+    (feature 014, D-08). `rotated` gira o veio 90° e dá o nome '<nome> ROTATED', que `common.set_cutpart_material`
+    procura para montantes e travessas. `texture_id` marca o material como do catálogo de texturas (D-09).
+    """
     path = os.path.abspath(path)
+    width = float(size_mm)
+    height = float(height_mm) if height_mm is not None else width
     for mat in bpy.data.materials:
-        if mat.get(PATH_PROP) == path and abs(float(mat.get(SIZE_PROP, 0.0)) - size_mm) < 1e-6:
-            return mat
+        if mat.get(PATH_PROP) == path and bool(mat.get(ROTATED_PROP, False)) == bool(rotated):
+            w, h = _size_of(mat)
+            if abs(w - width) < 1e-6 and abs(h - height) < 1e-6:
+                return mat
     image = bpy.data.images.load(path, check_existing=True)
-    mat = bpy.data.materials.new("Textura: {} {:g} mm".format(os.path.basename(path), size_mm))
-    mat[PATH_PROP], mat[SIZE_PROP] = path, float(size_mm)
+    mat = bpy.data.materials.new(material_name(path, width, height, rotated))
+    mat[PATH_PROP] = path
+    mat[SIZE_PROP] = width if abs(width - height) < 1e-6 else [width, height]
+    if rotated:
+        mat[ROTATED_PROP] = True
+    if texture_id:
+        mat[TEXTURE_ID_PROP] = texture_id
     tree = mat.node_tree
     bsdf = next(n for n in tree.nodes if n.type == 'BSDF_PRINCIPLED')
     coords = tree.nodes.new('ShaderNodeTexCoord')
@@ -85,8 +119,10 @@ def image_material(path, size_mm):
     tex.image = image
     tex.projection = 'BOX'
     tex.projection_blend = 0.2
-    scale = 1.0 / max(size_mm / 1000.0, 1e-4)
-    mapping.inputs['Scale'].default_value = (scale, scale, scale)
+    sx, sy = 1.0 / max(width / 1000.0, 1e-4), 1.0 / max(height / 1000.0, 1e-4)
+    mapping.inputs['Scale'].default_value = (sx, sy, sy)
+    if rotated:
+        mapping.inputs['Rotation'].default_value = (0.0, 0.0, math.radians(90.0))
     coords.location, mapping.location, tex.location = (-900, 0), (-700, 0), (-450, 0)
     tree.links.new(coords.outputs['Object'], mapping.inputs['Vector'])
     tree.links.new(mapping.outputs['Vector'], tex.inputs['Vector'])

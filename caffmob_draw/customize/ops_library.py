@@ -83,6 +83,8 @@ class BTM_OT_ModuleInsert(bpy.types.Operator, hb_placement.PlacementMixin):
 
     filepath: bpy.props.StringProperty(options={'HIDDEN'})  # type: ignore
     place: bpy.props.BoolProperty(default=True, options={'HIDDEN', 'SKIP_SAVE'})  # type: ignore
+    # Feature 014 (T033): vindo do arraste da biblioteca, o botão já está pressionado e a soltura confirma.
+    from_drag: bpy.props.BoolProperty(default=False, options={'HIDDEN', 'SKIP_SAVE'})  # type: ignore
 
     def execute(self, context):
         entry = _entry(self.filepath)
@@ -137,7 +139,7 @@ class BTM_OT_ModuleInsert(bpy.types.Operator, hb_placement.PlacementMixin):
             self.root.location = snapped
             for obj, offset in self.others.items():
                 obj.location = snapped + offset
-        if event.type == 'LEFTMOUSE' and event.value == 'PRESS':
+        if event.type == 'LEFTMOUSE' and (event.value == 'PRESS' or (self.from_drag and event.value == 'RELEASE')):
             hb_placement.clear_header_text(context)
             context.window.cursor_set('DEFAULT')
             return {'FINISHED'}

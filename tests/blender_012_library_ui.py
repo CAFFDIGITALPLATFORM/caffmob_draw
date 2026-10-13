@@ -4,8 +4,8 @@ Precisa de janela (não roda em --background):
     blender --factory-startup --enable-event-simulate --python tests/blender_012_library_ui.py
 
 Sem a extensão instalada, o HUD fica desligado (a preferência não existe): é o caso "painel sem o HUD" (RF-01).
-T023 (prova): o rótulo está no canto superior esquerdo, o clique abre a coluna, e clicar numa categoria abre o popover
-(`WindowManager.popover`) a partir do operador de keymap.
+T023 (prova): o rótulo está no canto superior esquerdo, o clique abre a coluna, e clicar numa categoria abre o conteúdo
+dela a partir do operador de keymap (desde a feature 014, T040, na grade do retângulo maximizado, aba Blocos).
 T040: Criar armário pelo diálogo (Enter) cria o módulo e abre o editor de armário; uma categoria criada aparece na
 coluna; com o painel fechado, o clique na viewport segue para a seleção (por componente, 011); Inserir sem as
 bibliotecas herdadas.
@@ -23,7 +23,6 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "tests"))
 import _blender_env  # noqa: E402,F401  (registra a extensão)
 from caffmob_draw.library_panel import draw as lib_draw  # noqa: E402
-from caffmob_draw.library_panel import popover  # noqa: E402
 
 FAILURES = []
 
@@ -80,12 +79,12 @@ def script():
           keys[:5] == ['CREATE_CABINET', 'CAT:Cozinha', 'CAT:Banheiro', 'CAT:Sala', 'CAT:Home office']
           and keys[-1] == 'CREATE_CATEGORY', str(keys))
 
-    before = popover._open['drawn']
     rect = dict(lay.items)['CAT:Cozinha']
     yield from click(win, *center(region, rect))
     yield 0.3
-    check("categoria abre o popover pelo keymap (T023)", popover._open['drawn'] > before and
-          popover._open['category'] == "Cozinha", f"desenhos={popover._open['drawn'] - before}")
+    # Feature 014 (T040): a categoria abre na grade do retângulo maximizado, aba Blocos (o popover fica de reserva).
+    check("categoria abre a grade da categoria pelo keymap (014, T040)", state.mode == 'MAX' and state.tab == 'BLOCKS'
+          and state.category == "Cozinha", f"{state.mode} {state.tab} {state.category}")
     check("categoria grava a linha", state.category == "Cozinha" and state.line == 'COZ',
           f"{state.category} {state.line}")
     ev(win, 'ESC', 'PRESS', region.x + 30, region.y + 30)

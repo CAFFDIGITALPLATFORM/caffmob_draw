@@ -54,6 +54,37 @@ def package_problems(source_dir):
     return problems
 
 
+def texture_problems(source_dir):
+    """Feature 014 (T039, D-04): o catálogo e todas as miniaturas listadas vão no pacote; imagem de fabricante em
+    tamanho real não vai (só o servidor da CAF Mob distribui, e ela não é conteúdo GPL)."""
+    import json
+    folder = os.path.join(source_dir, "textures")
+    catalog_path = os.path.join(folder, "catalog.json")
+    if not os.path.isfile(catalog_path):
+        return ["falta textures/catalog.json (rode tools/texturas_importar.py)"]
+    problems = []
+    try:
+        data = json.load(open(catalog_path, encoding="utf-8"))
+    except ValueError:
+        return ["textures/catalog.json inválido (rode tools/texturas_importar.py de novo)"]
+    listed = set()
+    for man in data.get("manufacturers", []):
+        for col in man.get("collections", []):
+            for item in col.get("items", []):
+                thumb = item.get("thumb", "")
+                listed.add(os.path.normpath(thumb))
+                if not os.path.isfile(os.path.join(folder, thumb)):
+                    problems.append(f"falta a miniatura textures/{thumb}")
+    for root, _dirs, files in os.walk(folder):
+        for file in files:
+            rel = os.path.normpath(os.path.relpath(os.path.join(root, file), folder))
+            if rel == "catalog.json" or (rel.startswith("thumbs" + os.sep) and rel in listed):
+                continue
+            problems.append(f"textures/{rel}: só o catálogo e as miniaturas listadas vão no pacote (imagem em "
+                            "tamanho real fica no servidor)")
+    return problems
+
+
 def build_zip():
     zip_filename = "caffmob_draw.zip"
     source_dir = "caffmob_draw"
@@ -71,7 +102,7 @@ def build_zip():
         print("Atualize o repositório (git pull) ou copie os arquivos antes de empacotar.")
         sys.exit(1)
 
-    problems = package_problems(source_dir)
+    problems = package_problems(source_dir) + texture_problems(source_dir)
     if problems:
         print("Error: o pacote não está pronto:")
         for problem in problems:
