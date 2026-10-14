@@ -17,6 +17,14 @@ Feature 008 (T018, T055; D-10, D-22):
 - `follow`: distanciador "p/ Divisão", posto no subvão logo depois da divisória seguida (offset 0), acompanha-a;
 - `remove_in_space`: "Sem Divisória" no subvão-folha tira a divisória que o criou e junta as metades.
 
+Feature 015 (T024; RN-15):
+- `INVISIBLE` (prateleira Invisível) e `DIVISION_ONLY` (Somente Divisão) dividem o subvão com espessura 0: não viram
+  peça nem entram no corte (`makes_part`);
+- `variant` guarda a variante do catálogo. `CORTA_SAR` faz a divisória vertical subir até o topo e corta os sarrafos
+  (`stretcher_cuts`); `ARAMADA` é ferragem, não chapa; `CORREDICA` é chapa com corrediças; `C_REB`,
+  `NAO_DIVIDE_FUNDO` e `MONTANTE` só ficam gravadas (o fundo já é uma peça única atrás das divisórias, 🟡);
+- `bay_width`: largura digitada do vão à esquerda de uma divisória de vão (`bays.py`).
+
 Códigos de mensagem: `DIV-001` subvão menor que o mínimo; `DIV-002` chapa com profundidade menor que o mínimo;
 `DIV-003` o subvão da divisão não existe mais (todos erro: impedem o Confirmar).
 """
@@ -34,6 +42,9 @@ DEFAULT_SETBACK = 0.02  # m (RN-13)
 VERTICAL = 'VERTICAL'
 HORIZONTAL = 'HORIZONTAL'
 FIXED, MOVABLE, SPACER = 'FIXED', 'MOVABLE', 'SPACER'
+INVISIBLE, DIVISION_ONLY = 'INVISIBLE', 'DIVISION_ONLY'
+NO_PART = (INVISIBLE, DIVISION_ONLY)
+CORTA_SAR, ARAMADA, CORREDICA = 'CORTA_SAR', 'ARAMADA', 'CORREDICA'
 _AXIS = {VERTICAL: 0, HORIZONTAL: 2}
 
 
@@ -64,6 +75,8 @@ class Division:
     kind: str = FIXED
     follow: str = ""
     bay: bool = False
+    variant: str = ""
+    bay_width: float = 0.0
 
 
 def new_uid():
@@ -77,6 +90,24 @@ def to_dict(division):
 def from_dict(data):
     names = Division.__dataclass_fields__
     return Division(**{k: v for k, v in data.items() if k in names})
+
+
+def makes_part(division):
+    """A divisão vira chapa no 3D e no corte? Invisível, Somente Divisão e prateleira Aramada não (feature 015)."""
+    return division.kind not in NO_PART and division.variant != ARAMADA
+
+
+def stretcher_cuts(cuts, divisions):
+    """[(x0, x1)] das divisórias verticais "Corta Sar": a faixa que corta os sarrafos da estrutura (feature 015).
+
+    `cuts` = {uid: (subvão, chapa Box)} do `resolve`.
+    """
+    out = []
+    for division in divisions:
+        if division.variant == CORTA_SAR and division.orientation == VERTICAL and division.uid in cuts:
+            plate = cuts[division.uid][1]
+            out.append((plate.lo[0], plate.hi[0]))
+    return sorted(out)
 
 
 def children(path):
@@ -142,7 +173,7 @@ def middle_offset(space, orientation, thickness):
 
 
 def add(roots, divisions, space, orientation, thickness, *, use_front=False, front=DEFAULT_SETBACK, use_back=False,
-        back=DEFAULT_SETBACK, uid=None, kind=FIXED, follow="", bay=False, offset=None):
+        back=DEFAULT_SETBACK, uid=None, kind=FIXED, follow="", bay=False, offset=None, variant=""):
     """Nova divisão no subvão-folha `space`: no meio, ou encostada na face esquerda/de baixo se for distanciador.
 
     Erro (ValueError) se o subvão não for uma folha.
@@ -151,10 +182,13 @@ def add(roots, divisions, space, orientation, thickness, *, use_front=False, fro
     box = leaves.get(space)
     if box is None:
         raise ValueError(tr("Escolha um vão livre para a divisão"))
+    if kind in NO_PART:
+        thickness = 0.0                         # divide sem chapa (feature 015)
     if offset is None:
         offset = 0.0 if kind == SPACER else middle_offset(box, orientation, thickness)
     division = Division(uid or new_uid(), space, orientation, float(offset), float(thickness), bool(use_front),
-                        float(front), bool(use_back), float(back), kind=kind, follow=follow, bay=bay)
+                        float(front), bool(use_back), float(back), kind=kind, follow=follow, bay=bay,
+                        variant=variant)
     return list(divisions) + [division]
 
 

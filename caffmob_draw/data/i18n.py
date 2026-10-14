@@ -50,8 +50,22 @@ def _schema_entries():
     return {pt: {'pt_BR': pt, 'en_US': en} for pt, en in pairs}
 
 
+def _structure_entries():
+    """Nomes das estruturas de caixa e dos ambientes (feature 015), do próprio catálogo (label_pt → label_en)."""
+    path = os.path.join(os.path.dirname(__file__), 'cabinet_structures.json')
+    try:
+        with open(path, encoding='utf-8') as handle:
+            data = json.load(handle)
+    except (OSError, ValueError):
+        return {}
+    items = list(data.get('environments') or []) + list(data.get('structures') or [])
+    return {i['label_pt']: {'pt_BR': i['label_pt'], 'en_US': i.get('label_en') or i['label_pt']}
+            for i in items if isinstance(i, dict) and i.get('label_pt')}
+
+
 def load_catalog():
     catalog = _schema_entries()
+    catalog.update(_structure_entries())
     for name in sorted(os.listdir(FOLDER)):
         if name.endswith('.json'):
             with open(os.path.join(FOLDER, name), encoding='utf-8') as handle:

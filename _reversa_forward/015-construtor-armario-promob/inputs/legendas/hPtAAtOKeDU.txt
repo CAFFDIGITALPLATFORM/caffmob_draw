@@ -1,0 +1,132 @@
+[0:06] Olá nesse vídeo eu vou mostrar para
+[0:07] vocês como construir um armário com
+[0:10] portas de correr no construtor de
+[0:12] armários seleciono a parede onde eu
+[0:15] quero posicionar o meu armário clico
+[0:18] aqui no no ícone construir
+[0:21] armário vou escolher o tipo de armário
+[0:25] neste caso vou pegar o portas
+[0:27] deslizantes internas com rodapé
+[0:33] posicionar ele aqui mais no meio da
+[0:34] minha
+[0:35] parede Vou colocar ali a medida da
+[0:44] largura
+[0:46] altura e o número de vão pelo tamanho
+[0:50] automaticamente ele já foi para para
+[0:53] dois tá Mas neste caso eu quero
+[0:58] três
+[1:02] aqui em cima ele tem uma vista superior
+[1:06] fica a critério se tu quer manter ou não
+[1:08] neste caso eu vou tirar
+[1:12] fora seleciono vão divisões
+[1:18] horizontal tenho prateleiras móveis
+[1:20] prateleiras fixas eu vou colocar Fixa
+[1:24] aqui não divide fundo com recuo frontal
+[1:27] para não bater nas portas de correr
+[1:32] vou posicionar ali a altura que eu quero
+[1:36] ela posso apertando control e
+[1:39] selecionando ela Posso copiar ela pro
+[1:47] lado seleciono o vão neste primeiro vão
+[1:52] aqui eu
+[1:54] quero dois tubos para
+[1:57] cabide para posicionar de baixo eu devo
+[2:01] colocar aqui uma prateleira invisível
+[2:04] para dar essa
+[2:06] divisão ó seleciono ali embaixo vou em
+[2:10] internos e coloco o outro Quando eu der
+[2:14] o ok e o meu móvel aparecer lá no meu
+[2:17] projeto essa prateleira aqui ela não
+[2:21] aparece tá ela é só para dar essa
+[2:23] divisão mesmo ela também não
+[2:28] orça
+[2:31] aqui no meio eu vou colocar um gaveteiro
+[2:33] e vou fazer uma
+[2:37] comeia vou posicionar a altura que eu
+[2:43] quero aqui eu vou colocar o
+[2:46] gaveteiro interna para trilho a gaveta
+[2:49] de baixo ela é um pouquinho mais alta
+[2:53] para não pegar no trilho quando abrir a
+[2:56] gaveta Então quando for roupeiro de
+[2:58] porta de corr
+[3:00] sempre essa opção interna para trilho
+[3:03] aqui são os afastadores né como aqui o
+[3:06] meu gaveteiro vai ficar no meio eu vou
+[3:08] manter o esquerdo e o direito para
+[3:10] quando abrir a gaveta não bater nas
+[3:13] portas essa gaveta de baixo aqui eu
+[3:16] quero ela maior mais alta do que as
+[3:21] demais vou clicar nela gaveta para
+[3:25] trilho e vou alterar aqui a medida
+[3:28] dela
+[3:32] aqui no meio eu vou fazer uma comeia
+[3:35] divisões
+[3:37] posso fazer com inserção
+[3:46] múltipla e aqui eu vou fazer um
+[3:50] cabideiro e algumas
+[3:58] prateleiras
+[4:00] determinar a
+[4:02] medida aqui em cima eu vou colocar a
+[4:05] barra de
+[4:07] cabide e aqui eu
+[4:11] vou fazer a
+[4:28] divisão
+[4:31] notem a diferença entre a prateleira
+[4:33] fixa e a prateleira móvel a fixa
+[4:36] normalmente ela cria essa
+[4:46] racha aqui nesse espaço eu quero manter
+[4:50] para pôr os longos então eu vou tirar
+[4:53] esse pedaço da prateleira fora com duplo
+[4:55] clique
+[4:58] delete
+[5:01] aqui nesse encontro de peças também eu
+[5:04] posso alterar com o editor de
+[5:08] encontros escolho maneira que fica
+[5:11] melhor vou manter como
+[5:15] está depois eu vou aqui nas
+[5:20] portas vou inserir e ele vai me me dar
+[5:24] uma mensagem onde eu posso editar as
+[5:27] portas no momento que eu der o ok aqui
+[5:29] para
+[5:31] colocar o roupeiro dentro do meu
+[5:35] ambiente tá Prontinho dou ok ele vai
+[5:39] abrir o editor das
+[5:42] portas abri o editor das portas A única
+[5:47] coisa que eu mexo aqui é o número de
+[5:49] portas aqui ele tá com duas tá onde se
+[5:53] eu fosse fazer com duas mesmo eu poderia
+[5:55] determinar Qual das portas eu gostaria
+[5:58] que ficasse na fr
+[6:00] né mas no meu caso aqui são três portas
+[6:04] eu vou alterar apenas o número de portas
+[6:06] o restante já tá configurado certinho
+[6:09] não vou mexer Tá vou dar um
+[6:18] ok Aqui tá o meu
+[6:25] armário vou ocultar as
+[6:28] portas ó notem que a prateleira que eu
+[6:31] coloquei aqui para fazer a divisão ela
+[6:33] não aparece
+[6:35] tá e as minhas gavetas elas vêm com o
+[6:39] puxador gola eu vou alterar
+[6:44] aqui reta com
+[6:47] rebaixo ela vai ficar à frente um pouco
+[6:50] mais baixa com um espaço para colocar a
+[6:52] mão ali então e abrir a gaveta como o
+[6:56] roupeiro fica fechado não tem
+[6:58] necessidade de de ter a a gaveta mais
+[7:01] alta e com puxador fica a critério do
+[7:09] projetista as portas
+[7:15] Então como vocês observaram antes eu não
+[7:19] mexi em nada ela já tá certinha no
+[7:22] tamanho da do vão do meu
+[7:28] armário
+[7:30] na porta do meio aqui eu vou colocar
+[7:32] espelho eu dou um duplo clique nela
+[7:38] seleção perfil 45 mais
+[7:43] gola o miolo eu vou escolher
+[7:47] vidro e aqui eu vou escolher o
+[7:52] espelho para colocar as portas
+[7:55] madeiradas dou um duplo
+[7:57] clique venho aqui
+[8:00] escolho uma
+[8:07] cor na outra a mesma
+[8:13] coisa e é isso aí tá pronto o meu

@@ -295,8 +295,8 @@ def script():
     payload = json_exporter.build_global_payload(project={"name": "008"}, standard={}, parts=parts,
                                                  modules=part_extractor.module_entries(ctx.scene),
                                                  hardware=hardware.collect(ctx.scene))
-    check("JSON 2.2.0 válido, com ferragens e furação",
-          payload["schema_version"] == "2.2.0" and not json_exporter.validate_global_json(payload)
+    check("JSON 2.3.0 válido, com ferragens e furação",
+          payload["schema_version"] == "2.3.0" and not json_exporter.validate_global_json(payload)
           and payload["hardware"] and any(p["drilling"] for p in payload["parts"]),
           str(json_exporter.validate_global_json(payload)[:3]))
     name = names[-1]

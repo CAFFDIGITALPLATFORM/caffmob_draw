@@ -34,6 +34,29 @@ class BaysTest(unittest.TestCase):
         self.assertIn("c1", [d.uid for d in rest])
         self.assertEqual(bays.removed(divs, rest), [d.uid for d in divs if d.bay and d.space == 's0.b'])
 
+    def test_vao_digitado_redistribui_nos_vizinhos(self):
+        # Feature 015 (T010; RN-14, D-15): 3000 com 3 vãos e chapa 18 → interno 2964, vãos de 976
+        self.assertEqual([round(w, 6) for w in bays.widths(2.964, 3, 0.018)[0]], [0.976] * 3)
+        found, short = bays.widths(2.964, 3, 0.018, [0.0, 0.900])
+        self.assertIsNone(short)
+        self.assertEqual([round(w, 6) for w in found], [1.014, 0.9, 1.014])
+
+    def test_vao_digitado_que_nao_cabe_e_recusado(self):
+        found, short = bays.widths(2.964, 3, 0.018, [0.0, 2.9])
+        self.assertIsNone(found)
+        self.assertLess(short, bays.MIN_WIDTH)
+        # o plano volta aos vãos iguais
+        plan = bays.plan(dv.Box((0, 0, 0), (2.964, 0.5, 2.0)), 3, 0.018, [0.0, 2.9])
+        self.assertAlmostEqual(plan[0][1], 0.976)
+
+    def test_largura_gravada_na_divisoria_vale_no_apply(self):
+        space = {'s0': dv.Box((0.0, 0.0, 0.0), (2.964, 0.5, 2.0))}
+        divs = bays.apply(space, [], 3, 0.018)
+        divs = [dv.replace(d, bay_width=0.9) if d.space == 's0.b' else d for d in divs]
+        again = bays.apply(space, divs, 3, 0.018)
+        offsets = {d.space: round(d.offset, 6) for d in again}
+        self.assertEqual(offsets, {'s0': 1.014, 's0.b': 0.9})
+
     def test_um_vao(self):
         self.assertEqual(bays.apply(ROOT, bays.apply(ROOT, [], 3, T), 1, T), [])
 

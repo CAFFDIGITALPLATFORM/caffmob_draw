@@ -1,0 +1,92 @@
+[0:00] seja bem vindo à primeira aula do curso
+[0:03] promove aula rápida e prática
+[0:05] então a gente vamos perder muito tempo
+[0:08] aqui
+[0:08] essa é a tela inicial do promob certo
+[0:11] quando você liga a vila nova já vai cair
+[0:14] nessa tela
+[0:15] a interface dela aqui ó seja vai aqui em
+[0:17] ferramentas preferências
+[0:19] ok geral aqui idiomas projeto aqui onde
+[0:26] o projeto será salvo seja marca aqui
+[0:29] outra basta um clique aqui
+[0:33] nenhuma pasta aqui o nariz e trabalho
+[0:35] você pode criar uma nova que eu criei
+[0:37] cursos ok então já dá o ok tais todos os
+[0:41] seus projetos irão ser salvos lá o
+[0:48] ambiente do fundo preenchimento é a onu
+[0:54] que os móveis né
+[0:56] o ambiente irá aparecer com linha chapa
+[0:58] de 107 ó texturas com minhas eu acho
+[1:01] melhor porque você vê tantas linhas com
+[1:03] a textura do módulo acordo é que seja o
+[1:05] tipo de ideia
+[1:07] deixa assim mesmo concessões para a
+[1:09] movimentação
+[1:11] vamos nós com as luzes tudo deixa assim
+[1:15] para ele deixa assim também 400 medidas
+[1:19] deixa sempre em milímetros quanto mais
+[1:22] preciso melhor internet não mexe na da
+[1:25] listagem também não mexe nada ok então
+[1:30] já feito isso você vai tem dados do
+[1:32] cliente
+[1:33] aqui você vai colocar os dados do
+[1:34] cliente o nome-código aqui do da
+[1:37] produção é da empresa por exemplo 101
+[1:39] que é o primeiro projeto a gente vai
+[1:41] fazer
+[1:41] o nome do cliente coloca santa maria
+[1:46] então se você pensa seus dados ou da
+[1:51] empresa no caso o nome do seu bairro
+[1:55] onde você mora onde essa empresa fica
+[1:58] responsável e meio e as coisas então ir
+[2:05] para o projeto
+[2:06] aí você já vai com o ambiente 3d
+[2:10] esse é um ambiente 3d
+[2:12] aqui você tem todas as ferramentas que
+[2:15] você vai usar dentro do projeto de
+[2:18] eletrodomésticos alguns módulos já
+[2:20] prontos também inclusive tem um favorito
+[2:23] saque que se pode fazer alguns móveis e
+[2:26] colocar em favoritos para ficar saudável
+[2:29] fica mais fácil se não ficar criando
+[2:30] sempre que for fazer algo diferente
+[2:32] então essa movimentação aqui é feita da
+[2:38] seguinte forma com o golo do mouse você
+[2:41] indo pra frente e lhe dá um zoom
+[2:42] voltando tirou o zoom clicando
+[2:46] pressionando o rolo do mouse e aparece
+[2:48] essa mãozinha tá vendo aí você arrasta
+[2:50] ele movimenta o ambiente pra você
+[2:54] movimentar e rotacional ambiente você
+[2:56] clica com o botão auxiliar direito ou
+[3:00] esse direito do móvel onde aperta
+[3:02] aparece a rotação
+[3:04] continuo impressionado rolo aí o que eu
+[3:06] faço eu olho pra todos os anos
+[3:09] é muito importante você pega bastante
+[3:12] prática desse movimento porque você vai
+[3:14] facilitar muito na hora de você criar o
+[3:15] seu projecto melhor você tiver esse
+[3:17] movimento mais rápido você conseguirá
+[3:20] chegar a um resultado
+[3:21] ok então todas as ferramentas são tudo
+[3:25] está aqui
+[3:26] seguindo a seqüência de cima para baixo
+[3:28] a tramontina cliquei tramontina embaixo
+[3:31] me dá as opções dela o top por exemplo
+[3:33] eu criei um golpe top mais abaixo eu
+[3:36] pego um tipo de button então na
+[3:38] seqüência mais um sobe e vai descendo
+[3:40] igualmente em materiais você clicou é aí
+[3:46] vêm aqui na parte de baixo e vai te dar
+[3:49] o que você quer dele embaixo também tem
+[3:52] horizontal e vertical sempre descendo a
+[3:54] seqüência vai descendo
+[3:57] então tudo que você quer estar nessa
+[3:59] interface e então você pega bem esse
+[4:02] movimento que vai ser primordial para a
+[4:05] gente fazer um projeto rápido bem
+[4:08] elaborado né
+[4:09] a não perder muito tempo ok então é isso
+[4:12] vamos seguir para a segunda aula

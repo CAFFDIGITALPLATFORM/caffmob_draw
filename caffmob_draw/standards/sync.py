@@ -248,7 +248,24 @@ def apply_to_module(context, obj, definition, values):
     clear_overrides(obj)
     obj[STANDARD_UID_PROP] = definition.uid
     obj[LINE_PROP] = cab.line
+    _migrate_structure(cab)                      # feature 015 (T037; RN-22, D-06)
     update_cabinet_geom(cab, context)
+
+
+def _migrate_structure(cab):
+    """Módulo de antes da 015 recebe a estrutura de caixa equivalente ao reaplicar o padrão (chapas da estrutura)."""
+    if cab.structure_id:
+        return False
+    from ..cabinet_editor import structures_core
+    recipe = structures_core.get(structures_core.load().legacy_structure(cab.line, cab.cabinet_type))
+    if recipe is None:
+        return False
+    from ..data.properties import suspended_geometry
+    with suspended_geometry():
+        cab.structure_id = recipe.id
+        for role in ('TOP', 'BOTTOM', 'BACK', 'LEFT', 'RIGHT'):
+            setattr(cab, 'has_' + role.lower(), recipe.has(role))
+    return True
 
 
 def _apply_definition(scene, definition, include_manual, changed_keys, modules=None):

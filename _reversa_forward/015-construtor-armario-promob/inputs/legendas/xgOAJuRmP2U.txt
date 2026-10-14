@@ -1,0 +1,428 @@
+[0:00] e se você chegou agora nesse vídeo
+[0:01] querendo saber como inserir portas
+[0:03] deslizantes no Promob as famosas portas
+[0:06] de correr Então você tá no lugar certo
+[0:08] porque nesse vídeo eu vou te mostrar
+[0:10] várias formas de você inserir portas
+[0:12] deslizantes nos seus armários de
+[0:14] dormitórios e também portas de passagem
+[0:17] e mais importante da forma correta Como
+[0:20] manda boa prática no projeto de
+[0:22] imobiliária
+[0:25] mas antes de irmos para o vídeo de fato
+[0:26] eu preciso te fazer um convite caso você
+[0:28] seja novo aqui no canal se inscreva
+[0:30] deixa o teu like para fortalecer o nosso
+[0:33] canal Ative o Sininho das notificações
+[0:35] para não perder nenhum vídeo novo e
+[0:37] compartilha esse vídeo com outros
+[0:39] colegas projetista seus que assim como
+[0:41] você eu tenho certeza que vão se
+[0:42] beneficiar aqui dos nossos conteúdos
+[0:44] dito isto vamos então ao vídeo muito bem
+[0:47] então você tá com seu promove aberto tá
+[0:49] com armário de dormitório e quer inserir
+[0:51] portas deslizantes as famosas as portas
+[0:54] de correr enfim nós temos várias
+[0:56] possibilidades até porque existem
+[0:57] sistemas diferentes e é isso que eu
+[0:59] quero te mostrar aqui nesse vídeo vamos
+[1:01] lá separei aqui três armários para que
+[1:03] você veja as três possibilidades mais
+[1:06] usuais que nós temos de inserir portas
+[1:08] deslizantes aí nesses roupeiros Então a
+[1:10] primeira delas você vai identificar que
+[1:13] vai ser o sistema mais convencional e o
+[1:16] que eu considero um dos melhores que é o
+[1:18] sistema tipo piso teto ele é chamado
+[1:20] assim porque nós temos um trilho
+[1:22] inferior e um trilho guia superior ou
+[1:24] seja ele vai do piso é o teto ou até uma
+[1:26] base superior independente do tipo do
+[1:28] teu Promob se é um Promob Studio Plus ou
+[1:31] outro você vai ter algumas
+[1:32] possibilidades que são inerentes a todos
+[1:34] eles que nem aqui eu tenho nesse meu
+[1:36] aqui que a versão Educacional eu tenho
+[1:38] dentro da aba do dormitórios da
+[1:40] modulação eu venho aqui em portas
+[1:42] deslizantes então tem algumas
+[1:43] possibilidades de portas deslizantes e
+[1:45] eu tenho também aqui portas deslizantes
+[1:47] de parceiros que você pode buscar de
+[1:50] empresas parceiras que fornecem os
+[1:52] sistemas vão ser muito parecidos entre
+[1:54] si volto aqui na porta nas portas
+[1:56] deslizantes Então eu tenho aqui interna
+[1:59] externa ou embutida Esses são os três
+[2:02] principais tipos de sistema interno é o
+[2:05] sistema piso teto que Eu mencionei
+[2:06] anteriormente externo é o sistema tipo
+[2:08] flutuante que ele vai fazer com que as
+[2:11] portas ficam flutuando abraçadas aí a
+[2:13] estrutura do armário e embutida vai
+[2:15] fazer com que as próprias laterais do
+[2:17] roupeiro sem precisar de tamponamento
+[2:19] sirvam de batente para essas portas daí
+[2:22] o nome embutida vamos lá a primeira
+[2:23] delas Então vou com a interna você vai
+[2:27] identificar vou selecionar aqui primeiro
+[2:29] a uma porta de um painel apenas você
+[2:31] pode selecionar a porta que você quiser
+[2:32] um painel dois painéis enfim tanto faz
+[2:35] vou selecionar essa aqui e agora olha só
+[2:38] nesse caso aqui veja que tem aqui uma
+[2:40] varinha mágica sobre cada uma desses
+[2:42] modelos significa que tem um sistema de
+[2:44] inserção automática E é exatamente esse
+[2:47] sistema que nós vamos buscar essa forma
+[2:49] de inserção que nós vamos buscar para
+[2:51] isso você então tem que se aproximar do
+[2:53] primeiro ponto que vai ser esse ponto
+[2:55] aqui é o vértice da lateral superior do
+[2:57] teu armário eu clico então na minha
+[2:59] porta arrasto e não largo ainda até
+[3:02] aparecer esse ponto vermelho apareceu
+[3:04] larga sobre ele e depois identifica o
+[3:07] segundo ponto que é o ponto oposto a ele
+[3:09] né o outro vértice da outra lateral aqui
+[3:12] final dele apareceu o pontinho vermelho
+[3:14] clica pronto com isso então abre-se o
+[3:17] editor de portas agora é onde a mágica
+[3:19] acontece onde nós vamos configurar a
+[3:21] nossa porta tem aqui uma planta baixa né
+[3:24] Onde eu consigo visualizar o roupeiro eu
+[3:26] posso inclusive aplicando aqui trocar a
+[3:29] orientação das portas para que uma
+[3:31] esquerda fique para frente ou para trás
+[3:32] Tanto faz você pode trocar isso aqui e
+[3:36] você vem aqui em configuração número de
+[3:38] portas são duas portas afinal de contas
+[3:40] meu armário tem dois vãos largura das
+[3:42] portas isso aqui é automático porque
+[3:44] você já pegou os pontos lá do armário o
+[3:46] transpasse Normalmente também é
+[3:48] automático que vai ser 10 mm folga zero
+[3:51] afastamento zero aqui você não precisa
+[3:53] mexer comprimento também a altura em
+[3:57] relação ao piso também a altura da
+[3:59] estrutura também enfim isso aqui você
+[4:00] não precisa mexer porque você já indicou
+[4:02] os pontos e o Promob identificou para
+[4:04] você em Trilhos você vem aqui ó trilho
+[4:07] superior duplo trilho inferior duplo Ok
+[4:10] é o que a gente precisa laterais aqui no
+[4:13] caso ele tá me pedindo aos tamponamentos
+[4:15] que eu vou colocar aí junto dessa minha
+[4:18] estrutura afinal de contas é um sistema
+[4:19] que precisa de tamponamento eu vou
+[4:21] colocar aqui por exemplo 680
+[4:24] porque normalmente ele precisa de dessa
+[4:28] dessa profundidade para poder ficar
+[4:30] ficar bem ficar legal ali no Promob E aí
+[4:33] você tem a opção de remover as laterais
+[4:35] caso você queira eu não quero remover as
+[4:37] laterais as laterais fazem parte da
+[4:39] estrutura do armário fechamento aí tem
+[4:41] linear superior que eu vou deixar e o
+[4:43] linear inferior Eu não vou usar depois
+[4:45] você já vai ver porque a altura o
+[4:47] fechamento inferior aqui você não
+[4:49] precisa mexer frente selecionada também
+[4:51] não basta você clicar agora em Ok pronto
+[4:54] com isso você de uma forma simples
+[4:57] rápida e Como manda boa prática inseriu
+[5:00] as portas deslizantes aí no teu armário
+[5:02] Olha só ele então se eles inseriu os
+[5:05] tamponamentos que eu indiquei aqui né o
+[5:08] tamponamento esquerdo tamponamento
+[5:09] direito tanto que essa estrutura ficou
+[5:11] uma estrutura única eu até posso ocultar
+[5:14] para você ver ó quando eu contei o
+[5:16] armário Ficou ali né eu tenho aqui a
+[5:19] base superior é uma travessa superior Eu
+[5:21] tenho esse acabamento que eu quis deixar
+[5:23] mas que eu posso deletar também aqui ó
+[5:25] apareça o trilho é de gosto de cada um E
+[5:27] aqui embaixo eu eu prefiro trabalhar com
+[5:30] o trilho direto no piso se você quer
+[5:32] trabalhar com um tamponamento ali não
+[5:34] tem problema eu prefiro trabalhar assim
+[5:35] acredito que o visual penso que fica
+[5:38] muito mais bonito muito mais
+[5:40] interessante e inclusive de acordo com a
+[5:42] porta o acabamento da porta que você for
+[5:44] trabalhar fica
+[5:46] visualmente mais bonito mas é gosto você
+[5:49] pode trabalhar com acabamento inferior
+[5:51] sem problema algum Então veja aqui nesse
+[5:54] sistema esse sistema interno é o sistema
+[5:56] piso teto onde tem carros inferiores nas
+[5:59] portas que vão correr sobre o trilho e o
+[6:02] peso da porta está sobre esse trilho aí
+[6:03] aqui em cima Esse trilho é um trilho
+[6:06] guia ele serve apenas para guiar as
+[6:08] portas Então não precisa ter reforço nem
+[6:10] nada disso porque apenas serve como guia
+[6:13] Então esse é o primeiro sistema o
+[6:15] sistema então de portas internas ou
+[6:17] ainda é chamado sistema piso teto você
+[6:20] vai ver no mercado fabricantes de
+[6:22] sistemas de portas deslizantes Nos quais
+[6:24] vão chamar várias coisas mas todos eles
+[6:26] entendem que um sistema piso teto ele
+[6:28] corre embaixo e Guia por cima a outra
+[6:31] possibilidade aqui é nós fazemos externo
+[6:34] né que aí muda um pouquinho vou agora
+[6:35] para diferenciar aqui no nosso desenho
+[6:37] vou pegar portas de dois painéis pode
+[6:39] ser quaisquer portas você identificar
+[6:42] aqui vou fazer a mesma coisa vem aqui
+[6:44] dois painéis clico arrasto largo no
+[6:48] primeiro ponto e vou largar No segundo
+[6:50] ponto
+[6:56] aqui no caso é importante que você
+[6:58] sempre lembre de não remover as laterais
+[7:01] afinal de contas nós vamos precisar
+[7:03] delas elas são importantes aí nesse tipo
+[7:05] de armário aqui a profundidade nós
+[7:07] podemos deixar aqui ver como o sistema
+[7:09] se comporta alguns tipos de sistemas
+[7:11] precisam que essa profundidade seja um
+[7:14] pouco maior um pouco menor a gente vai
+[7:15] ver como tá aqui nativo da modulação do
+[7:18] Promob e identificamos caso precisarmos
+[7:20] nós mudamos depois feito isso então Já
+[7:23] desmarquei ele remover laterais eu clico
+[7:26] em Ok pronto com isso então nosso
+[7:28] sistema foi criado lembrando nós temos
+[7:30] agora um trilho superior onde essa porta
+[7:32] esse sistema abraça aqui o trilho corre
+[7:36] por cima e por baixo ele guia é
+[7:38] diferente do anterior esse trilho aqui
+[7:40] de baixo ele serve como guia as portas
+[7:43] aqui vão ser enviadas no caso todo o
+[7:46] peso Diferentemente do anterior que o
+[7:48] peso era embaixo agora o superior vai
+[7:51] ser por cima Esse sistema aqui é um
+[7:53] sistema Como disse genérico nativo do
+[7:55] Promob
+[7:56] sistemas chamados de flutuantes vão se
+[7:58] comportar muito muito parecido como esse
+[8:01] aqui também para fazer esse exemplo eu
+[8:03] vou deletar esse sistema e vou inserir
+[8:05] nesse mesmo da armário aqui um sistema
+[8:07] externo de um parceiro para que nós
+[8:09] verifiquemos como eles se comporta
+[8:11] também aí para isso então eu vou aqui
+[8:14] num parceiro posso pegar aqui Village
+[8:16] por exemplo e aqui eu venho externo e aí
+[8:19] eu vou pegar um sistema aqui mesma coisa
+[8:21] também vai funcionar quando eu tenho a
+[8:23] varinha mágica aqui do lado do nosso
+[8:24] item de modulação significa que eu posso
+[8:26] fazer esse tipo de inserção então eu
+[8:28] clico nele vem aqui eu digo o primeiro
+[8:30] ponto depois segundo ponto pronto aí
+[8:34] então indicou tendo as portas aqui é
+[8:36] tudo automático aqui nos trilhos veja
+[8:38] tem um trilho duplo inferior e superior
+[8:40] também
+[8:42] laterais no caso aqui não vou não vou
+[8:44] estender aquelas estender para esquerda
+[8:47] não vou fazer isso laterais vou remover
+[8:49] né vou desmarcar remover laterais eu
+[8:52] preciso das laterais aqui tem os
+[8:54] tamponamentos frente selecionados Ok
+[8:56] pronto com isso então ele criou uma
+[8:59] outra estrutura né um tamponamento já
+[9:02] prevendo isso mas novamente veja aqui eu
+[9:04] tenho trilho superior a porta ela avança
+[9:07] para poder Esse sistema abraçar o trilho
+[9:10] superior e fazer com que ela seja
+[9:14] estruturada ou seja o peso dela Fique
+[9:16] por cima mesmo e aqui embaixo você vai
+[9:20] identificar se eu pegar essa porta e
+[9:22] ocultar ela olha só eu tenho trilho
+[9:24] inferior aqui embaixo também tá então
+[9:26] varia de sistema para sistema varia de
+[9:29] fabricante para fabricante mas a ideia é
+[9:31] a mesma o externo fala no sistema
+[9:33] flutuante porque flutuante a porta está
+[9:35] flutuando no armário ela não tem contato
+[9:38] com o piso e nem com o teto como por
+[9:41] exemplo essa aqui porque eu poderia ter
+[9:43] esse esse trilho preso no teto também
+[9:45] sem problema algum nesse caso não
+[9:47] sistema externo sistema flutuante a
+[9:49] porta ela acaba sendo Abraçada ao móvel
+[9:51] e o móvel aqui da estruturação para ela
+[9:54] e o outro caso aqui então nós temos
+[9:55] Então as portas deslizantes embutidas
+[9:58] agora é aquele outro tipo de sistema vou
+[10:00] pegar aqui com três painéis vou então
+[10:02] selecionar aqui os pontos
+[10:06] ponto dois novamente tem a configuração
+[10:10] aqui tem os trilhos laterais no caso eu
+[10:13] já nem me deixa né se eu quero ou não
+[10:15] remover as laterais porque ele não vai
+[10:16] usar ele vai usar as laterais como
+[10:18] batente então basicamente é isso aí né
+[10:22] lateral esquerda também não usar frente
+[10:24] selecionado Ok e é isso pronto olha só
+[10:27] que interessante agora ele usa conforme
+[10:30] o nome diz aqui embutida ele usa as
+[10:33] laterais como batente das portas
+[10:35] diferente desses outros que então usava
+[10:38] através de tamponamento tanto este
+[10:39] quanto este aqui agora aqui não agora
+[10:42] ele usa a própria lateral e é isso vai
+[10:44] faz com que por exemplo tenhamos isso
+[10:46] aqui né Essa divisão desse armário
+[10:49] avançando para frente da porta que que
+[10:51] eu tenho que fazer eu tenho que ir lá e
+[10:53] diminuir né fazer com que essa lateral
+[10:55] essa divisão seja bem menor para que
+[10:57] Então tenha espaço para as portas
+[10:59] correrem ali por isso que chama embutida
+[11:02] ela embutida na própria caixaria do
+[11:04] armário
+[11:06] dessa forma você pode entender então que
+[11:08] na própria base superior do armário aqui
+[11:11] o trilho vai preso e aqui embaixo também
+[11:13] ele de certa forma também é um sistema
+[11:16] piso teto conforme o anterior porque ele
+[11:19] tem um trilho embaixo é onde a porta se
+[11:21] apoia e ele guia por cima só que ele é
+[11:23] embutido na caixa do móvel Então essas
+[11:25] são as três formas convencionais de você
+[11:28] inserir as portas deslizantes aí no teu
+[11:31] Promob Independente se for Promob
+[11:33] estúdio promover Plus tanto faz
+[11:34] Independente se você trabalha com uma
+[11:37] modulação sob medida ou ainda trabalha
+[11:38] com uma modulação pré-definida pelo
+[11:40] fabricante Esses são os tipos mais
+[11:42] comuns de portas às vezes antes mas
+[11:45] todos eles a função para você inserir é
+[11:47] a mesma clica arrasta ponto um ponto
+[11:50] dois entra no editor de portas e ali faz
+[11:52] de forma até automática temos ainda uma
+[11:55] outra possibilidade que é importante
+[11:57] você saber que são as portas de passagem
+[11:59] que refere isso aí portas para closet
+[12:01] porta de divisão de ambientes que também
+[12:03] é muito simples da gente entender como
+[12:05] isso como isso é feito aqui no Promob
+[12:07] olha só aqui nesse caso você não vai lá
+[12:10] em portas deslizantes Você vai em
+[12:12] divisores de ambiente ou seja portas
+[12:14] divisórias de ambiente de ambientes Aí
+[12:17] você vem aqui divisor de ambiente vai
+[12:18] escolher no caso vou escolher aqui uma
+[12:20] porta com dois painéis pronto aí você
+[12:23] vai indicar mesma coisa dos pontos né
+[12:25] vem clica no agora vou indicar o ponto
+[12:28] de abertura obviamente né ponto um ponto
+[12:32] dois pronto e agora você vai ter que
+[12:34] configurar algumas coisas do que antes
+[12:36] vir automático como você tá mostrando
+[12:39] para ele apenas uma abertura o Promob
+[12:41] não entende se você quer fazer essa
+[12:43] abertura é maior é menor se você quer
+[12:45] duas portas quatro portas por isso nós
+[12:47] vamos ter que entender bom eu quero
+[12:48] colocar aqui
+[12:50] quatro portas pronto no momento que eu
+[12:52] coloco quatro portas veja já fez com que
+[12:54] as portas
+[12:55] tivessem aí uma medida um detalhe
+[12:58] importante e Aqui começa a entender que
+[13:01] é muito mais do que apenas mexer no
+[13:02] Promob eu preciso entender como isso se
+[13:04] dá na prática porta deslizantes de 55 cm
+[13:08] ela é muito Estreita ela vai dar
+[13:10] problema normalmente aí no deslizar
+[13:12] então é importante você tomar cuidado no
+[13:14] mínimo no mínimo 600 o ideal é mais de
+[13:17] 600 principalmente para portas
+[13:18] deslizantes de passagem então não serão
+[13:21] quatro portas eu vou colocar aqui com
+[13:22] três vamos ver ó ficou com 733 pode ser
+[13:25] pode mas eu quero fazer simétrica então
+[13:27] vai se vão ser duas portas de mil e cem
+[13:30] milímetros aqui em transpasse quando
+[13:31] tento colocar 10 que que acontece ele
+[13:33] não deixa ele deixa volta para zero
+[13:35] porque porque lá no trilho Ele tá
+[13:37] dizendo para usar um trilho Simples
+[13:39] então eu não posso fazer transpasse num
+[13:41] trilho simples eu tenho que vir aqui
+[13:42] colocar trilho duplo Pronto agora sim
+[13:44] trilho no inferior Eu não vou usar eu
+[13:46] vou usar o sistema de piso de porta
+[13:49] deslizante de aprendizagem onde ela
+[13:51] corre no trilho superior embaixo é
+[13:52] apenas um pino guia Então agora eu volto
+[13:55] na configuração pronto transpasse 10
+[13:57] agora é possível de eu entender esse
+[13:59] transpasse vou lá que intriga então
+[14:01] inferior não vou usar frente selecionada
+[14:03] também não clico em Ok pronto com isso
+[14:06] então o que que aconteceu Ele gerou para
+[14:08] mim aqui um trilho superior onde as
+[14:10] portas se estruturam nele ou seja elas
+[14:13] são agregadas a esse trilho o todo o
+[14:16] peso dela se dá por cima e aqui embaixo
+[14:18] não tem trilho nenhum porque esse tipo
+[14:20] de sistema ele vai um pino Guia em cada
+[14:23] porta fazendo com que ela possa deslizar
+[14:26] sem problema algum às vezes caso você
+[14:29] tenha feito esse sistema aqui e ele
+[14:31] fique para fora aqui da abertura pode
+[14:33] acontecer apenas por uma questão de
+[14:35] desenho aí de indicação do 3D tá você
+[14:37] basicamente pode pegar esse sistema aqui
+[14:40] e embutir aqui dentro que não tem
+[14:43] problema algum o sistema dessa forma foi
+[14:45] feito da forma correta por isso que caso
+[14:48] o teu fique para fora como eu ficou aqui
+[14:50] né Você pode inserir ele para dentro aí
+[14:52] sem problema dessa forma Então você
+[14:54] insere de uma forma muito simples as
+[14:56] portas deslizantes também de passagem
+[14:58] lembrando se você quer fazer mais portas
+[15:01] ou menos portas ela dentro do editor que
+[15:03] você constrói essa configuração muito
+[15:06] mais do que apenas você saber inserir as
+[15:09] portas no Promob é importante você
+[15:10] entender o conceito por trás desse
+[15:12] sistema como é que isso funciona o
+[15:13] sistema externo interno embutido e esse
+[15:17] sistema de portas deslizantes se você
+[15:19] entendendo o conceito por trás dele tudo
+[15:21] fica muito mais simples Até porque a
+[15:23] inserção como vimos é extremamente fácil
+[15:25] Viu só como é super simples inserir as
+[15:28] portas deslizantes dentro do Promob o
+[15:30] mais importante de tudo é não basta
+[15:32] apenas saber e inserir mas saber o
+[15:35] conceito por trás de cada um desses
+[15:36] sistemas Então comece a praticar que eu
+[15:39] tenho certeza que os seus projetos a
+[15:40] partir de agora ficaram muito melhores e
+[15:43] se esse vídeo te ajudou de alguma forma
+[15:45] você bem que podia deixar um like aí
+[15:46] para fortalecer o nosso conteúdo né
+[15:48] também se você não está se inscreva no
+[15:51] canal Ative o Sininho das notificações E
+[15:53] compartilhe esse vídeo para que chegue a
+[15:55] mais pessoas que assim como você com
+[15:57] certeza vão gostar de ver esses
+[15:59] conteúdos deixa aqui também o teu
+[16:00] comentário a respeito desse vídeo ou
+[16:02] ainda escreva algum outro assunto que
+[16:04] você gostaria que eu trouxesse aqui no
+[16:06] nosso canal eu fico por aqui no vídeo de
+[16:08] hoje mas eu espero muito te ver em um
+[16:10] próximo

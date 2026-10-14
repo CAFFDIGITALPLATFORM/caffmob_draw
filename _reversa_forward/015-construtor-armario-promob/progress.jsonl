@@ -1,0 +1,44 @@
+{"ts": "2026-10-14T02:53:47-03:00", "action": "T001", "status": "done", "files": ["caffmob_draw/data/cabinet_structures.json"]}
+{"ts": "2026-10-14T02:53:47-03:00", "action": "T002", "status": "done", "files": ["caffmob_draw/data/dimension_schema.py"]}
+{"ts": "2026-10-14T02:53:47-03:00", "action": "T003", "status": "done", "files": ["caffmob_draw/standards/model.py", "caffmob_draw/standards/group_assembly.py", "caffmob_draw/standards/api.py"], "note": "núcleo puro em group_assembly.py; PropertyGroup guarda JSON"}
+{"ts": "2026-10-14T02:53:47-03:00", "action": "T004", "status": "done", "files": ["caffmob_draw/data/properties.py"]}
+{"ts": "2026-10-14T02:53:47-03:00", "action": "T005", "status": "done", "files": ["caffmob_draw/cabinet_editor/data_props.py"]}
+{"ts": "2026-10-14T02:53:47-03:00", "action": "T006", "status": "done", "files": ["caffmob_draw/data/library_models.json"]}
+{"ts": "2026-10-14T02:53:47-03:00", "action": "T007", "status": "done", "files": ["tests/test_cabinet_structures.py"]}
+{"ts": "2026-10-14T02:53:47-03:00", "action": "T014", "status": "done", "files": ["caffmob_draw/cabinet_editor/structures_core.py"]}
+{"ts": "2026-10-14T02:53:47-03:00", "action": "T008", "status": "done", "files": ["tests/test_carcass_parts.py"]}
+{"ts": "2026-10-14T02:53:47-03:00", "action": "T015", "status": "done", "files": ["caffmob_draw/cabinet_editor/structure.py"]}
+{"ts": "2026-10-14T02:53:47-03:00", "action": "T016", "status": "done", "files": ["caffmob_draw/cabinet_editor/structure.py"]}
+{"ts": "2026-10-14T02:53:47-03:00", "action": "T017", "status": "done", "files": ["caffmob_draw/cabinet_editor/structure.py"]}
+{"ts": "2026-10-14T02:53:47-03:00", "action": "T018", "status": "done", "files": ["caffmob_draw/cabinet_editor/structure.py"]}
+{"ts": "2026-10-14T02:56:39-03:00", "action": "T010", "status": "done", "files": ["tests/test_cabinet_bays.py", "tests/test_cabinet_editor_divisions.py"]}
+{"ts": "2026-10-14T02:56:39-03:00", "action": "T019", "status": "done", "files": ["caffmob_draw/cabinet_editor/bays.py"], "note": "vãos livres dividem o que sobra (equivale aos vizinhos com 3 vãos); último vão sempre calculado"}
+{"ts": "2026-10-14T02:56:39-03:00", "action": "T024", "status": "done", "files": ["caffmob_draw/cabinet_editor/divisions.py", "caffmob_draw/cabinet_editor/scene_divisions.py", "caffmob_draw/cabinet_editor/structure.py"], "note": "C_REB/NAO_DIVIDE_FUNDO/MONTANTE só gravadas (fundo já é peça única); recuo da móvel pelo padrão fica na inserção (T032)"}
+{"ts": "2026-10-14T02:58:24-03:00", "action": "T011", "status": "done", "files": ["tests/test_cabinet_catalog.py"]}
+{"ts": "2026-10-14T02:58:24-03:00", "action": "T021", "status": "done", "files": ["caffmob_draw/cabinet_editor/catalog.py", "caffmob_draw/cabinet_editor/props.py"]}
+{"ts": "2026-10-14T02:58:24-03:00", "action": "T012", "status": "done", "files": ["tests/test_standards_group_assembly.py"], "note": "agente"}
+{"ts": "2026-10-14T02:58:24-03:00", "action": "T038", "status": "done", "files": ["caffmob_draw/standards/io_json.py"], "note": "agente"}
+{"ts": "2026-10-14T02:58:24-03:00", "action": "T039", "status": "done", "files": ["caffmob_draw/standards/io_promob.py", "caffmob_draw/operators/ops_standards.py"], "note": "agente; avisos reaproveitam mensagens já traduzidas"}
+{"ts": "2026-10-14T02:59:36-03:00", "action": "T022", "status": "done", "files": ["caffmob_draw/cabinet_editor/extras.py", "caffmob_draw/cabinet_editor/scene_extras.py", "caffmob_draw/cutting/hardware.py", "tests/test_cabinet_extras.py"]}
+{"ts": "2026-10-14T02:59:36-03:00", "action": "T023", "status": "done", "files": ["caffmob_draw/cabinet_editor/wardrobe.py", "tests/test_cabinet_wardrobe.py"], "note": "inclinação da sapateira não modelada (🟡)"}
+{"ts": "2026-10-14T03:00:17-03:00", "action": "T025", "status": "done", "files": ["caffmob_draw/standards/cabinet_defaults.py", "tests/test_cabinet_defaults.py"]}
+{"ts": "2026-10-14T03:02:31-03:00", "action": "T013", "status": "done", "files": ["tests/test_cut_structure.py", "tests/fixtures/cut_legacy_015.json"], "note": "fixture gravada com o código de antes da T027"}
+{"ts": "2026-10-14T03:02:31-03:00", "action": "T026", "status": "done", "files": ["caffmob_draw/geometry/mesh_gen.py", "caffmob_draw/cabinet_editor/structure_inputs.py"]}
+{"ts": "2026-10-14T03:02:31-03:00", "action": "T027", "status": "done", "files": ["caffmob_draw/cutting/part_sources.py", "caffmob_draw/cabinet_editor/structure_inputs.py"]}
+{"ts": "2026-10-14T03:04:18-03:00", "action": "T009", "status": "done", "files": ["tests/test_structure_gallery.py"], "note": "agente"}
+{"ts": "2026-10-14T03:04:18-03:00", "action": "T020", "status": "done", "files": ["caffmob_draw/cabinet_editor/gallery_core.py"], "note": "agente"}
+{"ts": "2026-10-14T03:04:18-03:00", "action": "T034", "status": "done", "files": ["caffmob_draw/cabinet_editor/gallery.py"], "note": "agente; cache da geometria em mm por estrutura em vez de GPUOffScreen (desvio de D-11)"}
+{"ts": "2026-10-14T03:04:18-03:00", "action": "T041", "status": "done", "files": ["caffmob_draw/cabinet_editor/gallery.py", "caffmob_draw/cabinet_editor/__init__.py"]}
+{"ts": "2026-10-14T03:05:43-03:00", "action": "T028", "status": "done", "files": ["caffmob_draw/operators/cabinet_builder.py"], "note": "estrutura com bays>1 nasce com 1 vão (Número de vãos no editor)"}
+{"ts": "2026-10-14T03:05:43-03:00", "action": "T029", "status": "done", "files": ["caffmob_draw/cabinet_editor/bridge.py", "caffmob_draw/cabinet_editor/state.py", "caffmob_draw/cabinet_editor/ops_editor.py"]}
+{"ts": "2026-10-14T03:06:35-03:00", "action": "T030", "status": "done", "files": ["caffmob_draw/cabinet_editor/panels_structure.py", "caffmob_draw/cabinet_editor/panels.py", "caffmob_draw/cabinet_editor/props.py", "caffmob_draw/cabinet_editor/bridge.py", "caffmob_draw/cabinet_editor/bays.py"]}
+{"ts": "2026-10-14T03:07:13-03:00", "action": "T031", "status": "done", "files": ["caffmob_draw/cabinet_editor/panels_divisions.py", "caffmob_draw/cabinet_editor/panels_drawers.py", "caffmob_draw/cabinet_editor/panels_interior.py", "caffmob_draw/cabinet_editor/props.py"]}
+{"ts": "2026-10-14T03:07:58-03:00", "action": "T032", "status": "done", "files": ["caffmob_draw/cabinet_editor/ops_actions.py", "caffmob_draw/cabinet_editor/scene_interiors.py", "caffmob_draw/cabinet_editor/bridge.py"], "note": "gavetas de dormitório usam o caminho de gavetas da biblioteca (CAFFMob não tem gavetas); a 'Interna p/ trilho mais alta' não é aplicada (🟡)"}
+{"ts": "2026-10-14T03:08:10-03:00", "action": "T033", "status": "done", "files": ["caffmob_draw/cabinet_editor/panels_sliding.py"]}
+{"ts": "2026-10-14T03:08:39-03:00", "action": "T035", "status": "done", "files": ["caffmob_draw/cabinet_editor/window.py"]}
+{"ts": "2026-10-14T03:09:08-03:00", "action": "T036", "status": "done", "files": ["caffmob_draw/library_panel/ops_cabinet.py", "caffmob_draw/library_panel/models_core.py", "caffmob_draw/library_panel/popover.py", "caffmob_draw/operators/cabinet_builder.py"]}
+{"ts": "2026-10-14T03:09:55-03:00", "action": "T037", "status": "done", "files": ["caffmob_draw/standards/sync.py", "caffmob_draw/operators/ops_standards.py"], "note": "group_assembly vale via structure_inputs na geração da malha; o diálogo lista os que mudam de estrutura"}
+{"ts": "2026-10-14T03:10:24-03:00", "action": "T040", "status": "done", "files": ["caffmob_draw/cutting/json_exporter.py", "caffmob_draw/cutting/part_extractor.py", "caffmob_draw/cutting/hardware.py"], "note": "STRUCTURE_UNKNOWN vai no módulo (modules[].limit_status); peça degenerada é omitida"}
+{"ts": "2026-10-14T03:12:11-03:00", "action": "T043", "status": "done", "files": ["caffmob_draw/data/translations/construtor_015.json", "caffmob_draw/data/i18n.py", "tools/render_dimension_refs.py", "caffmob_draw/assets/dimension_refs/ext_stretcher_width.png", "caffmob_draw/assets/dimension_refs/ext_shelf_setback.png", "caffmob_draw/assets/dimension_refs/ext_hanger_rod_drop.png"], "note": "tool de imagens tinha caminho antigo (blendertomob/) corrigido"}
+{"ts": "2026-10-14T03:17:47-03:00", "action": "T042", "status": "done", "files": ["tests/blender_015_construtor_smoke.py", "caffmob_draw/customize/adapters/btm.py", "caffmob_draw/cabinet_editor/state.py"], "note": "fumaça achou 2 defeitos corrigidos: vão das divisões vinha do layout antigo; assinatura do rascunho sem estrutura"}
+{"ts": "2026-10-14T03:23:14-03:00", "action": "T044", "status": "done", "files": ["tests/blender_008_construtor_smoke.py", "tests/blender_003_aggregates_smoke.py", "tests/blender_smoke.py", "tests/blender_increment1_smoke.py", "tests/test_production_contracts.py", "tests/test_cabinet_catalog.py", "tools/render_cabinet_thumbnails.py", "caffmob_draw/cabinet_editor/thumbnails"], "note": "só a versão do JSON (2.3.0) e as miniaturas dos 24 itens novos; nenhuma asserção afrouxada"}

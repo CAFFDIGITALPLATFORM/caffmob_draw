@@ -1,0 +1,78 @@
+[0:00] bem vindo ao meu canal essa é a aula
+[0:03] três do curso promove aprendemos a fazer
+[0:06] para ele colocar a janela né
+[0:08] eu vou fazer uma coloca aqui rapidinho
+[0:12] só pra gente começar hoje eu cometeria
+[0:15] essa aula agora a gente vai fazer
+[0:17] criação de geometria bancário da cozinha
+[0:24] bem bem prático e rápido como mostrar
+[0:27] pra vocês estarei aqui na 12 colocando a
+[0:33] porta decore janela dá lhe coloca aqui a
+[0:48] linha a janela beleza então do piso na
+[1:05] aula
+[1:06] 2 então o que vamos fazer agora a
+[1:09] bancada geometria e na geometria a
+[1:14] construir seis clicam e leiam todas as
+[1:19] informações fica aqui vocês começaram a
+[1:21] entender todo o programa construir o
+[1:24] metrô ea confiança mútua circular
+[1:25] construída e obter retangular construir
+[1:28] geometria poligonal vamos começar aqui
+[1:30] com a geometria retângulo com o botão
+[1:37] esquerdo do mouse você clica no ponto
+[1:38] que você quer começar sua bancada e
+[1:41] aonde você quer terminar terminar aqui
+[1:43] por exemplo novamente e com auxiliar
+[1:51] direito você vai clicar nessa reta como
+[1:58] foi nas paredes ela te dá o tamanho
+[2:00] nessa medida o seu clique aqui
+[2:03] o tamanho dessa medida geralmente
+[2:05] bancada o padrão dela é 60 de
+[2:07] profundidade então a gente coloca 600
+[2:09] milímetros
+[2:11] eu não vou colocar certo aqui e aqui
+[2:15] já coloquei a medida aqui eu sou perna e
+[2:18] arrasto pronto que já está com 60 também
+[2:20] rendeu à altura dela a espessura no caso
+[2:28] aqui ela tem ela vem por padrão
+[2:31] 15 15 mm de altura e 150 sem que vocês
+[2:39] quiserem mexer numa peça que está desse
+[2:41] lado você vê na informação que vai mexer
+[2:44] aqui e na informação que inclusive no
+[2:47] ambiente para ver se está no ambiente 3d
+[2:48] que o papa está no ambiente 3d aqui as
+[2:54] informações está aqui do lado
+[2:56] se tá mexendo aqui a informação está
+[2:58] tudo ok vamos lá
+[3:03] clica nela coloca à altura e de 10
+[3:07] centímetros geralmente ela é mais ou
+[3:09] menos nessa faixa de 10 centímetros
+[3:13] ela está no chão certo é que a minha
+[3:16] bancada
+[3:17] eu vou colocar ela com a altura do chão
+[3:20] cedeu a quinta posição absoluta z80 do
+[3:22] chão
+[3:23] geralmente também segue essa altura na
+[3:25] verdade como que a bancada à altura dela
+[3:27] só você vem aqui do lado coloca 40
+[3:31] geralmente uma bancada de colocar a base
+[3:36] da base a base sim você vai colocar daí
+[3:43] você pode movimentar até onde você
+[3:44] quiser certo altura 10 clicar em editar
+[3:53] geometria editar e geometria
+[3:56] tá me dando aqui está com 72
+[3:58] profundidade colocam ela não é 60 ela é
+[4:03] 50 porque tem 10 centímetros de tudo
+[4:06] então coloco 500 recuou lhe pega esse
+[4:09] ponto aqui e reclamar dele aqui da mesma
+[4:12] forma
+[4:13] vou
+[4:20] aí você vê aqui ó em ajustar onde tem um
+[4:24] resultado misto pism e especialmente com
+[4:26] 70 contudo não que não conseguindo na
+[4:30] geometria que vem construir lineares vem
+[4:33] conseguir lineares pega esse ponto vai
+[4:49] seguindo auxiliar esquerdo e dar um ok
+[4:59] fechar a bancada com a base própria
+[5:07] pronta para receber os armários aqui ok
+[5:10] então vamos a próxima aula

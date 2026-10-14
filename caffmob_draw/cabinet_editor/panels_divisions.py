@@ -56,9 +56,9 @@ class BTM_PT_CabinetEditorDivisionNew(_TabPanel, bpy.types.Panel):
             hint.active = False
             hint.label(text=tr("Remove a divisória do vão escolhido e junta os vãos"), icon='INFO')
         elif ui.div_kind == 'SPACER':
-            catalog_grid(layout, context, catalog.items('DIVISIONS', 'SPACER'))
+            catalog_grid(layout, context, catalog.items('DIVISIONS', 'SPACER', environment=props.environment()))
         else:
-            catalog_grid(layout, context, catalog.items('DIVISIONS', 'RECESS'))
+            catalog_grid(layout, context, catalog.items('DIVISIONS', 'RECESS', environment=props.environment()))
             col = layout.column()
             for use, value in (("new_use_front", "new_front"), ("new_use_back", "new_back")):
                 row = col.row(align=True)

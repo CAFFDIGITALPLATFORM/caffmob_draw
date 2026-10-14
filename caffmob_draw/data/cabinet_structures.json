@@ -1,0 +1,188 @@
+{
+  "schema-version": 1,
+  "environments": [
+    {"id": "COZ", "label_pt": "Cozinhas", "label_en": "Kitchens", "line": "COZ"},
+    {"id": "DOR", "label_pt": "Dormitórios", "label_en": "Bedrooms", "line": "DOR"}
+  ],
+  "structures": [
+    {
+      "id": "coz_inferior_divisoria", "environment": "COZ", "group": "INFERIOR", "order": 10,
+      "label_pt": "Inferior c/ Divisória", "label_en": "Base w/ Divider",
+      "assembly": "LATERAL", "sides_to_floor": false, "bays": 1,
+      "size_mm": {"width": 500, "height": null, "depth": null},
+      "components": {"LEFT": true, "RIGHT": true, "DIVIDERS": true, "BOTTOM": true, "TOP": false, "BACK": true,
+                     "STRETCHER_FRONT": true, "STRETCHER_BACK": true, "STRETCHER_FULL": false, "TOP_LINEAR": false,
+                     "TOE_KICK": false, "FEET": false, "KICK_GRANITE": false, "CLOSURE": false, "VIEWS": false},
+      "division_variants": ["CORTA_SAR", "C_REB"]
+    },
+    {
+      "id": "coz_inferior_divisoria_rod", "environment": "COZ", "group": "INFERIOR", "order": 20,
+      "label_pt": "Inferior c/ Divisória e Rod", "label_en": "Base w/ Divider and Toe Kick",
+      "assembly": "LATERAL", "sides_to_floor": false, "bays": 1,
+      "size_mm": {"width": 500, "height": null, "depth": null},
+      "components": {"LEFT": true, "RIGHT": true, "DIVIDERS": true, "BOTTOM": true, "TOP": false, "BACK": true,
+                     "STRETCHER_FRONT": true, "STRETCHER_BACK": true, "STRETCHER_FULL": false, "TOP_LINEAR": false,
+                     "TOE_KICK": true, "FEET": false, "KICK_GRANITE": false, "CLOSURE": false, "VIEWS": false},
+      "division_variants": ["CORTA_SAR", "C_REB"]
+    },
+    {
+      "id": "coz_inferior_divisoria_piso", "environment": "COZ", "group": "INFERIOR", "order": 30,
+      "label_pt": "Inferior c/ Divisória até Piso", "label_en": "Base w/ Divider to Floor",
+      "assembly": "LATERAL", "sides_to_floor": true, "bays": 1,
+      "size_mm": {"width": 500, "height": null, "depth": null},
+      "components": {"LEFT": true, "RIGHT": true, "DIVIDERS": true, "BOTTOM": true, "TOP": false, "BACK": true,
+                     "STRETCHER_FRONT": true, "STRETCHER_BACK": true, "STRETCHER_FULL": false, "TOP_LINEAR": false,
+                     "TOE_KICK": false, "FEET": false, "KICK_GRANITE": false, "CLOSURE": false, "VIEWS": false},
+      "division_variants": ["CORTA_SAR", "C_REB"]
+    },
+    {
+      "id": "coz_inferior_divisoria_piso_rod", "environment": "COZ", "group": "INFERIOR", "order": 40,
+      "label_pt": "Inferior c/ Divisória até Piso e Rod", "label_en": "Base w/ Divider to Floor and Toe Kick",
+      "assembly": "LATERAL", "sides_to_floor": true, "bays": 1,
+      "size_mm": {"width": 500, "height": null, "depth": null},
+      "components": {"LEFT": true, "RIGHT": true, "DIVIDERS": true, "BOTTOM": true, "TOP": false, "BACK": true,
+                     "STRETCHER_FRONT": true, "STRETCHER_BACK": true, "STRETCHER_FULL": false, "TOP_LINEAR": false,
+                     "TOE_KICK": true, "FEET": false, "KICK_GRANITE": false, "CLOSURE": false, "VIEWS": false},
+      "division_variants": ["CORTA_SAR", "C_REB"]
+    },
+    {
+      "id": "coz_inferior_2lat_piso", "environment": "COZ", "group": "INFERIOR", "order": 50,
+      "label_pt": "Inferior c/ 2 Laterais até Piso", "label_en": "Base w/ 2 Sides to Floor",
+      "assembly": "LATERAL", "sides_to_floor": true, "bays": 1,
+      "size_mm": {"width": 500, "height": null, "depth": null},
+      "components": {"LEFT": true, "RIGHT": true, "DIVIDERS": false, "BOTTOM": true, "TOP": false, "BACK": true,
+                     "STRETCHER_FRONT": true, "STRETCHER_BACK": true, "STRETCHER_FULL": false, "TOP_LINEAR": false,
+                     "TOE_KICK": false, "FEET": false, "KICK_GRANITE": false, "CLOSURE": false, "VIEWS": false},
+      "division_variants": ["CORTA_SAR", "C_REB"]
+    },
+    {
+      "id": "coz_inferior_2lat_piso_rod", "environment": "COZ", "group": "INFERIOR", "order": 60,
+      "label_pt": "Inferior c/ 2 Laterais até Piso e Rod", "label_en": "Base w/ 2 Sides to Floor and Toe Kick",
+      "assembly": "LATERAL", "sides_to_floor": true, "bays": 1,
+      "size_mm": {"width": 500, "height": null, "depth": null},
+      "components": {"LEFT": true, "RIGHT": true, "DIVIDERS": false, "BOTTOM": true, "TOP": false, "BACK": true,
+                     "STRETCHER_FRONT": true, "STRETCHER_BACK": true, "STRETCHER_FULL": false, "TOP_LINEAR": false,
+                     "TOE_KICK": true, "FEET": false, "KICK_GRANITE": false, "CLOSURE": false, "VIEWS": false},
+      "division_variants": ["CORTA_SAR", "C_REB"]
+    },
+    {
+      "id": "coz_gaveteiro", "environment": "COZ", "group": "INFERIOR", "order": 70,
+      "label_pt": "Gaveteiro", "label_en": "Drawer Base",
+      "assembly": "LATERAL", "sides_to_floor": false, "bays": 1,
+      "size_mm": {"width": 400, "height": null, "depth": null},
+      "components": {"LEFT": true, "RIGHT": true, "DIVIDERS": false, "BOTTOM": true, "TOP": false, "BACK": true,
+                     "STRETCHER_FRONT": true, "STRETCHER_BACK": true, "STRETCHER_FULL": false, "TOP_LINEAR": false,
+                     "TOE_KICK": false, "FEET": false, "KICK_GRANITE": false, "CLOSURE": false, "VIEWS": false},
+      "division_variants": []
+    },
+    {
+      "id": "coz_gaveteiro_rod", "environment": "COZ", "group": "INFERIOR", "order": 80,
+      "label_pt": "Gaveteiro c/ Rodapé", "label_en": "Drawer Base w/ Toe Kick",
+      "assembly": "LATERAL", "sides_to_floor": false, "bays": 1,
+      "size_mm": {"width": 400, "height": null, "depth": null},
+      "components": {"LEFT": true, "RIGHT": true, "DIVIDERS": false, "BOTTOM": true, "TOP": false, "BACK": true,
+                     "STRETCHER_FRONT": true, "STRETCHER_BACK": true, "STRETCHER_FULL": false, "TOP_LINEAR": false,
+                     "TOE_KICK": true, "FEET": false, "KICK_GRANITE": false, "CLOSURE": false, "VIEWS": false},
+      "division_variants": []
+    },
+    {
+      "id": "coz_superior_divisoria", "environment": "COZ", "group": "SUPERIOR", "order": 90,
+      "label_pt": "Superior c/ Divisória", "label_en": "Wall w/ Divider",
+      "assembly": "LATERAL", "sides_to_floor": false, "bays": 1,
+      "size_mm": {"width": 800, "height": null, "depth": null},
+      "components": {"LEFT": true, "RIGHT": true, "DIVIDERS": true, "BOTTOM": true, "TOP": true, "BACK": true,
+                     "STRETCHER_FRONT": false, "STRETCHER_BACK": false, "STRETCHER_FULL": false, "TOP_LINEAR": false,
+                     "TOE_KICK": false, "CLOSURE": false, "VIEWS": false},
+      "division_variants": []
+    },
+    {
+      "id": "coz_superior_2lat", "environment": "COZ", "group": "SUPERIOR", "order": 100,
+      "label_pt": "Superior c/ 2 Laterais", "label_en": "Wall w/ 2 Sides",
+      "assembly": "LATERAL", "sides_to_floor": false, "bays": 1,
+      "size_mm": {"width": 800, "height": null, "depth": null},
+      "components": {"LEFT": true, "RIGHT": true, "DIVIDERS": false, "BOTTOM": true, "TOP": true, "BACK": true,
+                     "STRETCHER_FRONT": false, "STRETCHER_BACK": false, "STRETCHER_FULL": false, "TOP_LINEAR": false,
+                     "TOE_KICK": false, "CLOSURE": false, "VIEWS": false},
+      "division_variants": []
+    },
+    {
+      "id": "coz_torre_eletros", "environment": "COZ", "group": "DESPENSEIRO", "order": 110,
+      "label_pt": "Torre p/ Eletros", "label_en": "Appliance Tower",
+      "assembly": "LATERAL", "sides_to_floor": false, "bays": 1,
+      "size_mm": {"width": 600, "height": null, "depth": null},
+      "components": {"LEFT": true, "RIGHT": true, "DIVIDERS": true, "BOTTOM": true, "TOP": true, "BACK": true,
+                     "STRETCHER_FRONT": false, "STRETCHER_BACK": false, "STRETCHER_FULL": false, "TOP_LINEAR": false,
+                     "TOE_KICK": false, "FEET": false, "CLOSURE": false, "VIEWS": false},
+      "division_variants": ["NAO_DIVIDE_FUNDO"]
+    },
+    {
+      "id": "coz_torre_eletros_rod", "environment": "COZ", "group": "DESPENSEIRO", "order": 120,
+      "label_pt": "Torre p/ Eletros c/ Rod", "label_en": "Appliance Tower w/ Toe Kick",
+      "assembly": "LATERAL", "sides_to_floor": false, "bays": 1,
+      "size_mm": {"width": 600, "height": null, "depth": null},
+      "components": {"LEFT": true, "RIGHT": true, "DIVIDERS": true, "BOTTOM": true, "TOP": true, "BACK": true,
+                     "STRETCHER_FRONT": false, "STRETCHER_BACK": false, "STRETCHER_FULL": false, "TOP_LINEAR": false,
+                     "TOE_KICK": true, "FEET": false, "CLOSURE": false, "VIEWS": false},
+      "division_variants": ["NAO_DIVIDE_FUNDO"]
+    },
+    {
+      "id": "dor_armario", "environment": "DOR", "group": "DESPENSEIRO", "order": 10,
+      "label_pt": "Armário", "label_en": "Wardrobe",
+      "assembly": "LATERAL", "sides_to_floor": false, "bays": 1,
+      "size_mm": {"width": 1000, "height": null, "depth": null},
+      "components": {"LEFT": true, "RIGHT": true, "DIVIDERS": true, "BOTTOM": true, "TOP": true, "BACK": true,
+                     "STRETCHER_FRONT": false, "STRETCHER_BACK": false, "STRETCHER_FULL": false, "TOP_LINEAR": false,
+                     "TOE_KICK": true, "CASTERS": false, "CLOSURE": false, "VIEWS": false},
+      "division_variants": ["MONTANTE", "INVISIBLE", "CORREDICA", "ARAMADA"]
+    },
+    {
+      "id": "dor_armario_s_lat_esq", "environment": "DOR", "group": "DESPENSEIRO", "order": 20,
+      "label_pt": "Armário s/ Lat Esq", "label_en": "Wardrobe w/o Left Side",
+      "assembly": "LATERAL", "sides_to_floor": false, "bays": 1,
+      "size_mm": {"width": 1000, "height": null, "depth": null},
+      "components": {"LEFT": false, "RIGHT": true, "DIVIDERS": true, "BOTTOM": true, "TOP": true, "BACK": true,
+                     "STRETCHER_FRONT": false, "STRETCHER_BACK": false, "STRETCHER_FULL": false, "TOP_LINEAR": false,
+                     "TOE_KICK": true, "CASTERS": false, "CLOSURE": false, "VIEWS": false},
+      "division_variants": ["MONTANTE", "INVISIBLE", "CORREDICA", "ARAMADA"]
+    },
+    {
+      "id": "dor_armario_s_lat_dir", "environment": "DOR", "group": "DESPENSEIRO", "order": 30,
+      "label_pt": "Armário s/ Lat Dir", "label_en": "Wardrobe w/o Right Side",
+      "assembly": "LATERAL", "sides_to_floor": false, "bays": 1,
+      "size_mm": {"width": 1000, "height": null, "depth": null},
+      "components": {"LEFT": true, "RIGHT": false, "DIVIDERS": true, "BOTTOM": true, "TOP": true, "BACK": true,
+                     "STRETCHER_FRONT": false, "STRETCHER_BACK": false, "STRETCHER_FULL": false, "TOP_LINEAR": false,
+                     "TOE_KICK": true, "CASTERS": false, "CLOSURE": false, "VIEWS": false},
+      "division_variants": ["MONTANTE", "INVISIBLE", "CORREDICA", "ARAMADA"]
+    },
+    {
+      "id": "dor_armario_s_laterais", "environment": "DOR", "group": "DESPENSEIRO", "order": 40,
+      "label_pt": "Armário s/ Laterais", "label_en": "Wardrobe w/o Sides",
+      "assembly": "LATERAL", "sides_to_floor": false, "bays": 1,
+      "size_mm": {"width": 1000, "height": null, "depth": null},
+      "components": {"LEFT": false, "RIGHT": false, "DIVIDERS": true, "BOTTOM": true, "TOP": true, "BACK": true,
+                     "STRETCHER_FRONT": false, "STRETCHER_BACK": false, "STRETCHER_FULL": false, "TOP_LINEAR": false,
+                     "TOE_KICK": true, "CASTERS": false, "CLOSURE": false, "VIEWS": false},
+      "division_variants": ["MONTANTE", "INVISIBLE", "CORREDICA", "ARAMADA"]
+    },
+    {
+      "id": "dor_divisoria_sobre_base", "environment": "DOR", "group": "DESPENSEIRO", "order": 50,
+      "label_pt": "Armário Divisória sobre Base", "label_en": "Wardrobe w/ Divider on Base",
+      "assembly": "LATERAL", "sides_to_floor": false, "bays": 2,
+      "size_mm": {"width": 1000, "height": null, "depth": 600},
+      "components": {"LEFT": true, "RIGHT": true, "DIVIDERS": true, "BOTTOM": false, "TOP": true, "BACK": true,
+                     "STRETCHER_FRONT": false, "STRETCHER_BACK": false, "STRETCHER_FULL": false, "TOP_LINEAR": false,
+                     "TOE_KICK": true, "CASTERS": false, "CLOSURE": false, "VIEWS": false},
+      "division_variants": ["MONTANTE", "INVISIBLE", "CORREDICA", "ARAMADA"]
+    }
+  ],
+  "legacy_map": [
+    {"line": "COZ", "cabinet_type": "BASE", "structure": "coz_inferior_divisoria"},
+    {"line": "COZ", "cabinet_type": "WALL", "structure": "coz_superior_divisoria"},
+    {"line": "COZ", "cabinet_type": "TALL", "structure": "coz_torre_eletros"},
+    {"line": "DOR", "cabinet_type": "TALL", "structure": "dor_armario"},
+    {"line": "*", "cabinet_type": "BASE", "structure": "coz_inferior_divisoria"},
+    {"line": "*", "cabinet_type": "WALL", "structure": "coz_superior_divisoria"},
+    {"line": "*", "cabinet_type": "TALL", "structure": "coz_torre_eletros"}
+  ]
+}

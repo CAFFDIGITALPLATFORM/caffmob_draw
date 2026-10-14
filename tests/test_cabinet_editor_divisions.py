@@ -144,5 +144,32 @@ class DivisionsTest(unittest.TestCase):
         self.assertEqual(dv.resolve(ROOT, fixed)[1], dv.resolve(ROOT, movable)[1])
 
 
+class DivisoesSemPecaTest(unittest.TestCase):
+    """Feature 015 (T024; RN-15): Invisível e Somente Divisão dividem sem chapa; variantes do catálogo."""
+
+    ROOT = {'s0': dv.Box((0.0, 0.0, 0.0), (0.964, 0.5, 2.0))}
+
+    def test_invisivel_divide_com_espessura_zero(self):
+        divs = dv.add(self.ROOT, [], 's0', dv.HORIZONTAL, 0.018, kind=dv.INVISIBLE)
+        self.assertEqual(divs[0].thickness, 0.0)
+        leaves, _cuts, _orphans = dv.resolve(self.ROOT, divs)
+        self.assertEqual(sorted(leaves), ['s0.a', 's0.b'])
+        self.assertAlmostEqual(leaves['s0.a'].size(2) + leaves['s0.b'].size(2), 2.0)
+        self.assertFalse(dv.makes_part(divs[0]))
+
+    def test_somente_divisao_e_aramada_nao_viram_peca(self):
+        only = dv.Division("a", 's0', dv.HORIZONTAL, 0.5, 0.0, kind=dv.DIVISION_ONLY)
+        wire = dv.Division("b", 's0', dv.HORIZONTAL, 0.5, 0.018, variant=dv.ARAMADA)
+        fixed = dv.Division("c", 's0', dv.HORIZONTAL, 0.5, 0.018, variant=dv.CORREDICA)
+        self.assertEqual([dv.makes_part(d) for d in (only, wire, fixed)], [False, False, True])
+
+    def test_corta_sar_da_a_faixa_da_chapa(self):
+        divs = dv.add(self.ROOT, [], 's0', dv.VERTICAL, 0.018, variant=dv.CORTA_SAR)
+        _leaves, cuts, _orphans = dv.resolve(self.ROOT, divs)
+        (a, b), = dv.stretcher_cuts(cuts, divs)
+        self.assertAlmostEqual(b - a, 0.018)
+        self.assertAlmostEqual(a, (0.964 - 0.018) / 2)
+
+
 if __name__ == '__main__':
     unittest.main()

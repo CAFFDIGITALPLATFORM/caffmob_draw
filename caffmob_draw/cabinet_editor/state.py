@@ -25,6 +25,8 @@ class EditorState:
     interiors: list = field(default_factory=list)     # internos [{catalog_id, space, …}] (008)
     backs: dict = field(default_factory=dict)         # fundo {mode, setback, auto} (008)
     assembly: str = ""                                # montagem do armário CAFFMob; vazio nas outras bibliotecas (012)
+    structure_id: str = ""                            # estrutura de caixa do CAFFMob; vazio = construção antiga (015)
+    present: dict = field(default_factory=dict)       # chapas da caixa presentes do CAFFMob {papel: bool} (015)
 
     def copy(self):
         return copy.deepcopy(self)
@@ -45,7 +47,8 @@ def signature(state):
     return json.dumps({"dims": dims, "spec": state.spec, "structure": _rounded(state.structure),
                        "divisions": _rounded(state.divisions), "extras": _rounded(state.extras),
                        "slides": _rounded(state.slides), "interiors": _rounded(state.interiors),
-                       "backs": _rounded(state.backs), "assembly": state.assembly}, sort_keys=True, default=str)
+                       "backs": _rounded(state.backs), "assembly": state.assembly,
+                       "structure_id": state.structure_id, "present": state.present}, sort_keys=True, default=str)
 
 
 class Draft:

@@ -18,14 +18,15 @@ from .nesting import NestingPart
 FORMAT = "caffmob_draw.project"
 # Arquivos exportados antes da identidade CAFFMob Draw continuam válidos na leitura (BUG-20261006-QAVK).
 ACCEPTED_FORMATS = (FORMAT, "blendertomob.project")
-SCHEMA_VERSION = "2.2.0"     # 2.1: `machining` por peça (003); 2.2: `hardware[]` e `drilling` (008); leitores 2.x valem
+SCHEMA_VERSION = "2.3.0"     # 2.1: `machining` por peça (003); 2.2: `hardware[]` e `drilling` (008);
+#                              2.3: `modules[].structure_id` e ferragens de roupeiro (015); leitores 2.x valem
 SUPPORTED_MAJOR = 2
 ALGORITHM = "guillotine-shelf-nfd"
 
 GRAIN_TO_JSON = {'NONE': "NONE", 'VERTICAL': "LENGTH", 'HORIZONTAL': "WIDTH"}
 GRAIN_FROM_JSON = {v: k for k, v in GRAIN_TO_JSON.items()}
 SOURCES = ("CUTPART", "SYNTHETIC", "FREE_GEOMETRY")
-LIMIT_STATUSES = ("OK", "EXCEEDS_WIDTH", "EXCEEDS_LENGTH", "MACHINING_CLIPPED")
+LIMIT_STATUSES = ("OK", "EXCEEDS_WIDTH", "EXCEEDS_LENGTH", "MACHINING_CLIPPED", "STRUCTURE_UNKNOWN", "PART_DEGENERATE")
 
 
 class GlobalJsonError(Exception):

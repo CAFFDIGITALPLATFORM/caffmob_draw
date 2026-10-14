@@ -1,7 +1,9 @@
 """Gera as imagens de referência do Configurador de Dimensões.
 
 Uso:
-    blender --background --factory-startup --python tools/render_dimension_refs.py
+    blender --background --factory-startup --python tools/render_dimension_refs.py [-- --only chave1,chave2]
+
+`--only` gera só as imagens pedidas (ex.: `ext_stretcher_width`), sem regravar as outras.
 
 Saída: blendertomob/assets/dimension_refs/<chave>.png (chaves = `image_key` de data/dimension_schema.py).
 - sheet_<componente>.png: placa com os lados da fita numerados (1 e 2 = bordas do comprimento,
@@ -19,9 +21,9 @@ import bpy
 from mathutils import Vector
 
 ROOT = Path(__file__).resolve().parents[1]
-OUT = ROOT / "blendertomob" / "assets" / "dimension_refs"
+OUT = ROOT / "caffmob_draw" / "assets" / "dimension_refs"
 
-spec = importlib.util.spec_from_file_location("dimension_schema", ROOT / "blendertomob/data/dimension_schema.py")
+spec = importlib.util.spec_from_file_location("dimension_schema", ROOT / "caffmob_draw/data/dimension_schema.py")
 schema = importlib.util.module_from_spec(spec)
 sys.modules["dimension_schema"] = schema
 spec.loader.exec_module(schema)
@@ -141,6 +143,16 @@ def external_image(field_name):
         box("Cota", (0.01, 0.01, kick), (w / 2 + 0.08, -d / 2, kick / 2), RED)
     elif field_name == 'install_height_upper':
         box("Cota", (0.01, 0.01, z0), (w / 2 + 0.08, -d / 2, z0 / 2), RED)
+    elif field_name == 'stretcher_width':           # feature 015: sarrafo frontal no alto do balcão aberto
+        box("Sarrafo", (w - 0.036, 0.1, 0.018), (0, -d / 2 + 0.05, h - 0.009), DARK)
+        box("Cota", (0.01, 0.1, 0.01), (w / 2 + 0.08, -d / 2 + 0.05, h + 0.05), RED)
+    elif field_name == 'shelf_setback':             # feature 015: recuo frontal da prateleira móvel
+        box("Prateleira", (w - 0.036, d - 0.04, 0.018), (0, 0.02, kick + (h - kick) / 2), DARK)
+        box("Cota", (0.04, 0.01, 0.01), (0, -d / 2 - 0.02 + 0.02, kick + (h - kick) / 2 + 0.05), RED)
+    elif field_name == 'hanger_rod_drop':           # feature 015: tubo do cabideiro abaixo da prateleira de cima
+        box("Prateleira", (w - 0.036, d - 0.02, 0.018), (0, 0.01, h - 0.3), DARK)
+        box("Tubo", (w - 0.04, 0.025, 0.025), (0, 0, h - 0.3 - 0.07), (0.7, 0.7, 0.72, 1.0))
+        box("Cota", (0.01, 0.01, 0.07), (w / 2 + 0.08, -d / 2, h - 0.3 - 0.035), RED)
     elif field_name == 'top_overhang':
         box("Tampo", (w + 0.04, d + 0.04, 0.03), (0, -0.02, h + 0.015), (0.6, 0.6, 0.6, 1.0))
         box("Cota", (0.01, 0.04, 0.01), (w / 2 + 0.08, -d / 2 - 0.02, h + 0.05), RED)
@@ -162,15 +174,20 @@ def max_image():
 
 
 def main():
+    argv = sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else []
+    only = set(argv[argv.index("--only") + 1].split(",")) if "--only" in argv else None
     for component in schema.COMPONENTS:
-        sheet_image(component)
+        if only is None or f"sheet_{component.code.lower()}" in only:
+            sheet_image(component)
     seen = set()
     for param in schema.params_for(group=schema.GROUP_EXTERNAL):
         if param.field in seen:
             continue
         seen.add(param.field)
-        external_image(param.field)
-    max_image()
+        if only is None or f"ext_{param.field}" in only:
+            external_image(param.field)
+    if only is None or "max_measures" in only:
+        max_image()
     print(f"DIMENSION_REFS_OK {len(list(OUT.glob('*.png')))} imagens em {OUT}")
 
 

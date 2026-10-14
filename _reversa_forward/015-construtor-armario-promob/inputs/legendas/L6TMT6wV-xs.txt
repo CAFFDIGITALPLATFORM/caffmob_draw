@@ -1,0 +1,173 @@
+[0:00] e
+[0:02] nas aulas anteriores aprendemos a
+[0:05] inserir módulos já existentes na
+[0:07] biblioteca do Promob no Promob Plus e no
+[0:10] pro mobiarq Podemos construir nossos
+[0:12] módulos personalizados utilizando a
+[0:15] ferramenta construir armários
+[0:18] e para construir módulo devemos
+[0:20] selecionar a parede ou piso assim
+[0:23] ativamos na barra superior o construtor
+[0:27] de armário
+[0:28] mostra o primeiro exemplo será cozinhas
+[0:32] um balcão de cozinha Ok cozinhas
+[0:34] inferior com divisória
+[0:36] é
+[0:37] a primeira parte do construída Mares do
+[0:40] Construtor de armários seria a estrutura
+[0:43] desse balcão eu vou dar um exemplo de um
+[0:45] balcão de 1.400 de largura e altura 700
+[0:49] profundidade vou colocar 600
+[0:53] o número de vãos eu quero gavetas duas
+[0:57] portas porta-latas
+[0:59] três vãos muito bem clicando no vão
+[1:03] Central eu coloco a medida de largura eu
+[1:05] vou colocar gavetas de 400 de largura
+[1:08] clica no último vão 200 de largura muito
+[1:13] bem dá um zoom para ficar mais próximo
+[1:17] divisões seriam prateleiras eu tenho
+[1:20] vertical e horizontal horizontal móveis
+[1:24] fixas com recuo sem recuo é vou usar uma
+[1:29] com recuo se eu trago a prateleira para
+[1:33] o vão Central
+[1:34] arrastando eu não tenho certeza eu tirei
+[1:37] calcular as medidas para centralizar
+[1:39] Então o que eu faço para entrar
+[1:42] centralizada vou deletar clica deleta eu
+[1:45] dois cliques no Vão dois cliques lá em
+[1:47] cima na prateleira ela entra
+[1:49] centralizada muito bem agora gaveta em
+[1:53] gavetas nesse vão eu vou em gavetas
+[1:57] aqui eu escolho o tipo de frente que eu
+[2:00] gostaria
+[2:02] e por exemplo
+[2:05] Hands um puxador madeira reta Lisa
+[2:08] frisada eu vou colocar gola
+[2:11] o que seria o puxador perfil ou gola
+[2:13] número de gavetas eu vou deixar 4
+[2:16] gavetas muito bem agora eu arrasto uma
+[2:18] caixinha com as gavetas ele seria o
+[2:20] quatro gaveta já com a frente gola muito
+[2:23] bem aqui eu gostaria de colocar duas
+[2:26] portas eu clico no vão ele selecionou o
+[2:29] vão inteiro eu vou em portas
+[2:32] ele fala amas uma só inteira só da
+[2:37] esquerda só da direita basculante
+[2:39] inferior ou basculante superior eu quero
+[2:41] ambas as duas muito bem eu dou dois
+[2:44] cliques na porta a gola horizontal elas
+[2:47] entram automaticamente Porque vão estava
+[2:49] selecionado muito bem eu vou colocar
+[2:52] também uma porta no último vão onde vai
+[2:55] o porta-latas e selecionou ele agora é
+[2:58] uma inteira
+[3:00] os dois cliques na porta ele inseriu a
+[3:03] porta
+[3:04] é mas eu quisesse que a porta entrasse
+[3:07] invertida na abertura eu clique Aria
+[3:10] inserir invertido ok muito bem agora
+[3:13] vamos lá nos internos
+[3:15] biblioteca acessórios de cozinha e
+[3:18] colocar o porta-latas aramado dentro
+[3:21] desse vão
+[3:23] é muito bem ok
+[3:27] nós
+[3:27] construímos um balcão com gavetas
+[3:32] e eu vou em aberturas eu consigo abrir
+[3:35] as portas e abrir as gavetas
+[3:38] muito bem agora o nosso exemplo será de
+[3:43] um armário de dormitório
+[3:44] seleciona a parede ou vai em ferramentas
+[3:48] construir armário ou direito do mouse
+[3:51] construir armário também funciona
+[3:54] o nosso exemplo será um dormitório agora
+[3:57] eu vou escolher o armário divisória
+[3:59] sobre Base ok
+[4:02] é muito bem primeiramente a estrutura
+[4:05] largura Total eu vou fazer um armário de
+[4:08] 22 e 600 altura 2.600 também
+[4:13] profundidade eu vou manter os 600 número
+[4:17] de vãos
+[4:18] e três vãos
+[4:22] e Note que ele fez a medida exata por
+[4:26] igual / igual muito bem divisões são as
+[4:29] prateleiras
+[4:30] divisão horizontal com recuou eu trago
+[4:34] uma clico nela e definam a medida de uma
+[4:38] ler mesma ele vai ter 450 eu vou deixar
+[4:41] de 500
+[4:42] 550 trago outra clico nela
+[4:47] 720 será o vão para as gavetas
+[4:50] agora Eu encaixo as outras os outros vão
+[4:54] ela já entram
+[4:56] é automaticamente na mesma medida de
+[4:59] altura né gavetas
+[5:01] aqui eu quero colocar três gavetas
+[5:04] número de gavetas 3
+[5:07] tipo da gaveta se encontra à frente ou
+[5:10] com contra frente eu vou colocar com
+[5:12] contra frente com a frente de vidro ok
+[5:15] muito bem arrasto e jogo tenho três
+[5:18] gavetas
+[5:20] sapateira com contra frente muito bem
+[5:24] quantas eu vou colocar 5 sapateiras Ok
+[5:27] sapateira colocada
+[5:30] e os internos
+[5:32] e eu coloco o cabideiro coloca um clico
+[5:35] nele a distância dele para prateleira
+[5:38] acima vou colocar 70 milímetros questão
+[5:41] 7cm ok
+[5:43] muito bem
+[5:46] É nesse vão eu gostaria de colocar duas
+[5:48] gavetas e duas sapateiras como a gente
+[5:52] faz isso
+[5:53] sapateiras e gavetas
+[5:56] e o Promob
+[5:59] lançou nas prateleiras nas divisões
+[6:03] tanto vertical quanto horizontal a gente
+[6:05] tem um sem prateleira Seria somente a
+[6:08] divisão é uma linha imaginária apenas
+[6:11] para fazer deixar o espaço para gaveta
+[6:13] Então vamos lá eu coloco ela aqui
+[6:16] as minhas gavetas terão espaço de
+[6:19] 450 muito bem eu vou colocar vou colocar
+[6:24] 400 pronto duas gavetas nesse vão de 400
+[6:28] e duas sapateiras não vão de 320 Ok a
+[6:32] linha imaginária vai determinar esse
+[6:34] espaço então duas gavetas internas
+[6:37] gavetas com vidro duas eu jogo em cima
+[6:42] e eu vou em sapateira e vou colocar
+[6:45] número de sapateiras duas
+[6:49] muito bem eu vou dar um OK
+[6:57] e essa linha imaginária ela fez com o
+[7:00] quê
+[7:01] se eu pudesse colocar duas gavetas em
+[7:03] cima duas sapateiras em baixo sendo que
+[7:06] o montante é inteiro ele vem inteiro
+[7:13] voltando meditar armários
+[7:16] Olá eu gostaria de fazer uma colmeia no
+[7:20] meio nichos aqui no meio muitas pessoas
+[7:22] chamam de Colmeia Ou a gente pode chamar
+[7:24] de nichos eu vou colocar dá dois cliques
+[7:28] no vão Central foi em divisões inserção
+[7:31] múltipla
+[7:32] com
+[7:34] recuo com recuo Esse é o modelo da
+[7:37] prateleira muito bem eu não posso clicar
+[7:40] nos quadradinhos eu escolho a quantidade
+[7:43] e depois eu clico Então vamos lá
+[7:45] 246 eu clico ela entra automaticamente
+[7:49] ok
+[7:53] é muito bem agora
+[7:56] vamos adicionar as portas volto lá no
+[8:00] editar armário direito do mouse editar
+[8:03] armário eu vou em portas
+[8:06] e eu quero ambas as portas então eu eu
+[8:09] clico no maneiro ele seleciona todo
+[8:12] bloco eu venho em ambas dois cliques na
+[8:15] porta ela entra maleiro 2 cliques na
+[8:21] porta ela entra
+[8:25] Oi ok
+[8:33] e eu tenho agora
+[8:35] é um armário
+[8:39] é produzido o construtor de armário

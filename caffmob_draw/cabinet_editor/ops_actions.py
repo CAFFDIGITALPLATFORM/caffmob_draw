@@ -431,14 +431,33 @@ def _division_payload(ui, s):
         orientation = ui.new_orientation if ui.div_mode == 'MULTIPLE' else ui.div_mode
         return 'ADD_DIVISION', {'space': s.space, 'orientation': orientation, 'kind': dv.SPACER,
                                 'thickness': item.param('thickness') / 1000.0, 'follow': bool(item.param('follow'))}
+    kind = dv.MOVABLE if ui.div_kind == 'MOVABLE' else dv.FIXED
+    orientation = ui.div_mode
     if item is not None and item.group == 'RECESS':
-        base.update(use_front=item.param('front') > 0, front=item.param('front') / 1000.0 or ui.new_front)
+        front = item.param('front') or 0.0
+        base.update(use_front=front > 0, front=front / 1000.0 or ui.new_front)
         if item.param('back'):                     # "Tras 15mm" (questions.md, pergunta 46)
             base.update(use_back=True, back=item.param('back') / 1000.0)
-    kind = dv.MOVABLE if ui.div_kind == 'MOVABLE' else dv.FIXED
+        base['variant'] = item.param('variant') or ""                   # feature 015 (RN-15)
+        kind = item.param('kind') or kind                               # Invisível, Somente Divisão
+        if item.param('orientation') and ui.div_mode != 'MULTIPLE':
+            orientation = item.param('orientation')
+        if kind == dv.MOVABLE and item.param('front') is None:          # item sem recuo próprio: o do padrão
+            base.update(use_front=True, front=_shelf_setback(s))
     if ui.div_mode == 'MULTIPLE':
         return 'ADD_MANY', dict(base, orientation=ui.new_orientation, count=ui.div_count, kind=kind)
-    return 'ADD_DIVISION', dict(base, orientation=ui.div_mode, kind=kind)
+    return 'ADD_DIVISION', dict(base, orientation=orientation, kind=kind)
+
+
+def _shelf_setback(s):
+    """Recuo frontal da prateleira móvel (m) do Padrão de Dimensões na linha do módulo (feature 015, Q5)."""
+    from ..standards import api, cabinet_defaults
+    from . import scene_divisions
+    root = s.root()
+    definition = api.active_definition(bpy.context.scene)
+    values = api.definition_values(definition) if definition is not None else {}
+    line = scene_divisions.line_of(root) if root is not None else 'COZ'
+    return cabinet_defaults.structure_params(values, line)['shelf_setback']
 
 
 def insert_payload(context, tab):

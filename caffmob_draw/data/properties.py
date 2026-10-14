@@ -346,6 +346,13 @@ class BTM_PG_CabinetProperties(bpy.types.PropertyGroup):
         ],
         default='BASE'
     )  # type: ignore
+    # Feature 015 (D-05, RN-22): estrutura de caixa do catálogo (`data/cabinet_structures.json`). Vazio = construção
+    # de antes da 015 (caixa de cinco chapas), mantida até o projetista abrir o editor ou reaplicar o padrão.
+    structure_id: bpy.props.StringProperty(
+        name="Estrutura de caixa",
+        default="",
+        update=update_cabinet_geom
+    )  # type: ignore
     # Feature 012 (D-08, D-10): montagem (lateral ou base passante) e linha do Padrão de Dimensões do módulo.
     assembly: bpy.props.EnumProperty(
         name="Montagem",

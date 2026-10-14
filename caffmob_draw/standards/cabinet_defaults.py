@@ -62,3 +62,44 @@ def defaults(values, line, cabinet_type):
         fallback = FALLBACK_BACK if role == 'BACK' else FALLBACK_SHEET
         thickness[role] = meters(f"{line}.sheets.{component}.thickness", fallback)
     return Defaults(width, height, depth, z, thickness, thickness['LEFT'], None)
+
+
+# Feature 015 (T025; D-07, D-08, D-19) ------------------------------------------------------------------------------
+# Medidas por estrutura de caixa: a largura vem da estrutura; altura e profundidade vêm do padrão pela linha e pelo
+# grupo (a estrutura só fixa quando traz a medida, ex. "Armário Divisória sobre Base" com 600 de profundidade). Os
+# parâmetros da caixa (sarrafo, rodapé, tampo, recuos, cabideiro) e a montagem por grupo também vêm do padrão.
+
+PARAM_KEYS = ('stretcher_width', 'toe_kick_height', 'toe_kick_setback', 'top_overhang', 'shelf_setback',
+              'hanger_rod_drop')
+StructureDefaults = namedtuple('StructureDefaults', 'base params assembly back_kind rear_stretcher warnings')
+
+
+def structure_params(values, line):
+    """{parâmetro: m} da caixa pela linha do padrão; o que falta vem de `structure.PARAM_FALLBACK_MM`."""
+    from ..cabinet_editor.structure import PARAM_FALLBACK_MM
+    out = {key: value / 1000.0 for key, value in PARAM_FALLBACK_MM.items()}
+    for key in PARAM_KEYS:
+        try:
+            out[key] = float(values[f"{line}.external.{key}"]) / 1000.0
+        except (KeyError, TypeError, ValueError):
+            pass
+    return out
+
+
+def defaults_for_structure(values, structure, group_assembly_text=""):
+    """`StructureDefaults` de uma estrutura do catálogo (`structures_core.Structure`)."""
+    from ..cabinet_editor import structures_core
+    from . import group_assembly
+    environment = structures_core.load().environment(structure.environment)
+    line = environment.line if environment is not None else 'COZ'
+    base = defaults(values, line, structure.cabinet_type)
+    width = structure.width_mm / 1000.0 if structure.width_mm else base.width
+    height = structure.height_mm / 1000.0 if structure.height_mm else base.height
+    depth = structure.depth_mm / 1000.0 if structure.depth_mm else base.depth
+    base = base._replace(width=width, height=height, depth=depth)
+    group = group_assembly.resolve(group_assembly_text, structure.group, {'assembly': structure.assembly})
+    _clean, warnings = group_assembly.normalize(group_assembly_text)
+    if base.warning:
+        warnings = [base.warning] + warnings
+    return StructureDefaults(base, structure_params(values or {}, line), group['assembly'], group['back_kind'],
+                             group['rear_stretcher'], tuple(warnings))

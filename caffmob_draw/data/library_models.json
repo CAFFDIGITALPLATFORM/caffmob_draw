@@ -1,10 +1,10 @@
 {
   "schema-version": 1,
   "models": [
-    {"id": "balcao_1p", "label": "Balcão 1 porta", "cabinet_type": "BASE", "width_mm": 450, "door_swing": "LEFT", "shelves": 1},
-    {"id": "balcao_2p", "label": "Balcão 2 portas", "cabinet_type": "BASE", "width_mm": 800, "door_swing": "DOUBLE", "shelves": 1},
-    {"id": "aereo_1p", "label": "Aéreo 1 porta", "cabinet_type": "WALL", "width_mm": 450, "door_swing": "LEFT", "shelves": 1},
-    {"id": "aereo_2p", "label": "Aéreo 2 portas", "cabinet_type": "WALL", "width_mm": 800, "door_swing": "DOUBLE", "shelves": 1},
-    {"id": "torre", "label": "Torre", "cabinet_type": "TALL", "width_mm": 600, "door_swing": "DOUBLE", "shelves": 4}
+    {"id": "balcao_1p", "label": "Balcão 1 porta", "cabinet_type": "BASE", "width_mm": 450, "door_swing": "LEFT", "shelves": 1, "structure_id": "coz_inferior_divisoria"},
+    {"id": "balcao_2p", "label": "Balcão 2 portas", "cabinet_type": "BASE", "width_mm": 800, "door_swing": "DOUBLE", "shelves": 1, "structure_id": "coz_inferior_divisoria"},
+    {"id": "aereo_1p", "label": "Aéreo 1 porta", "cabinet_type": "WALL", "width_mm": 450, "door_swing": "LEFT", "shelves": 1, "structure_id": "coz_superior_divisoria"},
+    {"id": "aereo_2p", "label": "Aéreo 2 portas", "cabinet_type": "WALL", "width_mm": 800, "door_swing": "DOUBLE", "shelves": 1, "structure_id": "coz_superior_divisoria"},
+    {"id": "torre", "label": "Torre", "cabinet_type": "TALL", "width_mm": 600, "door_swing": "DOUBLE", "shelves": 4, "structure_id": "coz_torre_eletros"}
   ]
 }

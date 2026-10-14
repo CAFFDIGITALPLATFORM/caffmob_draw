@@ -14,6 +14,7 @@ from dataclasses import dataclass, field
 
 from ..data.i18n import tr
 from ..data import dimension_schema as schema
+from . import group_assembly as ga
 
 
 class PromobFormatError(Exception):
@@ -60,6 +61,39 @@ def read_dimensionexport(path):
 
 ASSEMBLY_ID = 'CAFF_MONTAGEM'          # feature 012 (D-27): montagem do CAFFMob, sem equivalente no Promob
 ASSEMBLY_VALUES = ('LATERAL', 'BASE')
+# Feature 015 (D-07): medidas das estruturas de caixa por linha, sem equivalente no Promob (`<PREFIXO><LINHA>`).
+EXTRA_PREFIXES = (
+    ('CAFF_SARRAFO_', 'stretcher_width'),
+    ('CAFF_RECUO_PRAT_', 'shelf_setback'),
+    ('CAFF_CABIDEIRO_', 'hanger_rod_drop'),
+)
+
+
+def _is_caff_id(attr_id):
+    """IDs que o CAFFMob acrescenta no fim do arquivo: lidos à parte e nunca reexportados como crus."""
+    return (attr_id == ASSEMBLY_ID or attr_id.startswith(ga.XML_PREFIX)
+            or any(attr_id.startswith(prefix) for prefix, _field in EXTRA_PREFIXES))
+
+
+def _read_extra(attr_id, text, values, warnings):
+    """Lê um `CAFF_SARRAFO_<LINHA>`/`CAFF_RECUO_PRAT_<LINHA>`/`CAFF_CABIDEIRO_<LINHA>` para `values`."""
+    for prefix, field_name in EXTRA_PREFIXES:
+        if not attr_id.startswith(prefix):
+            continue
+        line = attr_id[len(prefix):]
+        if line not in schema.LINE_CODES:
+            warnings.append(tr("Linha desconhecida ignorada: {}").format(attr_id))
+            return
+        key = schema.external_key(line, field_name)
+        try:
+            value = _parse_number(text or "")
+        except ValueError:
+            value = None
+        if value is not None and schema.validate(schema.PARAMS[key], value)[0]:
+            values[key] = value
+        else:
+            warnings.append(tr("Valores inválidos ignorados: {}").format(f"{attr_id}={text}"))
+        return
 
 
 def _parse_number(text):
@@ -70,25 +104,38 @@ def to_definition_data(doc):
     """Converte o documento em dados de definição.
 
     Retorna dict com `name`, `values` (chave → valor em mm ou texto), `raw_attributes`
-    (lista de {id, value, key} na ordem original; `key` vazio = não reconhecido) e `report`
-    (`total`, `mapped`, `unrecognized`, `invalid`, `duplicates`, `confirmed_without_equivalent`).
+    (lista de {id, value, key} na ordem original; `key` vazio = não reconhecido), `assembly`, `group_assembly`
+    ({grupo: {campo: valor}}, feature 015) e `report` (`total`, `mapped`, `unrecognized`, `invalid`, `duplicates`,
+    `confirmed_without_equivalent`, `assembly_warning`, `caff_warnings`).
+    Os atributos `CAFF_*` ficam fora dos crus e da contagem: são regravados no fim pela exportação.
     """
     values = {}
+    extras = {}
     raw = []
     assembly = 'LATERAL'
+    groups = {}
     attributes = []
     report = {'total': 0, 'mapped': 0, 'unrecognized': [], 'invalid': [], 'duplicates': [],
-              'confirmed_without_equivalent': [], 'assembly_warning': None}
+              'confirmed_without_equivalent': [], 'assembly_warning': None, 'caff_warnings': []}
     for attr_id, text in doc.attributes:
-        if attr_id != ASSEMBLY_ID:
+        if not _is_caff_id(attr_id):
             attributes.append((attr_id, text))
-            continue
-        value = (text or "").strip().upper()
-        if value in ASSEMBLY_VALUES:
-            assembly = value
+        elif attr_id == ASSEMBLY_ID:
+            value = (text or "").strip().upper()
+            if value in ASSEMBLY_VALUES:
+                assembly = value
+            else:
+                assembly = 'LATERAL'
+                report['assembly_warning'] = tr("Montagem desconhecida: {}; usada lateral passante").format(text)
+        elif attr_id.startswith(ga.XML_PREFIX):
+            group, fields, warnings = ga.from_xml_attribute(attr_id, text)
+            report['caff_warnings'].extend(warnings)
+            if group and fields:
+                groups[group] = fields
+            elif group:
+                groups.pop(group, None)
         else:
-            assembly = 'LATERAL'
-            report['assembly_warning'] = tr("Montagem desconhecida: {}; usada lateral passante").format(text)
+            _read_extra(attr_id, text, extras, report['caff_warnings'])
     report['total'] = len(attributes)
     seen = {}
     for attr_id, text in attributes:
@@ -118,7 +165,9 @@ def to_definition_data(doc):
             if schema.parse_promob_id(attr_id):
                 report['confirmed_without_equivalent'].append(attr_id)
         raw.append({'id': attr_id, 'value': text, 'key': key})
-    return {'name': doc.name, 'values': values, 'raw_attributes': raw, 'report': report, 'assembly': assembly}
+    values.update(extras)
+    return {'name': doc.name, 'values': values, 'raw_attributes': raw, 'report': report, 'assembly': assembly,
+            'group_assembly': groups}
 
 
 def _format_number(value):
@@ -149,10 +198,26 @@ def build_attributes(values, raw_attributes):
     return pairs
 
 
-def write_dimensionexport(path, name, values, raw_attributes, assembly=None):
+def caff_attributes(values, assembly=None, group_assembly=None):
+    """[(ID, VALOR)] do CAFFMob para o fim do arquivo: montagem, montagem por grupo e medidas novas por linha."""
+    pairs = []
+    if assembly in ASSEMBLY_VALUES:
+        pairs.append((ASSEMBLY_ID, assembly))
+    pairs.extend(ga.to_xml_attributes(group_assembly or {}))
+    for line in schema.LINE_CODES:
+        for prefix, field_name in EXTRA_PREFIXES:
+            key = schema.external_key(line, field_name)
+            if key in values:
+                pairs.append((prefix + line, _format_number(values[key])))
+    return pairs
+
+
+def write_dimensionexport(path, name, values, raw_attributes, assembly=None, group_assembly=None):
     """Grava o DIMENSIONEXPORT (escrita atômica). `raw_attributes` define a ordem e os IDs exportados.
 
     `assembly` (feature 012): quando dado, `CAFF_MONTAGEM` vai no fim; o Promob ignora o ID desconhecido.
+    Depois dele (feature 015): `CAFF_GRUPO_*` de `group_assembly` e, por linha, `CAFF_SARRAFO_<LINHA>`,
+    `CAFF_RECUO_PRAT_<LINHA>` e `CAFF_CABIDEIRO_<LINHA>` com os valores presentes em `values`.
 
     Para uma definição criada no BlenderToMob (sem arquivo de origem), use `attributes_from_values`.
     """
@@ -160,10 +225,10 @@ def write_dimensionexport(path, name, values, raw_attributes, assembly=None):
     definition = ET.SubElement(root, 'DEFINITION', DESCRIPTION=name, ISSYSTEM="False", CHANGED="True")
     attributes = ET.SubElement(definition, 'ATTRIBUTES')
     for attr_id, text in build_attributes(values, raw_attributes):
-        if attr_id != ASSEMBLY_ID:
+        if not _is_caff_id(attr_id):
             ET.SubElement(attributes, 'ATTRIBUTE', ID=attr_id, VALUE=text)
-    if assembly in ASSEMBLY_VALUES:
-        ET.SubElement(attributes, 'ATTRIBUTE', ID=ASSEMBLY_ID, VALUE=assembly)
+    for attr_id, text in caff_attributes(values, assembly, group_assembly):
+        ET.SubElement(attributes, 'ATTRIBUTE', ID=attr_id, VALUE=text)
     ET.indent(root, space="  ")
     data = ET.tostring(root, encoding='unicode')
     directory = os.path.dirname(os.path.abspath(str(path))) or "."

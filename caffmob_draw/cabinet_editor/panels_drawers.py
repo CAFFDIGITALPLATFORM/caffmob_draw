@@ -8,7 +8,7 @@ import bpy  # type: ignore
 
 from ..data.i18n import tr
 from . import bridge, catalog, props
-from .panels import _TabPanel, insert_button, properties_box, target_box
+from .panels import catalog_grid, _TabPanel, insert_button, properties_box, target_box
 from .panels_tabs_common import registrar
 
 
@@ -36,7 +36,11 @@ class BTM_PT_CabinetEditorDrawers(_TabPanel, bpy.types.Panel):
             hint = layout.row()
             hint.active = False
             hint.label(text=tr("Gaveta interna só existe no frameless"), icon='CANCEL')
-        item = catalog.items('DRAWERS', ui.drawer_tab)[0]
+        options = catalog.items('DRAWERS', ui.drawer_tab, environment=props.environment())   # feature 015
+        chosen = catalog.get(ui.catalog_item)
+        item = chosen if chosen in options else options[0]
+        if len(options) > 1:
+            catalog_grid(layout, context, options)
         box = layout.box()
         box.label(text=tr("Opções de gavetas"))
         row = box.row()

@@ -11,7 +11,8 @@ from ..cutting import machining
 from . import appliances as ap
 from . import catalog, divisions as dv, scene_divisions, scene_parts
 
-KINDS = {'APPLIANCE_PANEL', 'APPLIANCE', 'APPLIANCE_SUPPORT', 'PISTON'}
+KINDS = {'APPLIANCE_PANEL', 'APPLIANCE', 'APPLIANCE_SUPPORT', 'PISTON',
+         'HANGER_ROD', 'PANTS_RACK', 'SHOE_RACK', 'BELT_RACK'}           # roupeiro (feature 015, T032)
 APPLIANCE_NAMES = {'OVEN': "Forno", 'MICRO': "Microondas", 'COFFEE': "Cafeteira"}
 PANEL_THICKNESS = 0.018
 PISTON_BOX = (0.02, 0.25, 0.02)
@@ -45,8 +46,34 @@ def _cutout(panel, cut, panel_box):
     mod.show_viewport = mod.show_render = True
 
 
+def _rod_drop(context, root):
+    """Distância do tubo do cabideiro à prateleira de cima (m), do Padrão de Dimensões na linha do módulo."""
+    from ..standards import api, cabinet_defaults
+    definition = api.active_definition(context.scene)
+    values = api.definition_values(definition) if definition is not None else {}
+    line = scene_divisions.line_of(root)
+    return cabinet_defaults.structure_params(values, line)['hanger_rod_drop']
+
+
+def _build_wardrobe(context, root, item, box, tag):
+    """Internos de roupeiro (feature 015, RN-16): chapa vira `CabinetPart`; ferragem vira caixa com `btm_hardware`."""
+    from . import wardrobe
+    kind = item.param('kind')
+    out = []
+    for piece in wardrobe.layout(kind, (box.lo, box.hi), rod_drop=_rod_drop(context, root),
+                                 material=item.param('material') or 'WOOD'):
+        if piece.hardware:
+            maker = scene_parts.make_cylinder if kind == 'HANGER_ROD' else scene_parts.make_box
+            out.append(maker(root, item.label, piece.box, piece.kind, hardware=piece.hardware, **tag))
+        else:
+            out.append(scene_parts.make_part(root, item.label, piece.box, piece.kind, piece.component, **tag))
+    return out
+
+
 def _build(context, root, item, space_path, box, slot):
     tag = dict(catalog_id=item.id, space=space_path, slot=slot)
+    if item.action == 'INSERT_WARDROBE':
+        return _build_wardrobe(context, root, item, box, tag)
     if item.id == 'SUPPORT':
         _m, t = scene_divisions.configured(context.scene, root)
         z = box.lo[2] + box.size(2) / 3.0

@@ -10,6 +10,7 @@ import tempfile
 
 from ..data.i18n import tr
 from ..data import dimension_schema as schema
+from . import group_assembly as ga
 
 FORMAT = "caffmob_draw.dimension-standard"
 # Arquivos exportados antes da identidade CAFFMob Draw continuam válidos na leitura (BUG-20261006-QAVK).
@@ -41,8 +42,18 @@ def document_assembly(document):
     return value if value in ASSEMBLIES else 'LATERAL'
 
 
-def values_to_document(name, uid, market, source, version, updated_at, values, raw_attributes=(), assembly='LATERAL'):
-    """Monta o dicionário do arquivo a partir de valores planos (chave → valor em mm ou texto)."""
+def document_group_assembly(document):
+    """(montagem por grupo normalizada, avisos) do arquivo; ausente (arquivo de antes da 015) → ({}, [])."""
+    value = document.get("group_assembly") if isinstance(document, dict) else None
+    return ga.normalize(value) if value else ({}, [])
+
+
+def values_to_document(name, uid, market, source, version, updated_at, values, raw_attributes=(), assembly='LATERAL',
+                       group_assembly=None):
+    """Monta o dicionário do arquivo a partir de valores planos (chave → valor em mm ou texto).
+
+    `group_assembly` (feature 015, D-08): dict ou texto JSON; vai ao lado de `assembly`, omitido quando vazio.
+    """
     lines = {}
     max_measures = {}
     for key, value in values.items():
@@ -63,7 +74,7 @@ def values_to_document(name, uid, market, source, version, updated_at, values, r
                 entry['edges'][int(param.field[-1]) - 1] = value
             else:
                 entry[param.field] = value
-    return {
+    document = {
         "schema": FORMAT,
         "schema_version": SCHEMA_VERSION,
         "uid": uid,
@@ -78,6 +89,15 @@ def values_to_document(name, uid, market, source, version, updated_at, values, r
         "lines": lines,
         "raw_attributes": [{"id": r['id'], "value": r['value'], "key": r.get('key', '')} for r in raw_attributes],
     }
+    groups, _warnings = ga.normalize(group_assembly or {})
+    if groups:
+        ordered = {}
+        for k, v in document.items():
+            ordered[k] = v
+            if k == "assembly":
+                ordered["group_assembly"] = groups
+        document = ordered
+    return document
 
 
 def document_to_values(document):
@@ -176,7 +196,8 @@ def export_definition(path, definition):
     raw = [{"id": r.attr_id, "value": r.value, "key": r.key} for r in definition.raw_attributes]
     document = values_to_document(definition.name, definition.uid, definition.market, definition.source,
                                   definition.version, definition.updated_at, values, raw,
-                                  assembly=getattr(definition, 'assembly', 'LATERAL'))
+                                  assembly=getattr(definition, 'assembly', 'LATERAL'),
+                                  group_assembly=getattr(definition, 'group_assembly', ""))
     write_document(path, document)
     return document
 
@@ -186,6 +207,8 @@ def import_definition(scene, path, on_conflict='rename'):
     from . import api, builtin
     document = read_document(path)
     values, warnings = document_to_values(document)
+    groups, group_warnings = document_group_assembly(document)
+    warnings = warnings + group_warnings
     data = api.ensure_ready(scene)
     name = str(document.get("name") or "Definição importada")
     existing = api.find_definition(scene, name=name)
@@ -202,6 +225,7 @@ def import_definition(scene, path, on_conflict='rename'):
     definition.updated_at = str(document.get("updated_at") or builtin.now_iso())
     builtin.fill_from_schema(definition, definition.market)
     definition.assembly = document_assembly(document)
+    definition.group_assembly = ga.dumps(groups)                # feature 015 (D-08)
     for key, value in values.items():
         api.set_value(definition, key, value)
     for raw in document.get("raw_attributes") or []:

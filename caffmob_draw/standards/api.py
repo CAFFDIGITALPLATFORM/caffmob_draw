@@ -97,6 +97,8 @@ def unique_name(scene, base):
 def copy_values(source, target):
     if hasattr(source, 'assembly') and hasattr(target, 'assembly'):      # feature 012 (D-10)
         target.assembly = source.assembly
+    if hasattr(source, 'group_assembly') and hasattr(target, 'group_assembly'):     # feature 015 (D-08)
+        target.group_assembly = source.group_assembly
     target.values.clear()
     for item in source.values:
         new = target.values.add()
@@ -273,6 +275,11 @@ def pending_changes(scene, draft):
         labels = {'LATERAL': tr("Lateral passante"), 'BASE': tr("Base passante")}
         changes.append({'key': 'assembly', 'label': tr("Montagem"), 'old': labels[definition.assembly],
                         'new': labels[draft.assembly]})
+    from . import group_assembly
+    if group_assembly.differs(getattr(draft, 'group_assembly', ""), getattr(definition, 'group_assembly', "")):
+        changes.append({'key': 'group_assembly', 'label': tr("Montagem por grupo"),
+                        'old': getattr(definition, 'group_assembly', "") or "—",
+                        'new': getattr(draft, 'group_assembly', "") or "—"})
     for item in draft.values:
         param = schema.get_param(item.name)
         if param is None:

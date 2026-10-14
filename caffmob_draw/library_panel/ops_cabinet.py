@@ -39,6 +39,16 @@ class BTM_OT_LibraryCreateCabinet(bpy.types.Operator):
         return context.mode == 'OBJECT'
 
     def invoke(self, context, event):
+        # Feature 015 (T036; RN-11): "Criar armário" abre a galeria de estruturas de caixa na aba da linha atual; o
+        # diálogo antigo continua para quem chama sem a galeria (EXEC).
+        state = getattr(context.window_manager, 'btm_library', None)
+        line = state.line if state is not None and state.line in categories_core.LINES else 'COZ'
+        if bpy.ops.caffmob.structure_gallery.poll():
+            bpy.ops.caffmob.structure_gallery('INVOKE_DEFAULT', environment=line)
+            return {'CANCELLED'}                 # o módulo nasce no OK da galeria, com o passo de desfazer dele
+        return self._invoke_dialog(context)
+
+    def _invoke_dialog(self, context):
         from ..standards import api
         state = getattr(context.window_manager, 'btm_library', None)
         line = state.line if state is not None and state.line in categories_core.LINES else 'COZ'

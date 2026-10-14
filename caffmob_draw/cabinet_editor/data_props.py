@@ -37,9 +37,14 @@ MATERIAL_ITEMS = [('', "Do Configurador", "Segue o Configurador de Dimensões")]
 EXTRA_KIND_ITEMS = [(k, k, "") for k in (
     'BASE_TOP_RECESSED', 'FOOT', 'KICK_FRONT', 'KICK_LEFT', 'KICK_RIGHT', 'KICK_GRANITE', 'CLOSURE', 'VIEW_FRONT',
     'VIEW_LEFT', 'VIEW_RIGHT', 'VIEW_TALL_LEFT', 'VIEW_TALL_RIGHT', 'VIEW_TALL_FRONT', 'APPLIANCE_PANEL', 'APPLIANCE',
-    'APPLIANCE_SUPPORT', 'PISTON', 'SLIDE_TRACK', 'SLIDE_LEAF')]
+    'APPLIANCE_SUPPORT', 'PISTON', 'SLIDE_TRACK', 'SLIDE_LEAF',
+    # Feature 015 (data-delta §1.3): sempre no fim, para o índice gravado nos arquivos não mudar.
+    'HANGER_ROD', 'PANTS_RACK', 'SHOE_RACK', 'BELT_RACK', 'CASTER', 'STRETCHER', 'TOE_KICK_STRUCT')]
 DIVISION_KIND_ITEMS = [('FIXED', "Fixa", ""), ('MOVABLE', "Móvel", "Regulável, com furação nas peças vizinhas"),
-                       ('SPACER', "Distanciador", "Ocupa a faixa sem dividir o vão")]
+                       ('SPACER', "Distanciador", "Ocupa a faixa sem dividir o vão"),
+                       # Feature 015 (RN-15): dividem o vão sem gerar peça nem entrar no corte
+                       ('INVISIBLE', "Invisível", "Divide o vão; não aparece no 3D nem no corte"),
+                       ('DIVISION_ONLY', "Somente Divisão", "Divide o vão para agregados, sem peça")]
 BACK_MODE_ITEMS = [('FULL', "Inteiro", ""), ('RECESSED', "Inteiro Recuado", "")]
 
 
@@ -148,9 +153,13 @@ class BTM_PG_Division(bpy.types.PropertyGroup):
     bay: bpy.props.BoolProperty(default=False)  # type: ignore            # gerada pelo Número de vãos (008)
     kind: bpy.props.EnumProperty(items=DIVISION_KIND_ITEMS, default='FIXED')  # type: ignore
     follow: bpy.props.StringProperty()  # type: ignore                    # uid da divisória seguida (008)
+    # Feature 015 (data-delta §1.3, §1.4): variante de catálogo (CORTA_SAR, C_REB, NAO_DIVIDE_FUNDO, CORREDICA,
+    # ARAMADA, MONTANTE; vazio = como antes) e largura digitada do vão à esquerda da divisória de vão (0 = igual).
+    variant: bpy.props.StringProperty()  # type: ignore
+    bay_width: bpy.props.FloatProperty(subtype='DISTANCE', unit='LENGTH', default=0.0, min=0.0)  # type: ignore
 
     FIELDS = ('uid', 'space', 'orientation', 'offset', 'use_front', 'front', 'use_back', 'back', 'thickness',
-              'material', 'bay', 'kind', 'follow')
+              'material', 'bay', 'kind', 'follow', 'variant', 'bay_width')
 
     def to_dict(self):
         return {name: getattr(self, name) for name in self.FIELDS}

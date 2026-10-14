@@ -66,7 +66,48 @@ def read_state(root):
                               extras=holder.extras_dict() if holder is not None else {},
                               slides=scene_slides.state_of(root), interiors=scene_interiors.entries(root),
                               backs=holder.backs_dict() if holder is not None else {},
-                              assembly=root.btm_cabinet.assembly if is_caffmob_module(root) else "")
+                              assembly=root.btm_cabinet.assembly if is_caffmob_module(root) else "",
+                              **_structure_fields(root))
+
+
+_CARCASS_ROLES = ('TOP', 'BOTTOM', 'BACK', 'LEFT', 'RIGHT')
+
+
+def _structure_fields(root):
+    """Estrutura de caixa e chapas presentes do módulo CAFFMob, para o instantâneo do editor (feature 015)."""
+    if not is_caffmob_module(root):
+        return {}
+    cab = root.btm_cabinet
+    return {'structure_id': cab.structure_id,
+            'present': {role: bool(getattr(cab, 'has_' + role.lower())) for role in _CARCASS_ROLES}}
+
+
+def set_structure(context, root, structure_id, present):
+    """Leva o módulo CAFFMob à estrutura `structure_id` com as chapas `present`; refaz malha, divisões e extras."""
+    from ..data.properties import suspended_geometry, update_cabinet_geom
+    cab = root.btm_cabinet
+    with suspended_geometry():
+        cab.structure_id = structure_id
+        for role, value in (present or {}).items():
+            setattr(cab, 'has_' + role.lower(), bool(value))
+    update_cabinet_geom(cab, context)
+    scene_divisions.reflow(context, root, force=True)
+    scene_extras.sync(context, root)
+    return []
+
+
+def migrate_structure(context, root):
+    """Módulo CAFFMob de antes da 015 passa para a estrutura equivalente (RN-22, D-06); devolve o id ou None."""
+    from . import structures_core
+    if not is_caffmob_module(root) or root.btm_cabinet.structure_id:
+        return None
+    cab = root.btm_cabinet
+    structure_id = structures_core.load().legacy_structure(cab.line, cab.cabinet_type)
+    recipe = structures_core.get(structure_id)
+    if recipe is None:
+        return None
+    set_structure(context, root, recipe.id, {role: recipe.has(role) for role in _CARCASS_ROLES})
+    return recipe.id
 
 
 def library_limits(root, library):
@@ -100,6 +141,8 @@ def apply_state(context, root, target):
             set_dimension(context, root, field, target.dimensions[index])
     if target.assembly and target.assembly != current.assembly:
         messages += set_assembly(context, root, {'assembly': target.assembly})
+    if is_caffmob_module(root) and (target.structure_id, target.present) != (current.structure_id, current.present):
+        messages += set_structure(context, root, target.structure_id, target.present)   # feature 015
     if adapter is None:
         return messages
     wanted = spec.from_dict(target.spec)
@@ -151,6 +194,9 @@ def apply_state(context, root, target):
         root.btm_structure.extras_from_dict(target.extras)
     if geometry or target.extras != current.extras:
         scene_extras.sync(context, root)
+        if target.extras != current.extras and is_caffmob_module(root) and root.btm_cabinet.structure_id:
+            from ..data.properties import update_cabinet_geom         # peças da estrutura na árvore (015)
+            update_cabinet_geom(root.btm_cabinet, context)
     if geometry or target.interiors != current.interiors:
         scene_interiors.apply(context, root, target.interiors)
     if _slides_key(target.slides) != _slides_key(current.slides) or (geometry and target.slides):
@@ -471,7 +517,7 @@ def add_division(context, root, data):
     added = dv.add(roots, core, space, data['orientation'], own or thickness,
                    use_front=data.get('use_front', False), front=data.get('front', dv.DEFAULT_SETBACK),
                    use_back=data.get('use_back', False), back=data.get('back', dv.DEFAULT_SETBACK),
-                   kind=kind, follow=follow)[-1]
+                   kind=kind, follow=follow, variant=data.get('variant', ""))[-1]
     scene_divisions.apply(context, root, raw + [_raw_entry(added, own_thickness=bool(own))])
     reflow_all(context, root)
     return []
@@ -506,6 +552,10 @@ def toggle_extra(context, root, data):
             action = remove_part if entry.enabled else restore_part
             messages += action(context, root, {'role': 'TOP', 'mode': st.KEEP})
     scene_extras.sync(context, root)
+    if key in catalog.STRUCTURE_KEYS and is_caffmob_module(root) and root.btm_cabinet.structure_id:
+        from ..data.properties import update_cabinet_geom             # sarrafos, tampo, rodapé (feature 015)
+        update_cabinet_geom(root.btm_cabinet, context)
+        scene_divisions.reflow(context, root, force=True)
     return messages
 
 
@@ -526,6 +576,36 @@ def set_bays(context, root, data):
     reflow_all(context, root)
     removed = _bays.removed(core, new)
     return [common.tr("{} divisória(s) de vão removida(s)").format(len(removed))] if removed else []
+
+
+def set_bay_width(context, root, data):
+    """Largura digitada de um vão (feature 015, RN-14, D-15): grava na divisória de vão à direita dele e refaz os
+    vãos; os livres dividem o que sobra. O último vão é sempre calculado; largura que não cabe é recusada."""
+    roots, core, raw, _names = division_context(context, root)
+    total = _bays.count(core)
+    index = int(data['index'])
+    if index >= total - 1:
+        raise ValueError(common.tr("O último vão é calculado: digite a largura de outro vão"))
+    _material, thickness = scene_divisions.configured(context.scene, root)
+    dividers = sorted((d for d in core if d.bay), key=lambda d: dv.depth_of(d.space))
+    typed = [d.bay_width for d in dividers]
+    typed[index] = max(0.0, float(data['width']))
+    found, short = _bays.widths(roots[_bays.ROOT].size(0), total, thickness, typed)
+    if found is None:
+        raise ValueError(common.tr("A largura não cabe: os outros vãos ficariam com {:.0f} mm").format(short * 1000.0))
+    target = dividers[index].uid
+    raw = [dict(d, bay_width=typed[index]) if d['uid'] == target else d for d in raw]
+    core = [dv.replace(d, bay_width=typed[index]) if d.uid == target else d for d in core]
+    new = _bays.apply(roots, core, total, thickness)
+    by_uid = {d['uid']: d for d in raw}
+    out = []
+    for division in new:
+        base = by_uid.get(division.uid)
+        out.append(dict(base, space=division.space, offset=division.offset) if base is not None
+                   else _raw_entry(division))
+    scene_divisions.apply(context, root, out)
+    reflow_all(context, root)
+    return []
 
 
 def set_back(context, root, data):
@@ -643,7 +723,12 @@ def insert_interior(context, root, data):
     box = dv.resolve(roots, core)[0].get(data['space'])
     if item is None or box is None:
         return [common.tr("Escolha um vão livre")]
-    from . import appliances
+    from . import appliances, wardrobe
+    if item.action == 'INSERT_WARDROBE':                 # roupeiro (feature 015): medida mínima do vão
+        small = wardrobe.too_small(item.param('kind'), (box.lo, box.hi))
+        if small is not None:
+            return [common.tr("{} precisa de um vão de {:.0f} mm de largura").format(
+                common.tr(item.label), small[0] * 1000.0)]
     need = appliances.missing(box, item.id)
     if need is not None and need[2] > 0:
         return [common.tr("{} precisa de um vão de {:.0f} × {:.0f} mm e {:.0f} mm de profundidade").format(
@@ -692,7 +777,7 @@ def remove_slides(context, root, data):
 EDIT_008 = {'TOGGLE_EXTRA': toggle_extra, 'SET_BAYS': set_bays, 'SET_BACK': set_back, 'ADD_MANY': add_many,
             'REMOVE_IN_SPACE': remove_in_space, 'INSERT_DOORS': insert_doors, 'INSERT_DRAWERS': insert_drawers,
             'INSERT_INTERIOR': insert_interior, 'REMOVE_INTERIOR': remove_interior, 'INSERT_SLIDES': insert_slides,
-            'REMOVE_SLIDES': remove_slides}
+            'REMOVE_SLIDES': remove_slides, 'SET_BAY_WIDTH': set_bay_width}
 
 
 EDIT_006 = {'ADD_DIVISION': add_division, 'EDIT_DIVISION': edit_division, 'REMOVE_DIVISION': remove_division,

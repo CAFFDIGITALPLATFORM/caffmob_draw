@@ -1,0 +1,187 @@
+[0:01] Olá pessoal hoje eu vou demonstrar a
+[0:04] maneira de construir os módulos pelas
+[0:07] três maneiras possíveis do Prom Então a
+[0:09] maneira mais simples e convencional É
+[0:12] através da inserção automática dos
+[0:16] módulos pela biblioteca do Promob né
+[0:19] posso editar as as medidas
+[0:23] aqui na barra de ferramentas e
+[0:26] propriedades e a maneira mais mais
+[0:31] comum né Não acho não acho mais fácil
+[0:37] depois depois tem
+[0:41] a pelo construtor de armário então eu
+[0:44] vou escolher módulo de cozinha inferior
+[0:48] com
+[0:51] divisória e aqui é muito fácil de você
+[0:55] copiar uma medida já existente tá vendo
+[0:58] eu Rasco o mouse aqui ó ele ele
+[1:01] vai ele consegue copiar a medida
+[1:04] certinha que você quer ou preencher um
+[1:07] espaço vazio então para colocar
+[1:13] [Música]
+[1:18] eh colocar três portas aqui eu vou em
+[1:23] divisão inserção múltipla
+[1:32] faço três divisórias
+[1:35] aqui excluo uma
+[2:02] portas escolho o vão eu quero aplicar
+[2:06] duas
+[2:07] portas e o vão que eu quero aplicar uma
+[2:19] porta ó exatamente
+[2:22] igual o efeito
+[2:25] do do do do módulo
+[2:30] exatamente o mesmo tá vendo
+[2:36] ó e a outra maneira de
+[2:40] construir é através da composição peça
+[2:44] por peça então pra gente construir um
+[2:47] móvel desse a gente vai ter que usar a
+[2:48] calculadora
+[2:52] eh construção de um móvel peça por peça
+[2:56] é exatamente igual uma construção de um
+[2:58] de um móvel na vida real mesmo na
+[3:01] marcenaria Então a gente vai pegar a
+[3:03] medida
+[3:06] externa e vai e vai colocar os
+[3:10] elementos Então a gente vai precisar de
+[3:12] qu duas laterais módulo tem 70 de altura
+[3:16] por 55 de profundidade e
+[3:20] 1,20 de
+[3:23] largura então a lateral de 15 a vai
+[3:26] jogar
+[3:27] aqui e vai colocar as
+[3:30] del 70 de altura 55 de
+[3:36] profundidade através da ferramenta
+[3:39] arranjo você pode duplicar essa lateral
+[3:55] aqui colocar aqui ó
+[4:02] 1200
+[4:05] menos
+[4:17] 15
+[4:20] 1,17 meu vão meu vão
+[4:24] interno dentro desse m17 eu tenho que
+[4:27] colocar uma base Então vem em base
+[4:30] tem gente que que constrói um um um
+[4:33] módulo assim de forma individual com
+[4:37] monte de prateleira pega a prateleira
+[4:39] vira vira vira mas não dá certo isso aí
+[4:41] é um serviço muito porco não tem tem
+[4:46] uma uma precisão porque na hora do do
+[4:49] plano de corte Ah você não aplica a
+[4:51] mesma quantidade de fita de borda numa
+[4:53] prateleira e numa porta por exemplo
+[4:55] entendeu Num lateral e no sarrafo então
+[4:58] isso não funciona E também o nome na
+[5:00] etiqueta não vai sair e o nome correto
+[5:03] né eu fiz com laterais porque são
+[5:05] laterais que eu tô usando são laterais
+[5:08] que que são que que faz parte da
+[5:11] composição aqui do do móvel né eu não
+[5:13] posso fazer todo o módulo com prateleira
+[5:15] prateleira sarrafa prateleira não posso
+[5:17] daí não
+[5:21] existe Peg uma base
+[5:24] linear dois cliques aqui
+[5:37] aqui
+[5:38] ó eu eu posso colocar aquela dimensão
+[5:42] que apareceu para mim 1,17 ou eu venho
+[5:46] aqui na
+[5:48] largura sinal de
+[5:50] mais
+[5:52] 17 ele preencheu o espaço faltava
+[6:01] certo eu poderia duplicar essa base aqui
+[6:04] para fazer o sarrafo de cima mas em cima
+[6:07] são sarrafo são bases vou ter que pegar
+[6:09] a sarrafo e colocar
+[6:46] sarrafa horizontal a mesma
+[6:49] coisa 1 m mais 17 1,17 m eu agora Posso
+[6:54] duplicar essa Rafa aqui ó através do do
+[6:58] botão direito do
+[7:04] Mouse duplicar fica Nesse caso fica
+[7:07] ficou mais simples né aqui no
+[7:09] meio me restou 67 cm eu preciso colocar
+[7:14] uma
+[7:15] divisória
+[7:17] Então vem
+[7:22] aqui e colocou uma divisória com fita
+[7:27] frontal aqui no meio
+[7:30] a medida que me restou lá foi 67 então
+[7:33] coloco 67
+[7:35] aqui como que eu vou fazer a divisão
+[7:37] aqui para
+[7:38] ficar certinho aqui ó duas portas de um
+[7:42] lado e uma desse outro lado eu venho na
+[7:49] calculadora coloco
+[7:54] menos 15 Men 15 - 15 me restou de vão
+[8:01] livre
+[8:03] 1,1 E5 M eu preciso dividir isso em três
+[8:12] partes cada vão tem
+[8:17] 38,5
+[8:19] então eu não preciso eu eu pego o vão
+[8:24] Solitário aqui coloca essa medida aqui ó
+[8:26] no na cota posterior
+[8:36] 38 agora vem com a
+[8:47] prateleira pega uma
+[8:53] prateleira linear
+[9:03] vou fazer a divisão aqui
+[9:07] ó centralizar ela em em
+[9:13] Y
+[9:17] diminuir a profundidade a prateleira Eu
+[9:21] Posso
+[9:25] duplicar ou colocar outra aqui direto né
+[9:29] se eu quiser duplicar aqui
+[9:32] ó vem foc com guid
+[9:36] [Aplausos]
+[9:37] 38,5 posiciono ela na local
+[9:50] correto agora vamos colocar as portas
+[9:59] venho em porta
+[10:04] reta jogo
+[10:06] aqui no
+[10:10] vão eu vou fazer a conta aqui
+[10:12] ó se o módulo tem 70 eu deixo 3 mm de
+[10:16] vão para cima e para baixo vai dar o
+[10:19] total de seis então eu venho aqui no na
+[10:23] dimensão na porta na altura coloco 70 -
+[10:26] 6 fica 694
+[10:30] a porta ela ela vai
+[10:33] cobrir 12 MM nessa
+[10:37] lateral e vai cobrir mais 5 mm dessa
+[10:41] outra
+[10:42] lateral
+[10:45] então eu pego a medida da prateleira
+[10:48] 38,5 copio a medida da prateleira jogo
+[10:51] na
+[10:55] porta aí vou colocar mais
+[11:03] mais C do outro lado na divisória deu
+[11:08] 402 venho aqui e
+[11:15] jogo jogo a
+[11:20] porta antes disso acho melhor agrupar
+[11:25] gabinete
+[11:37] módulo já certinho
+[11:41] né colocar a porta aqui na
+[11:48] frente aí a
+[11:51] gente tá centralizada já
+[11:54] na verticalmente né
+[12:00] eu preciso colocar 3 mm para
+[12:16] dentro porta tá
+[12:20] certinha agora eu eu venho aqui
+[12:26] na na prateleira
+[12:31] clico e pega a medida aqui 77 cm eu
+[12:35] preciso colocar duas portas aqui como
+[12:36] que eu faço Lembrando que eu vou ter que
+[12:41] acrescentar 12 mm para esse
+[12:46] lado acrescentar 5 mm para esse
+[12:51] lado e subtrair 3 mm do vão entre as
+[12:56] portas Então vamos lá
+[13:02] pego a
+[13:03] porta
+[13:12] duplico e vou colocar a
+[13:15] medida vou pela calculadora aqui
+[13:19] primeiro
+[13:20] 770
+[13:23] mais 12 MM do lado esquerdo
+[13:29] mais 5 mm do lado
+[13:33] direito menos 3 mm da folga entre as
+[13:37] portas
+[13:39] 78.4 divido por
+[13:42] 2
+[13:46] 392 então a medida aqui vai ser 392
+[13:59] C
+[14:42] e o gabinete tá pronto

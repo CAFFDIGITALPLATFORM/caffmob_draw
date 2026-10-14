@@ -1,0 +1,251 @@
+[0:00] [Música]
+[0:08] Olá essa aula diz respeito à questão da
+[0:12] construção de armários pelo construtor
+[0:15] de armários e a inserção de portas de
+[0:17] correr que é um assunto que o pessoal
+[0:19] vem pedindo bastante aí no nos
+[0:21] comentários inclusive também por
+[0:24] e-mail bom o construtor de armários ele
+[0:28] funciona da seguinte maneira você você
+[0:30] vai selecionar a parede que você quer
+[0:31] colocar o armário né então no caso que
+[0:34] escolhi essa parede aqui eu vou procurar
+[0:38] um botãozinho aqui em
+[0:39] cima chama construtor de armários ele
+[0:42] deve est aqui o deixa eu ver onde é que
+[0:44] ele tá aqui construtor de
+[0:49] armários construtor de armários acho que
+[0:51] meu Promob não tem o construtor de
+[0:53] armários porque ele é de uma versão mais
+[0:56] recente é não tem bom a Alguns vão ter
+[1:00] eu acredito que o 2013 já deva ter o
+[1:02] 2012 também pros que não tiverem o botão
+[1:05] ali em cima Clica com o direito aqui
+[1:08] construir armários o iconz é o mesmo vai
+[1:11] aparecer lá em cima então clica aqui e
+[1:14] aí aqui vai aparecer e essa mensagem
+[1:16] aqui pros 2011
+[1:18] e indicando como que vai ser a
+[1:21] construção do armário então a base é
+[1:23] sobrepõe base ou seja a lateral vai
+[1:25] sobrepor a base a lateral sobrepõe base
+[1:28] com rodapé lateral sobrepõe a lateral
+[1:31] enfim eu vou escolher esse daqui e nos
+[1:35] outros Promob eles vão ter aqui a opção
+[1:37] dormitórios e cozinhas vocês vão ter que
+[1:39] escolher dormitórios porque é diferente
+[1:42] do que o de cozinha eu tô falando na
+[1:44] construção de armário de dormitório tá
+[1:46] desculpa devia ter falado antes Ah vou
+[1:48] dar um ok aqui e aí aqui eu vou escolher
+[1:52] o número de vãos no caso eu quero um
+[1:55] armário de quatro vãos ele vai ter
+[1:59] largura total de 4
+[2:01] m por altura total de
+[2:06] 2450 profundidade de
+[2:10] 600 posição aqui seria posição em
+[2:13] relação à parede mas isso aqui eu posso
+[2:14] regular depois eu vou
+[2:17] centralizar aqui eu posso escolher se eu
+[2:19] quero ele com rodapé se eu quero ele com
+[2:21] base enfim né se eu quero tirar alguma
+[2:24] coisa
+[2:26] dele nesse meu modelinho aqui de
+[2:30] construtor de armários que é o mais
+[2:31] antigo eu vou ter que inserir as
+[2:33] prateleiras por aqui mas o de vocês vão
+[2:37] ter aqui embaixo talvez vocês tenham os
+[2:39] mais recentes aqui embaixo vão ter
+[2:41] internos gavetas portas etc
+[2:44] funcionamento basicamente é bem parecido
+[2:46] tá então aqui eu vou inserir divisórias
+[2:49] ele diz divisória vertical como indica o
+[2:52] desenho aqui mas aqui ó não fala nada
+[2:55] então eu quero
+[2:57] prateleira interna E aí eu vou adicionar
+[3:01] prateleira onde eu
+[3:04] quiser vou adicionar algumas aqui só
+[3:06] para
+[3:08] exemplificação aí agora eu vou clicar
+[3:11] pegar a setinha aqui vou clicar na
+[3:12] prateleira e quero definir quanto de
+[3:14] altura ela tem daqui até aqui ó como
+[3:16] indica a cota aqui então eu quero
+[3:19] 350 não quero
+[3:23] 550 essa daqui quando eu clicar nela
+[3:25] aqui ela vai aparecer 705 em relação a
+[3:28] esse aqui e aqui aqui essa parte de cima
+[3:30] e do outro lado ela aparece em relação
+[3:32] ao armário inteiro
+[3:34] ó então aqui eu vou querer
+[3:37] 350 e assim por diante eu posso ir
+[3:41] regulando de acordo
+[3:43] com a necessidade do cliente Isso aqui é
+[3:46] uma ferramenta muito boa para regular eh
+[3:49] para construir uma necessidade bem
+[3:51] específica pro teu cliente então aqui no
+[3:54] caso agora eu quero fazer o seguinte eu
+[3:56] quero colocar um armário eu quero
+[3:59] colocar desculpa eu quero colocar de um
+[4:00] lado aqui um gaveteiro Então vou
+[4:03] selecionar o vão que ficou entre a
+[4:04] prateleira e a base e aí esse vão aqui ó
+[4:08] ele vai ser o gaveteiro Então vou em
+[4:10] agregados gavetas vou escolher o número
+[4:14] de gavetas que eu quero se eu quero
+[4:16] interna ou externa no caso aqui só tem
+[4:19] opção interna mas nos outros vão ter
+[4:21] externo e aí como eu já Ten o vão
+[4:24] selecionado vou dar um inserir o que
+[4:27] acontece se eu não dividir o vão com
+[4:29] prateleira ele insere o gaveteiro numa
+[4:32] coisa bem grande ó fic um gaveteiro lá
+[4:34] em
+[4:35] cima e isso é prejudica bastante porque
+[4:39] a gente não sabe até onde é não consigo
+[4:42] regular depois o tamanho do gaveteiro
+[4:44] aqui eu consigo regular o tamanho da
+[4:46] prateleira e o gaveteiro vai junto
+[4:51] certo Bom vamos lá o que mais fundos a
+[4:56] parte de fundo é esse Promob aqui ele
+[4:59] não tem tem a opção de inserir
+[5:02] automaticamente mas os outros vão ter um
+[5:04] botãozinho aqui inserir automaticamente
+[5:06] ele insere o fundo automático é muito
+[5:07] útil isso
+[5:09] tá aí se eu quiser inserir por exemplo
+[5:12] um cabideiro eu só
+[5:15] arrasto nos próximos promis ele só
+[5:17] arrasta aqui ele vai inserir dentro e
+[5:20] nesse aqui eu tenho que selecionar o vão
+[5:22] inserir o que eu quero aqui d o inserir
+[5:24] eu tô confundindo os dois porque eu
+[5:26] trabalho com as duas versões e e aqui eu
+[5:31] clicando em cima dele ó eu posso
+[5:32] selecionar outros cabideiro se eu quiser
+[5:34] deletar
+[5:36] né mesma coisa com o a gaveta se eu ah
+[5:40] inseria errado clico nela aqui vou em
+[5:42] gavetas traço montante e
+[5:48] delet bom é isso aí agora se eu quiser
+[5:52] inserir por
+[5:54] exemplo portas de
+[5:57] correr então eu vou dar um OK aqui o meu
+[6:01] armário vai
+[6:04] aparecer tá
+[6:06] pensando Ele pensou um pouquinho o
+[6:08] armário apareceu agora que vem o grande
+[6:10] segredinho pra porta de correr eu venho
+[6:13] aqui em
+[6:15] dormitórios portas
+[6:18] deslizantes eu vou escolher armário com
+[6:21] sem rodapé armário com rodapé no nosso
+[6:23] caso que é com rodapé então eu vou
+[6:25] escolher o modelo com rodapé eu quero a
+[6:30] porta com Travessa ou sem Travessa vou
+[6:31] colocar com
+[6:33] Travessa esse
+[6:37] aqui não desculpa esse aqui armário com
+[6:40] rodapé esse esquema da porta que eu
+[6:43] explico mais pra
+[6:44] frente e vou escolher porta interna e
+[6:48] externa nesse Promob aqui não vai ter
+[6:50] diferença nenhuma entre as duas porque a
+[6:51] ferramenta tava em construção ainda aí
+[6:54] vou escolher de três painéis vou
+[6:56] arrastar sem soltar o botão do mouse
+[6:58] olha tá pressionado ainda eu vou soltar
+[7:01] em cima do primeiro ponto que aparecer
+[7:03] aqui e vou clicar no último ponto que
+[7:05] aparecer lá ó mas tem que ser no último
+[7:08] senão ele vai pegar errado Se ficar
+[7:10] difícil pode dar um zoom
+[7:13] ó apareceu o ponto mas ele não quer ir
+[7:16] agora foi Opa aí cliquei aí ele vai
+[7:22] abrir este editor de portas que vai
+[7:24] aparecer o vão do meu armário aqui
+[7:26] inteiro Ó daqui até aqui e ele vai me
+[7:29] dizer quantas portas ele tem largura
+[7:32] transpasse folga etc a única coisa que
+[7:35] eu mexo é a quantidade de portas no caso
+[7:38] são quatro porque são quatro
+[7:40] vãos eu vou se eu quiser escolher o
+[7:43] trilho eu posso colocar o duplo simples
+[7:45] triplo quádruplo enfim eu deixo como tá
+[7:48] aqui
+[7:50] laterais isso aqui é interessante ó eu
+[7:52] tenho opção de colocar a lateral a mais
+[7:57] certo porque o armário com porta de
+[7:58] correr a porta vem por fora então vai
+[8:01] vai uma lateral que chama lateral
+[8:02] avançada aqui por fora então eu vou
+[8:05] escolher aqui ó posso escolher não usar
+[8:06] Ou posso escolher lateral armário de 15
+[8:10] é essa aqui que eu vou deixar E aí eu
+[8:13] vou dar um OK aí o que que ele vai fazer
+[8:15] vai dar uma
+[8:17] padinha e vai inserir as
+[8:20] portas detalhe importante ó esse aqui tá
+[8:22] tudo separado tá então se eu quiser
+[8:25] mover isso aqui ó ele vem tudo separado
+[8:27] do armário
+[8:30] se eu quiser mover tudo eu clico em cima
+[8:33] e arrasto o armário que vai tudo
+[8:37] junto que eu falei da lateral é isso
+[8:40] daqui ó a lateral avançada ela vem por
+[8:41] fora isso daqui faz parte ó essa daqui
+[8:44] ela faz parte da composição do armário
+[8:46] interno nas ferramentas nos promis mais
+[8:49] novos eu tenho opção de remover essa
+[8:51] lateral aqui e o armário ele
+[8:53] automaticamente se ele prolonga essa
+[8:56] essa base superior para lá mas essa
+[8:58] versão então aqui a ferramenta estava em
+[9:00] construção ainda então ela tá bem pobre
+[9:03] inclusive se você for observar Ó tem
+[9:06] alguns defeitos ó isso daqui que não foi
+[9:08] até o final mas enfim ele mostra ele
+[9:11] visualiza
+[9:13] e a questão do armário pro cliente né E
+[9:17] aqui aí se eu quiser mudar e as portas
+[9:20] eu posso trocar a cor né Por aqui pelo
+[9:23] modelos posso trocar por exemplo aqui eu
+[9:27] tenho vidro verde eu posso colocar o
+[9:29] vidro fumet né se eu quiser escolher só
+[9:31] um pedacinho aqui para ser o vidro
+[9:33] espelhado Dou dois cliques no pedacinho
+[9:36] vou em seleção escolho o espelho aqui ó
+[9:40] espelhado esse aqui também vou fazer
+[9:47] espelhado
+[9:51] espelhado espelho bom é isso
+[9:55] aí agora vamos fazer o seguinte vamos
+[9:58] fazer a questão das
+[10:01] portas
+[10:03] normais que cham porta de abrir né o
+[10:06] porta batente então eu vou voltar na
+[10:09] construção do meu armário clico no
+[10:11] armário importante é clicar na parte de
+[10:13] cima porque às vezes ele não tem fundo
+[10:15] direito em cima construir armários eu
+[10:18] vou voltar na construção dele e aí aqui
+[10:21] eu vou selecionar o vão que eu quero a
+[10:24] porta no caso esse vão
+[10:26] aqui vou ir em frentes e vou escolher a
+[10:31] frente que eu quero no caso vou colocar
+[10:33] a inteira Lisa e dar o
+[10:37] inserir ele já escolheu a frente ó vou
+[10:40] dar um ok É para aparecer a frente aqui
+[10:44] aguardar um
+[10:50] pouquinho Ele demora um pouco bom eu
+[10:52] enerio à frente ó e aí deu uma porta se
+[10:55] eu quiser duas portas eu não escolho o
+[10:57] inteiro eu escolho o esquerdo e depois
+[11:00] faço
+[11:01] direito e é dessa forma
+[11:05] aqui bom acredito que seja isso se vocês
+[11:08] tiverem mais alguma dúvida vocês podem
+[11:10] mandar comentários abaixo né ou no
+[11:13] e-mail que eu vou deixar na descrição do
+[11:16] link até uma próxima aula e bons
+[11:27] estudos
+[11:30] Y

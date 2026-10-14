@@ -1,0 +1,470 @@
+{
+ "A largura não cabe: os outros vãos ficariam com {:.0f} mm": {
+  "en_US": "The width does not fit: the other bays would be {:.0f} mm",
+  "pt_BR": "A largura não cabe: os outros vãos ficariam com {:.0f} mm"
+ },
+ "Aba que abre (ambiente ou linha, ex.: COZ)": {
+  "en_US": "Tab to open (room or line, e.g. COZ)",
+  "pt_BR": "Aba que abre (ambiente ou linha, ex.: COZ)"
+ },
+ "Abra uma Vista 3D para escolher a estrutura": {
+  "en_US": "Open a 3D Viewport to choose the structure",
+  "pt_BR": "Abra uma Vista 3D para escolher a estrutura"
+ },
+ "Ainda não disponível nesta versão": {
+  "en_US": "Not available in this version yet",
+  "pt_BR": "Ainda não disponível nesta versão"
+ },
+ "Ambiente ilegível ignorado": {
+  "en_US": "Unreadable room skipped",
+  "pt_BR": "Ambiente ilegível ignorado"
+ },
+ "Aramada": {
+  "en_US": "Wire",
+  "pt_BR": "Aramada"
+ },
+ "Cab Extensível": {
+  "en_US": "Pull-down Rod",
+  "pt_BR": "Cab Extensível"
+ },
+ "Cabideiro 01": {
+  "en_US": "Hanging Rod 01",
+  "pt_BR": "Cabideiro 01"
+ },
+ "Cabideiro 02": {
+  "en_US": "Hanging Rod 02",
+  "pt_BR": "Cabideiro 02"
+ },
+ "Cabideiro que puxa para fora (ferragem)": {
+  "en_US": "Pull-out hanging rod (hardware)",
+  "pt_BR": "Cabideiro que puxa para fora (ferragem)"
+ },
+ "Cabideiros e Calceiros": {
+  "en_US": "Hanging Rods and Pants Racks",
+  "pt_BR": "Cabideiros e Calceiros"
+ },
+ "Calceiro Aramado Direito": {
+  "en_US": "Wire Pants Rack Right",
+  "pt_BR": "Calceiro Aramado Direito"
+ },
+ "Calceiro Aramado Esquerdo": {
+  "en_US": "Wire Pants Rack Left",
+  "pt_BR": "Calceiro Aramado Esquerdo"
+ },
+ "Calceiro Madeira Central": {
+  "en_US": "Wood Pants Rack Center",
+  "pt_BR": "Calceiro Madeira Central"
+ },
+ "Calceiro Madeira Direito": {
+  "en_US": "Wood Pants Rack Right",
+  "pt_BR": "Calceiro Madeira Direito"
+ },
+ "Calceiro Madeira Esquerdo": {
+  "en_US": "Wood Pants Rack Left",
+  "pt_BR": "Calceiro Madeira Esquerdo"
+ },
+ "Calceiro aramado": {
+  "en_US": "Wire pants rack",
+  "pt_BR": "Calceiro aramado"
+ },
+ "Calceiro aramado (ferragem)": {
+  "en_US": "Wire pants rack (hardware)",
+  "pt_BR": "Calceiro aramado (ferragem)"
+ },
+ "Calceiro de madeira no meio do vão": {
+  "en_US": "Wood pants rack in the middle of the bay",
+  "pt_BR": "Calceiro de madeira no meio do vão"
+ },
+ "Calceiro de madeira, saída pela direita": {
+  "en_US": "Wood pants rack, opening to the right",
+  "pt_BR": "Calceiro de madeira, saída pela direita"
+ },
+ "Calceiro de madeira, saída pela esquerda": {
+  "en_US": "Wood pants rack, opening to the left",
+  "pt_BR": "Calceiro de madeira, saída pela esquerda"
+ },
+ "Catálogo de estruturas em versão desconhecida": {
+  "en_US": "Structure catalog in an unknown version",
+  "pt_BR": "Catálogo de estruturas em versão desconhecida"
+ },
+ "Catálogo de estruturas inválido": {
+  "en_US": "Invalid structure catalog",
+  "pt_BR": "Catálogo de estruturas inválido"
+ },
+ "Catálogo de estruturas não encontrado": {
+  "en_US": "Structure catalog not found",
+  "pt_BR": "Catálogo de estruturas não encontrado"
+ },
+ "Corrediça de prateleira (par)": {
+  "en_US": "Shelf slide (pair)",
+  "pt_BR": "Corrediça de prateleira (par)"
+ },
+ "Despenseiro": {
+  "en_US": "Pantry",
+  "pt_BR": "Despenseiro"
+ },
+ "Divide o vão para agregados, sem peça": {
+  "en_US": "Splits the bay for add-ons, without a part",
+  "pt_BR": "Divide o vão para agregados, sem peça"
+ },
+ "Divide o vão; não aparece no 3D nem no corte": {
+  "en_US": "Splits the bay; not shown in 3D nor in the cut list",
+  "pt_BR": "Divide o vão; não aparece no 3D nem no corte"
+ },
+ "Divisória com rebaixo para o fundo passar": {
+  "en_US": "Divider with a rebate for the back",
+  "pt_BR": "Divisória com rebaixo para o fundo passar"
+ },
+ "Divisória vertical de dormitório": {
+  "en_US": "Bedroom vertical divider",
+  "pt_BR": "Divisória vertical de dormitório"
+ },
+ "Entrada de equivalência ilegível ignorada": {
+  "en_US": "Unreadable equivalence entry skipped",
+  "pt_BR": "Entrada de equivalência ilegível ignorada"
+ },
+ "Equivalência para estrutura inexistente: {}": {
+  "en_US": "Equivalence to a missing structure: {}",
+  "pt_BR": "Equivalência para estrutura inexistente: {}"
+ },
+ "Escolha a estrutura de caixa para iniciar a construção de um armário": {
+  "en_US": "Choose the carcass structure to start building a cabinet",
+  "pt_BR": "Escolha a estrutura de caixa para iniciar a construção de um armário"
+ },
+ "Estrutura de caixa": {
+  "en_US": "Carcass Structure",
+  "pt_BR": "Estrutura de caixa"
+ },
+ "Estrutura de caixa desconhecida: {}": {
+  "en_US": "Unknown carcass structure: {}",
+  "pt_BR": "Estrutura de caixa desconhecida: {}"
+ },
+ "Estrutura ilegível ignorada": {
+  "en_US": "Unreadable structure skipped",
+  "pt_BR": "Estrutura ilegível ignorada"
+ },
+ "Estrutura sem identificador válido ignorada": {
+  "en_US": "Structure without a valid identifier skipped",
+  "pt_BR": "Estrutura sem identificador válido ignorada"
+ },
+ "Estrutura {}: ambiente desconhecido": {
+  "en_US": "Structure {}: unknown room",
+  "pt_BR": "Estrutura {}: ambiente desconhecido"
+ },
+ "Estrutura {}: componente sem verdadeiro/falso": {
+  "en_US": "Structure {}: component without true/false",
+  "pt_BR": "Estrutura {}: componente sem verdadeiro/falso"
+ },
+ "Estrutura {}: grupo desconhecido": {
+  "en_US": "Structure {}: unknown group",
+  "pt_BR": "Estrutura {}: grupo desconhecido"
+ },
+ "Estrutura {}: identificador repetido": {
+  "en_US": "Structure {}: duplicate identifier",
+  "pt_BR": "Estrutura {}: identificador repetido"
+ },
+ "Estrutura {}: medidas ilegíveis": {
+  "en_US": "Structure {}: unreadable sizes",
+  "pt_BR": "Estrutura {}: medidas ilegíveis"
+ },
+ "Estrutura {}: montagem desconhecida": {
+  "en_US": "Structure {}: unknown assembly",
+  "pt_BR": "Estrutura {}: montagem desconhecida"
+ },
+ "Estrutura {}: número de vãos fora de 1 a 10": {
+  "en_US": "Structure {}: number of bays outside 1 to 10",
+  "pt_BR": "Estrutura {}: número de vãos fora de 1 a 10"
+ },
+ "Estrutura {}: peça desconhecida ({})": {
+  "en_US": "Structure {}: unknown part ({})",
+  "pt_BR": "Estrutura {}: peça desconhecida ({})"
+ },
+ "Estrutura {}: sem componentes": {
+  "en_US": "Structure {}: no components",
+  "pt_BR": "Estrutura {}: sem componentes"
+ },
+ "Estrutura {}: variante de divisão desconhecida": {
+  "en_US": "Structure {}: unknown division variant",
+  "pt_BR": "Estrutura {}: variante de divisão desconhecida"
+ },
+ "Estrutura {}: {} inválido": {
+  "en_US": "Structure {}: invalid {}",
+  "pt_BR": "Estrutura {}: {} inválido"
+ },
+ "Externas": {
+  "en_US": "External",
+  "pt_BR": "Externas"
+ },
+ "Gaveta externa de dormitório": {
+  "en_US": "Bedroom external drawer",
+  "pt_BR": "Gaveta externa de dormitório"
+ },
+ "Gaveta interna com a de baixo mais alta, para passar o trilho da porta de correr": {
+  "en_US": "Inner drawer with a taller bottom one, clearing the sliding door track",
+  "pt_BR": "Gaveta interna com a de baixo mais alta, para passar o trilho da porta de correr"
+ },
+ "Gaveta sapateira": {
+  "en_US": "Shoe drawer",
+  "pt_BR": "Gaveta sapateira"
+ },
+ "Grupo de montagem desconhecido: {}": {
+  "en_US": "Unknown assembly group: {}",
+  "pt_BR": "Grupo de montagem desconhecido: {}"
+ },
+ "Grupo {}: valor ilegível": {
+  "en_US": "Group {}: unreadable value",
+  "pt_BR": "Grupo {}: valor ilegível"
+ },
+ "Grupo {}: {} de {} campos; o resto vale o da estrutura": {
+  "en_US": "Group {}: {} of {} fields; the rest comes from the structure",
+  "pt_BR": "Grupo {}: {} de {} campos; o resto vale o da estrutura"
+ },
+ "Grupo {}: {} inválido ({}); vale o da estrutura": {
+  "en_US": "Group {}: invalid {} ({}); the structure's value applies",
+  "pt_BR": "Grupo {}: {} inválido ({}); vale o da estrutura"
+ },
+ "Interna c/ Reb 15mm": {
+  "en_US": "Inner w/ Rebate 15mm",
+  "pt_BR": "Interna c/ Reb 15mm"
+ },
+ "Interna p/ trilho": {
+  "en_US": "Inner for Track",
+  "pt_BR": "Interna p/ trilho"
+ },
+ "Interna s/ Recuo Tras Corta Sar 15mm": {
+  "en_US": "Inner No Rear Setback Batten Cut 15mm",
+  "pt_BR": "Interna s/ Recuo Tras Corta Sar 15mm"
+ },
+ "Internos de roupeiro (feature 015)": {
+  "en_US": "Wardrobe interiors",
+  "pt_BR": "Internos de roupeiro (feature 015)"
+ },
+ "Largura do vão": {
+  "en_US": "Bay Width",
+  "pt_BR": "Largura do vão"
+ },
+ "Laterais Engrossuradas": {
+  "en_US": "Thickened Sides",
+  "pt_BR": "Laterais Engrossuradas"
+ },
+ "Modelo {}: estrutura desconhecida": {
+  "en_US": "Model {}: unknown structure",
+  "pt_BR": "Modelo {}: estrutura desconhecida"
+ },
+ "Montagem por grupo": {
+  "en_US": "Assembly by Group",
+  "pt_BR": "Montagem por grupo"
+ },
+ "Montagem por grupo ilegível: ignorada": {
+  "en_US": "Unreadable assembly by group: ignored",
+  "pt_BR": "Montagem por grupo ilegível: ignorada"
+ },
+ "Montante 18mm": {
+  "en_US": "Upright 18mm",
+  "pt_BR": "Montante 18mm"
+ },
+ "Nada desta subaba neste ambiente": {
+  "en_US": "Nothing in this sub-tab for this room",
+  "pt_BR": "Nada desta subaba neste ambiente"
+ },
+ "Nenhuma estrutura de caixa no catálogo": {
+  "en_US": "No carcass structure in the catalog",
+  "pt_BR": "Nenhuma estrutura de caixa no catálogo"
+ },
+ "Nenhuma estrutura neste ambiente": {
+  "en_US": "No structure in this room",
+  "pt_BR": "Nenhuma estrutura neste ambiente"
+ },
+ "Nenhuma estrutura selecionada": {
+  "en_US": "No structure selected",
+  "pt_BR": "Nenhuma estrutura selecionada"
+ },
+ "No vão": {
+  "en_US": "In Bay",
+  "pt_BR": "No vão"
+ },
+ "Novo armário pelo construtor": {
+  "en_US": "New Cabinet from Builder",
+  "pt_BR": "Novo armário pelo construtor"
+ },
+ "Não Divide o Fundo c/ Recuo Front": {
+  "en_US": "Does Not Split the Back w/ Front Setback",
+  "pt_BR": "Não Divide o Fundo c/ Recuo Front"
+ },
+ "Não foi possível criar o armário pela estrutura escolhida": {
+  "en_US": "Could not create the cabinet from the chosen structure",
+  "pt_BR": "Não foi possível criar o armário pela estrutura escolhida"
+ },
+ "O último vão é calculado: digite a largura de outro vão": {
+  "en_US": "The last bay is calculated: type the width of another bay",
+  "pt_BR": "O último vão é calculado: digite a largura de outro vão"
+ },
+ "Porta Cintos/Gravatas": {
+  "en_US": "Belt/Tie Rack",
+  "pt_BR": "Porta Cintos/Gravatas"
+ },
+ "Porta cintos/gravatas": {
+  "en_US": "Belt/tie rack",
+  "pt_BR": "Porta cintos/gravatas"
+ },
+ "Prateleira Corrediça": {
+  "en_US": "Pull-out Shelf",
+  "pt_BR": "Prateleira Corrediça"
+ },
+ "Prateleira aramada": {
+  "en_US": "Wire shelf",
+  "pt_BR": "Prateleira aramada"
+ },
+ "Prateleira aramada (ferragem, fora do corte)": {
+  "en_US": "Wire shelf (hardware, not in the cut list)",
+  "pt_BR": "Prateleira aramada (ferragem, fora do corte)"
+ },
+ "Prateleira fixa; o fundo continua inteiro": {
+  "en_US": "Fixed shelf; the back stays whole",
+  "pt_BR": "Prateleira fixa; o fundo continua inteiro"
+ },
+ "Prateleira inclinada para sapatos": {
+  "en_US": "Slanted shelf for shoes",
+  "pt_BR": "Prateleira inclinada para sapatos"
+ },
+ "Prateleira que corre para fora": {
+  "en_US": "Shelf that slides out",
+  "pt_BR": "Prateleira que corre para fora"
+ },
+ "Prateleira sobre corrediças": {
+  "en_US": "Shelf on slides",
+  "pt_BR": "Prateleira sobre corrediças"
+ },
+ "Rodapé frontal": {
+  "en_US": "Front toe kick",
+  "pt_BR": "Rodapé frontal"
+ },
+ "Rodízio": {
+  "en_US": "Caster",
+  "pt_BR": "Rodízio"
+ },
+ "Rodízios": {
+  "en_US": "Casters",
+  "pt_BR": "Rodízios"
+ },
+ "Sapateira": {
+  "en_US": "Shoe Rack",
+  "pt_BR": "Sapateira"
+ },
+ "Sarrafo Frontal": {
+  "en_US": "Front Batten",
+  "pt_BR": "Sarrafo Frontal"
+ },
+ "Sarrafo Inteiro": {
+  "en_US": "Full Batten",
+  "pt_BR": "Sarrafo Inteiro"
+ },
+ "Sarrafo Traseiro": {
+  "en_US": "Rear Batten",
+  "pt_BR": "Sarrafo Traseiro"
+ },
+ "Sarrafo frontal": {
+  "en_US": "Front batten",
+  "pt_BR": "Sarrafo frontal"
+ },
+ "Sarrafo inteiro": {
+  "en_US": "Full batten",
+  "pt_BR": "Sarrafo inteiro"
+ },
+ "Sarrafo traseiro": {
+  "en_US": "Rear batten",
+  "pt_BR": "Sarrafo traseiro"
+ },
+ "Selecione um vão na vista para digitar a largura": {
+  "en_US": "Select a bay in the view to type its width",
+  "pt_BR": "Selecione um vão na vista para digitar a largura"
+ },
+ "Selecione uma estrutura de caixa para iniciar a construção": {
+  "en_US": "Select a carcass structure to start building",
+  "pt_BR": "Selecione uma estrutura de caixa para iniciar a construção"
+ },
+ "Sobe até o topo e corta o sarrafo": {
+  "en_US": "Goes up to the top and cuts the batten",
+  "pt_BR": "Sobe até o topo e corta o sarrafo"
+ },
+ "Sobre a caixa": {
+  "en_US": "Over Carcass",
+  "pt_BR": "Sobre a caixa"
+ },
+ "Sobre a caixa: disponível numa próxima versão": {
+  "en_US": "Over carcass: available in a future version",
+  "pt_BR": "Sobre a caixa: disponível numa próxima versão"
+ },
+ "Somente Divisão": {
+  "en_US": "Division Only",
+  "pt_BR": "Somente Divisão"
+ },
+ "Suporte na lateral do vão (ferragem)": {
+  "en_US": "Bracket on the bay side (hardware)",
+  "pt_BR": "Suporte na lateral do vão (ferragem)"
+ },
+ "Tampo Linear": {
+  "en_US": "Linear Top",
+  "pt_BR": "Tampo Linear"
+ },
+ "Tampo linear": {
+  "en_US": "Linear top",
+  "pt_BR": "Tampo linear"
+ },
+ "Travessa traseira inferior": {
+  "en_US": "Lower rear rail",
+  "pt_BR": "Travessa traseira inferior"
+ },
+ "Travessa traseira superior": {
+  "en_US": "Upper rear rail",
+  "pt_BR": "Travessa traseira superior"
+ },
+ "Tubo": {
+  "en_US": "Rod",
+  "pt_BR": "Tubo"
+ },
+ "Tubo com suporte de reforço no meio": {
+  "en_US": "Rod with a center support",
+  "pt_BR": "Tubo com suporte de reforço no meio"
+ },
+ "Tubo de cabide abaixo da prateleira de cima": {
+  "en_US": "Hanging rod below the top shelf",
+  "pt_BR": "Tubo de cabide abaixo da prateleira de cima"
+ },
+ "Tubo de cabide oval": {
+  "en_US": "Oval hanging rod",
+  "pt_BR": "Tubo de cabide oval"
+ },
+ "Tubo de cabideiro": {
+  "en_US": "Hanging rod",
+  "pt_BR": "Tubo de cabideiro"
+ },
+ "Tubo s/ Reforço": {
+  "en_US": "Rod w/o Support",
+  "pt_BR": "Tubo s/ Reforço"
+ },
+ "Tubo só com os suportes das pontas": {
+  "en_US": "Rod with end supports only",
+  "pt_BR": "Tubo só com os suportes das pontas"
+ },
+ "{} (mais {})": {
+  "en_US": "{} ({} more)",
+  "pt_BR": "{} (mais {})"
+ },
+ "{} inserido: {} x {} x {}": {
+  "en_US": "{} inserted: {} x {} x {}",
+  "pt_BR": "{} inserido: {} x {} x {}"
+ },
+ "{} módulo(s) passam para a estrutura de caixa nova": {
+  "en_US": "{} module(s) move to the new carcass structure",
+  "pt_BR": "{} módulo(s) passam para a estrutura de caixa nova"
+ },
+ "{} precisa de um vão de {:.0f} mm de largura": {
+  "en_US": "{} needs a bay {:.0f} mm wide",
+  "pt_BR": "{} precisa de um vão de {:.0f} mm de largura"
+ },
+ "{} · {} mm": {
+  "en_US": "{} · {} mm",
+  "pt_BR": "{} · {} mm"
+ }
+}

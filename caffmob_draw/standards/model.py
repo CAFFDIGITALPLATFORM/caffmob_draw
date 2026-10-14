@@ -54,6 +54,9 @@ class BTM_PG_StandardDefinition(bpy.types.PropertyGroup):
     assembly: bpy.props.EnumProperty(
         name="Montagem", items=ASSEMBLY_ITEMS, default='LATERAL',
         description="Regra de montagem da caixa dos armários")  # type: ignore
+    # Feature 015 (D-08): montagem, fundo e sarrafo traseiro por grupo de estrutura, em JSON
+    # (`standards/group_assembly.py`). Vazio = vale o da estrutura de caixa.
+    group_assembly: bpy.props.StringProperty(name="Montagem por grupo", default="")  # type: ignore
 
 
 class BTM_PG_Standards(bpy.types.PropertyGroup):
@@ -116,6 +119,7 @@ class BTM_PG_StandardsDraft(bpy.types.PropertyGroup):
     edit_enum: bpy.props.EnumProperty(name="Valor", items=_edit_enum_items, update=_edit_enum_update)  # type: ignore
     error: bpy.props.StringProperty()  # type: ignore
     assembly: bpy.props.EnumProperty(name="Montagem", items=ASSEMBLY_ITEMS, default='LATERAL')  # type: ignore
+    group_assembly: bpy.props.StringProperty(name="Montagem por grupo", default="")  # type: ignore
     include_manual: bpy.props.BoolProperty(
         name="Incluir medidas manuais",
         description="Também substitui medidas editadas à mão nos módulos (RN-23)",

@@ -254,9 +254,18 @@ def generate_cabinet_mesh(obj, w, h, d, t, shelves=0, structure=None, back_setba
     `cabinet_editor/structure.layout`.
 
     `assembly` (feature 012, D-09): `LATERAL` ou `BASE`; sem ele, vale a do módulo (`btm_cabinet.assembly`).
+
+    Feature 015 (T026; D-02): módulo com estrutura de caixa (`btm_cabinet.structure_id` do catálogo) monta as peças
+    de `structure.carcass_parts`, as mesmas do plano de corte; o recuo das prateleiras vem do Padrão de Dimensões.
+    Sem estrutura, ou com um id desconhecido, a caixa de sempre.
     """
     from ..cabinet_editor import structure as st
+    from ..cabinet_editor import structure_inputs
     clear_mesh(obj)
+    found = structure_inputs.carcass_parts_for(obj) if getattr(obj, 'btm_cabinet', None) is not None else None
+    if found is not None:
+        _structured_cabinet_mesh(obj, found, t, shelves)
+        return
 
     bm = bmesh.new()
 
@@ -315,6 +324,43 @@ def generate_cabinet_mesh(obj, w, h, d, t, shelves=0, structure=None, back_setba
 
     bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
 
+    bm.to_mesh(obj.data)
+    bm.free()
+    obj.data.update()
+
+
+def _structured_cabinet_mesh(obj, found, t, shelves):
+    """Malha da caixa por estrutura (feature 015): uma caixa por peça; fundo e travessas no grupo do fundo."""
+    from ..cabinet_editor import structure_inputs
+    parts, inner = found
+    bm = bmesh.new()
+
+    def box(lo, hi, material):
+        verts = [bm.verts.new(co) for co in ((lo[0], lo[1], lo[2]), (hi[0], lo[1], lo[2]), (hi[0], hi[1], lo[2]),
+                                              (lo[0], hi[1], lo[2]), (lo[0], lo[1], hi[2]), (hi[0], lo[1], hi[2]),
+                                              (hi[0], hi[1], hi[2]), (lo[0], hi[1], hi[2]))]
+        for a, b, c, d in ((0, 1, 2, 3), (4, 7, 6, 5), (0, 4, 5, 1), (1, 5, 6, 2), (2, 6, 7, 3), (3, 7, 4, 0)):
+            bm.faces.new((verts[a], verts[b], verts[c], verts[d])).material_index = material
+
+    for part in parts:
+        material = MAT_BACK if part.role in ('BACK', 'RAIL_LOW', 'RAIL_HIGH') else MAT_CARCASS
+        box(part.box[0], part.box[1], material)
+    (ix0, iy0, iz0), (ix1, iy1, iz1) = inner
+    shelf_t = next((p.thickness for p in parts if p.role == 'BOTTOM'), t)
+    recipe = structure_inputs.recipe_of(obj)
+    setback = SHELF_SETBACK
+    if recipe is not None:
+        from ..standards import cabinet_defaults
+        values, _group = structure_inputs._standard(structure_inputs._scene_of(obj, None))
+        setback = cabinet_defaults.structure_params(values, obj.btm_cabinet.line).get('shelf_setback', setback)
+    span = iz1 - iz0
+    count = int(shelves)
+    if count > 0 and span > count * shelf_t:
+        gap = (span - count * shelf_t) / (count + 1)
+        for i in range(count):
+            z0 = iz0 + gap * (i + 1) + shelf_t * i
+            box((ix0, iy0 + setback, z0), (ix1, iy1, z0 + shelf_t), MAT_SHELF)
+    bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
     bm.to_mesh(obj.data)
     bm.free()
     obj.data.update()

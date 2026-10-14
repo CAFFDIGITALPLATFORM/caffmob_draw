@@ -53,5 +53,28 @@ class DefaultsTest(unittest.TestCase):
         self.assertTrue(unknown.warning)
 
 
-if __name__ == "__main__":
+class EstruturaDefaultsTest(unittest.TestCase):
+    """Feature 015 (T025; D-19): largura da estrutura, altura e profundidade do padrão, parâmetros da caixa."""
+
+    def test_inferior_largura_da_estrutura_altura_do_padrao(self):
+        from caffmob_draw.cabinet_editor import structures_core as sc
+        values = {'COZ.external.base_height': 720.0, 'COZ.external.base_depth': 550.0,
+                  'COZ.external.stretcher_width': 80.0}
+        found = cd.defaults_for_structure(values, sc.load(sc.CATALOG).by_id('coz_inferior_divisoria'),
+                                          '{"INFERIOR": {"back_kind": "PREGADO"}}')
+        self.assertAlmostEqual(found.base.width, 0.5)
+        self.assertAlmostEqual(found.base.height, 0.72)
+        self.assertAlmostEqual(found.params['stretcher_width'], 0.08)
+        self.assertAlmostEqual(found.params['toe_kick_height'], 0.10)      # reserva
+        self.assertEqual((found.assembly, found.back_kind, found.rear_stretcher),
+                         ('LATERAL', 'PREGADO', 'HORIZONTAL'))
+
+    def test_profundidade_fixada_pela_estrutura(self):
+        from caffmob_draw.cabinet_editor import structures_core as sc
+        found = cd.defaults_for_structure({}, sc.load(sc.CATALOG).by_id('dor_divisoria_sobre_base'))
+        self.assertAlmostEqual(found.base.depth, 0.6)
+        self.assertTrue(found.warnings)                                     # sem padrão: medidas de fábrica
+
+
+if __name__ == '__main__':
     unittest.main()

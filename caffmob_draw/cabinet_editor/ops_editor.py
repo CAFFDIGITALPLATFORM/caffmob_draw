@@ -283,6 +283,9 @@ def start_session(context, root):
     info = bridge.info_of(root)
     draft = state.Draft(bridge.read_state(root))
     s = props.start(root.name, info.library, draft)
+    converted = bridge.migrate_structure(context, root)          # feature 015 (RN-22): depois do instantâneo
+    if converted:
+        draft.checkpoint(bridge.read_state(root))
     s.limits = validate.limits_for(bridge.library_limits(root, info.library))
     s.dim_messages = {}
     s.edited = set()

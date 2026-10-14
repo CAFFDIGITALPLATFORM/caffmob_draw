@@ -24,6 +24,17 @@ class BTM_PT_CabinetEditorSliding(_TabPanel, bpy.types.Panel):
         ui = context.window_manager.btm_cabinet_editor
         layout = self.layout
         layout.label(text=tr("Portas deslizantes"), icon='ARROW_LEFTRIGHT')
+        # Feature 015 (D-17, clarify Q4): dois modos; "Sobre a caixa" (conjunto Interna/Externa/Embutida) vem depois
+        mode = layout.row(align=True)
+        mode.label(text=tr("Modo"))
+        current = mode.row(align=True)
+        current.label(text=tr("No vão"), icon='RADIOBUT_ON')
+        later = mode.row(align=True)
+        later.enabled = False
+        later.label(text=tr("Sobre a caixa"), icon='RADIOBUT_OFF')
+        note = layout.row()
+        note.active = False
+        note.label(text=tr("Sobre a caixa: disponível numa próxima versão"), icon='INFO')
         layout.row().prop(ui, "slide_family", expand=True)
         catalog_grid(layout, context, catalog.items('SLIDING', ui.slide_family))
         row = layout.row(align=True)

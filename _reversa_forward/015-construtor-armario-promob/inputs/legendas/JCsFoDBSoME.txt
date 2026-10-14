@@ -1,0 +1,146 @@
+[0:00] o Olá pessoal sejam muito bem vindos de
+[0:02] volta ao meu canal na aula de hoje
+[0:05] pessoal vou falar um pouquinho sobre
+[0:06] essa ferramenta aqui ó chamada
+[0:09] construtor de armários da gente usa
+[0:12] pouco ela aqui nas aulas né mas ela é
+[0:14] muito eficiente para trabalhar por
+[0:17] exemplo cozinhas com quartos fora dos
+[0:20] padrões da modulação aqui do Promob né
+[0:22] então eu vou clicar aqui para mostrar
+[0:25] para vocês como por exemplo aqui no
+[0:28] Promob eu vou mostrar aqui ó aqui tem
+[0:30] uma modulação deixa eu fechar aqui Aqui
+[0:33] tem uma modulação padrão né Por exemplo
+[0:35] você quer um gaveteiro você vem aqui em
+[0:38] gaveteiro né pega aqui o gaveteiro
+[0:41] coloca ok Você quer um armário com duas
+[0:44] portas você vai lá pega um outro módulo
+[0:46] com duas portas e coloca aqui do lado né
+[0:50] então o que que acontece quando você
+[0:53] quer um módulo inteiro para colocar
+[0:55] gaveteiro duas portas por exemplo aqui ó
+[0:57] aqui tem dois módulos
+[1:00] é um aqui e outro aqui mas Digamos que
+[1:03] você não queira assim você quer um
+[1:06] módulo único e nesse módulo único você
+[1:08] quer colocar gaveteiro e duas portas né
+[1:11] aí no Promob tem esse módulo não não tem
+[1:15] no Promob aqui na biblioteca de
+[1:17] modulação mas tem no construtor de
+[1:19] armários e muita gente esquece disso
+[1:21] então é disso que nós vamos falar hoje
+[1:23] vou mostrar aqui para vocês como é
+[1:25] facinho uma dica simples rápida e que
+[1:28] vocês podem trabalhar direitinho no
+[1:30] projeto de vocês então vamos lá ó
+[1:34] E aí
+[1:35] [Música]
+[1:39] e olha só como acontece em quartos né a
+[1:42] gente já fez várias aulas aqui de
+[1:44] quartos e a gente insere os agregados
+[1:46] usando o editor de armários né lá no
+[1:49] construtor de armários de quartos aqui
+[1:52] em cozinha não a gente vai pegando o
+[1:53] módulo coloca um do lado do outro aí se
+[1:56] tiver que editar o tamanho do módulo que
+[1:58] a gente é dita né agora por exemplo no
+[2:01] construtor de armários de cozinha tem
+[2:04] como você fazer a edição usando os
+[2:07] agregados por harrachi aqui para os
+[2:10] módulos né O que não pode ser feito aqui
+[2:14] na modulação do jeito que tá ela é
+[2:16] engessada né Por exemplo aqui é um
+[2:18] armário com duas portas pronto e acabou
+[2:20] não tem como você colocar os agregados
+[2:22] aqui por exemplo de uma divisória não
+[2:25] tem aqui é do jeito que tá aqui pronto e
+[2:27] acabou mas nessa ferramenta construtor
+[2:29] de armários você pode fazer esse mesmo o
+[2:32] desenho aqui usando o módulo único esse
+[2:36] módulo único do jeito que tá que
+[2:38] desenhado ele não tem no Chrome
+[2:39] E como você construir e olha só é desse
+[2:42] jeito aqui assim ó pherson você vem na
+[2:45] ferramenta construtor de armários que
+[2:47] essa ferramenta aqui ó construir armário
+[2:50] aí aqui por exemplo vamos fazer esse
+[2:52] mesmo desenho que eu acabei de construir
+[2:54] aqui com a modulação do Promob você vem
+[2:57] aqui em cozinhas tá aí aqui ó você
+[3:01] coloca aqui inferior com divisória você
+[3:03] clica aqui aí vem aqui em OK tá aí que
+[3:09] que acontece aparece essa opção aqui ó
+[3:12] tá do jeitinho que tá aqui ela parece
+[3:15] com 470 de largura e aqui Pessoal vocês
+[3:20] vem que tem aqui ó várias opções para
+[3:23] vocês adicionar a Esse armário aqui tá
+[3:27] ele já vem com laterais a base inferior
+[3:30] a divisória que tá então o que que eu
+[3:34] vou fazer aqui eu vou clicar aqui e vou
+[3:37] colocar esse módulo aí com mil e
+[3:41] Oi gente OK aí que que eu vou fazer aqui
+[3:44] ó eu vou colocar uma divisória aqui pra
+[3:47] gaveta tá vou deixar a gaveta aqui com
+[3:50] 500 de largura e o restante aqui vou
+[3:52] colocar para duas portas tá aí que que
+[3:55] eu vou fazer eu venho aqui em divisões
+[3:57] tá Pego aqui ó vertical que é para uma
+[4:01] tá aí eu venho aqui onde divisórias
+[4:05] fixas tá E vou pegar aqui ó essa daqui
+[4:10] por exemplo
+[4:11] eu vou puxar e jogar aqui ó
+[4:15] eu vou deixar aqui com 500 de espaço
+[4:18] para a gaveta e aqui eu vou colocar o
+[4:20] gaveteiro e aqui eu vou colocar duas
+[4:23] portas aí que que eu faço eu venho aqui
+[4:25] em gavetas eu clico aqui tá aqui ó já
+[4:30] tem a opção de 4 gavetas você pode
+[4:32] colocar aqui três duas tanto que você
+[4:35] quiser aí eu vou colocar aqui a opção
+[4:36] com 4 gavetas puxo arrasto e coloca aqui
+[4:39] tá aqui ó eu vou querer uma prateleira
+[4:44] aqui no meio e duas portas mas se eu
+[4:47] colocar a prateleira no meio As portas
+[4:50] vão ficar divididas aqui então a
+[4:53] primeira coisa que eu tenho que colocar
+[4:54] são as portas e por último a prateleira
+[4:58] tá então como é que eu vou fazer isso
+[4:59] primeiramente eu venho aqui em portas tá
+[5:02] clica aqui ó que aqui é o espaço onde eu
+[5:05] quero colocar as portas eu venho aqui em
+[5:09] ambas tá E aqui ó eu vou colocar aqui eu
+[5:14] escolhi
+[5:15] a porta que eu quero colocar vou colocar
+[5:17] essa reta aqui mesmo puxo arrasto e
+[5:19] coloca aqui tá pronto toque A porta já
+[5:23] está inserido aqui agora sim eu venho
+[5:26] aqui para divisões e coloca aqui ó
+[5:28] horizontal puxo arrasto e coloca aqui ó
+[5:35] e entenderam tá pronto aqui ele tá no
+[5:38] módulo único de mil e quatrocentos por
+[5:41] 700 de altura tá eu venho aqui em ok
+[5:46] Eu e meu armário tá pronto com módulo
+[5:49] único de mil e quatrocentos olha só que
+[5:53] ele ó
+[5:55] ó tá vendo ele tem uma divisória aqui
+[5:58] antes do gaveteiro tá enquanto que esse
+[6:02] daqui ele tá com dois módulos Ou seja eu
+[6:06] gastaria uma lateral a mais para fazer o
+[6:09] armário do jeito que tá aqui é mais
+[6:11] fácil para montar sim é mais fácil para
+[6:14] montar Tá mas desta forma que fica mais
+[6:17] econômico isso vai do jeito que cada um
+[6:20] gosta de fazer suas coisas né então aqui
+[6:22] não tem nenhum ano em duas opções tem
+[6:25] várias opções para você trabalhar aqui
+[6:27] com os módulos do Promob tá bom essa
+[6:30] daqui é só mais uma então tá aí para
+[6:32] vocês que não sabiam que tem como fazer
+[6:36] a edição de armários aqui no editor de
+[6:39] armários usando a ferramenta arraste
+[6:42] aqui do Promob tá fiquem com Deus um
+[6:44] grande abraço deixa aí nos comentários
+[6:46] que vocês querem que nós estragamos aqui
+[6:48] para o canal tá bom Um beijo fica com
+[6:52] Deus

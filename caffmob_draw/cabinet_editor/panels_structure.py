@@ -83,12 +83,18 @@ class BTM_PT_CabinetEditorStructure(_TabPanel, bpy.types.Panel):
             more.enabled = not item.reason_remove and not item.removed
             more.operator("caffmob.cabinet_editor_part_remove", text="", icon='DOWNARROW_HLT').role = item.role
         layout.separator()
-        _draw_tree(layout, ui)
+        root = props.session().root() if props.session() is not None else None
+        _draw_tree(layout, ui, bool(getattr(getattr(root, 'btm_cabinet', None), 'structure_id', "")))
         face_frame_note(layout)
 
 
 def _value_row(layout, ui, key, label):
     row = layout.row(align=True)
+    reason = catalog.DISABLED.get(key)
+    if reason:                                       # feature 015: aparece desabilitado, com o motivo
+        row.enabled = False
+        row.prop(ui, "tree_" + key, text="{}  ·  {}".format(tr(label), tr(reason)))
+        return
     row.prop(ui, "tree_" + key, text=tr(label))
     if hasattr(ui, "value_" + key):
         sub = row.row(align=True)
@@ -96,10 +102,15 @@ def _value_row(layout, ui, key, label):
         sub.prop(ui, "value_" + key, text="")
 
 
-def _draw_tree(layout, ui):
-    """Extras do Construtor (RN-07a): grupos recolhíveis com os filhos; o valor ao lado de quem tem."""
+def _draw_tree(layout, ui, structured=False):
+    """Extras do Construtor (RN-07a): grupos recolhíveis com os filhos; o valor ao lado de quem tem.
+
+    Feature 015 (D-03, D-04): num módulo com estrutura de caixa aparecem as peças da estrutura (sarrafos, tampo
+    linear, rodapé, rodízios) e o rodapé da 008 sai; sem estrutura, o contrário.
+    """
+    hidden = catalog.LEGACY_ONLY_KEYS if structured else catalog.STRUCTURE_KEYS
     for key, label, parent, _default in catalog.TREE:
-        if parent is not None:
+        if parent is not None or key in hidden:
             continue
         children = catalog.CHILDREN.get(key)
         if not children:

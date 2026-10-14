@@ -412,6 +412,8 @@ class BTM_OT_StandardsImportPromob(bpy.types.Operator, ImportHelper):
             item = definition.raw_attributes.add()
             item.attr_id, item.value, item.key = raw['id'], raw['value'], raw['key']
         definition.assembly = data.get('assembly', 'LATERAL')      # feature 012 (D-27): CAFF_MONTAGEM
+        from ..standards import group_assembly
+        definition.group_assembly = group_assembly.dumps(data.get('group_assembly') or {})   # feature 015 (D-08)
         rep = data['report']
         lines = [tr("Definição: {}").format(name),
                  tr("Atributos no arquivo: {}; reconhecidos: {}").format(rep['total'], rep['mapped']),
@@ -423,6 +425,7 @@ class BTM_OT_StandardsImportPromob(bpy.types.Operator, ImportHelper):
             lines.append(tr("IDs duplicados (vale o último): {}").format(', '.join(rep['duplicates'][:10])))
         if rep.get('assembly_warning'):
             lines.append(rep['assembly_warning'])
+        lines.extend(rep.get('caff_warnings') or [])
         lines.append(tr("Use \"Definir ativa\" para aplicar esta definição ao projeto."))
         _set_report(tr("Importação do Promob"), lines)
         self.report({'INFO'}, tr("\"{}\": {} de {} atributos reconhecidos.").format(name, rep['mapped'], rep['total']))
@@ -450,7 +453,8 @@ class BTM_OT_StandardsExportPromob(bpy.types.Operator, ExportHelper):
             raw = io_promob.attributes_from_values(values)
         try:
             io_promob.write_dimensionexport(self.filepath, definition.name, values, raw,
-                                            assembly=getattr(definition, 'assembly', 'LATERAL'))
+                                            assembly=getattr(definition, 'assembly', 'LATERAL'),
+                                            group_assembly=definition.group_assembly)
         except OSError as exc:
             self.report({'ERROR'}, tr("Não foi possível gravar: {}").format(exc))
             return {'CANCELLED'}
@@ -507,6 +511,15 @@ def _draw_counts(layout, the_plan):
     col = layout.column(align=True)
     col.label(text=tr("{} módulo(s) seguem o padrão global").format(len(the_plan.follow)), icon='CHECKMARK')
     col.label(text=tr("{} com padrão diferente do global anterior").format(len(the_plan.differ)), icon='MODIFIER')
+    legacy_structure = 0                                    # feature 015 (T037): sem estrutura de caixa ainda
+    for name in list(the_plan.follow) + list(the_plan.differ):
+        obj = bpy.data.objects.get(name)
+        cab = getattr(obj, 'btm_cabinet', None) if obj is not None else None
+        if cab is not None and not cab.structure_id:
+            legacy_structure += 1
+    if legacy_structure:
+        col.label(text=tr("{} módulo(s) passam para a estrutura de caixa nova").format(legacy_structure),
+                  icon='MOD_BUILD')
     if the_plan.not_applicable:
         col.label(text=tr("{} não aplicável(is): itens importados ou armários antigos").format(
             len(the_plan.not_applicable)), icon='INFO')

@@ -66,5 +66,25 @@ class ExtrasTest(unittest.TestCase):
         self.assertEqual(size(top.box), (0.8 - 2 * T, 0.53, T))
 
 
+class EstruturaTest(unittest.TestCase):
+    """Feature 015 (T022; D-04)."""
+
+    def test_rodizios_sao_ferragem_nos_cantos(self):
+        parts = ex.layout(BOX, T, {'CASTERS': {'enabled': True}})
+        casters = [p for p in parts if p.kind == 'CASTER']
+        self.assertEqual(len(casters), 4)
+        self.assertEqual({p.hardware for p in casters}, {'RODIZIO'})
+        self.assertAlmostEqual(casters[0].box[0][2], -0.10)
+
+    def test_com_estrutura_o_rodape_da_008_nao_gera_peca(self):
+        settings = {'KICK_FRONT': {'enabled': True}, 'KICK_LEFT': {'enabled': True}}
+        self.assertEqual(ex.layout(BOX, T, settings, structure=True), [])
+        self.assertEqual(len(ex.layout(BOX, T, settings)), 2)
+
+    def test_recuo_do_rodape_pelo_padrao(self):
+        kick = ex.layout(BOX, T, {'KICK_FRONT': {'enabled': True}}, kick_setback=0.08)[0]
+        self.assertAlmostEqual(kick.box[0][1], 0.08)
+
+
 if __name__ == '__main__':
     unittest.main()

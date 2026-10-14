@@ -1,0 +1,156 @@
+[0:00] o olá sejam todos muito bem vindos eu
+[0:03] sou o lucas braga instrutor do curso de
+[0:05] promove na escola lv design cursos bom
+[0:08] na aula de hoje a gente vai estar
+[0:10] aprendendo a criar um armário de cozinha
+[0:13] uma parte inferior com portas de giro e
+[0:16] na parte superior portas de correr tá
+[0:19] então vamos para o trabalho aqui no
+[0:22] projeto né o nosso promove aberto eu já
+[0:25] tô com o meio ambiente construído tá vou
+[0:27] simular que um uma coisinha eu vou
+[0:30] clicar com o botão direito do mouse na
+[0:31] parede por causa que eu voltar
+[0:32] continente armário e veio aqui em
+[0:34] construtor de armários tá aqui eu vou
+[0:37] estar utilizando o módulo sala mesmo tá
+[0:39] não tem problema então eu dou um duplo
+[0:41] clique aqui nos potes externos tá e faço
+[0:44] a edição dele aqui aonde eu vou colocar
+[0:47] ai tá então vou editar ele aqui eu vou
+[0:51] tirar o novo estampamentos que eu tava
+[0:53] utilizando né no caso vou estar
+[0:55] utilizando o sofrimento de 15 então eu
+[0:57] tirar aqui menos 30 né para ele ficar
+[1:00] com
+[1:00] a cada lado lembrando que só apenas uma
+[1:04] simulação não é um projeto no caso de um
+[1:07] print final tá então lembrando que se eu
+[1:11] vou fazer um projeto nutriente o final
+[1:13] você tem que ter os descontos né ela não
+[1:16] tem problema na hora da instalação vamos
+[1:18] deixar ele com a cura de 80 cm tá e vou
+[1:23] deixar ele a 110 no chão perfeito
+[1:27] bom então aqui eu vou construir a vou
+[1:30] adicionar mais um vão né para a gente ir
+[1:32] as portas vou ver aqui em portas e vou
+[1:36] adicionar aqui porta cola horizontal
+[1:39] e nas portas aqui e duas portas aqui em
+[1:43] divisões ou adicionar uma prateleira
+[1:44] também que já interna
+[1:47] a atender os móveis internas dão duplo
+[1:51] clique nela perfeito e dá um ok que o
+[1:56] nosso balcão já tá construído vou fazer
+[1:58] adição agora o tamponamento tá meu meu
+[2:03] móvel tem 55 de profundidade eu estou
+[2:05] deixar o luta promete com 57
+[2:07] profundidade né para ele ficar com dois
+[2:11] centímetros ali de margem para frente do
+[2:13] mof para dar o acabamento legal é ele
+[2:16] ficar escondendo as portas espessura de
+[2:18] 15mm faço a inserção aqui então
+[2:21] polimento perfeito
+[2:24] é bom aqui a gente já tem o nosso o
+[2:28] nosso balcão construído tá agora na
+[2:31] parte superior vou adicionar eu vou
+[2:34] estar utilizando solta apuramento com a
+[2:35] tá querendo esse imóvel tá na parte
+[2:37] superior então utilizar o próprio
+[2:39] estacionamento para fazer isso
+[2:43] e deixar ele aqui numa altura legal aqui
+[2:46] dona suko eu não sou móvel tá é
+[2:50] participar eu posso deixar ele com
+[2:52] profundidade menor deixar ele com 38
+[2:55] a propriedade está melhor olha tá
+[2:59] simples pronto ó
+[3:02] o que eu vou estar utilizando o próprio
+[3:04] funcionamento para tá fazendo
+[3:06] a construção desse mote tá vou deixar
+[3:11] ele com assim centímetros de altura tá
+[3:16] interno e vou criar as laterais dele
+[3:20] e também pode deixar aqui com 60
+[3:22] centímetros né faça a votação nele aqui
+[3:26] lembrando que para fazer anotação é só
+[3:28] apertar a tecla shift do teclado
+[3:30] selecionar com o botão esquerdo do mouse
+[3:32] a peça e rotacionar o local lugar onde
+[3:35] você quer tá e para esquerda ou para a
+[3:37] direita tá então aqui eu queria a outra
+[3:42] eu vou adicionar aqui perfeito
+[3:46] basicamente eu não sou o olho tá pronto
+[3:48] tá aqui o fundo também eu vou adicionar
+[3:50] a construir com uma geometria para ser
+[3:52] mais rápido tá então vem que geometria
+[3:54] retangular clique com o botão direito na
+[3:56] parede e arrasto né até o final aqui da
+[3:59] pontinho vermelho vou deixar ele com 15
+[4:03] minutos de espessura tá bom aqui eu
+[4:09] posso fazer uma divisão interna tá no
+[4:13] meio tá vou duplicar essa peça aqui
+[4:16] também
+[4:17] o e faço centralização dela aqui
+[4:22] é legal se a gente precisa recuar ela
+[4:26] por conta da nossa porta tá então deixar
+[4:29] ela aqui com 35 de profundidade pois a
+[4:32] gente configura melhor hora quem seria
+[4:34] as portas tá então que eu posso
+[4:37] adicionar mais uma no meio né
+[4:41] a razão estação dela centralizo ela que
+[4:46] bom então duplo-clique tá fácil um duplo
+[4:54] vou duplicar nessa também e aí a gente
+[4:57] tem uma divisão interna aí com quatro
+[5:00] blocos perfeito agora vai ser as portas
+[5:04] né então eu vim aqui em módulos ou vir
+[5:08] aqui cozinha
+[5:09] tu tá em cozinhas e
+[5:14] e aí vem aqui em a portas e frentes em
+[5:19] e aqui pode fazer frente a gente tem
+[5:21] vários tipos de porta então quero uma
+[5:23] porta deslizante então vem aqui em
+[5:24] deslizante de madeira e aqui você pode
+[5:28] escolher é um modelo de porta que você
+[5:30] quer puxador gola visão tava na vertical
+[5:32] tá eu vou deixar sem puxador tá então
+[5:36] vou deixar vou pegar a reta aqui mesmo
+[5:38] vem até a frente do móvel né ele vai
+[5:40] selecionar aqui a parte da frente do
+[5:43] move tá
+[5:45] eu vou fazer de novo reta e aí a gente
+[5:50] solta
+[5:53] se desagregar ela aqui
+[5:56] e aí que seria aqui na frente nós vamos
+[5:59] tá o que eu posso fazer edição agora tá
+[6:03] vou fazer um definir a altura dela aqui
+[6:06] né dentro do nosso móvel ou ver que lado
+[6:09] ela tá abrindo tá eu quero que ela abre
+[6:12] corre para o outro lado então é só
+[6:15] apertar a tecla isso é só na peça e
+[6:17] apertar o ídolo teclado ele vai inverter
+[6:19] a posição da porta tá então aqui a gente
+[6:24] já configurou ela aqui é o tamanho dela
+[6:28] é a gente pode dividir o espaço a gente
+[6:32] pode pegar os passos total aqui dividir
+[6:34] por dois né então a gente tem que 1549
+[6:39] tá então vem aqui na minha calculadora
+[6:44] em 1549 dividido por 2 a 76 77 174,5
+[6:53] então que a gente pode colocar 700 74,5
+[7:01] e aí pode vídeo vão certinho para a
+[7:05] gente tá então aqui eu duplica essa peça
+[7:09] novamente tá é que eu posso colocar a
+[7:11] parte de dentro perfeito então ok pronto
+[7:16] que nosso porta de correr lá tá criado a
+[7:19] gente só ele fica a posição de abertura
+[7:20] dela se ela tá abrindo erra acerta né em
+[7:22] casa ela tá errado tá vendo para foto
+[7:25] mesma coisa e selecione a peça e aperta
+[7:28] o ir para inverter a ele já vi para o
+[7:31] outro lado perfeito então basicamente é
+[7:35] isso tá a gente tá fazendo a construção
+[7:38] desses armários na nossa cozinha feito
+[7:42] bom espero que você tenha gostado desse
+[7:45] vídeo né eu peço para você se inscrever
+[7:47] em nosso canal deixar o joinha e seu aí
+[7:49] tá a gente trazer mais vídeos para vocês
+[7:52] aí né é de conteúdo relevante no próprio
+[7:56] bom eu vou ficando por aqui um forte
+[7:59] abraço e até mais

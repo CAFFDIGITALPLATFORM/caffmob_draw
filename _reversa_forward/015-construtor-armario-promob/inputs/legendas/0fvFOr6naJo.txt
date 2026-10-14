@@ -1,0 +1,778 @@
+[0:01] E aí galera beleza T aqui para fazer um
+[0:05] videozinho Ensinando dando umas dicas
+[0:07] aqui de como fazer um projeto aqui no
+[0:09] Promob né hoje nó vamos fazer aqui um
+[0:12] dormitório dormitório de três portas
+[0:15] Porta de de correr ensinar colocar as
+[0:19] gavetas Enfim fazer um projeto bacana PR
+[0:21] você apresentar pro teu cliente então
+[0:23] primeiro passo tá aqui aberto fechar
+[0:27] aqui
+[0:28] dormitório
+[0:30] pode clicar nele que ele já vai te dar
+[0:33] vai aparecer nas Abas dos dormitórios
+[0:35] para dar uma facilitada né mas é só para
+[0:39] isso enfim primeira coisa você já foi na
+[0:42] casa do cliente foi lá tirou as medidas
+[0:44] Então essas medidas que estão aqui não
+[0:46] vão te servir então clica na parede logo
+[0:50] e botão direito remove que é o próprio
+[0:54] delete do teu
+[0:56] teclado todo né Tudo ok dá dois clique
+[1:00] aqui parede vamos lá o dormitório que eu
+[1:03] vou fazer aqui ele tem a extensão você
+[1:06] bota aqui ó aqui ele tá dando 5 m você
+[1:09] vai ver aqui no número vermelho quando
+[1:11] botar ele dá 5 m quando você botar aqui
+[1:13] fixo você já pode digitar direto no teu
+[1:15] teclado a medida né esse o guarda-roupa
+[1:19] que a gente vai fazer hoje ele tem um
+[1:22] tamanho padrão de apartamento que é 2,40
+[1:25] né 2400 MM Dá um enter ele já vai vira
+[1:30] aqui na diagonal o quarto ele tem
+[1:33] é 3 m é 240 por 3 né esse aqui que nós
+[1:38] vamos fazer então digitei 3.000 ali 3000
+[1:40] MM Dá um enter viri de novo 2400
+[1:44] novamente enter já vai lá ó ele já vai
+[1:47] dar em cima Os 3.000 clicou ele já te
+[1:49] pergunta aqui deseja fechar a parede e
+[1:51] finalizar a sua constução Sim aí você
+[1:54] clica aqui ó ajustar limites do piso
+[1:58] clicou nele ajustou se você apertar o
+[2:01] screw que é a bolinha do do teu Mouse ó
+[2:05] ap aperta o screw se você rolar pra
+[2:07] frente para trás ele dá o zoom né se
+[2:10] você apertar ele segurar você já
+[2:12] movimenta e ele volta pra setinha porque
+[2:14] agiliza essas ferramenta PR você não
+[2:16] ficar clicando aqui ó toda hora né você
+[2:18] ficar toda hora para ter que fazer você
+[2:20] clicar aqui e fica muito ruim tá bom
+[2:23] então vamos lá sempre começa pela
+[2:26] edificação então que que tá faltando
+[2:29] edificação só tem parede Aí você vem
+[2:31] aqui ó materiais aí você vai ter aqui ó
+[2:34] paredes e pisos Nessa versão ele já tem
+[2:36] o porcelanato e geralmente o que uso é o
+[2:39] Bezinho então você vem coloca no chão
+[2:41] observa bem é bom observar casa do
+[2:44] cliente né É aí você vem para cá ó
+[2:47] decore você tem portas no caso a gente
+[2:50] quer as internas e essa daqui que é a
+[2:52] porta interna Lisa não tem nada lá na no
+[2:56] projeto que nós estamos fazendo ele é
+[2:57] dessa posição caso você coloque aqui na
+[3:00] no outro lado precisa inverter a porta
+[3:01] só botão direito e você tem aqui ó
+[3:05] espelhar tá vendo É lá pro outro lado
+[3:07] olha aqui abertura ó clica aqui tá vendo
+[3:10] tá abrindo pro lado errado então você
+[3:11] vem aqui ó botão direito espelhar fica
+[3:15] pro lado certo vamos deixar ela
+[3:17] fechadinha aqui fechamos a porta e e o
+[3:21] quarto também tem uma janela Então a
+[3:22] gente tem aqui portas e janelas Eu
+[3:25] particularmente Nessa versão aqui eu
+[3:27] gosto de usar aqui ó nas próprias portas
+[3:29] aí tem aqui aqui ó com vidro aí tem essa
+[3:32] essa essa porta aqui ó
+[3:34] é número três com com quatro folhas tá
+[3:39] vendo seria uma porta gigante ó só que
+[3:43] não deixa de ser uma janela então você
+[3:45] vem aqui propriedades boto o tamanho que
+[3:48] essa no meu caso aqui uma janela de é
+[3:51] 1200 1,20 m né Por altura padrão que é 1
+[3:56] m então é 1000 então você vem aqui aqui
+[4:00] centraliza mais ou menos aqui
+[4:01] manualmente depois você botão direito em
+[4:03] cima da janela e você vem aqui ó
+[4:05] centralizar no x que é na horizontal aí
+[4:09] você vai ver aqui ó cota inferior
+[4:12] 865 para ficar da mesma altura da porta
+[4:15] que é 210 se a janela tem um então ele
+[4:17] tem que ficar com 100 1,10 M pronto se
+[4:22] você quiser rodar
+[4:25] rotação aqui ó aperta
+[4:28] segura quando quiser movimentar assim
+[4:30] você aperta o scru do do teclado Então
+[4:34] movimentou tá aqui o quarto a porta lá
+[4:38] não É dessa cor Então vem aqui materiais
+[4:40] aí a gente tem aqui eu gosto de colocar
+[4:41] aqui o madeira O mno que é padrão né
+[4:45] você aperta aqui na no pincelzinho para
+[4:49] pintar mais coisas e ele vai te dar aqui
+[4:51] ó para você pintar o portal pronto é
+[4:54] essa porta também tá muito larga essa
+[4:56] porta aqui
+[4:58] cadê
+[5:00] ccar fora clicar na porta de novo ela tá
+[5:02] com 98 Total não dá aqui 88 máximo
+[5:07] Pronto chega lá pro cantinho de novo
+[5:10] beleza primeira coisa que eu faço depois
+[5:12] que eu faço isso aqui antes de começar
+[5:13] os móveis de fato é salvar por você dá
+[5:17] qualquer pepino né meu irmão aí é
+[5:19] problema eu tenho meu lugar de salvar
+[5:22] aqui vamos fazer aqui tem aqui ó minha
+[5:27] partinha new house tem aqui
+[5:31] projetos nesse caso aqui que é um
+[5:33] projeto Promob eu vou botar aqui dentro
+[5:35] da do
+[5:36] Promob só colocar o nome do cliente no
+[5:40] caso aqui é José geralmente tiver mais
+[5:44] um coloca o
+[5:47] lugar nesse caso aqui Taguatinga
+[5:54] Taguatinga
+[5:55] salvar pronto beleza não corre risco de
+[5:59] dar um a no no no programa no teu
+[6:01] computador cab energia sei
+[6:03] lá você perder aí o que você fez então
+[6:07] feita o ambiente do cara é bom você
+[6:10] observar porque isso aqui você tá no
+[6:11] projeto para vender o teu produto então
+[6:14] é muito bom você prestar bastante
+[6:16] atenção nos detalhes da da casa às vezes
+[6:18] você vai tirar medidas na casa do
+[6:20] cliente ele pergunta mas para que que tu
+[6:22] tá medindo o quarto todo a ele não
+[6:23] imagina que você vai fazer esse projeto
+[6:24] todinho para mandar para ele aí chega um
+[6:27] concorrente teu só com um pedaço de
+[6:28] papel um lápis daquele de marcineiro meu
+[6:31] irmão você acha quem é que vai ganhar o
+[6:32] projeto você claro né então vamos lá
+[6:35] vamos pra
+[6:36] parte agora do armário em
+[6:41] si tem aqui ó
+[6:45] dormitórios clica em dormitório você vem
+[6:48] tem aqui ó armário e tem armário com
+[6:50] rodapé dentro do armário com rodapé você
+[6:53] vai ter aqui armários enfim e armários
+[6:56] de correr com dois vão e com TRS vãos
+[7:01] vamos pegar aqui o de três vãos que é a
+[7:04] recomendação do
+[7:05] cliente Ó ele aqui passou tá vendo ele
+[7:10] tá na largura de
+[7:14] 2,40 e 36 MM enfim só 2 400 seria o
+[7:21] tamanho da parede você vai ver que vai
+[7:23] ficar passando porque ele calcula dentro
+[7:24] a dentro então você tira aqui se você
+[7:28] botar do
+[7:30] desconto das duas madeiras de 15 ele
+[7:33] zera Geralmente eu dou um descontinho a
+[7:35] mais bot aqui 350 para ficar bem
+[7:38] Evidente n lateral fica com uma
+[7:40] folguinha mas é melhor então feito isso
+[7:43] tá aqui ele já pega essa parte aqui é
+[7:46] muito boa que ele já pega
+[7:50] pronto vamos
+[7:53] lá você achar melhor rebaixar isso aqui
+[7:58] ó setinha botão direito rebaixar pronto
+[8:02] esru pra frente dá um uma rotação zinha
+[8:07] aqui para ficar melhor para você
+[8:08] projetar legal fazer um projeto
+[8:11] bacana vender
+[8:13] né E aí você vai pegar aqui agora
+[8:17] setinha e aí você clica no armário tá
+[8:20] aqui três e você tem os
+[8:23] agregados agregados você vem aqui ó é
+[8:27] armário aí tá 1 2 3 Esse quer dizer um
+[8:31] dois e o três conforme o projeto aqui o
+[8:34] pedido do cliente Vamos colocar aqui
+[8:36] daquele lado ali ó gavetas você pode
+[8:38] botar na esquer na direita na esquerda
+[8:41] aí se você clicar no nome primeiro sem
+[8:42] ser no quadradinho ele aparece lá o
+[8:44] local onde vai ser inserido ou Central
+[8:47] que aqui é o caso então V clicar aqui no
+[8:49] central e já vai botar um conjunto de
+[8:51] gavetas e naquele caso ali ele tem um
+[8:55] cabideiro
+[8:56] superior pronto tá feito Vamos para o
+[9:00] dois você volta aqui na setinha Verde
+[9:03] armários dois o dois aqui a pessoa quer
+[9:09] o gaveteiro Central também o padrão
+[9:12] quatro gavetas né queer o cabideiro
+[9:15] superior
+[9:19] também e quer uma perfumaria E aí nesse
+[9:24] caso aqui é mais difícil é um pouquinho
+[9:27] mais complicado por porque não tem isso
+[9:29] aqui se eu botar uma divisória ele some
+[9:31] o cabideiro enfim o que que eu faço dois
+[9:34] cliques na peça Aí você vem aqui botão
+[9:36] direito você vai dar aqui um
+[9:38] duplica duplicou você pode movimentar
+[9:42] aqui bota um ângulo de 90º
+[9:45] é e ele tá aqui com isso aqui você tira
+[9:48] 300 que é o que a gente vai fazer então
+[9:50] de 771 tira 300 fica 471 tá vendo já
+[9:55] movimentou pro lugar Ok E aí tem algumas
+[9:59] forma de se fazer dá uma rodadinha aqui
+[10:00] para você enxergar melhor aproxima com
+[10:03] screw a bolinha do mouse né você puxa
+[10:06] aqui ó pode puxar tá vendo o cantinho Lá
+[10:08] no final da dobra ó ele já já deu E aí o
+[10:12] que que acontece o cabideiro ele
+[10:16] está o cab deiro tá passando por dentro
+[10:19] isso aqui não é interessante Então o que
+[10:22] que você vai fazer dois cliques no
+[10:23] cabideiro clica na setinha para ficar
+[10:25] certinho menos TR B mais do 0 Men 300
+[10:30] que é o tamanho que você tirou para isso
+[10:33] aí pronto nesse daqui você dá dois cliqu
+[10:36] de novo aí você pode dar um cont contrl
+[10:38] d ou botão direito que é cont control D
+[10:41] então duplicar né duplicou de novo você
+[10:44] vem aqui
+[10:45] apaga e aí você vai fazer o quê vai
+[10:49] baixar quanto padrão
+[10:52] 30 vamos ver o que que dá V botar com 30
+[10:56] você
+[10:57] vem para cá você vai reduzir ou você
+[11:01] pode fazer isso botar aqui logo com 300
+[11:05] ele vai pro lado de lá né Você pode
+[11:08] movimentar ou então você pode fazer do
+[11:11] seguinte já vem com a setinha aqui
+[11:14] bota menos
+[11:18] e
+[11:25] 4713 Vai dar quanto adivinha 300 né Tá
+[11:29] vendo que ele tá passando aqui uma
+[11:30] bordinha você quiser fazer o negócio
+[11:32] perfeito você tira os 15 do MDF agora
+[11:34] apaga isso aqui e bota só menos 15 que é
+[11:37] o MDF ele vem para cá adivinha o que que
+[11:41] tem que fazer agora botão direito
+[11:44] duplicar você vai pegar zero aqui pronto
+[11:48] e aí você baixa
+[11:50] quanto adivinha 300 a mesma medida
+[11:54] quando você fizer nota aqui agora
+[11:55] duplicar ele já vai jogar lá pronto se
+[11:58] ficar harmonioso ficou interessante Ó
+[12:02] ficou bem dividido tá obviamente isso
+[12:05] aqui é o Projeto né que a gente faz toda
+[12:08] diferença V um projeto bem feito Ele já
+[12:10] sabe o que que ele tá comprando tá
+[12:12] comprando nada no papel Então esse foi o
+[12:15] módulo do meio né o segundo agora a
+[12:17] gente clica no armário de
+[12:19] novo
+[12:21] agregados volta para cá armário e agora
+[12:23] o número três
+[12:27] e a aqui gavetas aqui a gente vai botar
+[12:31] uma sapateira só que tem aqui ó
+[12:33] sapateira esquerda e direita só que
+[12:35] aquele aqueles aramados é que que a
+[12:38] gente vai fazer vai botar gaveta e
+[12:41] sapateira tá vendo aqui que ele tem a
+[12:42] opção para gaveta e sapateira aí você
+[12:45] bota quando você botar ele vai ficar
+[12:47] aqui ó com o link ficou azul com traço
+[12:51] embaixo é o link você clica nele aí você
+[12:53] vem para cá ó tá vendo quatro gaveta que
+[12:56] tá marcado estrutura para tal e aqui tem
+[12:59] sapateira você clica nele fazer isso aos
+[13:03] próximos agregados
+[13:04] concorrentes sim pronto ó lá a sapateira
+[13:08] que a gente costuma fazer na macenaria
+[13:11] né volta aqui ó setinha faltou o que ali
+[13:15] o meu cabideiro que não pode ficar sem
+[13:18] né pronto beleza parede aqui ó tá com
+[13:21] 260 que é padrão o armário vem com 250
+[13:23] que é padrão deixa 10 lá em cima né todo
+[13:26] armário tem que ter sua folga né a gente
+[13:28] quando tá começando a apanhar muito mas
+[13:30] com o tempo a gente vai entender que tem
+[13:31] que deixar a folga lateral tem que
+[13:33] deixar em cima fazer o o acabamento tudo
+[13:37] direitinho Se a gente quiser aproveitar
+[13:39] 100% do espaço a gente só arruma dor de
+[13:41] cabeça que não existe Perfeição só aqui
+[13:43] mes irmão e de vez em quant ainda dá uns
+[13:46] erros Então tá aí ó o armário com você
+[13:50] apresentar isso aqui pro cliente ó vem
+[13:53] aqui ó ah e tá clicado na na porta né
+[13:56] clica no armário aqui ó
+[14:00] Opa quero o
+[14:04] armário armário ó tudo quanto é gaveta
+[14:09] se eu clicar aqui só esse ó então botão
+[14:12] direito abertura gavetas em Cascata tá
+[14:17] vendo aí tudo direitinho né quer fechar
+[14:21] Então você mostrar isso aqui pro cliente
+[14:22] MM isso aqui
+[14:24] você ainda já tem as opções aqui ó se
+[14:27] você quiser abrir Fechar todos Abrir em
+[14:30] Cascata né ficar mais
+[14:33] fácil slow
+[14:36] motion Cadê vamos aqui ó fechou todos e
+[14:41] slow
+[14:51] motion vamos
+[14:56] lá vamos PR as potas
+[14:59] que que acontece meu irmão aqui nesse
+[15:01] programa tem um problema aqui se tu for
+[15:04] botar as portas aqui portas deslizante
+[15:07] por exemplo você só vai conseguir
+[15:09] colocar aqui ó ela tem interna tem
+[15:11] externa aí tem aqui para armário com
+[15:14] rodapé um painel dois painéis três
+[15:17] painéis que é o nosso caso aqui até
+[15:19] quatro né mas e já te falo não funciona
+[15:24] não dá certo isso aqui você vai mexer
+[15:26] dor de cabeça então PR onde que a gente
+[15:29] vai
+[15:30] é a gente tem aqui ó dormitórios né Aí
+[15:34] tem aqui os armários P com
+[15:38] rodapé
+[15:40] beleza estante tal tal adinha o que que
+[15:43] você vai fazer agora tem aqui portas e
+[15:45] frentes dentro do
+[15:47] dormitório você tem essas duas opções Ó
+[15:50] você bota ela com o alumínio deslizante
+[15:53] Você pinta tudo a mesma cor ou então
+[15:55] você vai lá na
+[15:56] cozinha olha só cete aqui ó isso aqui
+[16:00] ninguém ensina isso aqui a gente aprende
+[16:03] quebrando a cabeça aqui com esse tante
+[16:04] componente aqui então você tem dentro da
+[16:07] cozinha aqui ó você vai ter aqui ó
+[16:08] portas e frente porque a porta desse
+[16:10] aqui funciona eu tenho ela reta Lisa tal
+[16:13] tem ela aqui ó só que isso aqui é dos
+[16:16] despenseiro aqui ó reta deslizante tá
+[16:18] vendo na reta deslizante você tem aqui ó
+[16:21] perfil de alumínio na vertical é essa
+[16:24] que nós vamos usar só clica nela arrasta
+[16:27] bota aqui em qualquer lugar solta tá no
+[16:31] armário Então nós vamos botar aqui a
+[16:32] primeira zerada ali
+[16:34] e vamos lá o armário tem 2 e
+[16:39] e 2,50 menos a base aqui geralmente
+[16:43] coloca 60 tá aí você tira 10 vem aqui
+[16:46] propriedades
+[16:48] e altura de 2,50 você vai tirar 10 Vou
+[16:52] colocar aqui 2,40 2400 Olha só como dá
+[16:56] certinho lá viu e é 3 x 8 24 então a
+[17:01] largura 80 né Vamos lá 80 feito isso é
+[17:07] vamos aqui vamos duplicar próxima ok
+[17:12] duplicar
+[17:13] novamente tá vendo ela passou para lá
+[17:16] primeira coisa que você faz você vai dar
+[17:18] aqui um espelhar que ela vai abrir para
+[17:21] lá quando você ó Isso aqui é um bug do
+[17:25] programa Só se você virar ela de cabeça
+[17:26] para
+[17:27] baixo presta atenção Vap Vap quando você
+[17:32] coisa ela abre para dentro essa daqui
+[17:35] Como já vem naquela
+[17:36] posição Pronto já foi e esse aqui fica
+[17:39] abrindo para um dos lados
+[17:41] né pois bem agora vamos ver coisa como é
+[17:45] que tá essas portas elas estão todas
+[17:47] alinhadas então aqui ó é para ela ficar
+[17:52] interna tá vendo aqui ó dar uma rodada
+[17:56] aqui para você ver tá vendo aqui que ela
+[17:58] tá certinha então o que que a gente tem
+[18:00] que fazer tirar mais uma beiradinha em
+[18:02] cima vamos tirar aqui em vez de
+[18:07] 240 vamos para deixar bem certinho isso
+[18:10] aqui foi feito de projeto se fosse
+[18:11] apresentar pro cliente já serviria para
+[18:14] deixar bem certinho vamos tirar aqui em
+[18:17] vez de 2 400 Vamos colocar
+[18:19] 2
+[18:21] 380 tirar 20 tá vendo
+[18:27] 380 e daquela outra ali que tá
+[18:29] escondidinha ali no
+[18:35] canto 2
+[18:40] 380 sim só que aí ela tirou lá de baixo
+[18:44] né eu vi que eu coloquei ela de cabeça
+[18:46] para baixo enfim para dar certo pro que
+[18:48] a gente quer aqui para nossa
+[18:52] finalidade Então você tem que vir aqui
+[18:54] eh deslocamento
+[18:56] eh 20 né que é o que a gente tirou e se
+[19:00] eu fizer isso ela vai subir mais que tá
+[19:02] vendo o menozinho aqui o mais tá para lá
+[19:03] ó pronto alinhou Se você prestar atenção
+[19:07] também meu esru aqui tá
+[19:09] ruim matando de raiva mas dá certo ele
+[19:13] tá passando para lá tá vendo Então esse
+[19:16] daqui é o vermelhinho só que pro outro
+[19:18] lado
+[19:19] mais Zerou pronto passou para dentro que
+[19:22] é normal né as portas ela tem que ter o
+[19:26] transpasso delas porque senão
+[19:29] fica a brecha
+[19:31] né Essa daqui já tá PR cá então essas
+[19:35] essa daqui eu jogar 20 para dentro que a
+[19:37] é no verdinho Opa veio para fora para
+[19:41] outro lado 20 para dentro
+[19:43] e 20 para
+[19:47] dentro e essa
+[19:50] daqui Se você quiser até botar outro
+[19:54] puxador aqui você pode ter alguns
+[19:56] algumas formas de fazer por exemplo você
+[19:57] pode vir aqui aqui ó eh duplicar
+[20:00] geometria aí você zera o negócio aqui
+[20:04] você quiser você aí você pega um botão
+[20:07] uma pontinho preto aqui ó até ele
+[20:09] aparecer aí você vira 90
+[20:12] 180º virou 180 aí
+[20:16] você alinha de novo
+[20:18] Eh viu que ficou alinhadinho ó tudo
+[20:21] certinho que é 240 por 80 o deslocamento
+[20:23] tem ser a mesma coisa que que você vai
+[20:25] fazer você vai movimentar ele para cá o
+[20:27] espaço Do puxador para minha bola tá
+[20:28] vendo ó puxador geralmente é 3,5 então
+[20:31] ele vai ficar quanto
+[20:34] 835 tá vendo lá que apareceu botar até
+[20:37] mais um aqui ó seis para ficar bem
+[20:40] certinho
+[20:42] sete pronto OK aí o que que você vai
+[20:45] fazer aperta o scru do teclado o control
+[20:49] aliás desculpa aperta o você já clicou
+[20:52] em uma delas aperto o control tá vendo
+[20:54] que a outra não tá marcada aí você marca
+[20:56] ela tá as duas Aí você faz o quê botão
+[20:59] direito e agrupar pronto virou uma porta
+[21:04] só para deixar o teu cliente mais feliz
+[21:06] você vem aqui em geometria
+[21:08] livre construir geometria retangular aí
+[21:12] você vai botão direito em cima dessa
+[21:14] porta aqui aí você marca aqui
+[21:20] ó ela jogou lá PR dentro essa geometria
+[21:23] cliquei aqui ó apareceu pronto ela tem
+[21:29] 15 cm de espessura para Vamos botar um
+[21:33] espelho
+[21:34] né o espelho aqui vamos dizer que você
+[21:37] vai colocar um de 3 mm 3 mm PR você vem
+[21:40] aqui movimentação 3 mm para onde para cá
+[21:44] né apareceu pronto vamos voltar aqui é
+[21:48] vamos deixar um tamanho certinho tá
+[21:50] perto de 500 né 550 tamanho bom 550 para
+[21:56] essa porta aqui e o tamanho aqui 2 m que
+[22:00] se você botar 2,5 você vai ter um custo
+[22:03] a mais por quê Porque o 2,5 você vai
+[22:06] tirar de uma outra folha até 2 m o
+[22:08] espelho você consegue tirar de uma folha
+[22:10] que é mais barata que ela tem um tamanho
+[22:12] de até 2 m e passou desse is se for dois
+[22:15] em um você já se complica então às vezes
+[22:18] você quer vender pro cliente aí por
+[22:19] causa de um
+[22:21] cm Você se complica para alinhar na
+[22:24] porta você vem aqui centralizar no x e
+[22:27] centralizar no
+[22:28] Y ficou certinho a porta tá vendo aqui
+[22:32] aí para botar o espelho que até agora só
+[22:34] tá Chap você vem aqui ó que tem todos os
+[22:37] tipos de materiais né então tem aqui ó
+[22:40] vidros e Acrílicos dentro dos vidros e
+[22:42] Acrílicos temos aqui espelhos clica
+[22:45] segura e arrasta nele todo tch Pronto já
+[22:51] foi aí que que você vai fazer terminou
+[22:55] pronto salva aqui
+[23:00] você não tem problema salvou você vai
+[23:03] começar a tirar as fotografias né então
+[23:08] se o cliente pediu tudo branco Primeira
+[23:10] opção que você faz é o branco aí desloca
+[23:12] um pouquinho para ele dar um ângulo do
+[23:14] espelho tal enfim Tá salvo
+[23:17] vamos arrumar a luz ó tá em cima da
+[23:19] parente então você vem para cá às vezes
+[23:21] ela some é só você fazer com esru que
+[23:23] ela tá por aqui por fora em algum lugar
+[23:25] nesse caso estava aqui bem pertinho já
+[23:27] vou centrar a luz no quarto
+[23:29] aqui fechar Salv de novo Tem vezes que
+[23:34] você vai renderizar a foto aqui vai dar
+[23:36] problema aí você vem aqui na lâmpada do
+[23:38] ladinha verdinha no render up né E tem
+[23:41] vem aqui ó configurar o
+[23:47] render aqui você ainda tem a opção de
+[23:49] mexer com a mãozinha né tá aqui para
+[23:51] você rotacionar dar um zoom ou não e
+[23:55] aqui você tem rápida normal alta e fina
+[23:57] né é enfim intensidade de luz luz branca
+[24:01] amarela enfim você configura algumas
+[24:03] coisas resolução da foto né que você
+[24:06] quer 800 por 600 eu acho que é um bom
+[24:09] tamanho PR pessoa ver tanto no
+[24:11] computador Quando você quiser fazer um
+[24:13] vídeo ou V no celular então é um bom
+[24:16] tamanho então você vem aqui
+[24:18] renderizar vai lá começar aí você fica
+[24:21] atento aqui no print screen do teclado
+[24:23] Quando tiver no finalzinho print screen
+[24:26] por qu na minha versão aqui eu vacilei
+[24:29] acessei a internet tá vendo que a
+[24:30] internet que eu cortei agora tá aqui
+[24:33] cortado aqui embaixo sem sinal de
+[24:34] internet por qu quando deu uma
+[24:36] atualizada ele pegou e girou isso você
+[24:39] não pode usar esse promovel aqui
+[24:40] acessando a internet né Então aí tem at
+[24:44] a manha né isso aqui tem que reinstalar
+[24:48] eh como tá aparecendo o Promob e o e eu
+[24:52] não quero mostrar isso aqui pro cliente
+[24:54] aí antes dele terminar você tem o print
+[24:56] screen do do do teclado né E aí você
+[25:00] aperta o print screen o que que ele faz
+[25:01] ele tira uma foto da sua tela aí você
+[25:03] vem aqui ó V iniciar aqui no pente você
+[25:08] vem aqui dentro e dá um control V de
+[25:11] colar tchã aparece tua foto aí você já
+[25:14] clica ajusta lá no cantinho Em cima ó
+[25:17] ajustei pronto beleza desço aqui desço
+[25:20] aqui clico fora ó ele vem para cá para
+[25:23] me ajustar
+[25:24] ó
+[25:26] tchã ajustei pronto tá a foto que eu
+[25:29] queria fecho salvar claro que salvar e
+[25:33] já apareceu aqui nem alguns projetos
+[25:35] meus ó tenho aqui projeto então aqui
+[25:37] botão direito nova
+[25:42] pasta
+[25:44] José
+[25:47] Taguatinga enter enter de novo aí eu vou
+[25:52] colocar aqui dormitório
+[25:58] um salvar pronto voltou aqui pro meu
+[26:02] Promob gerei uma foto vou fechar aí eu
+[26:06] venho aqui setinha deixa a foto do mesmo
+[26:09] jeito ISO que é importante Ó você aperta
+[26:11] a letra O ou com botão direito vem aqui
+[26:15] e E aí você tem aqui
+[26:18] é visível e invisível Tchan tá vendo tá
+[26:22] aparecendo as linhas se você vir aqui
+[26:23] embaixo mostrar mostrar modos invisíveis
+[26:26] ele para essas linhas ou mostrar modos
+[26:30] invisíveis né como a já mexe muito tempo
+[26:32] só clica com em cima da peça e aperta o
+[26:35] ó pode deixar as linhas na mesma posição
+[26:38] a gente vai tirar uma foto igualzinha
+[26:40] porque o cliente vai ver com a porta e
+[26:42] sem as portas por dentro vamos gerar uma
+[26:44] nova uma nova foto render up mesma
+[26:47] posição mesma configuração
+[26:50] renderizar tiro o mouse daqui e fica
+[26:53] ligado no print screen tiver no final
+[26:55] Tchan
+[26:56] foi vem aqui pente control
+[27:03] V
+[27:05] parar aqui clica
+[27:09] fora arrasta para cá cortou pronto fecha
+[27:13] salvar adivinha onde ele vai jogar já lá
+[27:16] onde eu tava né então eu clico em
+[27:17] dormitório apago um e boto
+[27:21] dois feito pronto para ficar mais legal
+[27:25] ainda
+[27:26] é é você vem aqui ó nesse aí você vai
+[27:30] ter aqui aberturas você bota aqui ó Enem
+[27:34] Cascata
+[27:36] eh tudo em Cascata tá vendo cliquei no
+[27:39] módulo fora e botei tudo em Cascata tiro
+[27:42] a mesma foto com a mesma posição eu não
+[27:45] mexi o ângulo não alterei nada tá a
+[27:48] mesma coisa ó
+[27:50] render deixa fora e fica ligado no print
+[27:53] screen aqui do
+[27:55] teclado agora pronto
+[28:00] ó ele não apareceu Prom porque ele tá
+[28:02] dando aqui algum bug aqui no no programa
+[28:04] tá vendo deu um bug aqui atrás por isso
+[28:06] que é importante ficar salvando Mas vem
+[28:08] pro pente aqui a foto que eu queria ele
+[28:11] já fez então é o que
+[28:13] interessa vamos para cá
+[28:20] ajustar ajusto aqui mesma foto tá
+[28:24] vendo
+[28:26] salvar e agora
+[28:29] número
+[28:31] TR salvar pronto voltou pro meu programa
+[28:35] aqui por algum motivo Ele não gerou
+[28:38] Promob em cima né mas
+[28:41] enfim geralmente ó dese realmente
+[28:45] cancelar sim para mim já foi né agora o
+[28:48] que que é interessante aqui ó se eu for
+[28:50] clicar em voltar aqui ó voltar voltar
+[28:53] mais um mais um mais um você D op para o
+[28:57] teu cente você fazer uma boa venda né
+[29:01] você vem em
+[29:03] materiais no caso aqui ó já vou pegar
+[29:06] uma Duratex aqui essencial qu sempre são
+[29:10] cores claras né porque traz sensação de
+[29:12] descanso conforto Vou botar aqui um no
+[29:15] Califórnia que é o madeirado m você
+[29:17] clica aqui no pincelzinho para pintar as
+[29:19] outras ficou naou na horizontal isso não
+[29:23] é interessante V para cá vertical
+[29:26] Califórnia pincelzinho Ok pronto ficou
+[29:29] do jeito que eu queria Pinto essa Pinto
+[29:32] essa tem uma coisa interessante tá vendo
+[29:34] um bugzinho aqui ó por são duas portas
+[29:38] aqui então tem uma posição aqui ó pronto
+[29:41] pintou Então você deixa ele nessa
+[29:46] posição só alterei o o zoom né E vamos
+[29:51] para cá render up de novo quanto mais
+[29:53] fotos você mandar pro teu cliente com um
+[29:55] bocado de opção mesmo ele esquece teus
+[29:57] corrente tudo tá então você vem aqui
+[30:00] fica ligado no print screen quando for
+[30:02] chegando no final você aperta ele vai
+[30:04] agora pronto pouco antes de aparecer o
+[30:07] Promob isso aqui é um jeito de burlar
+[30:10] isso aí né control
+[30:12] V vem para cá fotinha ajusta ali em cima
+[30:18] pronto
+[30:19] ajustou clica aqui fora vem aqui corta
+[30:22] isso aqui tudo que não precisa pronto
+[30:26] fechar
+[30:28] Claro dormitório número
+[30:32] 4 Ok fechou vamos fazer o que agora
+[30:36] colocar outra
+[30:37] no pincelzinho
+[30:40] Opa pegou na horizontal porque essa
+[30:43] madeira já ao contrário mesmo então
+[30:45] vamos ver aqui pincelzinho tem que ficar
+[30:48] assim então já Pinto aqui Pinto
+[30:51] aqui e pinto ali pronto fazer o qu Pode
+[30:57] vamos salvar né salvar
+[31:00] aqui configuração render
+[31:04] up tá do jeito que eu queria
+[31:08] pronto para ele ver que o que interessa
+[31:10] aqui é a alteração de cor fica ligado no
+[31:12] print screen ó quando for no finalzinho
+[31:15] agora apertou salvou antes e aparecer a
+[31:19] palavra PR em cima do teu projeto aperta
+[31:21] aqui o pent dá um control
+[31:23] v e aí você vem para cá
+[31:28] isso pronto puxa para cá clica fora ali
+[31:33] e arrasta PR cá para cortar
+[31:36] ali pronto fechou ele vai perguntar se
+[31:39] quer salvar é claro que quero salvar
+[31:41] dormitório de
+[31:45] C fechou aí pelo menos mais uma opção né
+[31:49] então botei duas Claras vamos botar aqui
+[31:51] uma Escura Tem cliente que fala ah se eu
+[31:54] botar uma cor escura não sei o qu Então
+[31:56] você fala eu já vou gerar para você
+[31:58] entender como é que é que funciona o
+[31:59] negócio clica aqui arrastei pincelzinho
+[32:02] pá Ok Opa ficou na horizontal
+[32:08] vertical pronto assim tem que ficar aqui
+[32:12] aqui Opa ali não ali é o puxador meu
+[32:16] aqui pronto mesma posição não alteri
+[32:20] nemum Zoom
+[32:24] render vamos lá renderizar
+[32:28] ti o mouse para fora fica ligado no
+[32:30] print screen antes de aparecer PR a
+[32:32] gente aperta quer ver agora
+[32:37] pronto pente ali control V
+[32:42] novamente vamos lá vamos lá vamos lá
+[32:51] Sair fechar salvar Sim claro domito C
+[32:56] você apaga 5. 1
+[32:58] se
+[33:00] salvar fechou aqui está feito o teu
+[33:05] projeto né
+[33:07] Eh vamos Tá salvo naquela outra cor vou
+[33:10] deixar naquela outra cor vou fechar aqui
+[33:12] o programa deixa salvar as suas
+[33:14] alterações não porque ele já tá salvo
+[33:16] com aquela outra cor lá e para mim é o
+[33:18] que interessa E aí agora eu vou abrir
+[33:21] aqui a pastinha
+[33:22] eh aqui no D você vai ver aqui ó aí tem
+[33:27] aqui a minha pastinha new house tem aqui
+[33:30] projetos e aí é o seu José Taguatinga
+[33:34] Cadê tá aqui dois cliques tá aqui se
+[33:39] você der dois cliques for passando Ó ele
+[33:42] primeira foto tá vendo aí ele vem pra
+[33:45] segunda na mesma posição sem as portas
+[33:48] já vai mostrar a configuração dentro as
+[33:51] gavetas e sapateiras abertas tá aí aí
+[33:54] vai mostrar ele fechado com as portas de
+[33:56] cor as portas um pouquinho mais clara
+[33:59] com as portas um pouquinho mais escuro
+[34:01] então aqui você tem opções que que tá
+[34:03] faltando aqui meu irmão macete para você
+[34:05] para não pegar e Usar você para
+[34:07] ficar fazendo projeto e passar pros
+[34:10] outros né apesar da gente não cobrar e
+[34:12] particularmente não cobra fazer o
+[34:13] projeto Mas enfim
+[34:15] e isso aí é é sacanagem né não dá certo
+[34:19] não pode isso aí então o que que nós
+[34:20] vamos fazer vou te ensinar uma mãe aqui
+[34:22] ó fechar aqui Eu uso esse programinha
+[34:24] aqui ó o foto
+[34:28] escape clicar nele aqui vou abrir vamos
+[34:32] lá aí você tem aqui ó editou em
+[34:36] lotes aí eu vou procurar aqui ó que ele
+[34:39] já deu a partinha porque eu costumo
+[34:40] fazer isso aqui sempre tá aqui ó José
+[34:43] Taguatinga tá vendo as fotos dele aqui
+[34:45] puxa tudo para cá ele já vai na
+[34:48] sequência e olha aqui ó o que que tem
+[34:50] aqui a marca d'água do meu cartão então
+[34:54] tá aqui em cima se eu quiser eu boto
+[34:56] aumento nele todo então geralmente eu
+[34:58] boto aqui no cantinho e fica comendo um
+[35:00] pedacinho do do móvel já é interessante
+[35:02] é bom você ver quando por exemplo tem
+[35:04] você tá fazendo quarto sala cozinha um
+[35:06] bocado de cor é bom para não cobrir as
+[35:08] partes mais importantes e aqui por
+[35:11] exemplo vai ficar cobrindo esse
+[35:13] gaveteiro aqui Geralmente eu puxo um
+[35:14] pouquinho isso pronto aqui tá
+[35:18] bom pronto aí
+[35:21] ó por qu se ele passar para outro mine
+[35:24] falar poxa Já fez o projeto com cara né
+[35:26] e tal e enfim você evita algumas coisas
+[35:29] né meu da você gera um constrangimento a
+[35:31] pessoa ficar passando teu projeto pros
+[35:33] outros aí não é interessante né tem aqui
+[35:35] ó objeto ó ó lá foto um tá vendo
+[35:39] apareceu Ó
+[35:40] eh você só clicar aqui nessa nos três
+[35:44] pontinos e selecionar a foto que você
+[35:45] quer no caso eu botei meu cartão aí
+[35:48] botão direito aqui ó você tem
+[35:49] propriedades e aí você tem aqui a
+[35:52] opacidade que eu botei aqui ó ó menos ou
+[35:56] mais 100% né geralmente boto no meio
+[35:59] pronto aqui então converter
+[36:03] todos salvar conversão concluída Ok
+[36:09] fechei ele criou essa partinha olha só
+[36:11] aqui a partinha que
+[36:13] interessante dentro da partinha agora se
+[36:16] você abrir tuas fotos Olha só todas elas
+[36:20] estão com marca
+[36:22] d'água tá
+[36:24] vendo pronto você tá mandando um projeto
+[36:28] de qualidade com opções de configuração
+[36:32] de cor com espelho enfim agora só você
+[36:36] está munido de informação o quê E você
+[36:39] calcula ele sem o espelho todo branco
+[36:42] calcula ele
+[36:44] e todo branco com as portas de cor
+[36:46] calcula ele todo de cor calcula ele com
+[36:50] a diferença do espelho porque essas
+[36:52] informações o cliente vai te pedir Então
+[36:55] você você está bem bem munido aí de
+[36:57] informação para poder vender o teu
+[36:58] produto aí com isso aqui meu irmão você
+[37:01] tem 99% de chance de fechar o contrato
+[37:04] aí com teu cliente viu Boa sorte aí nas
+[37:07] vendas gostou do do vídeo aí você dá um
+[37:12] like aí que fica aí e eh do vídeo né dá
+[37:16] um like aí se inscreve aí no nosso canal
+[37:18] e ajuda a gente e tem mais de 40 vídeos
+[37:21] aí de de móveis planejados Aí de todo
+[37:24] jeito você pensar até Como é feito o DF
+[37:27] e outros projetos ensinando algumas
+[37:29] coisas né então valeu até a próxima aí
+[37:33] não deixa de deixar o like aí não meu
+[37:35] não esquece não ajuda a gente aí valeu
+[37:37] até a
+[37:39] próxima

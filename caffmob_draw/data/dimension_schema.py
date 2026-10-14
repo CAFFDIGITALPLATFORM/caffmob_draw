@@ -158,6 +158,12 @@ _EXTERNAL_FIELDS = (
     ('top_overhang', "Tampo - Avanço", "Top - Overhang", 20.0, 1 * INCH_MM, 0.0, 200.0),
     ('toe_kick_height', "Rodapé - Altura", "Toe kick - Height", 100.0, 4 * INCH_MM, 0.0, 300.0),
     ('toe_kick_setback', "Rodapé - Recuo", "Toe kick - Setback", 50.0, 2.5 * INCH_MM, 0.0, 200.0),
+    # Feature 015 (D-07, RN-23): medidas das estruturas de caixa que os vídeos do Promob não mostram; editáveis.
+    ('stretcher_width', "Sarrafo - Largura", "Batten - Width", 100.0, 4 * INCH_MM, 30.0, 300.0),
+    ('shelf_setback', "Prateleira móvel - Recuo frontal", "Adjustable shelf - Front setback", 20.0, 0.75 * INCH_MM,
+     0.0, 100.0),
+    ('hanger_rod_drop', "Cabideiro - Distância da prateleira", "Hanging rod - Drop from shelf", 70.0,
+     2.75 * INCH_MM, 20.0, 300.0),
 )
 
 # Exceções por linha: Dormitórios usam altura/profundidade de roupeiro (Promob ALT_ARM/PROF_ARM; closets HB5).

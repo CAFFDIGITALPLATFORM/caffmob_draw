@@ -123,8 +123,21 @@ def module_entries(scene):
             "location_mm": [round(v * 1000.0, 1) for v in obj.matrix_world.translation],
             "rotation_deg": [round(v * 57.29577951308232, 3) for v in obj.matrix_world.to_euler()],
             "finish": {},
+            **_structure_entry(obj),
         })
     return entries
+
+
+def _structure_entry(obj):
+    """`structure_id` do módulo (2.3.0, feature 015): null sem estrutura; id fora do catálogo vem marcado."""
+    cab = getattr(obj, 'btm_cabinet', None)
+    structure_id = getattr(cab, 'structure_id', "") if cab is not None else ""
+    if not structure_id:
+        return {"structure_id": None}
+    from ..cabinet_editor import structures_core
+    if structures_core.get(structure_id) is None:
+        return {"structure_id": structure_id, "limit_status": "STRUCTURE_UNKNOWN"}
+    return {"structure_id": structure_id}
 
 
 def extract_parts_from_scene(context):

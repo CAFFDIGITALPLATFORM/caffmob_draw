@@ -17,7 +17,17 @@ NAMES = {
     'CORREDICA_BLUM': N_("Corrediça Blum (par)"),
     'TRILHO_SUP': N_("Trilho superior deslizante"),
     'TRILHO_INF': N_("Trilho inferior deslizante"),
+    # Feature 015 (T040; interfaces/cut-plan-json.md 2.3.0)
+    'RODIZIO': N_("Rodízio"),
+    'TUBO_CABIDEIRO': N_("Tubo de cabideiro"),
+    'CALCEIRO_ARAMADO': N_("Calceiro aramado"),
+    'PORTA_CINTOS': N_("Porta cintos/gravatas"),
+    'PRATELEIRA_ARAMADA': N_("Prateleira aramada"),
+    'CORREDICA_PRATELEIRA': N_("Corrediça de prateleira (par)"),
 }
+# Variante de divisão (feature 015) que leva ferragem: a aramada é só ferragem; a corrediça tem chapa e par de
+# corrediças. A divisão aramada fica oculta na cena, por isso conta pela divisão, e não pela visibilidade.
+DIVISION_HARDWARE = {'ARAMADA': 'PRATELEIRA_ARAMADA', 'CORREDICA': 'CORREDICA_PRATELEIRA'}
 
 
 def _order(row):
@@ -61,6 +71,9 @@ def collect(scene, ensure_uid=True):
     items = []
     for module in iter_modules(scene, ensure_uid):
         for obj in module.obj.children_recursive:
+            division = getattr(obj, 'btm_division', None)
+            if division is not None and division.is_division and division.variant in DIVISION_HARDWARE:
+                items.append((DIVISION_HARDWARE[division.variant], module.uid))
             if not _visible(obj):
                 continue
             code = obj.get(HARDWARE_PROP)

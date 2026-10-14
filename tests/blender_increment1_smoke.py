@@ -83,7 +83,7 @@ with tempfile.TemporaryDirectory() as directory:
     json_path = Path(directory) / 'projeto.json'
     assert bpy.ops.caffmob.export_cut_plan_json(filepath=str(json_path)) == {'FINISHED'}
     payload = json.loads(json_path.read_text(encoding='utf-8'))
-    assert payload['schema_version'] == '2.2.0'
+    assert payload['schema_version'] == '2.3.0'
     assert len(payload['parts']) == len(parts)
     csv_path = Path(directory) / 'pecas.csv'
     assert bpy.ops.caffmob.export_parts_csv(filepath=str(csv_path)) == {'FINISHED'}

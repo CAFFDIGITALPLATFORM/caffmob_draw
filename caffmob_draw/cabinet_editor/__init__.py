@@ -16,11 +16,12 @@
 
 def _modules():
     # Import tardio: os núcleos puros são usados nos testes fora do Blender sem carregar `bpy`.
-    from . import (data_props, ops_actions, ops_editor, panels, panels_backs, panels_divisions, panels_doors,
+    from . import (data_props, gallery, ops_actions, ops_editor, panels, panels_backs, panels_divisions, panels_doors,
                    panels_drawers, panels_interior, panels_sliding, panels_structure, previews, props, reflow_handler,
                    window)
-    return (data_props, props, previews, window, ops_editor, ops_actions, panels, panels_structure, panels_divisions,
-            panels_drawers, panels_interior, panels_doors, panels_sliding, panels_backs, reflow_handler)
+    return (data_props, props, previews, window, gallery, ops_editor, ops_actions, panels, panels_structure,
+            panels_divisions, panels_drawers, panels_interior, panels_doors, panels_sliding, panels_backs,
+            reflow_handler)
 
 
 def register():

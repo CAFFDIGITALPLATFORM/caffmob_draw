@@ -1,7 +1,9 @@
 """Gera as miniaturas do catálogo do Construtor de Armários (feature 008, T048; D-19).
 
 Uso:
-    blender --background --factory-startup --python tools/render_cabinet_thumbnails.py
+    blender --background --factory-startup --python tools/render_cabinet_thumbnails.py [-- --only-missing]
+
+`--only-missing` gera só as miniaturas que ainda não existem (feature 015), sem regravar as outras.
 
 Saída: caffmob_draw/cabinet_editor/thumbnails/<id em minúsculas>.png (chave = `catalog.Item.thumb`), 128 × 128.
 Cada item vira um esquema em caixas sobre um armário de referência (600 × 700 × 500 mm): a peça do item em destaque e
@@ -114,10 +116,32 @@ def leaf(x0, x1, y, style, overlap=False):
 
 def scene_for(item):
     group, tab = item.group, item.tab
-    if tab == 'DIVISIONS' and group == 'RECESS':
-        carcass()
-        front = item.param('front', 0.0) / 1000.0
-        box((W / 2 - T / 2, front, T), (W / 2 + T / 2, D - T - 0.015, H - T), ACCENT)
+    if tab == 'DIVISIONS' and group == 'RECESS' and (item.param('orientation') == 'HORIZONTAL'
+                                                      or item.param('kind') in ('INVISIBLE', 'DIVISION_ONLY')):
+        carcass()                                   # feature 015: prateleiras e divisões sem peça
+        front = (item.param('front') or 0.0) / 1000.0
+        z = H / 2
+        if item.param('kind') in ('INVISIBLE', 'DIVISION_ONLY'):
+            for x in range(6):                      # linha tracejada: divide sem chapa
+                x0 = T + x * (W - 2 * T) / 6
+                box((x0, 0.02, z), (x0 + (W - 2 * T) / 12, D - T, z + 0.004), ACCENT)
+        elif item.param('variant') == 'ARAMADA':
+            for k in range(7):
+                y = 0.03 + k * (D - 0.08) / 6
+                box((T, y, z), (W - T, y + 0.006, z + 0.006), METAL)
+        else:
+            box((T, front, z), (W - T, D - T, z + T), ACCENT)
+            if item.param('variant') == 'CORREDICA':
+                box((T, 0.02, z - 0.012), (T + 0.012, D - 0.04, z), METAL)
+                box((W - T - 0.012, 0.02, z - 0.012), (W - T, D - 0.04, z), METAL)
+    elif tab == 'DIVISIONS' and group == 'RECESS':
+        carcass(top=item.param('variant') != 'CORTA_SAR')
+        front = (item.param('front') or 0.0) / 1000.0
+        top = H if item.param('variant') == 'CORTA_SAR' else H - T
+        box((W / 2 - T / 2, front, T), (W / 2 + T / 2, D - T - 0.015, top), ACCENT)
+        if item.param('variant') == 'CORTA_SAR':
+            box((T, 0.0, H - T), (W / 2 - T / 2, 0.1, H), CARCASS)
+            box((W / 2 + T / 2, 0.0, H - T), (W - T, 0.1, H), CARCASS)
     elif tab == 'DIVISIONS' and group == 'SPACER':
         carcass()
         thick = item.param('thickness', 15.0) / 1000.0
@@ -157,7 +181,29 @@ def scene_for(item):
         carcass()
 
 
+def wardrobe(item):
+    """Internos de roupeiro (feature 015)."""
+    carcass()
+    kind = item.param('kind')
+    box((T, 0.0, H - 0.12), (W - T, D - T, H - 0.12 + T), CARCASS)     # prateleira de cima
+    if kind == 'HANGER_ROD':
+        box((T + 0.01, 0.04, H - 0.3), (W - T - 0.01, 0.07, H - 0.27), ACCENT)     # à frente, para aparecer
+    elif kind == 'PANTS_RACK':
+        color = METAL if item.param('material') == 'WIRE' else ACCENT
+        for k in range(5):
+            x = T + 0.04 + k * (W - 2 * T - 0.08) / 4
+            box((x, 0.05, H - 0.25), (x + 0.012, D - T, H - 0.238), color)
+    elif kind == 'SHOE_RACK':
+        box((T, 0.05, T), (W - T, D - T, T + 0.03), ACCENT)
+        box((T, 0.05, T + 0.15), (W - T, D - T, T + 0.18), ACCENT)
+    elif kind == 'BELT_RACK':
+        box((T, 0.05, H / 2 - 0.04), (T + 0.03, 0.45, H / 2 + 0.04), METAL)
+
+
 def interior(item):
+    if item.group == 'WARDROBE':
+        wardrobe(item)
+        return
     carcass()
     if item.group == 'PISTONS':
         box((0.003, -T, H * 0.55), (W - 0.003, 0, H), WOOD)
@@ -201,7 +247,11 @@ def camera(scene):
 def main():
     OUT.mkdir(parents=True, exist_ok=True)
     count = 0
+    argv = sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else []
+    only_missing = "--only-missing" in argv
     for item in catalog.ITEMS:
+        if only_missing and (OUT / (item.thumb + ".png")).exists():
+            continue
         scene = reset_scene()
         scene_for(item)
         camera(scene)

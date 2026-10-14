@@ -77,6 +77,7 @@ class BTM_OT_LibraryInsertModel(bpy.types.Operator):
                       door_swing=model.door_swing, shelves=model.shelves)
         if model.width_mm:
             kwargs['width'] = model.width_mm / 1000.0
+        kwargs['structure_id'] = models_core.model_structure(model, kwargs['line'])     # feature 015 (RN-13)
         return bpy.ops.caffmob.cabinet_builder(**kwargs)
 
 

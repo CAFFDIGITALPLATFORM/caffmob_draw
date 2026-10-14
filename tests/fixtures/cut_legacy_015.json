@@ -1,0 +1,184 @@
+{
+ "balcao_2p": [
+  [
+   "m1/BAS/0",
+   "Base inferior",
+   "BAS",
+   770.0,
+   550.0,
+   15.0
+  ],
+  [
+   "m1/BAS/1",
+   "Base superior",
+   "BAS",
+   770.0,
+   550.0,
+   15.0
+  ],
+  [
+   "m1/FUN_INF/0",
+   "Fundo",
+   "FUN_INF",
+   706.0,
+   786.0,
+   6.0
+  ],
+  [
+   "m1/LAT/0",
+   "Lateral esquerda",
+   "LAT",
+   720.0,
+   550.0,
+   15.0
+  ],
+  [
+   "m1/LAT/1",
+   "Lateral direita",
+   "LAT",
+   720.0,
+   550.0,
+   15.0
+  ],
+  [
+   "m1/POR/0",
+   "Porta esquerda",
+   "POR",
+   716.0,
+   397.0,
+   18.0
+  ],
+  [
+   "m1/POR/1",
+   "Porta direita",
+   "POR",
+   716.0,
+   397.0,
+   18.0
+  ],
+  [
+   "m1/PRAT/0",
+   "Prateleira",
+   "PRAT",
+   768.0,
+   530.0,
+   15.0
+  ]
+ ],
+ "sem_tampo": [
+  [
+   "m1/BAS/0",
+   "Base inferior",
+   "BAS",
+   770.0,
+   550.0,
+   15.0
+  ],
+  [
+   "m1/FUN_INF/0",
+   "Fundo",
+   "FUN_INF",
+   706.0,
+   786.0,
+   6.0
+  ],
+  [
+   "m1/LAT/0",
+   "Lateral esquerda",
+   "LAT",
+   720.0,
+   550.0,
+   15.0
+  ],
+  [
+   "m1/LAT/1",
+   "Lateral direita",
+   "LAT",
+   720.0,
+   550.0,
+   15.0
+  ],
+  [
+   "m1/POR/0",
+   "Porta esquerda",
+   "POR",
+   716.0,
+   397.0,
+   18.0
+  ],
+  [
+   "m1/POR/1",
+   "Porta direita",
+   "POR",
+   716.0,
+   397.0,
+   18.0
+  ],
+  [
+   "m1/PRAT/0",
+   "Prateleira",
+   "PRAT",
+   768.0,
+   530.0,
+   15.0
+  ]
+ ],
+ "base_passante": [
+  [
+   "m1/BAS/0",
+   "Base inferior",
+   "BAS",
+   800.0,
+   550.0,
+   15.0
+  ],
+  [
+   "m1/BAS/1",
+   "Base superior",
+   "BAS",
+   770.0,
+   550.0,
+   15.0
+  ],
+  [
+   "m1/FUN_INF/0",
+   "Fundo",
+   "FUN_INF",
+   706.0,
+   786.0,
+   6.0
+  ],
+  [
+   "m1/LAT/0",
+   "Lateral esquerda",
+   "LAT",
+   705.0,
+   550.0,
+   15.0
+  ],
+  [
+   "m1/LAT/1",
+   "Lateral direita",
+   "LAT",
+   705.0,
+   550.0,
+   15.0
+  ],
+  [
+   "m1/POR/0",
+   "Porta",
+   "POR",
+   716.0,
+   796.0,
+   18.0
+  ],
+  [
+   "m1/PRAT/0",
+   "Prateleira",
+   "PRAT",
+   768.0,
+   530.0,
+   15.0
+  ]
+ ]
+}

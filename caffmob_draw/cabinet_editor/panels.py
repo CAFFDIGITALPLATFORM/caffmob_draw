@@ -51,6 +51,10 @@ def cabinet_type(root, library):
     if library == 'CLOSETS' and getattr(root, 'hb_closet_starter', None) is not None:
         return str(root.hb_closet_starter.closet_type).title()
     if library == 'BTM' and getattr(root, 'btm_cabinet', None) is not None:
+        from . import structures_core
+        recipe = structures_core.get(root.btm_cabinet.structure_id)   # feature 015: o nome da estrutura
+        if recipe is not None:
+            return tr(recipe.label_pt)
         prop = root.btm_cabinet.bl_rna.properties['cabinet_type']
         return tr(prop.enum_items[root.btm_cabinet.cabinet_type].name)
     if code and str(code).upper() in _TYPE_LABELS:
@@ -197,6 +201,14 @@ class BTM_PT_CabinetEditorDimensions(_TabPanel, bpy.types.Panel):
         layout = self.layout
         unit = units.get_scene_length_unit(context.scene)
         layout.prop(ui, "bays")
+        if ui.bays > 1:                                   # feature 015 (RN-14): largura do vão selecionado
+            row = layout.row(align=True)
+            row.enabled = props._bay_of_selection() is not None
+            row.prop(ui, "bay_width")
+            if not row.enabled:
+                hint = layout.row()
+                hint.active = False
+                hint.label(text=tr("Selecione um vão na vista para digitar a largura"))
         col = layout.column(align=True)
         for field in ('width', 'height', 'depth'):
             row = col.row(align=True)

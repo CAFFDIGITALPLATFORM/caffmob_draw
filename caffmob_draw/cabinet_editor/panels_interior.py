@@ -24,8 +24,10 @@ class BTM_PT_CabinetEditorInterior(_TabPanel, bpy.types.Panel):
         ui = context.window_manager.btm_cabinet_editor
         layout = self.layout
         target_box(layout, context, 'INTERIOR')
+        env = props.environment()                       # feature 015 (D-13): catálogo pelo ambiente
         grid = layout.grid_flow(columns=2, align=True)
-        for key in ('PANELS', 'LIBRARY', 'SUPPORTS', 'PISTONS'):
+        keys = ('WARDROBE', 'LIBRARY', 'PISTONS') if env == 'DOR' else ('PANELS', 'LIBRARY', 'SUPPORTS', 'PISTONS')
+        for key in keys:
             grid.prop_enum(ui, "interior_group", key)
         if ui.interior_group == 'LIBRARY':
             hint = layout.row()
@@ -34,11 +36,15 @@ class BTM_PT_CabinetEditorInterior(_TabPanel, bpy.types.Panel):
             return
         if ui.interior_group == 'PANELS':
             layout.row().prop(ui, "interior_filter", expand=True)
-            items = catalog.items('INTERIOR', 'PANELS', filter_=ui.interior_filter)
+            items = catalog.items('INTERIOR', 'PANELS', filter_=ui.interior_filter, environment=env)
         else:
-            items = catalog.items('INTERIOR', ui.interior_group)
+            items = catalog.items('INTERIOR', ui.interior_group, environment=env)
         box = s.spaces.get(s.space)
         catalog_grid(layout, context, items, appliances._space_mm(box) if box is not None else None)
+        if not items:
+            hint = layout.row()
+            hint.active = False
+            hint.label(text=tr("Nada desta subaba neste ambiente"), icon='INFO')
         insert_button(layout, context, 'INTERIOR')
         chosen = catalog.get(ui.catalog_item)
         properties_box(layout, chosen if chosen is not None and chosen.tab == 'INTERIOR' else None)

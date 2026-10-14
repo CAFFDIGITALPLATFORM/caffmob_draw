@@ -75,7 +75,7 @@ parts, _bad = part_extractor.extract_production_parts(ctx)
 payload = json_exporter.build_global_payload(project={"name": "Smoke", "uid": "P", "rooms": []}, standard={},
                                              parts=parts, modules=part_extractor.module_entries(scene))
 assert json_exporter.validate_global_json(payload) == []
-assert payload["schema_version"] == "2.2.0"
+assert payload["schema_version"] == "2.3.0"
 assert not any(p["machining"] for p in payload["parts"]), "sem 'Furo real' a produção não muda"
 agg.real_hole = True
 env.settle()

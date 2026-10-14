@@ -1,0 +1,190 @@
+[0:00] A maior mentira que eles contam sobre o
+[0:03] Promob é que ele é um programa que só dá
+[0:06] para fazer móveis modulado por caixaria.
+[0:09] Ah, eu quero fazer uma cozinha, eu tenho
+[0:10] que fazer caixaria. E eu vou te mostrar
+[0:12] que isso não é verdade. Vou mostrar aqui
+[0:15] um passo a passo como você consegue
+[0:16] criar um balcão completo com o Promob
+[0:20] sem precisar fazendo por módulo
+[0:21] separado. Então muit das vezes a pessoa
+[0:23] não quer fazer por módulo separado, que
+[0:26] vai ficar um pouco mais caro. Sim, por
+[0:28] conta de ter duas laterais juntas ali,
+[0:31] deixa o móvel mais robusto, mas também
+[0:33] pode ficar um pouco mais caro porque vai
+[0:34] precisar de mais peça. E contam muito
+[0:37] isso e não é verdade. Vou te mostrar
+[0:39] aqui, Tô com um promob aberto. Muita
+[0:40] gente quando vai começar a fazer os
+[0:42] projetos no Promob, por não saber usar
+[0:44] essa ferramenta por completo, vem aqui
+[0:47] em módulos cozinhas e faz todo o projeto
+[0:51] só com essa modulação aqui, ó. Aqui tem
+[0:53] muita coisa, tem muita modulação, ó. Tem
+[0:55] muitos móveis aqui, tem muita modulação,
+[0:58] mas não é só isso aqui. Você consegue
+[1:02] criar suas peças. Eu não tô falando de
+[1:03] criar tudo do zero por composição,
+[1:05] porque também é uma possibilidade de
+[1:07] você vir aqui em composição e aqui tem
+[1:10] lateral, base, fundo. Você tem todas as
+[1:13] peças separadas para você criar um
+[1:15] móvel, não é por isso, tá? A forma para
+[1:18] você fazer seus móveis de uma forma mais
+[1:19] rápidas e eficaz é antes de começar um
+[1:22] aviso rápido. Quer dar para mob comigo?
+[1:24] Confere o primeiro link na descrição e
+[1:26] no comentário fixado. Vamos lá. Você vai
+[1:28] clicar com o lado direito sobre a
+[1:29] parede, vem aqui no construtor de
+[1:31] armário. Então essa ferramenta aqui é
+[1:32] uma ferramenta incrível que você que
+[1:34] quer trabalhar com Promob, ganhar vida
+[1:36] com esse programa aqui, você precisa
+[1:38] dominar essa ferramenta. E eu te ensino
+[1:39] isso lá dentro do nosso curso. Você
+[1:41] clicou aqui, aqui dentro do constor de
+[1:44] armário, a gente tem, ó, as pastas das
+[1:47] modulações. Então, se você quer projetar
+[1:48] uma cozinha, você vem aqui na parte de
+[1:50] cozinhas. Quero pegar um balcão
+[1:51] inferior. A gente tem algumas opções.
+[1:54] Inferior com divisória até o piso.
+[1:56] inferior com divisório até o tem aqui
+[1:58] algumas tem várias opções aqui. Você vai
+[2:00] ver qual que você quer. Tem com rodapé,
+[2:03] tem esse rodapé, você vai escolher.
+[2:04] &gt;&gt; Já tá inscrito no canal? Não. Então vou
+[2:07] esperar você se inscrever pra gente
+[2:09] continuar com o nosso vídeo.
+[2:11] Se inscreveu? Já deixou o like no vídeo?
+[2:14] Então agora continue com o seu vídeo.
+[2:16] Pegar esse aqui, vou clicar em OK. Aqui
+[2:18] entra observação. Você quer fazer um,
+[2:20] digamos que um balcão inferior completo,
+[2:22] você tem que respeitar o tamanho da
+[2:23] chapa de MDF. Então, se a chapa de MDF é
+[2:25] 2, 750 m, não adianta você querer fazer
+[2:28] uma peça com 3 m, que não não tem como,
+[2:30] não existe essa chapa. Então, tô com o
+[2:33] meu minha chapa aqui e digamos, eu quero
+[2:35] fazer ela com 2,700 m de largura. Olha
+[2:40] só, tá aqui 2,700 m de largura. A
+[2:44] profundidade que eu quero é 600, a
+[2:46] altura 750. Pronto, eu defini a
+[2:50] estrutura externa. Agora a gente vai
+[2:53] fazer toda a divisão interna por aqui,
+[2:54] ó. Divisão. E aqui em divisão eu vou
+[2:57] ter, ó, gavetas, internos, portas, tem
+[3:00] tudo aqui. Então vamos lá. Aqui na
+[3:02] estrutura, eu defini primeiro a largura,
+[3:04] altura, profundidade. Tem mais algumas
+[3:06] configurações aqui que a gente pode
+[3:07] fazer. Não vou entrar nesses méritos
+[3:09] aqui. Aqui em divisão a gente vai fazer
+[3:11] a divisão da nossa modulação, tá? E aqui
+[3:13] em divisão você tem que ter atenção que
+[3:15] você tem peças com recu e sem recu.
+[3:17] Então, por exemplo, vou pegar aqui uma
+[3:19] peça vertical, tá aqui, ó, sem recu.
+[3:22] Cliquei, vou trazer para cá. Então, essa
+[3:25] primeira divisão aqui, digamos que aqui
+[3:26] vai ter a cuba. E eu quero deixar ela
+[3:29] com um espaçamento de
+[3:32] 700. Então, esse aqui vai ser a
+[3:33] modulação paraa Cuba. Já fiz a divisão
+[3:36] aqui. Digamos que eu quero colocar dois
+[3:39] gavetões. Então, vou pegar aqui, trazer
+[3:42] para cá.
+[3:43] E aqui eu vou escolher o o espaçamento
+[3:45] deles. Então, digamos que esses gavetões
+[3:47] eu vou deixar com 600. Beleza? Aqui eu
+[3:50] vou colocar o fogão. Então, o fogão eu
+[3:53] também vou colocar com 600. Aqui,
+[3:57] digamos que eu quero colocar um porta
+[3:59] tempero, alguma coisa assim. Você vai
+[4:01] vir aqui e vai colocar, por exemplo,
+[4:03] 200. E essa sobra aqui eu vou botar um
+[4:05] armário de porta de giros. Beleza? Fiz
+[4:08] aqui a divisão dele. Agora aqui vai ter
+[4:11] a cuba. Então vou vir aqui em
+[4:13] horizontal, vou pegar com recol, vou
+[4:16] trazer para cá
+[4:18] para ter essa divisão. Aqui era dois
+[4:21] gavetão, né? Então já clico aqui, ó,
+[4:23] duas vezes. Venho aqui em gavetas, venho
+[4:26] aqui em gavetões, cliquei para inserir.
+[4:29] Aqui seria onde ia tá o fogão, né? Então
+[4:31] aqui eu não vou colocar estrutura
+[4:32] nenhuma por enquanto.
+[4:34] Aqui vai ser o porta o porta tempero.
+[4:37] Por aqui eu não tenho, tá aqui nessas
+[4:41] partes de gavetas a opção do porta
+[4:44] tempero, mas a gente consegue colocar
+[4:46] aqui por gaveta. Então digamos, quero
+[4:48] colocar duas gavetas, depois eu vou lá e
+[4:50] faço o ajuste manual que eu preciso, tá?
+[4:52] Então vou colocar aqui, ó, por exemplo,
+[4:54] vou colocar três.
+[4:57] Inserir, ó, inserir. E aqui vai ser
+[5:00] porta normal de giro. Então, venho aqui
+[5:02] em divisão horizontal mesmo, ó. Trazer
+[5:06] para cá. OK, tá feito aqui minha
+[5:08] divisão. Agora a gente vai colocar as
+[5:09] portas. Então, dá dois cliqu rápido,
+[5:12] segura a tecla control, dá dois clique.
+[5:14] Ó, selecionou só essa estrutura aqui,
+[5:17] venho aqui em portas
+[5:19] que você tem que ter atenção, ó, nos
+[5:21] nomes. Então, ambas, inferior, esquerdo,
+[5:24] tal, tal. Colocar ambas aqui, ó. Clicar,
+[5:27] inserir. OK. Aqui vai ser o do fogão,
+[5:31] não vou mexer. E aqui vai ser duas
+[5:33] portas de giro também,
+[5:36] ó. clicou ambas inserir nesse aqui que
+[5:40] vai ser o do fogão, digamos que eu quero
+[5:41] colocar um forno aqui, eu posso vir aqui
+[5:44] e colocar uma estrutura, ó, inteira para
+[5:47] simular uma porta, só para fazer o
+[5:49] fechamento. Clicar em OK.
+[5:52] E olha só, a gente tem aqui a nossa
+[5:55] modulação feita, tá? Então isso aqui eu
+[6:00] teria que fazer um ajuste depois aqui
+[6:01] manual para converter isso aqui em um
+[6:03] porta tempero, tá? Mas olha só, tá aqui
+[6:06] os gavetões, ó, as portas de giro, as
+[6:10] gavetas, ó. Então aqui pode ser, você
+[6:13] pode até utilizar assim também, só
+[6:14] diminuir aqui, ó, a altura para simular
+[6:17] isso aqui como um porta tempero, tá? E
+[6:19] coloca uma porta, uma uma frente única
+[6:21] aqui nele. Mas olha só, tá aqui os
+[6:24] gavetões, tudo certinho. Então você não
+[6:27] precisou vir aqui módulo por módulo,
+[6:29] arrastando para cá. Você fez uma peça
+[6:31] única, tá? pelo tamanho ali que comporta
+[6:34] na chapa de MDF. E você tem aqui o seu
+[6:37] projeto, né, feito, que é o que muitas
+[6:39] pessoas falam que não dá para fazer.
+[6:41] Isso aqui é o mínimo. Se você quer
+[6:44] dominar essa ferramenta por completo,
+[6:45] conheça o nosso curso, tá aqui o link na
+[6:47] descrição, no primeiro comentário
+[6:49] fixado. E agora desse lado aqui vai
+[6:51] aparecer dois vídeos para você continuar
+[6:52] assistindo aqui os vídeos do canal. Aqui
+[6:54] em cima vai aparecer o link do nosso
+[6:56] curso. Caso você queira conhecer, clica
+[6:58] aqui, vai lá no site, conheça, veja tudo
+[6:59] que você vai ter acesso. Aqui abaixo vai
+[7:02] tá o link do botão aqui para você se
+[7:03] inscrever no canal, caso você ainda não
+[7:05] seja inscrito. Aproveita, se inscreve,
+[7:07] ativa o sininho, assim toda vez que eu
+[7:08] publicar um vídeo você vai ser
+[7:09] notificado, vai poder assistir em
+[7:11] primeira mão. E fique com um desses dois
+[7:13] vídeos aqui. ou você pode acessar o
+[7:14] canal e ver outro vídeo que você queira
+[7:16] assistir.

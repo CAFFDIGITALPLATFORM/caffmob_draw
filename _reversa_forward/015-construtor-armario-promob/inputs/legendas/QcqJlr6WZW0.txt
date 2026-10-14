@@ -1,0 +1,54 @@
+[0:03] o objetivo desta dica é apresentar a
+[0:05] ferramenta construtor de armários
+[0:07] desenvolvida na versão 2011 do Promob
+[0:10] essa ferramenta permite criar facilmente
+[0:12] armários com divisões internas
+[0:15] personalizadas o construtor de armários
+[0:17] pode ser acessado através do ícone na
+[0:19] barra de ferramentas superior do Promob
+[0:22] ou através de clique com o botão direito
+[0:24] na parede em que o armário será
+[0:26] construído ao acessar a ferramenta são
+[0:28] exibidas algumas opções de estruturas de
+[0:31] armários após selecionar o tipo de
+[0:33] estrutura desejado o construtor de
+[0:35] armários é exibido e o primeiro passo é
+[0:38] definir a quantidade de vãos do armário
+[0:41] suas dimensões totais e a posição em que
+[0:44] ele será construído na parede na barra
+[0:47] de ferramenta superior do Construtor
+[0:49] estão as opções de prateleiras e
+[0:50] divisórias que são usadas para criar os
+[0:53] vãos os armários Observe que divisórias
+[0:56] e prateleiras podem ser do tipo fixas ou
+[0:58] móveis prateleiras divisórias fixas
+[1:00] possuem a mesma profundidade do armário
+[1:03] enquanto que as móveis possuem um recu
+[1:05] que pode ser configurado durante a
+[1:06] inserção destes itens no armário para
+[1:09] inserir prateleiras divisórias basta
+[1:11] selecionar uma dessas opções posicionar
+[1:13] o mouse no local onde a inserção deve
+[1:15] ser realizada serão exibidas cotas
+[1:18] indicando o posicionamento exato do item
+[1:20] no armário outro recurso muito
+[1:23] interessante do Construtor é a
+[1:25] possibilidade de inserir facilmente
+[1:27] nichos nos armários através da a
+[1:30] quantidade de divisões horizontais e
+[1:32] verticais do
+[1:33] nicho para insir agregados nos vãos do
+[1:36] armário basta selecionar o vão clicar no
+[1:40] agregado desejado no painel à direita e
+[1:42] após clicar no botão
+[1:44] inserir agregados do tipo cabideiro
+[1:47] calceiro Fundos gavetas e frentes podem
+[1:50] ser inseridos desta maneira ao inserir
+[1:52] gavetas é possível definir a quantidade
+[1:55] de gavetas para o vão para visualizar o
+[1:58] armário no ambiente clique em Ok se
+[2:01] houver necessidade de realizar ajustes
+[2:03] no armário após a inserção no ambiente
+[2:06] clique com o botão direito no armário
+[2:08] acesse novamente o Construtor e realize
+[2:10] as alterações desejadas

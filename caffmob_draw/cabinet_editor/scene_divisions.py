@@ -59,7 +59,10 @@ def read(root):
 
 def to_core(data, default_thickness):
     values = dict(data)
-    values['thickness'] = float(values.get('thickness') or 0.0) or default_thickness
+    if values.get('kind') in dv.NO_PART:
+        values['thickness'] = 0.0                       # divide sem chapa (feature 015)
+    else:
+        values['thickness'] = float(values.get('thickness') or 0.0) or default_thickness
     return dv.from_dict(values)
 
 
@@ -178,7 +181,12 @@ def reflow(context, root, force=False):
         obj = by_uid.get(division.uid)
         if obj is None or division.uid not in cuts:
             continue
-        _place(obj, dv.place(cuts[division.uid][1], division), division.orientation,
-               division.material or material)
+        box = dv.place(cuts[division.uid][1], division)
+        cab = getattr(root, 'btm_cabinet', None)
+        if division.variant == dv.CORTA_SAR and division.orientation == dv.VERTICAL and cab is not None:
+            box = dv.Box(box.lo, (box.hi[0], box.hi[1], float(cab.height)))   # sobe até o topo, entre os sarrafos
+        _place(obj, box, division.orientation, division.material or material)
+        hidden = not dv.makes_part(division)            # Invisível, Somente Divisão, Aramada (feature 015)
+        obj.hide_viewport = obj.hide_render = hidden
     root[SIGNATURE_PROP] = signature
     return orphans

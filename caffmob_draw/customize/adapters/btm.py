@@ -129,6 +129,10 @@ def set_back_recess(context, root, setback):
 
 def inner_spaces(context, root):
     from ...cabinet_editor.divisions import Box
+    from ...cabinet_editor import structure_inputs
+    found = structure_inputs.carcass_parts_for(root)      # feature 015: vão da estrutura (rodapé, sarrafos)
+    if found is not None:
+        return {"s0": Box(*found[1])}
     (_panels, inner), _thick = _layout(root.btm_cabinet)
     return {"s0": Box(*inner)}
 
@@ -150,6 +154,11 @@ def structure_info(context, root):
 def elevation_parts(context, root):
     """Chapas presentes da malha como peças da vista frontal: [(nome, papel, lo, hi)] no referencial da raiz."""
     from ...cabinet_editor import structure as st
+    from ...cabinet_editor import structure_inputs
+    found = structure_inputs.carcass_parts_for(root)      # feature 015: as peças da estrutura de caixa
+    if found is not None:
+        return [(tr(st.ROLE_LABELS[p.role]) if p.role in st.ROLE_LABELS else tr(p.name), p.role, p.box[0], p.box[1])
+                for p in found[0]]
     (panels, _inner), _thick = _layout(root.btm_cabinet)
     return [(tr(st.ROLE_LABELS[role]), role, lo, hi) for role, (lo, hi) in panels.items()]
 

@@ -147,7 +147,8 @@ DOOR_REGION_ITEMS = [('LOWER', "Inferior", ""), ('UPPER', "Superior", ""), ('TAL
 DOOR_SCOPE_ITEMS = [('BOTH', "Ambas", "Duas portas"), ('WHOLE', "Inteira", "Uma porta no vão"),
                     ('LEFT', "Esquerda", "Dobradiça à esquerda"), ('RIGHT', "Direita", "Dobradiça à direita")]
 INTERIOR_GROUP_ITEMS = [('PANELS', "Painel p/ Eletros", ""), ('LIBRARY', "Biblioteca", ""),
-                        ('SUPPORTS', "Apoios", ""), ('PISTONS', "Pistões", "")]
+                        ('SUPPORTS', "Apoios", ""), ('PISTONS', "Pistões", ""),
+                        ('WARDROBE', "Cabideiros e Calceiros", "Internos de roupeiro (feature 015)")]
 INTERIOR_FILTER_ITEMS = [('EXTERNAL', "Externos", ""), ('BUILT_IN', "Embutidos", "")]
 SLIDE_FAMILY_ITEMS = [('WOOD', "Madeira", ""), ('ALUMINIUM', "Alumínio", "")]
 BACK_TAB_ITEMS = [('FULL', "Inteiro", ""), ('RECESSED', "Inteiro Recuado", "")]
@@ -221,7 +222,13 @@ def _extra_enabled(root, key):
     if key in catalog.TREE_GROUPS and key not in ('FEET',):
         return any(_extra_enabled(root, child) for child in catalog.CHILDREN[key])
     entry = holder.extra(key)
-    return bool(entry.enabled) if entry is not None else key in catalog.DEFAULT_ON
+    if entry is not None:
+        return bool(entry.enabled)
+    if key in catalog.STRUCTURE_KEYS:                   # feature 015: sem marca própria vale a estrutura
+        from . import structures_core
+        recipe = structures_core.get(getattr(getattr(root, 'btm_cabinet', None), 'structure_id', ""))
+        return recipe.has(key) if recipe is not None else False
+    return key in catalog.DEFAULT_ON
 
 
 def _tree_get(key):
@@ -289,6 +296,41 @@ def _bays_set(_self, value):
     s = session()
     if s is not None:
         s.push('edit', ('SET_BAYS', {'count': int(value), 'targets': []}))
+
+
+def environment():
+    """Ambiente (COZ, DOR…) da estrutura de caixa do módulo em edição, ou None (feature 015, D-13)."""
+    from . import structures_core
+    root = _root()
+    recipe = structures_core.get(getattr(getattr(root, 'btm_cabinet', None), 'structure_id', "")) if root else None
+    return recipe.environment if recipe is not None else None
+
+
+def _bay_of_selection():
+    """(índice do vão do subvão selecionado, número de vãos, largura atual em m) ou None (feature 015)."""
+    from . import bays, divisions as dv, scene_divisions
+    s, root = session(), _root()
+    if s is None or root is None or not s.space:
+        return None
+    core = scene_divisions.core(bpy.context.scene, root)
+    total = bays.count(core)
+    if total < 2:
+        return None
+    index = bays.bay_index(s.space, total)
+    leaves, _cuts, _orphans = dv.resolve(scene_divisions.roots(bpy.context, root), [d for d in core if d.bay])
+    box = leaves.get(bays.chain(index) + ".a") if index < total - 1 else leaves.get(bays.chain(index))
+    return index, total, (box.size(0) if box is not None else 0.0)
+
+
+def _bay_width_get(_self):
+    found = _bay_of_selection()
+    return found[2] if found is not None else 0.0
+
+
+def _bay_width_set(_self, value):
+    found, s = _bay_of_selection(), session()
+    if found is not None and s is not None:
+        s.push('edit', ('SET_BAY_WIDTH', {'index': found[0], 'width': float(value), 'targets': []}))
 
 
 def _selected_division():
@@ -404,6 +446,8 @@ def _add_virtual_fields():
     for role in ('TOP', 'BOTTOM', 'BACK', 'LEFT', 'RIGHT'):
         notes['comp_' + role] = bpy.props.BoolProperty(get=_comp_get(role), set=_comp_set(role))
     notes['bays'] = bpy.props.IntProperty(name="Número de vãos", min=1, max=10, get=_bays_get, set=_bays_set)
+    notes['bay_width'] = bpy.props.FloatProperty(name="Largura do vão", subtype='DISTANCE', unit='LENGTH', min=0.0,
+                                                 get=_bay_width_get, set=_bay_width_set)     # feature 015 (RN-14)
     for which, label in (('front', "Cota anterior"), ('low', "Cota inferior"), ('back', "Cota posterior"),
                          ('high', "Cota superior")):
         notes['pos_' + which] = bpy.props.FloatProperty(name=label, subtype='DISTANCE', unit='LENGTH',

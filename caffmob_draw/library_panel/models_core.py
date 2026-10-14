@@ -11,7 +11,7 @@ from pathlib import Path
 
 from ..data.i18n import tr
 
-Model = namedtuple('Model', 'id label cabinet_type width_mm door_swing shelves')
+Model = namedtuple('Model', 'id label cabinet_type width_mm door_swing shelves structure_id', defaults=("",))
 CABINET_TYPES = ('BASE', 'WALL', 'TALL')
 DOOR_SWINGS = ('NONE', 'LEFT', 'RIGHT', 'DOUBLE', 'FLIP')
 CATALOG = Path(__file__).resolve().parents[1] / "data" / "library_models.json"
@@ -36,9 +36,26 @@ def parse(text):
             warnings.append(tr("Modelo {}: frente desconhecida").format(item['id']))
             continue
         width, shelves = _count(item, 'width_mm', warnings), _count(item, 'shelves', warnings)
+        structure_id = str(item.get('structure_id') or "")      # feature 015 (D-16): vazio = equivalência
+        if structure_id and not _known_structure(structure_id):
+            warnings.append(tr("Modelo {}: estrutura desconhecida").format(item['id']))
+            continue
         models.append(Model(str(item['id']), str(item.get('label') or item['id']), item['cabinet_type'],
-                            width, swing, shelves))
+                            width, swing, shelves, structure_id))
     return models, warnings
+
+
+def _known_structure(structure_id):
+    from ..cabinet_editor import structures_core
+    return structures_core.get(structure_id) is not None
+
+
+def model_structure(model, line):
+    """Estrutura de caixa do modelo: a do catálogo ou, sem ela, a equivalente pela linha e pelo tipo (RN-22)."""
+    if model.structure_id:
+        return model.structure_id
+    from ..cabinet_editor import structures_core
+    return structures_core.load().legacy_structure(line, model.cabinet_type) or ""
 
 
 def _count(item, key, warnings):

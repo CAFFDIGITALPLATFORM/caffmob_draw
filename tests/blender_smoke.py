@@ -34,7 +34,7 @@ with tempfile.TemporaryDirectory() as directory:
     output = str(Path(directory) / 'cut_plan.json')
     assert bpy.ops.caffmob.export_cut_plan_json(filepath=output) == {'FINISHED'}
     exported = json.loads(Path(output).read_text())
-    assert exported['schema_version'] == '2.2.0'
+    assert exported['schema_version'] == '2.3.0'
     assert len(exported['parts']) == 14
     assert exported['cut_plan']['stats']['parts_placed'] == 14
 

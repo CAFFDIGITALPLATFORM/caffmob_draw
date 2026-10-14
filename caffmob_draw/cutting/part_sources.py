@@ -222,6 +222,10 @@ def synthetic_records(module, thickness_for):
     """
     obj = module.obj
     cab = getattr(obj, 'btm_cabinet', None)
+    if cab is not None and getattr(cab, 'structure_id', "") and cab.width > 0:
+        structured = _structured_records(module, thickness_for)        # feature 015 (T027)
+        if structured is not None:
+            return structured
     back = thickness_for("FUN_INF")
     if cab is not None and cab.width > 0:
         width, height, depth = cab.width * 1000.0, cab.height * 1000.0, cab.depth * 1000.0
@@ -271,6 +275,48 @@ def synthetic_records(module, thickness_for):
     # Numeração única com as peças reais (feature 008: portas e prateleiras nossas no `btm` repetiam POR/0, PRAT/0);
     # os nomes sintéticos ("00", "01"…) ordenam antes dos objetos, e os uids de antes não mudam.
     return _assign_uids(module, found + _cutpart_found(module))
+
+
+def _structured_records(module, thickness_for):
+    """Registros de um módulo com estrutura de caixa: uma peça por `structure.carcass_parts`, com o nome do papel
+    (Sarrafo frontal, Rodapé frontal…), mais prateleiras e portas como no caminho antigo; None se a estrutura não
+    está no catálogo (o módulo segue a construção antiga). As espessuras são as da caixa do módulo, em mm.
+    """
+    from ..cabinet_editor import structure_inputs
+    obj = module.obj
+    cab = obj.btm_cabinet
+    found = structure_inputs.carcass_parts_for(obj, scale=1000.0)
+    if found is None:
+        return None
+    parts, inner = found
+    items = getattr(obj, 'btm_structure', None)
+    raw = {e.role: e.material for e in items.components} if items is not None else {}
+    spec = [(p.component, p.name, p.length, p.width, p.thickness, list(p.edges), raw.get(p.role, ""))
+            for p in parts]
+    (ix0, iy0, _iz0), (ix1, iy1, _iz1) = inner
+    shelf_w = max(50.0, ix1 - ix0 - 2.0)
+    for index in range(int(getattr(cab, 'shelves', 0) or 0)):
+        name = "Prateleira" if index == 0 else f"Prateleira {index + 1}"
+        spec.append(("PRAT", name, shelf_w, max(50.0, iy1 - iy0 - 20.0), thickness_for("PRAT"),
+                     [True, False, False, False], ""))
+    width, height = cab.width * 1000.0, cab.height * 1000.0
+    door = thickness_for("POR")
+    if cab.door_swing == 'DOUBLE':
+        for side in ("esquerda", "direita"):
+            spec.append(("POR", f"Porta {side}", max(50.0, height - 4.0), max(50.0, width / 2.0 - 3.0), door,
+                         [True, True, True, True], ""))
+    elif cab.door_swing != 'NONE':
+        spec.append(("POR", "Porta", max(50.0, height - 4.0), max(50.0, width - 4.0), door, [True, True, True, True],
+                     ""))
+    found_records = []
+    for i, (component, name, length, part_width, thickness, edges, material) in enumerate(spec):
+        if length <= 0.0 or part_width <= 0.0:
+            continue
+        found_records.append((component, f"{i:02d}", PartRecord(
+            uid="", module_uid=module.uid, module_name=module.name, line=module.line, name=name,
+            component=component, length=length, width=part_width, thickness=thickness,
+            edges_present=edges, source="SYNTHETIC", material=material, key="synthetic:" + name)))
+    return _assign_uids(module, found_records + _cutpart_found(module))
 
 
 def module_has_cutparts(module):

@@ -21,6 +21,7 @@ from ..canvas2d import window as _window
 from ..canvas2d.view import View2D
 from ..data import units
 from ..data.i18n import tr
+from ..library_panel import style as _style
 from . import elevation, props
 
 _draw_handle = []
@@ -33,17 +34,19 @@ FILL = {
     elevation.AGGREGATE: (0.35, 0.65, 0.95, 0.45),
     elevation.PART: (0.6, 0.6, 0.6, 0.4),
 }
-EDGE = (0.95, 0.95, 0.95, 0.85)
-OPENING_EDGE = (0.6, 0.6, 0.65, 0.7)
-SELECTED = (1.0, 0.75, 0.2, 1.0)
-FLAGGED = (1.0, 0.3, 0.25, 1.0)
-BACKGROUND = (0.13, 0.13, 0.14, 1.0)
-SPACE_EDGE = (0.45, 0.75, 1.0, 0.55)
-SPACE_FILL = (0.45, 0.75, 1.0, 0.18)
-REMOVED_EDGE = (0.85, 0.55, 0.45, 0.8)
-SWING = (0.45, 0.75, 0.35, 0.95)
-LIBRARY_EDGE = (0.45, 0.9, 0.55, 0.95)
-STATUS_BG = (0.09, 0.09, 0.10, 0.92)
+# Feature 015 (T035; D-12, RN-21): cores da identidade CAFF MOBI (família Noite da 014, `library_panel/style.py`):
+# laranja só na seleção, teal no vão, azul na informação; o estado continua também em texto.
+EDGE = _style.TEXT_MUTED
+OPENING_EDGE = _style.TEXT_SUBTLE
+SELECTED = _style.ACCENT
+FLAGGED = _style.ERROR
+BACKGROUND = _style.hex_rgba("#10302F")
+SPACE_EDGE = _style.SUCCESS[:3] + (0.75,)
+SPACE_FILL = _style.SUCCESS[:3] + (0.18,)
+REMOVED_EDGE = _style.ERROR[:3] + (0.8,)
+SWING = _style.SUCCESS
+LIBRARY_EDGE = _style.INFO
+STATUS_BG = _style.SURFACE_RAISED
 
 
 def session():
@@ -180,7 +183,23 @@ def _status_bar(region, s):
     sh = draw.begin()
     draw.rect(sh, (0, 0, region.width, 24), STATUS_BG)
     draw.end()
-    draw.text(10, 7, status_text(s))
+    draw.text(10, 7, status_text(s), color=_style.TEXT)
+    _type_header(region, s)
+
+
+def _type_header(region, s):
+    """"Tipo: <estrutura>" no alto da vista, em Sora (feature 015, D-12); sem a fonte, a da interface."""
+    from ..library_panel import draw as library_draw
+    from .panels import cabinet_type
+    root = s.root()
+    if root is None:
+        return
+    try:
+        label = tr("Tipo: {}").format(cabinet_type(root, s.library))
+    except (AttributeError, KeyError):
+        return
+    from .. import hb_gpu_draw
+    hb_gpu_draw.draw_text(library_draw._title_font(), 12, region.height - 24, 14, _style.TEXT, label)
 
 
 def draw_editor(context):
