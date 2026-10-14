@@ -1,0 +1,102 @@
+{
+  "caso": "junta-aguda-sem-esquadria",
+  "descricao": "Junta de 10°: a esquadria passaria de 10 × espessura, então as duas pontas ficam retas.",
+  "tipo": "ambiente",
+  "origem": "manual",
+  "revisadoPor": "Claude Opus 5.5, por delegação do titular (T017)",
+  "revisadoEm": "2026-10-14",
+  "entrada": {
+    "schema": "caffmob.ambiente/v1",
+    "id": "3f40eef2-d798-500c-b466-cbc655a44386",
+    "version": 1,
+    "atualizado_em": "2026-10-14T00:00:00.000Z",
+    "origem": "web",
+    "nome": "junta-aguda-sem-esquadria",
+    "paredes": [
+      {
+        "id": "028fa5f7-69f9-50fc-80aa-60c9f7e6f815",
+        "origem": {
+          "x": 0,
+          "y": 0
+        },
+        "fechada": false,
+        "segmentos": [
+          {
+            "id": "c1ed1901-5a48-53e4-b96d-9a95ee7f5064",
+            "comprimento": 3000,
+            "angulo_absoluto": 0,
+            "angulo_relativo": 0,
+            "espessura": 150,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "f0fda781-31b0-5b92-863c-85d4aaff2fbe",
+            "comprimento": 3000,
+            "angulo_absoluto": 170,
+            "angulo_relativo": 170,
+            "espessura": 150,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          }
+        ]
+      }
+    ],
+    "aberturas": [],
+    "modulos": []
+  },
+  "esperado": {
+    "contornos": [
+      {
+        "id": "c1ed1901-5a48-53e4-b96d-9a95ee7f5064",
+        "poligono": [
+          [
+            0,
+            0
+          ],
+          [
+            3000,
+            0
+          ],
+          [
+            3000,
+            150
+          ],
+          [
+            0,
+            150
+          ]
+        ]
+      },
+      {
+        "id": "f0fda781-31b0-5b92-863c-85d4aaff2fbe",
+        "poligono": [
+          [
+            3000,
+            0
+          ],
+          [
+            45.6,
+            520.9
+          ],
+          [
+            19.5,
+            373.2
+          ],
+          [
+            2974,
+            -147.7
+          ]
+        ]
+      }
+    ]
+  }
+}

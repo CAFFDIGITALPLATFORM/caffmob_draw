@@ -1,0 +1,61 @@
+{
+  "caso": "abertura-fora-do-segmento",
+  "descricao": "Porta de 800 na posição 2300 de um segmento de 3000 (máximo 2200): recusada.",
+  "tipo": "ambiente",
+  "origem": "manual",
+  "revisadoPor": "Claude Opus 5.5, por delegação do titular (T017)",
+  "revisadoEm": "2026-10-14",
+  "entrada": {
+    "schema": "caffmob.ambiente/v1",
+    "id": "31189f29-12e6-5c36-87fa-bca9b3801304",
+    "version": 1,
+    "atualizado_em": "2026-10-14T00:00:00.000Z",
+    "origem": "web",
+    "nome": "abertura-fora-do-segmento",
+    "paredes": [
+      {
+        "id": "15c6d0a6-6ec4-5ad1-a8ac-c33068d70e89",
+        "origem": {
+          "x": 0,
+          "y": 0
+        },
+        "fechada": false,
+        "segmentos": [
+          {
+            "id": "60c774a9-da97-5456-8460-37a05c539019",
+            "comprimento": 3000,
+            "angulo_absoluto": 0,
+            "angulo_relativo": 0,
+            "espessura": 150,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          }
+        ]
+      }
+    ],
+    "aberturas": [
+      {
+        "id": "3c00d8f4-3d50-5ef0-9ee2-a8e1fff123f6",
+        "tipo": "DOOR",
+        "segmento_id": "60c774a9-da97-5456-8460-37a05c539019",
+        "posicao": 2300,
+        "largura": 800,
+        "altura": 2100,
+        "peitoril": 0
+      }
+    ],
+    "modulos": []
+  },
+  "esperado": {
+    "erros": [
+      {
+        "caminho": "aberturas[0].posicao",
+        "codigo": "ABERTURA_FORA_DO_SEGMENTO"
+      }
+    ]
+  }
+}

@@ -28,6 +28,17 @@ class BTM_OT_AdjustFloor(bpy.types.Operator):
             self.report({'WARNING'}, "Nenhuma parede encontrada na cena.")
             return {'CANCELLED'}
 
+        # 061: parede do contrato tem o piso pelo polígono real da face interna, gerado com ela.
+        do_contrato = [obj for obj in wall_objects if obj.get("caffmob_parede")]
+        if do_contrato:
+            import json
+            from .caffmob_sync import regenerar_parede
+            for obj in do_contrato:
+                regenerar_parede(context, obj, json.loads(obj["caffmob_parede"]), [])
+            fechadas = sum(1 for obj in do_contrato if json.loads(obj["caffmob_parede"])["fechada"])
+            self.report({'INFO'}, f"Piso pelo contorno interno de {fechadas} parede(s) fechada(s).")
+            return {'FINISHED'}
+
         # Encontra ou cria o piso
         floor_obj = None
         for obj in context.scene.objects:

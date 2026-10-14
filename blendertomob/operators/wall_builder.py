@@ -3,7 +3,6 @@ import math
 import gpu
 from gpu_extras.batch import batch_for_shader
 from mathutils import Vector
-from ..geometry.mesh_gen import generate_wall_from_segments
 from ..data import units
 
 
@@ -312,10 +311,10 @@ class BTM_OT_WallBuilder(bpy.types.Operator):
         obj.btm_wall.height_start = first['height']
         obj.btm_wall.height_end = first['height']
 
-        # Salva em JSON e gera a malha
-        import json
-        obj["btm_wall_segments"] = json.dumps(self.segments)
-        generate_wall_from_segments(obj, self.segments)
+        # Contrato caffmob v1 (061 T091): todos os campos por segmento, em mm. A malha sai dele, com a
+        # espessura para o lado do sentido e juntas em esquadria; btm_wall_segments fica para a abertura.
+        from .caffmob_sync import regenerar_parede
+        regenerar_parede(context, obj, self._parede_do_contrato(), [])
 
         total_length = sum(
             Vector((s['end'][0] - s['start'][0], s['end'][1] - s['start'][1])).length
@@ -325,6 +324,29 @@ class BTM_OT_WallBuilder(bpy.types.Operator):
         self.report({'INFO'}, f"Paredes geradas: {len(self.segments)} segmentos, total: {total_formatted}.")
 
         self._cleanup(context)
+
+    def _parede_do_contrato(self):
+        import math
+        import uuid
+        from ..caffmob.contrato import arredondar_angulo, arredondar_medida
+        from ..caffmob.geometria import angulos_relativos
+        primeiro = self.segments[0]
+        ultimo = self.segments[-1]
+        fechada = len(self.segments) > 2 and (Vector(ultimo['end']) - Vector(primeiro['start'])).length < 1e-6
+        segmentos = []
+        for seg in self.segments:
+            dx, dy = seg['end'][0] - seg['start'][0], seg['end'][1] - seg['start'][1]
+            segmentos.append({
+                "id": str(uuid.uuid4()), "comprimento": arredondar_medida(math.hypot(dx, dy) * 1000),
+                "angulo_absoluto": arredondar_angulo(math.degrees(math.atan2(dy, dx)) % 360), "angulo_relativo": 0,
+                "espessura": arredondar_medida(seg['thickness'] * 1000), "pe_direito_inicial": arredondar_medida(seg['height'] * 1000),
+                "pe_direito_final": arredondar_medida(seg['height'] * 1000), "afastamento": arredondar_medida(seg['offset'] * 1000),
+                "flecha": 0, "sentido": self.orientation, "tipo": self.wall_type,
+            })
+        for segmento, relativo in zip(segmentos, angulos_relativos(segmentos)):
+            segmento["angulo_relativo"] = relativo
+        return {"id": str(uuid.uuid4()), "origem": {"x": arredondar_medida(primeiro['start'][0] * 1000), "y": arredondar_medida(primeiro['start'][1] * 1000)},
+                "fechada": fechada, "segmentos": segmentos}
 
     def _cleanup(self, context):
         if self._draw_handler is not None:

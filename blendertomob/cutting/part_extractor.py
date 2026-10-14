@@ -7,6 +7,27 @@ com dimensões em milímetros, espessura, material, sentido do veio e fitas de b
 from .nesting import NestingPart
 
 
+def _pecas_do_contrato(obj):
+    """
+    Módulo vindo do MOBI (061 T092): as peças saem das regras de construção do contrato, com id
+    `<uuid do módulo>_<código>` e module_ref = uuid, iguais às do MOBI. Medidas lidas do painel do
+    Blender só valem se alguém as mudou (mesma regra da sincronização).
+    """
+    import json
+    from ..caffmob.chapas import pecas_do_modulo
+    modulo = json.loads(obj["caffmob_modulo"])
+    cab = obj.btm_cabinet
+    for campo, metros in (("largura", cab.width), ("altura", cab.height), ("profundidade", cab.depth), ("espessura", cab.thickness)):
+        if abs(modulo[campo] - metros * 1000.0) > 0.05:
+            modulo[campo] = round(metros * 1000.0, 1)
+    modulo["portas"] = cab.door_swing
+    return [NestingPart(
+        id=peca["id"], name=peca["name"], width=peca["width"], height=peca["height"], quantity=peca["quantity"], thickness=peca["thickness"],
+        material=peca["material"], grain_direction=peca["grain_direction"], module_ref=peca["module_ref"],
+        edge_top=peca["edges"]["top"], edge_bottom=peca["edges"]["bottom"], edge_left=peca["edges"]["left"], edge_right=peca["edges"]["right"],
+    ) for peca in pecas_do_modulo(modulo)]
+
+
 def extract_parts_from_scene(context):
     """
     Percorre todos os objetos da cena atual e extrai as peças individuais
@@ -31,6 +52,10 @@ def extract_parts_from_scene(context):
 
         # Verifica se o objeto é um módulo BlenderToMob ou possui propriedades de marcenaria
         is_btm_module = hasattr(obj, 'btm_plane') and obj.btm_plane.object_kind == 'MODULE'
+
+        if is_btm_module and obj.get("caffmob_modulo"):
+            parts.extend(_pecas_do_contrato(obj))
+            continue
 
         if is_btm_module:
             cab = getattr(obj, 'btm_cabinet', None)

@@ -7,6 +7,18 @@ import bpy  # type: ignore
 
 def update_wall_geom(self, context):
     obj = self.id_data
+    if obj and obj.type == 'MESH' and obj.get("caffmob_parede"):
+        # Parede do contrato (061): o painel antigo muda espessura e pé-direito de todos os segmentos;
+        # um segmento só se edita pelo painel CAFF MOB.
+        from ..caffmob.contrato import arredondar_medida, ler_documento
+        from ..operators.caffmob_sync import regenerar_parede
+        parede = ler_documento(obj["caffmob_parede"])
+        for segmento in parede["segmentos"]:
+            segmento["espessura"] = arredondar_medida(self.thickness * 1000)
+            segmento["pe_direito_inicial"] = arredondar_medida(self.height_start * 1000)
+            segmento["pe_direito_final"] = arredondar_medida(self.height_end * 1000)
+        regenerar_parede(context, obj, parede, [])
+        return
     if obj and obj.type == 'MESH':
         import json
         segments_str = obj.get("btm_wall_segments", "")

@@ -1,0 +1,216 @@
+{
+  "caso": "arco-em-ambiente-fechado",
+  "descricao": "Ambiente com uma parede curva: a de cima, desenhada no sentido −x, com flecha −500, curva para a direita do desenho, ou seja, para fora. O piso segue o arco discretizado e fica entre o retângulo interno e o retângulo mais o segmento circular.",
+  "tipo": "ambiente",
+  "origem": "manual",
+  "revisadoPor": "Claude Opus 5.5, por delegação do titular (T017)",
+  "revisadoEm": "2026-10-14",
+  "entrada": {
+    "schema": "caffmob.ambiente/v1",
+    "id": "6df96f16-2ccf-5d5a-bdfe-37b6beb2c379",
+    "version": 1,
+    "atualizado_em": "2026-10-14T00:00:00.000Z",
+    "origem": "web",
+    "nome": "arco-em-ambiente-fechado",
+    "paredes": [
+      {
+        "id": "c39b2d10-a893-509e-a10c-5ebfbb6b9c0e",
+        "origem": {
+          "x": 0,
+          "y": 0
+        },
+        "fechada": true,
+        "segmentos": [
+          {
+            "id": "0554eef4-0109-57ba-974a-9f435bc8be0e",
+            "comprimento": 4000,
+            "angulo_absoluto": 0,
+            "angulo_relativo": 0,
+            "espessura": 150,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "9bf3aa2a-ad46-59cb-97b5-550247241d58",
+            "comprimento": 3000,
+            "angulo_absoluto": 90,
+            "angulo_relativo": 90,
+            "espessura": 150,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "bfb87ac4-603b-50b7-a31c-c98c0c9dc702",
+            "comprimento": 4000,
+            "angulo_absoluto": 180,
+            "angulo_relativo": 90,
+            "espessura": 150,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": -500,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "35c6033f-754e-5a47-9059-cd0ed74e8a00",
+            "comprimento": 3000,
+            "angulo_absoluto": 270,
+            "angulo_relativo": 90,
+            "espessura": 150,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          }
+        ]
+      }
+    ],
+    "aberturas": [],
+    "modulos": []
+  },
+  "esperado": {
+    "arcos": [
+      {
+        "id": "bfb87ac4-603b-50b7-a31c-c98c0c9dc702",
+        "raio": 4250,
+        "centro": [
+          2000,
+          -750
+        ],
+        "comprimento_do_arco": 4164.6,
+        "angulo_central": 56.145
+      }
+    ],
+    "piso": [
+      {
+        "parede_id": "c39b2d10-a893-509e-a10c-5ebfbb6b9c0e",
+        "vertices": [
+          [
+            150,
+            150
+          ],
+          [
+            3850,
+            150
+          ],
+          [
+            3850,
+            3000
+          ],
+          [
+            3929.4,
+            2867.6
+          ],
+          [
+            3773.6,
+            2946.5
+          ],
+          [
+            3614.5,
+            3018.7
+          ],
+          [
+            3452.5,
+            3084.1
+          ],
+          [
+            3287.9,
+            3142.5
+          ],
+          [
+            3121,
+            3193.8
+          ],
+          [
+            2952,
+            3237.9
+          ],
+          [
+            2781.3,
+            3274.9
+          ],
+          [
+            2609.1,
+            3304.5
+          ],
+          [
+            2435.9,
+            3326.8
+          ],
+          [
+            2261.8,
+            3341.6
+          ],
+          [
+            2087.3,
+            3349.1
+          ],
+          [
+            1912.7,
+            3349.1
+          ],
+          [
+            1738.2,
+            3341.6
+          ],
+          [
+            1564.1,
+            3326.8
+          ],
+          [
+            1390.9,
+            3304.5
+          ],
+          [
+            1218.7,
+            3274.9
+          ],
+          [
+            1048,
+            3237.9
+          ],
+          [
+            879,
+            3193.8
+          ],
+          [
+            712.1,
+            3142.5
+          ],
+          [
+            547.5,
+            3084.1
+          ],
+          [
+            385.5,
+            3018.7
+          ],
+          [
+            226.4,
+            2946.5
+          ],
+          [
+            70.6,
+            2867.6
+          ],
+          [
+            150,
+            3000
+          ]
+        ],
+        "area_mm2": 11298544.1
+      }
+    ]
+  }
+}

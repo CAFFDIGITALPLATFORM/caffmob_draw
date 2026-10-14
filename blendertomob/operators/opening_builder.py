@@ -293,6 +293,12 @@ class BTM_OT_InsertOpening(bpy.types.Operator):
         A = self.target_wall.matrix_world @ seg[0]
         B = self.target_wall.matrix_world @ seg[1]
 
+        # 061 (contrato §3.1, item 7): a abertura inteira fica dentro do segmento, nunca metade para fora.
+        comprimento = (seg[1] - seg[0]).length
+        if comprimento > self.width:
+            meio = self.width / 2 / comprimento
+            self.wall_t = min(max(self.wall_t, meio), 1.0 - meio)
+
         # Posição base na parede
         P_base = A + self.wall_t * (B - A)
 
@@ -347,7 +353,8 @@ class BTM_OT_InsertOpening(bpy.types.Operator):
             if self.target_seg_idx < len(segments):
                 seg = segments[self.target_seg_idx]
                 seg_len = (seg[1] - seg[0]).length
-                self.wall_t = max(0.0, min(1.0, val_m / seg_len))
+                # A cota é a distância do vértice inicial até a borda da abertura (contrato), não até o meio.
+                self.wall_t = max(0.0, min(1.0, (val_m + self.width / 2) / seg_len))
         elif self.active_field == 'SILL_HEIGHT':
             if self.opening_type == 'DOOR':
                 self.sill = 0.0
@@ -386,6 +393,7 @@ class BTM_OT_InsertOpening(bpy.types.Operator):
         cut_obj.btm_opening.height = self.height
         cut_obj.btm_opening.sill_height = self.sill
         cut_obj.btm_opening.parent_wall = self.target_wall
+        self._registrar_no_contrato(cut_obj)
 
         # Modificador Booleano na parede
         mod = self.target_wall.modifiers.new(
@@ -404,6 +412,25 @@ class BTM_OT_InsertOpening(bpy.types.Operator):
         self.report({'INFO'}, f"{type_name} inserida na parede {self.target_wall.name}.")
 
         self._cleanup(context)
+
+    def _registrar_no_contrato(self, cut_obj):
+        """Parede vinda do contrato (061): a abertura também entra nele, medida da borda, em mm."""
+        if not self.target_wall.get("caffmob_parede"):
+            return
+        import uuid
+        from ..caffmob.contrato import arredondar_medida, ler_documento, serializar
+        parede = ler_documento(self.target_wall["caffmob_parede"])
+        if self.target_seg_idx >= len(parede["segmentos"]):
+            return
+        seg = self._get_wall_segments(self.target_wall)[self.target_seg_idx]
+        comprimento_mm = (seg[1] - seg[0]).length * 1000.0
+        largura_mm = arredondar_medida(self.width * 1000.0)
+        posicao = arredondar_medida(min(max(self.wall_t * comprimento_mm - largura_mm / 2, 0.0), max(comprimento_mm - largura_mm, 0.0)))
+        cut_obj["caffmob_abertura"] = serializar({
+            "id": str(uuid.uuid4()), "tipo": self.opening_type, "segmento_id": parede["segmentos"][self.target_seg_idx]["id"],
+            "posicao": posicao, "largura": largura_mm, "altura": arredondar_medida(self.height * 1000.0),
+            "peitoril": 0 if self.opening_type == 'DOOR' else arredondar_medida(self.sill * 1000.0),
+        })
 
     # -------------------------------------------------------------------
     # Cleanup & UI
@@ -441,7 +468,7 @@ class BTM_OT_InsertOpening(bpy.types.Operator):
                 segments = self._get_wall_segments(self.target_wall)
                 seg = segments[self.target_seg_idx]
                 seg_len = (seg[1] - seg[0]).length
-                display_val = units.format_value(self.wall_t * seg_len, context.scene)
+                display_val = units.format_value(max(0.0, self.wall_t * seg_len - self.width / 2), context.scene)
             elif self.active_field == 'SILL_HEIGHT':
                 display_val = units.format_value(self.sill, context.scene)
             else:

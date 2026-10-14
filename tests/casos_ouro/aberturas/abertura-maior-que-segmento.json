@@ -1,0 +1,61 @@
+{
+  "caso": "abertura-maior-que-segmento",
+  "descricao": "Porta de 800 num segmento de 700: recusada.",
+  "tipo": "ambiente",
+  "origem": "manual",
+  "revisadoPor": "Claude Opus 5.5, por delegação do titular (T017)",
+  "revisadoEm": "2026-10-14",
+  "entrada": {
+    "schema": "caffmob.ambiente/v1",
+    "id": "a75e0e58-63b4-5aaf-8ccb-006bd92af35f",
+    "version": 1,
+    "atualizado_em": "2026-10-14T00:00:00.000Z",
+    "origem": "web",
+    "nome": "abertura-maior-que-segmento",
+    "paredes": [
+      {
+        "id": "fd2d6f82-21b5-5c09-a9d1-eda8043d9dad",
+        "origem": {
+          "x": 0,
+          "y": 0
+        },
+        "fechada": false,
+        "segmentos": [
+          {
+            "id": "53329d83-7b33-5b34-a765-782e167f5ff2",
+            "comprimento": 700,
+            "angulo_absoluto": 0,
+            "angulo_relativo": 0,
+            "espessura": 150,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          }
+        ]
+      }
+    ],
+    "aberturas": [
+      {
+        "id": "fdfb2e9b-295e-5719-961c-6c63b04d7403",
+        "tipo": "DOOR",
+        "segmento_id": "53329d83-7b33-5b34-a765-782e167f5ff2",
+        "posicao": 0,
+        "largura": 800,
+        "altura": 2100,
+        "peitoril": 0
+      }
+    ],
+    "modulos": []
+  },
+  "esperado": {
+    "erros": [
+      {
+        "caminho": "aberturas[0].largura",
+        "codigo": "ABERTURA_MAIOR_QUE_SEGMENTO"
+      }
+    ]
+  }
+}

@@ -1,0 +1,74 @@
+{
+  "caso": "peitoril-fora",
+  "descricao": "Porta com peitoril 100 e janela acima do pé-direito: as duas recusadas.",
+  "tipo": "ambiente",
+  "origem": "manual",
+  "revisadoPor": "Claude Opus 5.5, por delegação do titular (T017)",
+  "revisadoEm": "2026-10-14",
+  "entrada": {
+    "schema": "caffmob.ambiente/v1",
+    "id": "78607284-858b-5987-9029-a1833b0ef941",
+    "version": 1,
+    "atualizado_em": "2026-10-14T00:00:00.000Z",
+    "origem": "web",
+    "nome": "peitoril-fora",
+    "paredes": [
+      {
+        "id": "f3ae48eb-db31-5df0-9542-02c92118922a",
+        "origem": {
+          "x": 0,
+          "y": 0
+        },
+        "fechada": false,
+        "segmentos": [
+          {
+            "id": "e8ff8198-ea6e-5828-8499-9cceb6754169",
+            "comprimento": 4000,
+            "angulo_absoluto": 0,
+            "angulo_relativo": 0,
+            "espessura": 150,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          }
+        ]
+      }
+    ],
+    "aberturas": [
+      {
+        "id": "f1a474fa-2fa1-5095-b11a-fb1970eff3cc",
+        "tipo": "DOOR",
+        "segmento_id": "e8ff8198-ea6e-5828-8499-9cceb6754169",
+        "posicao": 0,
+        "largura": 800,
+        "altura": 2100,
+        "peitoril": 100
+      },
+      {
+        "id": "edabf349-5304-5394-9dac-b191afede82c",
+        "tipo": "WINDOW",
+        "segmento_id": "e8ff8198-ea6e-5828-8499-9cceb6754169",
+        "posicao": 1500,
+        "largura": 1000,
+        "altura": 1000,
+        "peitoril": 1800
+      }
+    ],
+    "modulos": []
+  },
+  "esperado": {
+    "erros": [
+      {
+        "caminho": "aberturas[0].peitoril",
+        "codigo": "PEITORIL_FORA"
+      },
+      {
+        "caminho": "aberturas[1].peitoril",
+        "codigo": "PEITORIL_FORA"
+      }
+    ]
+  }
+}

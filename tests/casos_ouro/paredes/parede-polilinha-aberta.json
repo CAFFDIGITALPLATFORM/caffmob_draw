@@ -1,0 +1,184 @@
+{
+  "caso": "parede-polilinha-aberta",
+  "descricao": "Polilinha aberta de 3 segmentos, com esquadria nas duas juntas e sem piso.",
+  "tipo": "ambiente",
+  "origem": "manual",
+  "revisadoPor": "Claude Opus 5.5, por delegação do titular (T017)",
+  "revisadoEm": "2026-10-14",
+  "entrada": {
+    "schema": "caffmob.ambiente/v1",
+    "id": "746bf460-bbc1-521d-821c-e8749a08df71",
+    "version": 1,
+    "atualizado_em": "2026-10-14T00:00:00.000Z",
+    "origem": "web",
+    "nome": "parede-polilinha-aberta",
+    "paredes": [
+      {
+        "id": "4a5094e0-8001-5c5a-ad7e-b2a869608f92",
+        "origem": {
+          "x": 0,
+          "y": 0
+        },
+        "fechada": false,
+        "segmentos": [
+          {
+            "id": "68344ab5-3731-512e-9ee5-e227a6ec6f1d",
+            "comprimento": 3000,
+            "angulo_absoluto": 0,
+            "angulo_relativo": 0,
+            "espessura": 150,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "051d453a-cee2-5dad-bbcf-0bdb014b325b",
+            "comprimento": 2000,
+            "angulo_absoluto": 90,
+            "angulo_relativo": 90,
+            "espessura": 150,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "c4e512b9-8e61-534f-ad83-0c7a3d0dae46",
+            "comprimento": 1500,
+            "angulo_absoluto": 180,
+            "angulo_relativo": 90,
+            "espessura": 150,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          }
+        ]
+      }
+    ],
+    "aberturas": [],
+    "modulos": []
+  },
+  "esperado": {
+    "segmentos": [
+      {
+        "id": "68344ab5-3731-512e-9ee5-e227a6ec6f1d",
+        "inicio": [
+          0,
+          0
+        ],
+        "fim": [
+          3000,
+          0
+        ],
+        "z_base": 0,
+        "altura_inicio": 2700,
+        "altura_fim": 2700,
+        "angulo_relativo": 0
+      },
+      {
+        "id": "051d453a-cee2-5dad-bbcf-0bdb014b325b",
+        "inicio": [
+          3000,
+          0
+        ],
+        "fim": [
+          3000,
+          2000
+        ],
+        "z_base": 0,
+        "altura_inicio": 2700,
+        "altura_fim": 2700,
+        "angulo_relativo": 90
+      },
+      {
+        "id": "c4e512b9-8e61-534f-ad83-0c7a3d0dae46",
+        "inicio": [
+          3000,
+          2000
+        ],
+        "fim": [
+          1500,
+          2000
+        ],
+        "z_base": 0,
+        "altura_inicio": 2700,
+        "altura_fim": 2700,
+        "angulo_relativo": 90
+      }
+    ],
+    "contornos": [
+      {
+        "id": "68344ab5-3731-512e-9ee5-e227a6ec6f1d",
+        "poligono": [
+          [
+            0,
+            0
+          ],
+          [
+            3000,
+            0
+          ],
+          [
+            2850,
+            150
+          ],
+          [
+            0,
+            150
+          ]
+        ]
+      },
+      {
+        "id": "051d453a-cee2-5dad-bbcf-0bdb014b325b",
+        "poligono": [
+          [
+            3000,
+            0
+          ],
+          [
+            3000,
+            2000
+          ],
+          [
+            2850,
+            1850
+          ],
+          [
+            2850,
+            150
+          ]
+        ]
+      },
+      {
+        "id": "c4e512b9-8e61-534f-ad83-0c7a3d0dae46",
+        "poligono": [
+          [
+            3000,
+            2000
+          ],
+          [
+            1500,
+            2000
+          ],
+          [
+            1500,
+            1850
+          ],
+          [
+            2850,
+            1850
+          ]
+        ]
+      }
+    ],
+    "piso": []
+  }
+}

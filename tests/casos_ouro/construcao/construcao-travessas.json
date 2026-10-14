@@ -1,0 +1,205 @@
+{
+  "caso": "construcao-travessas",
+  "descricao": "Balcão com 2 travessas de 80 no lugar do tampo visível.",
+  "tipo": "modulo",
+  "origem": "manual",
+  "revisadoPor": "Claude Opus 5.5, por delegação do titular (T017)",
+  "revisadoEm": "2026-10-14",
+  "entrada": {
+    "schema": "caffmob.modulo/v1",
+    "id": "0c5392ee-c177-5cee-bca4-1c25654e710e",
+    "version": 1,
+    "atualizado_em": "2026-10-14T00:00:00.000Z",
+    "origem": "web",
+    "nome": "construcao-travessas",
+    "tipo": "BASE",
+    "largura": 800,
+    "altura": 700,
+    "profundidade": 550,
+    "espessura": 15,
+    "material": "MDF",
+    "portas": "NONE",
+    "construcao": {
+      "laterais": "PASSANTE",
+      "tampo": "ENTRE_LATERAIS",
+      "fundo": {
+        "modo": "CANAL",
+        "espessura": 6,
+        "encaixe": 8
+      },
+      "rodape": {
+        "altura": 0,
+        "recuo": 0
+      },
+      "porta": {
+        "modo": "SOBREPOSTA",
+        "folga": 2,
+        "folga_central": 2,
+        "espessura": 18
+      },
+      "prateleiras": {
+        "quantidade": 1,
+        "recuo_frontal": 20,
+        "folga_lateral": 1,
+        "espessura": 15
+      },
+      "divisorias": {
+        "quantidade": 0
+      },
+      "gavetas": {
+        "quantidade": 0,
+        "altura_frente": 180
+      },
+      "travessas": {
+        "quantidade": 2,
+        "largura": 80
+      },
+      "fitas": {
+        "frente": 1,
+        "demais": 0.45,
+        "portas": 1
+      }
+    },
+    "chapas_editadas": []
+  },
+  "esperado": {
+    "pecas": [
+      {
+        "id": "0c5392ee-c177-5cee-bca4-1c25654e710e_LAT_ESQ",
+        "name": "Lateral Esquerda - construcao-travessas",
+        "width": 550,
+        "height": 700,
+        "quantity": 1,
+        "thickness": 15,
+        "material": "MDF 15 mm",
+        "grain_direction": "VERTICAL",
+        "module_ref": "0c5392ee-c177-5cee-bca4-1c25654e710e",
+        "edges": {
+          "top": 0.45,
+          "bottom": 0.45,
+          "left": 0.45,
+          "right": 1
+        }
+      },
+      {
+        "id": "0c5392ee-c177-5cee-bca4-1c25654e710e_LAT_DIR",
+        "name": "Lateral Direita - construcao-travessas",
+        "width": 550,
+        "height": 700,
+        "quantity": 1,
+        "thickness": 15,
+        "material": "MDF 15 mm",
+        "grain_direction": "VERTICAL",
+        "module_ref": "0c5392ee-c177-5cee-bca4-1c25654e710e",
+        "edges": {
+          "top": 0.45,
+          "bottom": 0.45,
+          "left": 0.45,
+          "right": 1
+        }
+      },
+      {
+        "id": "0c5392ee-c177-5cee-bca4-1c25654e710e_BASE",
+        "name": "Base Inferior - construcao-travessas",
+        "width": 770,
+        "height": 550,
+        "quantity": 1,
+        "thickness": 15,
+        "material": "MDF 15 mm",
+        "grain_direction": "HORIZONTAL",
+        "module_ref": "0c5392ee-c177-5cee-bca4-1c25654e710e",
+        "edges": {
+          "top": 0.45,
+          "bottom": 0.45,
+          "left": 0.45,
+          "right": 1
+        }
+      },
+      {
+        "id": "0c5392ee-c177-5cee-bca4-1c25654e710e_TAMPO",
+        "name": "Tampo Superior - construcao-travessas",
+        "width": 770,
+        "height": 550,
+        "quantity": 1,
+        "thickness": 15,
+        "material": "MDF 15 mm",
+        "grain_direction": "HORIZONTAL",
+        "module_ref": "0c5392ee-c177-5cee-bca4-1c25654e710e",
+        "edges": {
+          "top": 0.45,
+          "bottom": 0.45,
+          "left": 0.45,
+          "right": 1
+        }
+      },
+      {
+        "id": "0c5392ee-c177-5cee-bca4-1c25654e710e_FUNDO",
+        "name": "Fundo Traseiro - construcao-travessas",
+        "width": 786,
+        "height": 686,
+        "quantity": 1,
+        "thickness": 6,
+        "material": "MDF 6 mm",
+        "grain_direction": "VERTICAL",
+        "module_ref": "0c5392ee-c177-5cee-bca4-1c25654e710e",
+        "edges": {
+          "top": 0,
+          "bottom": 0,
+          "left": 0,
+          "right": 0
+        }
+      },
+      {
+        "id": "0c5392ee-c177-5cee-bca4-1c25654e710e_PRAT_01",
+        "name": "Prateleira Interna - construcao-travessas",
+        "width": 768,
+        "height": 530,
+        "quantity": 1,
+        "thickness": 15,
+        "material": "MDF 15 mm",
+        "grain_direction": "HORIZONTAL",
+        "module_ref": "0c5392ee-c177-5cee-bca4-1c25654e710e",
+        "edges": {
+          "top": 0.45,
+          "bottom": 0.45,
+          "left": 0.45,
+          "right": 1
+        }
+      },
+      {
+        "id": "0c5392ee-c177-5cee-bca4-1c25654e710e_TRAV_01",
+        "name": "Travessa - construcao-travessas",
+        "width": 770,
+        "height": 80,
+        "quantity": 1,
+        "thickness": 15,
+        "material": "MDF 15 mm",
+        "grain_direction": "HORIZONTAL",
+        "module_ref": "0c5392ee-c177-5cee-bca4-1c25654e710e",
+        "edges": {
+          "top": 0.45,
+          "bottom": 0.45,
+          "left": 0.45,
+          "right": 1
+        }
+      },
+      {
+        "id": "0c5392ee-c177-5cee-bca4-1c25654e710e_TRAV_02",
+        "name": "Travessa 2 - construcao-travessas",
+        "width": 770,
+        "height": 80,
+        "quantity": 1,
+        "thickness": 15,
+        "material": "MDF 15 mm",
+        "grain_direction": "HORIZONTAL",
+        "module_ref": "0c5392ee-c177-5cee-bca4-1c25654e710e",
+        "edges": {
+          "top": 0.45,
+          "bottom": 0.45,
+          "left": 0.45,
+          "right": 1
+        }
+      }
+    ]
+  }
+}

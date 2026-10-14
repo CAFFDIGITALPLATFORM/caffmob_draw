@@ -1,0 +1,468 @@
+{
+  "caso": "parede-ambiente-u",
+  "descricao": "Ambiente em U: 6000 × 4000 com um recorte de 2000 × 2000 no meio do lado de cima, espessura 100 para dentro.",
+  "tipo": "ambiente",
+  "origem": "manual",
+  "revisadoPor": "Claude Opus 5.5, por delegação do titular (T017)",
+  "revisadoEm": "2026-10-14",
+  "entrada": {
+    "schema": "caffmob.ambiente/v1",
+    "id": "9d505bc4-f56b-5d9f-9feb-36e2a8b14f1a",
+    "version": 1,
+    "atualizado_em": "2026-10-14T00:00:00.000Z",
+    "origem": "web",
+    "nome": "parede-ambiente-u",
+    "paredes": [
+      {
+        "id": "89304eed-22f2-51c0-8cdd-7e38526ad61d",
+        "origem": {
+          "x": 0,
+          "y": 0
+        },
+        "fechada": true,
+        "segmentos": [
+          {
+            "id": "88ba4412-b030-51ea-bd88-c3fc336b3c0e",
+            "comprimento": 6000,
+            "angulo_absoluto": 0,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "86f10afc-e849-5244-b181-e4c06242f845",
+            "comprimento": 4000,
+            "angulo_absoluto": 90,
+            "angulo_relativo": 90,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "b1d86651-2214-5b5a-aec6-0ceafe240f13",
+            "comprimento": 2000,
+            "angulo_absoluto": 180,
+            "angulo_relativo": 90,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "fb62062e-1f91-5baf-8ba8-da2e9dcfb057",
+            "comprimento": 2000,
+            "angulo_absoluto": 270,
+            "angulo_relativo": 90,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "2488153e-cef9-5f2e-b3a8-3fa709c01f5a",
+            "comprimento": 2000,
+            "angulo_absoluto": 180,
+            "angulo_relativo": -90,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "32cc6d47-0b88-5daa-92b9-4c485627786d",
+            "comprimento": 2000,
+            "angulo_absoluto": 90,
+            "angulo_relativo": -90,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "f626bb63-f1f7-52b3-ac1a-22df6e823844",
+            "comprimento": 2000,
+            "angulo_absoluto": 180,
+            "angulo_relativo": 90,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "0c4efd54-6810-56a7-990b-6d17c2d1e87f",
+            "comprimento": 4000,
+            "angulo_absoluto": 270,
+            "angulo_relativo": 90,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          }
+        ]
+      }
+    ],
+    "aberturas": [],
+    "modulos": []
+  },
+  "esperado": {
+    "segmentos": [
+      {
+        "id": "88ba4412-b030-51ea-bd88-c3fc336b3c0e",
+        "inicio": [
+          0,
+          0
+        ],
+        "fim": [
+          6000,
+          0
+        ],
+        "z_base": 0,
+        "altura_inicio": 2700,
+        "altura_fim": 2700,
+        "angulo_relativo": 0
+      },
+      {
+        "id": "86f10afc-e849-5244-b181-e4c06242f845",
+        "inicio": [
+          6000,
+          0
+        ],
+        "fim": [
+          6000,
+          4000
+        ],
+        "z_base": 0,
+        "altura_inicio": 2700,
+        "altura_fim": 2700,
+        "angulo_relativo": 90
+      },
+      {
+        "id": "b1d86651-2214-5b5a-aec6-0ceafe240f13",
+        "inicio": [
+          6000,
+          4000
+        ],
+        "fim": [
+          4000,
+          4000
+        ],
+        "z_base": 0,
+        "altura_inicio": 2700,
+        "altura_fim": 2700,
+        "angulo_relativo": 90
+      },
+      {
+        "id": "fb62062e-1f91-5baf-8ba8-da2e9dcfb057",
+        "inicio": [
+          4000,
+          4000
+        ],
+        "fim": [
+          4000,
+          2000
+        ],
+        "z_base": 0,
+        "altura_inicio": 2700,
+        "altura_fim": 2700,
+        "angulo_relativo": 90
+      },
+      {
+        "id": "2488153e-cef9-5f2e-b3a8-3fa709c01f5a",
+        "inicio": [
+          4000,
+          2000
+        ],
+        "fim": [
+          2000,
+          2000
+        ],
+        "z_base": 0,
+        "altura_inicio": 2700,
+        "altura_fim": 2700,
+        "angulo_relativo": -90
+      },
+      {
+        "id": "32cc6d47-0b88-5daa-92b9-4c485627786d",
+        "inicio": [
+          2000,
+          2000
+        ],
+        "fim": [
+          2000,
+          4000
+        ],
+        "z_base": 0,
+        "altura_inicio": 2700,
+        "altura_fim": 2700,
+        "angulo_relativo": -90
+      },
+      {
+        "id": "f626bb63-f1f7-52b3-ac1a-22df6e823844",
+        "inicio": [
+          2000,
+          4000
+        ],
+        "fim": [
+          0,
+          4000
+        ],
+        "z_base": 0,
+        "altura_inicio": 2700,
+        "altura_fim": 2700,
+        "angulo_relativo": 90
+      },
+      {
+        "id": "0c4efd54-6810-56a7-990b-6d17c2d1e87f",
+        "inicio": [
+          0,
+          4000
+        ],
+        "fim": [
+          0,
+          0
+        ],
+        "z_base": 0,
+        "altura_inicio": 2700,
+        "altura_fim": 2700,
+        "angulo_relativo": 90
+      }
+    ],
+    "contornos": [
+      {
+        "id": "88ba4412-b030-51ea-bd88-c3fc336b3c0e",
+        "poligono": [
+          [
+            0,
+            0
+          ],
+          [
+            6000,
+            0
+          ],
+          [
+            5900,
+            100
+          ],
+          [
+            100,
+            100
+          ]
+        ]
+      },
+      {
+        "id": "86f10afc-e849-5244-b181-e4c06242f845",
+        "poligono": [
+          [
+            6000,
+            0
+          ],
+          [
+            6000,
+            4000
+          ],
+          [
+            5900,
+            3900
+          ],
+          [
+            5900,
+            100
+          ]
+        ]
+      },
+      {
+        "id": "b1d86651-2214-5b5a-aec6-0ceafe240f13",
+        "poligono": [
+          [
+            6000,
+            4000
+          ],
+          [
+            4000,
+            4000
+          ],
+          [
+            4100,
+            3900
+          ],
+          [
+            5900,
+            3900
+          ]
+        ]
+      },
+      {
+        "id": "fb62062e-1f91-5baf-8ba8-da2e9dcfb057",
+        "poligono": [
+          [
+            4000,
+            4000
+          ],
+          [
+            4000,
+            2000
+          ],
+          [
+            4100,
+            1900
+          ],
+          [
+            4100,
+            3900
+          ]
+        ]
+      },
+      {
+        "id": "2488153e-cef9-5f2e-b3a8-3fa709c01f5a",
+        "poligono": [
+          [
+            4000,
+            2000
+          ],
+          [
+            2000,
+            2000
+          ],
+          [
+            1900,
+            1900
+          ],
+          [
+            4100,
+            1900
+          ]
+        ]
+      },
+      {
+        "id": "32cc6d47-0b88-5daa-92b9-4c485627786d",
+        "poligono": [
+          [
+            2000,
+            2000
+          ],
+          [
+            2000,
+            4000
+          ],
+          [
+            1900,
+            3900
+          ],
+          [
+            1900,
+            1900
+          ]
+        ]
+      },
+      {
+        "id": "f626bb63-f1f7-52b3-ac1a-22df6e823844",
+        "poligono": [
+          [
+            2000,
+            4000
+          ],
+          [
+            0,
+            4000
+          ],
+          [
+            100,
+            3900
+          ],
+          [
+            1900,
+            3900
+          ]
+        ]
+      },
+      {
+        "id": "0c4efd54-6810-56a7-990b-6d17c2d1e87f",
+        "poligono": [
+          [
+            0,
+            4000
+          ],
+          [
+            0,
+            0
+          ],
+          [
+            100,
+            100
+          ],
+          [
+            100,
+            3900
+          ]
+        ]
+      }
+    ],
+    "piso": [
+      {
+        "parede_id": "89304eed-22f2-51c0-8cdd-7e38526ad61d",
+        "vertices": [
+          [
+            100,
+            100
+          ],
+          [
+            5900,
+            100
+          ],
+          [
+            5900,
+            3900
+          ],
+          [
+            4100,
+            3900
+          ],
+          [
+            4100,
+            1900
+          ],
+          [
+            1900,
+            1900
+          ],
+          [
+            1900,
+            3900
+          ],
+          [
+            100,
+            3900
+          ]
+        ],
+        "area_mm2": 17640000
+      }
+    ]
+  }
+}

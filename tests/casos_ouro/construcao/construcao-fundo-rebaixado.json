@@ -1,0 +1,188 @@
+{
+  "caso": "construcao-fundo-rebaixado",
+  "descricao": "Fundo rebaixado com encaixe de 10: mesmas medidas do canal com o encaixe novo.",
+  "tipo": "modulo",
+  "origem": "manual",
+  "revisadoPor": "Claude Opus 5.5, por delegação do titular (T017)",
+  "revisadoEm": "2026-10-14",
+  "entrada": {
+    "schema": "caffmob.modulo/v1",
+    "id": "ffafe488-3e76-5ce1-b717-7980c188aa5e",
+    "version": 1,
+    "atualizado_em": "2026-10-14T00:00:00.000Z",
+    "origem": "web",
+    "nome": "construcao-fundo-rebaixado",
+    "tipo": "BASE",
+    "largura": 800,
+    "altura": 700,
+    "profundidade": 550,
+    "espessura": 15,
+    "material": "MDF",
+    "portas": "LEFT",
+    "construcao": {
+      "laterais": "PASSANTE",
+      "tampo": "ENTRE_LATERAIS",
+      "fundo": {
+        "modo": "REBAIXADO",
+        "espessura": 6,
+        "encaixe": 10
+      },
+      "rodape": {
+        "altura": 0,
+        "recuo": 0
+      },
+      "porta": {
+        "modo": "SOBREPOSTA",
+        "folga": 2,
+        "folga_central": 2,
+        "espessura": 18
+      },
+      "prateleiras": {
+        "quantidade": 1,
+        "recuo_frontal": 20,
+        "folga_lateral": 1,
+        "espessura": 15
+      },
+      "divisorias": {
+        "quantidade": 0
+      },
+      "gavetas": {
+        "quantidade": 0,
+        "altura_frente": 180
+      },
+      "travessas": {
+        "quantidade": 0,
+        "largura": 80
+      },
+      "fitas": {
+        "frente": 1,
+        "demais": 0.45,
+        "portas": 1
+      }
+    },
+    "chapas_editadas": []
+  },
+  "esperado": {
+    "pecas": [
+      {
+        "id": "ffafe488-3e76-5ce1-b717-7980c188aa5e_LAT_ESQ",
+        "name": "Lateral Esquerda - construcao-fundo-rebaixado",
+        "width": 550,
+        "height": 700,
+        "quantity": 1,
+        "thickness": 15,
+        "material": "MDF 15 mm",
+        "grain_direction": "VERTICAL",
+        "module_ref": "ffafe488-3e76-5ce1-b717-7980c188aa5e",
+        "edges": {
+          "top": 0.45,
+          "bottom": 0.45,
+          "left": 0.45,
+          "right": 1
+        }
+      },
+      {
+        "id": "ffafe488-3e76-5ce1-b717-7980c188aa5e_LAT_DIR",
+        "name": "Lateral Direita - construcao-fundo-rebaixado",
+        "width": 550,
+        "height": 700,
+        "quantity": 1,
+        "thickness": 15,
+        "material": "MDF 15 mm",
+        "grain_direction": "VERTICAL",
+        "module_ref": "ffafe488-3e76-5ce1-b717-7980c188aa5e",
+        "edges": {
+          "top": 0.45,
+          "bottom": 0.45,
+          "left": 0.45,
+          "right": 1
+        }
+      },
+      {
+        "id": "ffafe488-3e76-5ce1-b717-7980c188aa5e_BASE",
+        "name": "Base Inferior - construcao-fundo-rebaixado",
+        "width": 770,
+        "height": 550,
+        "quantity": 1,
+        "thickness": 15,
+        "material": "MDF 15 mm",
+        "grain_direction": "HORIZONTAL",
+        "module_ref": "ffafe488-3e76-5ce1-b717-7980c188aa5e",
+        "edges": {
+          "top": 0.45,
+          "bottom": 0.45,
+          "left": 0.45,
+          "right": 1
+        }
+      },
+      {
+        "id": "ffafe488-3e76-5ce1-b717-7980c188aa5e_TAMPO",
+        "name": "Tampo Superior - construcao-fundo-rebaixado",
+        "width": 770,
+        "height": 550,
+        "quantity": 1,
+        "thickness": 15,
+        "material": "MDF 15 mm",
+        "grain_direction": "HORIZONTAL",
+        "module_ref": "ffafe488-3e76-5ce1-b717-7980c188aa5e",
+        "edges": {
+          "top": 0.45,
+          "bottom": 0.45,
+          "left": 0.45,
+          "right": 1
+        }
+      },
+      {
+        "id": "ffafe488-3e76-5ce1-b717-7980c188aa5e_FUNDO",
+        "name": "Fundo Traseiro - construcao-fundo-rebaixado",
+        "width": 790,
+        "height": 690,
+        "quantity": 1,
+        "thickness": 6,
+        "material": "MDF 6 mm",
+        "grain_direction": "VERTICAL",
+        "module_ref": "ffafe488-3e76-5ce1-b717-7980c188aa5e",
+        "edges": {
+          "top": 0,
+          "bottom": 0,
+          "left": 0,
+          "right": 0
+        }
+      },
+      {
+        "id": "ffafe488-3e76-5ce1-b717-7980c188aa5e_PRAT_01",
+        "name": "Prateleira Interna - construcao-fundo-rebaixado",
+        "width": 768,
+        "height": 530,
+        "quantity": 1,
+        "thickness": 15,
+        "material": "MDF 15 mm",
+        "grain_direction": "HORIZONTAL",
+        "module_ref": "ffafe488-3e76-5ce1-b717-7980c188aa5e",
+        "edges": {
+          "top": 0.45,
+          "bottom": 0.45,
+          "left": 0.45,
+          "right": 1
+        }
+      },
+      {
+        "id": "ffafe488-3e76-5ce1-b717-7980c188aa5e_PORTA_UN",
+        "name": "Porta Frontal - construcao-fundo-rebaixado",
+        "width": 796,
+        "height": 696,
+        "quantity": 1,
+        "thickness": 18,
+        "material": "MDF 18 mm",
+        "grain_direction": "VERTICAL",
+        "module_ref": "ffafe488-3e76-5ce1-b717-7980c188aa5e",
+        "edges": {
+          "top": 1,
+          "bottom": 1,
+          "left": 1,
+          "right": 1
+        }
+      }
+    ]
+  }
+}

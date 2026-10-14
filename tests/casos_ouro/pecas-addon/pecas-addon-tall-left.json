@@ -1,0 +1,174 @@
+{
+  "caso": "pecas-addon-tall-left",
+  "descricao": "Módulo TALL 600 × 2100 × 550 × 15, portas LEFT, padrão de fábrica. Gerado pelo cutting/part_extractor.py do addon (caffmob_draw@4b87c21); name e material ficam fora (RN-13).",
+  "tipo": "modulo",
+  "origem": "addon",
+  "revisadoPor": null,
+  "revisadoEm": null,
+  "entrada": {
+    "schema": "caffmob.modulo/v1",
+    "id": "9e1a8bbf-38a0-583d-8537-f54256951a1a",
+    "version": 1,
+    "atualizado_em": "2026-10-14T00:00:00.000Z",
+    "origem": "blender",
+    "nome": "Módulo TALL LEFT",
+    "tipo": "TALL",
+    "largura": 600,
+    "altura": 2100,
+    "profundidade": 550,
+    "espessura": 15,
+    "material": "MDF",
+    "portas": "LEFT",
+    "construcao": {
+      "laterais": "PASSANTE",
+      "tampo": "ENTRE_LATERAIS",
+      "fundo": {
+        "modo": "CANAL",
+        "espessura": 6,
+        "encaixe": 8
+      },
+      "rodape": {
+        "altura": 0,
+        "recuo": 0
+      },
+      "porta": {
+        "modo": "SOBREPOSTA",
+        "folga": 2,
+        "folga_central": 2,
+        "espessura": 18
+      },
+      "prateleiras": {
+        "quantidade": 1,
+        "recuo_frontal": 20,
+        "folga_lateral": 1,
+        "espessura": 15
+      },
+      "divisorias": {
+        "quantidade": 0
+      },
+      "gavetas": {
+        "quantidade": 0,
+        "altura_frente": 180
+      },
+      "travessas": {
+        "quantidade": 0,
+        "largura": 80
+      },
+      "fitas": {
+        "frente": 1,
+        "demais": 0.45,
+        "portas": 1
+      }
+    },
+    "chapas_editadas": []
+  },
+  "esperado": {
+    "pecas": [
+      {
+        "id": "9e1a8bbf-38a0-583d-8537-f54256951a1a_LAT_ESQ",
+        "width": 550,
+        "height": 2100,
+        "quantity": 1,
+        "thickness": 15,
+        "grain_direction": "VERTICAL",
+        "module_ref": "9e1a8bbf-38a0-583d-8537-f54256951a1a",
+        "edges": {
+          "top": 0.45,
+          "bottom": 0.45,
+          "left": 0.45,
+          "right": 1
+        }
+      },
+      {
+        "id": "9e1a8bbf-38a0-583d-8537-f54256951a1a_LAT_DIR",
+        "width": 550,
+        "height": 2100,
+        "quantity": 1,
+        "thickness": 15,
+        "grain_direction": "VERTICAL",
+        "module_ref": "9e1a8bbf-38a0-583d-8537-f54256951a1a",
+        "edges": {
+          "top": 0.45,
+          "bottom": 0.45,
+          "left": 0.45,
+          "right": 1
+        }
+      },
+      {
+        "id": "9e1a8bbf-38a0-583d-8537-f54256951a1a_BASE",
+        "width": 570,
+        "height": 550,
+        "quantity": 1,
+        "thickness": 15,
+        "grain_direction": "HORIZONTAL",
+        "module_ref": "9e1a8bbf-38a0-583d-8537-f54256951a1a",
+        "edges": {
+          "top": 0.45,
+          "bottom": 0.45,
+          "left": 0.45,
+          "right": 1
+        }
+      },
+      {
+        "id": "9e1a8bbf-38a0-583d-8537-f54256951a1a_TAMPO",
+        "width": 570,
+        "height": 550,
+        "quantity": 1,
+        "thickness": 15,
+        "grain_direction": "HORIZONTAL",
+        "module_ref": "9e1a8bbf-38a0-583d-8537-f54256951a1a",
+        "edges": {
+          "top": 0.45,
+          "bottom": 0.45,
+          "left": 0.45,
+          "right": 1
+        }
+      },
+      {
+        "id": "9e1a8bbf-38a0-583d-8537-f54256951a1a_FUNDO",
+        "width": 586,
+        "height": 2086,
+        "quantity": 1,
+        "thickness": 6,
+        "grain_direction": "VERTICAL",
+        "module_ref": "9e1a8bbf-38a0-583d-8537-f54256951a1a",
+        "edges": {
+          "top": 0,
+          "bottom": 0,
+          "left": 0,
+          "right": 0
+        }
+      },
+      {
+        "id": "9e1a8bbf-38a0-583d-8537-f54256951a1a_PRAT_01",
+        "width": 568,
+        "height": 530,
+        "quantity": 1,
+        "thickness": 15,
+        "grain_direction": "HORIZONTAL",
+        "module_ref": "9e1a8bbf-38a0-583d-8537-f54256951a1a",
+        "edges": {
+          "top": 0.45,
+          "bottom": 0.45,
+          "left": 0.45,
+          "right": 1
+        }
+      },
+      {
+        "id": "9e1a8bbf-38a0-583d-8537-f54256951a1a_PORTA_UN",
+        "width": 596,
+        "height": 2096,
+        "quantity": 1,
+        "thickness": 18,
+        "grain_direction": "VERTICAL",
+        "module_ref": "9e1a8bbf-38a0-583d-8537-f54256951a1a",
+        "edges": {
+          "top": 1,
+          "bottom": 1,
+          "left": 1,
+          "right": 1
+        }
+      }
+    ]
+  }
+}
