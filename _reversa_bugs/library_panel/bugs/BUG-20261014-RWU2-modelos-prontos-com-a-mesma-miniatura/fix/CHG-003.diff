@@ -1,0 +1,61 @@
+--- a/caffmob_draw/library_panel/models_core.py
++++ b/caffmob_draw/library_panel/models_core.py
+@@ -59,3 +59,58 @@
+ 
+ def find(models, model_id):
+     return next((m for m in models if m.id == model_id), None)
++
++
++# Miniatura do modelo pronto na grade (BUG-20261014-RWU2) -----------------------------------------------------------
++THUMB_REF_MM = 2400.0                 # altura de referência: todos os modelos na mesma escala
++THUMB_PAD = 0.08                      # respiro da caixa, em fração do lado
++PLINTH_MM, DOOR_GAP_MM = 100.0, 12.0
++DOOR_COUNT = {'LEFT': 1, 'RIGHT': 1, 'DOUBLE': 2, 'FLIP': 1}
++
++
++def thumb_shapes(cabinet_type, width_mm, height_mm, z_mm, door_swing, shelves, box):
++    """Frente do módulo desenhada na caixa `box` (x, y, w, h; y para cima), em escala comum.
++
++    Devolve dict com `scale` (px por mm), `floor` (x0, y, x1), `plinth` (retângulo ou None), `carcass`, `doors`
++    (retângulos), `handles` ((x, y) de cada puxador) e `shelves` (y das prateleiras). Balcão e torre ficam no piso com
++    rodapé; o aéreo, na altura de instalação `z_mm`. Frente desconhecida desenha o módulo aberto.
++    """
++    bx, by, bw, bh = box
++    pad = min(bw, bh) * THUMB_PAD
++    width, height, z = max(1.0, float(width_mm)), max(1.0, float(height_mm)), max(0.0, float(z_mm))
++    scale = (bh - 2 * pad) / max(THUMB_REF_MM, z + height)
++    scale = min(scale, (bw - 2 * pad) / width)                 # largo demais: encolhe para caber
++    floor_y = by + pad
++    cw, ch = width * scale, height * scale
++    cx = bx + (bw - cw) / 2.0
++    cy = floor_y + (z * scale if cabinet_type == 'WALL' else 0.0)
++    carcass = (cx, cy, cw, ch)
++    plinth = None
++    front_y = cy
++    if cabinet_type != 'WALL':
++        ph = min(PLINTH_MM * scale, ch * 0.2)
++        inset = cw * 0.04
++        plinth = (cx + inset, cy, cw - 2 * inset, ph)
++        front_y = cy + ph
++    front_h = cy + ch - front_y
++    count = DOOR_COUNT.get(door_swing, 0)
++    gap = DOOR_GAP_MM * scale
++    doors, handles = [], []
++    if count:
++        dw = (cw - gap * (count + 1)) / count
++        for i in range(count):
++            doors.append((cx + gap + i * (dw + gap), front_y + gap, dw, front_h - 2 * gap))
++        hy = {'BASE': front_y + front_h * 0.82, 'WALL': front_y + front_h * 0.18}.get(cabinet_type,
++                                                                                   front_y + front_h * 0.5)
++        if door_swing == 'FLIP':
++            handles.append((cx + cw / 2.0, front_y + gap * 2))
++        elif door_swing == 'LEFT':
++            handles.append((doors[0][0] + doors[0][2] * 0.85, hy))
++        elif door_swing == 'RIGHT':
++            handles.append((doors[0][0] + doors[0][2] * 0.15, hy))
++        else:
++            handles += [(doors[0][0] + doors[0][2] * 0.85, hy), (doors[1][0] + doors[1][2] * 0.15, hy)]
++    rows = max(0, int(shelves))
++    shelf_ys = [front_y + front_h * (i + 1) / (rows + 1) for i in range(rows)]
++    return {"scale": scale, "floor": (bx + pad * 0.5, floor_y, bx + bw - pad * 0.5), "plinth": plinth,
++            "carcass": carcass, "doors": doors, "handles": handles, "shelves": shelf_ys}

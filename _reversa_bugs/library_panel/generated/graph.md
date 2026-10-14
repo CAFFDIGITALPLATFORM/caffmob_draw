@@ -1,9 +1,10 @@
-<!-- GENERATED, DO NOT EDIT: regenerado por /reversa-debugger-graph em 2026-10-12T04:13:57+00:00 a partir de 4 bugs -->
+<!-- GENERATED, DO NOT EDIT: regenerado por /reversa-debugger-graph em 2026-10-14T03:52:14+00:00 a partir de 5 bugs -->
 
 # Grafo · library_panel
 
 ```mermaid
 graph LR
+  BUG_20261014_RWU2["#143 Modelos prontos aparecem com a mesma mi…"]
   BUG_20261011_3UWR["#85 ':' no nome da categoria grava o módulo…"]
   BUG_20261011_C7IK["#86 categories.json inválido é sobrescrito …"]
   BUG_20261011_2HDG["#87 Valor não numérico quebra o popover da …"]

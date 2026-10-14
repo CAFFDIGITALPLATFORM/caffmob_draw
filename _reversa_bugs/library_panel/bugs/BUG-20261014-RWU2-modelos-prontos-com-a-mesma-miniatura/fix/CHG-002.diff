@@ -1,0 +1,123 @@
+diff --git a/tests/blender_bug_RWU2_model_thumbs.py b/tests/blender_bug_RWU2_model_thumbs.py
+new file mode 100644
+index 0000000..7e641ef
+--- /dev/null
++++ b/tests/blender_bug_RWU2_model_thumbs.py
+@@ -0,0 +1,117 @@
++"""Reprodução e regressão do BUG-20261014-RWU2: modelos prontos com a mesma miniatura na grade.
++
++Precisa de janela:
++    xvfb-run -a blender --factory-startup --enable-event-simulate --python tests/blender_bug_RWU2_model_thumbs.py
++
++Abre a BIBLIOTECA CAFFMOB maximizada na aba Blocos (Cozinha), captura a área da vista 3D e compara, pixel a pixel, o
++quadrado da miniatura dos modelos prontos:
++- reprodução: nenhum par de miniaturas pode ser igual (antes da correção, os 10 pares eram iguais);
++- regressão: o desenho da grade não levanta exceção e a miniatura não fica vazia (cor do fundo da célula).
++"""
++
++import os
++import sys
++import tempfile
++import traceback
++from pathlib import Path
++
++import bpy
++import numpy as np
++
++ROOT = Path(__file__).resolve().parents[1]
++sys.path.insert(0, str(ROOT / "tests"))
++import _blender_env  # noqa: E402,F401
++from caffmob_draw.library_panel import draw, grid_core, style  # noqa: E402
++
++FAILURES, ERRORS = [], []
++
++
++def check(name, ok, detail=""):
++    print(("OK   " if ok else "FALHA ") + name, detail, flush=True)
++    if not ok:
++        FAILURES.append(name)
++
++
++_original = draw._draw_max
++
++
++def _guarded(*args, **kwargs):
++    try:
++        return _original(*args, **kwargs)
++    except Exception as exc:                      # o desenho engole a exceção; o teste registra
++        ERRORS.append(repr(exc))
++        raise
++
++
++draw._draw_max = _guarded
++
++
++def capture(win, area):
++    path = os.path.join(tempfile.mkdtemp(), "shot.png")
++    with bpy.context.temp_override(window=win, area=area):
++        bpy.ops.screen.screenshot_area(filepath=path)
++    image = bpy.data.images.load(path)
++    w, h = image.size
++    pixels = np.empty(w * h * 4, dtype=np.float32)
++    image.pixels.foreach_get(pixels)
++    bpy.data.images.remove(image)
++    return pixels.reshape(h, w, 4)
++
++
++def script():
++    ctx = bpy.context
++    win = ctx.window_manager.windows[0]
++    area = next(a for a in win.screen.areas if a.type == 'VIEW_3D')
++    region = next(r for r in area.regions if r.type == 'WINDOW')
++    ox, oy = region.x - area.x, region.y - area.y
++    win.event_simulate('ESC', 'PRESS', x=region.x + 10, y=region.y + 10)
++    win.event_simulate('ESC', 'RELEASE', x=region.x + 10, y=region.y + 10)
++    for obj in list(ctx.scene.objects):
++        bpy.data.objects.remove(obj, do_unlink=True)
++    state = ctx.window_manager.btm_library
++    state.mode, state.tab, state.category, state.search, state.scroll = 'MAX', 'BLOCKS', "Cozinha", "", 0.0
++    state.rect = (8.0, 8.0, region.width - 16.0, region.height - 16.0)
++    for _ in range(6):
++        area.tag_redraw()
++        yield 0.1
++    img = capture(win, area)
++    with ctx.temp_override(window=win, area=area, region=region):
++        lay = draw.max_layout(ctx, area)
++    entries = draw.grid_entries(state)
++    s = ctx.preferences.system.ui_scale
++    cells = dict(grid_core.visible_cells(lay.grid, len(entries), s, 0.0))
++    side = int(style.CELL_W * s)
++    crops = {}
++    for index, entry in enumerate(entries):
++        if entry["kind"] != 'MODEL' or index not in cells:
++            continue
++        x, y, w, h = cells[index]
++        ty = int(y + h - side)
++        crops[entry["id"]] = img[int(oy + ty) + 4:int(oy + ty) + side - 4, int(ox + x) + 4:int(ox + x) + side - 4, :3]
++    ids = list(crops)
++    same = [(a, b) for i, a in enumerate(ids) for b in ids[i + 1:] if np.allclose(crops[a], crops[b], atol=0.02)]
++    check("os 5 modelos prontos aparecem na grade", len(ids) == 5, str(ids))
++    check("nenhum par de miniaturas igual (reprodução)", not same, f"{len(same)} pares iguais: {same[:3]}")
++    sunken = np.array(style.SURFACE_SUNKEN[:3])
++    empty = [k for k, c in crops.items() if np.abs(c - sunken).max(axis=2).max() < 0.05]
++    check("nenhuma miniatura vazia", not empty, str(empty))
++    check("desenho sem exceção", not ERRORS, str(ERRORS[:2]))
++    state.mode = 'MIN'
++
++
++_gen = script()
++
++
++def tick():
++    try:
++        return next(_gen)
++    except StopIteration:
++        pass
++    except Exception:
++        traceback.print_exc()
++        FAILURES.append("exceção no roteiro")
++    print(f"blender_bug_RWU2_model_thumbs: {'OK' if not FAILURES else 'FALHAS: ' + ', '.join(FAILURES)}", flush=True)
++    os._exit(1 if FAILURES else 0)
++
++
++bpy.app.timers.register(tick, first_interval=1.5)

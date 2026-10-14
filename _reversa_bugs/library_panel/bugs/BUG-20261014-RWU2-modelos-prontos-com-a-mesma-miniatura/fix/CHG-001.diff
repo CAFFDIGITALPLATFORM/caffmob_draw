@@ -1,0 +1,89 @@
+diff --git a/tests/test_library_model_thumbs.py b/tests/test_library_model_thumbs.py
+new file mode 100644
+index 0000000..9392c61
+--- /dev/null
++++ b/tests/test_library_model_thumbs.py
+@@ -0,0 +1,83 @@
++"""Miniatura dos modelos prontos na grade da biblioteca (BUG-20261014-RWU2).
++
++`models_core.thumb_shapes` desenha a frente do módulo numa caixa, com a mesma escala para todos (2.400 mm de altura de
++referência): piso, rodapé (balcão e torre), caixa, portas, puxadores e prateleiras.
++"""
++
++import unittest
++
++import _bootstrap  # noqa: F401
++from caffmob_draw.library_panel import models_core as mc
++
++BOX = (0.0, 0.0, 140.0, 140.0)
++# (tipo, largura, altura, z de instalação, frente, prateleiras), como sai do catálogo e do Padrão de Dimensões
++MODELS = {
++    "balcao_1p": ('BASE', 450, 720, 0, 'LEFT', 1),
++    "balcao_2p": ('BASE', 800, 720, 0, 'DOUBLE', 1),
++    "aereo_1p": ('WALL', 450, 700, 1500, 'LEFT', 1),
++    "aereo_2p": ('WALL', 800, 700, 1500, 'DOUBLE', 1),
++    "torre": ('TALL', 600, 2200, 0, 'DOUBLE', 4),
++}
++
++
++def shapes(key):
++    return mc.thumb_shapes(*MODELS[key], box=BOX)
++
++
++def inside(rect, box=BOX):
++    x, y, w, h = rect
++    return x >= box[0] - 1e-6 and y >= box[1] - 1e-6 and x + w <= box[0] + box[2] + 1e-6 \
++        and y + h <= box[1] + box[3] + 1e-6
++
++
++class ModelThumbTest(unittest.TestCase):
++    def test_os_cinco_modelos_tem_miniaturas_diferentes(self):
++        found = {key: shapes(key) for key in MODELS}
++        keys = list(found)
++        for i, a in enumerate(keys):
++            for b in keys[i + 1:]:
++                self.assertNotEqual(found[a], found[b], f"{a} e {b} saem iguais")
++
++    def test_aereo_fica_na_altura_de_instalacao(self):
++        s = shapes("aereo_1p")
++        floor_y = s["floor"][1]
++        self.assertAlmostEqual(s["carcass"][1] - floor_y, 1500 * s["scale"], places=3)
++        self.assertIsNone(s["plinth"])
++
++    def test_balcao_e_torre_no_piso_com_rodape(self):
++        for key in ("balcao_1p", "torre"):
++            s = shapes(key)
++            self.assertAlmostEqual(s["carcass"][1], s["floor"][1], places=3)
++            self.assertIsNotNone(s["plinth"])
++
++    def test_mesma_escala_torre_mais_alta(self):
++        base, tower = shapes("balcao_1p"), shapes("torre")
++        self.assertEqual(base["scale"], tower["scale"])
++        self.assertGreater(tower["carcass"][3], 2.5 * base["carcass"][3])
++
++    def test_portas_puxadores_e_prateleiras(self):
++        self.assertEqual(len(shapes("balcao_1p")["doors"]), 1)
++        self.assertEqual(len(shapes("balcao_2p")["doors"]), 2)
++        self.assertEqual(len(shapes("torre")["handles"]), 2)
++        self.assertEqual(len(shapes("torre")["shelves"]), 4)
++        aberto = mc.thumb_shapes('BASE', 600, 720, 0, 'NONE', 2, box=BOX)
++        self.assertEqual(aberto["doors"], [])
++        self.assertEqual(len(aberto["shelves"]), 2)
++
++    def test_tudo_dentro_da_caixa(self):
++        for key in MODELS:
++            s = shapes(key)
++            for rect in [s["carcass"]] + s["doors"] + ([s["plinth"]] if s["plinth"] else []):
++                self.assertTrue(inside(rect), f"{key}: {rect}")
++
++    def test_largo_demais_encolhe_para_caber(self):
++        s = mc.thumb_shapes('BASE', 6000, 720, 0, 'DOUBLE', 0, box=BOX)
++        self.assertTrue(inside(s["carcass"]), s["carcass"])
++
++    def test_frente_desconhecida_nao_quebra(self):
++        s = mc.thumb_shapes('BASE', 600, 720, 0, 'GIRATORIA', 1, box=BOX)
++        self.assertEqual(s["doors"], [])
++
++
++if __name__ == "__main__":
++    unittest.main()

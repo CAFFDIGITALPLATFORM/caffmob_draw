@@ -56,6 +56,7 @@ _mouse = {'pos': (-1, -1), 'region': 0}
 _cache = {}
 _font = {'title': 0, 'loaded': False}
 _blocks = {}                              # categoria → (hora, entradas)
+_model_sizes = {}                         # (linha, tipo) → (hora, (largura, altura, z) em mm) do Padrão de Dimensões
 _search = {'active': False}               # digitação da busca ligada (T031)
 _selected = {'id': ""}                    # textura selecionada (gravada pelo clique e pelo arraste, T030/T032)
 
@@ -198,6 +199,22 @@ def _module_entries(category):
     return entries
 
 
+def _model_size(line, cabinet_type):
+    """(largura, altura, z) em mm do Padrão de Dimensões ativo para a linha e o tipo (em cache por alguns segundos)."""
+    key = (line, cabinet_type)
+    hit = _model_sizes.get(key)
+    if hit is not None and time.monotonic() - hit[0] < BLOCKS_TTL:
+        return hit[1]
+    try:
+        from ..operators.cabinet_builder import standard_defaults
+        found, _definition = standard_defaults(bpy.context, line, cabinet_type)
+        size = (found.width * 1000.0, found.height * 1000.0, found.z * 1000.0)
+    except (ImportError, AttributeError, KeyError, TypeError, ValueError):
+        size = {'WALL': (800.0, 700.0, 1500.0), 'TALL': (600.0, 2200.0, 0.0)}.get(cabinet_type, (800.0, 720.0, 0.0))
+    _model_sizes[key] = (time.monotonic(), size)
+    return size
+
+
 def block_entries(state):
     """Blocos da categoria aberta (T040): modelos prontos na linha da categoria e os módulos salvos nela."""
     name = state.category
@@ -206,8 +223,12 @@ def block_entries(state):
     found = categories.find(name)
     line = found.line if found is not None else categories_core.DEFAULT_LINE
     models, _warnings = models_core.load_default()
-    entries = [{"id": "BLK:MODEL:" + m.id, "name": tr(m.label), "kind": 'MODEL', "model": m.id, "line": line,
-                "thumb_file": ""} for m in models]
+    entries = []
+    for m in models:
+        width, height, z = _model_size(line, m.cabinet_type)
+        entries.append({"id": "BLK:MODEL:" + m.id, "name": tr(m.label), "kind": 'MODEL', "model": m.id, "line": line,
+                        "thumb_file": "", "cabinet_type": m.cabinet_type, "door_swing": m.door_swing,
+                        "shelves": m.shelves, "size_mm": (m.width_mm or width, height, z)})
     entries += _module_entries(name)
     text = state.search.strip().casefold()
     return [e for e in entries if text in e["name"].casefold()] if text else entries
@@ -437,6 +458,28 @@ def _draw_cell(item, rect, state_kind, progress, hovered, viewport, s):
     kit.text(label, x, line_y - 1 * s, style.FONT_SMALL * s, color, max_w=side)
 
 
+def _draw_model_front(entry, box, viewport, s):
+    """Frente do modelo pronto no traço da marca: piso, rodapé, caixa, portas, puxadores e prateleiras."""
+    width, height, z = entry["size_mm"]
+    shapes = models_core.thumb_shapes(entry["cabinet_type"], width, height, z, entry["door_swing"], entry["shelves"],
+                                      box)
+    x0, fy, x1 = shapes["floor"]
+    kit.polyline([(x0, fy), (x1, fy)], style.TEXT_SUBTLE, 1.0, viewport)
+    cx, cy, cw, ch = shapes["carcass"]
+    kit.rect(cx, cy, cw, ch, style.SURFACE_RAISED, 1.5 * s)
+    if shapes["plinth"] is not None:
+        px, py, pw, ph = shapes["plinth"]
+        kit.rect(px, py, pw, ph, style.SURFACE_SUNKEN)
+    for y in shapes["shelves"]:
+        kit.polyline([(cx + 3 * s, y), (cx + cw - 3 * s, y)], style.TEXT_SUBTLE, 1.0, viewport)
+    for dx, dy, dw, dh in shapes["doors"]:
+        kit.rect(dx, dy, dw, dh, style.SURFACE_HOVER, 1.0 * s)
+        kit.outline(dx, dy, dw, dh, style.BORDER_STRONG, viewport, 1.0 * s)
+    kit.outline(cx, cy, cw, ch, style.TEXT_MUTED, viewport, 1.5 * s, 1.5)
+    for hx, hy in shapes["handles"]:
+        kit.circle(hx, hy, max(1.5, 1.8 * s), style.ACCENT)
+
+
 def _draw_block_cell(entry, rect, hovered, viewport, s):
     x, y, w, h = rect
     selected = entry["id"] == _selected['id']
@@ -448,6 +491,8 @@ def _draw_block_cell(entry, rect, hovered, viewport, s):
     tex = thumbs_gpu.texture(entry["id"], entry["thumb_file"]) if entry["thumb_file"] else None
     if tex is not None:
         kit.image(tex, x, ty, side, side)
+    elif entry["kind"] == 'MODEL':                     # modelo pronto: a frente dele em escala (BUG-20261014-RWU2)
+        _draw_model_front(entry, (x, ty, side, side), viewport, s)
     else:                                               # sem miniatura: o desenho de um módulo em traço
         m = side / 140.0
         bx, by, bw, bh = x + 38 * m, ty + 30 * m, 64 * m, 80 * m

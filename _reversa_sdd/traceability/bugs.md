@@ -1,4 +1,4 @@
-<!-- GENERATED, DO NOT EDIT: regenerado por /reversa-debugger-graph em 2026-10-12T04:13:57+00:00 a partir de 142 bugs -->
+<!-- GENERATED, DO NOT EDIT: regenerado por /reversa-debugger-graph em 2026-10-14T03:52:14+00:00 a partir de 143 bugs -->
 
 # Bugs que atingem as specs
 
@@ -20,6 +20,10 @@
 ## `_reversa_forward/003-modulos-agregados-reposicionar/requirements.md`
 
 - BUG-20261006-OG3P (resolved/fixed, P0): Módulos instalados não podem ser personalizados nem salvos e não existem agregados — `_reversa_bugs/modulos-personalizaveis/bugs/BUG-20261006-OG3P-modulos-e-agregados-personalizaveis`
+
+## `_reversa_forward/014-texturas-fabricantes-grade/requirements.md`
+
+- BUG-20261014-RWU2 (resolved/fixed, P1): Modelos prontos aparecem com a mesma miniatura na grade da biblioteca — `_reversa_bugs/library_panel/bugs/BUG-20261014-RWU2-modelos-prontos-com-a-mesma-miniatura`
 
 ## `_reversa_sdd/addenda/bug-BUG-20261006-KFAR-v001.md`
 
@@ -263,6 +267,10 @@
 
 - BUG-20261011-2HDG (resolved/fixed, P2): Valor não numérico quebra o popover da biblioteca — `_reversa_bugs/library_panel/bugs/BUG-20261011-2HDG-valor-nao-numerico-quebra-o-popover-da`
 - BUG-20261011-3UWR (resolved/fixed, P2): ':' no nome da categoria grava o módulo na pasta errada — `_reversa_bugs/library_panel/bugs/BUG-20261011-3UWR-no-nome-da-categoria-grava-o-modulo`
+
+## `_reversa_sdd/library_panel/requirements.md`
+
+- BUG-20261014-RWU2 (resolved/fixed, P1): Modelos prontos aparecem com a mesma miniatura na grade da biblioteca — `_reversa_bugs/library_panel/bugs/BUG-20261014-RWU2-modelos-prontos-com-a-mesma-miniatura`
 
 ## `_reversa_sdd/library_panel/tasks.md`
 

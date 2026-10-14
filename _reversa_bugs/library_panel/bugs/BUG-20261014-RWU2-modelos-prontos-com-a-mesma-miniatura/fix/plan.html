@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Plano · BUG-20261014-RWU2</title>
+<style>
+:root{--bg:#0f1517;--panel:#172124;--line:#2a3a3e;--text:#e8efed;--muted:#9fb3ae;--accent:#f07a2a;--ok:#1bb3ad;--warn:#e8c14a;--bad:#ff6b5e}
+body{margin:0;background:var(--bg);color:var(--text);font:15px/1.55 system-ui,sans-serif}
+main{max-width:980px;margin:0 auto;padding:24px 16px 64px}
+h1{font-size:22px;margin:0 0 4px}h2{font-size:17px;margin:28px 0 8px;color:var(--accent)}
+.meta{color:var(--muted);font-size:13px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:14px 16px;margin:10px 0}
+table{width:100%;border-collapse:collapse;font-size:14px}th,td{border-bottom:1px solid var(--line);padding:7px 8px;text-align:left;vertical-align:top}
+th{color:var(--muted);font-weight:600}code{background:#0b1012;padding:1px 5px;border-radius:4px;font-size:13px}
+a{color:#5bc0ff}.tag{display:inline-block;padding:1px 8px;border-radius:10px;font-size:12px;border:1px solid var(--line)}
+.ok{color:var(--ok)}.warn{color:var(--warn)}
+.node{display:inline-block;border:2px solid var(--warn);border-radius:8px;padding:10px 14px;background:#1d2a2d}
+svg text{fill:var(--text);font:12px system-ui}
+</style></head><body><main>
+<h1>Plano de correção · #143 BUG-20261014-RWU2</h1>
+<div class="meta">Contexto <code>library_panel</code> · 2026-10-14 · severidade <b>medium</b> · prioridade <b>P1</b> · commit base <code>1c9ea2d</code></div>
+
+<h2>Defeito e causa raiz</h2>
+<div class="card">
+<p>Na aba Blocos da BIBLIOTECA CAFFMOB, os cinco modelos prontos (balcão 1 e 2 portas, aéreo 1 e 2 portas, torre) aparecem com a mesma miniatura.</p>
+<p><b>Causa raiz</b> <span class="tag ok">confirmed</span>: o catálogo de modelos (<code>data/library_models.json</code>) não tem miniatura, <code>draw.block_entries</code> monta toda entrada <code>MODEL</code> com <code>thumb_file: ""</code> e <code>_draw_block_cell</code> desenha o mesmo contorno genérico de módulo.</p>
+<p><b>Evidência</b>: <code>evidence/reproduction.md</code>, captura da vista no Blender 5.2: 10 de 10 pares de miniaturas idênticos pixel a pixel, 3/3 execuções.</p>
+</div>
+
+<h2>Estratégia escolhida</h2>
+<div class="card"><b>Desenho por modelo</b> (escolha do titular): a célula desenha a frente do módulo no traço da marca, com as medidas do Padrão de Dimensões ativo na linha da categoria, todos na mesma escala (2.400 mm de altura cabem na miniatura), sobre a linha do piso. O balcão fica no chão com rodapé, o aéreo na altura de instalação e a torre ocupa a altura toda. Portas pela frente do modelo (1, 2 ou basculante), puxadores e prateleiras tracejadas. Não precisa de arquivo e vale para qualquer modelo novo do catálogo.</div>
+
+<h2>Correction Change Set proposto</h2>
+<table><tr><th>CHG</th><th>tipo</th><th>artefato</th><th>propósito</th></tr>
+<tr><td>CHG-001</td><td>test</td><td><code>tests/test_library_model_thumbs.py</code></td><td>Formas puras da miniatura: os 5 modelos diferem; o aéreo flutua acima do piso; a torre é mais alta; portas e prateleiras contadas; tudo dentro da caixa; frente desconhecida não quebra</td></tr>
+<tr><td>CHG-002</td><td>test</td><td><code>tests/blender_bug_RWU2_model_thumbs.py</code></td><td>Reprodução pela tela (nenhum par de miniaturas igual) e regressão (célula de textura e de módulo salvo continuam desenhando)</td></tr>
+<tr><td>CHG-003</td><td>code</td><td><code>caffmob_draw/library_panel/models_core.py</code></td><td><code>thumb_shapes(...)</code>, puro: piso, rodapé, caixa, portas, puxadores e prateleiras em coordenadas da caixa</td></tr>
+<tr><td>CHG-004</td><td>code</td><td><code>caffmob_draw/library_panel/draw.py</code></td><td><code>block_entries</code> leva tipo, frente, prateleiras e medidas do padrão (em cache por linha); <code>_draw_block_cell</code> desenha as formas do modelo</td></tr>
+</table>
+
+<h2>Testes planejados</h2>
+<table><tr><th>Teste</th><th>Papel</th><th>O que prova</th></tr>
+<tr><td><code>blender_bug_RWU2_model_thumbs.py</code></td><td>reprodução</td><td>Antes: 10/10 pares iguais (vermelho). Depois: 0 pares iguais (verde)</td></tr>
+<tr><td><code>test_library_model_thumbs.py</code></td><td>regressão</td><td>A miniatura de cada modelo depende do tipo, das medidas, das portas e das prateleiras</td></tr>
+<tr><td><code>blender_014_library_draw.py</code>, <code>blender_014_panel_smoke.py</code>, <code>blender_014_drag_smoke.py</code>, <code>blender_012_library_ui.py</code></td><td>regressão</td><td>Painel, grade, arraste do modelo pronto até o piso e a 012 continuam iguais</td></tr>
+</table>
+
+<h2>Riscos</h2>
+<div class="card"><b>change_risk: baixa</b>: só o desenho da célula; sem dados, sem contrato externo, sem mudança na inserção; reversível pelo diff.<br>
+Fora desta correção: a construção própria de cada tipo (rodapé, travessas, divisões do Promob) fica na feature do construtor de armário; o desenho mostra o rodapé do balcão como ideia do tipo, sem prometer a geometria.</div>
+
+<h2>Mini-grafo do bug</h2>
+<div class="card"><div class="node"><a href="../bug.md">#143 RWU2</a><br><small>Modelos prontos com a mesma miniatura</small><br><small class="warn">active · medium/P1</small></div>
+<p class="meta">Sem relações com outros bugs registrados. Ligado ao achado A016 da auditoria da feature 014 (não é bug registrado).</p></div>
+
+<h2>Matriz de relações</h2>
+<table><tr><th>origem</th><th>tipo</th><th>destino</th><th>estado</th></tr>
+<tr><td><a href="../bug.md">BUG-20261014-RWU2</a></td><td colspan="3" class="meta">nenhuma relação registrada</td></tr></table>
+</main></body></html>
