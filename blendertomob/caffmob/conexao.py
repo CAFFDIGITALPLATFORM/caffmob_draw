@@ -5,8 +5,12 @@ Python puro (urllib), sem bpy: o operador do Blender chama estas funções num t
 volta as chama contra o MOBI de ensaio. Os tokens ficam num arquivo do próprio usuário, nunca a senha.
 O token de renovação gira a cada uso: o arquivo é regravado na hora, senão o próximo uso revoga o
 aparelho por reuso.
+
+Texturas de fábrica (062 D-15): só a miniatura e a versão de trabalho saem do MOBI. O arquivo baixado fica num
+cache local com o sha256 no nome; a mesma textura nunca é baixada duas vezes, e o conteúdo é conferido pelo hash.
 """
 
+import hashlib
 import json
 import os
 import platform
@@ -52,6 +56,28 @@ def _pedir(metodo, url, corpo=None, cabecalhos=None, formulario=False):
         except ValueError:
             corpo_erro = texto
         return erro.code, corpo_erro, dict(erro.headers or {})
+
+
+def _pedir_bytes(url, cabecalhos=None):
+    """GET de arquivo: (status, bytes, cabeçalhos). 304 volta com bytes vazios."""
+    pedido = urllib.request.Request(url, method="GET", headers={"User-Agent": USER_AGENT, **(cabecalhos or {})})
+    try:
+        with urllib.request.urlopen(pedido, timeout=TEMPO_LIMITE_TEXTURA_S) as resposta:
+            return resposta.status, resposta.read(), dict(resposta.headers)
+    except urllib.error.HTTPError as erro:
+        return erro.code, erro.read(), dict(erro.headers or {})
+
+
+TEMPO_LIMITE_TEXTURA_S = 60
+EXTENSOES = {"image/jpeg": "jpg", "image/png": "png"}
+
+
+def _gravar(caminho, dados):
+    os.makedirs(os.path.dirname(caminho), exist_ok=True)
+    temporario = f"{caminho}.{os.getpid()}.tmp"
+    with open(temporario, "wb") as arquivo:
+        arquivo.write(dados)
+    os.replace(temporario, caminho)
 
 
 def pedir_codigo(base, nome, plataforma="blender"):
@@ -169,6 +195,63 @@ class Sessao:
         if status not in (200, 409):
             raise ErroDoMobi(status, corpo)
         return status, corpo
+
+    def chamar_bytes(self, caminho, cabecalhos=None):
+        if not self.conectado:
+            raise ErroDoMobi(401, {"erro": "DESCONECTADO"})
+        for tentativa in (1, 2):
+            status, dados, headers = _pedir_bytes(f"{self.base}/api/draw/v1{caminho}", {"Authorization": f"Bearer {self.tokens['access_token']}", **(cabecalhos or {})})
+            if status == 401 and tentativa == 1:
+                self._renovar()
+                continue
+            return status, dados, headers
+        return status, dados, headers
+
+    def listar_texturas(self, busca=None, fabricante=None, linha=None, cursor=None):
+        """Uma página de 60: {'itens': [...], 'proximo': cursor ou None}."""
+        filtros = {chave: valor for chave, valor in (("busca", busca), ("fabricante", fabricante), ("linha", linha), ("cursor", cursor)) if valor}
+        status, corpo, _ = self.chamar("GET", "/texturas" + (f"?{urllib.parse.urlencode(filtros)}" if filtros else ""))
+        if status != 200:
+            raise ErroDoMobi(status, corpo)
+        return corpo
+
+    def ler_textura(self, textura_id):
+        status, corpo, _ = self.chamar("GET", f"/texturas/{textura_id}")
+        if status != 200:
+            raise ErroDoMobi(status, corpo)
+        return corpo
+
+    def baixar_textura(self, textura, pasta, tamanho="trabalho"):
+        """Caminho do arquivo no cache. Baixa só se o sha256 ainda não está lá, e confere o hash do que chegou."""
+        sha = textura["sha256_trabalho" if tamanho == "trabalho" else "sha256_miniatura"]
+        for extensao in ("jpg", "png"):
+            existente = os.path.join(pasta, f"{sha}.{extensao}")
+            if os.path.exists(existente):
+                return existente
+        status, dados, headers = self.chamar_bytes(f"/texturas/{textura['id']}/imagem?tamanho={tamanho}")
+        if status != 200:
+            raise ErroDoMobi(status, dados[:200].decode(errors="replace"))
+        if hashlib.sha256(dados).hexdigest() != sha:
+            raise ErroDoMobi(502, {"erro": "HASH_DIVERGENTE", "textura": textura["id"]})
+        caminho = os.path.join(pasta, f"{sha}.{EXTENSOES.get(headers.get('Content-Type', '').split(';')[0], 'jpg')}")
+        _gravar(caminho, dados)
+        return caminho
+
+    def baixar_mapa(self, textura_id, tipo, pasta):
+        """Mapa (bump, bump2, specular) no cache, revalidado pelo ETag: o catálogo não traz o hash do mapa."""
+        caminho = os.path.join(pasta, f"{textura_id}-{tipo}.jpg")
+        etag = None
+        if os.path.exists(caminho) and os.path.exists(f"{caminho}.etag"):
+            with open(f"{caminho}.etag", encoding="utf-8") as arquivo:
+                etag = arquivo.read().strip()
+        status, dados, headers = self.chamar_bytes(f"/texturas/{textura_id}/mapas/{tipo}", {"If-None-Match": etag} if etag else None)
+        if status == 304:
+            return caminho
+        if status != 200:
+            raise ErroDoMobi(status, dados[:200].decode(errors="replace"))
+        _gravar(caminho, dados)
+        _gravar(f"{caminho}.etag", (headers.get("ETag") or "").encode())
+        return caminho
 
     def criar_ambiente(self, documento):
         status, corpo, _ = self.chamar("POST", "/ambientes", documento)

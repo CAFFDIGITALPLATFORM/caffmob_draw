@@ -5,6 +5,10 @@ CAFF MOB DRAW ligado ao CAFF MOBI (feature 061, RF-36 a RF-39).
   a pessoa confirma logada no navegador, e o Blender recebe um token próprio. Nunca a senha.
 - Listar e baixar: o ambiente vira cena parede a parede (mesmos segmentos, vãos, piso e módulos).
 - Enviar: a cena volta ao contrato e sobe com a versão lida; versão divergente (409) abre a escolha.
+- Texturas de fábrica (062 D-15): o módulo é montado chapa a chapa, e cada chapa com `textura_id` ganha o
+  material da textura, baixada sob demanda (só a versão de trabalho) e guardada num cache por hash. No painel,
+  "Acabamento" busca no catálogo e aplica a textura a todas as chapas, à caixa ou às frentes do módulo
+  selecionado; o `textura_id` volta ao MOBI no "Enviar".
 
 A conta e a geometria moram em ..caffmob (Python puro, provado pelos casos-ouro). Aqui só há bpy.
 """
@@ -16,10 +20,11 @@ import socket
 import uuid
 import webbrowser
 
+import bmesh  # type: ignore
 import bpy  # type: ignore
 
 from ..caffmob import conexao
-from ..caffmob.chapas import CONSTRUCAO_DE_FABRICA
+from ..caffmob.chapas import CONSTRUCAO_DE_FABRICA, aplicar_textura, caixas_das_chapas, texturas_do_modulo
 from ..caffmob.contrato import SCHEMA_AMBIENTE, arredondar_angulo, arredondar_medida, ler_documento, serializar
 from ..caffmob.geometria import mudar_comprimento, trechos_da_parede
 from ..caffmob.validacao import validar_ambiente
@@ -50,6 +55,26 @@ def arquivo_da_sessao():
 
 def sessao():
     return conexao.Sessao(arquivo_da_sessao(), base_do_mobi())
+
+
+def pasta_das_texturas():
+    """Cache das texturas baixadas, ao lado da sessão: o nome do arquivo é o sha256 do conteúdo."""
+    return os.path.join(os.path.dirname(arquivo_da_sessao()), "texturas")
+
+
+def baixar_texturas(atual, ids):
+    """{id: {"imagem": caminho, "bump": caminho ou None}} das texturas que der para baixar. A que falhar fica de
+    fora, e a chapa dela aparece na cor de sempre: a cena não deixa de abrir por causa de uma textura."""
+    imagens = {}
+    for textura_id in ids:
+        try:
+            textura = atual.ler_textura(textura_id)
+            imagem = atual.baixar_textura(textura, pasta_das_texturas())
+            bump = atual.baixar_mapa(textura_id, "bump", pasta_das_texturas()) if "bump" in textura.get("mapas", []) else None
+            imagens[textura_id] = {"imagem": imagem, "bump": bump}
+        except (conexao.ErroDoMobi, OSError) as erro:
+            print(f"[CAFF MOB] textura {textura_id} não baixou: {erro}")
+    return imagens
 
 
 # ---------------------------------------------------------------------------
@@ -103,7 +128,64 @@ def _origem_do_modulo(modulo):
     return (x / 1000.0, y / 1000.0, modulo["posicao"]["z"] / 1000.0)
 
 
-def criar_modulo(context, modulo):
+def _material_da_chapa(imagens, textura_id):
+    """Material por textura (Principled BSDF + Image Texture, e Bump se houver mapa); sem textura, o neutro."""
+    if not textura_id or textura_id not in imagens:
+        material = bpy.data.materials.get("CAFFMOB chapa") or bpy.data.materials.new("CAFFMOB chapa")
+        material.diffuse_color = (0.85, 0.77, 0.67, 1.0)
+        return material
+    nome = f"CAFFMOB {textura_id}"
+    material = bpy.data.materials.get(nome)
+    if material:
+        return material
+    material = bpy.data.materials.new(nome)
+    material.use_nodes = True
+    nos, ligacoes = material.node_tree.nodes, material.node_tree.links
+    principled = next(no for no in nos if no.type == 'BSDF_PRINCIPLED')
+    imagem = nos.new('ShaderNodeTexImage')
+    imagem.image = bpy.data.images.load(imagens[textura_id]["imagem"], check_existing=True)
+    ligacoes.new(imagem.outputs["Color"], principled.inputs["Base Color"])
+    if imagens[textura_id].get("bump"):
+        relevo = nos.new('ShaderNodeTexImage')
+        relevo.image = bpy.data.images.load(imagens[textura_id]["bump"], check_existing=True)
+        relevo.image.colorspace_settings.name = "Non-Color"
+        no_bump = nos.new('ShaderNodeBump')
+        no_bump.inputs["Strength"].default_value = 0.2
+        ligacoes.new(relevo.outputs["Color"], no_bump.inputs["Height"])
+        ligacoes.new(no_bump.outputs["Normal"], principled.inputs["Normal"])
+    return material
+
+
+def malha_do_modulo(obj, modulo, imagens):
+    """O módulo chapa a chapa: uma caixa por chapa, com o material dela e a imagem inteira em cada face (o veio
+    vertical gira a imagem 90°). Origem como a do armário do addon: meio da traseira, na base."""
+    bm = bmesh.new()
+    uv = bm.loops.layers.uv.new("UVMap")
+    materiais = []
+    larg, prof = modulo["largura"], modulo["profundidade"]
+    for caixa in caixas_das_chapas(modulo):
+        material = _material_da_chapa(imagens, caixa["textura_id"])
+        if material not in materiais:
+            materiais.append(material)
+        x0, y0, z0 = (caixa["x"] - larg / 2) / 1000.0, (caixa["y"] - prof) / 1000.0, caixa["z"] / 1000.0
+        x1, y1, z1 = x0 + caixa["dx"] / 1000.0, y0 + caixa["dy"] / 1000.0, z0 + caixa["dz"] / 1000.0
+        v = [bm.verts.new(p) for p in ((x0, y0, z0), (x1, y0, z0), (x1, y1, z0), (x0, y1, z0), (x0, y0, z1), (x1, y0, z1), (x1, y1, z1), (x0, y1, z1))]
+        cantos = [(0, 0), (1, 0), (1, 1), (0, 1)] if caixa["veio"] != "VERTICAL" else [(0, 1), (0, 0), (1, 0), (1, 1)]
+        for indices in ((0, 3, 2, 1), (4, 5, 6, 7), (0, 1, 5, 4), (1, 2, 6, 5), (2, 3, 7, 6), (3, 0, 4, 7)):
+            face = bm.faces.new([v[i] for i in indices])
+            face.material_index = materiais.index(material)
+            for laco, canto in zip(face.loops, cantos):
+                laco[uv].uv = canto
+    obj.data.clear_geometry()
+    bm.to_mesh(obj.data)
+    bm.free()
+    obj.data.materials.clear()
+    for material in materiais:
+        obj.data.materials.append(material)
+    obj.data.update()
+
+
+def criar_modulo(context, modulo, imagens=None):
     obj = _novo_objeto(context, modulo["nome"][:60] or "Módulo", "modulo")
     obj.btm_plane.object_kind = 'MODULE'
     obj.btm_cabinet.width = modulo["largura"] / 1000.0
@@ -114,6 +196,7 @@ def criar_modulo(context, modulo):
     if modulo["portas"] in PORTAS_DO_ADDON:
         obj.btm_cabinet.door_swing = modulo["portas"]
     generate_cabinet_mesh(obj, modulo["largura"] / 1000.0, modulo["altura"] / 1000.0, modulo["profundidade"] / 1000.0, modulo["espessura"] / 1000.0)
+    malha_do_modulo(obj, modulo, imagens or {})
     obj.location = _origem_do_modulo(modulo)
     obj.rotation_euler = (0.0, 0.0, math.radians(modulo["rotacao_z"]))
     obj["caffmob_modulo"] = serializar(modulo)
@@ -121,7 +204,7 @@ def criar_modulo(context, modulo):
     return obj
 
 
-def construir_cena(context, documento):
+def construir_cena(context, documento, imagens=None):
     """Reproduz o ambiente parede a parede. Troca o que veio antes do MOBI; não toca no resto da cena."""
     for obj in [o for o in context.scene.objects if o.get("caffmob_tipo")]:
         bpy.data.objects.remove(obj, do_unlink=True)
@@ -130,7 +213,7 @@ def construir_cena(context, documento):
         obj = _novo_objeto(context, f"Parede {i + 1}", "parede")
         regenerar_parede(context, obj, parede, [a for a in documento["aberturas"] if a["segmento_id"] in ids])
     for modulo in documento["modulos"]:
-        criar_modulo(context, modulo)
+        criar_modulo(context, modulo, imagens)
     context.scene["caffmob_ambiente"] = serializar(documento)
     context.scene["caffmob_versao"] = documento["version"]
 
@@ -305,12 +388,14 @@ class BTM_OT_CaffmobBaixar(bpy.types.Operator):
     ambiente_id: bpy.props.StringProperty()  # type: ignore
 
     def execute(self, context):
+        atual = sessao()
         try:
-            documento = sessao().baixar_ambiente(self.ambiente_id)
+            documento = atual.baixar_ambiente(self.ambiente_id)
         except conexao.ErroDoMobi as erro:
             self.report({'ERROR'}, f"MOBI respondeu {erro.status}: {erro.corpo}")
             return {'CANCELLED'}
-        construir_cena(context, documento)
+        ids = sorted({i for modulo in documento["modulos"] for i in texturas_do_modulo(modulo)})
+        construir_cena(context, documento, baixar_texturas(atual, ids))
         self.report({'INFO'}, f"{documento['nome']}: versão {documento['version']}.")
         return {'FINISHED'}
 
@@ -444,6 +529,51 @@ class BTM_OT_CaffmobEditarSegmento(bpy.types.Operator):
         return {'FINISHED'}
 
 
+class BTM_PG_CaffmobTextura(bpy.types.PropertyGroup):
+    textura_id: bpy.props.StringProperty()  # type: ignore
+    nome: bpy.props.StringProperty()  # type: ignore
+
+
+class BTM_OT_CaffmobBuscarTexturas(bpy.types.Operator):
+    """Buscar texturas de fábrica no catálogo do MOBI"""
+    bl_idname = "btm.caffmob_buscar_texturas"
+    bl_label = "Buscar texturas"
+
+    def execute(self, context):
+        wm = context.window_manager
+        try:
+            pagina = sessao().listar_texturas(busca=wm.caffmob_busca_textura.strip() or None)
+        except conexao.ErroDoMobi as erro:
+            self.report({'ERROR'}, f"MOBI respondeu {erro.status}: {erro.corpo}")
+            return {'CANCELLED'}
+        wm.caffmob_texturas.clear()
+        for textura in pagina["itens"][:20]:
+            item = wm.caffmob_texturas.add()
+            item.textura_id, item.nome = textura["id"], f"{textura['fabricante']} {textura['nome']}"
+        self.report({'INFO'}, f"{len(pagina['itens'])} texturas" + (" (mostrando 20)" if len(pagina["itens"]) > 20 else ""))
+        return {'FINISHED'}
+
+
+class BTM_OT_CaffmobAplicarTextura(bpy.types.Operator):
+    """Aplicar a textura às chapas do módulo selecionado; o acabamento vai ao MOBI ao enviar."""
+    bl_idname = "btm.caffmob_aplicar_textura"
+    bl_label = "Aplicar textura"
+    bl_options = {'REGISTER', 'UNDO'}
+
+    textura_id: bpy.props.StringProperty()  # type: ignore
+
+    def execute(self, context):
+        obj = context.object
+        if not obj or obj.get("caffmob_tipo") != "modulo":
+            self.report({'ERROR'}, "Selecione um módulo que veio do MOBI.")
+            return {'CANCELLED'}
+        modulo = aplicar_textura(_modulo_do_objeto(obj), context.window_manager.caffmob_grupo_textura, self.textura_id or None)
+        imagens = baixar_texturas(sessao(), texturas_do_modulo(modulo))
+        malha_do_modulo(obj, modulo, imagens)
+        obj["caffmob_modulo"] = serializar(modulo)
+        return {'FINISHED'}
+
+
 class BTM_PT_CaffmobDraw(bpy.types.Panel):
     bl_label = "CAFF MOBI"
     bl_idname = "BTM_PT_caffmob_draw"
@@ -478,6 +608,16 @@ class BTM_PT_CaffmobDraw(bpy.types.Panel):
             layout.operator("btm.caffmob_enviar", icon='EXPORT')
             if context.scene.get("caffmob_conflito"):
                 layout.operator("btm.caffmob_resolver_conflito", icon='ERROR')
+        if context.object and context.object.get("caffmob_tipo") == "modulo":
+            caixa = layout.box()
+            caixa.label(text="Acabamento", icon='MATERIAL')
+            caixa.prop(wm, "caffmob_grupo_textura", expand=True)
+            linha = caixa.row(align=True)
+            linha.prop(wm, "caffmob_busca_textura", text="")
+            linha.operator("btm.caffmob_buscar_texturas", text="", icon='VIEWZOOM')
+            for item in wm.caffmob_texturas:
+                caixa.operator("btm.caffmob_aplicar_textura", text=item.nome).textura_id = item.textura_id
+            caixa.operator("btm.caffmob_aplicar_textura", text="Sem textura", icon='X').textura_id = ""
         if context.object and context.object.get("caffmob_parede"):
             layout.separator()
             for i, segmento in enumerate(ler_documento(context.object["caffmob_parede"])["segmentos"]):
@@ -494,6 +634,9 @@ classes = (
     BTM_OT_CaffmobEnviar,
     BTM_OT_CaffmobResolverConflito,
     BTM_OT_CaffmobEditarSegmento,
+    BTM_PG_CaffmobTextura,
+    BTM_OT_CaffmobBuscarTexturas,
+    BTM_OT_CaffmobAplicarTextura,
     BTM_PT_CaffmobDraw,
 )
 
@@ -504,13 +647,17 @@ def register():
     bpy.types.WindowManager.caffmob_ambientes = bpy.props.CollectionProperty(type=BTM_PG_CaffmobAmbiente)
     bpy.types.WindowManager.caffmob_codigo = bpy.props.StringProperty()
     bpy.types.WindowManager.caffmob_situacao = bpy.props.StringProperty()
+    bpy.types.WindowManager.caffmob_texturas = bpy.props.CollectionProperty(type=BTM_PG_CaffmobTextura)
+    bpy.types.WindowManager.caffmob_busca_textura = bpy.props.StringProperty(name="Buscar textura")
+    bpy.types.WindowManager.caffmob_grupo_textura = bpy.props.EnumProperty(
+        name="Chapas", items=[("FRENTES", "Frentes", "Portas e frentes de gaveta"), ("CAIXA", "Caixa", "Laterais, base, tampo e prateleiras"), ("TODAS", "Todas", "Todas as chapas")])
 
 
 def unregister():
     if bpy.app.timers.is_registered(_consultar):
         bpy.app.timers.unregister(_consultar)
     _espera.update(codigo=None, sessao=None)
-    for nome in ("caffmob_ambientes", "caffmob_codigo", "caffmob_situacao"):
+    for nome in ("caffmob_ambientes", "caffmob_codigo", "caffmob_situacao", "caffmob_texturas", "caffmob_busca_textura", "caffmob_grupo_textura"):
         if hasattr(bpy.types.WindowManager, nome):
             delattr(bpy.types.WindowManager, nome)
     for cls in reversed(classes):
