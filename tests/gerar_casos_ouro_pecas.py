@@ -61,12 +61,19 @@ def numero(valor):
     return int(valor) if float(valor).is_integer() else valor
 
 
+class ObjetoSimulado(SimpleNamespace):
+    """Objeto de cena sem propriedades personalizadas: o extrator o trata como módulo antigo."""
+
+    def get(self, _chave, padrao=None):
+        return padrao
+
+
 def cena_com(modulo_id, largura, altura, profundidade, portas):
     cab = SimpleNamespace(
         width=largura / 1000, height=altura / 1000, depth=profundidade / 1000,
         thickness=ESPESSURA / 1000, door_swing=portas,
     )
-    obj = SimpleNamespace(type="MESH", name=modulo_id, btm_plane=SimpleNamespace(object_kind="MODULE"), btm_cabinet=cab)
+    obj = ObjetoSimulado(type="MESH", name=modulo_id, btm_plane=SimpleNamespace(object_kind="MODULE"), btm_cabinet=cab)
     return SimpleNamespace(scene=SimpleNamespace(btm_settings=SimpleNamespace(dimension_settings=None), objects=[obj]))
 
 
