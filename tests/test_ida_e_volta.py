@@ -38,6 +38,36 @@ class PelasUnidadesDoBlender(unittest.TestCase):
                 self.assertEqual(comparavel(de_metros(para_metros(caso["entrada"]))), comparavel(caso["entrada"]))
 
 
+class IdentificacaoDoAddon(unittest.TestCase):
+    def test_nao_usa_o_user_agent_do_urllib(self):
+        """O Cloudflare do MOBI responde 403 (1010) ao User-Agent padrão do urllib."""
+        self.assertTrue(conexao.USER_AGENT.startswith("CAFF-MOB-DRAW/"))
+        self.assertNotIn("urllib", conexao.USER_AGENT.lower())
+
+
+class EsperaPeloCodigo(unittest.TestCase):
+    def test_502_no_meio_nao_derruba_a_espera(self):
+        respostas = iter([{"error": "authorization_pending"}, {"error": "http_502"}, {"error": "slow_down"}, {"access_token": "mobd_x"}])
+        intervalos = []
+        original = conexao.consultar_token
+        conexao.consultar_token = lambda base, device_code: next(respostas)
+        try:
+            tokens = conexao.esperar_token("http://x", {"device_code": "mobc_x", "interval": 5, "expires_in": 600}, dormir=intervalos.append, agora=lambda: 0)
+        finally:
+            conexao.consultar_token = original
+        self.assertEqual(tokens, {"access_token": "mobd_x"})
+        self.assertEqual(intervalos, [5, 5, 10])
+
+    def test_recusa_encerra_a_espera(self):
+        original = conexao.consultar_token
+        conexao.consultar_token = lambda base, device_code: {"error": "access_denied"}
+        try:
+            with self.assertRaises(conexao.ErroDoMobi):
+                conexao.esperar_token("http://x", {"device_code": "mobc_x"}, dormir=lambda s: None, agora=lambda: 0)
+        finally:
+            conexao.consultar_token = original
+
+
 @unittest.skipUnless(URL, "defina CAFFMOB_ENSAIO_URL para rodar contra o MOBI de ensaio")
 class ContraOMobiDeEnsaio(unittest.TestCase):
     @classmethod

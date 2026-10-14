@@ -9,6 +9,7 @@ aparelho por reuso.
 
 import json
 import os
+import platform
 import time
 import urllib.error
 import urllib.parse
@@ -17,6 +18,9 @@ import urllib.request
 CLIENT_ID = "caffmob-draw"
 BASE_PADRAO = "https://mobi.caff.digital"
 TEMPO_LIMITE_S = 10
+# O Cloudflare na frente do MOBI recusa o User-Agent padrão do urllib (403, "error code: 1010",
+# medido em produção em 2026-10-14). O addon se identifica pelo nome.
+USER_AGENT = f"CAFF-MOB-DRAW/1.0 ({platform.system() or 'desconhecido'}; Python {platform.python_version()})"
 
 
 class ErroDoMobi(Exception):
@@ -28,7 +32,7 @@ class ErroDoMobi(Exception):
 
 def _pedir(metodo, url, corpo=None, cabecalhos=None, formulario=False):
     dados = None
-    cabecalhos = dict(cabecalhos or {})
+    cabecalhos = {"User-Agent": USER_AGENT, "Accept": "application/json", **(cabecalhos or {})}
     if corpo is not None:
         if formulario:
             dados = urllib.parse.urlencode(corpo).encode()
@@ -74,9 +78,12 @@ def esperar_token(base, codigo, dormir=time.sleep, agora=time.monotonic):
         resposta = consultar_token(base, codigo["device_code"])
         if "access_token" in resposta:
             return resposta
-        if resposta.get("error") == "slow_down":
+        erro = resposta.get("error", "")
+        if erro == "slow_down":
             intervalo += 5
-        elif resposta.get("error") != "authorization_pending":
+        elif erro.startswith("http_5"):
+            pass  # MOBI reiniciando (deploy) ou borda fora: tenta de novo dentro do prazo do código
+        elif erro != "authorization_pending":
             raise ErroDoMobi(400, resposta)
         dormir(intervalo)
     raise ErroDoMobi(400, {"error": "expired_token"})
