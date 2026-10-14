@@ -93,7 +93,7 @@ def chapas_do_modulo(modulo):
     for edicao in modulo.get("chapas_editadas", []):
         for item in chapas:
             if item["papel"] == edicao["papel"] and item["indice"] == edicao["indice"]:
-                for campo in ("largura", "altura", "espessura", "veio"):
+                for campo in ("largura", "altura", "espessura", "veio", "textura_id"):
                     if campo in edicao:
                         item[campo] = edicao[campo]
     return chapas
@@ -107,15 +107,108 @@ def codigo_da_chapa(chapa):
     return CODIGOS[chapa["papel"]]
 
 
-def pecas_do_modulo(modulo, nome_do_material=None):
+def pecas_do_modulo(modulo, nome_do_material=None, textura=None):
+    """Peças no formato `parts_catalog`. Chapa com textura conhecida leva " · <Fabricante> <nome>" no material
+    (062 D-11), igual ao núcleo do MOBI; `textura(id)` devolve {"fabricante", "nome"} ou None."""
     pecas = []
     for chapa in chapas_do_modulo(modulo):
         espessura = arredondar_medida(chapa["espessura"])
+        base = nome_do_material(espessura) if nome_do_material else f"{modulo['material']} {espessura} mm"
+        acabamento = textura(chapa["textura_id"]) if textura and chapa.get("textura_id") else None
         pecas.append({
             "id": f"{modulo['id']}_{codigo_da_chapa(chapa)}", "name": f"{chapa['nome']} - {modulo['nome']}",
             "width": arredondar_medida(chapa["largura"]), "height": arredondar_medida(chapa["altura"]), "quantity": chapa["quantidade"],
-            "thickness": espessura, "material": nome_do_material(espessura) if nome_do_material else f"{modulo['material']} {espessura} mm",
+            "thickness": espessura, "material": f"{base} · {acabamento['fabricante']} {acabamento['nome']}" if acabamento else base,
             "grain_direction": chapa["veio"], "module_ref": modulo["id"],
             "edges": {"top": chapa["fitas"]["topo"], "bottom": chapa["fitas"]["base"], "left": chapa["fitas"]["esquerda"], "right": chapa["fitas"]["direita"]},
         })
     return pecas
+
+
+# ---------------------------------------------------------------------------
+# 062: posição de cada chapa e acabamento por textura de fábrica
+# ---------------------------------------------------------------------------
+
+def caixas_das_chapas(modulo):
+    """Onde cada chapa fica, em mm, no espaço do módulo do contrato: x pela largura, y pela profundidade (a
+    frente em y = 0, para trás) e z para cima. Espelho de `caixasDasChapas` (client/src/pages/draw/modulo.ts)
+    do MOBI. É para ver o módulo chapa a chapa no Blender; não entra no contrato nem na lista de peças."""
+    larg, a, e, k = modulo["largura"], modulo["altura"], modulo["espessura"], modulo["construcao"]
+    d = medidas_derivadas(modulo)
+    hi, pc, pi = d["hi"], d["pc"], d["pi"]
+    hr = k["rodape"]["altura"]
+    passante = k["laterais"] == "PASSANTE"
+    sobreposta = k["porta"]["modo"] == "SOBREPOSTA"
+    g = k["porta"]["folga"]
+    q = max(1, k["prateleiras"]["quantidade"])
+    div = k["divisorias"]["quantidade"]
+    vao = (larg - 2 * e - div * e) / (div + 1)
+    x_da_frente = (0 if sobreposta else e) + g
+    base_da_frente = hr if sobreposta else hr + e
+    topo_da_frente = base_da_frente + (a - hr if sobreposta else hi)
+    caixas = []
+    for chapa in chapas_do_modulo(modulo):
+        L, H, E, i = chapa["largura"], chapa["altura"], chapa["espessura"], chapa["indice"]
+        papel = chapa["papel"]
+        for copia in range(chapa["quantidade"]):
+            if papel == "LATERAL_ESQUERDA":
+                caixa = (0, 0, 0 if passante else hr + e, E, L, H)
+            elif papel == "LATERAL_DIREITA":
+                caixa = (larg - E, 0, 0 if passante else hr + e, E, L, H)
+            elif papel == "BASE":
+                caixa = (e if passante else 0, 0, hr, L, H, E)
+            elif papel == "TAMPO":
+                caixa = (e if k["tampo"] == "ENTRE_LATERAIS" else 0, 0, a - E, L, H, E)
+            elif papel == "FUNDO":
+                if k["fundo"]["modo"] == "SOBREPOSTO":
+                    caixa = (0, pc, hr, L, E, H)
+                else:
+                    caixa = (e - k["fundo"]["encaixe"], pc - E - (10 if k["fundo"]["modo"] == "CANAL" else 0), hr + e - k["fundo"]["encaixe"], L, E, H)
+            elif papel == "PRATELEIRA":
+                compartimento, nivel = i // q, i % q
+                caixa = (e + compartimento * (vao + e) + k["prateleiras"]["folga_lateral"], pc - pi + k["prateleiras"]["recuo_frontal"], hr + e + hi * (nivel + 1) / (q + 1) - E / 2, L, H, E)
+            elif papel == "DIVISORIA":
+                caixa = (e + (i + 1) * vao + i * e, pc - pi, hr + e, E, L, H)
+            elif papel == "TRAVESSA":
+                caixa = (e, 0 if i % 2 == 0 else pc - H, a - e - E, L, H, E)
+            elif papel == "RODAPE":
+                caixa = (e, k["rodape"]["recuo"], 0, L, E, H)
+            elif papel == "FRENTE_DE_GAVETA":
+                caixa = (x_da_frente, -E if sobreposta else 0, topo_da_frente - g - (i + 1) * H - i * g, L, E, H)
+            else:  # PORTA
+                caixa = (x_da_frente + copia * (L + k["porta"]["folga_central"]), -E if sobreposta else 0, base_da_frente + g, L, E, H)
+            x, y, z, dx, dy, dz = caixa
+            caixas.append({"papel": papel, "indice": i, "nome": chapa["nome"], "x": x, "y": y, "z": z, "dx": dx, "dy": dy, "dz": dz,
+                           "veio": chapa["veio"], "textura_id": chapa.get("textura_id")})
+    return caixas
+
+
+GRUPOS_DE_CHAPA = {
+    "TODAS": lambda papel: True,
+    "CAIXA": lambda papel: papel not in ("PORTA", "FRENTE_DE_GAVETA", "FUNDO"),
+    "FRENTES": lambda papel: papel in ("PORTA", "FRENTE_DE_GAVETA"),
+}
+
+
+def aplicar_textura(modulo, grupo, textura_id):
+    """Põe (ou tira, com None) a textura nas chapas do grupo, pela edição chapa a chapa (062 D-10). Espelho de
+    `aplicarTextura` do MOBI: edição que fica sem nada sai do documento."""
+    alvos = [(c["papel"], c["indice"]) for c in chapas_do_modulo(modulo) if GRUPOS_DE_CHAPA[grupo](c["papel"])]
+    editadas = []
+    for edicao in modulo.get("chapas_editadas", []):
+        edicao = dict(edicao)
+        if (edicao["papel"], edicao["indice"]) in alvos:
+            edicao.pop("textura_id", None)
+            if textura_id:
+                edicao["textura_id"] = textura_id
+        editadas.append(edicao)
+    existentes = {(e["papel"], e["indice"]) for e in editadas}
+    if textura_id:
+        editadas += [{"papel": p, "indice": i, "textura_id": textura_id} for p, i in alvos if (p, i) not in existentes]
+    campos = ("largura", "altura", "espessura", "veio", "textura_id")
+    return {**modulo, "chapas_editadas": [e for e in editadas if any(c in e for c in campos)]}
+
+
+def texturas_do_modulo(modulo):
+    """Ids das texturas que as chapas do módulo usam, sem repetir, em ordem."""
+    return sorted({e["textura_id"] for e in modulo.get("chapas_editadas", []) if e.get("textura_id")})

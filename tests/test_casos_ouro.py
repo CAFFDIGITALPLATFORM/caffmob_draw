@@ -42,7 +42,8 @@ def divergencias(obtido, esperado, caminho=""):
 
 def calcular(caso):
     if caso["tipo"] == "modulo":
-        return {"erros": validar_medidas_do_modulo(caso["entrada"]), "pecas": pecas_do_modulo(caso["entrada"])}
+        texturas = caso.get("texturas", {})
+        return {"erros": validar_medidas_do_modulo(caso["entrada"]), "pecas": pecas_do_modulo(caso["entrada"], None, texturas.get)}
     erros = validar_ambiente(caso["entrada"])
     if "erros" in caso["esperado"]:
         return {"erros": erros}

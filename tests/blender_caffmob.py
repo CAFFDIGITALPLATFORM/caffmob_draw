@@ -1,5 +1,5 @@
 """
-Contrato caffmob v1 dentro do Blender (feature 061, T095 e T097, parte local).
+Contrato caffmob v1 dentro do Blender (feature 061, T095 e T097, parte local; 062 T032, texturas pela rede).
 
 Para cada caso-ouro de ambiente válido: monta a cena parede a parede e lê a cena de volta para o
 contrato; o documento tem de sair idêntico (fora version, atualizado_em e origem). Confere também as
@@ -118,6 +118,33 @@ if URL:
     final = sessao.baixar_ambiente(original["id"])
     if final["version"] != 5 or final["nome"] != "Mudado na web":
         falhas.append(f"Ficar com a minha deveria gravar a versão 5 com o nome da cena (veio {final['version']}, {final['nome']})")
+    # 062: textura de fábrica. Baixar traz só o que o módulo usa e monta o material; o painel aplica e o Enviar leva.
+    from blendertomob.caffmob.chapas import aplicar_textura
+    achadas = sessao.listar_texturas(busca="japandi")["itens"]
+    if len(achadas) != 1:
+        falhas.append(f"a busca por japandi deveria achar 1 textura (achou {len(achadas)})")
+    else:
+        tid = achadas[0]["id"]
+        com_textura = dict(original, id="7d0e0000-0000-4000-8000-000000000062", nome="Com textura",
+                           modulos=[aplicar_textura(original["modulos"][0], "CAIXA", tid), *original["modulos"][1:]])
+        sessao.criar_ambiente(com_textura)
+        bpy.ops.btm.caffmob_baixar(ambiente_id=com_textura["id"])
+        texturizado = next(o for o in contexto.scene.objects if o.get("caffmob_tipo") == "modulo" and json.loads(o["caffmob_modulo"])["id"] == com_textura["modulos"][0]["id"])
+        material = next((m for m in texturizado.data.materials if m.name == f"CAFFMOB {tid}"), None)
+        imagem = material and next((no.image for no in material.node_tree.nodes if no.type == 'TEX_IMAGE'), None)
+        if not imagem or imagem.size[0] == 0:
+            falhas.append("o módulo com textura deveria ter o material com a imagem carregada")
+        elif not Path(imagem.filepath).name.startswith(achadas[0]["sha256_trabalho"]):
+            falhas.append(f"a imagem deveria vir do cache com o sha256 no nome ({imagem.filepath})")
+        contexto.view_layer.objects.active = texturizado
+        contexto.window_manager.caffmob_grupo_textura = "TODAS"
+        bpy.ops.btm.caffmob_aplicar_textura(textura_id=tid)
+        if any(not c.get("textura_id") for c in __import__("blendertomob.caffmob.chapas", fromlist=["x"]).chapas_do_modulo(json.loads(texturizado["caffmob_modulo"]))):
+            falhas.append("Aplicar a todas deveria pôr a textura em toda chapa do módulo")
+        bpy.ops.btm.caffmob_enviar()
+        voltou = next(m for m in sessao.baixar_ambiente(com_textura["id"])["modulos"] if m["id"] == com_textura["modulos"][0]["id"])
+        if {e.get("textura_id") for e in voltou["chapas_editadas"]} != {tid}:
+            falhas.append(f"o textura_id deveria voltar ao MOBI em todas as chapas (veio {voltou['chapas_editadas']})")
     sessao.esquecer()
     print("pela rede com os operadores: ok" if not falhas else "pela rede com os operadores: falhou", flush=True)
 
