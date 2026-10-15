@@ -5,8 +5,14 @@ from ..texture_library import auth, downloads, catalog
 from . import tarefas
 
 CONNECTED = N_('Conectado ao titular {}')
+CONNECTED_PERSON = N_('Conectado como {} · {}')
 DISCONNECTED = N_('Blender desconectado do MOBI')
 CODE = N_('Código {}: confirme a conexão no navegador')
+
+
+def connected_text():
+    pessoa = auth.pessoa_nome()
+    return tr(CONNECTED_PERSON).format(pessoa, auth.titular_nome()) if pessoa else tr(CONNECTED).format(auth.titular_nome())
 
 
 class MOBI_OT_Conectar(bpy.types.Operator):
@@ -28,7 +34,7 @@ class MOBI_OT_Conectar(bpy.types.Operator):
         def done(ok, message):
             state = bpy.context.window_manager.btm_caffmob
             state.codigo = ''
-            state.situacao = tr(CONNECTED).format(auth.titular_nome()) if ok else tr(message)
+            state.situacao = connected_text() if ok else tr(message)
             if ok:
                 catalog.invalidate()
         auth.start_login(code, done)

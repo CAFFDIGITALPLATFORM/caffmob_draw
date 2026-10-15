@@ -1,6 +1,6 @@
 """Sessão única do aparelho MOBI (063 RF-03, RF-08; D-05, D-06).
 
-Código RFC 8628, renovação e revogação passam por downloads.request. A sessão, com tokens, titular e base,
+Código RFC 8628, renovação e revogação passam por downloads.request. A sessão, com tokens, pessoa, titular e base,
 fica em caffmob/sessao.json (0600); só 400 invalid_grant a invalida na renovação.
 """
 
@@ -260,3 +260,8 @@ def shutdown():
 
 def titular_nome():
     return account_email()
+
+
+def pessoa_nome():
+    session = _load()
+    return str((session or {}).get("pessoa", {}).get("nome") or "")

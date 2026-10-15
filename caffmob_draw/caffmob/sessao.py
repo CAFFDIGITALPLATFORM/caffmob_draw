@@ -9,7 +9,8 @@ PENDENTE = 'Desconectado neste Blender. Desconecte também em Aparelhos conectad
 def payload(tokens, base, saved_at=''):
     return {'schema-version': 1, 'server': base.rstrip('/'), 'saved-at': saved_at,
             'tokens': dict(tokens), 'refresh_token': str(tokens['refresh_token']),
-            'titular': dict(tokens.get('titular') or {})}
+            'titular': dict(tokens.get('titular') or {}),
+            'pessoa': dict(tokens.get('pessoa') or {})}
 
 
 def load(data, base):

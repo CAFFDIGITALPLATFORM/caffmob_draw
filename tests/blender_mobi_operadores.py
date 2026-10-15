@@ -5,7 +5,7 @@ import json
 import sys
 import tempfile
 from pathlib import Path
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
 import bpy
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -57,7 +57,8 @@ from caffmob_draw.mobi.ops_biblioteca import instance
 doc['modulos'] = [instance(mod, mod['id'])]
 state = bpy.context.window_manager.btm_caffmob
 assert state is not None
-with tempfile.TemporaryDirectory() as directory, patch.object(downloads, 'request', side_effect=request), patch.object(downloads, 'cancel_request', side_effect=cancel), patch.object(downloads, 'cache_dir', side_effect=lambda:directory):
+with tempfile.TemporaryDirectory() as directory, patch.object(downloads, 'request', side_effect=request), patch.object(downloads, 'cancel_request', side_effect=cancel), patch.object(downloads, 'cache_dir', side_effect=lambda:directory), patch.object(auth, 'session_path', return_value=directory + '/sessao.json'):
+    auth.reload()
     # T038: código RFC 8628 e revogação, sem navegador nem rede reais.
     with patch.object(downloads, 'unavailable_reason', return_value=''):
         assert bpy.ops.caffmob.mobi_conectar() == {'FINISHED'}
@@ -66,7 +67,39 @@ with tempfile.TemporaryDirectory() as directory, patch.object(downloads, 'reques
         reply(200, {'device_code':'mobc_teste', 'user_code':'BCDF-GHJK', 'verification_uri_complete':'http://127.0.0.1/conectar',
                     'verification_uri':'http://127.0.0.1/conectar','expires_in':600,'interval':5})
         assert state.codigo == 'BCDF-GHJK'
-        auth.cancel_login()
+        auth._state['flow'].next_poll = 0
+        auth._poll()
+        assert pending[0]['path'] == '/api/draw/aparelho/token'
+        reply(200, {'access_token':'mobd_teste', 'refresh_token':'mobr_teste', 'expires_in':3600,
+                    'titular':{'nome':'Oficina'}, 'pessoa':{'nome':'Ana'}})
+        assert auth.pessoa_nome() == 'Ana'
+        from caffmob_draw.mobi.ops_conta import CONNECTED, CONNECTED_PERSON
+        from caffmob_draw.ui.sidebar_project import draw_mobi_account
+        label = tr(CONNECTED_PERSON).format('Ana', 'Oficina')
+        assert state.situacao == label
+        # Mesmo texto no grupo CAFF MOBI e no quadro das preferências.
+        layout = MagicMock()
+        draw_mobi_account(layout)
+        layout.label.assert_any_call(text=label, icon='CHECKMARK')
+        prefs = MagicMock()
+        addon.BTM_AddonPreferences.draw(prefs, bpy.context)
+        prefs.layout.box.return_value.column.return_value.label.assert_any_call(text=label, icon='CHECKMARK')
+        # Sessão 1.1.0 sem pessoa: só titular, até a renovação preencher.
+        old = json.loads(Path(auth.session_path()).read_text())
+        old.pop('pessoa')
+        old['tokens'].pop('pessoa')
+        Path(auth.session_path()).write_text(json.dumps(old))
+        auth.reload()
+        layout = MagicMock()
+        draw_mobi_account(layout)
+        layout.label.assert_any_call(text=tr(CONNECTED).format('Oficina'), icon='CHECKMARK')
+        auth.with_access(lambda token: None)
+        reply(200, {'access_token':'mobd_renovado', 'refresh_token':'mobr_renovado', 'expires_in':3600,
+                    'titular':{'nome':'Oficina'}, 'pessoa':{'nome':'Beatriz'}})
+        assert auth.pessoa_nome() == 'Beatriz'
+        layout = MagicMock()
+        draw_mobi_account(layout)
+        layout.label.assert_any_call(text=tr(CONNECTED_PERSON).format('Beatriz', 'Oficina'), icon='CHECKMARK')
     # T039: cancelar antes da resposta deixa a cena idêntica.
     before = set(o.name for o in bpy.context.scene.objects)
     assert bpy.ops.caffmob.mobi_baixar_ambiente(ambiente_id=doc['id']) == {'FINISHED'}
