@@ -54,10 +54,14 @@ class Ponte(unittest.TestCase):
             renewal = [m for m in sent if m['type']=='request'][-1]
             self.assertEqual(renewal['path'], '/api/draw/aparelho/token')
             self.assertTrue(renewal['form'])
-            self.dl._dispatch({'type':'reply','rid':renewal['rid'],'status':200,'body':{'access_token':'mobd_y','refresh_token':'mobr_y','expires_in':3600,'titular':{'nome':'Oficina'}}})
+            self.dl._dispatch({'type':'reply','rid':renewal['rid'],'status':200,'body':{'access_token':'mobd_y','refresh_token':'mobr_y','expires_in':3600,'titular':{'nome':'Oficina'},'pessoa':{'nome':'Ana'}}})
             again = [m for m in sent if m['type']=='request'][-1]
             self.assertEqual(again['headers'], {'If-Match':'"7"'})
             self.dl._dispatch({'type':'reply','rid':again['rid'],'status':401,'headers':{'ETag':'"8"'}})
+        self.assertEqual(self.auth.pessoa_nome(), 'Ana')
+        self.auth.reload()
+        self.assertEqual(self.auth.pessoa_nome(), 'Ana')
+        self.assertEqual(self.auth.titular_nome(), 'Oficina')
         self.assertEqual(results, [(401, {'ETag':'"8"'})])
         self.assertEqual(len([m for m in sent if m.get('path')=='/api/draw/aparelho/token']), 1)
 
@@ -164,3 +168,18 @@ class Ponte(unittest.TestCase):
         request.assert_not_called()
         self.assertFalse(Path(self.auth.session_path()).exists())
         self.assertIn('Aparelhos conectados',result[0])
+
+    def test_troca_do_codigo_guarda_pessoa_e_sessao_antiga_mostra_so_titular(self):
+        self.assertEqual(self.auth.pessoa_nome(), '')
+        self.assertEqual(self.auth.titular_nome(), 'Oficina')
+        with patch.object(self.dl, 'request') as request:
+            self.auth.start_login()
+            request.call_args.kwargs['callback'](200, {'device_code':'codigo', 'user_code':'BCDF-GHJK',
+                'verification_uri':'http://127.0.0.1', 'expires_in':600, 'interval':5})
+            self.auth._state['flow'].next_poll = 0
+            self.auth._poll()
+            request.call_args.kwargs['callback'](200, {'access_token':'mobd_novo', 'refresh_token':'mobr_novo',
+                'expires_in':3600, 'titular':{'nome':'Oficina'}, 'pessoa':{'nome':'Ana'}})
+        self.auth.reload()
+        self.assertEqual(self.auth.pessoa_nome(), 'Ana')
+        self.assertEqual(json.loads(Path(self.auth.session_path()).read_text())['pessoa'], {'nome':'Ana'})

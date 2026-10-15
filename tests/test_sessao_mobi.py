@@ -7,7 +7,7 @@ import _bootstrap
 from caffmob_draw.caffmob import sessao
 from caffmob_draw.texture_library import auth_core
 
-TOKENS = {'access_token': 'mobd_teste', 'refresh_token': 'mobr_teste', 'titular': {'nome': 'Oficina'}}
+TOKENS = {'access_token': 'mobd_teste', 'refresh_token': 'mobr_teste', 'titular': {'nome': 'Oficina'}, 'pessoa': {'nome': 'Ana'}}
 
 
 class Sessao(unittest.TestCase):
@@ -19,6 +19,7 @@ class Sessao(unittest.TestCase):
             self.assertEqual(os.stat(path).st_mode & 0o777, 0o600)
             self.assertEqual(sessao.read(path, data['server'])['tokens'], TOKENS)
             self.assertIsNone(sessao.read(path, 'http://127.0.0.1:5678'))
+            self.assertEqual(sessao.read(path, data['server'])['pessoa'], {'nome': 'Ana'})
             self.assertNotIn('senha', json.dumps(data))
             os.chmod(path, 0o644)
             sessao.save(path, data)
@@ -39,3 +40,11 @@ class Sessao(unittest.TestCase):
             self.assertIn('Aparelhos conectados', sessao.disconnect(path, None))
             self.assertFalse(os.path.exists(path))
             self.assertEqual(sessao.disconnect(path, 200), '')
+
+    def test_sessao_antiga_sem_pessoa_carrega_e_renovacao_preenche(self):
+        antiga = sessao.payload({k: v for k, v in TOKENS.items() if k != 'pessoa'}, 'http://127.0.0.1')
+        antiga.pop('pessoa')
+        self.assertIsNotNone(sessao.load(antiga, antiga['server']))
+        outcome, tokens = sessao.refresh_outcome(200, TOKENS)
+        self.assertEqual(outcome, 'OK')
+        self.assertEqual(sessao.payload(tokens, antiga['server'])['pessoa'], {'nome': 'Ana'})

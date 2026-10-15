@@ -76,13 +76,13 @@ def draw_hardware(layout, context):
 def draw_mobi_account(layout):
     """Conta única do aparelho, compartilhada com as preferências."""
     from ..texture_library import auth, downloads
-    from ..mobi.ops_conta import CONNECTED, CODE
+    from ..mobi.ops_conta import connected_text, CODE
     reason = downloads.unavailable_reason()
     if reason:
         layout.label(text=tr(reason), icon='ERROR')
     state, code, _url = auth.login_state()
     if auth.signed_in():
-        layout.label(text=tr(CONNECTED).format(auth.titular_nome()), icon='CHECKMARK')
+        layout.label(text=connected_text(), icon='CHECKMARK')
     else:
         layout.label(text=tr("Blender desconectado do MOBI"), icon='USER')
     if state == 'WAITING':
