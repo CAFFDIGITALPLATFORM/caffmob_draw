@@ -44,6 +44,7 @@ from .selection import component_props, component_select, component_pick
 from . import legacy
 from . import library_panel
 from . import texture_library
+from . import mobi
 from . import compat_identity
 from . import ui
 from . import overlays
@@ -117,9 +118,12 @@ def _update_use_viewport_hud(self, context):
                         area.tag_redraw()
 
 
-def _update_textures_server(self, context):
+def _update_mobi_url(self, context):
     """Servidor trocado: encerra a rede e relê a sessão (ela vale só para o servidor em que foi feita)."""
     from .texture_library import auth, downloads
+    from .mobi import tarefas
+    tarefas.cancel_all()
+    auth.cancel_login()
     downloads.shutdown()
     auth.reload()
 
@@ -215,12 +219,12 @@ class BTM_AddonPreferences(bpy.types.AddonPreferences):
         default=0.05, min=0.001, max=0.5, subtype='DISTANCE', unit='LENGTH',
     )  # type: ignore
 
-    # Feature 014 (data-delta §5): base do contrato do servidor de texturas; o endereço oficial entra na publicação.
-    textures_server_url: bpy.props.StringProperty(
-        name="Servidor de texturas",
-        description="Endereço do servidor de texturas da CAF Mob (sem o /v1 do final)",
-        default="",
-        update=_update_textures_server,
+    # Feature 063 (RN-04): endereço único do MOBI; CAFFMOB_BASE sobrepõe nos testes.
+    mobi_url: bpy.props.StringProperty(
+        name="Endereço do MOBI",
+        description="Endereço do CAFF MOBI (sem /api/draw/v1 no final)",
+        default="https://mobi.caff.digital",
+        update=_update_mobi_url,
     )  # type: ignore
 
     asset_libraries: bpy.props.CollectionProperty(type=hb_assets.BTM_AssetLibraryEntry)  # type: ignore
@@ -251,10 +255,11 @@ class BTM_AddonPreferences(bpy.types.AddonPreferences):
         sub.prop(self, "stick_magnet_distance")
 
         box = layout.box()
-        box.label(text="Conta CAF Mob", icon='USER')
-        box.prop(self, "textures_server_url")
-        from .texture_library import ops_account
-        ops_account.draw_account(box.column())
+        from .data.i18n import tr
+        from .ui.sidebar_project import draw_mobi_account
+        box.label(text=tr("Conta CAFF MOBI"), icon='USER')
+        box.prop(self, "mobi_url")
+        draw_mobi_account(box.column())
 
         layout.separator()
 
@@ -330,6 +335,7 @@ def register():
     legacy.register()           # feature 012: bibliotecas herdadas fora da interface e conversão
     library_panel.register()    # feature 012: painel BIBLIOTECA CAFFMOB
     texture_library.register()  # feature 014: texturas dos fabricantes, conta CAF Mob e download
+    mobi.register()  # feature 063: operadores e estado único do aparelho
 
     # Register legacy UI
     view3d_sidebar.register()
@@ -378,6 +384,7 @@ def unregister():
     view3d_sidebar.unregister()
 
     # Unregister modern UI, operators & draw handlers
+    mobi.unregister()
     texture_library.unregister()
     library_panel.unregister()
     legacy.unregister()

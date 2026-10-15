@@ -25,12 +25,14 @@ import threading
 import time
 import urllib.error
 import urllib.request
+import urllib.parse
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import download_core  # noqa: E402  (este arquivo roda fora do pacote)
 
 CHUNK = 64 * 1024
-TIMEOUT = 30
+TIMEOUT = 10
+IMAGE_TIMEOUT = 60
 PROGRESS_EVERY = 0.15
 TOKEN_WAIT = 30.0
 
@@ -63,24 +65,24 @@ class Worker:
         return self.base + ("" if path.startswith("/") else "/") + path
 
     def opener(self, auth_url):
-        token = self.token
+        token, base = self.token, self.base
 
         class Redirect(urllib.request.HTTPRedirectHandler):
             def redirect_request(self, req, fp, code, msg, headers, newurl):
                 new = super().redirect_request(req, fp, code, msg, headers, newurl)
-                if new is not None and token and download_core.same_origin(auth_url, newurl):
+                if new is not None and req.get_header("Authorization") and download_core.same_origin(base, newurl):
                     new.add_unredirected_header("Authorization", "Bearer " + token)
                 return new
         return urllib.request.build_opener(Redirect)
 
-    def build(self, url, method="GET", body=None, auth=True, extra=None):
-        data = json.dumps(body).encode("utf-8") if body is not None else None
+    def build(self, url, method="GET", body=None, auth=True, extra=None, form=False):
+        data = (urllib.parse.urlencode(body) if form else json.dumps(body)).encode("utf-8") if body is not None else None
         request = urllib.request.Request(url, data=data, method=method)
         request.add_header("User-Agent", self.user_agent)
         request.add_header("Accept", "application/json")
         if data is not None:
-            request.add_header("Content-Type", "application/json")
-        if auth and self.token:
+            request.add_header("Content-Type", "application/x-www-form-urlencoded" if form else "application/json")
+        if auth and self.token and download_core.same_origin(self.base, url):
             request.add_unredirected_header("Authorization", "Bearer " + self.token)   # nunca segue o redirect
         for key, value in (extra or {}).items():
             request.add_header(key, value)
@@ -93,16 +95,26 @@ class Worker:
         except (ValueError, UnicodeDecodeError):
             return {}
 
-    def request(self, rid, method, path, body, auth):
-        url = self.url(path)
-        try:
-            with self.opener(url).open(self.build(url, method, body, auth), timeout=TIMEOUT) as response:
-                self.say(type="reply", rid=rid, status=response.status, body=self._json(response.read()))
-        except urllib.error.HTTPError as exc:
-            self.say(type="reply", rid=rid, status=exc.code, body=self._json(exc.read()),
-                     retry_after=exc.headers.get("Retry-After"))
-        except (urllib.error.URLError, OSError, ValueError) as exc:
-            self.say(type="reply", rid=rid, status=None, body={"error": "network", "message": str(exc)})
+    def request(self, rid, method, path, body, auth, headers=None, form=False):
+        # (063 RF-10; D-04) As esperas acontecem somente neste subprocesso.
+        url, attempt = self.url(path), 0
+        while not self.is_cancelled(rid):
+            response_headers = {}
+            try:
+                with self.opener(url).open(self.build(url, method, body, auth, headers, form), timeout=TIMEOUT) as response:
+                    status, payload = response.status, self._json(response.read())
+                    response_headers = dict(response.headers)
+            except urllib.error.HTTPError as exc:
+                status, payload = exc.code, self._json(exc.read())
+                response_headers = dict(exc.headers)
+            except (urllib.error.URLError, OSError, ValueError) as exc:
+                status, payload = None, {"error": "network", "message": str(exc)}
+            attempt += 1
+            delay = download_core.retry_delay(attempt, status, response_headers.get("Retry-After"))
+            if delay is None:
+                return self.say(type="reply", rid=rid, status=status, body=payload, headers=response_headers,
+                                etag=response_headers.get("ETag"), retry_after=response_headers.get("Retry-After"))
+            time.sleep(delay)
 
     # Download ------------------------------------------------------------------------------------------------
     def is_cancelled(self, item_id):
@@ -123,8 +135,12 @@ class Worker:
         expected = int(item.get("bytes") or 0)
         offset = download_core.resume_offset(os.path.getsize(part) if os.path.exists(part) else 0, expected)
         url = self.url(item["url"])
-        extra = {"Range": "bytes={}-".format(offset)} if offset else None
-        with self.opener(url).open(self.build(url, extra=extra), timeout=TIMEOUT) as response, \
+        extra = dict(item.get("headers") or {})
+        if offset:
+            extra["Range"] = "bytes={}-".format(offset)
+        if item.get("etag"):
+            extra["If-None-Match"] = item["etag"]
+        with self.opener(url).open(self.build(url, extra=extra), timeout=IMAGE_TIMEOUT) as response, \
                 open(part, "ab" if response.status == 206 and offset else "wb") as handle:
             last = 0.0
             while True:
@@ -137,7 +153,9 @@ class Worker:
                 now = time.monotonic()
                 if now - last >= PROGRESS_EVERY:
                     last = now
-                    self.say(type="progress", id=item["id"], received=handle.tell(), total=expected)
+                    self.say(type="progress", id=item["id"], received=handle.tell(),
+                             total=expected or int(response.headers.get("Content-Length") or 0))
+            item["response_headers"] = dict(response.headers)
         if expected and os.path.getsize(part) < expected:
             raise ConnectionError("conexão cortada antes do fim")      # fim de arquivo sem exceção (prova T004)
 
@@ -146,12 +164,22 @@ class Worker:
         part = dest + ".part"
         os.makedirs(os.path.dirname(dest) or ".", exist_ok=True)
         attempt, hash_retry, token_retry = 0, False, False
+        if not item.get("sha256") and os.path.isfile(dest + ".etag") and os.path.isfile(dest):
+            with open(dest + ".etag", encoding="utf-8") as handle:
+                item["etag"] = handle.read()
+            with open(dest, "rb") as handle:
+                if hashlib.sha256(handle.read()).hexdigest() != item["etag"].strip('"'):
+                    item.pop("etag", None)
         while True:
             try:
+                if self.is_cancelled(item_id):
+                    raise InterruptedError
                 self._fetch(item, part)
                 with open(part, "rb") as handle:
                     digest = hashlib.sha256(handle.read()).hexdigest()
-                if not download_core.verify(digest, item.get("sha256")):
+                headers = item.get("response_headers", {})
+                etag = headers.get("ETag", "")
+                if not download_core.verify(digest, item.get("sha256") or etag.strip('"')):
                     os.remove(part)
                     if hash_retry:
                         return self.say(type="error", id=item_id, code="hash", status=None,
@@ -159,10 +187,15 @@ class Worker:
                     hash_retry = True
                     continue
                 os.replace(part, dest)
-                return self.say(type="done", id=item_id, path=dest)
+                if etag:
+                    with open(dest + ".etag", "w", encoding="utf-8") as handle:
+                        handle.write(etag)
+                return self.say(type="done", id=item_id, path=dest, headers=headers, etag=etag, sha256=digest)
             except InterruptedError:
                 return self.say(type="error", id=item_id, code="cancelled", status=None, message="")
             except urllib.error.HTTPError as exc:
+                if exc.code == 304 and item.get("etag") and os.path.isfile(dest):
+                    return self.say(type="done", id=item_id, path=dest, headers=dict(exc.headers), etag=item["etag"])
                 body = self._json(exc.read())
                 if exc.code == 401 and not token_retry:
                     token_retry = True
@@ -197,7 +230,8 @@ class Worker:
         elif kind == "request":
             threading.Thread(target=self.request, daemon=True,
                              args=(message["rid"], message.get("method", "GET"), message["path"],
-                                   message.get("body"), bool(message.get("auth", True)))).start()
+                                   message.get("body"), bool(message.get("auth", True)),
+                                   message.get("headers"), bool(message.get("form")))).start()
         elif kind == "cancel":
             with self.state_lock:
                 self.cancelled.add(message["id"])

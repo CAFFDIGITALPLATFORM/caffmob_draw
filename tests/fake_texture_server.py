@@ -1,24 +1,9 @@
-"""Servidor falso do contrato de texturas da CAF Mob (feature 014, T003; interfaces/servidor-texturas.md).
+"""Servidor falso local do MOBI: texturas e autorização do aparelho (063 T058).
 
-Referência executável do contrato `v1` para os testes e para o time do site. Só biblioteca padrão.
-
-    python3 tests/fake_texture_server.py --root dist/texturas-servidor --port 8765 \\
-        --account teste@cafmob.local --download-all
-
-`--root` aponta para a saída do `tools/texturas_importar.py` (`manifest.json` + `files/`). Sem `--root`, o servidor
-serve um catálogo de demonstração com duas imagens geradas em memória.
-
-Falhas injetáveis (para os testes de robustez):
-- `--approve-after N`: o código de dispositivo é aprovado sozinho depois de N consultas a `/auth/token`
-  (padrão 1; 0 = só aprova quando alguém abre `/ativar?code=...`, como o navegador faria);
-- `--expire-access N`: o token de acesso vale N requisições autenticadas (depois, 401 `expired_token`);
-- `--forbid`: a conta não tem acesso a texturas (403 `not_entitled`);
-- `--rate-limit-once`: a primeira requisição de arquivo responde 429 com `Retry-After: 1`;
-- `--cut-after BYTES`: a primeira resposta de arquivo corta a conexão depois de BYTES bytes;
-- `--no-range`: ignora `Range` (responde 200 sempre);
-- `--redirect`: `/file` responde 302 para `/storage/<id>` (endereço "assinado").
+Só biblioteca padrão. Sem --root, gera três texturas PNG; --root lê manifest.json
+com arquivos sintéticos para os ensaios de corte, retomada, HTTP 429 e redirecionamento.
+Nenhuma rota legada da 014 é atendida. Use somente 127.0.0.1.
 """
-
 import argparse
 import hashlib
 import json
@@ -32,6 +17,9 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import parse_qs, urlparse
 
 CLIENT_ID = "caffmob-draw"
+TEXTURES = "/api/draw/v1/texturas"
+DEVICE = "/api/draw/aparelho"
+IDS = tuple("06300000-0000-4000-8000-{:012d}".format(i) for i in range(1, 4))
 
 
 def _png(rgb, size=8):
@@ -54,28 +42,31 @@ class Store:
         self.catalog = {"version": 1, "items": {}}
         self.devices = {}                    # device_code → {"user_code", "polls", "approved"}
         self.access = {}                     # access_token → requisições restantes (None = sem limite)
-        self.refresh = set()
+        self.refresh = {}
         self.calls = {"file": 0}
         self.log = []
         self._load()
 
     def _load(self):
-        root = self.args.root
-        if root:
-            manifest = json.load(open(os.path.join(root, "manifest.json"), encoding="utf-8"))
-            for tid, item in manifest["items"].items():
-                path = os.path.join(root, item["file"])
-                kind = "image/png" if path.lower().endswith(".png") else "image/jpeg"
-                self.files[tid] = (path, kind)
-                self.catalog["items"][tid] = {"sha256": item["sha256"], "bytes": item["bytes"],
-                                              "url": f"/v1/textures/{tid}/file"}
-            self.catalog["version"] = manifest.get("version", 1)
+        if self.args.root:
+            with open(os.path.join(self.args.root, "manifest.json"), encoding="utf-8") as handle:
+                manifest = json.load(handle)
+            for tid, meta in manifest["items"].items():
+                self.files[tid] = (os.path.join(self.args.root, meta["file"]), "image/jpeg")
+                self.catalog["items"][tid] = self._item(tid, meta["sha256"], meta.get("largura", 1024), meta.get("altura", 1024))
             return
-        for tid, rgb in (("demo/geral/carvalho", (150, 110, 70)), ("demo/geral/branco", (240, 240, 235))):
+        for i, (tid, rgb) in enumerate(zip(IDS, ((150, 110, 70), (240, 240, 235), (50, 80, 100)))):
             data = _png(rgb, 64)
             self.files[tid] = (data, "image/png")
-            self.catalog["items"][tid] = {"sha256": hashlib.sha256(data).hexdigest(), "bytes": len(data),
-                                          "url": f"/v1/textures/{tid}/file"}
+            raw = self._item(tid, hashlib.sha256(data).hexdigest(), 1024, 2048 if i == 1 else 1024)
+            raw.update(formato="png", nome=("Madeira", "Branco em pé", "Relevo")[i], mapas=["bump"] if i == 2 else [])
+            self.catalog["items"][tid] = raw
+
+    @staticmethod
+    def _item(tid, sha, width, height):
+        return {"id": tid, "nome": "Textura de teste", "fabricante": "Fábrica de teste", "linha": "Linha de teste",
+                "largura": width, "altura": height, "formato": "jpeg", "sha256_trabalho": sha,
+                "sha256_miniatura": sha, "mapas": []}
 
     def file_bytes(self, tid):
         source, kind = self.files[tid]
@@ -85,13 +76,13 @@ class Store:
             return handle.read(), kind
 
     def new_tokens(self):
-        access = secrets.token_urlsafe(24)
-        refresh = secrets.token_urlsafe(32)
+        access = "mobd_" + secrets.token_urlsafe(32)
+        refresh = "mobr_" + secrets.token_urlsafe(32)
         limit = self.args.expire_access or None
         self.access[access] = limit
-        self.refresh.add(refresh)
+        self.refresh[refresh] = access
         return {"access_token": access, "expires_in": 900, "refresh_token": refresh,
-                "account": {"email": self.args.account, "name": self.args.account.split("@")[0]}}
+                "titular": {"id": 1, "nome": self.args.titular}}
 
 
 class Handler(BaseHTTPRequestHandler):
@@ -120,7 +111,10 @@ class Handler(BaseHTTPRequestHandler):
         if not length:
             return {}
         try:
-            return json.loads(self.rfile.read(length).decode("utf-8"))
+            raw = self.rfile.read(length).decode("utf-8")
+            if "application/x-www-form-urlencoded" in self.headers.get("Content-Type", ""):
+                return {k: v[0] for k, v in parse_qs(raw).items()}
+            return json.loads(raw)
         except (ValueError, UnicodeDecodeError):
             return None
 
@@ -146,8 +140,8 @@ class Handler(BaseHTTPRequestHandler):
         body = self._body()
         if body is None:
             return self._error(400, "invalid_request", "JSON inválido.")
-        routes = {"/v1/auth/device": self._device, "/v1/auth/token": self._token,
-                  "/v1/auth/refresh": self._refresh, "/v1/auth/logout": self._logout}
+        routes = {DEVICE + "/codigo": self._device, DEVICE + "/token": self._token,
+                  DEVICE + "/revogar": self._logout}
         handler = routes.get(path)
         if handler is None:
             return self._error(404, "not_found", "Rota inexistente.")
@@ -160,25 +154,41 @@ class Handler(BaseHTTPRequestHandler):
             return self._approve(parse_qs(url.query).get("code", [""])[0])
         if path.startswith("/storage/"):
             return self._file(path[len("/storage/"):], signed=True)
-        if not path.startswith("/v1/"):
+        if not (path == TEXTURES or path.startswith(TEXTURES + "/")):
             return self._error(404, "not_found", "Rota inexistente.")
         if not self._authorized():
             return None
-        if path == "/v1/me/entitlements":
-            return self._json(200, {"textures": not self.store.args.forbid,
-                                    "download_all": bool(self.store.args.download_all) and not self.store.args.forbid,
-                                    "catalog_versions": [self.store.catalog["version"]]})
-        if path == "/v1/textures/catalog":
-            etag = '"' + hashlib.sha256(json.dumps(self.store.catalog, sort_keys=True).encode()).hexdigest()[:16] + '"'
-            if self.headers.get("If-None-Match") == etag:
-                self.send_response(304)
-                self.send_header("ETag", etag)
-                self.end_headers()
-                return None
-            return self._json(200, self.store.catalog, {"ETag": etag})
-        if path.startswith("/v1/textures/") and path.endswith("/file"):
-            return self._file(path[len("/v1/textures/"):-len("/file")])
+        if path == TEXTURES + "/fabricantes":
+            return self._etag_json({"itens": [{"fabricante": "Fábrica de teste", "total": len(self.store.files),
+                                              "linhas": [{"linha": "Linha de teste", "total": len(self.store.files)}]}]})
+        if path == TEXTURES:
+            query = parse_qs(url.query)
+            entries = list(self.store.catalog["items"].values())
+            for key in ("fabricante", "linha"):
+                if query.get(key):
+                    entries = [i for i in entries if i[key] == query[key][0]]
+            if query.get("busca"):
+                entries = [i for i in entries if query["busca"][0].casefold() in i["nome"].casefold()]
+            cursor = int(query.get("cursor", [0])[0])
+            return self._etag_json({"itens": entries[cursor:cursor + 2],
+                                    "proximo": str(cursor + 2) if len(entries) > cursor + 2 else None})
+        suffix = path[len(TEXTURES) + 1:]
+        if suffix.endswith("/imagem"):
+            return self._file(suffix[:-len("/imagem")])
+        if suffix.endswith("/mapas/bump"):
+            return self._file(suffix[:-len("/mapas/bump")])
+        if suffix in self.store.catalog["items"]:
+            return self._etag_json(self.store.catalog["items"][suffix])
         return self._error(404, "not_found", "Rota inexistente.")
+
+    def _etag_json(self, body):
+        etag = '"' + hashlib.sha256(json.dumps(body, sort_keys=True).encode()).hexdigest() + '"'
+        if self.headers.get("If-None-Match") == etag:
+            self.send_response(304)
+            self.send_header("ETag", etag)
+            self.end_headers()
+            return None
+        return self._json(200, body, {"ETag": etag})
 
     def _device(self, body):
         if body.get("client_id") != CLIENT_ID:
@@ -209,6 +219,8 @@ class Handler(BaseHTTPRequestHandler):
         return None
 
     def _token(self, body):
+        if body.get("grant_type") == "refresh_token":
+            return self._refresh(body)
         state = self.store.devices.get(body.get("device_code", ""))
         if state is None:
             return self._error(400, "expired_token", "Código expirado. Peça um novo.")
@@ -226,16 +238,15 @@ class Handler(BaseHTTPRequestHandler):
         token = body.get("refresh_token", "")
         with self.store.lock:
             if token not in self.store.refresh:
-                return self._error(401, "invalid_token", "Sessão encerrada. Entre de novo.")
-            self.store.refresh.discard(token)          # rotação
+                return self._error(400, "invalid_grant", "Sessão encerrada. Conecte de novo.")
+            self.store.refresh.pop(token, None)          # rotação
             return self._json(200, self.store.new_tokens())
 
     def _logout(self, body):
         with self.store.lock:
-            self.store.refresh.discard(body.get("refresh_token", ""))
-        self.send_response(204)
-        self.end_headers()
-        return None
+            access = self.store.refresh.pop(body.get("token", ""), None)
+            self.store.access.pop(access, None)
+        return self._json(200, {})
 
     def _file(self, tid, signed=False):
         if tid not in self.store.files:
@@ -285,8 +296,7 @@ def parse_args(argv=None):
     parser.add_argument("--root", default="")
     parser.add_argument("--host", default="127.0.0.1")
     parser.add_argument("--port", type=int, default=8765)
-    parser.add_argument("--account", default="teste@cafmob.local")
-    parser.add_argument("--download-all", action="store_true")
+    parser.add_argument("--titular", default="Oficina de teste")
     parser.add_argument("--approve-after", type=int, default=1)
     parser.add_argument("--expire-access", type=int, default=0)
     parser.add_argument("--forbid", action="store_true")
@@ -299,6 +309,8 @@ def parse_args(argv=None):
 
 def make_server(args):
     """Servidor pronto para `serve_forever()` (porta 0 = livre; a porta real fica em `server.server_address`)."""
+    if args.host != "127.0.0.1":
+        raise ValueError("O servidor falso só pode escutar em 127.0.0.1")
     handler = type("BoundHandler", (Handler,), {"store": Store(args)})
     return ThreadingHTTPServer((args.host, args.port), handler)
 

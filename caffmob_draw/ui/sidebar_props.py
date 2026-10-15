@@ -21,7 +21,7 @@ GROUPS = (
     # Verificar
     ('check_fronts', True), ('check_collisions', True),
     # Produção/Projeto
-    ('cut_plan', True), ('rooms', False), ('settings', False), ('project_info', False), ('drawings_2d', False),
+    ('mobi', False), ('cut_plan', True), ('rooms', False), ('settings', False), ('project_info', False), ('drawings_2d', False),
 )
 
 

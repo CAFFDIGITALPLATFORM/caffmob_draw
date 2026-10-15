@@ -20,7 +20,8 @@ def bump_id(item_id):
 
 def bump_entry(item):
     """Entrada do relevo para a fila de download (fora do catálogo do pacote)."""
-    return {"id": bump_id(item["id"]), "name": item.get("name", ""), "ext": "jpg", "sha256": "", "bytes": 0}
+    return {"id": bump_id(item["id"]), "name": item.get("name", ""), "ext": "jpg", "sha256": "", "bytes": 0,
+            "url": "/api/draw/v1/texturas/{}/mapas/bump".format(item["id"])}
 
 
 def attach(mat, path):
@@ -54,7 +55,6 @@ def request(mat, item):
     path = downloads.cached(entry["id"], entry=entry)
     if path:
         attach(mat, path)
-        return
     if downloads.unavailable_reason():
         return
     name = mat.name

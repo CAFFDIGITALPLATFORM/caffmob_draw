@@ -1,0 +1,77 @@
+{
+  "caso": "parede-fechada-que-nao-fecha",
+  "descricao": "Parede marcada como fechada cujo último vértice não volta à origem.",
+  "tipo": "ambiente",
+  "origem": "manual",
+  "revisadoPor": "Claude Opus 5.5, por delegação do titular (T017)",
+  "revisadoEm": "2026-10-14",
+  "entrada": {
+    "schema": "caffmob.ambiente/v1",
+    "id": "e51708df-0e47-5da8-b8d3-c58af0ee9d6f",
+    "version": 1,
+    "atualizado_em": "2026-10-14T00:00:00.000Z",
+    "origem": "web",
+    "nome": "parede-fechada-que-nao-fecha",
+    "paredes": [
+      {
+        "id": "0f250382-0d2b-5dcb-a2d9-860754f09e8c",
+        "origem": {
+          "x": 0,
+          "y": 0
+        },
+        "fechada": true,
+        "segmentos": [
+          {
+            "id": "5f313f2c-4264-5029-abd4-bdc9b9a3eff3",
+            "comprimento": 4000,
+            "angulo_absoluto": 0,
+            "angulo_relativo": 0,
+            "espessura": 150,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "aab1def0-da44-5721-b44b-a42b0d53524d",
+            "comprimento": 3000,
+            "angulo_absoluto": 90,
+            "angulo_relativo": 90,
+            "espessura": 150,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "9fb66a20-1533-57fb-a370-bae06be1c792",
+            "comprimento": 3000,
+            "angulo_absoluto": 180,
+            "angulo_relativo": 90,
+            "espessura": 150,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          }
+        ]
+      }
+    ],
+    "aberturas": [],
+    "modulos": []
+  },
+  "esperado": {
+    "erros": [
+      {
+        "caminho": "paredes[0].fechada",
+        "codigo": "PAREDE_ABERTA"
+      }
+    ]
+  }
+}

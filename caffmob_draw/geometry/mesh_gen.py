@@ -439,3 +439,54 @@ def generate_opening_tool_mesh(obj, width, height, depth=0.5):
     bm.to_mesh(obj.data)
     bm.free()
     obj.data.update()
+
+
+# (063 RF-01; D-10) Geometria da parede de contrato.
+
+
+# ---------------------------------------------------------------------------
+# Contrato caffmob v1 (feature 061 do CAFF MOBI)
+# ---------------------------------------------------------------------------
+
+def generate_wall_from_contract(obj, parede, aberturas):
+    """
+    Gera a parede do contrato (mm) em metros: sentido da espessura, pé-direito inicial e final, flecha,
+    juntas em esquadria e vãos recortados (sem booleano). Devolve o piso da parede, ou None se aberta.
+    """
+    from ..caffmob.prismas import prismas_da_parede
+
+    clear_mesh(obj)
+    prismas, piso = prismas_da_parede(parede, aberturas)
+    bm = bmesh.new()
+    for prisma in prismas:
+        baixo = [bm.verts.new((x / 1000.0, y / 1000.0, z / 1000.0)) for (x, y), z in zip(prisma["base"], prisma["baixo"])]
+        cima = [bm.verts.new((x / 1000.0, y / 1000.0, z / 1000.0)) for (x, y), z in zip(prisma["base"], prisma["cima"])]
+        bm.faces.new([baixo[0], baixo[3], baixo[2], baixo[1]])
+        bm.faces.new(cima)
+        for i in range(4):
+            j = (i + 1) % 4
+            bm.faces.new([baixo[i], baixo[j], cima[j], cima[i]])
+    bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
+    bm.to_mesh(obj.data)
+    bm.free()
+    obj.data.update()
+    return piso
+
+
+def generate_floor_from_contract(obj, vertices_mm):
+    """Piso pelo polígono real da face interna (contrato §3.1, item 6), em metros."""
+    clear_mesh(obj)
+    if len(vertices_mm) < 3:
+        return False
+    bm = bmesh.new()
+    verts = [bm.verts.new((x / 1000.0, y / 1000.0, 0.0)) for x, y in vertices_mm]
+    try:
+        bm.faces.new(verts)
+    except ValueError:
+        bm.free()
+        return False
+    bm.to_mesh(obj.data)
+    bm.free()
+    obj.data.update()
+    obj.btm_plane.object_kind = 'FLOOR'
+    return True

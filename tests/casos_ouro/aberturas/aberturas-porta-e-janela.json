@@ -1,0 +1,137 @@
+{
+  "caso": "aberturas-porta-e-janela",
+  "descricao": "Porta de 800 a 500 mm do vértice inicial do primeiro lado; janela 1200 × 1000 com peitoril 1000 no segundo.",
+  "tipo": "ambiente",
+  "origem": "manual",
+  "revisadoPor": "Claude Opus 5.5, por delegação do titular (T017)",
+  "revisadoEm": "2026-10-14",
+  "entrada": {
+    "schema": "caffmob.ambiente/v1",
+    "id": "10a152fe-9022-5b8d-934f-2eb80f82061c",
+    "version": 1,
+    "atualizado_em": "2026-10-14T00:00:00.000Z",
+    "origem": "web",
+    "nome": "aberturas-porta-e-janela",
+    "paredes": [
+      {
+        "id": "69469f46-845a-5532-8d1b-bee347bebb9b",
+        "origem": {
+          "x": 0,
+          "y": 0
+        },
+        "fechada": true,
+        "segmentos": [
+          {
+            "id": "31acabcc-a424-578f-85b3-f39546e86a5a",
+            "comprimento": 4000,
+            "angulo_absoluto": 0,
+            "angulo_relativo": 0,
+            "espessura": 150,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "7b28269a-f68a-5cde-913e-56b8fd9838b0",
+            "comprimento": 3000,
+            "angulo_absoluto": 90,
+            "angulo_relativo": 90,
+            "espessura": 150,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "21e22545-271e-52d0-a9bc-b2b9240576cd",
+            "comprimento": 4000,
+            "angulo_absoluto": 180,
+            "angulo_relativo": 90,
+            "espessura": 150,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "2dcfec6a-2dd5-5fc4-ae66-34cb0c85191f",
+            "comprimento": 3000,
+            "angulo_absoluto": 270,
+            "angulo_relativo": 90,
+            "espessura": 150,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          }
+        ]
+      }
+    ],
+    "aberturas": [
+      {
+        "id": "08c07346-2fa6-58c1-b809-9a16ef8757db",
+        "tipo": "DOOR",
+        "segmento_id": "31acabcc-a424-578f-85b3-f39546e86a5a",
+        "posicao": 500,
+        "largura": 800,
+        "altura": 2100,
+        "peitoril": 0
+      },
+      {
+        "id": "26b66d38-dbd4-56b7-a86a-0085ec32d4b8",
+        "tipo": "WINDOW",
+        "segmento_id": "7b28269a-f68a-5cde-913e-56b8fd9838b0",
+        "posicao": 900,
+        "largura": 1200,
+        "altura": 1000,
+        "peitoril": 1000
+      }
+    ],
+    "modulos": []
+  },
+  "esperado": {
+    "aberturas": [
+      {
+        "id": "08c07346-2fa6-58c1-b809-9a16ef8757db",
+        "faixa": [
+          0,
+          3200
+        ],
+        "peitoril_max": 600,
+        "inicio": [
+          500,
+          0
+        ],
+        "fim": [
+          1300,
+          0
+        ]
+      },
+      {
+        "id": "26b66d38-dbd4-56b7-a86a-0085ec32d4b8",
+        "faixa": [
+          0,
+          1800
+        ],
+        "peitoril_max": 1700,
+        "inicio": [
+          4000,
+          900
+        ],
+        "fim": [
+          4000,
+          2100
+        ]
+      }
+    ]
+  }
+}

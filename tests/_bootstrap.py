@@ -25,5 +25,5 @@ def _stub(name, path):
 _stub("caffmob_draw", PACKAGE)
 for _sub in ("cutting", "data", "standards", "inspection", "selection", "canvas2d", "move_over", "measure", "walls2d", "geometry",
              "aggregates", "customize", "stick", "collision", "cabinet_editor", "ui", "object_library", "openings",
-             "library_panel", "legacy", "texture_library"):
+             "library_panel", "legacy", "texture_library", "mobi"):
     _stub(f"caffmob_draw.{_sub}", PACKAGE / _sub)

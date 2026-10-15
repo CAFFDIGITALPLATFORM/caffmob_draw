@@ -1,0 +1,102 @@
+{
+  "caso": "junta-sentidos-diferentes",
+  "descricao": "Junta entre LEFT e RIGHT: sem esquadria, pontas retas.",
+  "tipo": "ambiente",
+  "origem": "manual",
+  "revisadoPor": "Claude Opus 5.5, por delegação do titular (T017)",
+  "revisadoEm": "2026-10-14",
+  "entrada": {
+    "schema": "caffmob.ambiente/v1",
+    "id": "01ce0aa0-fcbc-5a33-ba4d-7699bdaf7392",
+    "version": 1,
+    "atualizado_em": "2026-10-14T00:00:00.000Z",
+    "origem": "web",
+    "nome": "junta-sentidos-diferentes",
+    "paredes": [
+      {
+        "id": "841eb4e9-b0d0-55b5-a030-97b8e6e4e48c",
+        "origem": {
+          "x": 0,
+          "y": 0
+        },
+        "fechada": false,
+        "segmentos": [
+          {
+            "id": "cba62e36-bfd8-5152-85d9-c355803d5a11",
+            "comprimento": 3000,
+            "angulo_absoluto": 0,
+            "angulo_relativo": 0,
+            "espessura": 150,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "5d611519-ef08-565e-a8b5-8629259a4c66",
+            "comprimento": 3000,
+            "angulo_absoluto": 90,
+            "angulo_relativo": 90,
+            "espessura": 150,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "RIGHT",
+            "tipo": "NORMAL"
+          }
+        ]
+      }
+    ],
+    "aberturas": [],
+    "modulos": []
+  },
+  "esperado": {
+    "contornos": [
+      {
+        "id": "cba62e36-bfd8-5152-85d9-c355803d5a11",
+        "poligono": [
+          [
+            0,
+            0
+          ],
+          [
+            3000,
+            0
+          ],
+          [
+            3000,
+            150
+          ],
+          [
+            0,
+            150
+          ]
+        ]
+      },
+      {
+        "id": "5d611519-ef08-565e-a8b5-8629259a4c66",
+        "poligono": [
+          [
+            3000,
+            0
+          ],
+          [
+            3000,
+            3000
+          ],
+          [
+            3150,
+            3000
+          ],
+          [
+            3150,
+            0
+          ]
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,73 @@
+{
+  "caso": "abertura-em-arco",
+  "descricao": "Janela de 1000 num segmento curvo: a posição corre pelo arco e a largura conta pela corda.",
+  "tipo": "ambiente",
+  "origem": "manual",
+  "revisadoPor": "Claude Opus 5.5, por delegação do titular (T017)",
+  "revisadoEm": "2026-10-14",
+  "entrada": {
+    "schema": "caffmob.ambiente/v1",
+    "id": "a48822e5-915a-57e7-acc9-f2e01d8508e3",
+    "version": 1,
+    "atualizado_em": "2026-10-14T00:00:00.000Z",
+    "origem": "web",
+    "nome": "abertura-em-arco",
+    "paredes": [
+      {
+        "id": "2abd8515-1e74-567d-af54-4f00a176cda9",
+        "origem": {
+          "x": 0,
+          "y": 0
+        },
+        "fechada": false,
+        "segmentos": [
+          {
+            "id": "ddf63fb7-30bd-568e-a32c-21c61cdc8764",
+            "comprimento": 3000,
+            "angulo_absoluto": 0,
+            "angulo_relativo": 0,
+            "espessura": 150,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 300,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          }
+        ]
+      }
+    ],
+    "aberturas": [
+      {
+        "id": "2d480269-b3df-5960-909f-9d4c1084631f",
+        "tipo": "WINDOW",
+        "segmento_id": "ddf63fb7-30bd-568e-a32c-21c61cdc8764",
+        "posicao": 500,
+        "largura": 1000,
+        "altura": 1200,
+        "peitoril": 900
+      }
+    ],
+    "modulos": []
+  },
+  "esperado": {
+    "aberturas": [
+      {
+        "id": "2d480269-b3df-5960-909f-9d4c1084631f",
+        "faixa": [
+          0,
+          2076.6
+        ],
+        "peitoril_max": 1500,
+        "inicio": [
+          472.6,
+          162.2
+        ],
+        "fim": [
+          1463.1,
+          299.8
+        ]
+      }
+    ]
+  }
+}

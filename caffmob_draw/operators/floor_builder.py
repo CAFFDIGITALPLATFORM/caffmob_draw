@@ -17,6 +17,8 @@ def scene_walls(scene):
     """
     hb, layer = [], []
     for obj in scene.objects:
+        if obj.get('caffmob_parede'):
+            continue
         if obj.get('IS_WALL_BP'):
             hb.append(obj)
         elif obj.type == 'MESH' and obj.get("btm_wall_segments"):
@@ -92,9 +94,19 @@ class BTM_OT_AdjustFloor(bpy.types.Operator):
     @classmethod
     def poll(cls, context):
         hb, layer = scene_walls(context.scene)
-        return bool(hb or layer)
+        return bool(hb or layer or any(o.get("caffmob_parede") for o in context.scene.objects))
 
     def execute(self, context):
+        # (063 D-10) O piso do contrato vem antes das salas das outras fontes.
+        from ..mobi.cena import regenerar_parede
+        contratos = [o for o in context.scene.objects if o.get("caffmob_parede")]
+        for obj in contratos:
+            regenerar_parede(context, obj, json.loads(obj["caffmob_parede"]),
+                             json.loads(obj.get("caffmob_aberturas", "[]")))
+        hb, layer = scene_walls(context.scene)
+        if contratos and not (hb or layer):
+            self.report({'INFO'}, tr("Piso atualizado pelo contrato do MOBI"))
+            return {'FINISHED'}
         polygons, ends = room_outlines(context.scene)
         if not polygons:
             rect = floor_outline.bounding_rect(ends)
@@ -109,7 +121,7 @@ class BTM_OT_AdjustFloor(bpy.types.Operator):
         # Encontra ou cria o piso
         floor_obj = None
         for obj in context.scene.objects:
-            if hasattr(obj, 'btm_plane') and obj.btm_plane.object_kind == 'FLOOR':
+            if not obj.get('caffmob_tipo') and hasattr(obj, 'btm_plane') and obj.btm_plane.object_kind == 'FLOOR':
                 floor_obj = obj
                 break
 

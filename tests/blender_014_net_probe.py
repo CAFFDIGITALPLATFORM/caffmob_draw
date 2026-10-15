@@ -40,18 +40,18 @@ def post(path, body):
     try:
         with urllib.request.urlopen(req, timeout=10) as r: return r.status, json.loads(r.read() or b"{}")
     except urllib.error.HTTPError as e: return e.code, json.loads(e.read() or b"{}")
-st, dev = post("/v1/auth/device", {"client_id": "caffmob-draw"})
+st, dev = post("/api/draw/aparelho/codigo", {"client_id": "caffmob-draw"})
 say(type="device", user_code=dev["user_code"], url=dev["verification_uri_complete"])
 while True:
     time.sleep(dev["interval"])
-    st, body = post("/v1/auth/token", {"client_id": "caffmob-draw", "grant_type": "device_code", "device_code": dev["device_code"]})
+    st, body = post("/api/draw/aparelho/token", {"client_id": "caffmob-draw", "grant_type": "device_code", "device_code": dev["device_code"]})
     if st == 200: break
     say(type="pending", error=body.get("error"))
-token = body["access_token"]; say(type="logged", email=body["account"]["email"])
+token = body["access_token"]; say(type="logged", titular=body["titular"]["nome"])
 part = dest + ".part"; attempts = 0
 while True:
     offset = os.path.getsize(part) if os.path.exists(part) else 0
-    req = urllib.request.Request(base + "/v1/textures/big/file", headers={"Authorization": "Bearer " + token, **({"Range": f"bytes={offset}-"} if offset else {})})
+    req = urllib.request.Request(base + "/api/draw/v1/texturas/big/imagem?tamanho=trabalho", headers={"Authorization": "Bearer " + token, **({"Range": f"bytes={offset}-"} if offset else {})})
     try:
         with urllib.request.urlopen(req, timeout=30) as r, open(part, "ab" if r.status == 206 else "wb") as f:
             while True:

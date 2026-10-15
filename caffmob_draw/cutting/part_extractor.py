@@ -97,6 +97,9 @@ def extract_production_parts(context, scene=None):
     values = _active_values(scene)
     parts = []
     for module in part_sources.iter_modules(scene):
+        if module.library == "caffmob":
+            parts.extend(part_sources.caffmob_parts(module))
+            continue
         if module.library == "BTM":
             records = part_sources.synthetic_records(module, thickness_lookup(values, module.line))
         else:

@@ -98,10 +98,17 @@ def apply_cached(objs, item_id, path, size=None):
     changed = 0
     for obj in _meshes(objs):
         mat = retexture.image_material(path, width, height, rotated=grain_rotated(obj, entry), texture_id=item_id)
+        if entry.get("sha256"):
+            mat["btm_texture_sha256"] = entry["sha256"]
+            mat["btm_texture_formato"] = entry.get("formato", entry.get("ext", "jpg"))
         bump.request(mat, entry)                       # relevo, quando o fabricante tem (T045)
         if common.set_cutpart_material(obj, mat):
             changed += 1
-            _remember(obj, mat)
+            if obj.get("caffmob_modulo"):
+                from ..mobi.texturas import remember
+                remember(obj, item_id)
+            else:
+                _remember(obj, mat)
     return changed
 
 

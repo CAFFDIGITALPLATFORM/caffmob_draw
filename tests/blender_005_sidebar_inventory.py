@@ -215,6 +215,16 @@ def product_tabs():
 
 def capture_all():
     contexts = build_scene()
+    # 063: exercita os botões contextuais das listas, sem iniciar pedidos.
+    state = ctx.window_manager.btm_caffmob
+    state.ambientes.clear()
+    state.modelos.clear()
+    item = state.ambientes.add()
+    item.id, item.nome = 'ambiente-teste', 'Ambiente de teste'
+    item = state.modelos.add()
+    item.id, item.nome, item.escopo = 'titular', 'Modelo de teste', 'titular'
+    state.biblioteca = 'titular'
+    state.proximo_ambiente = 'pagina-2' 
     open_all_library_sections()
     pick_obstacle_type()
     result = {'sidebar': {}, 'paths': {}, 'errors': []}

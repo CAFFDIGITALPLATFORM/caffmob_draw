@@ -7,7 +7,7 @@ from caffmob_draw.texture_library import download_core as dc
 
 
 def item(i, size=100):
-    return {"id": f"t{i}", "url": f"/v1/textures/t{i}/file", "dest": f"/tmp/t{i}.jpg", "sha256": "a" * 64,
+    return {"id": f"t{i}", "url": f"/api/draw/v1/texturas/t{i}/imagem?tamanho=trabalho", "dest": f"/tmp/t{i}.jpg", "sha256": "a" * 64,
             "bytes": size}
 
 
@@ -83,9 +83,9 @@ class RulesTest(unittest.TestCase):
 
     def test_mesmo_dominio(self):
         """Authorization só vai para o mesmo servidor (redirecionamento para storage assinado não leva o token)."""
-        self.assertTrue(dc.same_origin("https://cafmob.app/v1/x", "https://cafmob.app/storage/y"))
-        self.assertFalse(dc.same_origin("https://cafmob.app/v1/x", "https://cdn.exemplo.com/y"))
-        self.assertFalse(dc.same_origin("https://cafmob.app/v1/x", "http://cafmob.app/y"))
+        self.assertTrue(dc.same_origin("https://exemplo.test/api/draw/v1/texturas", "https://exemplo.test/storage/y"))
+        self.assertFalse(dc.same_origin("https://exemplo.test/api/draw/v1/texturas", "https://cdn.exemplo.com/y"))
+        self.assertFalse(dc.same_origin("https://exemplo.test/api/draw/v1/texturas", "http://exemplo.test/y"))
 
 
 if __name__ == "__main__":

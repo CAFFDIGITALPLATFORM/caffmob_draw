@@ -3,14 +3,13 @@
 Precisa de janela:
     xvfb-run -a blender --factory-startup --enable-event-simulate --python tests/blender_014_drag_smoke.py
 
-Com uma textura "baixada" (a miniatura copiada para o cache) e um armário CAFFMob no meio da vista:
+Com uma textura baixada do servidor falso local do MOBI e um armário CAFFMob no meio da vista:
 - textura sobre a porta: só a frente muda; sobre o tampo da caixa: só a caixa muda;
 - no vazio: aviso, nada muda; Esc no meio do arraste: nada muda; voltar para o painel: nada muda;
 - modelo pronto (aba Blocos) até o piso: insere um módulo e um Ctrl+Z o remove.
 """
 
 import os
-import shutil
 import sys
 import traceback
 from pathlib import Path
@@ -27,7 +26,9 @@ from caffmob_draw.selection import classify  # noqa: E402
 from caffmob_draw.texture_library import catalog, downloads  # noqa: E402
 
 FAILURES = []
-TID = "arauco/colecao-realce/anis"
+from fake_texture_server import IDS
+from _mobi_texture_fixture import TextureServer
+TID = IDS[0]
 
 
 def check(name, ok, detail=""):
@@ -73,10 +74,9 @@ def script():
     ev('ESC', 'RELEASE', region.width / 2, 20)
     for obj in list(ctx.scene.objects):
         bpy.data.objects.remove(obj, do_unlink=True)
-    entry = catalog.item(TID)
-    dest = downloads.cache_path(entry)
-    os.makedirs(os.path.dirname(dest), exist_ok=True)
-    shutil.copy(catalog.thumb_path(entry), dest)
+    server = TextureServer()
+    server.connect()
+    server.download(TID)
 
     from mathutils import Euler
     import math
@@ -186,6 +186,7 @@ def script():
     yield 0.6
     check("um Ctrl+Z remove a inserção", len(modules()) == before, f"{len(modules())}")
     state.mode, state.pinned = 'MIN', False
+    server.close()
 
 
 _gen = script()

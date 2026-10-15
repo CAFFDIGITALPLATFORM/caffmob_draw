@@ -1,7 +1,7 @@
 schema_version = "1.0.0"
 
 id = "caffmob_draw"
-version = "1.0.1"
+version = "1.1.0"
 name = "CAFFMob Draw"
 tagline = "Parametric cabinetry and interior design CAD tools for Blender"
 maintainer = "TheLeoInfo"
@@ -16,6 +16,8 @@ license = [
 tags = ["3D View", "Add Mesh", "Modeling", "Scene"]
 location = "View3D > Sidebar > CAFFMob Draw"
 description = "Functional parametric interior design and cabinetry tools (inspired by Promob), including wall-building, floors, snap rules, and nested cut-list optimization."
+
+platforms = ["linux-x64", "linux-arm64", "windows-x64", "macos-x64", "macos-arm64"]
 
 wheels = [
     "./wheels/defusedxml-0.7.1-py2.py3-none-any.whl",
@@ -32,6 +34,9 @@ wheels = [
     "./wheels/shapely-2.2.0-cp313-cp313-win_amd64.whl",
 ]
 
+[build]
+paths_exclude_pattern = [".impeccable/", "__pycache__/", "catalog/"]
+
 [permissions]
 files = "Save projects and export cut plans, PDFs and layouts"
-network = "Download manufacturer textures from the CAF Mob server"
+network = "Sync environments, models and textures with CAFF MOBI"

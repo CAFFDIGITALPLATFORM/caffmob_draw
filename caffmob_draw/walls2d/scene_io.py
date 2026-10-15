@@ -100,7 +100,7 @@ def _chain_from(walls):
 def is_other_layer_wall(obj):
     """Parede da camada nova (`caffmob.wall_builder`), fora do Home Builder 5."""
     from ..selection import classify
-    return obj is not None and obj.type == 'MESH' and not obj.get('IS_WALL_BP') and classify.btm_kind(obj) == 'WALL'
+    return convert.can_convert(obj) and obj.type == 'MESH' and not obj.get('IS_WALL_BP') and classify.btm_kind(obj) == 'WALL'
 
 
 def convert_into(plan, objects, scene):
@@ -111,6 +111,9 @@ def convert_into(plan, objects, scene):
     """
     skipped = []
     for obj in objects:
+        if not convert.can_convert(obj):
+            skipped.append(obj.name)
+            continue
         try:
             raw = json.loads(obj.get("btm_wall_segments", ""))
         except (TypeError, ValueError):

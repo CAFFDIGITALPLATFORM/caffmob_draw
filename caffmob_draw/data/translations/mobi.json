@@ -1,0 +1,358 @@
+{
+  "O módulo do construtor da 015 não pode ser enviado ao MOBI. Use um módulo baixado do MOBI": {
+    "pt_BR": "O módulo do construtor da 015 não pode ser enviado ao MOBI. Use um módulo baixado do MOBI",
+    "en_US": "A module from builder 015 cannot be sent to MOBI. Use a module downloaded from MOBI"
+  },
+  "Esta cena não veio do MOBI: baixe um ambiente antes": {
+    "pt_BR": "Esta cena não veio do MOBI: baixe um ambiente antes",
+    "en_US": "This scene did not come from MOBI: download an environment first"
+  },
+  "Listando ambientes do MOBI…": {
+    "pt_BR": "Listando ambientes do MOBI…",
+    "en_US": "Listing MOBI environments…"
+  },
+  "Baixando ambiente e texturas…": {
+    "pt_BR": "Baixando ambiente e texturas…",
+    "en_US": "Downloading environment and textures…"
+  },
+  "Enviando ambiente ao MOBI…": {
+    "pt_BR": "Enviando ambiente ao MOBI…",
+    "en_US": "Sending environment to MOBI…"
+  },
+  "Documento recusado: {}": {
+    "pt_BR": "Documento recusado: {}",
+    "en_US": "Document rejected: {}"
+  },
+  "HTTP 409: escolha entre a versão do Blender e a versão do MOBI": {
+    "pt_BR": "HTTP 409: escolha entre a versão do Blender e a versão do MOBI",
+    "en_US": "HTTP 409: choose between the Blender version and the MOBI version"
+  },
+  "Listar ambientes do MOBI": {
+    "pt_BR": "Listar ambientes do MOBI",
+    "en_US": "List MOBI environments"
+  },
+  "Listar uma página de ambientes do titular": {
+    "pt_BR": "Listar uma página de ambientes do titular",
+    "en_US": "List a page of the account holder's environments"
+  },
+  "Baixar ambiente do MOBI": {
+    "pt_BR": "Baixar ambiente do MOBI",
+    "en_US": "Download MOBI environment"
+  },
+  "Baixar o ambiente e preparar as texturas antes de trocar a cena": {
+    "pt_BR": "Baixar o ambiente e preparar as texturas antes de trocar a cena",
+    "en_US": "Download the environment and prepare textures before replacing the scene"
+  },
+  "Enviar ambiente ao MOBI": {
+    "pt_BR": "Enviar ambiente ao MOBI",
+    "en_US": "Send environment to MOBI"
+  },
+  "Enviar as paredes e os módulos de contrato desta cena": {
+    "pt_BR": "Enviar as paredes e os módulos de contrato desta cena",
+    "en_US": "Send this scene's contract walls and modules"
+  },
+  "Resolver conflito com o MOBI": {
+    "pt_BR": "Resolver conflito com o MOBI",
+    "en_US": "Resolve conflict with MOBI"
+  },
+  "Comparar e escolher qual documento fica no MOBI": {
+    "pt_BR": "Comparar e escolher qual documento fica no MOBI",
+    "en_US": "Compare and choose which document to keep in MOBI"
+  },
+  "Ficar com": {
+    "pt_BR": "Ficar com",
+    "en_US": "Keep"
+  },
+  "Versão do Blender": {
+    "pt_BR": "Versão do Blender",
+    "en_US": "Blender version"
+  },
+  "Enviar o documento deste Blender": {
+    "pt_BR": "Enviar o documento deste Blender",
+    "en_US": "Send this Blender's document"
+  },
+  "Versão do MOBI": {
+    "pt_BR": "Versão do MOBI",
+    "en_US": "MOBI version"
+  },
+  "Usar o documento atual do MOBI": {
+    "pt_BR": "Usar o documento atual do MOBI",
+    "en_US": "Use MOBI's current document"
+  },
+  "Editar segmento": {
+    "pt_BR": "Editar segmento",
+    "en_US": "Edit segment"
+  },
+  "Editar um segmento da parede pelo contrato; mudar o comprimento desloca os vértices seguintes": {
+    "pt_BR": "Editar um segmento da parede pelo contrato; mudar o comprimento desloca os vértices seguintes",
+    "en_US": "Edit a wall segment through the contract; changing its length moves the following vertices"
+  },
+  "Comprimento (mm)": {
+    "pt_BR": "Comprimento (mm)",
+    "en_US": "Length (mm)"
+  },
+  "Espessura (mm)": {
+    "pt_BR": "Espessura (mm)",
+    "en_US": "Thickness (mm)"
+  },
+  "Pé-direito inicial (mm)": {
+    "pt_BR": "Pé-direito inicial (mm)",
+    "en_US": "Start wall height (mm)"
+  },
+  "Pé-direito final (mm)": {
+    "pt_BR": "Pé-direito final (mm)",
+    "en_US": "End wall height (mm)"
+  },
+  "Afastamento (mm)": {
+    "pt_BR": "Afastamento (mm)",
+    "en_US": "Offset (mm)"
+  },
+  "Flecha (mm)": {
+    "pt_BR": "Flecha (mm)",
+    "en_US": "Sagitta (mm)"
+  },
+  "Espessura para": {
+    "pt_BR": "Espessura para",
+    "en_US": "Thickness to"
+  },
+  "Alvenaria": {
+    "pt_BR": "Alvenaria",
+    "en_US": "Masonry"
+  },
+  "Segmento inexistente.": {
+    "pt_BR": "Segmento inexistente.",
+    "en_US": "Segment does not exist."
+  },
+  "Listando modelos do titular e pessoais…": {
+    "pt_BR": "Listando modelos do titular e pessoais…",
+    "en_US": "Listing account holder and personal models…"
+  },
+  "Baixando modelo e texturas…": {
+    "pt_BR": "Baixando modelo e texturas…",
+    "en_US": "Downloading model and textures…"
+  },
+  "Enviando modelo ao MOBI…": {
+    "pt_BR": "Enviando modelo ao MOBI…",
+    "en_US": "Sending model to MOBI…"
+  },
+  "A biblioteca está vazia. Crie um modelo na Biblioteca do MOBI": {
+    "pt_BR": "A biblioteca está vazia. Crie um modelo na Biblioteca do MOBI",
+    "en_US": "The library is empty. Create a model in the MOBI Library"
+  },
+  "Este módulo ainda não tem modelo de origem. Envie como modelo novo": {
+    "pt_BR": "Este módulo ainda não tem modelo de origem. Envie como modelo novo",
+    "en_US": "This module has no source model yet. Send it as a new model"
+  },
+  "Listar modelos do MOBI": {
+    "pt_BR": "Listar modelos do MOBI",
+    "en_US": "List MOBI models"
+  },
+  "Listar os modelos do titular e pessoais com as imagens": {
+    "pt_BR": "Listar os modelos do titular e pessoais com as imagens",
+    "en_US": "List account holder and personal models with images"
+  },
+  "Inserir modelo do MOBI": {
+    "pt_BR": "Inserir modelo do MOBI",
+    "en_US": "Insert MOBI model"
+  },
+  "Inserir uma cópia da versão atual ou escolhida de um modelo": {
+    "pt_BR": "Inserir uma cópia da versão atual ou escolhida de um modelo",
+    "en_US": "Insert a copy of the current or selected model version"
+  },
+  "Versão do modelo": {
+    "pt_BR": "Versão do modelo",
+    "en_US": "Model version"
+  },
+  "Enviar modelo ao MOBI": {
+    "pt_BR": "Enviar modelo ao MOBI",
+    "en_US": "Send model to MOBI"
+  },
+  "Enviar um módulo do MOBI como versão nova ou modelo novo": {
+    "pt_BR": "Enviar um módulo do MOBI como versão nova ou modelo novo",
+    "en_US": "Send a MOBI module as a new version or a new model"
+  },
+  "Criar modelo novo": {
+    "pt_BR": "Criar modelo novo",
+    "en_US": "Create new model"
+  },
+  "Do titular": {
+    "pt_BR": "Do titular",
+    "en_US": "Account holder"
+  },
+  "Pessoal": {
+    "pt_BR": "Pessoal",
+    "en_US": "Personal"
+  },
+  "Nome do modelo": {
+    "pt_BR": "Nome do modelo",
+    "en_US": "Model name"
+  },
+  "Categoria do modelo": {
+    "pt_BR": "Categoria do modelo",
+    "en_US": "Model category"
+  },
+  "Conectado ao titular {}": {
+    "pt_BR": "Conectado ao titular {}",
+    "en_US": "Connected to account holder {}"
+  },
+  "Blender desconectado do MOBI": {
+    "pt_BR": "Blender desconectado do MOBI",
+    "en_US": "Blender disconnected from MOBI"
+  },
+  "Código {}: confirme a conexão no navegador": {
+    "pt_BR": "Código {}: confirme a conexão no navegador",
+    "en_US": "Code {}: confirm the connection in your browser"
+  },
+  "Conectar ao MOBI": {
+    "pt_BR": "Conectar ao MOBI",
+    "en_US": "Connect to MOBI"
+  },
+  "Conectar o Blender ao MOBI pelo código do aparelho": {
+    "pt_BR": "Conectar o Blender ao MOBI pelo código do aparelho",
+    "en_US": "Connect Blender to MOBI using the device code"
+  },
+  "Desconectar do MOBI": {
+    "pt_BR": "Desconectar do MOBI",
+    "en_US": "Disconnect from MOBI"
+  },
+  "Revogar o aparelho e encerrar a sessão local": {
+    "pt_BR": "Revogar o aparelho e encerrar a sessão local",
+    "en_US": "Revoke the device and end the local session"
+  },
+  "HTTP {}: {}": {
+    "pt_BR": "HTTP {}: {}",
+    "en_US": "HTTP {}: {}"
+  },
+  "Sem rede: o MOBI não respondeu. A sessão foi mantida": {
+    "pt_BR": "Sem rede: o MOBI não respondeu. A sessão foi mantida",
+    "en_US": "No network: MOBI did not respond. The session was kept"
+  },
+  "Contrato incompatível. Atualize o CAFFMob Draw": {
+    "pt_BR": "Contrato incompatível. Atualize o CAFFMob Draw",
+    "en_US": "Incompatible contract. Update CAFFMob Draw"
+  },
+  "Conecte o Blender ao MOBI novamente": {
+    "pt_BR": "Conecte o Blender ao MOBI novamente",
+    "en_US": "Connect Blender to MOBI again"
+  },
+  "Há duas versões. Escolha a versão do Blender ou a do MOBI": {
+    "pt_BR": "Há duas versões. Escolha a versão do Blender ou a do MOBI",
+    "en_US": "There are two versions. Choose the Blender version or the MOBI version"
+  },
+  "O ambiente passa do limite de 1 MB": {
+    "pt_BR": "O ambiente passa do limite de 1 MB",
+    "en_US": "The environment exceeds the 1 MB limit"
+  },
+  "Limite de chamadas. Aguarde o intervalo informado pelo MOBI": {
+    "pt_BR": "Limite de chamadas. Aguarde o intervalo informado pelo MOBI",
+    "en_US": "Request limit reached. Wait for the interval specified by MOBI"
+  },
+  "O MOBI está indisponível. A sessão foi mantida": {
+    "pt_BR": "O MOBI está indisponível. A sessão foi mantida",
+    "en_US": "MOBI is unavailable. The session was kept"
+  },
+  "O aparelho foi desconectado. Conecte o Blender ao MOBI novamente": {
+    "pt_BR": "O aparelho foi desconectado. Conecte o Blender ao MOBI novamente",
+    "en_US": "The device was disconnected. Connect Blender to MOBI again"
+  },
+  "O MOBI recusou o pedido": {
+    "pt_BR": "O MOBI recusou o pedido",
+    "en_US": "MOBI rejected the request"
+  },
+  "Operação cancelada. A cena foi preservada": {
+    "pt_BR": "Operação cancelada. A cena foi preservada",
+    "en_US": "Operation cancelled. The scene was preserved"
+  },
+  "Operação concluída": {
+    "pt_BR": "Operação concluída",
+    "en_US": "Operation completed"
+  },
+  "Cancelar operação do MOBI": {
+    "pt_BR": "Cancelar operação do MOBI",
+    "en_US": "Cancel MOBI operation"
+  },
+  "Cancelar os pedidos do MOBI em andamento": {
+    "pt_BR": "Cancelar os pedidos do MOBI em andamento",
+    "en_US": "Cancel pending MOBI requests"
+  },
+  "Aplicar resultado do MOBI": {
+    "pt_BR": "Aplicar resultado do MOBI",
+    "en_US": "Apply MOBI result"
+  },
+  "Aplicar o resultado preparado do MOBI": {
+    "pt_BR": "Aplicar o resultado preparado do MOBI",
+    "en_US": "Apply the prepared MOBI result"
+  },
+  "Carregar mais texturas": {
+    "pt_BR": "Carregar mais texturas",
+    "en_US": "Load more textures"
+  },
+  "Piso atualizado pelo contrato do MOBI": {
+    "pt_BR": "Piso atualizado pelo contrato do MOBI",
+    "en_US": "Floor updated from the MOBI contract"
+  },
+  "Desconectado neste Blender. Desconecte também em Aparelhos conectados no MOBI": {
+    "pt_BR": "Desconectado neste Blender. Desconecte também em Aparelhos conectados no MOBI",
+    "en_US": "Disconnected in this Blender. Also disconnect in Connected devices on MOBI"
+  },
+  "Biblioteca do MOBI": {
+    "pt_BR": "Biblioteca do MOBI",
+    "en_US": "MOBI library"
+  },
+  "CAFF MOBI": {
+    "pt_BR": "CAFF MOBI",
+    "en_US": "CAFF MOBI"
+  },
+  "Carregar mais ambientes": {
+    "pt_BR": "Carregar mais ambientes",
+    "en_US": "Load more environments"
+  },
+  "Conectar": {
+    "pt_BR": "Conectar",
+    "en_US": "Connect"
+  },
+  "Conta CAFF MOBI": {
+    "pt_BR": "Conta CAFF MOBI",
+    "en_US": "CAFF MOBI account"
+  },
+  "Desconectar": {
+    "pt_BR": "Desconectar",
+    "en_US": "Disconnect"
+  },
+  "Endereço do CAFF MOBI (sem /api/draw/v1 no final)": {
+    "pt_BR": "Endereço do CAFF MOBI (sem /api/draw/v1 no final)",
+    "en_US": "CAFF MOBI address (without /api/draw/v1 at the end)"
+  },
+  "Endereço do MOBI": {
+    "pt_BR": "Endereço do MOBI",
+    "en_US": "MOBI address"
+  },
+  "Enviar ambiente": {
+    "pt_BR": "Enviar ambiente",
+    "en_US": "Send environment"
+  },
+  "Enviar como modelo novo": {
+    "pt_BR": "Enviar como modelo novo",
+    "en_US": "Send as a new model"
+  },
+  "Enviar versão do modelo": {
+    "pt_BR": "Enviar versão do modelo",
+    "en_US": "Send model version"
+  },
+  "Listar ambientes": {
+    "pt_BR": "Listar ambientes",
+    "en_US": "List environments"
+  },
+  "Listar modelos": {
+    "pt_BR": "Listar modelos",
+    "en_US": "List models"
+  },
+  "Progresso": {
+    "pt_BR": "Progresso",
+    "en_US": "Progress"
+  },
+  "Situação": {
+    "pt_BR": "Situação",
+    "en_US": "Status"
+  }
+}

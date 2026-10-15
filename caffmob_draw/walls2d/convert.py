@@ -47,3 +47,8 @@ def chains_from_segments(segments):
         inner = center.shifted_nodes(0.5 if side == 'RIGHT' else -0.5)   # meia espessura, longe do lado da espessura
         chains.append(model.Chain(inner, segs, closed=closed, side=side))
     return chains
+
+
+# (063 D-10) A parede do MOBI é editada pelo contrato, sem conversão.
+def can_convert(obj):
+    return obj is not None and not obj.get("caffmob_parede")

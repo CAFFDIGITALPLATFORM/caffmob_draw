@@ -50,6 +50,9 @@ BLOCK_STATUS = {'MODEL': N_("Modelo pronto"), 'MODULE': N_("Meu módulo"), 'HOVE
 BLOCKS_TTL = 2.0                          # segundos de cache da lista de módulos salvos (lida do disco)
 DOWNLOAD_FOOTER = N_("Baixando {} de {} · {} de {} MB")
 CANCEL = N_("Cancelar")
+LOAD_MORE = N_("Carregar mais texturas")
+_more_id = "MOBI:MORE"
+_remote = {"manufacturers": None, "thumbs": set(), "query": None, "changed": 0.0}
 
 _handle = [None]
 _mouse = {'pos': (-1, -1), 'region': 0}
@@ -63,7 +66,7 @@ _selected = {'id': ""}                    # textura selecionada (gravada pelo cl
 
 def _scale(context):
     try:
-        return context.preferences.system.ui_scale
+        return context.preferences.system.ui_scale or 1.0
     except AttributeError:
         return 1.0
 
@@ -176,12 +179,14 @@ def _catalog():
 def texture_tree():
     cat = _catalog()
     data, _warnings = cat.load()
-    return [(m["id"], m["name"], sum(len(c["items"]) for c in m["collections"]),
-             [(c["id"], c["name"], len(c["items"])) for c in m["collections"]]) for m in data["manufacturers"]]
+    return [(m["id"], m["name"], m.get("total", sum(len(c["items"]) for c in m["collections"])),
+             [(c["id"], c["name"], c.get("total", len(c["items"]))) for c in m["collections"]]) for m in data["manufacturers"]]
 
 
 def texture_items(state):
-    return _catalog().search(state.search, manufacturer=state.manufacturer, collection=state.collection)
+    cat = _catalog()
+    found = cat.search(state.search, manufacturer=state.manufacturer, collection=state.collection)
+    return found + ([{"id": _more_id, "name": tr(LOAD_MORE)}] if cat.has_more() else [])
 
 
 def _module_entries(category):
@@ -420,6 +425,9 @@ def _clip(region, rect):
 
 def _draw_cell(item, rect, state_kind, progress, hovered, viewport, s):
     x, y, w, h = rect
+    if item["id"] == _more_id:
+        kit.text_centered_y(tr(LOAD_MORE), rect, x, style.FONT_LABEL * s, style.TEXT)
+        return
     selected = item["id"] == _selected['id']
     if hovered or selected:
         kit.rect(x - 4 * s, y - 4 * s, w + 8 * s, h + 8 * s, style.SURFACE_HOVER, (style.RADIUS_CELL + 2) * s)
@@ -618,12 +626,62 @@ def tag_redraw(context):
                 area.tag_redraw()
 
 
+# (063 RF-03, RF-11; D-07) O timer agenda rede e miniaturas; draw só lê.
+def _remote_tick():
+    from ..texture_library import auth, downloads
+    cat = _catalog()
+    state = getattr(bpy.context.window_manager, 'btm_library', None)
+    if state is None or state.mode != 'MAX' or state.tab != 'TEXTURES':
+        return 0.4
+    if not auth.signed_in() or downloads.unavailable_reason():
+        return 0.4
+    if _remote['revision'] != cat._cache['revision']:
+        _remote.update(manufacturers=None, thumbs=set(), query=None, revision=cat._cache['revision'])
+    if _remote['manufacturers'] is None:
+        _remote['manufacturers'] = True
+        def manufacturers_done(status, body):
+            _remote['manufacturers'] = status in (200, 304)
+        cat.refresh_manufacturers(manufacturers_done)
+    query = (state.search, state.manufacturer, state.collection)
+    now = time.monotonic()
+    if _remote['query'] != query:
+        _remote.update(query=query, changed=now)
+        cat.cancel()
+    if now - _remote['changed'] >= 0.4:
+        cat.refresh(*query)
+    entries = texture_items(state)
+    for window in bpy.context.window_manager.windows:
+        for area in window.screen.areas:
+            if area.type != 'VIEW_3D':
+                continue
+            lay = max_layout(bpy.context, area)
+            scale = _scale(bpy.context)
+            content = grid_core.content_height(lay.grid[2], len(entries), scale)
+            scroll = grid_core.clamp_scroll(state.scroll, content, lay.grid[3])
+            for index, _rect in grid_core.visible_cells(lay.grid, len(entries), scale, scroll):
+                entry = entries[index]
+                if entry['id'] == _more_id:
+                    continue
+                thumb = cat.thumb_entry(entry)
+                if thumb['id'] in _remote['thumbs'] or cat.thumb_path(entry):
+                    continue
+                _remote['thumbs'].add(thumb['id'])
+                downloads.fetch(thumb['id'], entry=thumb)
+    tag_redraw(bpy.context)
+    return 0.4
+
+
 def register():
+    if not bpy.app.timers.is_registered(_remote_tick):
+        bpy.app.timers.register(_remote_tick, first_interval=0.4, persistent=True)
     if _handle[0] is None:
         _handle[0] = bpy.types.SpaceView3D.draw_handler_add(draw_panel, (), 'WINDOW', 'POST_PIXEL')
 
 
 def unregister():
+    if bpy.app.timers.is_registered(_remote_tick):
+        bpy.app.timers.unregister(_remote_tick)
+    _remote.update(manufacturers=None, thumbs=set(), query=None)
     if _handle[0] is not None:
         bpy.types.SpaceView3D.draw_handler_remove(_handle[0], 'WINDOW')
         _handle[0] = None
