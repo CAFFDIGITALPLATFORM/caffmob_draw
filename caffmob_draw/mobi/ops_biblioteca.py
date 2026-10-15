@@ -15,6 +15,7 @@ SENDING = N_('Enviando modelo ao MOBI…')
 EMPTY = N_('A biblioteca está vazia. Crie um modelo na Biblioteca do MOBI')
 NO_MODEL = N_('Este módulo ainda não tem modelo de origem. Envie como modelo novo')
 INVALID = N_('Documento recusado: {}')
+NO_SCOPE = N_('Modelo sem biblioteca de origem. Liste os modelos de novo')
 
 
 def instance(document, module_id, posicao=None, rotacao=0, plano=None):
@@ -106,9 +107,15 @@ class MOBI_OT_BaixarModelo(bpy.types.Operator):
     bl_label = 'Inserir modelo do MOBI'
     modelo_id: bpy.props.StringProperty()  # type: ignore
     versao: bpy.props.IntProperty(name='Versão do modelo', min=0, default=0)  # type: ignore
+    # (063 T059) O MOBI exige o escopo na referência do modelo; sem ele o ambiente volta com 422.
+    escopo: bpy.props.StringProperty()  # type: ignore
 
     def execute(self, context):
         model_id, requested = self.modelo_id, self.versao
+        scope = self.escopo or next((i.escopo for i in context.window_manager.btm_caffmob.modelos if i.id == model_id), '')
+        if scope not in ('titular', 'pessoal'):
+            self.report({'ERROR'}, tr(NO_SCOPE))
+            return {'CANCELLED'}
         job = tarefas.Job(context, LOADING)
         path = '/api/draw/v1/modelos/' + quote(model_id, safe='')
         if requested:
@@ -123,7 +130,7 @@ class MOBI_OT_BaixarModelo(bpy.types.Operator):
                 return
             version = requested or int(incoming.get('ETag', '0').strip('"') or body.get('version', 0))
             copy = instance(body, str(uuid.uuid4()))
-            copy['modelo'] = {'id':model_id, 'version':version}
+            copy['modelo'] = {'id':model_id, 'version':version, 'escopo':scope}
             def ready(images):
                 def commit(context):
                     obj = cena.criar_modulo(context, copy, images)

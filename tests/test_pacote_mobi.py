@@ -23,5 +23,11 @@ class Pacote(unittest.TestCase):
             self.skipTest('referência disponível apenas na pasta de entrega')
         for name in ('__init__','contrato','geometria','derivar','prismas','validacao','chapas'):
             original = ast.dump(ast.parse((reference / (name+'.py')).read_text()))
-            current = ast.dump(ast.parse((ROOT / 'caffmob_draw/caffmob' / (name+'.py')).read_text()))
+            texto = (ROOT / 'caffmob_draw/caffmob' / (name+'.py')).read_text()
+            if name == 'validacao':
+                # Única mudança deliberada depois do porte: a referência do modelo com a regra do MOBI (063 T059).
+                inicio = texto.index('        # Mesma regra do MOBI')
+                fim = texto.index('erro(f"modulos[{m}].modelo", "ESQUEMA")\n') + len('erro(f"modulos[{m}].modelo", "ESQUEMA")\n')
+                texto = texto[:inicio] + texto[fim:]
+            current = ast.dump(ast.parse(texto))
             self.assertEqual(original,current,name)

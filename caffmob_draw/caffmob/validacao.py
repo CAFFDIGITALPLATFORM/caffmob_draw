@@ -81,6 +81,12 @@ def validar_ambiente(ambiente):
 
     for m, modulo in enumerate(ambiente["modulos"]):
         erros.extend(validar_medidas_do_modulo(modulo, f"modulos[{m}]"))
+        # Mesma regra do MOBI (shared/caffmob/validacao.ts): a referência leva exatamente escopo, id e version (063 T059).
+        modelo = modulo.get("modelo")
+        if modelo is not None and not (isinstance(modelo, dict) and sorted(modelo) == ["escopo", "id", "version"]
+                                       and modelo["escopo"] in ("titular", "pessoal") and isinstance(modelo["id"], str)
+                                       and isinstance(modelo["version"], int) and modelo["version"] >= 1):
+            erro(f"modulos[{m}].modelo", "ESQUEMA")
     return erros
 
 

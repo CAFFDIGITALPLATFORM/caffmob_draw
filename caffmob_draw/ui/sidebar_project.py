@@ -124,6 +124,7 @@ def draw_mobi(layout, context):
         row.label(text=item.nome)
         op = row.operator('caffmob.mobi_baixar_modelo', text=tr("Inserir"), icon='ADD')
         op.modelo_id = item.id
+        op.escopo = item.escopo
     content.operator('caffmob.mobi_enviar_modelo', text=tr("Enviar versão do modelo"), icon='EXPORT')
     op = content.operator('caffmob.mobi_enviar_modelo', text=tr("Enviar como modelo novo"), icon='ADD')
     op.novo, op.escopo = True, state.biblioteca

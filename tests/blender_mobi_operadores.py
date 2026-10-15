@@ -151,11 +151,12 @@ with tempfile.TemporaryDirectory() as directory, patch.object(downloads, 'reques
     reply(200, {'itens':[]}); reply(200, {'itens':[]})
     assert state.situacao == tr(EMPTY), state.situacao
     for version in (0, 3):
-        bpy.ops.caffmob.mobi_baixar_modelo(modelo_id=mod['id'], versao=version)
+        bpy.ops.caffmob.mobi_baixar_modelo(modelo_id=mod['id'], versao=version, escopo='titular')
         assert pending[0]['path'].endswith('/versoes/3') if version else pending[0]['path'].endswith(mod['id'])
         reply(200, mod, {'ETag':'"4"'})
         inserted = bpy.context.object
         assert inserted.get('caffmob_modelo_versao') == (version or 4)
+        assert json.loads(inserted['caffmob_modulo'])['modelo'] == {'id': mod['id'], 'version': version or 4, 'escopo': 'titular'}
         assert cena._modulo_do_objeto(inserted)['id'] != mod['id']
         assert not inserted.children
     # T042: PUT e POST; 015 não emite pedido.
@@ -206,6 +207,12 @@ with tempfile.TemporaryDirectory() as directory, patch.object(downloads, 'reques
         reply(200, {'itens':[{'id':'outro','nome':'Pessoal','version':2,'categoria':'Quarto','escopo':'pessoal'}]})
     assert {i.escopo for i in state.modelos} == {'titular','pessoal'}
     assert all(i.imagem == cached for i in state.modelos)
+    # Sem escopo, vale o da lista; sem lista que o conheça, o operador recusa sem pedido (063 T059).
+    try:
+        bpy.ops.caffmob.mobi_baixar_modelo(modelo_id='sem-lista')
+        raise AssertionError('inserir sem escopo devia ser recusado')
+    except RuntimeError as recusa:
+        assert 'Liste os modelos' in str(recusa) or 'List the models' in str(recusa), recusa
     before = set(o.name for o in bpy.context.scene.objects)
     bpy.ops.caffmob.mobi_baixar_modelo(modelo_id=mod['id'])
     bpy.ops.caffmob.mobi_cancelar()

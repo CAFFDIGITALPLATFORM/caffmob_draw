@@ -354,5 +354,9 @@
   "Situação": {
     "pt_BR": "Situação",
     "en_US": "Status"
+  },
+  "Modelo sem biblioteca de origem. Liste os modelos de novo": {
+    "pt_BR": "Modelo sem biblioteca de origem. Liste os modelos de novo",
+    "en_US": "Model without a source library. List the models again"
   }
 }
