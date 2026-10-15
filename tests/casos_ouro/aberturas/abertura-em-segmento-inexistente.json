@@ -1,0 +1,61 @@
+{
+  "caso": "abertura-em-segmento-inexistente",
+  "descricao": "Abertura apontando para um segmento que não existe.",
+  "tipo": "ambiente",
+  "origem": "manual",
+  "revisadoPor": "Claude Opus 5.5, por delegação do titular (T017)",
+  "revisadoEm": "2026-10-14",
+  "entrada": {
+    "schema": "caffmob.ambiente/v1",
+    "id": "8eee739d-62d1-5ab6-8b82-7d79add43369",
+    "version": 1,
+    "atualizado_em": "2026-10-14T00:00:00.000Z",
+    "origem": "web",
+    "nome": "abertura-em-segmento-inexistente",
+    "paredes": [
+      {
+        "id": "0f5f2dcc-f06a-5ee4-a3cb-6dc97edb5469",
+        "origem": {
+          "x": 0,
+          "y": 0
+        },
+        "fechada": false,
+        "segmentos": [
+          {
+            "id": "eeaa038a-de26-5695-9769-47444deaccfa",
+            "comprimento": 3000,
+            "angulo_absoluto": 0,
+            "angulo_relativo": 0,
+            "espessura": 150,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          }
+        ]
+      }
+    ],
+    "aberturas": [
+      {
+        "id": "ec9ac026-6e00-5f41-98bf-74604d6670fa",
+        "tipo": "DOOR",
+        "segmento_id": "4d77065b-7500-52eb-aee8-a1714435c1c7",
+        "posicao": 0,
+        "largura": 800,
+        "altura": 2100,
+        "peitoril": 0
+      }
+    ],
+    "modulos": []
+  },
+  "esperado": {
+    "erros": [
+      {
+        "caminho": "aberturas[0].segmento_id",
+        "codigo": "SEGMENTO_INEXISTENTE"
+      }
+    ]
+  }
+}

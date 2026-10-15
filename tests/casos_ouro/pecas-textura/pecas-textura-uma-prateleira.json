@@ -1,0 +1,193 @@
+{
+  "caso": "pecas-textura-uma-prateleira",
+  "descricao": "Módulo BASE 800 × 700 × 550 × 15, porta à esquerda, padrão de fábrica, com a textura Duratex Nogueira só na prateleira (062 D-11). Textura na edição chapa a chapa sem medida nenhuma: as medidas são as do caso pecas-addon-base-left.",
+  "tipo": "modulo",
+  "origem": "manual",
+  "revisadoPor": "Claude Opus 5.5 (062 T005): medidas do caso gerado no addon, material pela regra D-11; a confirmar pelo titular",
+  "revisadoEm": "2026-10-14",
+  "texturas": {
+    "7d4c3b2a-1e0f-5a9b-8c7d-6e5f4a3b2c1d": {
+      "fabricante": "Duratex",
+      "nome": "Nogueira"
+    }
+  },
+  "entrada": {
+    "schema": "caffmob.modulo/v1",
+    "id": "be083baa-2aa5-59ee-8bec-bfdb0338a6aa",
+    "version": 1,
+    "atualizado_em": "2026-10-14T00:00:00.000Z",
+    "origem": "blender",
+    "nome": "Módulo BASE LEFT",
+    "tipo": "BASE",
+    "largura": 800,
+    "altura": 700,
+    "profundidade": 550,
+    "espessura": 15,
+    "material": "MDF",
+    "portas": "LEFT",
+    "construcao": {
+      "laterais": "PASSANTE",
+      "tampo": "ENTRE_LATERAIS",
+      "fundo": {
+        "modo": "CANAL",
+        "espessura": 6,
+        "encaixe": 8
+      },
+      "rodape": {
+        "altura": 0,
+        "recuo": 0
+      },
+      "porta": {
+        "modo": "SOBREPOSTA",
+        "folga": 2,
+        "folga_central": 2,
+        "espessura": 18
+      },
+      "prateleiras": {
+        "quantidade": 1,
+        "recuo_frontal": 20,
+        "folga_lateral": 1,
+        "espessura": 15
+      },
+      "divisorias": {
+        "quantidade": 0
+      },
+      "gavetas": {
+        "quantidade": 0,
+        "altura_frente": 180
+      },
+      "travessas": {
+        "quantidade": 0,
+        "largura": 80
+      },
+      "fitas": {
+        "frente": 1,
+        "demais": 0.45,
+        "portas": 1
+      }
+    },
+    "chapas_editadas": [
+      {
+        "papel": "PRATELEIRA",
+        "indice": 0,
+        "textura_id": "7d4c3b2a-1e0f-5a9b-8c7d-6e5f4a3b2c1d"
+      }
+    ]
+  },
+  "esperado": {
+    "pecas": [
+      {
+        "id": "be083baa-2aa5-59ee-8bec-bfdb0338a6aa_LAT_ESQ",
+        "width": 550,
+        "height": 700,
+        "quantity": 1,
+        "thickness": 15,
+        "grain_direction": "VERTICAL",
+        "module_ref": "be083baa-2aa5-59ee-8bec-bfdb0338a6aa",
+        "edges": {
+          "top": 0.45,
+          "bottom": 0.45,
+          "left": 0.45,
+          "right": 1
+        },
+        "material": "MDF 15 mm"
+      },
+      {
+        "id": "be083baa-2aa5-59ee-8bec-bfdb0338a6aa_LAT_DIR",
+        "width": 550,
+        "height": 700,
+        "quantity": 1,
+        "thickness": 15,
+        "grain_direction": "VERTICAL",
+        "module_ref": "be083baa-2aa5-59ee-8bec-bfdb0338a6aa",
+        "edges": {
+          "top": 0.45,
+          "bottom": 0.45,
+          "left": 0.45,
+          "right": 1
+        },
+        "material": "MDF 15 mm"
+      },
+      {
+        "id": "be083baa-2aa5-59ee-8bec-bfdb0338a6aa_BASE",
+        "width": 770,
+        "height": 550,
+        "quantity": 1,
+        "thickness": 15,
+        "grain_direction": "HORIZONTAL",
+        "module_ref": "be083baa-2aa5-59ee-8bec-bfdb0338a6aa",
+        "edges": {
+          "top": 0.45,
+          "bottom": 0.45,
+          "left": 0.45,
+          "right": 1
+        },
+        "material": "MDF 15 mm"
+      },
+      {
+        "id": "be083baa-2aa5-59ee-8bec-bfdb0338a6aa_TAMPO",
+        "width": 770,
+        "height": 550,
+        "quantity": 1,
+        "thickness": 15,
+        "grain_direction": "HORIZONTAL",
+        "module_ref": "be083baa-2aa5-59ee-8bec-bfdb0338a6aa",
+        "edges": {
+          "top": 0.45,
+          "bottom": 0.45,
+          "left": 0.45,
+          "right": 1
+        },
+        "material": "MDF 15 mm"
+      },
+      {
+        "id": "be083baa-2aa5-59ee-8bec-bfdb0338a6aa_FUNDO",
+        "width": 786,
+        "height": 686,
+        "quantity": 1,
+        "thickness": 6,
+        "grain_direction": "VERTICAL",
+        "module_ref": "be083baa-2aa5-59ee-8bec-bfdb0338a6aa",
+        "edges": {
+          "top": 0,
+          "bottom": 0,
+          "left": 0,
+          "right": 0
+        },
+        "material": "MDF 6 mm"
+      },
+      {
+        "id": "be083baa-2aa5-59ee-8bec-bfdb0338a6aa_PRAT_01",
+        "width": 768,
+        "height": 530,
+        "quantity": 1,
+        "thickness": 15,
+        "grain_direction": "HORIZONTAL",
+        "module_ref": "be083baa-2aa5-59ee-8bec-bfdb0338a6aa",
+        "edges": {
+          "top": 0.45,
+          "bottom": 0.45,
+          "left": 0.45,
+          "right": 1
+        },
+        "material": "MDF 15 mm · Duratex Nogueira"
+      },
+      {
+        "id": "be083baa-2aa5-59ee-8bec-bfdb0338a6aa_PORTA_UN",
+        "width": 796,
+        "height": 696,
+        "quantity": 1,
+        "thickness": 18,
+        "grain_direction": "VERTICAL",
+        "module_ref": "be083baa-2aa5-59ee-8bec-bfdb0338a6aa",
+        "edges": {
+          "top": 1,
+          "bottom": 1,
+          "left": 1,
+          "right": 1
+        },
+        "material": "MDF 18 mm"
+      }
+    ]
+  }
+}

@@ -1,0 +1,73 @@
+{
+  "caso": "abertura-no-limite",
+  "descricao": "Porta de 800 num segmento de 3000, na posição máxima 2200: válida.",
+  "tipo": "ambiente",
+  "origem": "manual",
+  "revisadoPor": "Claude Opus 5.5, por delegação do titular (T017)",
+  "revisadoEm": "2026-10-14",
+  "entrada": {
+    "schema": "caffmob.ambiente/v1",
+    "id": "ae15839a-eba3-5bf8-b0be-284ac7a9bbd2",
+    "version": 1,
+    "atualizado_em": "2026-10-14T00:00:00.000Z",
+    "origem": "web",
+    "nome": "abertura-no-limite",
+    "paredes": [
+      {
+        "id": "43e4a863-0765-531a-9791-306b350bdfe4",
+        "origem": {
+          "x": 0,
+          "y": 0
+        },
+        "fechada": false,
+        "segmentos": [
+          {
+            "id": "84a4caea-586f-5687-accd-638bd90e25aa",
+            "comprimento": 3000,
+            "angulo_absoluto": 0,
+            "angulo_relativo": 0,
+            "espessura": 150,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          }
+        ]
+      }
+    ],
+    "aberturas": [
+      {
+        "id": "691b180f-cc49-528b-92fd-e76c679a605b",
+        "tipo": "DOOR",
+        "segmento_id": "84a4caea-586f-5687-accd-638bd90e25aa",
+        "posicao": 2200,
+        "largura": 800,
+        "altura": 2100,
+        "peitoril": 0
+      }
+    ],
+    "modulos": []
+  },
+  "esperado": {
+    "aberturas": [
+      {
+        "id": "691b180f-cc49-528b-92fd-e76c679a605b",
+        "faixa": [
+          0,
+          2200
+        ],
+        "peitoril_max": 600,
+        "inicio": [
+          2200,
+          0
+        ],
+        "fim": [
+          3000,
+          0
+        ]
+      }
+    ]
+  }
+}

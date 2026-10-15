@@ -1,10 +1,6 @@
-"""Operadores da conta CAF Mob e do "Baixar tudo" (feature 014, T035; RN-11, RN-12, D-12, D-15).
+"""Conta e cancelamento das texturas (063 RN-02, RN-12; D-05, D-08).
 
-- `caffmob.texture_login`: pede o código, abre o navegador na página da CAF Mob e acompanha até a confirmação;
-- `caffmob.texture_logout`: avisa o servidor e apaga a sessão;
-- `caffmob.texture_download_all`: só com `download_all` na conta; baixa todas as imagens que faltam pela fila, com
-  progresso total no rodapé da biblioteca e cancelamento (`caffmob.texture_download_cancel`);
-- `caffmob.texture_account_menu`: menu do chip da conta na biblioteca maximizada.
+A grade usa a mesma sessão de aparelho do MOBI. Não há download do catálogo inteiro.
 """
 
 import bpy  # type: ignore
@@ -15,10 +11,6 @@ from . import auth, catalog, downloads
 CODE_HINT = N_("Código {}: confirme no navegador que abriu")
 CONNECTED = N_("Conta CAF Mob conectada: {}")
 SIGNED_OUT = N_("Você saiu da conta CAF Mob")
-NOT_ENTITLED = N_("Sua conta não tem permissão para baixar todas as texturas")
-ALL_DONE = N_("Todas as texturas baixadas")
-DOWNLOAD_ALL_START = N_("Baixando {} texturas ({:.0f} MB)")
-CONFIRM_ALL = N_("Baixar todas as texturas que faltam (cerca de {:.0f} MB)?")
 
 
 def _notify(text):
@@ -33,34 +25,6 @@ def _redraw():
         for area in window.screen.areas:
             if area.type in ('VIEW_3D', 'PREFERENCES'):
                 area.tag_redraw()
-
-
-def missing_items():
-    """Itens do catálogo cuja imagem ainda não está no cache."""
-    data, _warnings = catalog.load()
-    return [item for item in catalog.catalog_core.iter_items(data) if not downloads.cached(item["id"])]
-
-
-def start_download_all(on_done=None):
-    """Enfileira tudo o que falta, se a conta permitir. `on_done(ok, mensagem)` ao decidir (não ao terminar)."""
-    def decide(ent):
-        if not ent or not ent.get("download_all"):
-            message = tr(NOT_ENTITLED) if ent is not None else tr(downloads.NO_ACCOUNT)
-            if on_done:
-                on_done(False, message)
-            return
-        items = missing_items()
-        if not items:
-            if on_done:
-                on_done(True, tr(ALL_DONE))
-            return
-        downloads.clear_finished()
-        for item in items:
-            downloads.fetch(item["id"])
-        size = sum(int(i.get("bytes") or 0) for i in items) / 1048576.0
-        if on_done:
-            on_done(True, tr(DOWNLOAD_ALL_START).format(len(items), size))
-    auth.fetch_entitlements(decide)
 
 
 class BTM_OT_TextureLogin(bpy.types.Operator):
@@ -100,33 +64,9 @@ class BTM_OT_TextureLogout(bpy.types.Operator):
 
     def execute(self, context):
         downloads.cancel_all()
-        auth.logout()
+        auth.logout(lambda message: _notify(tr(message)) if message else None)
         self.report({'INFO'}, tr(SIGNED_OUT))
         _redraw()
-        return {'FINISHED'}
-
-
-class BTM_OT_TextureDownloadAll(bpy.types.Operator):
-    """Baixa todas as texturas para usar sem internet (só para contas com essa permissão)"""
-    bl_idname = "caffmob.texture_download_all"
-    bl_label = "Baixar todas as texturas"
-    bl_options = {'INTERNAL'}
-
-    @classmethod
-    def poll(cls, context):
-        return auth.signed_in()
-
-    def invoke(self, context, event):
-        size = sum(int(i.get("bytes") or 0) for i in missing_items()) / 1048576.0
-        return context.window_manager.invoke_confirm(self, event, title=tr(CONFIRM_ALL).format(size),
-                                                     confirm_text=tr("Baixar"), icon='IMPORT')
-
-    def execute(self, context):
-        reason = downloads.unavailable_reason()
-        if reason:
-            self.report({'WARNING'}, tr(reason))
-            return {'CANCELLED'}
-        start_download_all(lambda ok, message: _notify(message))
         return {'FINISHED'}
 
 
@@ -154,7 +94,6 @@ def draw_account(layout):
     if email:
         layout.label(text=tr(CONNECTED).format(email), icon='CHECKMARK')
         layout.operator(BTM_OT_TextureLogout.bl_idname, icon='X')
-        layout.operator(BTM_OT_TextureDownloadAll.bl_idname, icon='IMPORT')
     else:
         row = layout.row()
         row.enabled = not reason
@@ -177,7 +116,7 @@ class BTM_OT_TextureAccountMenu(bpy.types.Operator):
         return {'FINISHED'}
 
 
-classes = (BTM_OT_TextureLogin, BTM_OT_TextureLogout, BTM_OT_TextureDownloadAll, BTM_OT_TextureDownloadCancel,
+classes = (BTM_OT_TextureLogin, BTM_OT_TextureLogout, BTM_OT_TextureDownloadCancel,
            BTM_OT_TextureAccountMenu)
 
 

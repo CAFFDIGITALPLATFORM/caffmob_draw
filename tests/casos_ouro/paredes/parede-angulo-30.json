@@ -1,0 +1,184 @@
+{
+  "caso": "parede-angulo-30",
+  "descricao": "Polilinha com segmento a 30°: coordenadas com seno e cosseno, arredondadas a 0,1 mm.",
+  "tipo": "ambiente",
+  "origem": "manual",
+  "revisadoPor": "Claude Opus 5.5, por delegação do titular (T017)",
+  "revisadoEm": "2026-10-14",
+  "entrada": {
+    "schema": "caffmob.ambiente/v1",
+    "id": "c5210808-5e13-5237-9828-81a98b6858e9",
+    "version": 1,
+    "atualizado_em": "2026-10-14T00:00:00.000Z",
+    "origem": "web",
+    "nome": "parede-angulo-30",
+    "paredes": [
+      {
+        "id": "d3d967fe-ca49-5368-9ca5-254771f3a975",
+        "origem": {
+          "x": 0,
+          "y": 0
+        },
+        "fechada": false,
+        "segmentos": [
+          {
+            "id": "1bc11a1d-f51d-59df-bf51-b07a0d2e0fb1",
+            "comprimento": 2000,
+            "angulo_absoluto": 0,
+            "angulo_relativo": 0,
+            "espessura": 150,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "98747e94-6f07-58ce-aa05-00ca9598136c",
+            "comprimento": 2000,
+            "angulo_absoluto": 30,
+            "angulo_relativo": 30,
+            "espessura": 150,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "c0e656c7-3aec-5f4a-8fe1-6a9f1092c93a",
+            "comprimento": 1000,
+            "angulo_absoluto": 120,
+            "angulo_relativo": 90,
+            "espessura": 150,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          }
+        ]
+      }
+    ],
+    "aberturas": [],
+    "modulos": []
+  },
+  "esperado": {
+    "segmentos": [
+      {
+        "id": "1bc11a1d-f51d-59df-bf51-b07a0d2e0fb1",
+        "inicio": [
+          0,
+          0
+        ],
+        "fim": [
+          2000,
+          0
+        ],
+        "z_base": 0,
+        "altura_inicio": 2700,
+        "altura_fim": 2700,
+        "angulo_relativo": 0
+      },
+      {
+        "id": "98747e94-6f07-58ce-aa05-00ca9598136c",
+        "inicio": [
+          2000,
+          0
+        ],
+        "fim": [
+          3732.1,
+          1000
+        ],
+        "z_base": 0,
+        "altura_inicio": 2700,
+        "altura_fim": 2700,
+        "angulo_relativo": 30
+      },
+      {
+        "id": "c0e656c7-3aec-5f4a-8fe1-6a9f1092c93a",
+        "inicio": [
+          3732.1,
+          1000
+        ],
+        "fim": [
+          3232.1,
+          1866
+        ],
+        "z_base": 0,
+        "altura_inicio": 2700,
+        "altura_fim": 2700,
+        "angulo_relativo": 90
+      }
+    ],
+    "contornos": [
+      {
+        "id": "1bc11a1d-f51d-59df-bf51-b07a0d2e0fb1",
+        "poligono": [
+          [
+            0,
+            0
+          ],
+          [
+            2000,
+            0
+          ],
+          [
+            1959.8,
+            150
+          ],
+          [
+            0,
+            150
+          ]
+        ]
+      },
+      {
+        "id": "98747e94-6f07-58ce-aa05-00ca9598136c",
+        "poligono": [
+          [
+            2000,
+            0
+          ],
+          [
+            3732.1,
+            1000
+          ],
+          [
+            3527.1,
+            1054.9
+          ],
+          [
+            1959.8,
+            150
+          ]
+        ]
+      },
+      {
+        "id": "c0e656c7-3aec-5f4a-8fe1-6a9f1092c93a",
+        "poligono": [
+          [
+            3732.1,
+            1000
+          ],
+          [
+            3232.1,
+            1866
+          ],
+          [
+            3102.1,
+            1791
+          ],
+          [
+            3527.1,
+            1054.9
+          ]
+        ]
+      }
+    ],
+    "piso": []
+  }
+}

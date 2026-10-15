@@ -1,0 +1,57 @@
+{
+  "caso": "arco-semicirculo",
+  "descricao": "Semicírculo: corda 2000, flecha 1000, raio 1000, comprimento do arco π·1000.",
+  "tipo": "ambiente",
+  "origem": "manual",
+  "revisadoPor": "Claude Opus 5.5, por delegação do titular (T017)",
+  "revisadoEm": "2026-10-14",
+  "entrada": {
+    "schema": "caffmob.ambiente/v1",
+    "id": "6285ae08-33d9-562c-b8ba-60c8fbd61a83",
+    "version": 1,
+    "atualizado_em": "2026-10-14T00:00:00.000Z",
+    "origem": "web",
+    "nome": "arco-semicirculo",
+    "paredes": [
+      {
+        "id": "9b9b57e1-d148-5986-b8a3-ee9ccbe495e1",
+        "origem": {
+          "x": 0,
+          "y": 0
+        },
+        "fechada": false,
+        "segmentos": [
+          {
+            "id": "5fb08861-4e19-5cf4-bd49-a02e217890f6",
+            "comprimento": 2000,
+            "angulo_absoluto": 90,
+            "angulo_relativo": 90,
+            "espessura": 150,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 1000,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          }
+        ]
+      }
+    ],
+    "aberturas": [],
+    "modulos": []
+  },
+  "esperado": {
+    "arcos": [
+      {
+        "id": "5fb08861-4e19-5cf4-bd49-a02e217890f6",
+        "raio": 1000,
+        "centro": [
+          0,
+          1000
+        ],
+        "comprimento_do_arco": 3141.6,
+        "angulo_central": 180
+      }
+    ]
+  }
+}

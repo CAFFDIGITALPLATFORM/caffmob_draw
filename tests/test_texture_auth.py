@@ -1,4 +1,4 @@
-"""Testes do núcleo da conta CAF Mob (feature 014, T012; RN-11, D-12, D-13; interfaces/servidor-texturas.md §1)."""
+"""Testes do núcleo da sessão MOBI (feature 063, T012; RN-11, D-12, D-13; interfaces/servidor-texturas.md §1)."""
 
 import unittest
 
@@ -8,7 +8,7 @@ from caffmob_draw.texture_library import auth_core as ac
 START = {"device_code": "dev", "user_code": "WDJB-MJHT", "verification_uri": "https://x/ativar",
          "verification_uri_complete": "https://x/ativar?code=WDJB-MJHT", "expires_in": 600, "interval": 5}
 TOKENS = {"access_token": "acc", "expires_in": 900, "refresh_token": "ref",
-          "account": {"email": "a@b.c", "name": "a"}}
+          "titular": {"id": 1, "nome": "Oficina de teste"}}
 
 
 class DeviceFlowTest(unittest.TestCase):
@@ -50,12 +50,12 @@ class DeviceFlowTest(unittest.TestCase):
 
 
 class SessionTest(unittest.TestCase):
-    def test_sessao_sem_segredo_de_curta_duracao(self):
+    def test_sessao_unica_com_tokens_e_titular(self):
         data = ac.session_payload(TOKENS, server="https://x", saved_at="2026-10-12T10:00:00-03:00")
         self.assertEqual(data["refresh_token"], "ref")
-        self.assertNotIn("access_token", data)
+        self.assertEqual(data["tokens"], TOKENS)
         self.assertNotIn("password", str(data).lower())
-        self.assertEqual(data["account"]["email"], "a@b.c")
+        self.assertEqual(data["titular"], TOKENS["titular"])
         self.assertEqual(ac.load_session(data, server="https://x"), data)
 
     def test_sessao_invalida_ou_de_outro_servidor(self):
@@ -68,10 +68,12 @@ class SessionTest(unittest.TestCase):
     def test_renovacao(self):
         self.assertEqual(ac.refresh_outcome(200, dict(TOKENS, refresh_token="novo")),
                          (ac.OK, dict(TOKENS, refresh_token="novo")))
-        self.assertEqual(ac.refresh_outcome(401, {"error": "invalid_token"}), (ac.LOGOUT, None))
+        self.assertEqual(ac.refresh_outcome(401, {"error": "invalid_token"}), (ac.RETRY, None))
+        self.assertEqual(ac.refresh_outcome(400, {"error": "invalid_grant"}), (ac.LOGOUT, None))
+        self.assertEqual(ac.refresh_outcome(429, {}), (ac.RETRY, None))
         self.assertEqual(ac.refresh_outcome(503, {}), (ac.RETRY, None))
         self.assertEqual(ac.refresh_outcome(None, None), (ac.RETRY, None))   # sem rede
-        self.assertEqual(ac.refresh_outcome(200, {"access_token": "x"}), (ac.LOGOUT, None))  # resposta incompleta
+        self.assertEqual(ac.refresh_outcome(200, {"access_token": "x"}), (ac.RETRY, None))  # resposta incompleta preserva a sessão
 
     def test_validade_do_token_de_acesso(self):
         self.assertTrue(ac.access_valid(expires_at=1000.0, now=900.0))

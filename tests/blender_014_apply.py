@@ -3,7 +3,7 @@
 Roda em segundo plano:
     blender --background --factory-startup --python-exit-code 1 --python tests/blender_014_apply.py
 
-Com a imagem "baixada" (a miniatura do pacote copiada para o cache do usuário):
+Com catálogo remoto e imagens sintéticas baixadas do servidor falso local do MOBI:
 - peça: material de imagem do catálogo (`btm_texture_id`) e gravado na personalização da peça;
 - imagem em pé numa peça: variante `ROTATED` (veio); objeto solto não gira;
 - frente: todas as malhas da frente; módulo: todas as peças; mesma textura de novo reaproveita o material;
@@ -11,7 +11,6 @@ Com a imagem "baixada" (a miniatura do pacote copiada para o cache do usuário):
 """
 
 import os
-import shutil
 import sys
 import traceback
 from pathlib import Path
@@ -23,6 +22,9 @@ from caffmob_draw.customize.adapters import common  # noqa: E402
 from caffmob_draw.product_libraries.frameless import types_frameless as tf  # noqa: E402
 from caffmob_draw.selection import classify  # noqa: E402
 from caffmob_draw.texture_library import apply, catalog, downloads  # noqa: E402
+from _mobi_texture_fixture import TextureServer
+
+server = TextureServer()
 
 ctx = bpy.context
 FAILURES = []
@@ -35,15 +37,11 @@ def check(name, ok, detail=""):
 
 
 def fake_download(item_id):
-    entry = catalog.item(item_id)
-    dest = downloads.cache_path(entry)
-    os.makedirs(os.path.dirname(dest), exist_ok=True)
-    shutil.copy(catalog.thumb_path(entry), dest)
-    return dest
+    return server.download(item_id)
 
 
 def item_where(pred):
-    for item in catalog.catalog_core.iter_items(catalog.load()[0]):
+    for item in catalog.search():
         if pred(item):
             return item["id"]
     raise AssertionError("nenhum item do catálogo atende")
@@ -59,6 +57,7 @@ def mats(obj):
 
 def main():
     env.clean_scene()
+    server.connect()
     square = item_where(lambda i: i["px"][0] == i["px"][1])
     tall = item_where(lambda i: i["px"][1] > i["px"][0])
     for tid in (square, tall):
@@ -115,7 +114,7 @@ def main():
     cube.select_set(True)
     ctx.view_layer.objects.active = cube
     assert bpy.ops.caffmob.texture_apply(item_id=square) == {'FINISHED'}
-    check("operador aplica à seleção", any("anis" in n for n in mats(cube)), str(mats(cube)))
+    check("operador aplica à seleção", any(bpy.data.materials[n].get("btm_texture_id") == square for n in mats(cube)), str(mats(cube)))
     result = bpy.ops.caffmob.texture_size('EXEC_DEFAULT', width_mm=1200.0, height_mm=900.0, keep_ratio=False)
     names = mats(cube)
     mat = bpy.data.materials.get(next(iter(names)))
@@ -131,7 +130,7 @@ def main():
     fake_download(bumpy)
     relief = bump.bump_entry(catalog.item(bumpy))
     relief_path = downloads.cache_path(relief)
-    shutil.copy(catalog.thumb_path(catalog.item(bumpy)), relief_path)
+    server.download(relief["id"], entry=relief)
     bpy.ops.mesh.primitive_cube_add()
     plate = ctx.active_object
     apply.apply([plate], bumpy)
@@ -148,7 +147,8 @@ def main():
 
     original = downloads.online
     downloads.online = lambda: False
-    missing = item_where(lambda i: i["id"] not in (square, tall))
+    raw = dict(catalog.item(square), id='06300000-0000-4000-8000-999999999999', sha256_trabalho='e' * 64)
+    missing = catalog.remember(raw)['id']
     before = mats(cube)
     status, msg = apply.apply([cube], missing)
     downloads.online = original
@@ -161,5 +161,7 @@ try:
 except Exception:
     traceback.print_exc()
     FAILURES.append("exceção")
+finally:
+    server.close()
 print(f"blender_014_apply: {'OK' if not FAILURES else 'FALHAS: ' + ', '.join(FAILURES)}", flush=True)
 sys.exit(1 if FAILURES else 0)

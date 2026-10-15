@@ -7,6 +7,13 @@ import bpy  # type: ignore
 
 def update_wall_geom(self, context):
     obj = self.id_data
+    if obj and obj.type == 'MESH' and obj.get("caffmob_parede"):
+        # (063 D-10) Contrato só muda em Editar segmento; preserva os vãos.
+        import json
+        from ..mobi.cena import regenerar_parede
+        regenerar_parede(context, obj, json.loads(obj["caffmob_parede"]),
+                         json.loads(obj.get("caffmob_aberturas", "[]")))
+        return
     if obj and obj.type == 'MESH':
         import json
         segments_str = obj.get("btm_wall_segments", "")

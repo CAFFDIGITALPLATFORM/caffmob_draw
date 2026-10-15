@@ -6,6 +6,8 @@ Usado pelos dois lados do subprocesso de rede:
   para 429/5xx e o cuidado de não mandar `Authorization` a outro domínio (`downloader.py`);
 - `encode`/`parse_line`: protocolo de uma mensagem JSON por linha entre o Blender e o subprocesso.
 
+(063 RF-10; D-04): request aceita form e headers; reply devolve headers e etag.
+
 Mensagens para o subprocesso: `get` (id, url, dest, sha256, bytes), `token` (value), `cancel` (id), `quit`.
 Mensagens do subprocesso: `progress` (id, received, total), `done` (id, path), `error` (id, code, status, message),
 `need_token` (id).

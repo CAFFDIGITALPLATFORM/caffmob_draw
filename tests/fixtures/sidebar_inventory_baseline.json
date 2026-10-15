@@ -2040,6 +2040,92 @@
      "scope": "SELECTED"
     },
     "text": "Selecionado"
+   },
+   {
+    "kind": "operator",
+    "name": "caffmob.mobi_conectar",
+    "section": "CAFFMob Draw › Produção/Projeto › CAFF MOBI",
+    "args": {},
+    "text": "Conectar"
+   },
+   {
+    "kind": "operator",
+    "name": "caffmob.mobi_desconectar",
+    "section": "CAFFMob Draw › Produção/Projeto › CAFF MOBI",
+    "args": {},
+    "text": "Desconectar"
+   },
+   {
+    "kind": "operator",
+    "name": "caffmob.mobi_listar_ambientes",
+    "section": "CAFFMob Draw › Produção/Projeto › CAFF MOBI",
+    "args": {},
+    "text": "Listar ambientes"
+   },
+   {
+    "kind": "operator",
+    "name": "caffmob.mobi_baixar_ambiente",
+    "section": "CAFFMob Draw › Produção/Projeto › CAFF MOBI",
+    "args": {
+     "ambiente_id": "ambiente-teste"
+    },
+    "text": "Baixar"
+   },
+   {
+    "kind": "operator",
+    "name": "caffmob.mobi_listar_ambientes",
+    "section": "CAFFMob Draw › Produção/Projeto › CAFF MOBI",
+    "args": {
+     "mais": true
+    },
+    "text": "Carregar mais ambientes"
+   },
+   {
+    "kind": "operator",
+    "name": "caffmob.mobi_enviar_ambiente",
+    "section": "CAFFMob Draw › Produção/Projeto › CAFF MOBI",
+    "args": {},
+    "text": "Enviar ambiente"
+   },
+   {
+    "kind": "operator",
+    "name": "caffmob.mobi_editar_segmento",
+    "section": "CAFFMob Draw › Produção/Projeto › CAFF MOBI",
+    "args": {},
+    "text": "Editar segmento"
+   },
+   {
+    "kind": "operator",
+    "name": "caffmob.mobi_listar_modelos",
+    "section": "CAFFMob Draw › Produção/Projeto › CAFF MOBI",
+    "args": {},
+    "text": "Listar modelos"
+   },
+   {
+    "kind": "operator",
+    "name": "caffmob.mobi_baixar_modelo",
+    "section": "CAFFMob Draw › Produção/Projeto › CAFF MOBI",
+    "args": {
+     "modelo_id": "pessoal"
+    },
+    "text": "Inserir"
+   },
+   {
+    "kind": "operator",
+    "name": "caffmob.mobi_enviar_modelo",
+    "section": "CAFFMob Draw › Produção/Projeto › CAFF MOBI",
+    "args": {},
+    "text": "Enviar versão do modelo"
+   },
+   {
+    "kind": "operator",
+    "name": "caffmob.mobi_enviar_modelo",
+    "section": "CAFFMob Draw › Produção/Projeto › CAFF MOBI",
+    "args": {
+     "novo": true,
+     "escopo": "pessoal"
+    },
+    "text": "Enviar como modelo novo"
    }
   ],
   "parede": [
@@ -2755,6 +2841,92 @@
      "scope": "SELECTED"
     },
     "text": "Selecionado"
+   },
+   {
+    "kind": "operator",
+    "name": "caffmob.mobi_conectar",
+    "section": "CAFFMob Draw › Produção/Projeto › CAFF MOBI",
+    "args": {},
+    "text": "Conectar"
+   },
+   {
+    "kind": "operator",
+    "name": "caffmob.mobi_desconectar",
+    "section": "CAFFMob Draw › Produção/Projeto › CAFF MOBI",
+    "args": {},
+    "text": "Desconectar"
+   },
+   {
+    "kind": "operator",
+    "name": "caffmob.mobi_listar_ambientes",
+    "section": "CAFFMob Draw › Produção/Projeto › CAFF MOBI",
+    "args": {},
+    "text": "Listar ambientes"
+   },
+   {
+    "kind": "operator",
+    "name": "caffmob.mobi_baixar_ambiente",
+    "section": "CAFFMob Draw › Produção/Projeto › CAFF MOBI",
+    "args": {
+     "ambiente_id": "ambiente-teste"
+    },
+    "text": "Baixar"
+   },
+   {
+    "kind": "operator",
+    "name": "caffmob.mobi_listar_ambientes",
+    "section": "CAFFMob Draw › Produção/Projeto › CAFF MOBI",
+    "args": {
+     "mais": true
+    },
+    "text": "Carregar mais ambientes"
+   },
+   {
+    "kind": "operator",
+    "name": "caffmob.mobi_enviar_ambiente",
+    "section": "CAFFMob Draw › Produção/Projeto › CAFF MOBI",
+    "args": {},
+    "text": "Enviar ambiente"
+   },
+   {
+    "kind": "operator",
+    "name": "caffmob.mobi_editar_segmento",
+    "section": "CAFFMob Draw › Produção/Projeto › CAFF MOBI",
+    "args": {},
+    "text": "Editar segmento"
+   },
+   {
+    "kind": "operator",
+    "name": "caffmob.mobi_listar_modelos",
+    "section": "CAFFMob Draw › Produção/Projeto › CAFF MOBI",
+    "args": {},
+    "text": "Listar modelos"
+   },
+   {
+    "kind": "operator",
+    "name": "caffmob.mobi_baixar_modelo",
+    "section": "CAFFMob Draw › Produção/Projeto › CAFF MOBI",
+    "args": {
+     "modelo_id": "pessoal"
+    },
+    "text": "Inserir"
+   },
+   {
+    "kind": "operator",
+    "name": "caffmob.mobi_enviar_modelo",
+    "section": "CAFFMob Draw › Produção/Projeto › CAFF MOBI",
+    "args": {},
+    "text": "Enviar versão do modelo"
+   },
+   {
+    "kind": "operator",
+    "name": "caffmob.mobi_enviar_modelo",
+    "section": "CAFFMob Draw › Produção/Projeto › CAFF MOBI",
+    "args": {
+     "novo": true,
+     "escopo": "pessoal"
+    },
+    "text": "Enviar como modelo novo"
    }
   ],
   "frameless": [
@@ -3581,6 +3753,92 @@
      "scope": "SELECTED"
     },
     "text": "Selecionado"
+   },
+   {
+    "kind": "operator",
+    "name": "caffmob.mobi_conectar",
+    "section": "CAFFMob Draw › Produção/Projeto › CAFF MOBI",
+    "args": {},
+    "text": "Conectar"
+   },
+   {
+    "kind": "operator",
+    "name": "caffmob.mobi_desconectar",
+    "section": "CAFFMob Draw › Produção/Projeto › CAFF MOBI",
+    "args": {},
+    "text": "Desconectar"
+   },
+   {
+    "kind": "operator",
+    "name": "caffmob.mobi_listar_ambientes",
+    "section": "CAFFMob Draw › Produção/Projeto › CAFF MOBI",
+    "args": {},
+    "text": "Listar ambientes"
+   },
+   {
+    "kind": "operator",
+    "name": "caffmob.mobi_baixar_ambiente",
+    "section": "CAFFMob Draw › Produção/Projeto › CAFF MOBI",
+    "args": {
+     "ambiente_id": "ambiente-teste"
+    },
+    "text": "Baixar"
+   },
+   {
+    "kind": "operator",
+    "name": "caffmob.mobi_listar_ambientes",
+    "section": "CAFFMob Draw › Produção/Projeto › CAFF MOBI",
+    "args": {
+     "mais": true
+    },
+    "text": "Carregar mais ambientes"
+   },
+   {
+    "kind": "operator",
+    "name": "caffmob.mobi_enviar_ambiente",
+    "section": "CAFFMob Draw › Produção/Projeto › CAFF MOBI",
+    "args": {},
+    "text": "Enviar ambiente"
+   },
+   {
+    "kind": "operator",
+    "name": "caffmob.mobi_editar_segmento",
+    "section": "CAFFMob Draw › Produção/Projeto › CAFF MOBI",
+    "args": {},
+    "text": "Editar segmento"
+   },
+   {
+    "kind": "operator",
+    "name": "caffmob.mobi_listar_modelos",
+    "section": "CAFFMob Draw › Produção/Projeto › CAFF MOBI",
+    "args": {},
+    "text": "Listar modelos"
+   },
+   {
+    "kind": "operator",
+    "name": "caffmob.mobi_baixar_modelo",
+    "section": "CAFFMob Draw › Produção/Projeto › CAFF MOBI",
+    "args": {
+     "modelo_id": "pessoal"
+    },
+    "text": "Inserir"
+   },
+   {
+    "kind": "operator",
+    "name": "caffmob.mobi_enviar_modelo",
+    "section": "CAFFMob Draw › Produção/Projeto › CAFF MOBI",
+    "args": {},
+    "text": "Enviar versão do modelo"
+   },
+   {
+    "kind": "operator",
+    "name": "caffmob.mobi_enviar_modelo",
+    "section": "CAFFMob Draw › Produção/Projeto › CAFF MOBI",
+    "args": {
+     "novo": true,
+     "escopo": "pessoal"
+    },
+    "text": "Enviar como modelo novo"
    }
   ],
   "face_frame": [
@@ -4377,6 +4635,92 @@
      "scope": "SELECTED"
     },
     "text": "Selecionado"
+   },
+   {
+    "kind": "operator",
+    "name": "caffmob.mobi_conectar",
+    "section": "CAFFMob Draw › Produção/Projeto › CAFF MOBI",
+    "args": {},
+    "text": "Conectar"
+   },
+   {
+    "kind": "operator",
+    "name": "caffmob.mobi_desconectar",
+    "section": "CAFFMob Draw › Produção/Projeto › CAFF MOBI",
+    "args": {},
+    "text": "Desconectar"
+   },
+   {
+    "kind": "operator",
+    "name": "caffmob.mobi_listar_ambientes",
+    "section": "CAFFMob Draw › Produção/Projeto › CAFF MOBI",
+    "args": {},
+    "text": "Listar ambientes"
+   },
+   {
+    "kind": "operator",
+    "name": "caffmob.mobi_baixar_ambiente",
+    "section": "CAFFMob Draw › Produção/Projeto › CAFF MOBI",
+    "args": {
+     "ambiente_id": "ambiente-teste"
+    },
+    "text": "Baixar"
+   },
+   {
+    "kind": "operator",
+    "name": "caffmob.mobi_listar_ambientes",
+    "section": "CAFFMob Draw › Produção/Projeto › CAFF MOBI",
+    "args": {
+     "mais": true
+    },
+    "text": "Carregar mais ambientes"
+   },
+   {
+    "kind": "operator",
+    "name": "caffmob.mobi_enviar_ambiente",
+    "section": "CAFFMob Draw › Produção/Projeto › CAFF MOBI",
+    "args": {},
+    "text": "Enviar ambiente"
+   },
+   {
+    "kind": "operator",
+    "name": "caffmob.mobi_editar_segmento",
+    "section": "CAFFMob Draw › Produção/Projeto › CAFF MOBI",
+    "args": {},
+    "text": "Editar segmento"
+   },
+   {
+    "kind": "operator",
+    "name": "caffmob.mobi_listar_modelos",
+    "section": "CAFFMob Draw › Produção/Projeto › CAFF MOBI",
+    "args": {},
+    "text": "Listar modelos"
+   },
+   {
+    "kind": "operator",
+    "name": "caffmob.mobi_baixar_modelo",
+    "section": "CAFFMob Draw › Produção/Projeto › CAFF MOBI",
+    "args": {
+     "modelo_id": "pessoal"
+    },
+    "text": "Inserir"
+   },
+   {
+    "kind": "operator",
+    "name": "caffmob.mobi_enviar_modelo",
+    "section": "CAFFMob Draw › Produção/Projeto › CAFF MOBI",
+    "args": {},
+    "text": "Enviar versão do modelo"
+   },
+   {
+    "kind": "operator",
+    "name": "caffmob.mobi_enviar_modelo",
+    "section": "CAFFMob Draw › Produção/Projeto › CAFF MOBI",
+    "args": {
+     "novo": true,
+     "escopo": "pessoal"
+    },
+    "text": "Enviar como modelo novo"
    }
   ],
   "closets": [
@@ -5228,6 +5572,92 @@
      "scope": "SELECTED"
     },
     "text": "Selecionado"
+   },
+   {
+    "kind": "operator",
+    "name": "caffmob.mobi_conectar",
+    "section": "CAFFMob Draw › Produção/Projeto › CAFF MOBI",
+    "args": {},
+    "text": "Conectar"
+   },
+   {
+    "kind": "operator",
+    "name": "caffmob.mobi_desconectar",
+    "section": "CAFFMob Draw › Produção/Projeto › CAFF MOBI",
+    "args": {},
+    "text": "Desconectar"
+   },
+   {
+    "kind": "operator",
+    "name": "caffmob.mobi_listar_ambientes",
+    "section": "CAFFMob Draw › Produção/Projeto › CAFF MOBI",
+    "args": {},
+    "text": "Listar ambientes"
+   },
+   {
+    "kind": "operator",
+    "name": "caffmob.mobi_baixar_ambiente",
+    "section": "CAFFMob Draw › Produção/Projeto › CAFF MOBI",
+    "args": {
+     "ambiente_id": "ambiente-teste"
+    },
+    "text": "Baixar"
+   },
+   {
+    "kind": "operator",
+    "name": "caffmob.mobi_listar_ambientes",
+    "section": "CAFFMob Draw › Produção/Projeto › CAFF MOBI",
+    "args": {
+     "mais": true
+    },
+    "text": "Carregar mais ambientes"
+   },
+   {
+    "kind": "operator",
+    "name": "caffmob.mobi_enviar_ambiente",
+    "section": "CAFFMob Draw › Produção/Projeto › CAFF MOBI",
+    "args": {},
+    "text": "Enviar ambiente"
+   },
+   {
+    "kind": "operator",
+    "name": "caffmob.mobi_editar_segmento",
+    "section": "CAFFMob Draw › Produção/Projeto › CAFF MOBI",
+    "args": {},
+    "text": "Editar segmento"
+   },
+   {
+    "kind": "operator",
+    "name": "caffmob.mobi_listar_modelos",
+    "section": "CAFFMob Draw › Produção/Projeto › CAFF MOBI",
+    "args": {},
+    "text": "Listar modelos"
+   },
+   {
+    "kind": "operator",
+    "name": "caffmob.mobi_baixar_modelo",
+    "section": "CAFFMob Draw › Produção/Projeto › CAFF MOBI",
+    "args": {
+     "modelo_id": "pessoal"
+    },
+    "text": "Inserir"
+   },
+   {
+    "kind": "operator",
+    "name": "caffmob.mobi_enviar_modelo",
+    "section": "CAFFMob Draw › Produção/Projeto › CAFF MOBI",
+    "args": {},
+    "text": "Enviar versão do modelo"
+   },
+   {
+    "kind": "operator",
+    "name": "caffmob.mobi_enviar_modelo",
+    "section": "CAFFMob Draw › Produção/Projeto › CAFF MOBI",
+    "args": {
+     "novo": true,
+     "escopo": "pessoal"
+    },
+    "text": "Enviar como modelo novo"
    }
   ],
   "btm": [
@@ -6045,6 +6475,92 @@
      "scope": "SELECTED"
     },
     "text": "Selecionado"
+   },
+   {
+    "kind": "operator",
+    "name": "caffmob.mobi_conectar",
+    "section": "CAFFMob Draw › Produção/Projeto › CAFF MOBI",
+    "args": {},
+    "text": "Conectar"
+   },
+   {
+    "kind": "operator",
+    "name": "caffmob.mobi_desconectar",
+    "section": "CAFFMob Draw › Produção/Projeto › CAFF MOBI",
+    "args": {},
+    "text": "Desconectar"
+   },
+   {
+    "kind": "operator",
+    "name": "caffmob.mobi_listar_ambientes",
+    "section": "CAFFMob Draw › Produção/Projeto › CAFF MOBI",
+    "args": {},
+    "text": "Listar ambientes"
+   },
+   {
+    "kind": "operator",
+    "name": "caffmob.mobi_baixar_ambiente",
+    "section": "CAFFMob Draw › Produção/Projeto › CAFF MOBI",
+    "args": {
+     "ambiente_id": "ambiente-teste"
+    },
+    "text": "Baixar"
+   },
+   {
+    "kind": "operator",
+    "name": "caffmob.mobi_listar_ambientes",
+    "section": "CAFFMob Draw › Produção/Projeto › CAFF MOBI",
+    "args": {
+     "mais": true
+    },
+    "text": "Carregar mais ambientes"
+   },
+   {
+    "kind": "operator",
+    "name": "caffmob.mobi_enviar_ambiente",
+    "section": "CAFFMob Draw › Produção/Projeto › CAFF MOBI",
+    "args": {},
+    "text": "Enviar ambiente"
+   },
+   {
+    "kind": "operator",
+    "name": "caffmob.mobi_editar_segmento",
+    "section": "CAFFMob Draw › Produção/Projeto › CAFF MOBI",
+    "args": {},
+    "text": "Editar segmento"
+   },
+   {
+    "kind": "operator",
+    "name": "caffmob.mobi_listar_modelos",
+    "section": "CAFFMob Draw › Produção/Projeto › CAFF MOBI",
+    "args": {},
+    "text": "Listar modelos"
+   },
+   {
+    "kind": "operator",
+    "name": "caffmob.mobi_baixar_modelo",
+    "section": "CAFFMob Draw › Produção/Projeto › CAFF MOBI",
+    "args": {
+     "modelo_id": "pessoal"
+    },
+    "text": "Inserir"
+   },
+   {
+    "kind": "operator",
+    "name": "caffmob.mobi_enviar_modelo",
+    "section": "CAFFMob Draw › Produção/Projeto › CAFF MOBI",
+    "args": {},
+    "text": "Enviar versão do modelo"
+   },
+   {
+    "kind": "operator",
+    "name": "caffmob.mobi_enviar_modelo",
+    "section": "CAFFMob Draw › Produção/Projeto › CAFF MOBI",
+    "args": {
+     "novo": true,
+     "escopo": "pessoal"
+    },
+    "text": "Enviar como modelo novo"
    }
   ],
   "geometria": [
@@ -6753,6 +7269,92 @@
      "scope": "SELECTED"
     },
     "text": "Selecionado"
+   },
+   {
+    "kind": "operator",
+    "name": "caffmob.mobi_conectar",
+    "section": "CAFFMob Draw › Produção/Projeto › CAFF MOBI",
+    "args": {},
+    "text": "Conectar"
+   },
+   {
+    "kind": "operator",
+    "name": "caffmob.mobi_desconectar",
+    "section": "CAFFMob Draw › Produção/Projeto › CAFF MOBI",
+    "args": {},
+    "text": "Desconectar"
+   },
+   {
+    "kind": "operator",
+    "name": "caffmob.mobi_listar_ambientes",
+    "section": "CAFFMob Draw › Produção/Projeto › CAFF MOBI",
+    "args": {},
+    "text": "Listar ambientes"
+   },
+   {
+    "kind": "operator",
+    "name": "caffmob.mobi_baixar_ambiente",
+    "section": "CAFFMob Draw › Produção/Projeto › CAFF MOBI",
+    "args": {
+     "ambiente_id": "ambiente-teste"
+    },
+    "text": "Baixar"
+   },
+   {
+    "kind": "operator",
+    "name": "caffmob.mobi_listar_ambientes",
+    "section": "CAFFMob Draw › Produção/Projeto › CAFF MOBI",
+    "args": {
+     "mais": true
+    },
+    "text": "Carregar mais ambientes"
+   },
+   {
+    "kind": "operator",
+    "name": "caffmob.mobi_enviar_ambiente",
+    "section": "CAFFMob Draw › Produção/Projeto › CAFF MOBI",
+    "args": {},
+    "text": "Enviar ambiente"
+   },
+   {
+    "kind": "operator",
+    "name": "caffmob.mobi_editar_segmento",
+    "section": "CAFFMob Draw › Produção/Projeto › CAFF MOBI",
+    "args": {},
+    "text": "Editar segmento"
+   },
+   {
+    "kind": "operator",
+    "name": "caffmob.mobi_listar_modelos",
+    "section": "CAFFMob Draw › Produção/Projeto › CAFF MOBI",
+    "args": {},
+    "text": "Listar modelos"
+   },
+   {
+    "kind": "operator",
+    "name": "caffmob.mobi_baixar_modelo",
+    "section": "CAFFMob Draw › Produção/Projeto › CAFF MOBI",
+    "args": {
+     "modelo_id": "pessoal"
+    },
+    "text": "Inserir"
+   },
+   {
+    "kind": "operator",
+    "name": "caffmob.mobi_enviar_modelo",
+    "section": "CAFFMob Draw › Produção/Projeto › CAFF MOBI",
+    "args": {},
+    "text": "Enviar versão do modelo"
+   },
+   {
+    "kind": "operator",
+    "name": "caffmob.mobi_enviar_modelo",
+    "section": "CAFFMob Draw › Produção/Projeto › CAFF MOBI",
+    "args": {
+     "novo": true,
+     "escopo": "pessoal"
+    },
+    "text": "Enviar como modelo novo"
    }
   ],
   "grudado": [
@@ -7447,6 +8049,92 @@
      "scope": "SELECTED"
     },
     "text": "Selecionado"
+   },
+   {
+    "kind": "operator",
+    "name": "caffmob.mobi_conectar",
+    "section": "CAFFMob Draw › Produção/Projeto › CAFF MOBI",
+    "args": {},
+    "text": "Conectar"
+   },
+   {
+    "kind": "operator",
+    "name": "caffmob.mobi_desconectar",
+    "section": "CAFFMob Draw › Produção/Projeto › CAFF MOBI",
+    "args": {},
+    "text": "Desconectar"
+   },
+   {
+    "kind": "operator",
+    "name": "caffmob.mobi_listar_ambientes",
+    "section": "CAFFMob Draw › Produção/Projeto › CAFF MOBI",
+    "args": {},
+    "text": "Listar ambientes"
+   },
+   {
+    "kind": "operator",
+    "name": "caffmob.mobi_baixar_ambiente",
+    "section": "CAFFMob Draw › Produção/Projeto › CAFF MOBI",
+    "args": {
+     "ambiente_id": "ambiente-teste"
+    },
+    "text": "Baixar"
+   },
+   {
+    "kind": "operator",
+    "name": "caffmob.mobi_listar_ambientes",
+    "section": "CAFFMob Draw › Produção/Projeto › CAFF MOBI",
+    "args": {
+     "mais": true
+    },
+    "text": "Carregar mais ambientes"
+   },
+   {
+    "kind": "operator",
+    "name": "caffmob.mobi_enviar_ambiente",
+    "section": "CAFFMob Draw › Produção/Projeto › CAFF MOBI",
+    "args": {},
+    "text": "Enviar ambiente"
+   },
+   {
+    "kind": "operator",
+    "name": "caffmob.mobi_editar_segmento",
+    "section": "CAFFMob Draw › Produção/Projeto › CAFF MOBI",
+    "args": {},
+    "text": "Editar segmento"
+   },
+   {
+    "kind": "operator",
+    "name": "caffmob.mobi_listar_modelos",
+    "section": "CAFFMob Draw › Produção/Projeto › CAFF MOBI",
+    "args": {},
+    "text": "Listar modelos"
+   },
+   {
+    "kind": "operator",
+    "name": "caffmob.mobi_baixar_modelo",
+    "section": "CAFFMob Draw › Produção/Projeto › CAFF MOBI",
+    "args": {
+     "modelo_id": "pessoal"
+    },
+    "text": "Inserir"
+   },
+   {
+    "kind": "operator",
+    "name": "caffmob.mobi_enviar_modelo",
+    "section": "CAFFMob Draw › Produção/Projeto › CAFF MOBI",
+    "args": {},
+    "text": "Enviar versão do modelo"
+   },
+   {
+    "kind": "operator",
+    "name": "caffmob.mobi_enviar_modelo",
+    "section": "CAFFMob Draw › Produção/Projeto › CAFF MOBI",
+    "args": {
+     "novo": true,
+     "escopo": "pessoal"
+    },
+    "text": "Enviar como modelo novo"
    }
   ]
  },

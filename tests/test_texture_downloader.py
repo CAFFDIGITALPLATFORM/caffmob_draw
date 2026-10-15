@@ -41,7 +41,7 @@ class Server:
         self.root, self.big = make_root()
         self.httpd = fake.make_server(fake.parse_args(["--root", self.root, "--port", "0", *flags]))
         host, port = self.httpd.server_address[:2]
-        self.base = f"http://{host}:{port}/v1"
+        self.base = f"http://{host}:{port}"
         threading.Thread(target=self.httpd.serve_forever, daemon=True).start()
 
     def close(self):
@@ -78,20 +78,20 @@ class Worker:
     def call(self, method, path, body=None, auth=True):
         self.rid += 1
         rid = self.rid
-        self.send(type="request", rid=rid, method=method, path=path, body=body, auth=auth)
+        self.send(type="request", rid=rid, method=method, path=path, body=body, auth=auth, form=not auth and method == "POST")
         reply = self.wait(lambda m: m["type"] == "reply" and m["rid"] == rid)
         return reply["status"], reply["body"]
 
     def login(self):
-        _st, device = self.call("POST", "/v1/auth/device", {"client_id": "caffmob-draw"}, auth=False)
-        status, tokens = self.call("POST", "/v1/auth/token", {"client_id": "caffmob-draw", "device_code":
+        _st, device = self.call("POST", "/api/draw/aparelho/codigo", {"client_id": "caffmob-draw"}, auth=False)
+        status, tokens = self.call("POST", "/api/draw/aparelho/token", {"client_id": "caffmob-draw", "grant_type": "urn:ietf:params:oauth:grant-type:device_code", "device_code":
                                                              device["device_code"]}, auth=False)
         assert status == 200, tokens
         self.send(type="token", value=tokens["access_token"])
         return tokens
 
     def get(self, item_id, dest, sha, size, url=None):
-        self.send(type="get", id=item_id, url=url or f"/v1/textures/{item_id}/file", dest=dest, sha256=sha,
+        self.send(type="get", id=item_id, url=url or f"/api/draw/v1/texturas/{item_id}/imagem?tamanho=trabalho", dest=dest, sha256=sha,
                   bytes=size)
         return self.wait(lambda m: m["type"] in ("done", "error") and m.get("id") == item_id, timeout=30)
 
@@ -99,6 +99,7 @@ class Worker:
         if not self.proc.stdin.closed:
             self.proc.stdin.close()
         self.proc.wait(timeout=5)
+        self.proc.stdout.close()
 
 
 class DownloaderTest(unittest.TestCase):
@@ -115,6 +116,8 @@ class DownloaderTest(unittest.TestCase):
             worker.proc.stdout.close()
         for server in self.servers:
             server.close()
+            self.assertTrue(all(not line.split(' ', 1)[-1].startswith('/v1/')
+                                for line in server.httpd.RequestHandlerClass.store.log))
 
     def start(self, *flags):
         server = Server(*flags)
@@ -134,7 +137,7 @@ class DownloaderTest(unittest.TestCase):
         with open(self.dest(), "rb") as handle:
             self.assertEqual(hashlib.sha256(handle.read()).hexdigest(), server.big["sha256"])
         self.assertFalse(os.path.exists(self.dest() + ".part"))
-        ranged = [line for line in server.httpd.RequestHandlerClass.store.log if "/file" in line]
+        ranged = [line for line in server.httpd.RequestHandlerClass.store.log if "/imagem" in line]
         self.assertGreaterEqual(len(ranged), 2, "deveria ter retomado numa segunda requisição")
 
     def test_redirecionamento_e_429(self):
@@ -146,13 +149,13 @@ class DownloaderTest(unittest.TestCase):
     def test_401_pede_token_novo(self):
         server, worker = self.start("--expire-access", "1")
         tokens = worker.login()
-        status, _body = worker.call("GET", "/v1/me/entitlements")
+        status, _body = worker.call("GET", "/api/draw/v1/texturas/fabricantes")
         self.assertEqual(status, 200)
-        worker.send(type="get", id="big", url="/v1/textures/big/file", dest=self.dest(),
+        worker.send(type="get", id="big", url="/api/draw/v1/texturas/big/imagem?tamanho=trabalho", dest=self.dest(),
                     sha256=server.big["sha256"], bytes=SIZE)
         worker.wait(lambda m: m["type"] == "need_token" and m["id"] == "big")
-        status, fresh = worker.call("POST", "/v1/auth/refresh", {"client_id": "caffmob-draw",
-                                                                 "refresh_token": tokens["refresh_token"]},
+        status, fresh = worker.call("POST", "/api/draw/aparelho/token", {"client_id": "caffmob-draw",
+                                                                 "grant_type": "refresh_token", "refresh_token": tokens["refresh_token"]},
                                     auth=False)
         self.assertEqual(status, 200)
         worker.send(type="token", value=fresh["access_token"])
@@ -178,9 +181,9 @@ class DownloaderTest(unittest.TestCase):
         self.assertFalse(os.path.exists(self.dest() + ".part"))
 
     def test_sem_rede(self):
-        worker = Worker("http://127.0.0.1:9/v1")
+        worker = Worker("http://127.0.0.1:9")
         self.workers.append(worker)
-        status, body = worker.call("GET", "/v1/me/entitlements")
+        status, body = worker.call("GET", "/api/draw/v1/texturas/fabricantes")
         self.assertIsNone(status)
         self.assertEqual(body["error"], "network")
 

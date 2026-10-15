@@ -118,6 +118,7 @@ def max_click(context, part, lay, mx, my):
         if mx >= fx + fw - 90 * s:
             from ..texture_library import downloads
             downloads.cancel_all()
+            draw._catalog().cancel()
     elif part == 'SIDEBAR':
         blocks = state.tab != 'TEXTURES'
         rows = layout_core.sidebar_rows(lay.sidebar, draw.sidebar_tree(state), "" if blocks else state.manufacturer,
@@ -143,6 +144,9 @@ def cell_at(context, lay, mx, my):
     content = grid_core.content_height(area[2], len(entries), s)
     scroll = grid_core.clamp_scroll(state.scroll, content, area[3])
     index = grid_core.hit_cell(grid_core.visible_cells(area, len(entries), s, scroll), mx, my)
+    if index is not None and entries[index]["id"] == draw._more_id:
+        draw._catalog().refresh(state.search, state.manufacturer, state.collection, more=True)
+        return ""
     return draw.entry_key(entries[index]) if index is not None else ""
 
 

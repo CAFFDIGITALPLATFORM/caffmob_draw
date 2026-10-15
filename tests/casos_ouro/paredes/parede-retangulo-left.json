@@ -1,0 +1,256 @@
+{
+  "caso": "parede-retangulo-left",
+  "descricao": "Retângulo 4000 × 3000 fechado, desenhado no anti-horário, espessura 150 para dentro (LEFT). Piso 3700 × 2700 = 9 990 000 mm².",
+  "tipo": "ambiente",
+  "origem": "manual",
+  "revisadoPor": "Claude Opus 5.5, por delegação do titular (T017)",
+  "revisadoEm": "2026-10-14",
+  "entrada": {
+    "schema": "caffmob.ambiente/v1",
+    "id": "aa888061-aa8d-5d69-99ff-40f8d05ec906",
+    "version": 1,
+    "atualizado_em": "2026-10-14T00:00:00.000Z",
+    "origem": "web",
+    "nome": "parede-retangulo-left",
+    "paredes": [
+      {
+        "id": "41619f7d-0130-50e1-8cd5-1e1d300d3e1a",
+        "origem": {
+          "x": 0,
+          "y": 0
+        },
+        "fechada": true,
+        "segmentos": [
+          {
+            "id": "e1a7b84e-0b57-5d3f-ac9a-1ac4b68b8daa",
+            "comprimento": 4000,
+            "angulo_absoluto": 0,
+            "angulo_relativo": 0,
+            "espessura": 150,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "816bc7eb-7238-5582-b029-6a5cfe52e246",
+            "comprimento": 3000,
+            "angulo_absoluto": 90,
+            "angulo_relativo": 90,
+            "espessura": 150,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "db58f300-2136-533a-829f-ed5926076feb",
+            "comprimento": 4000,
+            "angulo_absoluto": 180,
+            "angulo_relativo": 90,
+            "espessura": 150,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "f6ab6f74-56a1-59bb-8ed6-7f8fccf1ddd3",
+            "comprimento": 3000,
+            "angulo_absoluto": 270,
+            "angulo_relativo": 90,
+            "espessura": 150,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          }
+        ]
+      }
+    ],
+    "aberturas": [],
+    "modulos": []
+  },
+  "esperado": {
+    "segmentos": [
+      {
+        "id": "e1a7b84e-0b57-5d3f-ac9a-1ac4b68b8daa",
+        "inicio": [
+          0,
+          0
+        ],
+        "fim": [
+          4000,
+          0
+        ],
+        "z_base": 0,
+        "altura_inicio": 2700,
+        "altura_fim": 2700,
+        "angulo_relativo": 0
+      },
+      {
+        "id": "816bc7eb-7238-5582-b029-6a5cfe52e246",
+        "inicio": [
+          4000,
+          0
+        ],
+        "fim": [
+          4000,
+          3000
+        ],
+        "z_base": 0,
+        "altura_inicio": 2700,
+        "altura_fim": 2700,
+        "angulo_relativo": 90
+      },
+      {
+        "id": "db58f300-2136-533a-829f-ed5926076feb",
+        "inicio": [
+          4000,
+          3000
+        ],
+        "fim": [
+          0,
+          3000
+        ],
+        "z_base": 0,
+        "altura_inicio": 2700,
+        "altura_fim": 2700,
+        "angulo_relativo": 90
+      },
+      {
+        "id": "f6ab6f74-56a1-59bb-8ed6-7f8fccf1ddd3",
+        "inicio": [
+          0,
+          3000
+        ],
+        "fim": [
+          0,
+          0
+        ],
+        "z_base": 0,
+        "altura_inicio": 2700,
+        "altura_fim": 2700,
+        "angulo_relativo": 90
+      }
+    ],
+    "contornos": [
+      {
+        "id": "e1a7b84e-0b57-5d3f-ac9a-1ac4b68b8daa",
+        "poligono": [
+          [
+            0,
+            0
+          ],
+          [
+            4000,
+            0
+          ],
+          [
+            3850,
+            150
+          ],
+          [
+            150,
+            150
+          ]
+        ]
+      },
+      {
+        "id": "816bc7eb-7238-5582-b029-6a5cfe52e246",
+        "poligono": [
+          [
+            4000,
+            0
+          ],
+          [
+            4000,
+            3000
+          ],
+          [
+            3850,
+            2850
+          ],
+          [
+            3850,
+            150
+          ]
+        ]
+      },
+      {
+        "id": "db58f300-2136-533a-829f-ed5926076feb",
+        "poligono": [
+          [
+            4000,
+            3000
+          ],
+          [
+            0,
+            3000
+          ],
+          [
+            150,
+            2850
+          ],
+          [
+            3850,
+            2850
+          ]
+        ]
+      },
+      {
+        "id": "f6ab6f74-56a1-59bb-8ed6-7f8fccf1ddd3",
+        "poligono": [
+          [
+            0,
+            3000
+          ],
+          [
+            0,
+            0
+          ],
+          [
+            150,
+            150
+          ],
+          [
+            150,
+            2850
+          ]
+        ]
+      }
+    ],
+    "piso": [
+      {
+        "parede_id": "41619f7d-0130-50e1-8cd5-1e1d300d3e1a",
+        "vertices": [
+          [
+            150,
+            150
+          ],
+          [
+            3850,
+            150
+          ],
+          [
+            3850,
+            2850
+          ],
+          [
+            150,
+            2850
+          ]
+        ],
+        "area_mm2": 9990000
+      }
+    ]
+  }
+}

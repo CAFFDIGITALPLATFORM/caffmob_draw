@@ -91,7 +91,9 @@ def iter_modules(scene, ensure_uid=True):
     """
     modules, seen = [], set()
     for obj in scene.objects:
-        if obj.get(FRAMELESS_TAG):
+        if obj.get("caffmob_modulo"):
+            library, line, kind = "caffmob", "", "MODULE"
+        elif obj.get(FRAMELESS_TAG):
             library, line, kind = "FRAMELESS", obj.get(LINE_PROP) or "COZ", obj.get('CABINET_TYPE', '')
         elif obj.get(CLOSET_TAG):
             starter = getattr(obj, 'hb_closet_starter', None)
@@ -365,3 +367,19 @@ def geometry_records(scene):
             component=g.component, length=length * 1000.0, width=width * 1000.0, thickness=thickness * 1000.0,
             finish=g.finish, source="FREE_GEOMETRY", material=g.material))
     return records
+
+
+# (063 RN-08; D-09) O contrato do MOBI fornece as peças, sem recalcular pela 015.
+def caffmob_parts(module):
+    from ..caffmob.chapas import pecas_do_modulo
+    from ..texture_library import catalog
+    from .nesting import NestingPart
+    from ..mobi.cena import _modulo_do_objeto
+    modulo = _modulo_do_objeto(module.obj)
+    return [NestingPart(
+        id=p["id"], uid=p["id"], name=p["name"], width=p["width"], height=p["height"],
+        quantity=p["quantity"], thickness=p["thickness"], material=p["material"],
+        grain_direction=p["grain_direction"], module_ref=p["module_ref"], module_uid=module.uid, source="caffmob",
+        edge_top=p["edges"]["top"], edge_bottom=p["edges"]["bottom"],
+        edge_left=p["edges"]["left"], edge_right=p["edges"]["right"])
+        for p in pecas_do_modulo(modulo, textura=catalog.item)]

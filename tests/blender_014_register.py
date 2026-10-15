@@ -9,7 +9,6 @@ Roda em segundo plano:
 """
 
 import os
-import shutil
 import sys
 import traceback
 from pathlib import Path
@@ -21,8 +20,11 @@ from caffmob_draw import texture_library  # noqa: E402
 from caffmob_draw.object_library import retexture  # noqa: E402
 from caffmob_draw.texture_library import catalog, downloads, handlers  # noqa: E402
 
+from _mobi_texture_fixture import TextureServer
+
+server = TextureServer()
 FAILURES = []
-OPS = ("texture_login", "texture_logout", "texture_download_all", "texture_download_cancel", "texture_account_menu",
+OPS = ("texture_login", "texture_logout", "texture_download_cancel", "texture_account_menu",
        "texture_apply", "texture_size", "library_drag", "library_search", "library_scroll")
 
 
@@ -46,24 +48,27 @@ def main():
     check("handlers load_post e load_pre registrados", handlers.on_load_post in bpy.app.handlers.load_post
           and handlers.on_load_pre in bpy.app.handlers.load_pre)
 
-    tid = "arauco/colecao-realce/anis"
+    entries = server.connect()
+    tid = entries[0]['id']
     entry = catalog.item(tid)
-    dest = downloads.cache_path(entry)
-    os.makedirs(os.path.dirname(dest), exist_ok=True)
-    shutil.copy(catalog.thumb_path(entry), dest)
-    old = os.path.join(os.path.dirname(dest), "outro_computador.jpg")
-    shutil.copy(dest, old)
+    dest = server.download(tid)
+    old = os.path.join(os.path.dirname(dest), "outro_computador.png")
+    Path(old).write_bytes(Path(dest).read_bytes())
     mat = retexture.image_material(old, 600.0, texture_id=tid)
-    os.remove(old)
-    ghost = bpy.data.materials.new("Textura: sumiu")
-    ghost[retexture.TEXTURE_ID_PROP] = "fabricante/que/saiu"
-    fixed, unknown = handlers.relink()
+    mat['btm_texture_sha256'] = entry['sha256']
+    mat['btm_texture_formato'] = entry['formato']
+    legacy = bpy.data.materials.new("Textura antiga da 014")
+    legacy[retexture.TEXTURE_ID_PROP] = "fabricante/antigo"
+    legacy[retexture.PATH_PROP] = old
+    fixed, unknown = handlers.relink([mat, legacy])
     image = next(n.image for n in mat.node_tree.nodes if n.type == 'TEX_IMAGE')
-    check("relink aponta para o cache deste computador", fixed >= 1 and mat[retexture.PATH_PROP] == dest
+    check("relink aponta pelo sha para o cache deste computador", fixed == 1 and mat[retexture.PATH_PROP] == dest
           and bpy.path.abspath(image.filepath) == dest, f"{fixed} {image.filepath}")
-    check("id fora do catálogo é listado", unknown == ["fabricante/que/saiu"], str(unknown))
+    check("material da 014 preserva o caminho, sem buscar catálogo", legacy[retexture.PATH_PROP] == old and unknown == [])
+    check("Baixar tudo foi retirado", not _registered("texture_download_all"))
     handlers.on_load_post(None)                         # avisa uma vez, sem erro
 
+    server.close()
     texture_library.unregister()
     left = [op for op in OPS if op.startswith("texture_") and _registered(op)]
     check("unregister tira os operadores de textura", not left, str(left))

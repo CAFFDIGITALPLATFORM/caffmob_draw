@@ -1,10 +1,7 @@
-"""Handlers de arquivo das texturas (feature 014, T037, T038; D-09, princípio VII).
+"""Arquivos das texturas (063 RF-04; D-07).
 
-- `load_post`: o caminho da imagem muda entre computadores. Cada material com `btm_texture_id` tem a imagem
-  apontada de novo para o cache do usuário (`downloads.cache_path`). Imagem ainda não baixada: o material fica como
-  está e a textura é baixada na próxima vez que for usada. Ids fora do catálogo do pacote são avisados uma vez.
-- `load_pre`: encerra o subprocesso de rede e esquece a fila e o login em andamento (os pedidos eram do arquivo que
-  está fechando).
+load_post reaponta materiais com sha para o cache único; slugs antigos da 014 mantêm o caminho original.
+load_pre encerra os pedidos e o login do arquivo anterior.
 """
 
 import os
@@ -27,16 +24,16 @@ def relink(materials=None):
         tid = mat.get(retexture.TEXTURE_ID_PROP)
         if not tid:
             continue
-        entry = catalog.item(tid)
-        if entry is None:
-            unknown.append(str(tid))
-            continue
-        path = downloads.cache_path(entry)
+        sha = mat.get("btm_texture_sha256")
+        if not sha:
+            continue                                # slug da 014 mantém o caminho original
+        formato = mat.get("btm_texture_formato", "jpeg")
+        path = os.path.join(downloads.cache_dir(), sha + (".jpg" if formato == "jpeg" else "." + formato))
         if not os.path.isfile(path) or mat.get(retexture.PATH_PROP) == path:
             continue
         mat[retexture.PATH_PROP] = path
         for node in (mat.node_tree.nodes if mat.node_tree else []):
-            if node.type == 'TEX_IMAGE' and node.image is not None:
+            if node.type == 'TEX_IMAGE' and node.image is not None and node.image.colorspace_settings.name != 'Non-Color':
                 node.image.filepath = path
                 node.image.reload()
         fixed += 1

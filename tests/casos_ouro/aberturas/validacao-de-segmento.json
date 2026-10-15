@@ -1,0 +1,102 @@
+{
+  "caso": "validacao-de-segmento",
+  "descricao": "Comprimento 0, espessura 0, pé-direito final 0 e flecha maior que meia corda: cada um recusado com o caminho do campo.",
+  "tipo": "ambiente",
+  "origem": "manual",
+  "revisadoPor": "Claude Opus 5.5, por delegação do titular (T017)",
+  "revisadoEm": "2026-10-14",
+  "entrada": {
+    "schema": "caffmob.ambiente/v1",
+    "id": "b0d34dd5-7be6-558e-829e-71773e1894fa",
+    "version": 1,
+    "atualizado_em": "2026-10-14T00:00:00.000Z",
+    "origem": "web",
+    "nome": "validacao-de-segmento",
+    "paredes": [
+      {
+        "id": "053f1c40-ba84-5c78-9635-acbc2a8feff5",
+        "origem": {
+          "x": 0,
+          "y": 0
+        },
+        "fechada": false,
+        "segmentos": [
+          {
+            "id": "e2c10ec9-03f0-509b-9d11-89f908c01227",
+            "comprimento": 0,
+            "angulo_absoluto": 0,
+            "angulo_relativo": 0,
+            "espessura": 150,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "df1e96d4-790d-56aa-973d-788cf122aee3",
+            "comprimento": 2000,
+            "angulo_absoluto": 90,
+            "angulo_relativo": 90,
+            "espessura": 0,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "195f4eaf-7910-5e6b-9117-068377520f36",
+            "comprimento": 2000,
+            "angulo_absoluto": 180,
+            "angulo_relativo": 90,
+            "espessura": 150,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 0,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "f0659a29-4f03-5943-aeaa-3b0f9bdc489f",
+            "comprimento": 2000,
+            "angulo_absoluto": 270,
+            "angulo_relativo": 90,
+            "espessura": 150,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 1500,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          }
+        ]
+      }
+    ],
+    "aberturas": [],
+    "modulos": []
+  },
+  "esperado": {
+    "erros": [
+      {
+        "caminho": "paredes[0].segmentos[0].comprimento",
+        "codigo": "MAIOR_QUE_ZERO"
+      },
+      {
+        "caminho": "paredes[0].segmentos[1].espessura",
+        "codigo": "MAIOR_QUE_ZERO"
+      },
+      {
+        "caminho": "paredes[0].segmentos[2].pe_direito_final",
+        "codigo": "MAIOR_QUE_ZERO"
+      },
+      {
+        "caminho": "paredes[0].segmentos[3].flecha",
+        "codigo": "FLECHA_FORA"
+      }
+    ]
+  }
+}

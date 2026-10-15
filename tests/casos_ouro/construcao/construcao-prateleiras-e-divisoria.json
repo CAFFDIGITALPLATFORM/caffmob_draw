@@ -1,0 +1,290 @@
+{
+  "caso": "construcao-prateleiras-e-divisoria",
+  "descricao": "Módulo TALL 1200 com 3 prateleiras por vão e 1 divisória: 6 prateleiras de (Li − e)/2 − 2.",
+  "tipo": "modulo",
+  "origem": "manual",
+  "revisadoPor": "Claude Opus 5.5, por delegação do titular (T017)",
+  "revisadoEm": "2026-10-14",
+  "entrada": {
+    "schema": "caffmob.modulo/v1",
+    "id": "34fb0df6-6ba4-5e1b-9514-3ab130f0601e",
+    "version": 1,
+    "atualizado_em": "2026-10-14T00:00:00.000Z",
+    "origem": "web",
+    "nome": "construcao-prateleiras-e-divisoria",
+    "tipo": "TALL",
+    "largura": 1200,
+    "altura": 2100,
+    "profundidade": 550,
+    "espessura": 18,
+    "material": "MDF",
+    "portas": "DOUBLE",
+    "construcao": {
+      "laterais": "PASSANTE",
+      "tampo": "ENTRE_LATERAIS",
+      "fundo": {
+        "modo": "CANAL",
+        "espessura": 6,
+        "encaixe": 8
+      },
+      "rodape": {
+        "altura": 0,
+        "recuo": 0
+      },
+      "porta": {
+        "modo": "SOBREPOSTA",
+        "folga": 2,
+        "folga_central": 2,
+        "espessura": 18
+      },
+      "prateleiras": {
+        "quantidade": 3,
+        "recuo_frontal": 20,
+        "folga_lateral": 1,
+        "espessura": 15
+      },
+      "divisorias": {
+        "quantidade": 1
+      },
+      "gavetas": {
+        "quantidade": 0,
+        "altura_frente": 180
+      },
+      "travessas": {
+        "quantidade": 0,
+        "largura": 80
+      },
+      "fitas": {
+        "frente": 1,
+        "demais": 0.45,
+        "portas": 1
+      }
+    },
+    "chapas_editadas": []
+  },
+  "esperado": {
+    "pecas": [
+      {
+        "id": "34fb0df6-6ba4-5e1b-9514-3ab130f0601e_LAT_ESQ",
+        "name": "Lateral Esquerda - construcao-prateleiras-e-divisoria",
+        "width": 550,
+        "height": 2100,
+        "quantity": 1,
+        "thickness": 18,
+        "material": "MDF 18 mm",
+        "grain_direction": "VERTICAL",
+        "module_ref": "34fb0df6-6ba4-5e1b-9514-3ab130f0601e",
+        "edges": {
+          "top": 0.45,
+          "bottom": 0.45,
+          "left": 0.45,
+          "right": 1
+        }
+      },
+      {
+        "id": "34fb0df6-6ba4-5e1b-9514-3ab130f0601e_LAT_DIR",
+        "name": "Lateral Direita - construcao-prateleiras-e-divisoria",
+        "width": 550,
+        "height": 2100,
+        "quantity": 1,
+        "thickness": 18,
+        "material": "MDF 18 mm",
+        "grain_direction": "VERTICAL",
+        "module_ref": "34fb0df6-6ba4-5e1b-9514-3ab130f0601e",
+        "edges": {
+          "top": 0.45,
+          "bottom": 0.45,
+          "left": 0.45,
+          "right": 1
+        }
+      },
+      {
+        "id": "34fb0df6-6ba4-5e1b-9514-3ab130f0601e_BASE",
+        "name": "Base Inferior - construcao-prateleiras-e-divisoria",
+        "width": 1164,
+        "height": 550,
+        "quantity": 1,
+        "thickness": 18,
+        "material": "MDF 18 mm",
+        "grain_direction": "HORIZONTAL",
+        "module_ref": "34fb0df6-6ba4-5e1b-9514-3ab130f0601e",
+        "edges": {
+          "top": 0.45,
+          "bottom": 0.45,
+          "left": 0.45,
+          "right": 1
+        }
+      },
+      {
+        "id": "34fb0df6-6ba4-5e1b-9514-3ab130f0601e_TAMPO",
+        "name": "Tampo Superior - construcao-prateleiras-e-divisoria",
+        "width": 1164,
+        "height": 550,
+        "quantity": 1,
+        "thickness": 18,
+        "material": "MDF 18 mm",
+        "grain_direction": "HORIZONTAL",
+        "module_ref": "34fb0df6-6ba4-5e1b-9514-3ab130f0601e",
+        "edges": {
+          "top": 0.45,
+          "bottom": 0.45,
+          "left": 0.45,
+          "right": 1
+        }
+      },
+      {
+        "id": "34fb0df6-6ba4-5e1b-9514-3ab130f0601e_FUNDO",
+        "name": "Fundo Traseiro - construcao-prateleiras-e-divisoria",
+        "width": 1180,
+        "height": 2080,
+        "quantity": 1,
+        "thickness": 6,
+        "material": "MDF 6 mm",
+        "grain_direction": "VERTICAL",
+        "module_ref": "34fb0df6-6ba4-5e1b-9514-3ab130f0601e",
+        "edges": {
+          "top": 0,
+          "bottom": 0,
+          "left": 0,
+          "right": 0
+        }
+      },
+      {
+        "id": "34fb0df6-6ba4-5e1b-9514-3ab130f0601e_PRAT_01",
+        "name": "Prateleira Interna - construcao-prateleiras-e-divisoria",
+        "width": 571,
+        "height": 530,
+        "quantity": 1,
+        "thickness": 15,
+        "material": "MDF 15 mm",
+        "grain_direction": "HORIZONTAL",
+        "module_ref": "34fb0df6-6ba4-5e1b-9514-3ab130f0601e",
+        "edges": {
+          "top": 0.45,
+          "bottom": 0.45,
+          "left": 0.45,
+          "right": 1
+        }
+      },
+      {
+        "id": "34fb0df6-6ba4-5e1b-9514-3ab130f0601e_PRAT_02",
+        "name": "Prateleira Interna 2 - construcao-prateleiras-e-divisoria",
+        "width": 571,
+        "height": 530,
+        "quantity": 1,
+        "thickness": 15,
+        "material": "MDF 15 mm",
+        "grain_direction": "HORIZONTAL",
+        "module_ref": "34fb0df6-6ba4-5e1b-9514-3ab130f0601e",
+        "edges": {
+          "top": 0.45,
+          "bottom": 0.45,
+          "left": 0.45,
+          "right": 1
+        }
+      },
+      {
+        "id": "34fb0df6-6ba4-5e1b-9514-3ab130f0601e_PRAT_03",
+        "name": "Prateleira Interna 3 - construcao-prateleiras-e-divisoria",
+        "width": 571,
+        "height": 530,
+        "quantity": 1,
+        "thickness": 15,
+        "material": "MDF 15 mm",
+        "grain_direction": "HORIZONTAL",
+        "module_ref": "34fb0df6-6ba4-5e1b-9514-3ab130f0601e",
+        "edges": {
+          "top": 0.45,
+          "bottom": 0.45,
+          "left": 0.45,
+          "right": 1
+        }
+      },
+      {
+        "id": "34fb0df6-6ba4-5e1b-9514-3ab130f0601e_PRAT_04",
+        "name": "Prateleira Interna 4 - construcao-prateleiras-e-divisoria",
+        "width": 571,
+        "height": 530,
+        "quantity": 1,
+        "thickness": 15,
+        "material": "MDF 15 mm",
+        "grain_direction": "HORIZONTAL",
+        "module_ref": "34fb0df6-6ba4-5e1b-9514-3ab130f0601e",
+        "edges": {
+          "top": 0.45,
+          "bottom": 0.45,
+          "left": 0.45,
+          "right": 1
+        }
+      },
+      {
+        "id": "34fb0df6-6ba4-5e1b-9514-3ab130f0601e_PRAT_05",
+        "name": "Prateleira Interna 5 - construcao-prateleiras-e-divisoria",
+        "width": 571,
+        "height": 530,
+        "quantity": 1,
+        "thickness": 15,
+        "material": "MDF 15 mm",
+        "grain_direction": "HORIZONTAL",
+        "module_ref": "34fb0df6-6ba4-5e1b-9514-3ab130f0601e",
+        "edges": {
+          "top": 0.45,
+          "bottom": 0.45,
+          "left": 0.45,
+          "right": 1
+        }
+      },
+      {
+        "id": "34fb0df6-6ba4-5e1b-9514-3ab130f0601e_PRAT_06",
+        "name": "Prateleira Interna 6 - construcao-prateleiras-e-divisoria",
+        "width": 571,
+        "height": 530,
+        "quantity": 1,
+        "thickness": 15,
+        "material": "MDF 15 mm",
+        "grain_direction": "HORIZONTAL",
+        "module_ref": "34fb0df6-6ba4-5e1b-9514-3ab130f0601e",
+        "edges": {
+          "top": 0.45,
+          "bottom": 0.45,
+          "left": 0.45,
+          "right": 1
+        }
+      },
+      {
+        "id": "34fb0df6-6ba4-5e1b-9514-3ab130f0601e_DIV_01",
+        "name": "Divisória - construcao-prateleiras-e-divisoria",
+        "width": 550,
+        "height": 2064,
+        "quantity": 1,
+        "thickness": 18,
+        "material": "MDF 18 mm",
+        "grain_direction": "VERTICAL",
+        "module_ref": "34fb0df6-6ba4-5e1b-9514-3ab130f0601e",
+        "edges": {
+          "top": 0.45,
+          "bottom": 0.45,
+          "left": 0.45,
+          "right": 1
+        }
+      },
+      {
+        "id": "34fb0df6-6ba4-5e1b-9514-3ab130f0601e_PORTA_PAR",
+        "name": "Portas Frontais (Par) - construcao-prateleiras-e-divisoria",
+        "width": 597,
+        "height": 2096,
+        "quantity": 2,
+        "thickness": 18,
+        "material": "MDF 18 mm",
+        "grain_direction": "VERTICAL",
+        "module_ref": "34fb0df6-6ba4-5e1b-9514-3ab130f0601e",
+        "edges": {
+          "top": 1,
+          "bottom": 1,
+          "left": 1,
+          "right": 1
+        }
+      }
+    ]
+  }
+}

@@ -27,6 +27,8 @@ sys.path.insert(0, str(ROOT / "tests"))
 import _blender_env  # noqa: E402,F401
 
 from caffmob_draw.library_panel import draw, style, thumbs_gpu  # noqa: E402
+from caffmob_draw.texture_library import catalog
+from _mobi_texture_fixture import TextureServer
 
 FAILURES = []
 ERRORS = []
@@ -85,6 +87,11 @@ def script():
         pass
     for obj in list(ctx.scene.objects):
         bpy.data.objects.remove(obj, do_unlink=True)
+    server = TextureServer()
+    entries = server.connect()
+    for entry in entries:
+        thumb = catalog.thumb_entry(entry)
+        server.download(thumb['id'], thumb)
     state = ctx.window_manager.btm_library
 
     def at(img, x, y):
@@ -115,7 +122,7 @@ def script():
           str(at(img, rx + rw - 6, ry + 4)[:3]))
 
     # MAX
-    state.mode, state.manufacturer, state.collection, state.tab = 'MAX', "duratex", "", 'TEXTURES'
+    state.mode, state.manufacturer, state.collection, state.tab = 'MAX', "Fábrica de teste", "", 'TEXTURES'
     area.tag_redraw()
     for _ in range(80):                                     # o timer converte as miniaturas visíveis
         area.tag_redraw()
@@ -152,6 +159,7 @@ def script():
         with ctx.temp_override(window=win, area=area):
             bpy.ops.screen.screenshot_area(filepath=os.path.join(out, "max.png"))
     state.mode = 'MIN'
+    server.close()
 
 
 _gen = script()

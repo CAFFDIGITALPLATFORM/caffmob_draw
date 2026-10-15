@@ -1,52 +1,23 @@
-"""O empacotamento exige o catálogo e as miniaturas e recusa imagem em tamanho real (feature 014, T039; D-04)."""
-
-import json
-import os
+"""O pacote MOBI não distribui catálogo nem miniaturas (063 RN-12)."""
 import sys
-import tempfile
 import unittest
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-import build  # noqa: E402
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
+import build
 
 
-def make_package(items=("a/b/c",), extra=()):
-    root = tempfile.mkdtemp()
-    folder = os.path.join(root, "textures")
-    os.makedirs(os.path.join(folder, "thumbs"))
-    entries = []
-    for tid in items:
-        thumb = "thumbs/" + tid + ".png"
-        os.makedirs(os.path.dirname(os.path.join(folder, thumb)), exist_ok=True)
-        open(os.path.join(folder, thumb), "wb").write(b"png")
-        entries.append({"id": tid, "thumb": thumb})
-    catalog = {"manufacturers": [{"id": "a", "collections": [{"id": "b", "items": entries}]}]}
-    json.dump(catalog, open(os.path.join(folder, "catalog.json"), "w"))
-    for rel in extra:
-        os.makedirs(os.path.dirname(os.path.join(folder, rel)) or folder, exist_ok=True)
-        open(os.path.join(folder, rel), "wb").write(b"jpg")
-    return root
+class TexturePackageTest(unittest.TestCase):
+    def test_sem_catalogo_nem_miniaturas(self):
+        package = ROOT / "caffmob_draw"
+        self.assertFalse((package / "textures").exists())
+        self.assertEqual([p for p in package.rglob("catalog.json") if "translations" not in p.parts], [])
+        self.assertEqual(list(package.rglob("thumbs")), [])
 
-
-class TextureProblemsTest(unittest.TestCase):
-    def test_pacote_correto(self):
-        self.assertEqual(build.texture_problems(make_package()), [])
-
-    def test_sem_catalogo(self):
-        root = tempfile.mkdtemp()
-        self.assertIn("catalog.json", build.texture_problems(root)[0])
-
-    def test_miniatura_faltando(self):
-        root = make_package()
-        os.remove(os.path.join(root, "textures", "thumbs", "a", "b", "c.png"))
-        self.assertTrue(any("falta a miniatura" in p for p in build.texture_problems(root)))
-
-    def test_recusa_imagem_em_tamanho_real(self):
-        root = make_package(extra=("arauco/Colecao/Anis.jpg", "thumbs/nao_listada.png"))
-        problems = build.texture_problems(root)
-        self.assertEqual(len(problems), 2, problems)
-        self.assertTrue(all("tamanho real" in p for p in problems))
+    def test_prechecagem_de_nos_preservada(self):
+        self.assertEqual(build.missing_node_files(str(ROOT / "caffmob_draw")), [])
+        self.assertFalse(hasattr(build, "texture_problems"))
 
 
 if __name__ == "__main__":

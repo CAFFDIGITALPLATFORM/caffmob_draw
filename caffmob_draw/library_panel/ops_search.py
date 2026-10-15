@@ -10,7 +10,7 @@ import bpy  # type: ignore
 
 from . import draw
 
-MAX_LEN = 60
+MAX_LEN = 80
 
 
 class BTM_OT_LibrarySearch(bpy.types.Operator):

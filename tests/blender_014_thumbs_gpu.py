@@ -3,7 +3,7 @@
 Precisa de janela (contexto de GPU):
     xvfb-run -a blender --factory-startup --python tests/blender_014_thumbs_gpu.py
 
-- 40 miniaturas reais do catálogo (`caffmob_draw/textures/thumbs/`) viram `GPUTexture` sem criar `Image` em
+- 40 miniaturas sintéticas no formato remoto do MOBI viram `GPUTexture` sem criar `Image` em
   `bpy.data`;
 - cada chamada de `process()` respeita o orçamento (para no orçamento depois da primeira conversão), e o timer
   esvazia a fila sozinho, sem o teste chamar `process()`;
@@ -37,13 +37,26 @@ def check(name, ok, detail=""):
 
 
 def script():
-    textures = ROOT / "caffmob_draw" / "textures"
-    catalog = json.load(open(textures / "catalog.json", encoding="utf-8"))
-    items = [i for m in catalog["manufacturers"] for c in m["collections"] for i in c["items"]][:40]
+    import tempfile
+    from fake_texture_server import _png
+    from caffmob_draw.texture_library import catalog, downloads
+    folder = Path(tempfile.mkdtemp(prefix="mobi_thumbs_"))
+    items = []
+    for i in range(40):
+        data = _png((i * 5, 110, 70), 64)
+        import hashlib
+        sha = hashlib.sha256(data).hexdigest()
+        entry = catalog.remember({'id': '06300000-0000-4000-8000-{:012d}'.format(i),
+                                 'nome': 'Miniatura de teste', 'fabricante': 'Teste', 'linha': 'Teste',
+                                 'largura': 64, 'altura': 64, 'formato': 'png', 'mapas': [],
+                                 'sha256_trabalho': sha, 'sha256_miniatura': sha})
+        path = folder / (sha + '.png')
+        path.write_bytes(data)
+        items.append(dict(entry, thumb=str(path)))
     images_before = len(bpy.data.images)
     for item in items:
-        thumbs_gpu.texture(item["id"], str(textures / item["thumb"]))
-    thumbs_gpu.texture(items[0]["id"], str(textures / items[0]["thumb"]))       # repetida: não duplica
+        thumbs_gpu.texture(item["id"], item["thumb"])
+    thumbs_gpu.texture(items[0]["id"], items[0]["thumb"])       # repetida: não duplica
     check("fila sem duplicar", thumbs_gpu.pending() == 40, str(thumbs_gpu.pending()))
     s = time.perf_counter()
     thumbs_gpu.process()

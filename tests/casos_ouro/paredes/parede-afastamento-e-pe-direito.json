@@ -1,0 +1,62 @@
+{
+  "caso": "parede-afastamento-e-pe-direito",
+  "descricao": "Segmento elevado 100 mm do piso e com pé-direito de 2700 caindo para 2400.",
+  "tipo": "ambiente",
+  "origem": "manual",
+  "revisadoPor": "Claude Opus 5.5, por delegação do titular (T017)",
+  "revisadoEm": "2026-10-14",
+  "entrada": {
+    "schema": "caffmob.ambiente/v1",
+    "id": "fcd2cfd9-b34b-5217-ad7d-49cd692a86d5",
+    "version": 1,
+    "atualizado_em": "2026-10-14T00:00:00.000Z",
+    "origem": "web",
+    "nome": "parede-afastamento-e-pe-direito",
+    "paredes": [
+      {
+        "id": "4816fa4d-7f7f-5106-b0df-65c2be10ca40",
+        "origem": {
+          "x": 0,
+          "y": 0
+        },
+        "fechada": false,
+        "segmentos": [
+          {
+            "id": "ccacabc0-890f-5186-93d1-5b242267566c",
+            "comprimento": 3000,
+            "angulo_absoluto": 0,
+            "angulo_relativo": 0,
+            "espessura": 150,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2400,
+            "afastamento": 100,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          }
+        ]
+      }
+    ],
+    "aberturas": [],
+    "modulos": []
+  },
+  "esperado": {
+    "segmentos": [
+      {
+        "id": "ccacabc0-890f-5186-93d1-5b242267566c",
+        "inicio": [
+          0,
+          0
+        ],
+        "fim": [
+          3000,
+          0
+        ],
+        "z_base": 100,
+        "altura_inicio": 2700,
+        "altura_fim": 2400,
+        "angulo_relativo": 0
+      }
+    ]
+  }
+}

@@ -1,0 +1,4524 @@
+{
+  "caso": "carga-200-segmentos-30-modulos",
+  "descricao": "Quadrado de 10 000 × 10 000 com 200 segmentos de 200 e 30 módulos: caso de desempenho (D-10). Documento válido.",
+  "tipo": "ambiente",
+  "origem": "manual",
+  "revisadoPor": "Claude Opus 5.5, por delegação do titular (T017)",
+  "revisadoEm": "2026-10-14",
+  "entrada": {
+    "schema": "caffmob.ambiente/v1",
+    "id": "5a481909-c488-521f-9550-0f4595028723",
+    "version": 1,
+    "atualizado_em": "2026-10-14T00:00:00.000Z",
+    "origem": "web",
+    "nome": "carga-200-segmentos-30-modulos",
+    "paredes": [
+      {
+        "id": "47336c56-a112-5962-ab2e-5b7c63dcca0e",
+        "origem": {
+          "x": 0,
+          "y": 0
+        },
+        "fechada": true,
+        "segmentos": [
+          {
+            "id": "0ddd0508-602b-5998-98ff-6fa32aa8aec1",
+            "comprimento": 200,
+            "angulo_absoluto": 0,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "215a5122-6b87-5acc-a94f-8aeaa8460453",
+            "comprimento": 200,
+            "angulo_absoluto": 0,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "eb36449b-cdce-51cd-9dd8-f09d06fc9cff",
+            "comprimento": 200,
+            "angulo_absoluto": 0,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "64003898-79a5-5803-b1b9-34697585291b",
+            "comprimento": 200,
+            "angulo_absoluto": 0,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "c7d8f03b-caa4-5f1b-b5a6-d4e0bdbb798a",
+            "comprimento": 200,
+            "angulo_absoluto": 0,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "8e3c1cbc-13bd-5fc7-9e7a-9abb2db4f039",
+            "comprimento": 200,
+            "angulo_absoluto": 0,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "5af82fde-557a-56a8-9dc9-1012ea9c6bef",
+            "comprimento": 200,
+            "angulo_absoluto": 0,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "9e06ec3d-534b-5073-9437-9e66a2d70a78",
+            "comprimento": 200,
+            "angulo_absoluto": 0,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "1979c3f6-e169-5b33-8517-6645f41a74a3",
+            "comprimento": 200,
+            "angulo_absoluto": 0,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "3f18d6a8-e9b2-5439-a819-a7c9a7d98e31",
+            "comprimento": 200,
+            "angulo_absoluto": 0,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "220746b6-0847-5e60-b61a-923c37f9d1d2",
+            "comprimento": 200,
+            "angulo_absoluto": 0,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "0f734415-0b6b-5e89-b2ea-2aa28aace077",
+            "comprimento": 200,
+            "angulo_absoluto": 0,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "9df27b48-8093-5c48-bffe-4416e7739a8b",
+            "comprimento": 200,
+            "angulo_absoluto": 0,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "b7bca695-7045-558d-b6f5-afc049b5b876",
+            "comprimento": 200,
+            "angulo_absoluto": 0,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "8bf2fafc-c45c-550e-b4b8-5b0828ebdbbb",
+            "comprimento": 200,
+            "angulo_absoluto": 0,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "23298878-d886-5d58-9280-11e41df2b3b3",
+            "comprimento": 200,
+            "angulo_absoluto": 0,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "e42f8d5b-70da-57f1-ad95-04aa808c9221",
+            "comprimento": 200,
+            "angulo_absoluto": 0,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "6696e487-6544-5cfa-ba96-d867041eec7e",
+            "comprimento": 200,
+            "angulo_absoluto": 0,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "b504ffb0-0705-5002-8bab-08555c562c7a",
+            "comprimento": 200,
+            "angulo_absoluto": 0,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "f922e1df-42ce-5603-a028-0b3667ceb707",
+            "comprimento": 200,
+            "angulo_absoluto": 0,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "dced85f9-7c38-5cc3-b326-947b65391918",
+            "comprimento": 200,
+            "angulo_absoluto": 0,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "74230d85-08a0-5beb-909d-0d91ff636a3f",
+            "comprimento": 200,
+            "angulo_absoluto": 0,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "14aa2a9d-7bf1-54b3-9156-1c606bf2e052",
+            "comprimento": 200,
+            "angulo_absoluto": 0,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "a992dead-389b-5b08-964b-a581a83aef21",
+            "comprimento": 200,
+            "angulo_absoluto": 0,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "010d5c01-5710-5d40-865c-6cf9f5fb36ab",
+            "comprimento": 200,
+            "angulo_absoluto": 0,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "4f5b3efe-43bd-5c8e-bfd7-447fb3c9b166",
+            "comprimento": 200,
+            "angulo_absoluto": 0,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "ca5cc6df-4528-58f6-9785-e7e725202ad9",
+            "comprimento": 200,
+            "angulo_absoluto": 0,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "0c6131d0-f02f-56a5-bb4e-2495aae1f412",
+            "comprimento": 200,
+            "angulo_absoluto": 0,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "031eb50b-c57c-50bc-b533-71e88a212068",
+            "comprimento": 200,
+            "angulo_absoluto": 0,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "b25c5c4a-2e7b-51fd-8244-e0bbdfdad8c6",
+            "comprimento": 200,
+            "angulo_absoluto": 0,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "7e116d21-f537-5e99-a04c-a0fa45b71400",
+            "comprimento": 200,
+            "angulo_absoluto": 0,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "25526914-3b8c-5eeb-8e05-957b59717f7c",
+            "comprimento": 200,
+            "angulo_absoluto": 0,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "aaf08a98-10f8-5f9e-adf2-0a3d5e94437b",
+            "comprimento": 200,
+            "angulo_absoluto": 0,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "a2a0ccca-2d8c-50b8-a55f-df41fe8ecd7c",
+            "comprimento": 200,
+            "angulo_absoluto": 0,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "08c038ff-028d-5ac6-851a-34ffc3837520",
+            "comprimento": 200,
+            "angulo_absoluto": 0,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "444a2722-e0e9-5ea3-a188-d21c30ce3282",
+            "comprimento": 200,
+            "angulo_absoluto": 0,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "59f84bcc-5f32-56c7-8480-27b0f5c4c107",
+            "comprimento": 200,
+            "angulo_absoluto": 0,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "8849685f-0285-5582-ac66-56f451055364",
+            "comprimento": 200,
+            "angulo_absoluto": 0,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "0c54ebf3-1b09-5d55-87a4-8456b4f941f1",
+            "comprimento": 200,
+            "angulo_absoluto": 0,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "29caee12-9ba8-53fd-b78a-80e669edb336",
+            "comprimento": 200,
+            "angulo_absoluto": 0,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "fcdb3342-2338-53d2-b082-a8531947572b",
+            "comprimento": 200,
+            "angulo_absoluto": 0,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "e5c2c7e4-47cc-5385-ba00-3dd98a89364d",
+            "comprimento": 200,
+            "angulo_absoluto": 0,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "1f86f029-68cf-52d6-999c-4bf967cc8884",
+            "comprimento": 200,
+            "angulo_absoluto": 0,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "e3f1e06d-2013-5bed-9791-c784c4d3fdc0",
+            "comprimento": 200,
+            "angulo_absoluto": 0,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "4b2e1ecf-10d0-54e4-a1ba-0b8f316f7e83",
+            "comprimento": 200,
+            "angulo_absoluto": 0,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "c8a3267d-12d8-5522-a4ad-1b5563acd331",
+            "comprimento": 200,
+            "angulo_absoluto": 0,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "542cd6c7-adac-5716-acf1-88618b76ab2a",
+            "comprimento": 200,
+            "angulo_absoluto": 0,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "1f91d333-dd71-5240-841a-3cf3896242c0",
+            "comprimento": 200,
+            "angulo_absoluto": 0,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "57123a09-2f03-5a24-b552-5f0d47aa8680",
+            "comprimento": 200,
+            "angulo_absoluto": 0,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "7f8b3b96-62a5-579c-bc50-86a1e1f48244",
+            "comprimento": 200,
+            "angulo_absoluto": 0,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "4901323b-adeb-57ca-a05c-7199fdeebef5",
+            "comprimento": 200,
+            "angulo_absoluto": 90,
+            "angulo_relativo": 90,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "6fdfc59b-9a53-5fb3-944c-ab9d521dca99",
+            "comprimento": 200,
+            "angulo_absoluto": 90,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "37a0868a-5d96-528a-8c4d-6840aa4fb2d2",
+            "comprimento": 200,
+            "angulo_absoluto": 90,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "9210be28-55be-5782-ba9c-8e6f18519d76",
+            "comprimento": 200,
+            "angulo_absoluto": 90,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "e7bdadf2-3b1b-57c7-9bbb-b2aa480e1fb7",
+            "comprimento": 200,
+            "angulo_absoluto": 90,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "975f456c-8669-54f5-b2d3-fbbc69f900b5",
+            "comprimento": 200,
+            "angulo_absoluto": 90,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "bada42cf-7c6c-5d9a-aad4-7b68a04585d3",
+            "comprimento": 200,
+            "angulo_absoluto": 90,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "7da23e12-8377-5d89-b3c7-9e6c3684162d",
+            "comprimento": 200,
+            "angulo_absoluto": 90,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "18350ca7-44dd-5da9-9747-86a4390576f4",
+            "comprimento": 200,
+            "angulo_absoluto": 90,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "590fff28-cfcc-588d-92a0-ca5576445bd2",
+            "comprimento": 200,
+            "angulo_absoluto": 90,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "724738cb-8836-5bbe-9f66-7fc20f98eb50",
+            "comprimento": 200,
+            "angulo_absoluto": 90,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "54e95e2b-80df-5f1a-9300-086aedb16721",
+            "comprimento": 200,
+            "angulo_absoluto": 90,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "24d64c34-5cb7-5b51-b4c0-c83664a526f2",
+            "comprimento": 200,
+            "angulo_absoluto": 90,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "a62bb74c-10d7-5f91-9d34-2f7d994bfdd4",
+            "comprimento": 200,
+            "angulo_absoluto": 90,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "87c649b7-faeb-5705-83da-350f6607a60d",
+            "comprimento": 200,
+            "angulo_absoluto": 90,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "e14bfc4d-f4de-5ef2-8d4a-707b493fcedf",
+            "comprimento": 200,
+            "angulo_absoluto": 90,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "a20d9869-f1a8-5e04-8ad9-26a04243272f",
+            "comprimento": 200,
+            "angulo_absoluto": 90,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "71ca472f-274a-5e69-9bdd-837b1bec7c6a",
+            "comprimento": 200,
+            "angulo_absoluto": 90,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "0c95a794-8ab7-5b2c-8bd5-70e1d7082d86",
+            "comprimento": 200,
+            "angulo_absoluto": 90,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "0a2b37b3-5413-5727-96af-67d492c21634",
+            "comprimento": 200,
+            "angulo_absoluto": 90,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "af0fcd78-8c47-5f3c-96e7-84d77ba49852",
+            "comprimento": 200,
+            "angulo_absoluto": 90,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "7131357f-039d-5865-b7ac-7326b8d9f02b",
+            "comprimento": 200,
+            "angulo_absoluto": 90,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "2aa89267-2ae1-5bfa-8cf1-e2a4da0d485c",
+            "comprimento": 200,
+            "angulo_absoluto": 90,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "b6d8a54a-da5b-595f-ab65-2f78d7e8cc97",
+            "comprimento": 200,
+            "angulo_absoluto": 90,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "3c3d68c2-1f00-5387-88f4-097b407906b9",
+            "comprimento": 200,
+            "angulo_absoluto": 90,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "d70e67ee-97b5-546a-ae20-4accec7425b0",
+            "comprimento": 200,
+            "angulo_absoluto": 90,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "765e08ba-0cab-583f-979d-a2741884fb95",
+            "comprimento": 200,
+            "angulo_absoluto": 90,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "f887eb2b-16a0-59e7-9b02-4f290dc124fe",
+            "comprimento": 200,
+            "angulo_absoluto": 90,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "b4d5a2a0-0d8d-5781-a1fc-c1234f7a023d",
+            "comprimento": 200,
+            "angulo_absoluto": 90,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "24a9074e-d627-5e8a-a44d-5c87f07692a1",
+            "comprimento": 200,
+            "angulo_absoluto": 90,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "5d82c187-ecb8-5f14-bcb9-d9f1af3ff35f",
+            "comprimento": 200,
+            "angulo_absoluto": 90,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "49444e71-7602-5204-9ddf-b526f305bf0f",
+            "comprimento": 200,
+            "angulo_absoluto": 90,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "f6e31428-6732-577b-90f7-793c80f504b2",
+            "comprimento": 200,
+            "angulo_absoluto": 90,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "82342146-97eb-5973-95c1-3aa9a2557e7c",
+            "comprimento": 200,
+            "angulo_absoluto": 90,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "69aa2662-1fee-579d-a669-463ff413f3f2",
+            "comprimento": 200,
+            "angulo_absoluto": 90,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "a94254c9-711d-5876-8403-1615c5d6fac6",
+            "comprimento": 200,
+            "angulo_absoluto": 90,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "dc55297f-e728-5446-9769-7e73f0d4202d",
+            "comprimento": 200,
+            "angulo_absoluto": 90,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "56726dbc-9829-51ec-9baf-58374085ce6e",
+            "comprimento": 200,
+            "angulo_absoluto": 90,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "d0a3e251-31ed-5780-9e5f-52494cdd3f95",
+            "comprimento": 200,
+            "angulo_absoluto": 90,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "a5e68f0d-2783-528e-932b-3c9804a13c8f",
+            "comprimento": 200,
+            "angulo_absoluto": 90,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "1e9fe3d6-d740-59cf-a63c-8cea3799d192",
+            "comprimento": 200,
+            "angulo_absoluto": 90,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "fc00091d-1a16-52bc-82c7-e6c70fb4ea46",
+            "comprimento": 200,
+            "angulo_absoluto": 90,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "2b0e3af6-1aae-5a4f-99f7-1c51b2f6492c",
+            "comprimento": 200,
+            "angulo_absoluto": 90,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "f439d3b3-e00d-551d-b9b4-effcebd04fa8",
+            "comprimento": 200,
+            "angulo_absoluto": 90,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "2800cfaa-8c18-5276-829b-12fec45abd7a",
+            "comprimento": 200,
+            "angulo_absoluto": 90,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "65bcea84-2aff-5a59-9f5c-d5db58588b19",
+            "comprimento": 200,
+            "angulo_absoluto": 90,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "239d01f4-b390-5fde-93ec-83a3f6fb5ea6",
+            "comprimento": 200,
+            "angulo_absoluto": 90,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "e66d6039-a828-538f-ac9e-74b1faf3b559",
+            "comprimento": 200,
+            "angulo_absoluto": 90,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "34756ed2-327a-5e30-b957-62569b04321c",
+            "comprimento": 200,
+            "angulo_absoluto": 90,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "690d10cd-3230-5322-95d1-2547fb8cbd4e",
+            "comprimento": 200,
+            "angulo_absoluto": 90,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "d14d02ef-cd5d-59e6-886d-ca7eb8117dbe",
+            "comprimento": 200,
+            "angulo_absoluto": 180,
+            "angulo_relativo": 90,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "1ed7b395-d802-50f4-81af-c6ad082d2193",
+            "comprimento": 200,
+            "angulo_absoluto": 180,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "fcbf14c0-1209-59ce-97ed-044c49c3900c",
+            "comprimento": 200,
+            "angulo_absoluto": 180,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "446f9a89-df54-59a5-a244-c3718f928e7f",
+            "comprimento": 200,
+            "angulo_absoluto": 180,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "08049e4a-f53b-5ced-a4c3-6c5aba4116dd",
+            "comprimento": 200,
+            "angulo_absoluto": 180,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "360a359e-5cb8-56bc-8bc6-005654f3e9fb",
+            "comprimento": 200,
+            "angulo_absoluto": 180,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "c8c859f8-9ba5-533f-a593-ab3d648b007f",
+            "comprimento": 200,
+            "angulo_absoluto": 180,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "653f7412-908b-593f-adda-8927288c3c16",
+            "comprimento": 200,
+            "angulo_absoluto": 180,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "e18c2938-d6c1-5380-9c11-7ca79d67d6e4",
+            "comprimento": 200,
+            "angulo_absoluto": 180,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "ced6fd47-220e-5d3b-ab36-099b9253d25e",
+            "comprimento": 200,
+            "angulo_absoluto": 180,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "ae5c7c2e-95a4-5f0e-b44d-09cef0bc6273",
+            "comprimento": 200,
+            "angulo_absoluto": 180,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "1511805c-9589-5025-bc72-bd43a8fa5a26",
+            "comprimento": 200,
+            "angulo_absoluto": 180,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "1d500454-89a3-58c6-a015-a112e0e0286a",
+            "comprimento": 200,
+            "angulo_absoluto": 180,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "52c1db82-15a9-5745-a462-8887081bf0a0",
+            "comprimento": 200,
+            "angulo_absoluto": 180,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "5a5d314e-2592-549e-bd05-ea5ba1cb5370",
+            "comprimento": 200,
+            "angulo_absoluto": 180,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "29d3129b-d870-52b8-a61e-9165768005af",
+            "comprimento": 200,
+            "angulo_absoluto": 180,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "63f1ef85-cf81-53c0-bb15-2ec4957ba321",
+            "comprimento": 200,
+            "angulo_absoluto": 180,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "9f6b94ba-d8b3-507b-bac7-26acba0c83d4",
+            "comprimento": 200,
+            "angulo_absoluto": 180,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "a14382b4-6627-5fad-bc89-e51dae866dd4",
+            "comprimento": 200,
+            "angulo_absoluto": 180,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "01da54c0-d771-57f1-8b1f-e006ae1f96f7",
+            "comprimento": 200,
+            "angulo_absoluto": 180,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "691ec0bf-ed84-55e4-bbee-2da57b0ab873",
+            "comprimento": 200,
+            "angulo_absoluto": 180,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "2e4b1327-0a76-5231-9e3b-4419aef251c0",
+            "comprimento": 200,
+            "angulo_absoluto": 180,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "e51fce7e-beee-5273-a9e6-53881070af09",
+            "comprimento": 200,
+            "angulo_absoluto": 180,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "f0a3383d-4f03-50ca-9cf5-f1cc3c404c65",
+            "comprimento": 200,
+            "angulo_absoluto": 180,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "046b17bd-b360-5191-b390-9b67dacd2ca9",
+            "comprimento": 200,
+            "angulo_absoluto": 180,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "56613a84-79db-5436-9c4a-b42490173c2e",
+            "comprimento": 200,
+            "angulo_absoluto": 180,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "aa934e83-167f-59f2-b92a-239da5469b9a",
+            "comprimento": 200,
+            "angulo_absoluto": 180,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "620238c0-11a6-5731-886f-28ba9c3d54e2",
+            "comprimento": 200,
+            "angulo_absoluto": 180,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "b01c8836-8fec-54fd-b2a4-505db5d52543",
+            "comprimento": 200,
+            "angulo_absoluto": 180,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "56c69045-df10-5e67-9309-7282ca551096",
+            "comprimento": 200,
+            "angulo_absoluto": 180,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "a9b07108-eec8-5058-8b3f-af0dd730c673",
+            "comprimento": 200,
+            "angulo_absoluto": 180,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "d7afc486-a663-5e27-90e1-a23acdb2ae8f",
+            "comprimento": 200,
+            "angulo_absoluto": 180,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "4a8c25fe-1d71-5b41-8275-e6203d459835",
+            "comprimento": 200,
+            "angulo_absoluto": 180,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "767c76f4-88a5-52dc-9cfb-50a58c3f42de",
+            "comprimento": 200,
+            "angulo_absoluto": 180,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "2068a7dc-0a84-5d00-8aeb-7c92e534add1",
+            "comprimento": 200,
+            "angulo_absoluto": 180,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "40cba613-7a3a-5f27-a110-0353727af459",
+            "comprimento": 200,
+            "angulo_absoluto": 180,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "664af90e-3d4d-5668-88fb-94c3f910e0a3",
+            "comprimento": 200,
+            "angulo_absoluto": 180,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "35cdfbb1-fc10-526e-a37e-ae988e9735a1",
+            "comprimento": 200,
+            "angulo_absoluto": 180,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "d697124e-1b15-5a2b-94c5-15272635d32a",
+            "comprimento": 200,
+            "angulo_absoluto": 180,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "22f2e4e0-a46f-57fa-8e88-9466c3f707c4",
+            "comprimento": 200,
+            "angulo_absoluto": 180,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "86d8c102-d37f-5282-a5be-a07fe1880864",
+            "comprimento": 200,
+            "angulo_absoluto": 180,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "4f88262c-5341-55ce-9da0-1590a57bae39",
+            "comprimento": 200,
+            "angulo_absoluto": 180,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "9bddeb74-2b5d-5df6-9855-f01a3f05bad2",
+            "comprimento": 200,
+            "angulo_absoluto": 180,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "bea09f29-02eb-52bf-a057-165ee087d6f3",
+            "comprimento": 200,
+            "angulo_absoluto": 180,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "539aa1b0-0b6e-5f81-8584-746b842fa559",
+            "comprimento": 200,
+            "angulo_absoluto": 180,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "78e28276-8be3-5c72-a0ea-15829942b2eb",
+            "comprimento": 200,
+            "angulo_absoluto": 180,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "e2d4229c-6d21-5bee-9485-9d42ce9f3284",
+            "comprimento": 200,
+            "angulo_absoluto": 180,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "0ae772a5-da09-58de-b407-fe9aafee9ad1",
+            "comprimento": 200,
+            "angulo_absoluto": 180,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "103b4d4b-cd7b-5d1f-bdb4-12dcdc8be284",
+            "comprimento": 200,
+            "angulo_absoluto": 180,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "3ae19327-da4d-59b4-8e6b-4175d92b85e1",
+            "comprimento": 200,
+            "angulo_absoluto": 180,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "e1f93c46-6662-5ed2-b262-16edeca522c4",
+            "comprimento": 200,
+            "angulo_absoluto": 270,
+            "angulo_relativo": 90,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "ab034fa9-ecbc-5e79-ab84-de6b5e6b1329",
+            "comprimento": 200,
+            "angulo_absoluto": 270,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "38424f77-91c0-54c3-8ed2-187d223f8518",
+            "comprimento": 200,
+            "angulo_absoluto": 270,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "12c20bfa-0245-51b0-9d02-331cd774b91e",
+            "comprimento": 200,
+            "angulo_absoluto": 270,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "bbf68b41-a00a-5a12-8480-b4db7b31d1ea",
+            "comprimento": 200,
+            "angulo_absoluto": 270,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "4622ab76-7166-55b0-8468-67f026c61439",
+            "comprimento": 200,
+            "angulo_absoluto": 270,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "e93847db-c511-5dba-b39d-c3b9875fd3db",
+            "comprimento": 200,
+            "angulo_absoluto": 270,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "81943b64-c429-53b1-ac21-a729194ec99b",
+            "comprimento": 200,
+            "angulo_absoluto": 270,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "4b5891ae-39e3-57d6-865a-b74bfc1a52f8",
+            "comprimento": 200,
+            "angulo_absoluto": 270,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "c38799ab-84a5-50d0-9d10-966d35f5474e",
+            "comprimento": 200,
+            "angulo_absoluto": 270,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "c2502fce-91a4-5bcc-88ab-1427c37a8fa7",
+            "comprimento": 200,
+            "angulo_absoluto": 270,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "a7bbfe38-ac4e-5749-beea-49083e6fafeb",
+            "comprimento": 200,
+            "angulo_absoluto": 270,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "674a7763-2c83-56f0-8dfa-c869d13f19f5",
+            "comprimento": 200,
+            "angulo_absoluto": 270,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "00f6c870-87f5-5fe7-9e4d-96cca0273f81",
+            "comprimento": 200,
+            "angulo_absoluto": 270,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "4a10b1e1-ce4e-5f54-9f1a-d393b54b49e6",
+            "comprimento": 200,
+            "angulo_absoluto": 270,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "5bb0a23d-7c21-52fe-b5e2-810ae4badd1c",
+            "comprimento": 200,
+            "angulo_absoluto": 270,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "e2c4b2e5-35ec-5c7f-a335-1db1a23a8b07",
+            "comprimento": 200,
+            "angulo_absoluto": 270,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "6d1b9568-6bee-537b-8005-35a412fd3d83",
+            "comprimento": 200,
+            "angulo_absoluto": 270,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "3ec847bd-af7e-5ee4-b2e2-b099bd595e6f",
+            "comprimento": 200,
+            "angulo_absoluto": 270,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "feceabd3-6050-5e35-b0be-b6931a0c36fd",
+            "comprimento": 200,
+            "angulo_absoluto": 270,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "59d6517c-debb-5c53-8c3f-4de949cc8a13",
+            "comprimento": 200,
+            "angulo_absoluto": 270,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "37756861-4603-59d7-9361-34c5b5dee765",
+            "comprimento": 200,
+            "angulo_absoluto": 270,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "49100787-0d83-555e-8f21-c440b3e2dd4b",
+            "comprimento": 200,
+            "angulo_absoluto": 270,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "156a0f9e-4671-5299-8416-f4e0277732db",
+            "comprimento": 200,
+            "angulo_absoluto": 270,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "7038bf1e-b7ba-5644-8134-bf33503ac67a",
+            "comprimento": 200,
+            "angulo_absoluto": 270,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "f1af62c5-4337-5b0b-86f6-c2f44fb42b52",
+            "comprimento": 200,
+            "angulo_absoluto": 270,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "9db1b72c-676c-5dfb-9826-bab31e4293c3",
+            "comprimento": 200,
+            "angulo_absoluto": 270,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "4df1bbe6-c720-57a3-9c70-7b9c64c8fa0f",
+            "comprimento": 200,
+            "angulo_absoluto": 270,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "cec182a8-196f-5d75-a786-12674769949e",
+            "comprimento": 200,
+            "angulo_absoluto": 270,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "853f25ca-dcde-5f72-b399-6246fc5e2102",
+            "comprimento": 200,
+            "angulo_absoluto": 270,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "f892f73c-3883-5eeb-97b9-0fb0b5d18522",
+            "comprimento": 200,
+            "angulo_absoluto": 270,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "ed35f94b-a4aa-50ab-a9f9-9f21ac461c01",
+            "comprimento": 200,
+            "angulo_absoluto": 270,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "f718404d-1547-56b1-bef4-e1379a3d8625",
+            "comprimento": 200,
+            "angulo_absoluto": 270,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "cb200439-4888-53c3-a881-3ca1dc0e15ac",
+            "comprimento": 200,
+            "angulo_absoluto": 270,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "87851d52-5eda-5a67-842e-a38e4d7fbe6c",
+            "comprimento": 200,
+            "angulo_absoluto": 270,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "8eec9cd8-a3f3-52a2-9331-0a8bb67bb5fa",
+            "comprimento": 200,
+            "angulo_absoluto": 270,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "75022f45-406c-54a1-8204-c620c66827bb",
+            "comprimento": 200,
+            "angulo_absoluto": 270,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "127795a0-7ae7-554a-b943-7b88fab4afe9",
+            "comprimento": 200,
+            "angulo_absoluto": 270,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "271a5ef0-3f74-50ed-ab0a-fd8c7ae55bd4",
+            "comprimento": 200,
+            "angulo_absoluto": 270,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "50dbfc29-ee35-5555-8387-26aadd911db7",
+            "comprimento": 200,
+            "angulo_absoluto": 270,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "0a413501-97f7-588a-b3ed-bd8d2fde7548",
+            "comprimento": 200,
+            "angulo_absoluto": 270,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "bca47544-06f1-5748-91ec-bc7795589a21",
+            "comprimento": 200,
+            "angulo_absoluto": 270,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "b29077e4-4065-5575-b3e2-08c7b32c7717",
+            "comprimento": 200,
+            "angulo_absoluto": 270,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "1b4d8051-2a6e-5dc7-9c11-f869bfaf0e72",
+            "comprimento": 200,
+            "angulo_absoluto": 270,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "f6734507-d97f-57dc-a862-115aca07bdbf",
+            "comprimento": 200,
+            "angulo_absoluto": 270,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "7b53bbcc-05b3-52f6-8a6d-a7bd9053914e",
+            "comprimento": 200,
+            "angulo_absoluto": 270,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "6e2a05dc-b5da-522d-a279-13fbf6868f2b",
+            "comprimento": 200,
+            "angulo_absoluto": 270,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "d4eeb118-c371-505d-861e-7a7bfd0ae2b5",
+            "comprimento": 200,
+            "angulo_absoluto": 270,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "1e1a021a-c457-5708-a48b-b22dbb714e89",
+            "comprimento": 200,
+            "angulo_absoluto": 270,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          },
+          {
+            "id": "94ec4f9c-6099-5e89-9f54-dcee55932e6f",
+            "comprimento": 200,
+            "angulo_absoluto": 270,
+            "angulo_relativo": 0,
+            "espessura": 100,
+            "pe_direito_inicial": 2700,
+            "pe_direito_final": 2700,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL"
+          }
+        ]
+      }
+    ],
+    "aberturas": [],
+    "modulos": [
+      {
+        "id": "d4a8f66e-933d-51f1-a8e2-8b05fc7a57e1",
+        "nome": "Módulo 1",
+        "tipo": "BASE",
+        "largura": 800,
+        "altura": 700,
+        "profundidade": 550,
+        "espessura": 15,
+        "material": "MDF",
+        "portas": "LEFT",
+        "construcao": {
+          "laterais": "PASSANTE",
+          "tampo": "ENTRE_LATERAIS",
+          "fundo": {
+            "modo": "CANAL",
+            "espessura": 6,
+            "encaixe": 8
+          },
+          "rodape": {
+            "altura": 0,
+            "recuo": 0
+          },
+          "porta": {
+            "modo": "SOBREPOSTA",
+            "folga": 2,
+            "folga_central": 2,
+            "espessura": 18
+          },
+          "prateleiras": {
+            "quantidade": 1,
+            "recuo_frontal": 20,
+            "folga_lateral": 1,
+            "espessura": 15
+          },
+          "divisorias": {
+            "quantidade": 0
+          },
+          "gavetas": {
+            "quantidade": 0,
+            "altura_frente": 180
+          },
+          "travessas": {
+            "quantidade": 0,
+            "largura": 80
+          },
+          "fitas": {
+            "frente": 1,
+            "demais": 0.45,
+            "portas": 1
+          }
+        },
+        "chapas_editadas": [],
+        "posicao": {
+          "x": 200,
+          "y": 200,
+          "z": 0
+        },
+        "rotacao_z": 0,
+        "plano_pai": {
+          "tipo": "FLOOR",
+          "id": null
+        }
+      },
+      {
+        "id": "d47476d3-56c3-5ea7-b49a-b205732148b5",
+        "nome": "Módulo 2",
+        "tipo": "BASE",
+        "largura": 800,
+        "altura": 700,
+        "profundidade": 550,
+        "espessura": 15,
+        "material": "MDF",
+        "portas": "LEFT",
+        "construcao": {
+          "laterais": "PASSANTE",
+          "tampo": "ENTRE_LATERAIS",
+          "fundo": {
+            "modo": "CANAL",
+            "espessura": 6,
+            "encaixe": 8
+          },
+          "rodape": {
+            "altura": 0,
+            "recuo": 0
+          },
+          "porta": {
+            "modo": "SOBREPOSTA",
+            "folga": 2,
+            "folga_central": 2,
+            "espessura": 18
+          },
+          "prateleiras": {
+            "quantidade": 1,
+            "recuo_frontal": 20,
+            "folga_lateral": 1,
+            "espessura": 15
+          },
+          "divisorias": {
+            "quantidade": 0
+          },
+          "gavetas": {
+            "quantidade": 0,
+            "altura_frente": 180
+          },
+          "travessas": {
+            "quantidade": 0,
+            "largura": 80
+          },
+          "fitas": {
+            "frente": 1,
+            "demais": 0.45,
+            "portas": 1
+          }
+        },
+        "chapas_editadas": [],
+        "posicao": {
+          "x": 1000,
+          "y": 200,
+          "z": 0
+        },
+        "rotacao_z": 0,
+        "plano_pai": {
+          "tipo": "FLOOR",
+          "id": null
+        }
+      },
+      {
+        "id": "82fd330c-2079-5512-90d3-4bb602e76343",
+        "nome": "Módulo 3",
+        "tipo": "BASE",
+        "largura": 800,
+        "altura": 700,
+        "profundidade": 550,
+        "espessura": 15,
+        "material": "MDF",
+        "portas": "LEFT",
+        "construcao": {
+          "laterais": "PASSANTE",
+          "tampo": "ENTRE_LATERAIS",
+          "fundo": {
+            "modo": "CANAL",
+            "espessura": 6,
+            "encaixe": 8
+          },
+          "rodape": {
+            "altura": 0,
+            "recuo": 0
+          },
+          "porta": {
+            "modo": "SOBREPOSTA",
+            "folga": 2,
+            "folga_central": 2,
+            "espessura": 18
+          },
+          "prateleiras": {
+            "quantidade": 1,
+            "recuo_frontal": 20,
+            "folga_lateral": 1,
+            "espessura": 15
+          },
+          "divisorias": {
+            "quantidade": 0
+          },
+          "gavetas": {
+            "quantidade": 0,
+            "altura_frente": 180
+          },
+          "travessas": {
+            "quantidade": 0,
+            "largura": 80
+          },
+          "fitas": {
+            "frente": 1,
+            "demais": 0.45,
+            "portas": 1
+          }
+        },
+        "chapas_editadas": [],
+        "posicao": {
+          "x": 1800,
+          "y": 200,
+          "z": 0
+        },
+        "rotacao_z": 0,
+        "plano_pai": {
+          "tipo": "FLOOR",
+          "id": null
+        }
+      },
+      {
+        "id": "87463c4b-fbe5-55ca-b19f-12fe5f33901a",
+        "nome": "Módulo 4",
+        "tipo": "BASE",
+        "largura": 800,
+        "altura": 700,
+        "profundidade": 550,
+        "espessura": 15,
+        "material": "MDF",
+        "portas": "LEFT",
+        "construcao": {
+          "laterais": "PASSANTE",
+          "tampo": "ENTRE_LATERAIS",
+          "fundo": {
+            "modo": "CANAL",
+            "espessura": 6,
+            "encaixe": 8
+          },
+          "rodape": {
+            "altura": 0,
+            "recuo": 0
+          },
+          "porta": {
+            "modo": "SOBREPOSTA",
+            "folga": 2,
+            "folga_central": 2,
+            "espessura": 18
+          },
+          "prateleiras": {
+            "quantidade": 1,
+            "recuo_frontal": 20,
+            "folga_lateral": 1,
+            "espessura": 15
+          },
+          "divisorias": {
+            "quantidade": 0
+          },
+          "gavetas": {
+            "quantidade": 0,
+            "altura_frente": 180
+          },
+          "travessas": {
+            "quantidade": 0,
+            "largura": 80
+          },
+          "fitas": {
+            "frente": 1,
+            "demais": 0.45,
+            "portas": 1
+          }
+        },
+        "chapas_editadas": [],
+        "posicao": {
+          "x": 2600,
+          "y": 200,
+          "z": 0
+        },
+        "rotacao_z": 0,
+        "plano_pai": {
+          "tipo": "FLOOR",
+          "id": null
+        }
+      },
+      {
+        "id": "4e08ed13-ce73-57d5-8795-eb33eab77d51",
+        "nome": "Módulo 5",
+        "tipo": "BASE",
+        "largura": 800,
+        "altura": 700,
+        "profundidade": 550,
+        "espessura": 15,
+        "material": "MDF",
+        "portas": "LEFT",
+        "construcao": {
+          "laterais": "PASSANTE",
+          "tampo": "ENTRE_LATERAIS",
+          "fundo": {
+            "modo": "CANAL",
+            "espessura": 6,
+            "encaixe": 8
+          },
+          "rodape": {
+            "altura": 0,
+            "recuo": 0
+          },
+          "porta": {
+            "modo": "SOBREPOSTA",
+            "folga": 2,
+            "folga_central": 2,
+            "espessura": 18
+          },
+          "prateleiras": {
+            "quantidade": 1,
+            "recuo_frontal": 20,
+            "folga_lateral": 1,
+            "espessura": 15
+          },
+          "divisorias": {
+            "quantidade": 0
+          },
+          "gavetas": {
+            "quantidade": 0,
+            "altura_frente": 180
+          },
+          "travessas": {
+            "quantidade": 0,
+            "largura": 80
+          },
+          "fitas": {
+            "frente": 1,
+            "demais": 0.45,
+            "portas": 1
+          }
+        },
+        "chapas_editadas": [],
+        "posicao": {
+          "x": 3400,
+          "y": 200,
+          "z": 0
+        },
+        "rotacao_z": 0,
+        "plano_pai": {
+          "tipo": "FLOOR",
+          "id": null
+        }
+      },
+      {
+        "id": "19d0d399-1e16-582e-a581-619ed761266b",
+        "nome": "Módulo 6",
+        "tipo": "BASE",
+        "largura": 800,
+        "altura": 700,
+        "profundidade": 550,
+        "espessura": 15,
+        "material": "MDF",
+        "portas": "LEFT",
+        "construcao": {
+          "laterais": "PASSANTE",
+          "tampo": "ENTRE_LATERAIS",
+          "fundo": {
+            "modo": "CANAL",
+            "espessura": 6,
+            "encaixe": 8
+          },
+          "rodape": {
+            "altura": 0,
+            "recuo": 0
+          },
+          "porta": {
+            "modo": "SOBREPOSTA",
+            "folga": 2,
+            "folga_central": 2,
+            "espessura": 18
+          },
+          "prateleiras": {
+            "quantidade": 1,
+            "recuo_frontal": 20,
+            "folga_lateral": 1,
+            "espessura": 15
+          },
+          "divisorias": {
+            "quantidade": 0
+          },
+          "gavetas": {
+            "quantidade": 0,
+            "altura_frente": 180
+          },
+          "travessas": {
+            "quantidade": 0,
+            "largura": 80
+          },
+          "fitas": {
+            "frente": 1,
+            "demais": 0.45,
+            "portas": 1
+          }
+        },
+        "chapas_editadas": [],
+        "posicao": {
+          "x": 4200,
+          "y": 200,
+          "z": 0
+        },
+        "rotacao_z": 0,
+        "plano_pai": {
+          "tipo": "FLOOR",
+          "id": null
+        }
+      },
+      {
+        "id": "03b70b6c-f88e-538d-8474-b6b7e016ef2f",
+        "nome": "Módulo 7",
+        "tipo": "BASE",
+        "largura": 800,
+        "altura": 700,
+        "profundidade": 550,
+        "espessura": 15,
+        "material": "MDF",
+        "portas": "LEFT",
+        "construcao": {
+          "laterais": "PASSANTE",
+          "tampo": "ENTRE_LATERAIS",
+          "fundo": {
+            "modo": "CANAL",
+            "espessura": 6,
+            "encaixe": 8
+          },
+          "rodape": {
+            "altura": 0,
+            "recuo": 0
+          },
+          "porta": {
+            "modo": "SOBREPOSTA",
+            "folga": 2,
+            "folga_central": 2,
+            "espessura": 18
+          },
+          "prateleiras": {
+            "quantidade": 1,
+            "recuo_frontal": 20,
+            "folga_lateral": 1,
+            "espessura": 15
+          },
+          "divisorias": {
+            "quantidade": 0
+          },
+          "gavetas": {
+            "quantidade": 0,
+            "altura_frente": 180
+          },
+          "travessas": {
+            "quantidade": 0,
+            "largura": 80
+          },
+          "fitas": {
+            "frente": 1,
+            "demais": 0.45,
+            "portas": 1
+          }
+        },
+        "chapas_editadas": [],
+        "posicao": {
+          "x": 5000,
+          "y": 200,
+          "z": 0
+        },
+        "rotacao_z": 0,
+        "plano_pai": {
+          "tipo": "FLOOR",
+          "id": null
+        }
+      },
+      {
+        "id": "ec814dc5-6ec0-5383-8ad3-4f526afa34d9",
+        "nome": "Módulo 8",
+        "tipo": "BASE",
+        "largura": 800,
+        "altura": 700,
+        "profundidade": 550,
+        "espessura": 15,
+        "material": "MDF",
+        "portas": "LEFT",
+        "construcao": {
+          "laterais": "PASSANTE",
+          "tampo": "ENTRE_LATERAIS",
+          "fundo": {
+            "modo": "CANAL",
+            "espessura": 6,
+            "encaixe": 8
+          },
+          "rodape": {
+            "altura": 0,
+            "recuo": 0
+          },
+          "porta": {
+            "modo": "SOBREPOSTA",
+            "folga": 2,
+            "folga_central": 2,
+            "espessura": 18
+          },
+          "prateleiras": {
+            "quantidade": 1,
+            "recuo_frontal": 20,
+            "folga_lateral": 1,
+            "espessura": 15
+          },
+          "divisorias": {
+            "quantidade": 0
+          },
+          "gavetas": {
+            "quantidade": 0,
+            "altura_frente": 180
+          },
+          "travessas": {
+            "quantidade": 0,
+            "largura": 80
+          },
+          "fitas": {
+            "frente": 1,
+            "demais": 0.45,
+            "portas": 1
+          }
+        },
+        "chapas_editadas": [],
+        "posicao": {
+          "x": 5800,
+          "y": 200,
+          "z": 0
+        },
+        "rotacao_z": 0,
+        "plano_pai": {
+          "tipo": "FLOOR",
+          "id": null
+        }
+      },
+      {
+        "id": "a0adc0a6-2568-5b39-a46c-15a868723ed0",
+        "nome": "Módulo 9",
+        "tipo": "BASE",
+        "largura": 800,
+        "altura": 700,
+        "profundidade": 550,
+        "espessura": 15,
+        "material": "MDF",
+        "portas": "LEFT",
+        "construcao": {
+          "laterais": "PASSANTE",
+          "tampo": "ENTRE_LATERAIS",
+          "fundo": {
+            "modo": "CANAL",
+            "espessura": 6,
+            "encaixe": 8
+          },
+          "rodape": {
+            "altura": 0,
+            "recuo": 0
+          },
+          "porta": {
+            "modo": "SOBREPOSTA",
+            "folga": 2,
+            "folga_central": 2,
+            "espessura": 18
+          },
+          "prateleiras": {
+            "quantidade": 1,
+            "recuo_frontal": 20,
+            "folga_lateral": 1,
+            "espessura": 15
+          },
+          "divisorias": {
+            "quantidade": 0
+          },
+          "gavetas": {
+            "quantidade": 0,
+            "altura_frente": 180
+          },
+          "travessas": {
+            "quantidade": 0,
+            "largura": 80
+          },
+          "fitas": {
+            "frente": 1,
+            "demais": 0.45,
+            "portas": 1
+          }
+        },
+        "chapas_editadas": [],
+        "posicao": {
+          "x": 6600,
+          "y": 200,
+          "z": 0
+        },
+        "rotacao_z": 0,
+        "plano_pai": {
+          "tipo": "FLOOR",
+          "id": null
+        }
+      },
+      {
+        "id": "d025248f-2131-5224-8316-08af51d2a774",
+        "nome": "Módulo 10",
+        "tipo": "BASE",
+        "largura": 800,
+        "altura": 700,
+        "profundidade": 550,
+        "espessura": 15,
+        "material": "MDF",
+        "portas": "LEFT",
+        "construcao": {
+          "laterais": "PASSANTE",
+          "tampo": "ENTRE_LATERAIS",
+          "fundo": {
+            "modo": "CANAL",
+            "espessura": 6,
+            "encaixe": 8
+          },
+          "rodape": {
+            "altura": 0,
+            "recuo": 0
+          },
+          "porta": {
+            "modo": "SOBREPOSTA",
+            "folga": 2,
+            "folga_central": 2,
+            "espessura": 18
+          },
+          "prateleiras": {
+            "quantidade": 1,
+            "recuo_frontal": 20,
+            "folga_lateral": 1,
+            "espessura": 15
+          },
+          "divisorias": {
+            "quantidade": 0
+          },
+          "gavetas": {
+            "quantidade": 0,
+            "altura_frente": 180
+          },
+          "travessas": {
+            "quantidade": 0,
+            "largura": 80
+          },
+          "fitas": {
+            "frente": 1,
+            "demais": 0.45,
+            "portas": 1
+          }
+        },
+        "chapas_editadas": [],
+        "posicao": {
+          "x": 7400,
+          "y": 200,
+          "z": 0
+        },
+        "rotacao_z": 0,
+        "plano_pai": {
+          "tipo": "FLOOR",
+          "id": null
+        }
+      },
+      {
+        "id": "7e3706bf-0c80-59d6-b78c-0d78905192fe",
+        "nome": "Módulo 11",
+        "tipo": "BASE",
+        "largura": 800,
+        "altura": 700,
+        "profundidade": 550,
+        "espessura": 15,
+        "material": "MDF",
+        "portas": "LEFT",
+        "construcao": {
+          "laterais": "PASSANTE",
+          "tampo": "ENTRE_LATERAIS",
+          "fundo": {
+            "modo": "CANAL",
+            "espessura": 6,
+            "encaixe": 8
+          },
+          "rodape": {
+            "altura": 0,
+            "recuo": 0
+          },
+          "porta": {
+            "modo": "SOBREPOSTA",
+            "folga": 2,
+            "folga_central": 2,
+            "espessura": 18
+          },
+          "prateleiras": {
+            "quantidade": 1,
+            "recuo_frontal": 20,
+            "folga_lateral": 1,
+            "espessura": 15
+          },
+          "divisorias": {
+            "quantidade": 0
+          },
+          "gavetas": {
+            "quantidade": 0,
+            "altura_frente": 180
+          },
+          "travessas": {
+            "quantidade": 0,
+            "largura": 80
+          },
+          "fitas": {
+            "frente": 1,
+            "demais": 0.45,
+            "portas": 1
+          }
+        },
+        "chapas_editadas": [],
+        "posicao": {
+          "x": 200,
+          "y": 2200,
+          "z": 0
+        },
+        "rotacao_z": 0,
+        "plano_pai": {
+          "tipo": "FLOOR",
+          "id": null
+        }
+      },
+      {
+        "id": "467fda56-f62d-5232-9f4b-a0529e6c1288",
+        "nome": "Módulo 12",
+        "tipo": "BASE",
+        "largura": 800,
+        "altura": 700,
+        "profundidade": 550,
+        "espessura": 15,
+        "material": "MDF",
+        "portas": "LEFT",
+        "construcao": {
+          "laterais": "PASSANTE",
+          "tampo": "ENTRE_LATERAIS",
+          "fundo": {
+            "modo": "CANAL",
+            "espessura": 6,
+            "encaixe": 8
+          },
+          "rodape": {
+            "altura": 0,
+            "recuo": 0
+          },
+          "porta": {
+            "modo": "SOBREPOSTA",
+            "folga": 2,
+            "folga_central": 2,
+            "espessura": 18
+          },
+          "prateleiras": {
+            "quantidade": 1,
+            "recuo_frontal": 20,
+            "folga_lateral": 1,
+            "espessura": 15
+          },
+          "divisorias": {
+            "quantidade": 0
+          },
+          "gavetas": {
+            "quantidade": 0,
+            "altura_frente": 180
+          },
+          "travessas": {
+            "quantidade": 0,
+            "largura": 80
+          },
+          "fitas": {
+            "frente": 1,
+            "demais": 0.45,
+            "portas": 1
+          }
+        },
+        "chapas_editadas": [],
+        "posicao": {
+          "x": 1000,
+          "y": 2200,
+          "z": 0
+        },
+        "rotacao_z": 0,
+        "plano_pai": {
+          "tipo": "FLOOR",
+          "id": null
+        }
+      },
+      {
+        "id": "b786b3c8-8e67-5ea3-a87e-12498e95a1d3",
+        "nome": "Módulo 13",
+        "tipo": "BASE",
+        "largura": 800,
+        "altura": 700,
+        "profundidade": 550,
+        "espessura": 15,
+        "material": "MDF",
+        "portas": "LEFT",
+        "construcao": {
+          "laterais": "PASSANTE",
+          "tampo": "ENTRE_LATERAIS",
+          "fundo": {
+            "modo": "CANAL",
+            "espessura": 6,
+            "encaixe": 8
+          },
+          "rodape": {
+            "altura": 0,
+            "recuo": 0
+          },
+          "porta": {
+            "modo": "SOBREPOSTA",
+            "folga": 2,
+            "folga_central": 2,
+            "espessura": 18
+          },
+          "prateleiras": {
+            "quantidade": 1,
+            "recuo_frontal": 20,
+            "folga_lateral": 1,
+            "espessura": 15
+          },
+          "divisorias": {
+            "quantidade": 0
+          },
+          "gavetas": {
+            "quantidade": 0,
+            "altura_frente": 180
+          },
+          "travessas": {
+            "quantidade": 0,
+            "largura": 80
+          },
+          "fitas": {
+            "frente": 1,
+            "demais": 0.45,
+            "portas": 1
+          }
+        },
+        "chapas_editadas": [],
+        "posicao": {
+          "x": 1800,
+          "y": 2200,
+          "z": 0
+        },
+        "rotacao_z": 0,
+        "plano_pai": {
+          "tipo": "FLOOR",
+          "id": null
+        }
+      },
+      {
+        "id": "d4a3b7fb-674e-581c-a165-9f949e143c2d",
+        "nome": "Módulo 14",
+        "tipo": "BASE",
+        "largura": 800,
+        "altura": 700,
+        "profundidade": 550,
+        "espessura": 15,
+        "material": "MDF",
+        "portas": "LEFT",
+        "construcao": {
+          "laterais": "PASSANTE",
+          "tampo": "ENTRE_LATERAIS",
+          "fundo": {
+            "modo": "CANAL",
+            "espessura": 6,
+            "encaixe": 8
+          },
+          "rodape": {
+            "altura": 0,
+            "recuo": 0
+          },
+          "porta": {
+            "modo": "SOBREPOSTA",
+            "folga": 2,
+            "folga_central": 2,
+            "espessura": 18
+          },
+          "prateleiras": {
+            "quantidade": 1,
+            "recuo_frontal": 20,
+            "folga_lateral": 1,
+            "espessura": 15
+          },
+          "divisorias": {
+            "quantidade": 0
+          },
+          "gavetas": {
+            "quantidade": 0,
+            "altura_frente": 180
+          },
+          "travessas": {
+            "quantidade": 0,
+            "largura": 80
+          },
+          "fitas": {
+            "frente": 1,
+            "demais": 0.45,
+            "portas": 1
+          }
+        },
+        "chapas_editadas": [],
+        "posicao": {
+          "x": 2600,
+          "y": 2200,
+          "z": 0
+        },
+        "rotacao_z": 0,
+        "plano_pai": {
+          "tipo": "FLOOR",
+          "id": null
+        }
+      },
+      {
+        "id": "8b7d6594-59a1-59c9-9968-8ab56929d7d2",
+        "nome": "Módulo 15",
+        "tipo": "BASE",
+        "largura": 800,
+        "altura": 700,
+        "profundidade": 550,
+        "espessura": 15,
+        "material": "MDF",
+        "portas": "LEFT",
+        "construcao": {
+          "laterais": "PASSANTE",
+          "tampo": "ENTRE_LATERAIS",
+          "fundo": {
+            "modo": "CANAL",
+            "espessura": 6,
+            "encaixe": 8
+          },
+          "rodape": {
+            "altura": 0,
+            "recuo": 0
+          },
+          "porta": {
+            "modo": "SOBREPOSTA",
+            "folga": 2,
+            "folga_central": 2,
+            "espessura": 18
+          },
+          "prateleiras": {
+            "quantidade": 1,
+            "recuo_frontal": 20,
+            "folga_lateral": 1,
+            "espessura": 15
+          },
+          "divisorias": {
+            "quantidade": 0
+          },
+          "gavetas": {
+            "quantidade": 0,
+            "altura_frente": 180
+          },
+          "travessas": {
+            "quantidade": 0,
+            "largura": 80
+          },
+          "fitas": {
+            "frente": 1,
+            "demais": 0.45,
+            "portas": 1
+          }
+        },
+        "chapas_editadas": [],
+        "posicao": {
+          "x": 3400,
+          "y": 2200,
+          "z": 0
+        },
+        "rotacao_z": 0,
+        "plano_pai": {
+          "tipo": "FLOOR",
+          "id": null
+        }
+      },
+      {
+        "id": "e397337a-9b42-5c32-9e6d-8cc47bf09e11",
+        "nome": "Módulo 16",
+        "tipo": "BASE",
+        "largura": 800,
+        "altura": 700,
+        "profundidade": 550,
+        "espessura": 15,
+        "material": "MDF",
+        "portas": "LEFT",
+        "construcao": {
+          "laterais": "PASSANTE",
+          "tampo": "ENTRE_LATERAIS",
+          "fundo": {
+            "modo": "CANAL",
+            "espessura": 6,
+            "encaixe": 8
+          },
+          "rodape": {
+            "altura": 0,
+            "recuo": 0
+          },
+          "porta": {
+            "modo": "SOBREPOSTA",
+            "folga": 2,
+            "folga_central": 2,
+            "espessura": 18
+          },
+          "prateleiras": {
+            "quantidade": 1,
+            "recuo_frontal": 20,
+            "folga_lateral": 1,
+            "espessura": 15
+          },
+          "divisorias": {
+            "quantidade": 0
+          },
+          "gavetas": {
+            "quantidade": 0,
+            "altura_frente": 180
+          },
+          "travessas": {
+            "quantidade": 0,
+            "largura": 80
+          },
+          "fitas": {
+            "frente": 1,
+            "demais": 0.45,
+            "portas": 1
+          }
+        },
+        "chapas_editadas": [],
+        "posicao": {
+          "x": 4200,
+          "y": 2200,
+          "z": 0
+        },
+        "rotacao_z": 0,
+        "plano_pai": {
+          "tipo": "FLOOR",
+          "id": null
+        }
+      },
+      {
+        "id": "6d7ff205-152a-585d-8df2-f2af7bd9d7ef",
+        "nome": "Módulo 17",
+        "tipo": "BASE",
+        "largura": 800,
+        "altura": 700,
+        "profundidade": 550,
+        "espessura": 15,
+        "material": "MDF",
+        "portas": "LEFT",
+        "construcao": {
+          "laterais": "PASSANTE",
+          "tampo": "ENTRE_LATERAIS",
+          "fundo": {
+            "modo": "CANAL",
+            "espessura": 6,
+            "encaixe": 8
+          },
+          "rodape": {
+            "altura": 0,
+            "recuo": 0
+          },
+          "porta": {
+            "modo": "SOBREPOSTA",
+            "folga": 2,
+            "folga_central": 2,
+            "espessura": 18
+          },
+          "prateleiras": {
+            "quantidade": 1,
+            "recuo_frontal": 20,
+            "folga_lateral": 1,
+            "espessura": 15
+          },
+          "divisorias": {
+            "quantidade": 0
+          },
+          "gavetas": {
+            "quantidade": 0,
+            "altura_frente": 180
+          },
+          "travessas": {
+            "quantidade": 0,
+            "largura": 80
+          },
+          "fitas": {
+            "frente": 1,
+            "demais": 0.45,
+            "portas": 1
+          }
+        },
+        "chapas_editadas": [],
+        "posicao": {
+          "x": 5000,
+          "y": 2200,
+          "z": 0
+        },
+        "rotacao_z": 0,
+        "plano_pai": {
+          "tipo": "FLOOR",
+          "id": null
+        }
+      },
+      {
+        "id": "6bee1683-20ad-5b98-b09c-1c2640221dc3",
+        "nome": "Módulo 18",
+        "tipo": "BASE",
+        "largura": 800,
+        "altura": 700,
+        "profundidade": 550,
+        "espessura": 15,
+        "material": "MDF",
+        "portas": "LEFT",
+        "construcao": {
+          "laterais": "PASSANTE",
+          "tampo": "ENTRE_LATERAIS",
+          "fundo": {
+            "modo": "CANAL",
+            "espessura": 6,
+            "encaixe": 8
+          },
+          "rodape": {
+            "altura": 0,
+            "recuo": 0
+          },
+          "porta": {
+            "modo": "SOBREPOSTA",
+            "folga": 2,
+            "folga_central": 2,
+            "espessura": 18
+          },
+          "prateleiras": {
+            "quantidade": 1,
+            "recuo_frontal": 20,
+            "folga_lateral": 1,
+            "espessura": 15
+          },
+          "divisorias": {
+            "quantidade": 0
+          },
+          "gavetas": {
+            "quantidade": 0,
+            "altura_frente": 180
+          },
+          "travessas": {
+            "quantidade": 0,
+            "largura": 80
+          },
+          "fitas": {
+            "frente": 1,
+            "demais": 0.45,
+            "portas": 1
+          }
+        },
+        "chapas_editadas": [],
+        "posicao": {
+          "x": 5800,
+          "y": 2200,
+          "z": 0
+        },
+        "rotacao_z": 0,
+        "plano_pai": {
+          "tipo": "FLOOR",
+          "id": null
+        }
+      },
+      {
+        "id": "0665c400-8e6f-5a0e-87d3-05c8617359a7",
+        "nome": "Módulo 19",
+        "tipo": "BASE",
+        "largura": 800,
+        "altura": 700,
+        "profundidade": 550,
+        "espessura": 15,
+        "material": "MDF",
+        "portas": "LEFT",
+        "construcao": {
+          "laterais": "PASSANTE",
+          "tampo": "ENTRE_LATERAIS",
+          "fundo": {
+            "modo": "CANAL",
+            "espessura": 6,
+            "encaixe": 8
+          },
+          "rodape": {
+            "altura": 0,
+            "recuo": 0
+          },
+          "porta": {
+            "modo": "SOBREPOSTA",
+            "folga": 2,
+            "folga_central": 2,
+            "espessura": 18
+          },
+          "prateleiras": {
+            "quantidade": 1,
+            "recuo_frontal": 20,
+            "folga_lateral": 1,
+            "espessura": 15
+          },
+          "divisorias": {
+            "quantidade": 0
+          },
+          "gavetas": {
+            "quantidade": 0,
+            "altura_frente": 180
+          },
+          "travessas": {
+            "quantidade": 0,
+            "largura": 80
+          },
+          "fitas": {
+            "frente": 1,
+            "demais": 0.45,
+            "portas": 1
+          }
+        },
+        "chapas_editadas": [],
+        "posicao": {
+          "x": 6600,
+          "y": 2200,
+          "z": 0
+        },
+        "rotacao_z": 0,
+        "plano_pai": {
+          "tipo": "FLOOR",
+          "id": null
+        }
+      },
+      {
+        "id": "ade15ddc-f1a4-5f90-9998-c7b0e40f0df7",
+        "nome": "Módulo 20",
+        "tipo": "BASE",
+        "largura": 800,
+        "altura": 700,
+        "profundidade": 550,
+        "espessura": 15,
+        "material": "MDF",
+        "portas": "LEFT",
+        "construcao": {
+          "laterais": "PASSANTE",
+          "tampo": "ENTRE_LATERAIS",
+          "fundo": {
+            "modo": "CANAL",
+            "espessura": 6,
+            "encaixe": 8
+          },
+          "rodape": {
+            "altura": 0,
+            "recuo": 0
+          },
+          "porta": {
+            "modo": "SOBREPOSTA",
+            "folga": 2,
+            "folga_central": 2,
+            "espessura": 18
+          },
+          "prateleiras": {
+            "quantidade": 1,
+            "recuo_frontal": 20,
+            "folga_lateral": 1,
+            "espessura": 15
+          },
+          "divisorias": {
+            "quantidade": 0
+          },
+          "gavetas": {
+            "quantidade": 0,
+            "altura_frente": 180
+          },
+          "travessas": {
+            "quantidade": 0,
+            "largura": 80
+          },
+          "fitas": {
+            "frente": 1,
+            "demais": 0.45,
+            "portas": 1
+          }
+        },
+        "chapas_editadas": [],
+        "posicao": {
+          "x": 7400,
+          "y": 2200,
+          "z": 0
+        },
+        "rotacao_z": 0,
+        "plano_pai": {
+          "tipo": "FLOOR",
+          "id": null
+        }
+      },
+      {
+        "id": "4f3075d9-6565-5f4d-8d3c-d164921d2763",
+        "nome": "Módulo 21",
+        "tipo": "BASE",
+        "largura": 800,
+        "altura": 700,
+        "profundidade": 550,
+        "espessura": 15,
+        "material": "MDF",
+        "portas": "LEFT",
+        "construcao": {
+          "laterais": "PASSANTE",
+          "tampo": "ENTRE_LATERAIS",
+          "fundo": {
+            "modo": "CANAL",
+            "espessura": 6,
+            "encaixe": 8
+          },
+          "rodape": {
+            "altura": 0,
+            "recuo": 0
+          },
+          "porta": {
+            "modo": "SOBREPOSTA",
+            "folga": 2,
+            "folga_central": 2,
+            "espessura": 18
+          },
+          "prateleiras": {
+            "quantidade": 1,
+            "recuo_frontal": 20,
+            "folga_lateral": 1,
+            "espessura": 15
+          },
+          "divisorias": {
+            "quantidade": 0
+          },
+          "gavetas": {
+            "quantidade": 0,
+            "altura_frente": 180
+          },
+          "travessas": {
+            "quantidade": 0,
+            "largura": 80
+          },
+          "fitas": {
+            "frente": 1,
+            "demais": 0.45,
+            "portas": 1
+          }
+        },
+        "chapas_editadas": [],
+        "posicao": {
+          "x": 200,
+          "y": 4200,
+          "z": 0
+        },
+        "rotacao_z": 0,
+        "plano_pai": {
+          "tipo": "FLOOR",
+          "id": null
+        }
+      },
+      {
+        "id": "458e0acb-362b-569b-a711-2ebec3657f9f",
+        "nome": "Módulo 22",
+        "tipo": "BASE",
+        "largura": 800,
+        "altura": 700,
+        "profundidade": 550,
+        "espessura": 15,
+        "material": "MDF",
+        "portas": "LEFT",
+        "construcao": {
+          "laterais": "PASSANTE",
+          "tampo": "ENTRE_LATERAIS",
+          "fundo": {
+            "modo": "CANAL",
+            "espessura": 6,
+            "encaixe": 8
+          },
+          "rodape": {
+            "altura": 0,
+            "recuo": 0
+          },
+          "porta": {
+            "modo": "SOBREPOSTA",
+            "folga": 2,
+            "folga_central": 2,
+            "espessura": 18
+          },
+          "prateleiras": {
+            "quantidade": 1,
+            "recuo_frontal": 20,
+            "folga_lateral": 1,
+            "espessura": 15
+          },
+          "divisorias": {
+            "quantidade": 0
+          },
+          "gavetas": {
+            "quantidade": 0,
+            "altura_frente": 180
+          },
+          "travessas": {
+            "quantidade": 0,
+            "largura": 80
+          },
+          "fitas": {
+            "frente": 1,
+            "demais": 0.45,
+            "portas": 1
+          }
+        },
+        "chapas_editadas": [],
+        "posicao": {
+          "x": 1000,
+          "y": 4200,
+          "z": 0
+        },
+        "rotacao_z": 0,
+        "plano_pai": {
+          "tipo": "FLOOR",
+          "id": null
+        }
+      },
+      {
+        "id": "c9e5120a-5bbd-5563-ac8a-05caaada8914",
+        "nome": "Módulo 23",
+        "tipo": "BASE",
+        "largura": 800,
+        "altura": 700,
+        "profundidade": 550,
+        "espessura": 15,
+        "material": "MDF",
+        "portas": "LEFT",
+        "construcao": {
+          "laterais": "PASSANTE",
+          "tampo": "ENTRE_LATERAIS",
+          "fundo": {
+            "modo": "CANAL",
+            "espessura": 6,
+            "encaixe": 8
+          },
+          "rodape": {
+            "altura": 0,
+            "recuo": 0
+          },
+          "porta": {
+            "modo": "SOBREPOSTA",
+            "folga": 2,
+            "folga_central": 2,
+            "espessura": 18
+          },
+          "prateleiras": {
+            "quantidade": 1,
+            "recuo_frontal": 20,
+            "folga_lateral": 1,
+            "espessura": 15
+          },
+          "divisorias": {
+            "quantidade": 0
+          },
+          "gavetas": {
+            "quantidade": 0,
+            "altura_frente": 180
+          },
+          "travessas": {
+            "quantidade": 0,
+            "largura": 80
+          },
+          "fitas": {
+            "frente": 1,
+            "demais": 0.45,
+            "portas": 1
+          }
+        },
+        "chapas_editadas": [],
+        "posicao": {
+          "x": 1800,
+          "y": 4200,
+          "z": 0
+        },
+        "rotacao_z": 0,
+        "plano_pai": {
+          "tipo": "FLOOR",
+          "id": null
+        }
+      },
+      {
+        "id": "a82d6540-d135-5e5e-9ad2-882ec9d790cf",
+        "nome": "Módulo 24",
+        "tipo": "BASE",
+        "largura": 800,
+        "altura": 700,
+        "profundidade": 550,
+        "espessura": 15,
+        "material": "MDF",
+        "portas": "LEFT",
+        "construcao": {
+          "laterais": "PASSANTE",
+          "tampo": "ENTRE_LATERAIS",
+          "fundo": {
+            "modo": "CANAL",
+            "espessura": 6,
+            "encaixe": 8
+          },
+          "rodape": {
+            "altura": 0,
+            "recuo": 0
+          },
+          "porta": {
+            "modo": "SOBREPOSTA",
+            "folga": 2,
+            "folga_central": 2,
+            "espessura": 18
+          },
+          "prateleiras": {
+            "quantidade": 1,
+            "recuo_frontal": 20,
+            "folga_lateral": 1,
+            "espessura": 15
+          },
+          "divisorias": {
+            "quantidade": 0
+          },
+          "gavetas": {
+            "quantidade": 0,
+            "altura_frente": 180
+          },
+          "travessas": {
+            "quantidade": 0,
+            "largura": 80
+          },
+          "fitas": {
+            "frente": 1,
+            "demais": 0.45,
+            "portas": 1
+          }
+        },
+        "chapas_editadas": [],
+        "posicao": {
+          "x": 2600,
+          "y": 4200,
+          "z": 0
+        },
+        "rotacao_z": 0,
+        "plano_pai": {
+          "tipo": "FLOOR",
+          "id": null
+        }
+      },
+      {
+        "id": "5dcc7afd-d399-55ec-b177-fc9e7a8a9bd7",
+        "nome": "Módulo 25",
+        "tipo": "BASE",
+        "largura": 800,
+        "altura": 700,
+        "profundidade": 550,
+        "espessura": 15,
+        "material": "MDF",
+        "portas": "LEFT",
+        "construcao": {
+          "laterais": "PASSANTE",
+          "tampo": "ENTRE_LATERAIS",
+          "fundo": {
+            "modo": "CANAL",
+            "espessura": 6,
+            "encaixe": 8
+          },
+          "rodape": {
+            "altura": 0,
+            "recuo": 0
+          },
+          "porta": {
+            "modo": "SOBREPOSTA",
+            "folga": 2,
+            "folga_central": 2,
+            "espessura": 18
+          },
+          "prateleiras": {
+            "quantidade": 1,
+            "recuo_frontal": 20,
+            "folga_lateral": 1,
+            "espessura": 15
+          },
+          "divisorias": {
+            "quantidade": 0
+          },
+          "gavetas": {
+            "quantidade": 0,
+            "altura_frente": 180
+          },
+          "travessas": {
+            "quantidade": 0,
+            "largura": 80
+          },
+          "fitas": {
+            "frente": 1,
+            "demais": 0.45,
+            "portas": 1
+          }
+        },
+        "chapas_editadas": [],
+        "posicao": {
+          "x": 3400,
+          "y": 4200,
+          "z": 0
+        },
+        "rotacao_z": 0,
+        "plano_pai": {
+          "tipo": "FLOOR",
+          "id": null
+        }
+      },
+      {
+        "id": "92b91a44-5db0-5861-960c-907e0a3455bb",
+        "nome": "Módulo 26",
+        "tipo": "BASE",
+        "largura": 800,
+        "altura": 700,
+        "profundidade": 550,
+        "espessura": 15,
+        "material": "MDF",
+        "portas": "LEFT",
+        "construcao": {
+          "laterais": "PASSANTE",
+          "tampo": "ENTRE_LATERAIS",
+          "fundo": {
+            "modo": "CANAL",
+            "espessura": 6,
+            "encaixe": 8
+          },
+          "rodape": {
+            "altura": 0,
+            "recuo": 0
+          },
+          "porta": {
+            "modo": "SOBREPOSTA",
+            "folga": 2,
+            "folga_central": 2,
+            "espessura": 18
+          },
+          "prateleiras": {
+            "quantidade": 1,
+            "recuo_frontal": 20,
+            "folga_lateral": 1,
+            "espessura": 15
+          },
+          "divisorias": {
+            "quantidade": 0
+          },
+          "gavetas": {
+            "quantidade": 0,
+            "altura_frente": 180
+          },
+          "travessas": {
+            "quantidade": 0,
+            "largura": 80
+          },
+          "fitas": {
+            "frente": 1,
+            "demais": 0.45,
+            "portas": 1
+          }
+        },
+        "chapas_editadas": [],
+        "posicao": {
+          "x": 4200,
+          "y": 4200,
+          "z": 0
+        },
+        "rotacao_z": 0,
+        "plano_pai": {
+          "tipo": "FLOOR",
+          "id": null
+        }
+      },
+      {
+        "id": "f2889c4e-2722-5afe-be59-bd841c0058a4",
+        "nome": "Módulo 27",
+        "tipo": "BASE",
+        "largura": 800,
+        "altura": 700,
+        "profundidade": 550,
+        "espessura": 15,
+        "material": "MDF",
+        "portas": "LEFT",
+        "construcao": {
+          "laterais": "PASSANTE",
+          "tampo": "ENTRE_LATERAIS",
+          "fundo": {
+            "modo": "CANAL",
+            "espessura": 6,
+            "encaixe": 8
+          },
+          "rodape": {
+            "altura": 0,
+            "recuo": 0
+          },
+          "porta": {
+            "modo": "SOBREPOSTA",
+            "folga": 2,
+            "folga_central": 2,
+            "espessura": 18
+          },
+          "prateleiras": {
+            "quantidade": 1,
+            "recuo_frontal": 20,
+            "folga_lateral": 1,
+            "espessura": 15
+          },
+          "divisorias": {
+            "quantidade": 0
+          },
+          "gavetas": {
+            "quantidade": 0,
+            "altura_frente": 180
+          },
+          "travessas": {
+            "quantidade": 0,
+            "largura": 80
+          },
+          "fitas": {
+            "frente": 1,
+            "demais": 0.45,
+            "portas": 1
+          }
+        },
+        "chapas_editadas": [],
+        "posicao": {
+          "x": 5000,
+          "y": 4200,
+          "z": 0
+        },
+        "rotacao_z": 0,
+        "plano_pai": {
+          "tipo": "FLOOR",
+          "id": null
+        }
+      },
+      {
+        "id": "7ed200be-6166-5f52-80b6-3bb4a3c76c50",
+        "nome": "Módulo 28",
+        "tipo": "BASE",
+        "largura": 800,
+        "altura": 700,
+        "profundidade": 550,
+        "espessura": 15,
+        "material": "MDF",
+        "portas": "LEFT",
+        "construcao": {
+          "laterais": "PASSANTE",
+          "tampo": "ENTRE_LATERAIS",
+          "fundo": {
+            "modo": "CANAL",
+            "espessura": 6,
+            "encaixe": 8
+          },
+          "rodape": {
+            "altura": 0,
+            "recuo": 0
+          },
+          "porta": {
+            "modo": "SOBREPOSTA",
+            "folga": 2,
+            "folga_central": 2,
+            "espessura": 18
+          },
+          "prateleiras": {
+            "quantidade": 1,
+            "recuo_frontal": 20,
+            "folga_lateral": 1,
+            "espessura": 15
+          },
+          "divisorias": {
+            "quantidade": 0
+          },
+          "gavetas": {
+            "quantidade": 0,
+            "altura_frente": 180
+          },
+          "travessas": {
+            "quantidade": 0,
+            "largura": 80
+          },
+          "fitas": {
+            "frente": 1,
+            "demais": 0.45,
+            "portas": 1
+          }
+        },
+        "chapas_editadas": [],
+        "posicao": {
+          "x": 5800,
+          "y": 4200,
+          "z": 0
+        },
+        "rotacao_z": 0,
+        "plano_pai": {
+          "tipo": "FLOOR",
+          "id": null
+        }
+      },
+      {
+        "id": "1744384e-3a05-5dcf-aa49-0214c631b80c",
+        "nome": "Módulo 29",
+        "tipo": "BASE",
+        "largura": 800,
+        "altura": 700,
+        "profundidade": 550,
+        "espessura": 15,
+        "material": "MDF",
+        "portas": "LEFT",
+        "construcao": {
+          "laterais": "PASSANTE",
+          "tampo": "ENTRE_LATERAIS",
+          "fundo": {
+            "modo": "CANAL",
+            "espessura": 6,
+            "encaixe": 8
+          },
+          "rodape": {
+            "altura": 0,
+            "recuo": 0
+          },
+          "porta": {
+            "modo": "SOBREPOSTA",
+            "folga": 2,
+            "folga_central": 2,
+            "espessura": 18
+          },
+          "prateleiras": {
+            "quantidade": 1,
+            "recuo_frontal": 20,
+            "folga_lateral": 1,
+            "espessura": 15
+          },
+          "divisorias": {
+            "quantidade": 0
+          },
+          "gavetas": {
+            "quantidade": 0,
+            "altura_frente": 180
+          },
+          "travessas": {
+            "quantidade": 0,
+            "largura": 80
+          },
+          "fitas": {
+            "frente": 1,
+            "demais": 0.45,
+            "portas": 1
+          }
+        },
+        "chapas_editadas": [],
+        "posicao": {
+          "x": 6600,
+          "y": 4200,
+          "z": 0
+        },
+        "rotacao_z": 0,
+        "plano_pai": {
+          "tipo": "FLOOR",
+          "id": null
+        }
+      },
+      {
+        "id": "144ef295-da37-5879-80d7-eae006a71fb0",
+        "nome": "Módulo 30",
+        "tipo": "BASE",
+        "largura": 800,
+        "altura": 700,
+        "profundidade": 550,
+        "espessura": 15,
+        "material": "MDF",
+        "portas": "LEFT",
+        "construcao": {
+          "laterais": "PASSANTE",
+          "tampo": "ENTRE_LATERAIS",
+          "fundo": {
+            "modo": "CANAL",
+            "espessura": 6,
+            "encaixe": 8
+          },
+          "rodape": {
+            "altura": 0,
+            "recuo": 0
+          },
+          "porta": {
+            "modo": "SOBREPOSTA",
+            "folga": 2,
+            "folga_central": 2,
+            "espessura": 18
+          },
+          "prateleiras": {
+            "quantidade": 1,
+            "recuo_frontal": 20,
+            "folga_lateral": 1,
+            "espessura": 15
+          },
+          "divisorias": {
+            "quantidade": 0
+          },
+          "gavetas": {
+            "quantidade": 0,
+            "altura_frente": 180
+          },
+          "travessas": {
+            "quantidade": 0,
+            "largura": 80
+          },
+          "fitas": {
+            "frente": 1,
+            "demais": 0.45,
+            "portas": 1
+          }
+        },
+        "chapas_editadas": [],
+        "posicao": {
+          "x": 7400,
+          "y": 4200,
+          "z": 0
+        },
+        "rotacao_z": 0,
+        "plano_pai": {
+          "tipo": "FLOOR",
+          "id": null
+        }
+      }
+    ]
+  },
+  "esperado": {
+    "erros": []
+  }
+}
