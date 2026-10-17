@@ -249,6 +249,7 @@ def _finish(item_id, path, error):
         try:
             callback(path, error)
         except Exception as exc:                      # um chamador com defeito não derruba a fila
+            catalog.warn("callback")
             print("CAFFMob texturas:", repr(exc))
 
 
@@ -291,6 +292,7 @@ def _dispatch(message):
             try:
                 callback(message.get("status"), message.get("body") or {}, message.get("headers") or {})
             except Exception as exc:
+                catalog.warn("callback")
                 print("CAFFMob texturas:", repr(exc))
 
 

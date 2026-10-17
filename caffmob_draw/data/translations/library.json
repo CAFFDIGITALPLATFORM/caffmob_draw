@@ -786,5 +786,9 @@
  "{}  ·  Esc: cancelar": {
   "pt_BR": "{}  ·  Esc: cancelar",
   "en_US": "{}  ·  Esc: cancel"
+ },
+ "Não foi possível carregar o catálogo do MOBI. Tentaremos novamente.": {
+  "pt_BR": "Não foi possível carregar o catálogo do MOBI. Tentaremos novamente.",
+  "en_US": "Could not load the MOBI catalog. We will try again."
  }
 }

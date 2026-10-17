@@ -122,6 +122,16 @@ def apply(objs, item_id, size=None):
     entry = catalog.item(item_id)
     if entry is None:
         return ERROR, tr(UNKNOWN)
+    if entry.get('mobi_id'):
+        result = []
+        def resolved(remote, error):
+            if error:
+                result.append((ERROR, tr(error['message'])))
+                _notify(tr(error['message']))
+            else:
+                result.append(apply(objs, remote['id'], size))
+        catalog.resolve(item_id, resolved)
+        return result[0] if result else (QUEUED, 0)
     objs = _meshes(objs)
     if not objs:
         return ERROR, tr(NO_TARGET)
