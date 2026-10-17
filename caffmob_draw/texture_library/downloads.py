@@ -263,7 +263,7 @@ def _dispatch(message):
         entry = _queue.items.get(message["id"], {})
         path = message.get("path", "")
         if path and not entry.get("sha256") and message.get("etag"):
-            sha = message["etag"].strip('"')
+            sha = download_core.etag_value(message["etag"])
             final = os.path.join(cache_dir(), sha + "." + entry.get("ext", "jpg"))
             if path != final:
                 os.replace(path, final)

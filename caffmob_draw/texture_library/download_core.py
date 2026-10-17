@@ -99,6 +99,24 @@ def resume_offset(part_size, expected):
     return int(part_size)
 
 
+def etag_value(etag):
+    """Valor para leitura/comparação; preserve o ETag original nos pedidos condicionais."""
+    value = str(etag or '').strip()
+    if value.startswith('W/'):
+        value = value[2:]
+    if value.startswith('"') and value.endswith('"'):
+        value = value[1:-1]
+    return value
+
+
+def response_version(body, headers, default=0):
+    """A versão do documento prevalece sobre o validador HTTP da borda."""
+    if body.get('version') is not None:
+        return int(body['version'])
+    etag = next((v for k, v in headers.items() if k.lower() == 'etag'), '')
+    return int(etag_value(etag) or default)
+
+
 def verify(actual_sha, expected_sha):
     return bool(expected_sha) and str(actual_sha).lower() == str(expected_sha).lower()
 

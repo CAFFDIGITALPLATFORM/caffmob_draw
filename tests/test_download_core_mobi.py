@@ -26,15 +26,21 @@ class Handler(BaseHTTPRequestHandler):
         self.server.seen.append((self.path, dict(self.headers), self.rfile.read(int(self.headers.get('Content-Length', 0)))))
         status = self.server.statuses.pop(0) if self.server.statuses else 200
         self.send_response(status)
-        self.send_header('ETag', '"pagina"')
+        self.send_header('ETag', ('W/' if getattr(self.server, 'weak_etag', False) else '') + '"pagina"')
         self.send_header('Retry-After', '90')
         self.end_headers()
         self.wfile.write(b'{"ok":true}')
 
     def do_GET(self):
         self.server.seen.append((self.path, dict(self.headers), b''))
+        if self.path == '/modelo':
+            self.send_response(200)
+            self.send_header('ETag', ('W/' if self.server.weak_etag else '') + '"99"')
+            self.end_headers()
+            self.wfile.write(json.dumps(self.server.model_body).encode())
+            return
         self.send_response(304 if self.headers.get('If-None-Match') else 200)
-        self.send_header('ETag', '"' + ('0'*64 if getattr(self.server, 'bad_etag', False) else hashlib.sha256(b'imagem').hexdigest()) + '"')
+        self.send_header('ETag', ('W/' if getattr(self.server, 'weak_etag', False) else '') + '"' + ('0'*64 if getattr(self.server, 'bad_etag', False) else hashlib.sha256(b'imagem').hexdigest()) + '"')
         self.end_headers()
         if not self.headers.get('If-None-Match'):
             self.wfile.write(b'imagem')
@@ -89,6 +95,45 @@ class Protocolo(unittest.TestCase):
             self.w.download(item)
             self.assertEqual(self.messages[-1]['type'], 'done')
             self.assertIn('If-None-Match', self.http.seen[-1][1])
+
+    def test_versao_corpo_prevalece_e_etag_numerico_reserva(self):
+        for weak in (False, True):
+            self.http.weak_etag = weak
+            for body, expected in (({'version':7}, 7), ({}, 99)):
+                with self.subTest(weak=weak, body=body):
+                    self.http.model_body = body
+                    self.w.request(1, 'GET', '/modelo', None, False)
+                    reply = self.messages[-1]
+                    self.assertEqual(download_core.response_version(reply['body'], reply['headers']), expected)
+        for etag in ('W/"8"', '"8"', '8'):
+            with self.subTest(etag=etag):
+                self.assertEqual(download_core.response_version({}, {'eTaG':etag}), 8)
+                self.assertEqual(download_core.response_version({'version':5}, {'ETag':etag}), 5)
+        self.assertEqual(download_core.response_version({'version':5}, {'ETag':'opaco'}), 5)
+        self.assertEqual(download_core.response_version({'version':5}, {}), 5)
+        self.assertEqual(download_core.response_version({}, {}, 3), 3)
+
+    def test_etag_fraco_download_cache_304_e_corrupcao(self):
+        self.http.weak_etag = True
+        etag = 'W/"' + hashlib.sha256(b'imagem').hexdigest() + '"'
+        with tempfile.TemporaryDirectory() as tmp:
+            def item():
+                return {'id': 'fraco', 'url': '/fraco', 'dest': tmp + '/imagem'}
+            self.w.download(item())
+            self.assertEqual(self.messages[-1]['type'], 'done')
+            self.assertEqual(self.messages[-1]['etag'], etag)
+            self.assertEqual(Path(tmp + '/imagem.etag').read_text(), etag)
+            self.w.download(item())
+            self.assertEqual(self.messages[-1]['type'], 'done')
+            self.assertEqual(self.http.seen[-1][1]['If-None-Match'], etag)
+            Path(tmp + '/imagem').write_bytes(b'corrompido')
+            self.w.download(item())
+            self.assertNotIn('If-None-Match', self.http.seen[-1][1])
+            self.assertEqual(Path(tmp + '/imagem').read_bytes(), b'imagem')
+            self.http.bad_etag = True
+            self.w.download({'id':'ruim', 'url':'/ruim', 'dest':tmp + '/ruim'})
+            self.assertEqual(self.messages[-1]['code'], 'hash')
+            self.assertFalse(Path(tmp + '/ruim').exists())
 
     def test_recusa_hash_divergente(self):
         with tempfile.TemporaryDirectory() as tmp:

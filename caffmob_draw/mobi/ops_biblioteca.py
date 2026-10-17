@@ -5,7 +5,7 @@ import bpy  # type: ignore
 from ..data.i18n import N_, tr
 from ..caffmob.contrato import ler_documento, serializar, sem_envelope_do_servidor, SCHEMA_MODULO
 from ..caffmob.validacao import validar_medidas_do_modulo
-from ..texture_library import downloads
+from ..texture_library import downloads, download_core
 from . import cena, tarefas, texturas, respostas
 from .ops_ambientes import sent
 
@@ -128,7 +128,7 @@ class MOBI_OT_BaixarModelo(bpy.types.Operator):
             if errors:
                 job.finish(tr(INVALID).format(errors))
                 return
-            version = requested or int(incoming.get('ETag', '0').strip('"') or body.get('version', 0))
+            version = download_core.response_version(body, incoming, requested)
             copy = instance(body, str(uuid.uuid4()))
             copy['modelo'] = {'id':model_id, 'version':version, 'escopo':scope}
             def ready(images):
