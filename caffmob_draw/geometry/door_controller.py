@@ -24,8 +24,17 @@ def get_child_by_name(parent, suffix):
     return None
 
 
+def closed_door_y(cabinet_obj):
+    """Face externa da folha fechada: a caixa vai de -profundidade (frente) a 0 (fundo).
+
+    A malha da folha ocupa Y de 0 a espessura a partir do pivô.
+    """
+    cabinet = cabinet_obj.btm_cabinet
+    return -cabinet.depth - cabinet.thickness
+
+
 def setup_limit_constraint(empty_obj):
-    """Configura restrição Limit Location para limitar o movimento do Empty no eixo Y local de 0.0 a 0.2m."""
+    """Limita o curso a 0,2 m para fora (-Y), mantendo o controlador na frente da caixa."""
     # Remove restrições antigas se existirem
     for con in empty_obj.constraints:
         if con.type == 'LIMIT_LOCATION':
@@ -33,24 +42,24 @@ def setup_limit_constraint(empty_obj):
 
     con = empty_obj.constraints.new(type='LIMIT_LOCATION')
     con.use_min_x = True
-    con.min_x = 0.0
+    con.min_x = empty_obj.location.x
     con.use_max_x = True
-    con.max_x = 0.0
+    con.max_x = empty_obj.location.x
 
     con.use_min_y = True
-    con.min_y = 0.0
+    con.min_y = empty_obj.location.y - 0.2
     con.use_max_y = True
-    con.max_y = 0.2
+    con.max_y = empty_obj.location.y
 
     con.use_min_z = True
-    con.min_z = 0.0
+    con.min_z = empty_obj.location.z
     con.use_max_z = True
-    con.max_z = 0.0
+    con.max_z = empty_obj.location.z
 
     con.owner_space = 'LOCAL'
 
 
-def add_rotation_driver(door_obj, controller_obj, axis, factor):
+def add_rotation_driver(door_obj, controller_obj, axis, factor, closed_y):
     """Adiciona um Driver de rotação na folha da porta controlado pelo eixo Y local do Empty."""
     # Remove driver de rotação anterior se houver
     door_obj.driver_remove("rotation_euler", axis)
@@ -69,12 +78,11 @@ def add_rotation_driver(door_obj, controller_obj, axis, factor):
     target.transform_type = 'LOC_Y'
     target.transform_space = 'LOCAL_SPACE'
 
-    # y vai de 0.0 a 0.2. Queremos que a rotação vá de 0 a factor * (pi / 2)
-    # Relação: rotação = y * (factor * 1.570796 / 0.2) = y * factor * 7.85398
-    driver.expression = f"y * ({factor} * 7.85398)"
+    # O deslocamento para -Y a partir da frente fechada abre de 0 a 90 graus.
+    driver.expression = f"({closed_y!r} - y) * ({factor} * 7.85398)"
 
 
-def add_ui_sync_driver(cabinet_obj, controller_obj):
+def add_ui_sync_driver(cabinet_obj, controller_obj, closed_y):
     """Adiciona driver na propriedade cabinet_obj.btm_cabinet.door_open baseada no movimento do Empty."""
     cabinet_obj.driver_remove("btm_cabinet.door_open")
 
@@ -92,14 +100,15 @@ def add_ui_sync_driver(cabinet_obj, controller_obj):
     target.transform_type = 'LOC_Y'
     target.transform_space = 'LOCAL_SPACE'
 
-    # 0.2m no Empty = 1.0 (100% aberto) no slider
-    driver.expression = "y / 0.2"
+    # Curso de 0,2 m para fora = 1,0 (100% aberto) no slider.
+    driver.expression = f"({closed_y!r} - y) / 0.2"
 
 
 def update_door_geometry_and_controller(cabinet_obj):
     """Cria/atualiza as portas e o Empty controlador conforme as propriedades do armário."""
     cabinet = cabinet_obj.btm_cabinet
     swing = cabinet.door_swing
+    opening = cabinet.door_open
 
     # Nomes dos filhos esperados
     door_l_suffix = "_Door_L"
@@ -126,16 +135,13 @@ def update_door_geometry_and_controller(cabinet_obj):
         cabinet_obj.users_collection[0].objects.link(controller_obj)
         controller_obj.parent = cabinet_obj
 
-    setup_limit_constraint(controller_obj)
-
-    # Reposiciona o Empty no local fechado (canto frontal direito/puxador padrão)
-    # Y local do armário corre para trás (-Y), então a frente é em Y: 0.0
-    # O Empty se move localmente no eixo Y dele próprio (que alinhamos com o Y global para frente).
-    # Vamos posicionar o Empty na extremidade direita do armário para portas comuns
+    # Mesmo referencial do layout/carcass_parts: frente em -profundidade, fundo em 0.
+    # O controlador parte da face externa da folha e corre para fora da caixa (-Y).
+    door_y = closed_door_y(cabinet_obj)
     controller_obj.location.x = cabinet.width / 2.0 - 0.03
-    # Fechado = Y local 0: a restrição limita o curso a 0–0,2 m e o driver das portas usa y·(π/2)/0,2 (T059).
-    controller_obj.location.y = 0.0
+    controller_obj.location.y = door_y
     controller_obj.location.z = cabinet.height / 2.0
+    setup_limit_constraint(controller_obj)
 
     # Determina espessura e folga
     t = cabinet.thickness
@@ -170,12 +176,12 @@ def update_door_geometry_and_controller(cabinet_obj):
 
         # Pivô no lado esquerdo da abertura
         door_obj.location.x = -cabinet.width / 2.0 + margin
-        door_obj.location.y = t  # alinha na face frontal
+        door_obj.location.y = door_y  # face interna da folha encosta na frente da caixa
         door_obj.location.z = margin
         door_obj.rotation_euler.zero()
 
-        # Adiciona o driver de rotação no eixo Z (positivo para abrir para fora/esquerda)
-        add_rotation_driver(door_obj, controller_obj, 2, 1.0)
+        # Rotação negativa em Z abre a folha esquerda para fora (-Y).
+        add_rotation_driver(door_obj, controller_obj, 2, -1.0, door_y)
 
     # --- GERAR PORTA DIREITA ---
     if swing in ('RIGHT', 'DOUBLE'):
@@ -194,12 +200,12 @@ def update_door_geometry_and_controller(cabinet_obj):
 
         # Pivô no lado direito da abertura
         door_obj.location.x = cabinet.width / 2.0 - margin
-        door_obj.location.y = t
+        door_obj.location.y = door_y
         door_obj.location.z = margin
         door_obj.rotation_euler.zero()
 
-        # Adiciona o driver de rotação no eixo Z (negativo para abrir para fora/direita)
-        add_rotation_driver(door_obj, controller_obj, 2, -1.0)
+        # Rotação positiva em Z abre a folha direita para fora (-Y).
+        add_rotation_driver(door_obj, controller_obj, 2, 1.0, door_y)
 
     # --- GERAR PORTA BASCULANTE (FLIP UP) ---
     if swing == 'FLIP':
@@ -220,18 +226,18 @@ def update_door_geometry_and_controller(cabinet_obj):
 
         # Pivô na parte superior (topo)
         door_obj.location.x = -cabinet.width / 2.0 + margin
-        door_obj.location.y = t
+        door_obj.location.y = door_y
         door_obj.location.z = cabinet.height - margin
         door_obj.rotation_euler.zero()
 
         # Rotação em X (negativa abre para cima/fora)
-        add_rotation_driver(door_obj, controller_obj, 0, -1.0)
+        add_rotation_driver(door_obj, controller_obj, 0, -1.0, door_y)
 
     # Adiciona driver de sincronização de UI no cabinet_obj.btm_cabinet.door_open
-    add_ui_sync_driver(cabinet_obj, controller_obj)
+    add_ui_sync_driver(cabinet_obj, controller_obj, door_y)
 
     # Atualiza a posição do controlador baseando-se no valor inicial da propriedade
-    controller_obj.location.y = cabinet.door_open * 0.2
+    controller_obj.location.y = door_y - opening * 0.2
 
 
 def update_door_rotation_from_property(cabinet_obj):
@@ -243,7 +249,7 @@ def update_door_rotation_from_property(cabinet_obj):
     controller_obj = get_child_by_name(cabinet_obj, "_Controller")
     if controller_obj:
         # Move o Empty. Os drivers das portas lerão a nova posição e rotacionarão!
-        controller_obj.location.y = cabinet.door_open * 0.2
+        controller_obj.location.y = closed_door_y(cabinet_obj) - cabinet.door_open * 0.2
         # Força atualização da Viewport
         cabinet_obj.update_tag()
 

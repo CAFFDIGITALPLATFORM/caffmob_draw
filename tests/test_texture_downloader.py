@@ -51,12 +51,13 @@ class Server:
 
 class Worker:
     def __init__(self, base):
+        # select observa o pipe; sem leitura adiantada, nenhuma resposta fica retida no TextIOWrapper.
         self.proc = subprocess.Popen([sys.executable, str(WORKER), "--base", base, "--ua", "CAFFMobDraw/teste"],
-                                     stdin=subprocess.PIPE, stdout=subprocess.PIPE, text=True, bufsize=1)
+                                     stdin=subprocess.PIPE, stdout=subprocess.PIPE, bufsize=0)
         self.rid = 0
 
     def send(self, **message):
-        self.proc.stdin.write(json.dumps(message) + "\n")
+        self.proc.stdin.write((json.dumps(message) + "\n").encode("utf-8"))
         self.proc.stdin.flush()
 
     def wait(self, predicate, timeout=20.0):
