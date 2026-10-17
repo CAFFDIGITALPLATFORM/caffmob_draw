@@ -169,7 +169,7 @@ with tempfile.TemporaryDirectory() as directory, patch.object(downloads, 'reques
     assert json.loads(state.conflito_mobi)['nome'] == 'Mudou no MOBI'
     bpy.ops.caffmob.mobi_resolver_conflito(escolha='BLENDER')
     assert pending[0]['headers']['If-Match'] == '"9"'
-    reply(200, {'version':10})
+    reply(200, {'version':10}, {'ETag':'W/"99"'})
     assert bpy.context.scene['caffmob_versao'] == 10
     # T040: editar segmento mantém aberturas, muda só pelo contrato.
     bpy.context.view_layer.objects.active = wall
@@ -183,19 +183,29 @@ with tempfile.TemporaryDirectory() as directory, patch.object(downloads, 'reques
     bpy.ops.caffmob.mobi_listar_modelos()
     reply(200, {'itens':[]}); reply(200, {'itens':[]})
     assert state.situacao == tr(EMPTY), state.situacao
-    for version in (0, 3):
+    for version, etag, body_version, expected in (
+        (0, 'W/"4"', None, 4), (0, '"4"', None, 4), (0, '4', None, 4),
+        (0, 'W/"99"', 6, 6), (0, 'opaco', 6, 6), (0, '', 6, 6),
+        (3, 'W/"3"', 3, 3),
+    ):
         bpy.ops.caffmob.mobi_baixar_modelo(modelo_id=mod['id'], versao=version, escopo='titular')
         assert pending[0]['path'].endswith('/versoes/3') if version else pending[0]['path'].endswith(mod['id'])
-        reply(200, mod, {'ETag':'"4"'})
+        response = dict(mod)
+        if body_version is None:
+            response.pop('version', None)
+        else:
+            response['version'] = body_version
+        reply(200, response, {'ETag':etag})
         inserted = bpy.context.object
-        assert inserted.get('caffmob_modelo_versao') == (version or 4)
-        assert json.loads(inserted['caffmob_modulo'])['modelo'] == {'id': mod['id'], 'version': version or 4, 'escopo': 'titular'}
+        assert inserted.get('caffmob_modelo_versao') == expected, (state.situacao, etag)
+        assert json.loads(inserted['caffmob_modulo'])['modelo'] == {'id': mod['id'], 'version': expected, 'escopo': 'titular'}
         assert cena._modulo_do_objeto(inserted)['id'] != mod['id']
         assert not inserted.children
     # T042: PUT e POST; 015 não emite pedido.
     bpy.ops.caffmob.mobi_enviar_modelo()
     assert pending[0]['method']=='PUT' and pending[0]['headers']['If-Match']=='"3"'
-    reply(200, {'version':4})
+    reply(200, {'version':4}, {'ETag':'W/"99"'})
+    assert inserted['caffmob_modelo_versao'] == 4
     bpy.ops.caffmob.mobi_enviar_modelo(novo=True, nome='Modelo novo', escopo='pessoal')
     assert pending[0]['method']=='POST' and pending[0]['body']['escopo']=='pessoal'
     reply(201, {'id':mod['id'],'version':1})

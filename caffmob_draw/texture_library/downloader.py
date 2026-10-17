@@ -168,7 +168,7 @@ class Worker:
             with open(dest + ".etag", encoding="utf-8") as handle:
                 item["etag"] = handle.read()
             with open(dest, "rb") as handle:
-                if hashlib.sha256(handle.read()).hexdigest() != item["etag"].strip('"'):
+                if hashlib.sha256(handle.read()).hexdigest() != download_core.etag_value(item["etag"]):
                     item.pop("etag", None)
         while True:
             try:
@@ -179,7 +179,7 @@ class Worker:
                     digest = hashlib.sha256(handle.read()).hexdigest()
                 headers = item.get("response_headers", {})
                 etag = headers.get("ETag", "")
-                if not download_core.verify(digest, item.get("sha256") or etag.strip('"')):
+                if not download_core.verify(digest, item.get("sha256") or download_core.etag_value(etag)):
                     os.remove(part)
                     if hash_retry:
                         return self.say(type="error", id=item_id, code="hash", status=None,

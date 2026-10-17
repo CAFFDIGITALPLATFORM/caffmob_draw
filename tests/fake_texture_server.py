@@ -182,7 +182,7 @@ class Handler(BaseHTTPRequestHandler):
         return self._error(404, "not_found", "Rota inexistente.")
 
     def _etag_json(self, body):
-        etag = '"' + hashlib.sha256(json.dumps(body, sort_keys=True).encode()).hexdigest() + '"'
+        etag = ('W/' if getattr(self.store.args, 'weak_etag', False) else '') + '"' + hashlib.sha256(json.dumps(body, sort_keys=True).encode()).hexdigest() + '"'
         if self.headers.get("If-None-Match") == etag:
             self.send_response(304)
             self.send_header("ETag", etag)
@@ -276,7 +276,7 @@ class Handler(BaseHTTPRequestHandler):
         self.send_response(206 if start else 200)
         self.send_header("Content-Type", kind)
         self.send_header("Content-Length", str(len(payload)))
-        self.send_header("ETag", '"' + hashlib.sha256(data).hexdigest() + '"')
+        self.send_header("ETag", ('W/' if getattr(self.store.args, 'weak_etag', False) else '') + '"' + hashlib.sha256(data).hexdigest() + '"')
         self.send_header("Accept-Ranges", "none" if self.store.args.no_range else "bytes")
         if start:
             self.send_header("Content-Range", f"bytes {start}-{len(data) - 1}/{len(data)}")
@@ -293,6 +293,7 @@ class Handler(BaseHTTPRequestHandler):
 
 def parse_args(argv=None):
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
+    parser.add_argument("--weak-etag", action="store_true")
     parser.add_argument("--root", default="")
     parser.add_argument("--host", default="127.0.0.1")
     parser.add_argument("--port", type=int, default=8765)

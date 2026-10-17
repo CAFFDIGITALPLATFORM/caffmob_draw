@@ -97,6 +97,38 @@ class Ponte(unittest.TestCase):
             calls[-1][1]['callback'](304, {}, {})
             self.assertEqual(self.catalog.search()[0]['id'], 'uuid')
 
+    def test_cache_de_imagem_com_etag_fraco_e_forte(self):
+        import hashlib
+        for prefix in ('W/', ''):
+            with self.subTest(prefix=prefix):
+                digest = hashlib.sha256(b'imagem').hexdigest()
+                etag = prefix + '"' + digest + '"'
+                item_id = 'imagem-' + prefix
+                url = '/api/draw/v1/modelos/teste/imagem'
+                path = Path(self.tmp.name) / 'temporario.png'
+                path.write_bytes(b'imagem')
+                self.dl._queue.add({'id':item_id, 'url':url, 'ext':'png'})
+                result = []
+                self.dl._callbacks[item_id] = [lambda p,e:result.append((p,e))]
+                self.dl._dispatch({'type':'done', 'id':item_id, 'path':str(path), 'etag':etag})
+                final = Path(self.tmp.name) / (digest + '.png')
+                self.assertEqual(result, [(str(final), None)])
+                self.assertEqual(final.read_bytes(), b'imagem')
+                self.assertEqual(Path(str(final) + '.etag').read_text(), etag)
+                metadata = Path(self.tmp.name) / (hashlib.sha256(url.encode()).hexdigest() + '.json')
+                self.assertEqual(json.loads(metadata.read_text()), {'file':final.name, 'etag':etag})
+
+    def test_catalogo_304_preserva_etag_fraco_opaco(self):
+        calls = []
+        with patch.object(self.dl, 'request', side_effect=lambda *a, **k:calls.append(k)):
+            self.catalog.refresh('fraco')
+            calls[-1]['callback'](200, {'itens':[ITEM], 'proximo':None}, {'etag':'W/"pagina"'})
+            self.catalog._cache['query'] = None
+            self.catalog.refresh('fraco')
+            self.assertEqual(calls[-1]['headers'], {'If-None-Match':'W/"pagina"'})
+            calls[-1]['callback'](304, {}, {})
+            self.assertEqual(self.catalog.search()[0]['id'], ITEM['id'])
+
     def test_cancelar_pedido_suprime_resposta(self):
         seen = []
         with patch.object(self.dl, '_ensure_process', return_value=True), patch.object(self.dl, '_send', return_value=True):
