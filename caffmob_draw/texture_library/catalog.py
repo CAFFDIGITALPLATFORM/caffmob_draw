@@ -1,13 +1,55 @@
-# (063 RF-03, RF-04; D-07) Catálogo paginado do MOBI, sem catálogo embutido.
+# Catálogo MOBI com alternativa embutida da 014 (#30 e #31, versão 1.1.2).
 import hashlib
 import json
 import os
+import unicodedata
+import uuid
 from urllib.parse import urlencode
 
+from ..data.i18n import N_
 from . import catalog_core
 
 _cache = {'catalog': catalog_core.empty_catalog(), 'warnings': [], 'by_id': {}, 'items': [],
-          'query': None, 'next': None, 'busy': False, 'ticket': None, 'generation': 0, 'revision': 0, 'manufacturer_ticket': None}
+          'query': None, 'next': None, 'busy': False, 'ticket': None, 'generation': 0, 'revision': 0,
+          'manufacturer_ticket': None, 'available': None}
+
+LOCAL_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'textures')
+NAMESPACE = uuid.UUID('5b0c7d6e-2f41-4c8a-9e3d-0a62e7f1c062')
+LOAD_FAILED = N_('Não foi possível carregar o catálogo do MOBI. Tentaremos novamente.')
+_local = {}
+_errors = {}
+
+
+def warn(source, message=LOAD_FAILED):
+    if source == 'callback':
+        _cache.update(busy=False, query=None, available=False)
+    _errors[source] = message
+    _cache['warnings'] = list(_errors.values())
+
+
+def _clear_warning(source):
+    _errors.pop(source, None)
+    _cache['warnings'] = list(_errors.values())
+
+
+def embedded():
+    if not _local:
+        try:
+            with open(os.path.join(LOCAL_DIR, 'catalog.json'), encoding='utf-8') as handle:
+                data, warnings = catalog_core.parse_catalog(handle.read())
+        except OSError:
+            data, warnings = catalog_core.empty_catalog(), [catalog_core.INVALID]
+        entries = {}
+        for entry in catalog_core.iter_items(data):
+            entry['mobi_id'] = str(uuid.uuid5(NAMESPACE, unicodedata.normalize('NFC', entry['file'])))
+            entries[entry['id']] = entry
+        _local.update(catalog=data, by_id=entries, warnings=warnings)
+    return _local
+
+
+def remote_source():
+    from . import auth, downloads
+    return bool(auth.signed_in() and not downloads.unavailable_reason() and _cache['available'] is not False)
 
 
 def from_mobi(item):
@@ -28,7 +70,8 @@ class PageCache:
     def read(self, key):
         try:
             with open(self.path(key), encoding='utf-8') as handle:
-                return json.load(handle)
+                data = json.load(handle)
+                return data if isinstance(data, dict) else {}
         except (OSError, ValueError):
             return {}
 
@@ -43,26 +86,31 @@ class PageCache:
 def invalidate():
     cancel(manufacturers=True)
     _cache['revision'] += 1
-    _cache.update(catalog=catalog_core.empty_catalog(), warnings=[], by_id={}, items=[], query=None, next=None)
+    _errors.clear()
+    _cache.update(catalog=catalog_core.empty_catalog(), warnings=[], by_id={}, items=[], query=None,
+                  next=None, available=None)
 
 
 def load():
-    return _cache['catalog'], _cache['warnings']
+    if remote_source():
+        return _cache['catalog'], _cache['warnings']
+    local = embedded()
+    return local['catalog'], _cache['warnings'] + local['warnings']
 
 
 def manufacturers():
-    return [(m['id'], m['name']) for m in _cache['catalog']['manufacturers']]
+    return [(m['id'], m['name']) for m in load()[0]['manufacturers']]
 
 
 def collections(manufacturer_id):
-    for man in _cache['catalog']['manufacturers']:
+    for man in load()[0]['manufacturers']:
         if man['id'] == manufacturer_id:
             return [(c['id'], c['name']) for c in man['collections']]
     return []
 
 
 def item(item_id):
-    return _cache['by_id'].get(item_id)
+    return _cache['by_id'].get(item_id) or embedded()['by_id'].get(item_id)
 
 
 def remember(raw):
@@ -72,7 +120,9 @@ def remember(raw):
 
 
 def search(text='', manufacturer='', collection=''):
-    return list(_cache['items'])
+    if remote_source():
+        return list(_cache['items'])
+    return catalog_core.search(embedded()['catalog'], text, manufacturer, collection)
 
 
 def thumb_entry(entry):
@@ -81,6 +131,9 @@ def thumb_entry(entry):
 
 
 def thumb_path(entry):
+    if entry.get('file'):
+        path = os.path.join(LOCAL_DIR, entry['thumb'])
+        return path if os.path.isfile(path) else ''
     from . import downloads
     return downloads.cached(entry['id'] + ':miniatura', thumb_entry(entry))
 
@@ -99,13 +152,17 @@ def _page(path, done):
     def received(status, body, incoming):
         if status == 304:
             body = previous.get('body', {})
-        elif status == 200:
-            disk.write(key, body, incoming.get('ETag', ''))
+        elif status == 200 and isinstance(body, dict) and isinstance(body.get('itens'), list):
+            try:
+                disk.write(key, body, next((v for k, v in incoming.items() if k.lower() == 'etag'), ''))
+                _clear_warning('cache')
+            except OSError:
+                warn('cache')
         done(status, body)
     return downloads.request('GET', path, headers=headers, callback=received, response_headers=True)
 
 
-def refresh(text='', manufacturer='', collection='', more=False, callback=None):
+def refresh(text='', manufacturer='', collection='', more=False, callback=None, force=False):
     query = (text.strip(), manufacturer, collection)
     if query[0] and not 2 <= len(query[0]) <= 80:
         cancel()
@@ -115,7 +172,7 @@ def refresh(text='', manufacturer='', collection='', more=False, callback=None):
         return
     if query != _cache['query']:
         cancel()
-    elif not more and _cache['query'] is not None:
+    elif not force and not more and _cache['query'] is not None:
         return
     cursor = _cache['next'] if more else None
     if more and not cursor:
@@ -130,12 +187,19 @@ def refresh(text='', manufacturer='', collection='', more=False, callback=None):
         if generation != _cache['generation']:
             return
         _cache['busy'] = False
-        if status in (200, 304):
-            entries = [remember(i) for i in body.get('itens', [])]
+        try:
+            if status not in (200, 304) or not isinstance(body, dict) or not isinstance(body.get('itens'), list):
+                raise ValueError('Resposta inválida do catálogo')
+            entries = [from_mobi(i) for i in body['itens']]
+            _cache['by_id'].update((e['id'], e) for e in entries)
             _cache['items'] = (_cache['items'] if more else []) + entries
             _cache['next'] = body.get('proximo')
-        else:
-            _cache['query'] = None
+            _cache['available'] = 'manufacturers' not in _errors
+            _clear_warning('items')
+            _clear_warning('callback')
+        except (KeyError, TypeError, ValueError):
+            _cache.update(query=None, available=False)
+            warn('items')
         if callback:
             callback(status, body)
     _cache['ticket'] = _page('/api/draw/v1/texturas?' + urlencode(params), received)
@@ -146,11 +210,21 @@ def refresh_manufacturers(callback=None):
     def received(status, body):
         if revision != _cache['revision']:
             return
-        if status in (200, 304):
-            _cache['catalog']['manufacturers'] = [
+        try:
+            if status not in (200, 304) or not isinstance(body, dict) or not isinstance(body.get('itens'), list):
+                raise ValueError('Resposta inválida de fabricantes')
+            manufacturers = [
                 {'id': m['fabricante'], 'name': m['fabricante'], 'total': m['total'],
                  'collections': [{'id': c['linha'], 'name': c['linha'], 'total': c['total'], 'items': []}
-                                 for c in m.get('linhas', [])]} for m in body.get('itens', [])]
+                                 for c in m.get('linhas', [])]} for m in body['itens']]
+            _cache['catalog']['manufacturers'] = manufacturers
+            _clear_warning('manufacturers')
+            if 'items' not in _errors:
+                _cache['available'] = True
+        except (KeyError, TypeError, ValueError):
+            status = None
+            _cache['available'] = False
+            warn('manufacturers')
         if callback:
             callback(status, body)
     _cache['manufacturer_ticket'] = _page('/api/draw/v1/texturas/fabricantes', received)
@@ -167,4 +241,28 @@ def cancel(manufacturers=False):
 
 
 def has_more():
-    return bool(_cache['next'])
+    return remote_source() and bool(_cache['next'])
+
+
+def resolve(item_id, callback):
+    """Slug da 014 → UUID da 062; só metadados atuais identificam o derivado de trabalho."""
+    from . import downloads
+    entry = item(item_id)
+    if entry is None or not entry.get('mobi_id'):
+        callback(entry, None if entry else {'message': catalog_core.INVALID})
+        return
+    remote = _cache['by_id'].get(entry['mobi_id'])
+    if remote:
+        callback(remote, None)
+        return
+
+    def received(status, body):
+        try:
+            if status != 200 or body.get('id') != entry['mobi_id']:
+                raise ValueError('Textura indisponível no MOBI')
+            remote = remember(body)
+        except (KeyError, TypeError, ValueError, AttributeError):
+            callback(None, {'message': LOAD_FAILED})
+            return
+        callback(remote, None)
+    downloads.request('GET', '/api/draw/v1/texturas/' + entry['mobi_id'], callback=received)

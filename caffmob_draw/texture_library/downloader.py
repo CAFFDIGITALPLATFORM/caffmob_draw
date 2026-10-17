@@ -93,7 +93,7 @@ class Worker:
         try:
             return json.loads(raw.decode("utf-8")) if raw else {}
         except (ValueError, UnicodeDecodeError):
-            return {}
+            return {"error": "invalid_json"}
 
     def request(self, rid, method, path, body, auth, headers=None, form=False):
         # (063 RF-10; D-04) As esperas acontecem somente neste subprocesso.

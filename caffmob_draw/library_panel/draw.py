@@ -52,7 +52,9 @@ DOWNLOAD_FOOTER = N_("Baixando {} de {} · {} de {} MB")
 CANCEL = N_("Cancelar")
 LOAD_MORE = N_("Carregar mais texturas")
 _more_id = "MOBI:MORE"
-_remote = {"manufacturers": None, "thumbs": set(), "query": None, "changed": 0.0}
+_remote = {"manufacturers": None, "thumbs": set(), "query": None, "changed": 0.0,
+           "revision": -1, "active": False, "source": None, "requested": False,
+           "manufacturers_retry": 0.0, "refresh_at": 0.0, "thumb_retry": {}}
 
 _handle = [None]
 _mouse = {'pos': (-1, -1), 'region': 0}
@@ -260,6 +262,8 @@ def texture_state(item):
     try:
         from ..texture_library import downloads
         found = downloads.state(item["id"])
+        if downloads.state(item["id"] + ":miniatura") == 'FAILED':
+            found = 'FAILED'
         progress = downloads.progress(item["id"])
     except (ImportError, AttributeError, ValueError, RuntimeError):
         return 'NOT_DOWNLOADED', 0.0
@@ -544,6 +548,9 @@ def _draw_grid(region, lay, state, mouse, viewport, s):
             _draw_empty(area, tr(NO_RESULTS).format(state.search), tr(NO_RESULTS_HINT) if state.search else "",
                         viewport, s)
         return
+    if warnings:
+        kit.text(tr(warnings[0]), area[0] + 4 * s, area[1] + area[3] + 4 * s,
+                 style.FONT_SMALL * s, style.TEXT, max_w=area[2])
     content = grid_core.content_height(area[2], len(entries), s)
     scroll = grid_core.clamp_scroll(state.scroll, content, area[3])
     cells = grid_core.visible_cells(area, len(entries), s, scroll)
@@ -631,24 +638,40 @@ def _remote_tick():
     from ..texture_library import auth, downloads
     cat = _catalog()
     state = getattr(bpy.context.window_manager, 'btm_library', None)
-    if state is None or state.mode != 'MAX' or state.tab != 'TEXTURES':
+    opened = state is not None and state.mode == 'MAX' and state.tab == 'TEXTURES'
+    if not opened:
+        if _remote['active']:
+            cat.cancel(manufacturers=True)
+        _remote['active'] = False
         return 0.4
+    source = cat.remote_source()
+    if _remote['source'] is not None and source != _remote['source']:
+        state.manufacturer = state.collection = ''
+        state.scroll = 0
+    _remote['source'] = source
     if not auth.signed_in() or downloads.unavailable_reason():
+        _remote['active'] = False
         return 0.4
-    if _remote['revision'] != cat._cache['revision']:
-        _remote.update(manufacturers=None, thumbs=set(), query=None, revision=cat._cache['revision'])
-    if _remote['manufacturers'] is None:
+    if not _remote['active'] or _remote['revision'] != cat._cache['revision']:
+        cat.cancel(manufacturers=True)
+        _remote.update(manufacturers=None, thumbs=set(), query=None, revision=cat._cache['revision'],
+                       active=True, requested=False, manufacturers_retry=0.0, refresh_at=0.0, thumb_retry={})
+    now = time.monotonic()
+    if _remote['manufacturers'] is None and now >= _remote['manufacturers_retry']:
         _remote['manufacturers'] = True
+        revision = cat._cache['revision']
         def manufacturers_done(status, body):
-            _remote['manufacturers'] = status in (200, 304)
+            if revision == cat._cache['revision']:
+                _remote['manufacturers'] = True if status in (200, 304) else None
+                _remote['manufacturers_retry'] = time.monotonic() + 5.0
         cat.refresh_manufacturers(manufacturers_done)
     query = (state.search, state.manufacturer, state.collection)
-    now = time.monotonic()
     if _remote['query'] != query:
-        _remote.update(query=query, changed=now)
+        _remote.update(query=query, changed=now, requested=False, refresh_at=0.0)
         cat.cancel()
-    if now - _remote['changed'] >= 0.4:
-        cat.refresh(*query)
+    if now - _remote['changed'] >= 0.4 and now >= _remote['refresh_at']:
+        cat.refresh(*query, force=not _remote['requested'])
+        _remote.update(requested=True, refresh_at=now + 5.0)
     entries = texture_items(state)
     for window in bpy.context.window_manager.windows:
         for area in window.screen.areas:
@@ -660,13 +683,21 @@ def _remote_tick():
             scroll = grid_core.clamp_scroll(state.scroll, content, lay.grid[3])
             for index, _rect in grid_core.visible_cells(lay.grid, len(entries), scale, scroll):
                 entry = entries[index]
-                if entry['id'] == _more_id:
+                if entry['id'] == _more_id or entry.get('file'):
                     continue
                 thumb = cat.thumb_entry(entry)
-                if thumb['id'] in _remote['thumbs'] or cat.thumb_path(entry):
+                if (thumb['id'] in _remote['thumbs'] or cat.thumb_path(entry)
+                        or now < _remote['thumb_retry'].get(thumb['id'], 0.0)):
                     continue
                 _remote['thumbs'].add(thumb['id'])
-                downloads.fetch(thumb['id'], entry=thumb)
+                revision = cat._cache['revision']
+                def thumbnail_done(path, error, tid=thumb['id'], revision=revision):
+                    if revision != cat._cache['revision']:
+                        return
+                    _remote['thumbs'].discard(tid)
+                    if error:
+                        _remote['thumb_retry'][tid] = time.monotonic() + 5.0
+                downloads.fetch(thumb['id'], thumbnail_done, entry=thumb)
     tag_redraw(bpy.context)
     return 0.4
 
@@ -681,7 +712,8 @@ def register():
 def unregister():
     if bpy.app.timers.is_registered(_remote_tick):
         bpy.app.timers.unregister(_remote_tick)
-    _remote.update(manufacturers=None, thumbs=set(), query=None)
+    _remote.update(manufacturers=None, thumbs=set(), query=None, revision=-1, active=False, source=None,
+                   requested=False, manufacturers_retry=0.0, refresh_at=0.0, thumb_retry={})
     if _handle[0] is not None:
         bpy.types.SpaceView3D.draw_handler_remove(_handle[0], 'WINDOW')
         _handle[0] = None

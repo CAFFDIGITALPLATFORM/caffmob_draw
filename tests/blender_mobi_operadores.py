@@ -215,14 +215,17 @@ with tempfile.TemporaryDirectory() as directory, patch.object(downloads, 'reques
     library = bpy.context.window_manager.btm_library
     library.mode, library.tab, library.search = 'MAX', 'TEXTURES', 'madeira'
     library.manufacturer, library.collection = 'Berneck', 'Linha'
-    draw._remote.update(manufacturers=True, thumbs=set(), query=('madeira','Berneck','Linha'), changed=0.0, revision=catalog._cache['revision'])
     entry['sha256_miniatura'] = 'b'*64
-    catalog._cache.update(items=[entry], next='p2')
+    catalog._cache.update(items=[entry], next='p2', available=True)
     with patch.object(auth,'signed_in',return_value=True), patch.object(downloads,'unavailable_reason',return_value=''), \
          patch.object(catalog,'refresh') as refresh, patch.object(downloads,'fetch') as fetch, \
+         patch.object(catalog,'refresh_manufacturers'), patch.object(draw.time,'monotonic') as clock, \
          patch.object(draw.grid_core,'visible_cells',return_value=[(0,(0,0,100,100))]):
+        clock.return_value = 10.0
         draw._remote_tick()
-        refresh.assert_called_with('madeira','Berneck','Linha')
+        clock.return_value = 10.5
+        draw._remote_tick()
+        refresh.assert_called_with('madeira','Berneck','Linha',force=True)
         assert fetch.call_args.kwargs['entry']['url'].endswith('tamanho=miniatura')
         assert draw.texture_items(library)[-1]['id'] == draw._more_id
         from types import SimpleNamespace
