@@ -135,7 +135,9 @@ def draw_mobi(layout, context):
     content.operator('caffmob.mobi_enviar_modelo', text=tr("Enviar versão do modelo"), icon='EXPORT')
     op = content.operator('caffmob.mobi_enviar_modelo', text=tr("Enviar como modelo novo"), icon='ADD')
     op.novo, op.escopo = True, state.biblioteca
-    if state.conflito_local:
+    if context.scene.get('caffmob_conflito_v2'):
+        content.operator('caffmob.mobi_resolver_conflito_v2', icon='ERROR')
+    elif state.conflito_local:
         content.operator('caffmob.mobi_resolver_conflito', icon='ERROR')
     layout.separator()
     layout.label(text=tr("Situação"), icon='INFO')

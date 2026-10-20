@@ -1,7 +1,7 @@
 {
   "shared/studio/tipos.ts": "1cede360325e3816883b49140f7f9d0516d74f11b96477615b69688e371b0160",
   "shared/studio/validacao.ts": "64b454497ff6f42e04720cf1a4d7dd7343cf8271a4a7123751750e46582a4c58",
-  "shared/studio/paredes.ts": "2f10a0dc6ceceea6b37baa24514b311358e60d4ac6c10656c3533ef3038bdcf3",
+  "shared/studio/paredes.ts": "37f2c21a12a107c1151adc509a9f20ba728228280564bc2f3d403ab8a30aa3f2",
   "shared/studio/aberturas.ts": "78eda6ee97838be429c0c030fc4d1b0b34b93c84f2ea4e1798872944476dd715",
   "shared/studio/limitesEspaciais.ts": "664ade499bdb976f986e0b20a9962f7a58e111973c9434b1eb86d4cb9047927f",
   "shared/caffmob/contorno.ts": "c0148a1918faa1c2e0477dbf037f65f98dae0a60043648db79f3b4dae4b14147",

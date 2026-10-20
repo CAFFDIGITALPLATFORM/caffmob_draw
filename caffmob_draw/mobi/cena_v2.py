@@ -342,6 +342,10 @@ class Montagem:
         preparo.name = NOME_DA_COLECAO
         for p in documento['pavimentos']:
             self.colecoes[p['id']].name = p['nome']
+        context.view_layer.update()
+        from .enviar_v2 import registrar_estado
+        for obj in preparo.all_objects:
+            registrar_estado(obj)
         context.scene.unit_settings.system = 'METRIC'
         context.scene.unit_settings.scale_length = 1
         self.concluida = True

@@ -19,6 +19,7 @@ class Session:
 
     def __init__(self, plan, scene_name):
         self.plan = plan
+        self.v2 = None
         self.scene_name = scene_name
         self.view = None
         self.window_ptr = 0
@@ -65,7 +66,7 @@ class Session:
         self.typed_preview = ""
 
     def dirty(self):
-        return model.plan_signature(self.plan) != self.signature
+        return self.v2.documento != self.v2.original if self.v2 else model.plan_signature(self.plan) != self.signature
 
     def segment(self):
         if self.selected is None:
@@ -78,7 +79,7 @@ class Session:
 
     def checkpoint(self):
         """Grava um passo de desfazer se o rascunho mudou."""
-        return self.history.checkpoint(self.plan)
+        return self.v2.checkpoint() if self.v2 else self.history.checkpoint(self.plan)
 
     def _restore(self, plan):
         if plan is None:
@@ -91,10 +92,10 @@ class Session:
         return True
 
     def undo(self):
-        return self._restore(self.history.undo())
+        return self.v2.historico(-1) if self.v2 else self._restore(self.history.undo())
 
     def redo(self):
-        return self._restore(self.history.redo())
+        return self.v2.historico(1) if self.v2 else self._restore(self.history.redo())
 
     def redraw(self):
         for window in bpy.context.window_manager.windows:

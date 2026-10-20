@@ -90,5 +90,37 @@
   "O documento recebido pertence a outro ambiente": {
     "pt_BR": "O documento recebido pertence a outro ambiente",
     "en_US": "The received document belongs to another environment"
+  },
+  "Objeto sem malha; não foi convertido em caixa": {
+    "pt_BR": "Objeto sem malha; não foi convertido em caixa",
+    "en_US": "Object has no mesh; it was not converted to a box"
+  },
+  "Entidade não suportada; contrato preservado integralmente": {
+    "pt_BR": "Entidade não suportada; contrato preservado integralmente",
+    "en_US": "Unsupported entity; the entire contract was preserved"
+  },
+  "Transformação não representável no contrato; ajuste o objeto antes de enviar": {
+    "pt_BR": "Transformação não representável no contrato; ajuste o objeto antes de enviar",
+    "en_US": "Transform cannot be represented in the contract; adjust the object before sending"
+  },
+  "Identidade de entidade inválida ou duplicada na cena": {
+    "pt_BR": "Identidade de entidade inválida ou duplicada na cena",
+    "en_US": "Invalid or duplicate entity identity in the scene"
+  },
+  "Ambiente do Blender": {
+    "pt_BR": "Ambiente do Blender",
+    "en_US": "Blender environment"
+  },
+  "Resolver conflito com o Studio": {
+    "pt_BR": "Resolver conflito com o Studio",
+    "en_US": "Resolve conflict with Studio"
+  },
+  "Recibo confirmado. O Studio já tem outra revisão; baixe ou resolva o conflito antes de gravar novamente": {
+    "pt_BR": "Recibo confirmado. O Studio já tem outra revisão; baixe ou resolva o conflito antes de gravar novamente",
+    "en_US": "Receipt confirmed. Studio has another revision; download or resolve the conflict before saving again"
+  },
+  "Guardar ambas as versões até a escolha explícita do titular": {
+    "pt_BR": "Guardar ambas as versões até a escolha explícita do titular",
+    "en_US": "Keep both versions until the owner explicitly chooses"
   }
 }
