@@ -1,0 +1,342 @@
+{
+  "entrada": {
+    "tipo": "L",
+    "altura": 6000,
+    "espelho_alvo": 150,
+    "largura": 900
+  },
+  "esperado": {
+    "degraus": 40,
+    "espelho": 150,
+    "piso": 320,
+    "pisos": 39,
+    "blondel": 620,
+    "primeiro_lance": 20,
+    "profundidade": 6980,
+    "projecao": 6980,
+    "patamares": [
+      {
+        "papel": "Patamar",
+        "x": 6080,
+        "y": 6080,
+        "largura": 900,
+        "profundidade": 900,
+        "topo": 3000
+      }
+    ],
+    "blocos": [
+      {
+        "papel": "Degrau 1",
+        "x": 0,
+        "y": 6080,
+        "largura": 320,
+        "profundidade": 900,
+        "topo": 150
+      },
+      {
+        "papel": "Degrau 2",
+        "x": 320,
+        "y": 6080,
+        "largura": 320,
+        "profundidade": 900,
+        "topo": 300
+      },
+      {
+        "papel": "Degrau 3",
+        "x": 640,
+        "y": 6080,
+        "largura": 320,
+        "profundidade": 900,
+        "topo": 450
+      },
+      {
+        "papel": "Degrau 4",
+        "x": 960,
+        "y": 6080,
+        "largura": 320,
+        "profundidade": 900,
+        "topo": 600
+      },
+      {
+        "papel": "Degrau 5",
+        "x": 1280,
+        "y": 6080,
+        "largura": 320,
+        "profundidade": 900,
+        "topo": 750
+      },
+      {
+        "papel": "Degrau 6",
+        "x": 1600,
+        "y": 6080,
+        "largura": 320,
+        "profundidade": 900,
+        "topo": 900
+      },
+      {
+        "papel": "Degrau 7",
+        "x": 1920,
+        "y": 6080,
+        "largura": 320,
+        "profundidade": 900,
+        "topo": 1050
+      },
+      {
+        "papel": "Degrau 8",
+        "x": 2240,
+        "y": 6080,
+        "largura": 320,
+        "profundidade": 900,
+        "topo": 1200
+      },
+      {
+        "papel": "Degrau 9",
+        "x": 2560,
+        "y": 6080,
+        "largura": 320,
+        "profundidade": 900,
+        "topo": 1350
+      },
+      {
+        "papel": "Degrau 10",
+        "x": 2880,
+        "y": 6080,
+        "largura": 320,
+        "profundidade": 900,
+        "topo": 1500
+      },
+      {
+        "papel": "Degrau 11",
+        "x": 3200,
+        "y": 6080,
+        "largura": 320,
+        "profundidade": 900,
+        "topo": 1650
+      },
+      {
+        "papel": "Degrau 12",
+        "x": 3520,
+        "y": 6080,
+        "largura": 320,
+        "profundidade": 900,
+        "topo": 1800
+      },
+      {
+        "papel": "Degrau 13",
+        "x": 3840,
+        "y": 6080,
+        "largura": 320,
+        "profundidade": 900,
+        "topo": 1950
+      },
+      {
+        "papel": "Degrau 14",
+        "x": 4160,
+        "y": 6080,
+        "largura": 320,
+        "profundidade": 900,
+        "topo": 2100
+      },
+      {
+        "papel": "Degrau 15",
+        "x": 4480,
+        "y": 6080,
+        "largura": 320,
+        "profundidade": 900,
+        "topo": 2250
+      },
+      {
+        "papel": "Degrau 16",
+        "x": 4800,
+        "y": 6080,
+        "largura": 320,
+        "profundidade": 900,
+        "topo": 2400
+      },
+      {
+        "papel": "Degrau 17",
+        "x": 5120,
+        "y": 6080,
+        "largura": 320,
+        "profundidade": 900,
+        "topo": 2550
+      },
+      {
+        "papel": "Degrau 18",
+        "x": 5440,
+        "y": 6080,
+        "largura": 320,
+        "profundidade": 900,
+        "topo": 2700
+      },
+      {
+        "papel": "Degrau 19",
+        "x": 5760,
+        "y": 6080,
+        "largura": 320,
+        "profundidade": 900,
+        "topo": 2850
+      },
+      {
+        "papel": "Degrau 21",
+        "x": 6080,
+        "y": 5760,
+        "largura": 900,
+        "profundidade": 320,
+        "topo": 3150
+      },
+      {
+        "papel": "Degrau 22",
+        "x": 6080,
+        "y": 5440,
+        "largura": 900,
+        "profundidade": 320,
+        "topo": 3300
+      },
+      {
+        "papel": "Degrau 23",
+        "x": 6080,
+        "y": 5120,
+        "largura": 900,
+        "profundidade": 320,
+        "topo": 3450
+      },
+      {
+        "papel": "Degrau 24",
+        "x": 6080,
+        "y": 4800,
+        "largura": 900,
+        "profundidade": 320,
+        "topo": 3600
+      },
+      {
+        "papel": "Degrau 25",
+        "x": 6080,
+        "y": 4480,
+        "largura": 900,
+        "profundidade": 320,
+        "topo": 3750
+      },
+      {
+        "papel": "Degrau 26",
+        "x": 6080,
+        "y": 4160,
+        "largura": 900,
+        "profundidade": 320,
+        "topo": 3900
+      },
+      {
+        "papel": "Degrau 27",
+        "x": 6080,
+        "y": 3840,
+        "largura": 900,
+        "profundidade": 320,
+        "topo": 4050
+      },
+      {
+        "papel": "Degrau 28",
+        "x": 6080,
+        "y": 3520,
+        "largura": 900,
+        "profundidade": 320,
+        "topo": 4200
+      },
+      {
+        "papel": "Degrau 29",
+        "x": 6080,
+        "y": 3200,
+        "largura": 900,
+        "profundidade": 320,
+        "topo": 4350
+      },
+      {
+        "papel": "Degrau 30",
+        "x": 6080,
+        "y": 2880,
+        "largura": 900,
+        "profundidade": 320,
+        "topo": 4500
+      },
+      {
+        "papel": "Degrau 31",
+        "x": 6080,
+        "y": 2560,
+        "largura": 900,
+        "profundidade": 320,
+        "topo": 4650
+      },
+      {
+        "papel": "Degrau 32",
+        "x": 6080,
+        "y": 2240,
+        "largura": 900,
+        "profundidade": 320,
+        "topo": 4800
+      },
+      {
+        "papel": "Degrau 33",
+        "x": 6080,
+        "y": 1920,
+        "largura": 900,
+        "profundidade": 320,
+        "topo": 4950
+      },
+      {
+        "papel": "Degrau 34",
+        "x": 6080,
+        "y": 1600,
+        "largura": 900,
+        "profundidade": 320,
+        "topo": 5100
+      },
+      {
+        "papel": "Degrau 35",
+        "x": 6080,
+        "y": 1280,
+        "largura": 900,
+        "profundidade": 320,
+        "topo": 5250
+      },
+      {
+        "papel": "Degrau 36",
+        "x": 6080,
+        "y": 960,
+        "largura": 900,
+        "profundidade": 320,
+        "topo": 5400
+      },
+      {
+        "papel": "Degrau 37",
+        "x": 6080,
+        "y": 640,
+        "largura": 900,
+        "profundidade": 320,
+        "topo": 5550
+      },
+      {
+        "papel": "Degrau 38",
+        "x": 6080,
+        "y": 320,
+        "largura": 900,
+        "profundidade": 320,
+        "topo": 5700
+      },
+      {
+        "papel": "Degrau 39",
+        "x": 6080,
+        "y": 0,
+        "largura": 900,
+        "profundidade": 320,
+        "topo": 5850
+      },
+      {
+        "papel": "Patamar",
+        "x": 6080,
+        "y": 6080,
+        "largura": 900,
+        "profundidade": 900,
+        "topo": 3000
+      }
+    ]
+  }
+}

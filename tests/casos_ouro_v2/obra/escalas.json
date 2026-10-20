@@ -1,0 +1,31 @@
+[
+  {
+    "entrada": {
+      "escala": null,
+      "imagem": {
+        "largura": 1200,
+        "altura": 800
+      }
+    },
+    "esperado": {
+      "largura": 1000,
+      "altura": 666.6666666666666
+    }
+  },
+  {
+    "entrada": {
+      "escala": {
+        "largura": 300,
+        "altura": 500
+      },
+      "imagem": {
+        "largura": 1200,
+        "altura": 800
+      }
+    },
+    "esperado": {
+      "largura": 300,
+      "altura": 500
+    }
+  }
+]

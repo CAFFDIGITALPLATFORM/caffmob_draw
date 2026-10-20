@@ -1,0 +1,29 @@
+{
+  "entrada": {
+    "tipo": "reta",
+    "altura": 300,
+    "espelho_alvo": 200,
+    "largura": 900
+  },
+  "esperado": {
+    "degraus": 2,
+    "espelho": 150,
+    "piso": 320,
+    "pisos": 1,
+    "blondel": 620,
+    "primeiro_lance": 1,
+    "profundidade": 900,
+    "projecao": 320,
+    "patamares": [],
+    "blocos": [
+      {
+        "papel": "Degrau 1",
+        "x": 0,
+        "y": 0,
+        "largura": 320,
+        "profundidade": 900,
+        "topo": 150
+      }
+    ]
+  }
+}
