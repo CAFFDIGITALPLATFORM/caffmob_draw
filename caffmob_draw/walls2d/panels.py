@@ -21,7 +21,8 @@ class _EditorPanel:
 
     @classmethod
     def poll(cls, context):
-        return window.is_editor_area(context)
+        s = props.session()
+        return window.is_editor_area(context) and (not s or not s.v2 or cls.bl_idname == "BTM_PT_wall_editor_segment")
 
 
 class BTM_PT_WallEditorTools(_EditorPanel, bpy.types.Panel):
@@ -45,6 +46,10 @@ class BTM_PT_WallEditorSegment(_EditorPanel, bpy.types.Panel):
         layout = self.layout
         state = context.window_manager.btm_wall_editor
         s = props.session()
+        if s and s.v2:
+            from .studio_ui import painel
+            painel(layout, context, s)
+            return
         chain, i = s.segment() if s else (None, None)
         if chain is None:
             layout.label(text="Selecione um trecho na planta.", icon='INFO')

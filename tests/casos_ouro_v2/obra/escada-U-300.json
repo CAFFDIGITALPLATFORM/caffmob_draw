@@ -1,0 +1,54 @@
+{
+  "entrada": {
+    "tipo": "U",
+    "altura": 300,
+    "espelho_alvo": 200,
+    "largura": 900
+  },
+  "esperado": {
+    "degraus": 2,
+    "espelho": 150,
+    "piso": 320,
+    "pisos": 1,
+    "blondel": 620,
+    "primeiro_lance": 1,
+    "profundidade": 1900,
+    "projecao": 900,
+    "patamares": [
+      {
+        "papel": "Patamar 1",
+        "x": 0,
+        "y": 1000,
+        "largura": 900,
+        "profundidade": 900,
+        "topo": 150
+      },
+      {
+        "papel": "Patamar 2",
+        "x": 0,
+        "y": 0,
+        "largura": 900,
+        "profundidade": 1000,
+        "topo": 150
+      }
+    ],
+    "blocos": [
+      {
+        "papel": "Patamar 1",
+        "x": 0,
+        "y": 1000,
+        "largura": 900,
+        "profundidade": 900,
+        "topo": 150
+      },
+      {
+        "papel": "Patamar 2",
+        "x": 0,
+        "y": 0,
+        "largura": 900,
+        "profundidade": 1000,
+        "topo": 150
+      }
+    ]
+  }
+}

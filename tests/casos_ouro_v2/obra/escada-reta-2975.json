@@ -1,0 +1,157 @@
+{
+  "entrada": {
+    "tipo": "reta",
+    "altura": 2975,
+    "espelho_alvo": 170,
+    "largura": 900
+  },
+  "esperado": {
+    "degraus": 18,
+    "espelho": 165.27777777777777,
+    "piso": 304,
+    "pisos": 17,
+    "blondel": 634.5555555555555,
+    "primeiro_lance": 9,
+    "profundidade": 900,
+    "projecao": 5168,
+    "patamares": [],
+    "blocos": [
+      {
+        "papel": "Degrau 1",
+        "x": 0,
+        "y": 0,
+        "largura": 304,
+        "profundidade": 900,
+        "topo": 165.27777777777777
+      },
+      {
+        "papel": "Degrau 2",
+        "x": 304,
+        "y": 0,
+        "largura": 304,
+        "profundidade": 900,
+        "topo": 330.55555555555554
+      },
+      {
+        "papel": "Degrau 3",
+        "x": 608,
+        "y": 0,
+        "largura": 304,
+        "profundidade": 900,
+        "topo": 495.8333333333333
+      },
+      {
+        "papel": "Degrau 4",
+        "x": 912,
+        "y": 0,
+        "largura": 304,
+        "profundidade": 900,
+        "topo": 661.1111111111111
+      },
+      {
+        "papel": "Degrau 5",
+        "x": 1216,
+        "y": 0,
+        "largura": 304,
+        "profundidade": 900,
+        "topo": 826.3888888888889
+      },
+      {
+        "papel": "Degrau 6",
+        "x": 1520,
+        "y": 0,
+        "largura": 304,
+        "profundidade": 900,
+        "topo": 991.6666666666666
+      },
+      {
+        "papel": "Degrau 7",
+        "x": 1824,
+        "y": 0,
+        "largura": 304,
+        "profundidade": 900,
+        "topo": 1156.9444444444443
+      },
+      {
+        "papel": "Degrau 8",
+        "x": 2128,
+        "y": 0,
+        "largura": 304,
+        "profundidade": 900,
+        "topo": 1322.2222222222222
+      },
+      {
+        "papel": "Degrau 9",
+        "x": 2432,
+        "y": 0,
+        "largura": 304,
+        "profundidade": 900,
+        "topo": 1487.5
+      },
+      {
+        "papel": "Degrau 10",
+        "x": 2736,
+        "y": 0,
+        "largura": 304,
+        "profundidade": 900,
+        "topo": 1652.7777777777778
+      },
+      {
+        "papel": "Degrau 11",
+        "x": 3040,
+        "y": 0,
+        "largura": 304,
+        "profundidade": 900,
+        "topo": 1818.0555555555554
+      },
+      {
+        "papel": "Degrau 12",
+        "x": 3344,
+        "y": 0,
+        "largura": 304,
+        "profundidade": 900,
+        "topo": 1983.3333333333333
+      },
+      {
+        "papel": "Degrau 13",
+        "x": 3648,
+        "y": 0,
+        "largura": 304,
+        "profundidade": 900,
+        "topo": 2148.611111111111
+      },
+      {
+        "papel": "Degrau 14",
+        "x": 3952,
+        "y": 0,
+        "largura": 304,
+        "profundidade": 900,
+        "topo": 2313.8888888888887
+      },
+      {
+        "papel": "Degrau 15",
+        "x": 4256,
+        "y": 0,
+        "largura": 304,
+        "profundidade": 900,
+        "topo": 2479.1666666666665
+      },
+      {
+        "papel": "Degrau 16",
+        "x": 4560,
+        "y": 0,
+        "largura": 304,
+        "profundidade": 900,
+        "topo": 2644.4444444444443
+      },
+      {
+        "papel": "Degrau 17",
+        "x": 4864,
+        "y": 0,
+        "largura": 304,
+        "profundidade": 900,
+        "topo": 2809.722222222222
+      }
+    ]
+  }
+}

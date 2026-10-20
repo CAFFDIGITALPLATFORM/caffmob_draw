@@ -1,0 +1,143 @@
+{
+  "tipo": "edicao",
+  "operacao": "removerTrecho",
+  "entrada": {
+    "schema": "caffmob.ambiente/v2",
+    "id": "06400000-0000-4000-8000-000000000001",
+    "version": 1,
+    "atualizado_em": "2026-10-18T12:00:00.000Z",
+    "origem": "web",
+    "nome": "Cena Studio",
+    "unidade": "mm",
+    "eixos": "Z_UP",
+    "configuracao_geometrica": {
+      "perfil": "studio/1",
+      "espessuras": {
+        "caixa": 15,
+        "porta": 18,
+        "fundo": 6
+      }
+    },
+    "pavimentos": [
+      {
+        "id": "06400000-0000-4000-8000-000000000002",
+        "nome": "Térreo",
+        "ordem": 0,
+        "pe_direito": 2600,
+        "laje": {
+          "id": "06400000-0000-4000-8000-000000000066",
+          "ativa": false,
+          "tipo": "macica",
+          "espessura": 120,
+          "contrapiso": 30,
+          "beiral": 0,
+          "recortes": []
+        },
+        "forro": {
+          "tipo": "nenhum",
+          "material": "gesso",
+          "sanca": null
+        }
+      }
+    ],
+    "paredes": [
+      {
+        "id": "06400000-0000-4000-8000-00000000000a",
+        "origem": {
+          "x": 0,
+          "y": 0
+        },
+        "fechada": false,
+        "pavimento_id": "06400000-0000-4000-8000-000000000002",
+        "camada_id": null,
+        "visivel": true,
+        "perfil": "studio/1",
+        "segmentos": [
+          {
+            "id": "06400000-0000-4000-8000-00000000000b",
+            "comprimento": 3000,
+            "angulo_absoluto": 0,
+            "angulo_relativo": 0,
+            "espessura": 150,
+            "pe_direito_inicial": 2600,
+            "pe_direito_final": 2600,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL",
+            "estado": "ativo"
+          },
+          {
+            "id": "06400000-0000-4000-8000-00000000000c",
+            "comprimento": 2500,
+            "angulo_absoluto": 30,
+            "angulo_relativo": 30,
+            "espessura": 150,
+            "pe_direito_inicial": 2600,
+            "pe_direito_final": 2600,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL",
+            "estado": "ativo"
+          }
+        ]
+      }
+    ],
+    "aberturas": [
+      {
+        "id": "06400000-0000-4000-8000-000000000014",
+        "tipo": "DOOR",
+        "segmento_id": "06400000-0000-4000-8000-00000000000b",
+        "posicao": 100,
+        "largura": 800,
+        "altura": 2100,
+        "peitoril": 0
+      },
+      {
+        "id": "06400000-0000-4000-8000-000000000015",
+        "tipo": "WINDOW",
+        "segmento_id": "06400000-0000-4000-8000-00000000000b",
+        "posicao": 1500,
+        "largura": 1000,
+        "altura": 900,
+        "peitoril": 1000
+      },
+      {
+        "id": "06400000-0000-4000-8000-000000000016",
+        "tipo": "WINDOW",
+        "segmento_id": "06400000-0000-4000-8000-00000000000c",
+        "posicao": 400,
+        "largura": 600,
+        "altura": 900,
+        "peitoril": 1000
+      }
+    ],
+    "modulos": [],
+    "pecas_avulsas": [],
+    "primitivas": [],
+    "escadas": [],
+    "itens_externos": [],
+    "materiais": [],
+    "camadas": [],
+    "vinculos": []
+  },
+  "parametros": {
+    "segmento_id": "06400000-0000-4000-8000-00000000000b"
+  },
+  "esperado": {
+    "ok": false,
+    "erros": [
+      {
+        "caminho": "aberturas[0]",
+        "codigo": "CONFIRMAR_DEPENDENCIAS",
+        "mensagem": "A operação afeta esta relação; confirme para continuar."
+      },
+      {
+        "caminho": "aberturas[1]",
+        "codigo": "CONFIRMAR_DEPENDENCIAS",
+        "mensagem": "A operação afeta esta relação; confirme para continuar."
+      }
+    ]
+  }
+}

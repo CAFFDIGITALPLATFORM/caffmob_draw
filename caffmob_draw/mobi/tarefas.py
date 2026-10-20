@@ -17,6 +17,7 @@ class Job:
         self.id, self.scene = uuid.uuid4().hex, context.scene.name
         self.cancelled, self.tickets, self.batch, self.items = False, [], None, []
         self.commit = None
+        self.preparo, self.timer = None, None
         _jobs[self.id] = self
         state = context.window_manager.btm_caffmob
         state.ocupado, state.progresso, state.situacao = True, 0.0, tr(message)
@@ -33,6 +34,34 @@ class Job:
             state = bpy.context.window_manager.btm_caffmob
             state.ocupado, state.progresso, state.situacao = False, 1.0, tr(message)
         _jobs.pop(self.id, None)
+        self._limpar_preparo()
+
+    def _limpar_preparo(self):
+        if self.timer is not None:
+            if bpy.app.timers.is_registered(self.timer):
+                bpy.app.timers.unregister(self.timer)
+            self.timer = None
+        if self.preparo is not None:
+            self.preparo.cancelar()
+            self.preparo = None
+
+    def preparar_em_passos(self, preparo, concluir):
+        """Cede a interface entre unidades; a troca continua no operador com Undo."""
+        self.preparo = preparo
+        def tick():
+            if not self.alive():
+                self.cancel()
+                return None
+            try:
+                if preparo.avancar():
+                    return 0.01
+                self.timer = None
+                self.apply(concluir)
+            except Exception as exc:
+                self.finish(str(exc))
+            return None
+        self.timer = tick
+        bpy.app.timers.register(tick, first_interval=0.01)
 
     def request(self, method, path, body=None, headers=None, callback=None):
         def received(status, data, incoming):
@@ -57,6 +86,7 @@ class Job:
 
     def cancel(self):
         self.cancelled = True
+        self._limpar_preparo()
         for ticket in self.tickets:
             downloads.cancel_request(ticket)
         if self.batch:

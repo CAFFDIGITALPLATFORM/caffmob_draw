@@ -1,0 +1,346 @@
+{
+ "Clique para começar a desenhar": {
+  "pt_BR": "Clique para começar a desenhar",
+  "en_US": "Click to start drawing"
+ },
+ "Ou escolha um modelo no painel da parede": {
+  "pt_BR": "Ou escolha um modelo no painel da parede",
+  "en_US": "Or choose a template in the wall panel"
+ },
+ "Comprimento: {} mm | Enter confirma": {
+  "pt_BR": "Comprimento: {} mm | Enter confirma",
+  "en_US": "Length: {} mm | Enter confirms"
+ },
+ "Direção (°)": {
+  "pt_BR": "Direção (°)",
+  "en_US": "Direction (°)"
+ },
+ "Editar parede": {
+  "pt_BR": "Editar parede",
+  "en_US": "Edit wall"
+ },
+ "Enquadrar": {
+  "pt_BR": "Enquadrar",
+  "en_US": "Fit drawing"
+ },
+ "Espessura padrão (mm)": {
+  "pt_BR": "Espessura padrão (mm)",
+  "en_US": "Default thickness (mm)"
+ },
+ "Face externa": {
+  "pt_BR": "Face externa",
+  "en_US": "Outer face"
+ },
+ "Face interna": {
+  "pt_BR": "Face interna",
+  "en_US": "Inner face"
+ },
+ "Medida (mm)": {
+  "pt_BR": "Medida (mm)",
+  "en_US": "Measurement (mm)"
+ },
+ "Parede · Studio": {
+  "pt_BR": "Parede · Studio",
+  "en_US": "Wall · Studio"
+ },
+ "Peitoril (mm)": {
+  "pt_BR": "Peitoril (mm)",
+  "en_US": "Sill (mm)"
+ },
+ "Portas e janelas": {
+  "pt_BR": "Portas e janelas",
+  "en_US": "Doors and windows"
+ },
+ "Posição (mm)": {
+  "pt_BR": "Posição (mm)",
+  "en_US": "Position (mm)"
+ },
+ "Posição X (mm)": {
+  "pt_BR": "Posição X (mm)",
+  "en_US": "X position (mm)"
+ },
+ "Posição Y (mm)": {
+  "pt_BR": "Posição Y (mm)",
+  "en_US": "Y position (mm)"
+ },
+ "Posição da divisão (mm)": {
+  "pt_BR": "Posição da divisão (mm)",
+  "en_US": "Split position (mm)"
+ },
+ "Profundidade (mm)": {
+  "pt_BR": "Profundidade (mm)",
+  "en_US": "Depth (mm)"
+ },
+ "Sem material": {
+  "pt_BR": "Sem material",
+  "en_US": "No material"
+ },
+ "Trecho selecionado": {
+  "pt_BR": "Trecho selecionado",
+  "en_US": "Selected segment"
+ },
+ "{} parede(s) · {:.2f} m de parede · {} contorno(s) fechado(s) · Clique seleciona; dois cliques dividem; arraste pontos ou arestas": {
+  "pt_BR": "{} parede(s) · {:.2f} m de parede · {} contorno(s) fechado(s) · Clique seleciona; dois cliques dividem; arraste pontos ou arestas",
+  "en_US": "{} wall(s) · {:.2f} m of wall · {} closed outline(s) · Click to select; double click to split; drag points or edges"
+ },
+ "{} parede(s) · {} trecho(s)": {
+  "pt_BR": "{} parede(s) · {} trecho(s)",
+  "en_US": "{} wall(s) · {} segment(s)"
+ },
+ "{} | Enter confirma": {
+  "pt_BR": "{} | Enter confirma",
+  "en_US": "{} | Enter confirms"
+ },
+ "Desenhar": {
+  "pt_BR": "Desenhar",
+  "en_US": "Draw"
+ },
+ "Ortogonal": {
+  "pt_BR": "Ortogonal",
+  "en_US": "Orthogonal"
+ },
+ "Ambiente atual": {
+  "pt_BR": "Ambiente atual",
+  "en_US": "Current room"
+ },
+ "Adicionar trecho": {
+  "pt_BR": "Adicionar trecho",
+  "en_US": "Add segment"
+ },
+ "Aplicar espessura a todas": {
+  "pt_BR": "Aplicar espessura a todas",
+  "en_US": "Apply thickness to all"
+ },
+ "Dividir neste ponto": {
+  "pt_BR": "Dividir neste ponto",
+  "en_US": "Split at this point"
+ },
+ "Atualizar abertura": {
+  "pt_BR": "Atualizar abertura",
+  "en_US": "Update opening"
+ },
+ "Excluir abertura": {
+  "pt_BR": "Excluir abertura",
+  "en_US": "Delete opening"
+ },
+ "Confirmar exclusão e dependentes": {
+  "pt_BR": "Confirmar exclusão e dependentes",
+  "en_US": "Confirm deletion and dependents"
+ },
+ "Concluir": {
+  "pt_BR": "Concluir",
+  "en_US": "Finish"
+ },
+ "Continuar": {
+  "pt_BR": "Continuar",
+  "en_US": "Continue"
+ },
+ "Restaurar trecho": {
+  "pt_BR": "Restaurar trecho",
+  "en_US": "Restore segment"
+ },
+ "Ocultar trecho": {
+  "pt_BR": "Ocultar trecho",
+  "en_US": "Hide segment"
+ },
+ "Excluir ponto": {
+  "pt_BR": "Excluir ponto",
+  "en_US": "Delete point"
+ },
+ "Excluir trecho": {
+  "pt_BR": "Excluir trecho",
+  "en_US": "Delete segment"
+ },
+ "Âncora: início": {
+  "pt_BR": "Âncora: início",
+  "en_US": "Anchor: start"
+ },
+ "Âncora: fim": {
+  "pt_BR": "Âncora: fim",
+  "en_US": "Anchor: end"
+ },
+ "Retângulo": {
+  "pt_BR": "Retângulo",
+  "en_US": "Rectangle"
+ },
+ "Canto em L": {
+  "pt_BR": "Canto em L",
+  "en_US": "L corner"
+ },
+ "Em U": {
+  "pt_BR": "Em U",
+  "en_US": "U shape"
+ },
+ "Arco (mm)": {
+  "pt_BR": "Arco (mm)",
+  "en_US": "Arc sagitta (mm)"
+ },
+ "Altura inicial (mm)": {
+  "pt_BR": "Altura inicial (mm)",
+  "en_US": "Start height (mm)"
+ },
+ "Altura final (mm)": {
+  "pt_BR": "Altura final (mm)",
+  "en_US": "End height (mm)"
+ },
+ "Snap de 15° e 10 mm": {
+  "pt_BR": "Snap de 15° e 10 mm",
+  "en_US": "15° and 10 mm snap"
+ },
+ "Medida e direção": {
+  "pt_BR": "Medida e direção",
+  "en_US": "Measurement and direction"
+ },
+ "Primeiro ponto": {
+  "pt_BR": "Primeiro ponto",
+  "en_US": "First point"
+ },
+ "Alinhamento X": {
+  "pt_BR": "Alinhamento X",
+  "en_US": "X alignment"
+ },
+ "Alinhamento Z": {
+  "pt_BR": "Alinhamento Z",
+  "en_US": "Z alignment"
+ },
+ "Alinhamento X e Z": {
+  "pt_BR": "Alinhamento X e Z",
+  "en_US": "X and Z alignment"
+ },
+ "Excluir {} parede(s) selecionada(s)? Aberturas serão removidas e vínculos serão soltos.": {
+  "pt_BR": "Excluir {} parede(s) selecionada(s)? Aberturas serão removidas e vínculos serão soltos.",
+  "en_US": "Delete {} selected wall(s)? Openings will be removed and links released."
+ },
+ "arraste no vazio para selecionar · botão do meio ou Espaço move a vista": {
+  "pt_BR": "arraste no vazio para selecionar · botão do meio ou Espaço move a vista",
+  "en_US": "drag on empty space to select · middle button or Space moves the view"
+ },
+ "vários": {
+  "pt_BR": "vários",
+  "en_US": "multiple"
+ },
+ "Selecionar todas": {
+  "pt_BR": "Selecionar todas",
+  "en_US": "Select all"
+ },
+ "Pronto": {
+  "pt_BR": "Pronto",
+  "en_US": "Done"
+ },
+ "{} paredes selecionadas": {
+  "pt_BR": "{} paredes selecionadas",
+  "en_US": "{} walls selected"
+ },
+ "Ocultar selecionadas": {
+  "pt_BR": "Ocultar selecionadas",
+  "en_US": "Hide selected"
+ },
+ "Aplicar às selecionadas": {
+  "pt_BR": "Aplicar às selecionadas",
+  "en_US": "Apply to selected"
+ },
+ "Excluir selecionadas": {
+  "pt_BR": "Excluir selecionadas",
+  "en_US": "Delete selected"
+ },
+ "Posição X": {
+  "pt_BR": "Posição X",
+  "en_US": "Position X"
+ },
+ "Posição Y": {
+  "pt_BR": "Posição Y",
+  "en_US": "Position Y"
+ },
+ "Direções da parede": {
+  "pt_BR": "Direções da parede",
+  "en_US": "Wall directions"
+ },
+ "Lado da medida": {
+  "pt_BR": "Lado da medida",
+  "en_US": "Measured side"
+ },
+ "Pelo eixo": {
+  "pt_BR": "Pelo eixo",
+  "en_US": "Centerline"
+ },
+ "Ao mudar a medida, mover": {
+  "pt_BR": "Ao mudar a medida, mover",
+  "en_US": "When the length changes, move"
+ },
+ "o fim": {
+  "pt_BR": "o fim",
+  "en_US": "the end"
+ },
+ "o início": {
+  "pt_BR": "o início",
+  "en_US": "the start"
+ },
+ "Distância do início": {
+  "pt_BR": "Distância do início",
+  "en_US": "Distance from start"
+ },
+ "Mais medidas": {
+  "pt_BR": "Mais medidas",
+  "en_US": "More measurements"
+ },
+ "Esconder": {
+  "pt_BR": "Esconder",
+  "en_US": "Hide"
+ },
+ "Altura inicial": {
+  "pt_BR": "Altura inicial",
+  "en_US": "Start height"
+ },
+ "Altura final": {
+  "pt_BR": "Altura final",
+  "en_US": "End height"
+ },
+ "Flecha da curva": {
+  "pt_BR": "Flecha da curva",
+  "en_US": "Arc rise"
+ },
+ "Elevação relativa": {
+  "pt_BR": "Elevação relativa",
+  "en_US": "Relative elevation"
+ },
+ "Lado interno": {
+  "pt_BR": "Lado interno",
+  "en_US": "Inner side"
+ },
+ "Posição da divisão": {
+  "pt_BR": "Posição da divisão",
+  "en_US": "Split position"
+ },
+ "Excluir parede": {
+  "pt_BR": "Excluir parede",
+  "en_US": "Delete wall"
+ },
+ "Desenhar paredes": {
+  "pt_BR": "Desenhar paredes",
+  "en_US": "Draw walls"
+ },
+ "Espessura padrão": {
+  "pt_BR": "Espessura padrão",
+  "en_US": "Default thickness"
+ },
+ "Modelos": {
+  "pt_BR": "Modelos",
+  "en_US": "Templates"
+ },
+ "Editar paredes": {
+  "pt_BR": "Editar paredes",
+  "en_US": "Edit walls"
+ },
+ "{} paredes": {
+  "pt_BR": "{} paredes",
+  "en_US": "{} walls"
+ },
+ "Paredes do pavimento": {
+  "pt_BR": "Paredes do pavimento",
+  "en_US": "Walls on this floor"
+ },
+ "Parede {} · trecho {} · {} mm": {
+  "pt_BR": "Parede {} · trecho {} · {} mm",
+  "en_US": "Wall {} · segment {} · {} mm"
+ }
+}

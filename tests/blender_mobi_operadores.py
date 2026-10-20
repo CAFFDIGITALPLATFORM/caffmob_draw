@@ -276,6 +276,11 @@ with tempfile.TemporaryDirectory() as directory, patch.object(downloads, 'reques
         bpy.ops.caffmob.mobi_cancelar()
         image_callbacks[0](cached,None)
     assert set(o.name for o in bpy.context.scene.objects) == before
+    # 065 T118: a lista consulta as capacidades antes; este ensaio sem rede simula um servidor que só tem a v1,
+    # como se a descoberta já tivesse recebido 404, para seguir provando o caminho v1 da 063.
+    from caffmob_draw.mobi import api_v2
+    api_v2._sessao.clear()
+    api_v2._sessao.update(servidor=downloads.server_url(), capacidades={'versao_api': 1, 'schemas': ['caffmob.ambiente/v1'], 'ambientes_v2': False})
     # T039: paginação explícita, sem perder a lista anterior ao cancelar.
     bpy.ops.caffmob.mobi_listar_ambientes()
     reply(200, {'itens':[{'id':doc['id'],'nome':doc['nome'],'version':7}], 'proximo':'p2'})

@@ -1,5 +1,7 @@
-"""Editor de Paredes 2D (feature 002, bloco 3): planta a lápis das paredes do Home Builder 5.
+"""Editor de Paredes 2D: contrato MOBI v2 ou planta a lápis do Home Builder 5.
 
+- `studio` / `studio_interacao`: prancheta v2 e despacho puros, com documento em mm
+- `scene_v2` / `studio_ui`: leitura, montagem v2 e apresentação Blender
 - `model`: nós, trechos, linhas interna/externa/referência e edição (Python puro, testável fora do Blender)
 - `scene_io` / `apply`: leitura das paredes da cena e aplicação do rascunho no OK
 - `props`: sessão do editor e campos do trecho (`WindowManager.btm_wall_editor`)
@@ -11,8 +13,8 @@
 
 def _modules():
     # Import tardio: `model` é usado nos testes fora do Blender sem carregar `bpy`.
-    from . import ops_editor, panels, props, window
-    return (props, window, ops_editor, panels)
+    from . import ops_editor, panels, props, window, studio_ui
+    return (props, studio_ui, window, ops_editor, panels)
 
 
 def register():

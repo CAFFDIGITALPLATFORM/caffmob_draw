@@ -91,11 +91,17 @@ def _region_rect(region, area=None):
 
 def ensure_view(region, area=None):
     s = props.session()
+    rect = _region_rect(region, area)
+    if s.v2:                              # 065 T128: o painel da parede é desenhado à direita, fora da vista
+        from .studio_painel import largura_painel
+        largura = largura_painel(rect[2], _ui_scale())
+        s.studio_painel_area = (rect[2] - largura, 0.0, largura, float(region.height))
+        rect = (rect[0], rect[1], max(1.0, rect[2] - largura), rect[3])
     if s.view is None:
-        s.view = View2D(_region_rect(region, area))
-        s.view.fit(s.plan.bounds(), margin=0.15)
+        s.view = View2D(rect)
+        s.view.fit(s.v2.bounds() if s.v2 else s.plan.bounds(), margin=0.15)
     else:
-        s.view.rect = _region_rect(region, area)
+        s.view.rect = rect
     return s.view
 
 
@@ -107,6 +113,10 @@ def draw_plan(context):
     if s is None or region is None:
         return
     view = ensure_view(region, context.area)
+    if s.v2:
+        from . import studio_ui
+        studio_ui.desenhar(context, s, view)
+        return
     state = _state(context)
     sh = draw.begin()
     draw.rect(sh, (0, 0, region.width, region.height), COLORS['background'])
@@ -481,7 +491,9 @@ class BTM_OT_WallEditor(bpy.types.Operator):
         return not bpy.app.background and context.window is not None and props.session() is None
 
     def _other_layer(self, context):
-        from . import scene_io
+        from . import scene_io, scene_v2
+        if scene_v2.documento_da_cena(context) is not None:
+            return []
         return [o for o in context.selected_objects if scene_io.is_other_layer_wall(o)]
 
     def invoke(self, context, event):
@@ -496,7 +508,22 @@ class BTM_OT_WallEditor(bpy.types.Operator):
         layout.prop(self, "other_walls", expand=True)
 
     def execute(self, context):
-        from . import scene_io
+        from . import scene_io, scene_v2
+        try:
+            v2_session = scene_v2.abrir(context)
+        except (ValueError, TypeError) as exc:
+            self.report({'ERROR'}, str(exc))
+            return {'CANCELLED'}
+        if v2_session is not None:
+            try:
+                win, area, region = window.open_editor(context)
+            except RuntimeError as exc:
+                props.end()
+                self.report({'ERROR'}, str(exc))
+                return {'CANCELLED'}
+            with context.temp_override(window=win, area=area, region=region):
+                bpy.ops.caffmob.wall_editor_modal('INVOKE_DEFAULT')
+            return {'FINISHED'}
         plan = scene_io.read_plan(context.scene)
         others = self._other_layer(context)
         if others and self.other_walls == 'CONVERT':
@@ -542,7 +569,11 @@ class BTM_OT_WallEditorModal(bpy.types.Operator):
     def _end(self, context, apply_changes):
         s = props.session()
         report = None
-        if s is not None and apply_changes:
+        if s is not None and apply_changes and s.v2:
+            from . import scene_v2
+            scene_v2.aplicar(context, s)
+            report = dict(created=[], updated=[p['id'] for p in s.v2.documento['paredes']], removed=[])
+        elif s is not None and apply_changes:
             from . import apply
             report = apply.apply_plan(context, s.plan, remove_modules=s.remove_modules,
                                       project_height=s.project_height if s.equalize_height else None)
@@ -573,7 +604,13 @@ class BTM_OT_WallEditorModal(bpy.types.Operator):
             self._end(context, False)
             return {'CANCELLED'}
         if s.request == 'ok':
-            report = self._end(context, True)
+            try:
+                report = self._end(context, True)
+            except Exception as exc:
+                s.request, s.error = None, str(exc)
+                self.report({'ERROR'}, s.error)
+                s.redraw()
+                return {'RUNNING_MODAL'}
             closed = tr(", {} sala(s) fechada(s) no OK").format(report['closed']) if report.get('closed') else ""
             self.report({'INFO'}, tr("Paredes aplicadas: {} nova(s), {} atualizada(s), {} removida(s){}.").format(
                 len(report['created']), len(report['updated']), len(report['removed']), closed))
@@ -588,6 +625,10 @@ class BTM_OT_WallEditorModal(bpy.types.Operator):
             if not self.tab_ready:
                 _win, area, _region = window.editor_area(context)
                 self.tab_ready = window.focus_editor_tab(area)
+            if s.v2 and getattr(self, 'studio_espera', None):
+                from .studio_interacao import segurar      # 065 T133: segurar 450 ms no toque ou na caneta
+                if segurar(self, s.v2):
+                    s.redraw()
             return {'PASS_THROUGH'}
         if self._handle_undo(event, s):
             return {'RUNNING_MODAL'}          # Ctrl+Z fica com o rascunho: não vai para o desfazer do 3D
@@ -615,6 +656,8 @@ class BTM_OT_WallEditorModal(bpy.types.Operator):
 
     def _update_snap(self, context, s, view):
         """Ponto travado da mira para o desenho e para o próximo clique (009, D-02)."""
+        if s.v2:
+            return
         state = _state(context)
         origin, exclude = None, ()
         if self.dragging is not None:
@@ -646,6 +689,10 @@ class BTM_OT_WallEditorModal(bpy.types.Operator):
     # Eventos ------------------------------------------------------------------------------------------------
     def _handle(self, context, event, s, view, pixel):
         state = _state(context)
+        if s.v2:
+            from . import studio_ui           # 065 T128/T133: painel desenhado, diálogo e barra antes da navegação
+            if studio_ui.capturar(self, context, event, s, view, pixel):
+                return True
         if handle_zoom_window(event, s, view, pixel):
             return True
         if event.type == 'MIDDLEMOUSE':
@@ -665,10 +712,13 @@ class BTM_OT_WallEditorModal(bpy.types.Operator):
             view.pan(*compat.trackpad_delta(event))
             return True
         if event.type == 'HOME' and event.value == 'PRESS':
-            view.fit(s.plan.bounds(), margin=0.15)
+            view.fit(s.v2.bounds() if s.v2 else s.plan.bounds(), margin=0.15)
             return True
         if s.zoom_window is not None:
             return True                       # com a lupa ligada, só navegação e Ctrl+Z passam (D-10)
+        if s.v2:
+            from . import studio_ui
+            return studio_ui.tratar(self, context, event, s, view, pixel)
         if s.prompt in PROMPTS:
             return self._handle_prompt(context, event, s, pixel)
         if state.tool == 'DRAW':
@@ -895,6 +945,9 @@ class BTM_OT_WallEditorOk(bpy.types.Operator):
         s = props.session()
         if s is None:
             return {'CANCELLED'}
+        if s.v2:
+            s.request = 'ok'
+            return {'FINISHED'}
         from . import apply
         missing = apply.items_that_do_not_fit(s.plan)
         modules = apply.modules_of_removed(s.plan)
@@ -950,7 +1003,7 @@ class BTM_OT_WallEditorFit(bpy.types.Operator):
     def execute(self, context):
         s = props.session()
         if s is not None and s.view is not None:
-            s.view.fit(s.plan.bounds(), margin=0.15)
+            s.view.fit(s.v2.bounds() if s.v2 else s.plan.bounds(), margin=0.15)
             s.redraw()
         return {'FINISHED'}
 

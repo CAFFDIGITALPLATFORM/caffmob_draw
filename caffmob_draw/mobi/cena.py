@@ -84,7 +84,7 @@ def _material_da_chapa(imagens, textura_id):
     return material
 
 
-def malha_do_modulo(obj, modulo, imagens):
+def malha_do_modulo(obj, modulo, imagens, material_da_chapa=None):
     """O módulo chapa a chapa: uma caixa por chapa, com o material dela e a imagem inteira em cada face (o veio
     vertical gira a imagem 90°). Origem como a do armário do addon: meio da traseira, na base."""
     bm = bmesh.new()
@@ -92,7 +92,7 @@ def malha_do_modulo(obj, modulo, imagens):
     materiais = []
     larg, prof = modulo["largura"], modulo["profundidade"]
     for caixa in caixas_das_chapas(modulo):
-        material = _material_da_chapa(imagens, caixa["textura_id"])
+        material = (material_da_chapa or _material_da_chapa)(imagens, caixa["textura_id"])
         if material not in materiais:
             materiais.append(material)
         x0, y0, z0 = (caixa["x"] - larg / 2) / 1000.0, (caixa["y"] - prof) / 1000.0, caixa["z"] / 1000.0
@@ -113,10 +113,10 @@ def malha_do_modulo(obj, modulo, imagens):
     obj.data.update()
 
 
-def criar_modulo(context, modulo, imagens=None, colecao=None):
+def criar_modulo(context, modulo, imagens=None, colecao=None, material_da_chapa=None):
     obj = _novo_objeto(context, modulo["nome"][:60] or "Módulo", "modulo", colecao)
     obj.btm_plane.object_kind = 'MODULE'
-    malha_do_modulo(obj, modulo, imagens or {})
+    malha_do_modulo(obj, modulo, imagens or {}, material_da_chapa)
     obj.location = _origem_do_modulo(modulo)
     obj.rotation_euler = (0.0, 0.0, math.radians(modulo["rotacao_z"]))
     obj["caffmob_modulo"] = serializar(modulo)

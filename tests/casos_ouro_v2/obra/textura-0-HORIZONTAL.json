@@ -1,0 +1,18 @@
+{
+  "entrada": {
+    "escala": {
+      "largura": 1500,
+      "altura": 750
+    },
+    "rotacao": 0,
+    "veio": "HORIZONTAL",
+    "uv": [
+      725,
+      365
+    ]
+  },
+  "esperado": [
+    0.983,
+    0.986
+  ]
+}

@@ -6,6 +6,7 @@ class MOBI_PG_Item(bpy.types.PropertyGroup):
     id: bpy.props.StringProperty()  # type: ignore
     nome: bpy.props.StringProperty()  # type: ignore
     version: bpy.props.IntProperty()  # type: ignore
+    schema: bpy.props.StringProperty(default='caffmob.ambiente/v1')  # type: ignore
     categoria: bpy.props.StringProperty()  # type: ignore
     escopo: bpy.props.StringProperty()  # type: ignore
     imagem: bpy.props.StringProperty()  # type: ignore
@@ -13,6 +14,7 @@ class MOBI_PG_Item(bpy.types.PropertyGroup):
 
 class MOBI_PG_Estado(bpy.types.PropertyGroup):
     situacao: bpy.props.StringProperty()  # type: ignore
+    relatorio_v2: bpy.props.StringProperty()  # type: ignore
     codigo: bpy.props.StringProperty()  # type: ignore
     endereco: bpy.props.StringProperty()  # type: ignore
     ocupado: bpy.props.BoolProperty()  # type: ignore

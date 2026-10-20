@@ -1,0 +1,9 @@
+{
+  "shared/studio/pavimentos.ts": "29a87e79d7c155194929f32bef43c96559b696b1d36e56e7279a3e2da9c18af6",
+  "shared/studio/escadas.ts": "7ddeedd8c5e1ce59c831a892590599f3dcabe128909e14e88f9b61e69449139a",
+  "shared/studio/forros.ts": "91c92332bae267c7f70a9bbd344b46770c1de83250afd799975773e15dc0ff58",
+  "shared/studio/texturas.ts": "e69c1272d6919aef107f81180aa88e647d5e1228cb037316f7ac75274dda5788",
+  "shared/studio/camadas.ts": "ffac1d06b9261fa15ed457126d5c8869b0b2431c41fa1a462fb78f0d968cbc18",
+  "client/src/pages/draw/studio/geometria3DStudio.ts": "d7c6a7aa2c636660437fff0bc73a0e6fda3c37094adf97d8a8c817a7929e0351",
+  "client/src/pages/draw/studio/material3DStudio.ts": "29a4cdbee44751769a74dce49105c9fd03802ae36b85f8f7a61bd8252962ca18"
+}

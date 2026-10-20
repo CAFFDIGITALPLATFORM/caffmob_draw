@@ -1,0 +1,258 @@
+{
+  "tipo": "edicao",
+  "operacao": "moverVertice",
+  "entrada": {
+    "schema": "caffmob.ambiente/v2",
+    "id": "06400000-0000-4000-8000-000000000001",
+    "version": 1,
+    "atualizado_em": "2026-10-18T12:00:00.000Z",
+    "origem": "web",
+    "nome": "Cena Studio",
+    "unidade": "mm",
+    "eixos": "Z_UP",
+    "configuracao_geometrica": {
+      "perfil": "studio/1",
+      "espessuras": {
+        "caixa": 15,
+        "porta": 18,
+        "fundo": 6
+      }
+    },
+    "pavimentos": [
+      {
+        "id": "06400000-0000-4000-8000-000000000002",
+        "nome": "Térreo",
+        "ordem": 0,
+        "pe_direito": 2600,
+        "laje": {
+          "id": "06400000-0000-4000-8000-000000000066",
+          "ativa": false,
+          "tipo": "macica",
+          "espessura": 120,
+          "contrapiso": 30,
+          "beiral": 0,
+          "recortes": []
+        },
+        "forro": {
+          "tipo": "nenhum",
+          "material": "gesso",
+          "sanca": null
+        }
+      }
+    ],
+    "paredes": [
+      {
+        "id": "06400000-0000-4000-8000-0000000000c8",
+        "origem": {
+          "x": 347,
+          "y": -219
+        },
+        "fechada": true,
+        "pavimento_id": "06400000-0000-4000-8000-000000000002",
+        "camada_id": null,
+        "visivel": true,
+        "perfil": "studio/1",
+        "segmentos": [
+          {
+            "id": "06400000-0000-4000-8000-0000000000c9",
+            "comprimento": 4000,
+            "angulo_absoluto": 0,
+            "angulo_relativo": 0,
+            "espessura": 150,
+            "pe_direito_inicial": 2600,
+            "pe_direito_final": 2600,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "RIGHT",
+            "tipo": "NORMAL",
+            "estado": "ativo"
+          },
+          {
+            "id": "06400000-0000-4000-8000-0000000000ca",
+            "comprimento": 3000,
+            "angulo_absoluto": 90,
+            "angulo_relativo": 90,
+            "espessura": 150,
+            "pe_direito_inicial": 2600,
+            "pe_direito_final": 2600,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "RIGHT",
+            "tipo": "NORMAL",
+            "estado": "ativo"
+          },
+          {
+            "id": "06400000-0000-4000-8000-0000000000cb",
+            "comprimento": 4000,
+            "angulo_absoluto": 180,
+            "angulo_relativo": 90,
+            "espessura": 150,
+            "pe_direito_inicial": 2600,
+            "pe_direito_final": 2600,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "RIGHT",
+            "tipo": "NORMAL",
+            "estado": "ativo"
+          },
+          {
+            "id": "06400000-0000-4000-8000-0000000000cc",
+            "comprimento": 3000,
+            "angulo_absoluto": 270,
+            "angulo_relativo": 90,
+            "espessura": 150,
+            "pe_direito_inicial": 2600,
+            "pe_direito_final": 2600,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "RIGHT",
+            "tipo": "NORMAL",
+            "estado": "ativo"
+          }
+        ]
+      }
+    ],
+    "aberturas": [],
+    "modulos": [],
+    "pecas_avulsas": [],
+    "primitivas": [],
+    "escadas": [],
+    "itens_externos": [],
+    "materiais": [],
+    "camadas": [],
+    "vinculos": []
+  },
+  "parametros": {
+    "parede_id": "06400000-0000-4000-8000-0000000000c8",
+    "indice": 0,
+    "ponto": {
+      "x": 200,
+      "y": -300
+    }
+  },
+  "esperado": {
+    "ok": true,
+    "valor": {
+      "schema": "caffmob.ambiente/v2",
+      "id": "06400000-0000-4000-8000-000000000001",
+      "version": 1,
+      "atualizado_em": "2026-10-18T12:00:00.000Z",
+      "origem": "web",
+      "nome": "Cena Studio",
+      "unidade": "mm",
+      "eixos": "Z_UP",
+      "configuracao_geometrica": {
+        "perfil": "studio/1",
+        "espessuras": {
+          "caixa": 15,
+          "porta": 18,
+          "fundo": 6
+        }
+      },
+      "pavimentos": [
+        {
+          "id": "06400000-0000-4000-8000-000000000002",
+          "nome": "Térreo",
+          "ordem": 0,
+          "pe_direito": 2600,
+          "laje": {
+            "id": "06400000-0000-4000-8000-000000000066",
+            "ativa": false,
+            "tipo": "macica",
+            "espessura": 120,
+            "contrapiso": 30,
+            "beiral": 0,
+            "recortes": []
+          },
+          "forro": {
+            "tipo": "nenhum",
+            "material": "gesso",
+            "sanca": null
+          }
+        }
+      ],
+      "paredes": [
+        {
+          "id": "06400000-0000-4000-8000-0000000000c8",
+          "origem": {
+            "x": 200,
+            "y": -300
+          },
+          "fechada": true,
+          "pavimento_id": "06400000-0000-4000-8000-000000000002",
+          "camada_id": null,
+          "visivel": true,
+          "perfil": "studio/1",
+          "segmentos": [
+            {
+              "id": "06400000-0000-4000-8000-0000000000c9",
+              "comprimento": 4147.790978340157,
+              "angulo_absoluto": 1.1189698795157597,
+              "angulo_relativo": 1.119,
+              "espessura": 150,
+              "pe_direito_inicial": 2600,
+              "pe_direito_final": 2600,
+              "afastamento": 0,
+              "flecha": 0,
+              "sentido": "RIGHT",
+              "tipo": "NORMAL",
+              "estado": "ativo"
+            },
+            {
+              "id": "06400000-0000-4000-8000-0000000000ca",
+              "comprimento": 3000,
+              "angulo_absoluto": 90,
+              "angulo_relativo": 88.881,
+              "espessura": 150,
+              "pe_direito_inicial": 2600,
+              "pe_direito_final": 2600,
+              "afastamento": 0,
+              "flecha": 0,
+              "sentido": "RIGHT",
+              "tipo": "NORMAL",
+              "estado": "ativo"
+            },
+            {
+              "id": "06400000-0000-4000-8000-0000000000cb",
+              "comprimento": 4000,
+              "angulo_absoluto": 180,
+              "angulo_relativo": 90,
+              "espessura": 150,
+              "pe_direito_inicial": 2600,
+              "pe_direito_final": 2600,
+              "afastamento": 0,
+              "flecha": 0,
+              "sentido": "RIGHT",
+              "tipo": "NORMAL",
+              "estado": "ativo"
+            },
+            {
+              "id": "06400000-0000-4000-8000-0000000000cc",
+              "comprimento": 3084.504822495825,
+              "angulo_absoluto": 267.26838776818204,
+              "angulo_relativo": 87.268,
+              "espessura": 150,
+              "pe_direito_inicial": 2600,
+              "pe_direito_final": 2600,
+              "afastamento": 0,
+              "flecha": 0,
+              "sentido": "RIGHT",
+              "tipo": "NORMAL",
+              "estado": "ativo"
+            }
+          ]
+        }
+      ],
+      "aberturas": [],
+      "modulos": [],
+      "pecas_avulsas": [],
+      "primitivas": [],
+      "escadas": [],
+      "itens_externos": [],
+      "materiais": [],
+      "camadas": [],
+      "vinculos": []
+    },
+    "avisos": []
+  }
+}
