@@ -37,6 +37,8 @@ class MOBI_OT_Conectar(bpy.types.Operator):
             state.situacao = connected_text() if ok else tr(message)
             if ok:
                 catalog.invalidate()
+                from . import api_v2
+                api_v2.na_conexao(context, connected_text())
         auth.start_login(code, done)
         return {'FINISHED'}
 
@@ -48,6 +50,8 @@ class MOBI_OT_Desconectar(bpy.types.Operator):
 
     def execute(self, context):
         tarefas.cancel_all()
+        from . import api_v2
+        api_v2.encerrar_sessao()
         downloads.cancel_all()
         catalog.invalidate()
         def done(message):

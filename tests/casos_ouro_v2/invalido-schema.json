@@ -1,0 +1,13 @@
+{
+  "tipo": "validacao",
+  "entrada": {
+    "schema": "caffmob.ambiente/v9"
+  },
+  "esperado": [
+    {
+      "caminho": "schema",
+      "codigo": "ESQUEMA",
+      "mensagem": "Esquema não suportado."
+    }
+  ]
+}

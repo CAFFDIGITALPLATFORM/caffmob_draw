@@ -1,0 +1,358 @@
+{
+  "tipo": "parede",
+  "entrada": {
+    "schema": "caffmob.ambiente/v2",
+    "id": "06400000-0000-4000-8000-000000000001",
+    "version": 1,
+    "atualizado_em": "2026-10-18T12:00:00.000Z",
+    "origem": "web",
+    "nome": "Cena Studio",
+    "unidade": "mm",
+    "eixos": "Z_UP",
+    "configuracao_geometrica": {
+      "perfil": "studio/1",
+      "espessuras": {
+        "caixa": 15,
+        "porta": 18,
+        "fundo": 6
+      }
+    },
+    "pavimentos": [
+      {
+        "id": "06400000-0000-4000-8000-000000000002",
+        "nome": "Térreo",
+        "ordem": 0,
+        "pe_direito": 2600,
+        "laje": {
+          "id": "06400000-0000-4000-8000-000000000066",
+          "ativa": false,
+          "tipo": "macica",
+          "espessura": 120,
+          "contrapiso": 30,
+          "beiral": 0,
+          "recortes": []
+        },
+        "forro": {
+          "tipo": "nenhum",
+          "material": "gesso",
+          "sanca": null
+        }
+      }
+    ],
+    "paredes": [
+      {
+        "id": "06400000-0000-4000-8000-0000000000c8",
+        "origem": {
+          "x": 347,
+          "y": -219
+        },
+        "fechada": false,
+        "pavimento_id": "06400000-0000-4000-8000-000000000002",
+        "camada_id": null,
+        "visivel": true,
+        "perfil": "studio/1",
+        "segmentos": [
+          {
+            "id": "06400000-0000-4000-8000-0000000000c9",
+            "comprimento": 4000,
+            "angulo_absoluto": 0,
+            "angulo_relativo": 0,
+            "espessura": 150,
+            "pe_direito_inicial": 2600,
+            "pe_direito_final": 2600,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "RIGHT",
+            "tipo": "NORMAL",
+            "estado": "ativo"
+          },
+          {
+            "id": "06400000-0000-4000-8000-0000000000ca",
+            "comprimento": 3000,
+            "angulo_absoluto": 90,
+            "angulo_relativo": 90,
+            "espessura": 150,
+            "pe_direito_inicial": 2600,
+            "pe_direito_final": 2600,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "RIGHT",
+            "tipo": "NORMAL",
+            "estado": "ativo"
+          },
+          {
+            "id": "06400000-0000-4000-8000-0000000000cb",
+            "comprimento": 4000,
+            "angulo_absoluto": 180,
+            "angulo_relativo": 90,
+            "espessura": 150,
+            "pe_direito_inicial": 2600,
+            "pe_direito_final": 2600,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "RIGHT",
+            "tipo": "NORMAL",
+            "estado": "ativo"
+          }
+        ]
+      }
+    ],
+    "aberturas": [],
+    "modulos": [],
+    "pecas_avulsas": [],
+    "primitivas": [],
+    "escadas": [],
+    "itens_externos": [],
+    "materiais": [],
+    "camadas": [],
+    "vinculos": []
+  },
+  "esperado": [
+    {
+      "id": "06400000-0000-4000-8000-0000000000c8",
+      "pavimento_id": "06400000-0000-4000-8000-000000000002",
+      "visivel": true,
+      "segmentos": [
+        {
+          "id": "06400000-0000-4000-8000-0000000000c9",
+          "estado": "ativo",
+          "trecho": [
+            [
+              347,
+              -219
+            ],
+            [
+              4347,
+              -219
+            ]
+          ],
+          "linha": [
+            [
+              347,
+              -219
+            ],
+            [
+              4347,
+              -219
+            ]
+          ],
+          "face": [
+            [
+              347,
+              -369
+            ],
+            [
+              4497,
+              -369
+            ]
+          ],
+          "comprimento": 4000,
+          "arco": null,
+          "poligono": [
+            [
+              347,
+              -219
+            ],
+            [
+              4347,
+              -219
+            ],
+            [
+              4497,
+              -369
+            ],
+            [
+              347,
+              -369
+            ]
+          ],
+          "base": 0,
+          "topo_inicial": 2600,
+          "topo_final": 2600,
+          "recortes": []
+        },
+        {
+          "id": "06400000-0000-4000-8000-0000000000ca",
+          "estado": "ativo",
+          "trecho": [
+            [
+              4347,
+              -219
+            ],
+            [
+              4347,
+              2781
+            ]
+          ],
+          "linha": [
+            [
+              4347,
+              -219
+            ],
+            [
+              4347,
+              2781
+            ]
+          ],
+          "face": [
+            [
+              4497,
+              -369
+            ],
+            [
+              4497,
+              2931
+            ]
+          ],
+          "comprimento": 3000,
+          "arco": null,
+          "poligono": [
+            [
+              4347,
+              -219
+            ],
+            [
+              4347,
+              2781
+            ],
+            [
+              4497,
+              2931
+            ],
+            [
+              4497,
+              -369
+            ]
+          ],
+          "base": 0,
+          "topo_inicial": 2600,
+          "topo_final": 2600,
+          "recortes": []
+        },
+        {
+          "id": "06400000-0000-4000-8000-0000000000cb",
+          "estado": "ativo",
+          "trecho": [
+            [
+              4347,
+              2781
+            ],
+            [
+              347,
+              2781.0000000000005
+            ]
+          ],
+          "linha": [
+            [
+              4347,
+              2781
+            ],
+            [
+              347,
+              2781.0000000000005
+            ]
+          ],
+          "face": [
+            [
+              4497,
+              2931
+            ],
+            [
+              347,
+              2931.0000000000005
+            ]
+          ],
+          "comprimento": 4000,
+          "arco": null,
+          "poligono": [
+            [
+              4347,
+              2781
+            ],
+            [
+              347,
+              2781.0000000000005
+            ],
+            [
+              347,
+              2931.0000000000005
+            ],
+            [
+              4497,
+              2931
+            ]
+          ],
+          "base": 0,
+          "topo_inicial": 2600,
+          "topo_final": 2600,
+          "recortes": []
+        }
+      ]
+    }
+  ],
+  "medidas": [
+    {
+      "parede_id": "06400000-0000-4000-8000-0000000000c8",
+      "segmento_id": "06400000-0000-4000-8000-0000000000c9",
+      "medida": 3200,
+      "lado": "interna",
+      "esperado": 3200
+    },
+    {
+      "parede_id": "06400000-0000-4000-8000-0000000000c8",
+      "segmento_id": "06400000-0000-4000-8000-0000000000c9",
+      "medida": 3200,
+      "lado": "externa",
+      "esperado": 3050
+    },
+    {
+      "parede_id": "06400000-0000-4000-8000-0000000000c8",
+      "segmento_id": "06400000-0000-4000-8000-0000000000c9",
+      "medida": 3200,
+      "lado": "eixo",
+      "esperado": 3125
+    },
+    {
+      "parede_id": "06400000-0000-4000-8000-0000000000c8",
+      "segmento_id": "06400000-0000-4000-8000-0000000000ca",
+      "medida": 3200,
+      "lado": "interna",
+      "esperado": 3200
+    },
+    {
+      "parede_id": "06400000-0000-4000-8000-0000000000c8",
+      "segmento_id": "06400000-0000-4000-8000-0000000000ca",
+      "medida": 3200,
+      "lado": "externa",
+      "esperado": 2900
+    },
+    {
+      "parede_id": "06400000-0000-4000-8000-0000000000c8",
+      "segmento_id": "06400000-0000-4000-8000-0000000000ca",
+      "medida": 3200,
+      "lado": "eixo",
+      "esperado": 3050
+    },
+    {
+      "parede_id": "06400000-0000-4000-8000-0000000000c8",
+      "segmento_id": "06400000-0000-4000-8000-0000000000cb",
+      "medida": 3200,
+      "lado": "interna",
+      "esperado": 3200
+    },
+    {
+      "parede_id": "06400000-0000-4000-8000-0000000000c8",
+      "segmento_id": "06400000-0000-4000-8000-0000000000cb",
+      "medida": 3200,
+      "lado": "externa",
+      "esperado": 3050
+    },
+    {
+      "parede_id": "06400000-0000-4000-8000-0000000000c8",
+      "segmento_id": "06400000-0000-4000-8000-0000000000cb",
+      "medida": 3200,
+      "lado": "eixo",
+      "esperado": 3125
+    }
+  ]
+}

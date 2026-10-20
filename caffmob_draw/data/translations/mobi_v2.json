@@ -1,0 +1,50 @@
+{
+  "Tentar novamente": {
+    "pt_BR": "Tentar novamente",
+    "en_US": "Try again"
+  },
+  "Acesso à internet do Blender desligado": {
+    "pt_BR": "Acesso à internet do Blender desligado",
+    "en_US": "Blender internet access is disabled"
+  },
+  "Este servidor aceita somente ambientes v1. O ambiente v2 foi preservado": {
+    "pt_BR": "Este servidor aceita somente ambientes v1. O ambiente v2 foi preservado",
+    "en_US": "This server only accepts v1 environments. The v2 environment was preserved"
+  },
+  "Não foi possível consultar as capacidades do MOBI. Tente novamente": {
+    "pt_BR": "Não foi possível consultar as capacidades do MOBI. Tente novamente",
+    "en_US": "Could not query MOBI capabilities. Try again"
+  },
+  "Há um envio pendente. Confirme o recibo antes de iniciar outro envio": {
+    "pt_BR": "Há um envio pendente. Confirme o recibo antes de iniciar outro envio",
+    "en_US": "A send operation is pending. Confirm its receipt before starting another send"
+  },
+  "Carregar a versão do MOBI": {
+    "pt_BR": "Carregar a versão do MOBI",
+    "en_US": "Load the MOBI version"
+  },
+  "Enviar a versão local": {
+    "pt_BR": "Enviar a versão local",
+    "en_US": "Send the local version"
+  },
+  "Salvar como cópia": {
+    "pt_BR": "Salvar como cópia",
+    "en_US": "Save as a copy"
+  },
+  "O MOBI não confirmou o recibo. A chave do envio foi preservada": {
+    "pt_BR": "O MOBI não confirmou o recibo. A chave do envio foi preservada",
+    "en_US": "MOBI did not confirm the receipt. The operation key was preserved"
+  },
+  "Consultando capacidades do MOBI…": {
+    "pt_BR": "Consultando capacidades do MOBI…",
+    "en_US": "Querying MOBI capabilities…"
+  },
+  "Operação ou revisão-base inválida": {
+    "pt_BR": "Operação ou revisão-base inválida",
+    "en_US": "Invalid operation or base revision"
+  },
+  "Escolha de conflito inválida": {
+    "pt_BR": "Escolha de conflito inválida",
+    "en_US": "Invalid conflict choice"
+  }
+}

@@ -1,0 +1,892 @@
+{
+  "tipo": "referencia",
+  "entrada": {
+    "schema": "caffmob.ambiente/v2",
+    "id": "06400000-0000-4000-8000-000000000001",
+    "version": 1,
+    "atualizado_em": "2026-10-18T12:00:00.000Z",
+    "origem": "web",
+    "nome": "Cena Studio",
+    "unidade": "mm",
+    "eixos": "Z_UP",
+    "configuracao_geometrica": {
+      "perfil": "studio/1",
+      "espessuras": {
+        "caixa": 15,
+        "porta": 18,
+        "fundo": 6
+      }
+    },
+    "pavimentos": [
+      {
+        "id": "06400000-0000-4000-8000-000000000002",
+        "nome": "Térreo",
+        "ordem": 0,
+        "pe_direito": 2600,
+        "laje": {
+          "id": "06400000-0000-4000-8000-000000000066",
+          "ativa": true,
+          "tipo": "macica",
+          "espessura": 120,
+          "contrapiso": 30,
+          "beiral": 0,
+          "recortes": [
+            {
+              "id": "06400000-0000-4000-8000-00000000005a",
+              "forma": "retangular",
+              "posicao": {
+                "x": 1500,
+                "y": 1000
+              },
+              "largura": 1000,
+              "altura": 500,
+              "escada_id": "06400000-0000-4000-8000-00000000005b"
+            }
+          ],
+          "contorno": [
+            {
+              "x": 0,
+              "y": 0
+            },
+            {
+              "x": 3000,
+              "y": 0
+            },
+            {
+              "x": 3000,
+              "y": 2000
+            },
+            {
+              "x": 0,
+              "y": 2000
+            }
+          ],
+          "material_id": "06400000-0000-4000-8000-000000000047"
+        },
+        "forro": {
+          "tipo": "nenhum",
+          "material": "gesso",
+          "sanca": null
+        },
+        "piso_material_id": "06400000-0000-4000-8000-000000000046"
+      },
+      {
+        "id": "06400000-0000-4000-8000-000000000003",
+        "nome": "Andar",
+        "ordem": 1,
+        "pe_direito": 2600,
+        "laje": {
+          "id": "06400000-0000-4000-8000-000000000067",
+          "ativa": false,
+          "tipo": "macica",
+          "espessura": 120,
+          "contrapiso": 30,
+          "beiral": 0,
+          "recortes": []
+        },
+        "forro": {
+          "tipo": "sanca",
+          "material": "drywall",
+          "material_id": "06400000-0000-4000-8000-000000000047",
+          "sanca": {
+            "tipo": "invertida",
+            "largura": 200,
+            "rebaixo": 80,
+            "led": true
+          }
+        }
+      }
+    ],
+    "paredes": [
+      {
+        "id": "06400000-0000-4000-8000-00000000000a",
+        "origem": {
+          "x": 0,
+          "y": 0
+        },
+        "fechada": false,
+        "pavimento_id": "06400000-0000-4000-8000-000000000002",
+        "camada_id": null,
+        "visivel": true,
+        "perfil": "studio/1",
+        "segmentos": [
+          {
+            "id": "06400000-0000-4000-8000-00000000000b",
+            "comprimento": 3000,
+            "angulo_absoluto": 0,
+            "angulo_relativo": 0,
+            "espessura": 150,
+            "pe_direito_inicial": 2600,
+            "pe_direito_final": 2600,
+            "afastamento": 0,
+            "flecha": 200,
+            "sentido": "LEFT",
+            "tipo": "NORMAL",
+            "estado": "ativo",
+            "material_interno_id": "06400000-0000-4000-8000-000000000046",
+            "material_externo_id": "06400000-0000-4000-8000-000000000047"
+          }
+        ],
+        "material_id": "06400000-0000-4000-8000-000000000046"
+      },
+      {
+        "id": "06400000-0000-4000-8000-000000000028",
+        "origem": {
+          "x": 0,
+          "y": 0
+        },
+        "fechada": false,
+        "pavimento_id": "06400000-0000-4000-8000-000000000003",
+        "camada_id": null,
+        "visivel": true,
+        "perfil": "studio/1",
+        "segmentos": [
+          {
+            "id": "06400000-0000-4000-8000-000000000029",
+            "comprimento": 3000,
+            "angulo_absoluto": 0,
+            "angulo_relativo": 0,
+            "espessura": 150,
+            "pe_direito_inicial": 2600,
+            "pe_direito_final": 2600,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL",
+            "estado": "ativo"
+          }
+        ]
+      }
+    ],
+    "aberturas": [
+      {
+        "id": "06400000-0000-4000-8000-000000000014",
+        "tipo": "WINDOW",
+        "segmento_id": "06400000-0000-4000-8000-00000000000b",
+        "posicao": 400,
+        "largura": 800,
+        "altura": 900,
+        "peitoril": 900
+      }
+    ],
+    "modulos": [
+      {
+        "id": "06400000-0000-4000-8000-00000000001e",
+        "nome": "Balcão",
+        "posicao": {
+          "x": 347,
+          "y": -219,
+          "z": 43
+        },
+        "rotacao_z": 37,
+        "parametros": {
+          "tipo": "BASE",
+          "largura": 800,
+          "altura": 820,
+          "profundidade": 600,
+          "espessura": 15,
+          "material": "MDF",
+          "portas": "DOUBLE",
+          "construcao": {
+            "laterais": "PASSANTE",
+            "tampo": "ENTRE_LATERAIS",
+            "fundo": {
+              "modo": "CANAL",
+              "espessura": 6,
+              "encaixe": 8
+            },
+            "rodape": {
+              "altura": 0,
+              "recuo": 0
+            },
+            "porta": {
+              "modo": "SOBREPOSTA",
+              "folga": 2,
+              "folga_central": 2,
+              "espessura": 18
+            },
+            "prateleiras": {
+              "quantidade": 1,
+              "recuo_frontal": 20,
+              "folga_lateral": 1,
+              "espessura": 15
+            },
+            "divisorias": {
+              "quantidade": 0
+            },
+            "gavetas": {
+              "quantidade": 0,
+              "altura_frente": 180
+            },
+            "travessas": {
+              "quantidade": 0,
+              "largura": 80
+            },
+            "fitas": {
+              "frente": 1,
+              "demais": 0.45,
+              "portas": 1
+            }
+          },
+          "chapas_editadas": [
+            {
+              "papel": "PORTA",
+              "indice": 0,
+              "largura": 390,
+              "altura": 810,
+              "espessura": 18,
+              "veio": "VERTICAL",
+              "textura_id": "06400000-0000-4000-8000-000000000062"
+            }
+          ],
+          "plano_pai": {
+            "tipo": "FLOOR",
+            "id": null
+          },
+          "modelo": {
+            "id": "06400000-0000-4000-8000-000000000063",
+            "version": 4,
+            "escopo": "pessoal"
+          }
+        },
+        "pavimento_id": "06400000-0000-4000-8000-000000000002",
+        "camada_id": "06400000-0000-4000-8000-000000000050",
+        "visivel": true,
+        "perfil_construcao": "caffmob.modulo/v1"
+      }
+    ],
+    "pecas_avulsas": [
+      {
+        "id": "06400000-0000-4000-8000-00000000005c",
+        "nome": "Entidade",
+        "pavimento_id": "06400000-0000-4000-8000-000000000002",
+        "camada_id": null,
+        "visivel": false,
+        "posicao": {
+          "x": 123,
+          "y": 456,
+          "z": 7
+        },
+        "rotacao_z": 37,
+        "papel": "livre",
+        "dimensoes": {
+          "largura": 700,
+          "profundidade": 400,
+          "altura": 500
+        },
+        "espessura": 18,
+        "material_id": "06400000-0000-4000-8000-000000000046",
+        "veio": "HORIZONTAL",
+        "fitas": {
+          "topo": 1,
+          "base": 0,
+          "esquerda": 0.45,
+          "direita": 1
+        },
+        "recortes": [
+          {
+            "id": "06400000-0000-4000-8000-00000000005d",
+            "forma": "circular",
+            "posicao": {
+              "x": 200,
+              "y": 200
+            },
+            "diametro": 100
+          }
+        ]
+      }
+    ],
+    "primitivas": [
+      {
+        "id": "06400000-0000-4000-8000-00000000005e",
+        "nome": "Entidade",
+        "pavimento_id": "06400000-0000-4000-8000-000000000002",
+        "camada_id": null,
+        "visivel": false,
+        "posicao": {
+          "x": 123,
+          "y": 456,
+          "z": 7
+        },
+        "rotacao_z": 37,
+        "forma": "cilindro",
+        "material_id": "06400000-0000-4000-8000-000000000047",
+        "diametro": 200,
+        "altura": 500
+      },
+      {
+        "id": "06400000-0000-4000-8000-00000000005f",
+        "nome": "Entidade",
+        "pavimento_id": "06400000-0000-4000-8000-000000000002",
+        "camada_id": null,
+        "visivel": false,
+        "posicao": {
+          "x": 123,
+          "y": 456,
+          "z": 7
+        },
+        "rotacao_z": 37,
+        "forma": "placa",
+        "material_id": null,
+        "dimensoes": {
+          "largura": 20,
+          "altura": 30,
+          "profundidade": 40
+        }
+      }
+    ],
+    "escadas": [
+      {
+        "id": "06400000-0000-4000-8000-00000000005b",
+        "nome": "Entidade",
+        "pavimento_id": "06400000-0000-4000-8000-000000000002",
+        "camada_id": null,
+        "visivel": false,
+        "posicao": {
+          "x": 123,
+          "y": 456,
+          "z": 7
+        },
+        "rotacao_z": 37,
+        "tipo": "L",
+        "altura": 2750,
+        "largura": 800,
+        "espelho_alvo": 180,
+        "material": "concreto",
+        "laje_id": "06400000-0000-4000-8000-000000000066",
+        "furo_id": "06400000-0000-4000-8000-00000000005a"
+      }
+    ],
+    "itens_externos": [
+      {
+        "id": "06400000-0000-4000-8000-000000000060",
+        "nome": "Entidade",
+        "pavimento_id": "06400000-0000-4000-8000-000000000002",
+        "camada_id": null,
+        "visivel": false,
+        "posicao": {
+          "x": 123,
+          "y": 456,
+          "z": 7
+        },
+        "rotacao_z": 37,
+        "forma": "caixa",
+        "origem_tipo": "externo_blender",
+        "dimensoes": {
+          "largura": 500,
+          "profundidade": 800,
+          "altura": 900
+        },
+        "transformacao_origem": [
+          1,
+          0,
+          0,
+          123,
+          0,
+          1,
+          0,
+          456,
+          0,
+          0,
+          1,
+          7,
+          0,
+          0,
+          0,
+          1
+        ]
+      }
+    ],
+    "materiais": [
+      {
+        "id": "06400000-0000-4000-8000-000000000046",
+        "nome": "Madeira",
+        "tipo": "textura",
+        "textura_id": "06400000-0000-4000-8000-000000000062",
+        "escala_mm": {
+          "largura": 1500,
+          "altura": 750
+        },
+        "rotacao": 90
+      },
+      {
+        "id": "06400000-0000-4000-8000-000000000047",
+        "nome": "Cor",
+        "tipo": "cor",
+        "cor": "#abcdef",
+        "classe_visual": "gesso"
+      }
+    ],
+    "camadas": [
+      {
+        "id": "06400000-0000-4000-8000-000000000050",
+        "nome": "Camada",
+        "categoria": "ambiente",
+        "pavimento_id": "06400000-0000-4000-8000-000000000002",
+        "visivel": false
+      }
+    ],
+    "vinculos": [
+      {
+        "id": "06400000-0000-4000-8000-000000000061",
+        "origem_id": "06400000-0000-4000-8000-00000000001e",
+        "destino": {
+          "tipo": "segmento",
+          "id": "06400000-0000-4000-8000-00000000000b"
+        },
+        "deslocamento_mundial": {
+          "x": 1,
+          "y": 2,
+          "z": 3
+        },
+        "lado": "frente",
+        "afastamento": 20
+      }
+    ]
+  },
+  "esperado": {
+    "schema": "caffmob.ambiente/v2",
+    "id": "06400000-0000-4000-8000-000000000001",
+    "version": 1,
+    "atualizado_em": "2026-10-18T12:00:00.000Z",
+    "origem": "web",
+    "nome": "Cena Studio",
+    "unidade": "mm",
+    "eixos": "Z_UP",
+    "configuracao_geometrica": {
+      "perfil": "studio/1",
+      "espessuras": {
+        "caixa": 15,
+        "porta": 18,
+        "fundo": 6
+      }
+    },
+    "pavimentos": [
+      {
+        "id": "06400000-0000-4000-8000-000000000002",
+        "nome": "Térreo",
+        "ordem": 0,
+        "pe_direito": 2600,
+        "piso_material_id": "06400000-0000-4000-8000-000000000046",
+        "laje": {
+          "id": "06400000-0000-4000-8000-000000000066",
+          "ativa": true,
+          "tipo": "macica",
+          "espessura": 120,
+          "contrapiso": 30,
+          "beiral": 0,
+          "material_id": "06400000-0000-4000-8000-000000000047",
+          "contorno": [
+            {
+              "x": 0,
+              "y": 0
+            },
+            {
+              "x": 3000,
+              "y": 0
+            },
+            {
+              "x": 3000,
+              "y": 2000
+            },
+            {
+              "x": 0,
+              "y": 2000
+            }
+          ],
+          "recortes": [
+            {
+              "id": "06400000-0000-4000-8000-00000000005a",
+              "forma": "retangular",
+              "largura": 1000,
+              "altura": 500,
+              "escada_id": "06400000-0000-4000-8000-00000000005b",
+              "posicao": {
+                "x": 1500,
+                "y": 1000
+              }
+            }
+          ]
+        },
+        "forro": {
+          "tipo": "nenhum",
+          "material": "gesso",
+          "sanca": null
+        }
+      },
+      {
+        "id": "06400000-0000-4000-8000-000000000003",
+        "nome": "Andar",
+        "ordem": 1,
+        "pe_direito": 2600,
+        "laje": {
+          "id": "06400000-0000-4000-8000-000000000067",
+          "ativa": false,
+          "tipo": "macica",
+          "espessura": 120,
+          "contrapiso": 30,
+          "beiral": 0,
+          "recortes": []
+        },
+        "forro": {
+          "tipo": "sanca",
+          "material": "drywall",
+          "material_id": "06400000-0000-4000-8000-000000000047",
+          "sanca": {
+            "tipo": "invertida",
+            "largura": 200,
+            "rebaixo": 80,
+            "led": true
+          }
+        }
+      }
+    ],
+    "paredes": [
+      {
+        "id": "06400000-0000-4000-8000-00000000000a",
+        "fechada": false,
+        "pavimento_id": "06400000-0000-4000-8000-000000000002",
+        "camada_id": null,
+        "visivel": true,
+        "perfil": "studio/1",
+        "material_id": "06400000-0000-4000-8000-000000000046",
+        "origem": {
+          "x": 0,
+          "y": 0
+        },
+        "segmentos": [
+          {
+            "id": "06400000-0000-4000-8000-00000000000b",
+            "comprimento": 3000,
+            "angulo_absoluto": 0,
+            "angulo_relativo": 0,
+            "espessura": 150,
+            "pe_direito_inicial": 2600,
+            "pe_direito_final": 2600,
+            "afastamento": 0,
+            "flecha": 200,
+            "sentido": "LEFT",
+            "tipo": "NORMAL",
+            "estado": "ativo",
+            "material_interno_id": "06400000-0000-4000-8000-000000000046",
+            "material_externo_id": "06400000-0000-4000-8000-000000000047"
+          }
+        ]
+      },
+      {
+        "id": "06400000-0000-4000-8000-000000000028",
+        "fechada": false,
+        "pavimento_id": "06400000-0000-4000-8000-000000000003",
+        "camada_id": null,
+        "visivel": true,
+        "perfil": "studio/1",
+        "origem": {
+          "x": 0,
+          "y": 0
+        },
+        "segmentos": [
+          {
+            "id": "06400000-0000-4000-8000-000000000029",
+            "comprimento": 3000,
+            "angulo_absoluto": 0,
+            "angulo_relativo": 0,
+            "espessura": 150,
+            "pe_direito_inicial": 2600,
+            "pe_direito_final": 2600,
+            "afastamento": 0,
+            "flecha": 0,
+            "sentido": "LEFT",
+            "tipo": "NORMAL",
+            "estado": "ativo"
+          }
+        ]
+      }
+    ],
+    "aberturas": [
+      {
+        "id": "06400000-0000-4000-8000-000000000014",
+        "tipo": "WINDOW",
+        "segmento_id": "06400000-0000-4000-8000-00000000000b",
+        "posicao": 400,
+        "largura": 800,
+        "altura": 900,
+        "peitoril": 900
+      }
+    ],
+    "modulos": [
+      {
+        "id": "06400000-0000-4000-8000-00000000001e",
+        "nome": "Balcão",
+        "pavimento_id": "06400000-0000-4000-8000-000000000002",
+        "camada_id": "06400000-0000-4000-8000-000000000050",
+        "visivel": true,
+        "rotacao_z": 37,
+        "posicao": {
+          "x": 347,
+          "y": -219,
+          "z": 43
+        },
+        "perfil_construcao": "caffmob.modulo/v1",
+        "parametros": {
+          "tipo": "BASE",
+          "largura": 800,
+          "altura": 820,
+          "profundidade": 600,
+          "espessura": 15,
+          "material": "MDF",
+          "portas": "DOUBLE",
+          "construcao": {
+            "laterais": "PASSANTE",
+            "tampo": "ENTRE_LATERAIS",
+            "fundo": {
+              "modo": "CANAL",
+              "espessura": 6,
+              "encaixe": 8
+            },
+            "rodape": {
+              "altura": 0,
+              "recuo": 0
+            },
+            "porta": {
+              "modo": "SOBREPOSTA",
+              "folga": 2,
+              "folga_central": 2,
+              "espessura": 18
+            },
+            "prateleiras": {
+              "quantidade": 1,
+              "recuo_frontal": 20,
+              "folga_lateral": 1,
+              "espessura": 15
+            },
+            "divisorias": {
+              "quantidade": 0
+            },
+            "gavetas": {
+              "quantidade": 0,
+              "altura_frente": 180
+            },
+            "travessas": {
+              "quantidade": 0,
+              "largura": 80
+            },
+            "fitas": {
+              "frente": 1,
+              "demais": 0.45,
+              "portas": 1
+            }
+          },
+          "chapas_editadas": [
+            {
+              "papel": "PORTA",
+              "indice": 0,
+              "largura": 390,
+              "altura": 810,
+              "espessura": 18,
+              "veio": "VERTICAL",
+              "textura_id": "06400000-0000-4000-8000-000000000062"
+            }
+          ],
+          "plano_pai": {
+            "tipo": "FLOOR",
+            "id": null
+          },
+          "modelo": {
+            "id": "06400000-0000-4000-8000-000000000063",
+            "version": 4,
+            "escopo": "pessoal"
+          }
+        }
+      }
+    ],
+    "pecas_avulsas": [
+      {
+        "id": "06400000-0000-4000-8000-00000000005c",
+        "nome": "Entidade",
+        "pavimento_id": "06400000-0000-4000-8000-000000000002",
+        "camada_id": null,
+        "visivel": false,
+        "rotacao_z": 37,
+        "posicao": {
+          "x": 123,
+          "y": 456,
+          "z": 7
+        },
+        "papel": "livre",
+        "espessura": 18,
+        "material_id": "06400000-0000-4000-8000-000000000046",
+        "veio": "HORIZONTAL",
+        "dimensoes": {
+          "largura": 700,
+          "profundidade": 400,
+          "altura": 500
+        },
+        "fitas": {
+          "topo": 1,
+          "base": 0,
+          "esquerda": 0.45,
+          "direita": 1
+        },
+        "recortes": [
+          {
+            "id": "06400000-0000-4000-8000-00000000005d",
+            "forma": "circular",
+            "diametro": 100,
+            "posicao": {
+              "x": 200,
+              "y": 200
+            }
+          }
+        ]
+      }
+    ],
+    "primitivas": [
+      {
+        "id": "06400000-0000-4000-8000-00000000005e",
+        "nome": "Entidade",
+        "pavimento_id": "06400000-0000-4000-8000-000000000002",
+        "camada_id": null,
+        "visivel": false,
+        "rotacao_z": 37,
+        "posicao": {
+          "x": 123,
+          "y": 456,
+          "z": 7
+        },
+        "material_id": "06400000-0000-4000-8000-000000000047",
+        "forma": "cilindro",
+        "diametro": 200,
+        "altura": 500
+      },
+      {
+        "id": "06400000-0000-4000-8000-00000000005f",
+        "nome": "Entidade",
+        "pavimento_id": "06400000-0000-4000-8000-000000000002",
+        "camada_id": null,
+        "visivel": false,
+        "rotacao_z": 37,
+        "posicao": {
+          "x": 123,
+          "y": 456,
+          "z": 7
+        },
+        "material_id": null,
+        "forma": "placa",
+        "dimensoes": {
+          "largura": 20,
+          "profundidade": 40,
+          "altura": 30
+        }
+      }
+    ],
+    "escadas": [
+      {
+        "id": "06400000-0000-4000-8000-00000000005b",
+        "nome": "Entidade",
+        "pavimento_id": "06400000-0000-4000-8000-000000000002",
+        "camada_id": null,
+        "visivel": false,
+        "rotacao_z": 37,
+        "posicao": {
+          "x": 123,
+          "y": 456,
+          "z": 7
+        },
+        "tipo": "L",
+        "altura": 2750,
+        "largura": 800,
+        "espelho_alvo": 180,
+        "material": "concreto",
+        "laje_id": "06400000-0000-4000-8000-000000000066",
+        "furo_id": "06400000-0000-4000-8000-00000000005a"
+      }
+    ],
+    "itens_externos": [
+      {
+        "id": "06400000-0000-4000-8000-000000000060",
+        "nome": "Entidade",
+        "pavimento_id": "06400000-0000-4000-8000-000000000002",
+        "camada_id": null,
+        "visivel": false,
+        "rotacao_z": 37,
+        "posicao": {
+          "x": 123,
+          "y": 456,
+          "z": 7
+        },
+        "forma": "caixa",
+        "origem_tipo": "externo_blender",
+        "dimensoes": {
+          "largura": 500,
+          "profundidade": 800,
+          "altura": 900
+        },
+        "transformacao_origem": [
+          1,
+          0,
+          0,
+          123,
+          0,
+          1,
+          0,
+          456,
+          0,
+          0,
+          1,
+          7,
+          0,
+          0,
+          0,
+          1
+        ]
+      }
+    ],
+    "materiais": [
+      {
+        "id": "06400000-0000-4000-8000-000000000046",
+        "nome": "Madeira",
+        "tipo": "textura",
+        "textura_id": "06400000-0000-4000-8000-000000000062",
+        "rotacao": 90,
+        "escala_mm": {
+          "largura": 1500,
+          "altura": 750
+        }
+      },
+      {
+        "id": "06400000-0000-4000-8000-000000000047",
+        "nome": "Cor",
+        "tipo": "cor",
+        "cor": "#abcdef",
+        "classe_visual": "gesso"
+      }
+    ],
+    "camadas": [
+      {
+        "id": "06400000-0000-4000-8000-000000000050",
+        "nome": "Camada",
+        "categoria": "ambiente",
+        "pavimento_id": "06400000-0000-4000-8000-000000000002",
+        "visivel": false
+      }
+    ],
+    "vinculos": [
+      {
+        "id": "06400000-0000-4000-8000-000000000061",
+        "origem_id": "06400000-0000-4000-8000-00000000001e",
+        "lado": "frente",
+        "afastamento": 20,
+        "destino": {
+          "tipo": "segmento",
+          "id": "06400000-0000-4000-8000-00000000000b"
+        },
+        "deslocamento_mundial": {
+          "x": 1,
+          "y": 2,
+          "z": 3
+        }
+      }
+    ]
+  },
+  "canonico": "{\"aberturas\":[{\"altura\":900,\"id\":\"06400000-0000-4000-8000-000000000014\",\"largura\":800,\"peitoril\":900,\"posicao\":400,\"segmento_id\":\"06400000-0000-4000-8000-00000000000b\",\"tipo\":\"WINDOW\"}],\"atualizado_em\":\"2026-10-18T12:00:00.000Z\",\"camadas\":[{\"categoria\":\"ambiente\",\"id\":\"06400000-0000-4000-8000-000000000050\",\"nome\":\"Camada\",\"pavimento_id\":\"06400000-0000-4000-8000-000000000002\",\"visivel\":false}],\"configuracao_geometrica\":{\"espessuras\":{\"caixa\":15,\"fundo\":6,\"porta\":18},\"perfil\":\"studio/1\"},\"eixos\":\"Z_UP\",\"escadas\":[{\"altura\":2750,\"camada_id\":null,\"espelho_alvo\":180,\"furo_id\":\"06400000-0000-4000-8000-00000000005a\",\"id\":\"06400000-0000-4000-8000-00000000005b\",\"laje_id\":\"06400000-0000-4000-8000-000000000066\",\"largura\":800,\"material\":\"concreto\",\"nome\":\"Entidade\",\"pavimento_id\":\"06400000-0000-4000-8000-000000000002\",\"posicao\":{\"x\":123,\"y\":456,\"z\":7},\"rotacao_z\":37,\"tipo\":\"L\",\"visivel\":false}],\"id\":\"06400000-0000-4000-8000-000000000001\",\"itens_externos\":[{\"camada_id\":null,\"dimensoes\":{\"altura\":900,\"largura\":500,\"profundidade\":800},\"forma\":\"caixa\",\"id\":\"06400000-0000-4000-8000-000000000060\",\"nome\":\"Entidade\",\"origem_tipo\":\"externo_blender\",\"pavimento_id\":\"06400000-0000-4000-8000-000000000002\",\"posicao\":{\"x\":123,\"y\":456,\"z\":7},\"rotacao_z\":37,\"transformacao_origem\":[1,0,0,123,0,1,0,456,0,0,1,7,0,0,0,1],\"visivel\":false}],\"materiais\":[{\"escala_mm\":{\"altura\":750,\"largura\":1500},\"id\":\"06400000-0000-4000-8000-000000000046\",\"nome\":\"Madeira\",\"rotacao\":90,\"textura_id\":\"06400000-0000-4000-8000-000000000062\",\"tipo\":\"textura\"},{\"classe_visual\":\"gesso\",\"cor\":\"#abcdef\",\"id\":\"06400000-0000-4000-8000-000000000047\",\"nome\":\"Cor\",\"tipo\":\"cor\"}],\"modulos\":[{\"camada_id\":\"06400000-0000-4000-8000-000000000050\",\"id\":\"06400000-0000-4000-8000-00000000001e\",\"nome\":\"Balcão\",\"parametros\":{\"altura\":820,\"chapas_editadas\":[{\"altura\":810,\"espessura\":18,\"indice\":0,\"largura\":390,\"papel\":\"PORTA\",\"textura_id\":\"06400000-0000-4000-8000-000000000062\",\"veio\":\"VERTICAL\"}],\"construcao\":{\"divisorias\":{\"quantidade\":0},\"fitas\":{\"demais\":0.45,\"frente\":1,\"portas\":1},\"fundo\":{\"encaixe\":8,\"espessura\":6,\"modo\":\"CANAL\"},\"gavetas\":{\"altura_frente\":180,\"quantidade\":0},\"laterais\":\"PASSANTE\",\"porta\":{\"espessura\":18,\"folga\":2,\"folga_central\":2,\"modo\":\"SOBREPOSTA\"},\"prateleiras\":{\"espessura\":15,\"folga_lateral\":1,\"quantidade\":1,\"recuo_frontal\":20},\"rodape\":{\"altura\":0,\"recuo\":0},\"tampo\":\"ENTRE_LATERAIS\",\"travessas\":{\"largura\":80,\"quantidade\":0}},\"espessura\":15,\"largura\":800,\"material\":\"MDF\",\"modelo\":{\"escopo\":\"pessoal\",\"id\":\"06400000-0000-4000-8000-000000000063\",\"version\":4},\"plano_pai\":{\"id\":null,\"tipo\":\"FLOOR\"},\"portas\":\"DOUBLE\",\"profundidade\":600,\"tipo\":\"BASE\"},\"pavimento_id\":\"06400000-0000-4000-8000-000000000002\",\"perfil_construcao\":\"caffmob.modulo/v1\",\"posicao\":{\"x\":347,\"y\":-219,\"z\":43},\"rotacao_z\":37,\"visivel\":true}],\"nome\":\"Cena Studio\",\"origem\":\"web\",\"paredes\":[{\"camada_id\":null,\"fechada\":false,\"id\":\"06400000-0000-4000-8000-00000000000a\",\"material_id\":\"06400000-0000-4000-8000-000000000046\",\"origem\":{\"x\":0,\"y\":0},\"pavimento_id\":\"06400000-0000-4000-8000-000000000002\",\"perfil\":\"studio/1\",\"segmentos\":[{\"afastamento\":0,\"angulo_absoluto\":0,\"angulo_relativo\":0,\"comprimento\":3000,\"espessura\":150,\"estado\":\"ativo\",\"flecha\":200,\"id\":\"06400000-0000-4000-8000-00000000000b\",\"material_externo_id\":\"06400000-0000-4000-8000-000000000047\",\"material_interno_id\":\"06400000-0000-4000-8000-000000000046\",\"pe_direito_final\":2600,\"pe_direito_inicial\":2600,\"sentido\":\"LEFT\",\"tipo\":\"NORMAL\"}],\"visivel\":true},{\"camada_id\":null,\"fechada\":false,\"id\":\"06400000-0000-4000-8000-000000000028\",\"origem\":{\"x\":0,\"y\":0},\"pavimento_id\":\"06400000-0000-4000-8000-000000000003\",\"perfil\":\"studio/1\",\"segmentos\":[{\"afastamento\":0,\"angulo_absoluto\":0,\"angulo_relativo\":0,\"comprimento\":3000,\"espessura\":150,\"estado\":\"ativo\",\"flecha\":0,\"id\":\"06400000-0000-4000-8000-000000000029\",\"pe_direito_final\":2600,\"pe_direito_inicial\":2600,\"sentido\":\"LEFT\",\"tipo\":\"NORMAL\"}],\"visivel\":true}],\"pavimentos\":[{\"forro\":{\"material\":\"gesso\",\"sanca\":null,\"tipo\":\"nenhum\"},\"id\":\"06400000-0000-4000-8000-000000000002\",\"laje\":{\"ativa\":true,\"beiral\":0,\"contorno\":[{\"x\":0,\"y\":0},{\"x\":3000,\"y\":0},{\"x\":3000,\"y\":2000},{\"x\":0,\"y\":2000}],\"contrapiso\":30,\"espessura\":120,\"id\":\"06400000-0000-4000-8000-000000000066\",\"material_id\":\"06400000-0000-4000-8000-000000000047\",\"recortes\":[{\"altura\":500,\"escada_id\":\"06400000-0000-4000-8000-00000000005b\",\"forma\":\"retangular\",\"id\":\"06400000-0000-4000-8000-00000000005a\",\"largura\":1000,\"posicao\":{\"x\":1500,\"y\":1000}}],\"tipo\":\"macica\"},\"nome\":\"Térreo\",\"ordem\":0,\"pe_direito\":2600,\"piso_material_id\":\"06400000-0000-4000-8000-000000000046\"},{\"forro\":{\"material\":\"drywall\",\"material_id\":\"06400000-0000-4000-8000-000000000047\",\"sanca\":{\"largura\":200,\"led\":true,\"rebaixo\":80,\"tipo\":\"invertida\"},\"tipo\":\"sanca\"},\"id\":\"06400000-0000-4000-8000-000000000003\",\"laje\":{\"ativa\":false,\"beiral\":0,\"contrapiso\":30,\"espessura\":120,\"id\":\"06400000-0000-4000-8000-000000000067\",\"recortes\":[],\"tipo\":\"macica\"},\"nome\":\"Andar\",\"ordem\":1,\"pe_direito\":2600}],\"pecas_avulsas\":[{\"camada_id\":null,\"dimensoes\":{\"altura\":500,\"largura\":700,\"profundidade\":400},\"espessura\":18,\"fitas\":{\"base\":0,\"direita\":1,\"esquerda\":0.45,\"topo\":1},\"id\":\"06400000-0000-4000-8000-00000000005c\",\"material_id\":\"06400000-0000-4000-8000-000000000046\",\"nome\":\"Entidade\",\"papel\":\"livre\",\"pavimento_id\":\"06400000-0000-4000-8000-000000000002\",\"posicao\":{\"x\":123,\"y\":456,\"z\":7},\"recortes\":[{\"diametro\":100,\"forma\":\"circular\",\"id\":\"06400000-0000-4000-8000-00000000005d\",\"posicao\":{\"x\":200,\"y\":200}}],\"rotacao_z\":37,\"veio\":\"HORIZONTAL\",\"visivel\":false}],\"primitivas\":[{\"altura\":500,\"camada_id\":null,\"diametro\":200,\"forma\":\"cilindro\",\"id\":\"06400000-0000-4000-8000-00000000005e\",\"material_id\":\"06400000-0000-4000-8000-000000000047\",\"nome\":\"Entidade\",\"pavimento_id\":\"06400000-0000-4000-8000-000000000002\",\"posicao\":{\"x\":123,\"y\":456,\"z\":7},\"rotacao_z\":37,\"visivel\":false},{\"camada_id\":null,\"dimensoes\":{\"altura\":30,\"largura\":20,\"profundidade\":40},\"forma\":\"placa\",\"id\":\"06400000-0000-4000-8000-00000000005f\",\"material_id\":null,\"nome\":\"Entidade\",\"pavimento_id\":\"06400000-0000-4000-8000-000000000002\",\"posicao\":{\"x\":123,\"y\":456,\"z\":7},\"rotacao_z\":37,\"visivel\":false}],\"schema\":\"caffmob.ambiente/v2\",\"unidade\":\"mm\",\"version\":1,\"vinculos\":[{\"afastamento\":20,\"deslocamento_mundial\":{\"x\":1,\"y\":2,\"z\":3},\"destino\":{\"id\":\"06400000-0000-4000-8000-00000000000b\",\"tipo\":\"segmento\"},\"id\":\"06400000-0000-4000-8000-000000000061\",\"lado\":\"frente\",\"origem_id\":\"06400000-0000-4000-8000-00000000001e\"}]}"
+}

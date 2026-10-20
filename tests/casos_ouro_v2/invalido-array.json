@@ -1,0 +1,11 @@
+{
+  "tipo": "validacao",
+  "entrada": [],
+  "esperado": [
+    {
+      "caminho": "documento",
+      "codigo": "ESQUEMA",
+      "mensagem": "Informe um objeto de documento."
+    }
+  ]
+}
