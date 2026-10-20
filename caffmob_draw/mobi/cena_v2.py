@@ -1,9 +1,10 @@
 """065 T114 a T117: documento v2 validado → cena, com troca apenas ao concluir.
 
 Parede do contrato é a fonte da verdade. Não cria parede do Home Builder nem
-estado walls2d. Transporte, progresso e cancelamento pertencem à T118.
+estado walls2d. Montagem incremental da T118 mantém o preparo fora da cena.
 """
 import math
+from functools import partial
 import bmesh  # type: ignore
 import bpy  # type: ignore
 from ..caffmob.v2.validacao import validar_documento
@@ -94,7 +95,8 @@ def _aberturas(documento, parede, colecao, z):
 def _modulo(context, documento, modulo, colecao, z, materiais):
     legado = dict(modulo['parametros'], id=modulo['id'], nome=modulo['nome'],
                   posicao=modulo['posicao'], rotacao_z=modulo['rotacao_z'])
-    obj = cena.criar_modulo(context, legado, colecao=colecao)
+    obj = cena.criar_modulo(context, legado, colecao=colecao,
+                            material_da_chapa=lambda _imagens, _tid: _material(materiais))
     obj.location.z += z / 1000
     _dados(obj, modulo, 'modulo', modulo['pavimento_id'])
     obj['caffmob_modulo_v2'] = serializar(modulo)
@@ -104,6 +106,7 @@ def _modulo(context, documento, modulo, colecao, z, materiais):
     # Reusa as caixas e o construtor da 063, trocando somente aparência/UVs. Uma
     # variante por veio evita girar juntas chapas horizontais e verticais.
     frentes_ocultas = []
+    faces_do_modulo = list(obj.data.polygons)
     for j, b in enumerate(caixas_das_chapas(legado)):
         dado = next((m for m in documento['materiais'] if m['tipo'] == 'textura' and m['textura_id'] == b['textura_id']), None)
         if dado is None and b['textura_id']:
@@ -114,7 +117,7 @@ def _modulo(context, documento, modulo, colecao, z, materiais):
             obj.data.materials.append(mat)
         indice = obj.data.materials.find(mat.name)
         categoria = ('portas_dormitorio' if legado['tipo'] == 'TALL' else 'portas_cozinha') if b['papel'] in ('PORTA', 'FRENTE_DE_GAVETA') else None
-        for face in list(obj.data.polygons)[j * 6:(j + 1) * 6]:
+        for face in faces_do_modulo[j * 6:(j + 1) * 6]:
             face.material_index = indice
             # O UV usa a caixa original em mm, com comprimento X, profundidade Y
             # e Z vertical. A escala não depende do tamanho final da chapa.
@@ -183,6 +186,12 @@ def _obra(documento, p, colecao, z, materiais):
 
 
 def _remover_colecao(colecao, context=None):
+    if context is not None:
+        for obj in colecao.all_objects:
+            if not obj.get('caffmob_tipo') and obj.parent and obj.parent.get('caffmob_tipo'):
+                mundo = obj.matrix_world.copy()
+                obj.parent = None
+                obj.matrix_world = mundo
     for child in list(colecao.children):
         _remover_colecao(child, context)
     for obj in list(colecao.objects):
@@ -202,89 +211,163 @@ def _remover_colecao(colecao, context=None):
     bpy.data.collections.remove(colecao)
 
 
+class Montagem:
+    """Preparo incremental, com propriedade explícita dos dados que criou.
+
+    Os passos rodam na thread principal. O registro por passo evita recolher
+    dados locais criados pelo usuário entre dois disparos do timer.
+    """
+    TIPOS = ('objects', 'collections', 'meshes', 'materials', 'images')
+
+    def __init__(self, context, documento, etag=None):
+        self.context, self.documento, self.etag = context, documento, etag
+        self.preparo, self.concluida = None, False
+        self.colecoes = {}
+        self.criados = {tipo: set() for tipo in self.TIPOS}
+        self.elevacoes = obra.elevacoes_dos_pavimentos(documento)
+        self.materiais = dict(dados={m['id']: m for m in documento['materiais']}, cache={})
+        for classe, cor in (('concreto', '#b5b5b5'), ('porcelanato', '#eeeeea'), ('madeira', '#b99770'),
+                            ('gesso', '#eee9de'), ('drywall', '#eee9de'), ('pvc', '#efefeb')):
+            self.materiais['dados']['studio/' + classe] = dict(nome=classe.capitalize(), tipo='cor', cor=cor,
+                                                             classe_visual='gesso' if classe == 'drywall' else classe)
+
+    def _executar(self, funcao):
+        antes = {tipo: {x.as_pointer() for x in getattr(bpy.data, tipo)} for tipo in self.TIPOS}
+        try:
+            funcao()
+        finally:
+            for tipo in self.TIPOS:
+                self.criados[tipo].update(x for x in getattr(bpy.data, tipo) if x.as_pointer() not in antes[tipo])
+
+    def _iniciar(self):
+        self.preparo = bpy.data.collections.new('CAFF MOB preparo v2')
+        self.preparo['caffmob_schema'] = self.documento['schema']
+        self.preparo['caffmob_id'] = self.documento['id']
+        self.preparo['caffmob_camadas'] = serializar(self.documento['camadas'])
+
+    def _pavimento(self, p):
+        colecao = bpy.data.collections.new(p['nome'])
+        self.preparo.children.link(colecao)
+        colecao['caffmob_id'] = p['id']
+        colecao['caffmob_pavimento'] = serializar(p)
+        colecao['caffmob_ordem'] = p['ordem']
+        colecao['caffmob_z_mm'] = self.elevacoes[p['id']]
+        colecao['caffmob_nome'] = p['nome']
+        self.colecoes[p['id']] = colecao
+
+    def _parede(self, parede):
+        colecao, z = self.colecoes[parede['pavimento_id']], self.elevacoes[parede['pavimento_id']]
+        obj = _malha(colecao, 'Parede ' + parede['id'][:8], obra.malha_da_parede(self.documento, parede), self.materiais)
+        _dados(obj, parede, 'parede', parede['pavimento_id'])
+        obj['caffmob_parede'] = serializar(parede)
+        obj['caffmob_aberturas'] = serializar([a for a in self.documento['aberturas'] if a['segmento_id'] in {s['id'] for s in parede['segmentos']}])
+        obj.location.z = z / 1000
+        _visibilidade(obj, self.documento, parede, 'paredes')
+
+    def _entidade(self, tipo, e):
+        m = obra.malha_da_escada(e) if tipo == 'escada' else obra.malha_da_entidade(e)
+        obj = _malha(self.colecoes[e['pavimento_id']], e['nome'], m, self.materiais,
+                     {k: e.get('material_id', 'studio/' + e['material'] if tipo == 'escada' else None)
+                      for k in ('cima', 'baixo', 'lateral')}, e.get('veio', 'HORIZONTAL'))
+        _dados(obj, e, tipo, e['pavimento_id'])
+        _lugar(obj, e, self.elevacoes[e['pavimento_id']])
+        _visibilidade(obj, self.documento, e, None)
+        if tipo == 'escada':
+            obj['caffmob_degraus'] = obra.calcular_escada(e)['degraus']
+            obj['caffmob_blocos'] = len(obra.calcular_escada(e)['blocos'])
+            obj['caffmob_laje_id'] = e['laje_id'] or ''
+            obj['caffmob_furo_id'] = e.get('furo_id', '')
+        if 'transformacao_origem' in e:
+            obj['caffmob_transformacao_origem'] = e['transformacao_origem']
+
+    def passos(self):
+        """Uma unidade de construção por tick; aberturas cedem entre si."""
+        yield 'pavimentos', partial(self._executar, self._iniciar)
+        for p in sorted(self.documento['pavimentos'], key=lambda p: p['ordem']):
+            yield 'pavimentos', partial(self._executar, partial(self._pavimento, p))
+        for parede in self.documento['paredes']:
+            yield 'paredes', partial(self._executar, partial(self._parede, parede))
+            ids = {s['id'] for s in parede['segmentos']}
+            for abertura in self.documento['aberturas']:
+                if abertura['segmento_id'] in ids:
+                    doc = dict(self.documento, aberturas=[abertura])
+                    yield 'paredes', partial(self._executar, partial(_aberturas, doc, parede,
+                        self.colecoes[parede['pavimento_id']], self.elevacoes[parede['pavimento_id']]))
+        for p in self.documento['pavimentos']:
+            yield 'obra', partial(self._executar, partial(_obra, self.documento, p,
+                self.colecoes[p['id']], self.elevacoes[p['id']], self.materiais))
+        for e in self.documento['escadas']:
+            yield 'obra', partial(self._executar, partial(self._entidade, 'escada', e))
+        for modulo in self.documento['modulos']:
+            yield 'moveis', partial(self._executar, partial(_modulo, self.context, self.documento, modulo,
+                self.colecoes[modulo['pavimento_id']], self.elevacoes[modulo['pavimento_id']], self.materiais))
+        for tipo, familia in (('peca_avulsa', 'pecas_avulsas'), ('primitiva', 'primitivas'), ('item_externo', 'itens_externos')):
+            for e in self.documento[familia]:
+                yield 'moveis', partial(self._executar, partial(self._entidade, tipo, e))
+        # Serialização ainda no preparo; falha aqui também preserva o ambiente ativo.
+        yield 'moveis', self._guardar
+        yield 'texturas', lambda: None
+
+    def _guardar(self):
+        self.guardado = serializar(self.documento)
+
+    def cancelar(self):
+        if self.concluida:
+            return
+        # Objetos antes de coleções; só dados deste preparo e sem usuários externos.
+        for tipo in self.TIPOS:
+            for dado in self.criados[tipo]:
+                try:
+                    if tipo in ('objects', 'collections'):
+                        getattr(bpy.data, tipo).remove(dado, do_unlink=True)
+                    elif dado.users == 0:
+                        getattr(bpy.data, tipo).remove(dado)
+                except ReferenceError:
+                    pass
+            self.criados[tipo].clear()
+        self.preparo = None
+
+    def concluir(self):
+        context, documento, preparo = self.context, self.documento, self.preparo
+        antiga = next((c for c in context.scene.collection.children
+                       if c.name == NOME_DA_COLECAO or c.get('caffmob_schema') == documento['schema']), None)
+        context.scene.collection.children.link(preparo)
+        context.scene['caffmob_ambiente'] = self.guardado
+        context.scene['caffmob_versao'] = documento.get('version', 0)
+        if self.etag is not None:
+            context.scene['caffmob_etag_v2'] = self.etag
+            context.scene['caffmob_base_v2'] = self.guardado
+        if antiga:
+            _remover_colecao(antiga, context)
+        preparo.name = NOME_DA_COLECAO
+        for p in documento['pavimentos']:
+            self.colecoes[p['id']].name = p['nome']
+        context.scene.unit_settings.system = 'METRIC'
+        context.scene.unit_settings.scale_length = 1
+        self.concluida = True
+        return preparo
+
+    def texturas(self):
+        try:
+            materiais_v2.baixar_pendentes(self.preparo)
+        except Exception:
+            for material in self.materiais['cache'].values():
+                material['caffmob_baixando'] = False
+
+
 def construir_cena(context, documento):
-    """Retorna a coleção ativa. Erro antes do commit deixa a cena anterior intacta."""
+    """Entrada síncrona das provas de geometria; o botão usa Montagem incremental."""
     erros = validar_documento(documento)
     if erros:
         raise ValueError(str(erros))
-    antes = {tipo: {x.as_pointer() for x in getattr(bpy.data, tipo)}
-             for tipo in ('objects', 'collections', 'meshes', 'materials', 'images')}
-    preparo = bpy.data.collections.new('CAFF MOB preparo v2')
-    preparo['caffmob_schema'] = documento['schema']
-    preparo['caffmob_id'] = documento['id']
-    preparo['caffmob_camadas'] = serializar(documento['camadas'])
-    elevacoes = obra.elevacoes_dos_pavimentos(documento)
-    materiais = dict(dados={m['id']: m for m in documento['materiais']}, cache={})
-    for classe, cor in (('concreto', '#b5b5b5'), ('porcelanato', '#eeeeea'), ('madeira', '#b99770'),
-                        ('gesso', '#eee9de'), ('drywall', '#eee9de'), ('pvc', '#efefeb')):
-        materiais['dados']['studio/' + classe] = dict(nome=classe.capitalize(), tipo='cor', cor=cor,
-                                                     classe_visual='gesso' if classe == 'drywall' else classe)
-    colecoes = {}
+    montagem = Montagem(context, documento)
     try:
-        for p in sorted(documento['pavimentos'], key=lambda p: p['ordem']):
-            colecao = bpy.data.collections.new(p['nome'])
-            preparo.children.link(colecao)
-            colecao['caffmob_id'] = p['id']
-            colecao['caffmob_pavimento'] = serializar(p)
-            colecao['caffmob_ordem'] = p['ordem']
-            colecao['caffmob_z_mm'] = elevacoes[p['id']]
-            colecao['caffmob_nome'] = p['nome']
-            colecoes[p['id']] = colecao
-        for parede in documento['paredes']:
-            colecao, z = colecoes[parede['pavimento_id']], elevacoes[parede['pavimento_id']]
-            obj = _malha(colecao, 'Parede ' + parede['id'][:8], obra.malha_da_parede(documento, parede), materiais)
-            _dados(obj, parede, 'parede', parede['pavimento_id'])
-            obj['caffmob_parede'] = serializar(parede)
-            obj['caffmob_aberturas'] = serializar([a for a in documento['aberturas'] if a['segmento_id'] in {s['id'] for s in parede['segmentos']}])
-            obj.location.z = z / 1000
-            _visibilidade(obj, documento, parede, 'paredes')
-            _aberturas(documento, parede, colecao, z)
-        for modulo in documento['modulos']:
-            _modulo(context, documento, modulo, colecoes[modulo['pavimento_id']], elevacoes[modulo['pavimento_id']], materiais)
-        for tipo, familia in (('peca_avulsa', 'pecas_avulsas'), ('primitiva', 'primitivas'), ('item_externo', 'itens_externos'), ('escada', 'escadas')):
-            for e in documento[familia]:
-                m = obra.malha_da_escada(e) if tipo == 'escada' else obra.malha_da_entidade(e)
-                obj = _malha(colecoes[e['pavimento_id']], e['nome'], m, materiais,
-                             {k: e.get('material_id', 'studio/' + e['material'] if tipo == 'escada' else None)
-                              for k in ('cima', 'baixo', 'lateral')}, e.get('veio', 'HORIZONTAL'))
-                _dados(obj, e, tipo, e['pavimento_id'])
-                _lugar(obj, e, elevacoes[e['pavimento_id']])
-                _visibilidade(obj, documento, e, None)
-                if tipo == 'escada':
-                    obj['caffmob_degraus'] = obra.calcular_escada(e)['degraus']
-                    obj['caffmob_blocos'] = len(obra.calcular_escada(e)['blocos'])
-                    obj['caffmob_laje_id'] = e['laje_id'] or ''
-                    obj['caffmob_furo_id'] = e.get('furo_id', '')
-                if 'transformacao_origem' in e:
-                    obj['caffmob_transformacao_origem'] = e['transformacao_origem']
-        for p in documento['pavimentos']:
-            _obra(documento, p, colecoes[p['id']], elevacoes[p['id']], materiais)
-        guardado = serializar(documento)
+        for _etapa, passo in montagem.passos():
+            passo()
+        colecao = montagem.concluir()
     except Exception:
-        _remover_colecao(preparo)
-        for tipo, ids in antes.items():
-            for dado in list(getattr(bpy.data, tipo)):
-                if dado.as_pointer() not in ids and dado.users == 0:
-                    getattr(bpy.data, tipo).remove(dado)
+        montagem.cancelar()
         raise
-    # A coleção de preparo ficou fora da árvore da cena até este ponto.
-    antiga = next((c for c in context.scene.collection.children if c.name == NOME_DA_COLECAO or c.get('caffmob_schema') == documento['schema']), None)
-    context.scene.collection.children.link(preparo)
-    context.scene['caffmob_ambiente'] = guardado
-    context.scene['caffmob_versao'] = documento.get('version', 0)
-    if antiga:
-        _remover_colecao(antiga, context)
-    preparo.name = NOME_DA_COLECAO
-    for p in documento['pavimentos']:
-        colecoes[p['id']].name = p['nome']
-    context.scene.unit_settings.system = 'METRIC'
-    context.scene.unit_settings.scale_length = 1
     context.view_layer.update()
-    # Download é posterior ao commit e nunca invalida uma cena montada.
-    try:
-        materiais_v2.baixar_pendentes(preparo)
-    except Exception:
-        # Uma fila/cache indisponível não transforma um commit bem-sucedido em erro.
-        for material in materiais['cache'].values():
-            material['caffmob_baixando'] = False
-    return preparo
+    montagem.texturas()
+    return colecao

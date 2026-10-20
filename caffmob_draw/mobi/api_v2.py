@@ -36,6 +36,7 @@ def cliente(context, job, sessao=None, v1=None):
         from ..texture_library import downloads
         if _sessao.get('servidor') != downloads.server_url():
             _sessao.clear()
+            _sessao['servidor'] = downloads.server_url()
     return ClienteV2(job.request, ArmazenamentoCena(context.scene), _sessao if sessao is None else sessao,
                      online=lambda: bpy.app.online_access, v1=v1)
 
@@ -55,9 +56,28 @@ def na_conexao(context, mensagem):
         if base != downloads.server_url():
             _sessao.clear()
         job.finish(mensagem)
+        if base == downloads.server_url() and not resultado.mensagem:
+            retomar_texturas(context)
     cliente(context, job).descobrir(recebido)
     return job
 
 
 def encerrar_sessao():
     _sessao.clear()
+
+
+def retomar_texturas(context):
+    """Após reconexão, tenta apenas as texturas pendentes da coleção ativa v2."""
+    import bpy  # type: ignore
+    from . import materiais_v2
+    colecoes = [c for c in context.scene.collection.children if c.get('caffmob_schema') == 'caffmob.ambiente/v2']
+    if not colecoes:
+        return
+    def tick():
+        for colecao in colecoes:
+            try:
+                materiais_v2.baixar_pendentes(colecao)
+            except (ReferenceError, RuntimeError):
+                pass
+        return None
+    bpy.app.timers.register(tick, first_interval=0.01)

@@ -98,8 +98,13 @@ def draw_mobi_account(layout):
 
 def draw_mobi(layout, context):
     from ..texture_library import auth, downloads
+    from ..mobi.baixar_v2 import rotulo
     state = context.window_manager.btm_caffmob
     draw_mobi_account(layout)
+    if state.relatorio_v2:
+        report = layout.box()
+        for linha in state.relatorio_v2.splitlines():
+            report.label(text=linha, icon='ERROR')
     content = layout.column()
     content.enabled = auth.signed_in() and not state.ocupado and not downloads.unavailable_reason()
     content.separator()
@@ -108,7 +113,9 @@ def draw_mobi(layout, context):
     for item in state.ambientes:
         row = content.row(align=True)
         row.label(text=item.nome)
-        row.operator('caffmob.mobi_baixar_ambiente', text=tr("Baixar"), icon='IMPORT').ambiente_id = item.id
+        row.label(text=rotulo(item.schema))
+        baixar = row.operator('caffmob.mobi_baixar_ambiente', text=tr("Baixar"), icon='IMPORT')
+        baixar.ambiente_id, baixar.schema = item.id, item.schema
     if state.proximo_ambiente:
         content.operator('caffmob.mobi_listar_ambientes', text=tr("Carregar mais ambientes")).mais = True
     content.operator('caffmob.mobi_enviar_ambiente', text=tr("Enviar ambiente"), icon='EXPORT')
@@ -136,7 +143,7 @@ def draw_mobi(layout, context):
         layout.label(text=state.situacao)
     waiting = auth.login_state()[0] == 'WAITING'
     if state.ocupado:
-        layout.progress(factor=state.progresso, type='BAR', text=tr("Progresso"))
+        layout.progress(factor=state.progresso, type='BAR', text=state.situacao or tr("Progresso"))
     if state.ocupado or waiting:
         layout.operator('caffmob.mobi_cancelar', text=tr("Cancelar"), icon='CANCEL')
 

@@ -6,6 +6,9 @@ from ..data.i18n import N_, tr
 from ..caffmob.contrato import ler_documento, serializar, sem_envelope_do_servidor
 from ..caffmob.validacao import validar_ambiente
 from . import cena, tarefas, texturas, respostas
+from . import api_v2, baixar_v2, cena_v2
+from .api_v2_core import SCHEMA_V1, SCHEMA_V2
+from ..caffmob.v2.validacao import validar_documento
 from .cena import regenerar_parede
 from ..caffmob.geometria import mudar_comprimento
 from ..caffmob.contrato import arredondar_medida, arredondar_angulo
@@ -15,6 +18,50 @@ LOADING = N_('Baixando ambiente e texturas…')
 SENDING = N_('Enviando ambiente ao MOBI…')
 INVALID = N_('Documento recusado: {}')
 CONFLICT = N_('HTTP 409: escolha entre a versão do Blender e a versão do MOBI')
+LOADING_V2 = N_('Baixando ambiente do Studio…')
+
+
+def baixar_documento_v2(context, job, ambiente_id):
+    """Cliente da T112, validação integral e preparo cancelável antes da troca."""
+    context.window_manager.btm_caffmob.relatorio_v2 = ''
+    def received(status, body, incoming):
+        if status != 200:
+            job.finish(respostas.message(status, body, incoming))
+            return
+        errors = validar_documento(body)
+        if not errors and body['id'] != ambiente_id:
+            errors = [dict(caminho='id', codigo='ID_DIVERGENTE', mensagem=tr(ID_DIVERGENTE))]
+        if errors:
+            report = baixar_v2.relatorio(errors)
+            context.window_manager.btm_caffmob.relatorio_v2 = report
+            job.finish(tr(INVALID).format(report))
+            return
+        etag = baixar_v2.revisao(body, incoming)
+        montagem = cena_v2.Montagem(context, body, etag)
+        def progress(etapa, valor):
+            if job.alive():
+                context.window_manager.btm_caffmob.situacao = tr(baixar_v2.ETAPAS[etapa])
+                job.progress(valor)
+        preparo = baixar_v2.Preparo(montagem, progress)
+        def commit(context):
+            montagem.concluir()
+            # A fila de textura começa em outro tick, depois de a cena estar ativa.
+            def textures():
+                try:
+                    if montagem.preparo.name in bpy.data.collections:
+                        montagem.texturas()
+                except ReferenceError:
+                    pass
+                return None
+            try:
+                bpy.app.timers.register(textures, first_interval=0.01)
+            except RuntimeError:
+                pass  # A textura conserva a cor de reserva se a fila estiver indisponível.
+        job.preparar_em_passos(preparo, commit)
+    api_v2.cliente(context, job).ler(quote(ambiente_id, safe=''), received)
+
+
+ID_DIVERGENTE = N_('O documento recebido pertence a outro ambiente')
 
 
 def same_document(a, b):
@@ -75,7 +122,7 @@ class MOBI_OT_ListarAmbientes(bpy.types.Operator):
 
     def execute(self, context):
         state = context.window_manager.btm_caffmob
-        previous = [dict(id=i.id, nome=i.nome, version=i.version) for i in state.ambientes] if self.mais else []
+        previous = [dict(id=i.id, nome=i.nome, version=i.version, schema=i.schema) for i in state.ambientes] if self.mais else []
         cursor = state.proximo_ambiente if self.mais else ''
         job = tarefas.Job(context, LISTING)
         def received(status, body, incoming):
@@ -88,9 +135,24 @@ class MOBI_OT_ListarAmbientes(bpy.types.Operator):
                 for raw in previous + body['itens']:
                     item = target.ambientes.add()
                     item.id, item.nome, item.version = raw['id'], raw['nome'], raw['version']
+                    item.schema = raw.get('schema', SCHEMA_V1)
                 target.proximo_ambiente = body.get('proximo') or ''
             job.apply(commit)
-        job.request('GET', '/api/draw/v1/ambientes?' + urlencode({'depois':cursor or '0'}), callback=received)
+        client = api_v2.cliente(context, job)
+        def list_page():
+            if baixar_v2.lista_v2(client.sessao.get('capacidades')):
+                client.listar(received, cursor or '0')
+            else:
+                job.request('GET', '/api/draw/v1/ambientes?' + urlencode({'depois':cursor or '0'}), callback=received)
+        if client.sessao.get('capacidades') is None:
+            def discovered(resultado):
+                if resultado.mensagem:
+                    job.finish(resultado.mensagem)
+                else:
+                    list_page()
+            client.descobrir(discovered)
+        else:
+            list_page()
         return {'FINISHED'}
 
 
@@ -99,8 +161,17 @@ class MOBI_OT_BaixarAmbiente(bpy.types.Operator):
     bl_idname = 'caffmob.mobi_baixar_ambiente'
     bl_label = 'Baixar ambiente do MOBI'
     ambiente_id: bpy.props.StringProperty()  # type: ignore
+    schema: bpy.props.StringProperty(default=SCHEMA_V1)  # type: ignore
 
     def execute(self, context):
+        schema = baixar_v2.schema_do_item(context.window_manager.btm_caffmob.ambientes, self.ambiente_id, self.schema)
+        if schema == SCHEMA_V2:
+            job = tarefas.Job(context, LOADING_V2)
+            try:
+                baixar_documento_v2(context, job, self.ambiente_id)
+            except (ValueError, RuntimeError) as exc:
+                job.finish(str(exc))
+            return {'FINISHED'}
         job = tarefas.Job(context, LOADING)
         def received(status, body, incoming):
             if status != 200:

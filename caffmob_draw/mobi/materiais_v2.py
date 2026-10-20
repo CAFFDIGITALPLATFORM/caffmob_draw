@@ -23,7 +23,7 @@ def criar_material(dado=None, veio='HORIZONTAL', emissivo=False):
     if dado.get('id'):
         m['caffmob_id'] = dado['id']
     m.diffuse_color = _cor(dado.get('cor', COR_RESERVA))
-    bsdf = m.node_tree.nodes.get('Principled BSDF')
+    bsdf = next(n for n in m.node_tree.nodes if n.type == 'BSDF_PRINCIPLED')
     bsdf.inputs['Base Color'].default_value = m.diffuse_color
     bsdf.inputs['Roughness'].default_value = 0.75
     classe = dado.get('classe_visual', 'mdf')
@@ -48,13 +48,13 @@ def criar_material(dado=None, veio='HORIZONTAL', emissivo=False):
 
 def _aplicar_imagem(m, dado, path):
     tree = m.node_tree
-    bsdf = tree.nodes.get('Principled BSDF')
+    bsdf = next(n for n in tree.nodes if n.type == 'BSDF_PRINCIPLED')
     # Os UVs estão em mm. Esta ordem reproduz a matriz de Three.Texture, inclusive
     # escala anisotrópica, centro 0,5 e giro do veio vertical somado à rotação.
     image = bpy.data.images.load(path, check_existing=True)
     escala = escala_da_textura(dado.get('escala_mm'), dict(largura=image.size[0], altura=image.size[1]))
     for node in list(tree.nodes):
-        if node not in (bsdf, tree.nodes.get('Material Output')):
+        if node not in (bsdf, next(n for n in tree.nodes if n.type == 'OUTPUT_MATERIAL')):
             tree.nodes.remove(node)
     uv = tree.nodes.new('ShaderNodeTexCoord')
     sub = tree.nodes.new('ShaderNodeVectorMath')

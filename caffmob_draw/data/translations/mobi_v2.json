@@ -46,5 +46,49 @@
   "Escolha de conflito inválida": {
     "pt_BR": "Escolha de conflito inválida",
     "en_US": "Invalid conflict choice"
+  },
+  "Montando pavimentos…": {
+    "pt_BR": "Montando pavimentos…",
+    "en_US": "Building floors…"
+  },
+  "Montando paredes…": {
+    "pt_BR": "Montando paredes…",
+    "en_US": "Building walls…"
+  },
+  "Montando obra…": {
+    "pt_BR": "Montando obra…",
+    "en_US": "Building construction…"
+  },
+  "Montando móveis…": {
+    "pt_BR": "Montando móveis…",
+    "en_US": "Building furniture…"
+  },
+  "Solicitando texturas…": {
+    "pt_BR": "Solicitando texturas…",
+    "en_US": "Requesting textures…"
+  },
+  "v 1": {
+    "pt_BR": "v 1",
+    "en_US": "v 1"
+  },
+  "v 2": {
+    "pt_BR": "v 2",
+    "en_US": "v 2"
+  },
+  "Revisão do ambiente inválida. A cena foi preservada": {
+    "pt_BR": "Revisão do ambiente inválida. A cena foi preservada",
+    "en_US": "Invalid environment revision. The scene was preserved"
+  },
+  "{}: {} ({})": {
+    "pt_BR": "{}: {} ({})",
+    "en_US": "{}: {} ({})"
+  },
+  "Baixando ambiente do Studio…": {
+    "pt_BR": "Baixando ambiente do Studio…",
+    "en_US": "Downloading Studio environment…"
+  },
+  "O documento recebido pertence a outro ambiente": {
+    "pt_BR": "O documento recebido pertence a outro ambiente",
+    "en_US": "The received document belongs to another environment"
   }
 }
