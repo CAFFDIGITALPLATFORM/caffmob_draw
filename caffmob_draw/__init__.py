@@ -40,6 +40,7 @@ from . import collision
 from . import cabinet_editor
 from . import object_library
 from . import openings
+from . import cladding
 from .selection import component_props, component_select, component_pick
 from . import legacy
 from . import library_panel
@@ -329,6 +330,7 @@ def register():
     cabinet_editor.register()
     object_library.register()
     openings.register()
+    cladding.register()
     # Seleção por componente (feature 011)
     for _module in (component_props, component_select, component_pick):
         _module.register()
@@ -390,6 +392,7 @@ def unregister():
     legacy.unregister()
     for _module in (component_pick, component_select, component_props):
         _module.unregister()
+    cladding.unregister()
     openings.unregister()
     object_library.unregister()
     cabinet_editor.unregister()

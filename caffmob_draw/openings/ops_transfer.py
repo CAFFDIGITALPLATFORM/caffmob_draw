@@ -57,7 +57,10 @@ def blocked(context, door, wall, x):
 
 
 def cladding_changed(_door, _old_wall, _new_wall):
-    """Ponto de extensão da onda 4 (T083)."""
+    """Recalcula origem e destino no mesmo passo de Desfazer do portal (T083)."""
+    from ..cladding import sync as cladding_sync
+    bpy.context.view_layer.update()
+    cladding_sync.sync_hosts({_old_wall, _new_wall})
 
 
 def transfer(context, door, wall, reference='START', distance=0.0, chosen=None):
