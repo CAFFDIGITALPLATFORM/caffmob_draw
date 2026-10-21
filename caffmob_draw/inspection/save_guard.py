@@ -26,6 +26,11 @@ def close_for_save():
         if _saves_open(scene):
             continue
         for front in fronts.iter_fronts(scene):
+            from ..openings.ops import door_of
+            from .room_door_leaf import has_real_door
+            door = door_of(front.obj)
+            if door is not None and has_real_door(door):
+                continue  # RF-037 da 066: porta de ambiente conserva a abertura também no arquivo.
             if front.key in seen:
                 continue
             seen.add(front.key)

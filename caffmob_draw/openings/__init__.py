@@ -10,8 +10,9 @@
 
 def _modules():
     from ..ui import view_mode
-    from . import ops, props, region, region_props
-    return (props, ops, view_mode, region_props, region)
+    from . import ops, ops_transfer, props, region, region_props
+    from .. import identity_migration
+    return (props, ops, view_mode, region_props, region, ops_transfer, identity_migration)
 
 
 def register():

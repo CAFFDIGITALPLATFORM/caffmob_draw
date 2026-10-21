@@ -235,9 +235,18 @@ def cut_wall(wall_obj, cutting_obj):
 
     Função de módulo desde a feature 007 (T004), para a janela importada instalada fora do modal.
     """
-    mod_name = f"Boolean_{cutting_obj.name}"
-    if mod_name in wall_obj.modifiers:
-        return wall_obj.modifiers[mod_name]
+    from .. import stable_id
+    data = cutting_obj.btm_opening_real
+    uid = stable_id.ensure_uid(data)
+    if cutting_obj.get('IS_ENTRY_DOOR_BP') or cutting_obj.get('IS_WINDOW_BP'):
+        data.host_wall = wall_obj
+    mod_name = "Boolean_" + stable_id.short(uid)
+    matches = [m for m in wall_obj.modifiers if m.type == 'BOOLEAN' and m.object == cutting_obj]
+    if matches:
+        for extra in matches[1:]:
+            wall_obj.modifiers.remove(extra)
+        matches[0].name = mod_name
+        return matches[0]
     mod = wall_obj.modifiers.new(name=mod_name, type='BOOLEAN')
     mod.operation = 'DIFFERENCE'
     mod.object = cutting_obj
@@ -1309,55 +1318,47 @@ class home_builder_doors_windows_OT_window_prompts(bpy.types.Operator):
 
 class home_builder_doors_windows_OT_flip_door_swing(bpy.types.Operator):
     bl_idname = "caffmob_doors_windows.flip_door_swing"
-    bl_label = "Flip Door Swing"
-    bl_description = "Flip the door swing direction (swings inside/outside)"
+    bl_label = "Abrir para o outro lado"
+    bl_description = "Troca o lado da parede para onde a porta abre"
     bl_options = {'UNDO'}
 
     @classmethod
     def poll(cls, context):
-        return context.object and context.object.get('IS_ENTRY_DOOR_BP')
+        from ..openings.ops import door_of
+        return door_of(context.active_object) is not None
 
     def execute(self, context):
-        door_obj = context.object
-        # Find the door swing child
-        for child in door_obj.children:
-            if 'Door Swing' in child.name:
-                door_swing = hb_types.GeoNodeObject(child)
-                try:
-                    current = door_swing.get_input('Swing Inside')
-                    door_swing.set_input('Swing Inside', not current)
-                    _sync_opening(context, door_obj)
-                    self.report({'INFO'}, "Door swing flipped")
-                except Exception:
-                    self.report({'WARNING'}, "Could not find Swing Inside input")
-                break
+        from ..openings.ops import door_of
+        from ..openings import sync
+        door_obj = door_of(context.active_object)
+        door_swing = hb_types.GeoNodeObject(sync._swing(door_obj)[0])
+        door_swing.set_input('Swing Inside', not bool(door_swing.get_input('Swing Inside')))
+        _sync_opening(context, door_obj)
+        door_obj.select_set(True)
+        context.view_layer.objects.active = door_obj
         return {'FINISHED'}
 
 
 class home_builder_doors_windows_OT_flip_door_hand(bpy.types.Operator):
     bl_idname = "caffmob_doors_windows.flip_door_hand"
-    bl_label = "Flip Door Hand"
-    bl_description = "Flip the door hand (left/right hinge)"
+    bl_label = "Trocar dobradiça"
+    bl_description = "Troca a dobradiça entre esquerda e direita"
     bl_options = {'UNDO'}
 
     @classmethod
     def poll(cls, context):
-        return context.object and context.object.get('IS_ENTRY_DOOR_BP')
+        from ..openings.ops import door_of
+        return door_of(context.active_object) is not None
 
     def execute(self, context):
-        door_obj = context.object
-        # Find the door swing child
-        for child in door_obj.children:
-            if 'Door Swing' in child.name:
-                door_swing = hb_types.GeoNodeObject(child)
-                try:
-                    current = door_swing.get_input('Is Left')
-                    door_swing.set_input('Is Left', not current)
-                    _sync_opening(context, door_obj)
-                    self.report({'INFO'}, "Door hand flipped")
-                except Exception:
-                    self.report({'WARNING'}, "Could not find Is Left input")
-                break
+        from ..openings.ops import door_of
+        from ..openings import sync
+        door_obj = door_of(context.active_object)
+        door_swing = hb_types.GeoNodeObject(sync._swing(door_obj)[0])
+        door_swing.set_input('Is Left', not bool(door_swing.get_input('Is Left')))
+        _sync_opening(context, door_obj)
+        door_obj.select_set(True)
+        context.view_layer.objects.active = door_obj
         return {'FINISHED'}
 
 
