@@ -35,6 +35,8 @@ class _Entry:
 
 
 def _skip(obj):
+    if getattr(getattr(obj, 'btm_member', None), 'role', '') == 'CUTTER':
+        return True
     if any(obj.get(tag) for tag in _SKIP_TAGS):
         return True
     try:
@@ -130,6 +132,10 @@ def _has_body(obj, depsgraph=None):
 
 def _kind_of(obj, depsgraph=None):
     """(tipo para as regras, raiz, confirmar pela malha) ou None quando o objeto não entra sozinho."""
+    owner = getattr(getattr(obj, 'btm_member', None), 'owner', None)
+    if owner is not None or obj.get('IS_AUTHORED_CABINET'):
+        root = owner if owner is not None else obj
+        return (rules.ITEM, root.name, True) if _has_body(obj, depsgraph) else None
     if obj.get('btm_wall_segments') and obj.type == 'MESH':
         return rules.WALL, obj.name, True
     agg = getattr(obj, 'btm_aggregate', None)

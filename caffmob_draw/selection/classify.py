@@ -27,9 +27,10 @@ KIND_LABELS = {
     CEILING: N_("Teto"), OTHER: N_("Objeto"),
 }
 LIBRARY_LABELS = {'FRAMELESS': N_("Frameless"), 'FACE_FRAME': N_("Face frame"), 'CLOSETS': N_("Closets"),
-                  'BTM': N_("Módulo rápido"), 'HB': N_("Ambiente")}
+                  'BTM': N_("Módulo rápido"), 'HB': N_("Ambiente"), 'AUTHORED': N_("Armário autoral")}
 
 MODULE_TAGS = (
+    ('IS_AUTHORED_CABINET', 'AUTHORED'),
     ('IS_FRAMELESS_CABINET_CAGE', 'FRAMELESS'),
     ('IS_FACE_FRAME_CABINET_CAGE', 'FACE_FRAME'),
     ('IS_FACE_FRAME_PRODUCT_CAGE', 'FACE_FRAME'),

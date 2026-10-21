@@ -45,6 +45,18 @@ def local_corners(obj):
     return [Vector(c) for c in obj.evaluated_get(depsgraph).bound_box]
 
 
+def front_frame(parent):
+    """Do referencial canônico (frente −Y) para o espaço local do dono."""
+    data = getattr(parent, 'btm_authored', None)
+    angle = {'NEG_Y': 0, 'POS_X': 90, 'POS_Y': 180, 'NEG_X': -90}.get(
+        getattr(data, 'front_axis', 'NEG_Y'), 0)
+    return Matrix.Rotation(math.radians(angle), 4, 'Z')
+
+
+def base_from_pivot(pivot, parent):
+    return (front_frame(parent).inverted() @ parent.matrix_world.inverted_safe() @ pivot.matrix_world).translation
+
+
 def leaf_box(obj):
     """Caixa da folha fechada no espaço do pai."""
     rest = rest_matrix(obj)
@@ -129,7 +141,8 @@ def apply_fraction(obj, fraction):
     pivot = pivot_of(obj)
     if pivot is None:
         return
-    pivot.matrix_basis = pose_matrix(obj.btm_aggregate, _base(obj), fraction)
+    pivot.matrix_basis = front_frame(obj.btm_aggregate.parent_ref) @ pose_matrix(
+        obj.btm_aggregate, _base(obj), fraction)
     pivot[OPEN_KEY] = float(fraction)
 
 
@@ -144,7 +157,8 @@ def rebuild_pivot(obj):
     parent = agg.parent_ref
     if agg.kind != 'LEAF' or parent is None or REST_KEY not in obj:
         return None
-    base = base_point(leaf_box(obj), agg.motion, agg.hinge)
+    base = (Vector(obj['btm_leaf_manual_base']) if 'btm_leaf_manual_base' in obj
+            else base_point(leaf_box(obj), agg.motion, agg.hinge))
     pivot = pivot_of(obj)
     if pivot is None:
         pivot = bpy.data.objects.new(obj.name + PIVOT_SUFFIX, None)
@@ -153,7 +167,6 @@ def rebuild_pivot(obj):
             collection.objects.link(pivot)
         agg.pivot = pivot
     pivot.empty_display_type = 'SINGLE_ARROW' if agg.motion == 'SWING' else 'PLAIN_AXES'   # segue o movimento (RN-11)
-    pivot['btm_leaf'] = obj.name
     pivot['btm_leaf_base'] = list(base)
     pivot.parent = parent
     pivot.matrix_parent_inverse = Matrix.Identity(4)
@@ -210,7 +223,8 @@ def make_leaf(obj, parent, motion='SWING', hinge='LEFT', swing_sign='OUT', max_a
     if not agg.is_aggregate:
         agg.orig_parent = obj.parent
         agg.orig_matrix = [v for row in obj.matrix_world for v in row]
-    obj[REST_KEY] = [v for row in (parent.matrix_world.inverted() @ obj.matrix_world) for v in row]
+    rest = front_frame(parent).inverted() @ parent.matrix_world.inverted() @ obj.matrix_world
+    obj[REST_KEY] = [v for row in rest for v in row]
     for name, value in (('kind', 'LEAF'), ('motion', motion), ('hinge', hinge), ('swing_sign', swing_sign),
                         ('max_angle', max_angle), ('slide_dir', slide_dir), ('travel', travel), ('open_value', 0.0)):
         apply._write(obj, name, value)
@@ -234,7 +248,7 @@ def remove_pivot(obj):
     if parent is not None and rest is not None:
         obj.parent = parent
         obj.matrix_parent_inverse = Matrix.Identity(4)
-        obj.matrix_basis = rest
+        obj.matrix_basis = front_frame(parent) @ rest
     if pivot is not None:
         bpy.data.objects.remove(pivot, do_unlink=True)
     obj.btm_aggregate.pivot = None

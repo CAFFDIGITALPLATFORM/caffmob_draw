@@ -41,9 +41,15 @@ def _is_frame_leaf(node):
     return bool(getattr(data, 'is_group', False)) and getattr(data, 'kind', '') == 'FRAME'
 
 
+def _is_authored_part(node):
+    member = getattr(node, 'btm_member', None)
+    owner = getattr(member, 'owner', None)
+    return owner is not None and bool(owner.get('IS_AUTHORED_CABINET'))
+
+
 def _is_own_aggregate(node):
     agg = getattr(node, 'btm_aggregate', None)
-    return bool(getattr(agg, 'is_aggregate', False)) and not _is_frame_leaf(node)
+    return bool(getattr(agg, 'is_aggregate', False)) and not _is_frame_leaf(node) and not _is_authored_part(node)
 
 
 def _is_item(node):
@@ -62,7 +68,7 @@ def component_root(obj, modes=None):
     for node in chain:
         if classify.module_library(node):
             break                                   # agregado e grudado ficam abaixo do hospedeiro
-        if _is_stuck(node) or _is_own_aggregate(node):
+        if not _is_authored_part(node) and (_is_stuck(node) or _is_own_aggregate(node)):
             return node
     root, library = classify.module_root(obj)
     if root is not None:

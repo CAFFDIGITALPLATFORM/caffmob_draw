@@ -11,7 +11,7 @@ class BTM_PG_Interference(bpy.types.PropertyGroup):
     kind: bpy.props.EnumProperty(
         name="Tipo",
         items=[('DOOR', "Porta", ""), ('FLIP_UP', "Basculante", ""), ('FLIP_DOWN', "Basculante p/ baixo", ""),
-               ('DRAWER', "Gaveta", ""), ('PULLOUT', "Pullout", "")],
+               ('SLIDING', "Porta de correr", ""), ('DRAWER', "Gaveta", ""), ('PULLOUT', "Pullout", "")],
         default='DOOR')  # type: ignore
 
 

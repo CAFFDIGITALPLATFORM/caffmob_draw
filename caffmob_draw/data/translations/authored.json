@@ -1,0 +1,222 @@
+{
+  "Frente local": {
+    "pt_BR": "Frente local",
+    "en_US": "Local front"
+  },
+  "Medidas locais (mm)": {
+    "pt_BR": "Medidas locais (mm)",
+    "en_US": "Local dimensions (mm)"
+  },
+  "Armário dono": {
+    "pt_BR": "Armário dono",
+    "en_US": "Cabinet owner"
+  },
+  "Regra dimensional": {
+    "pt_BR": "Regra dimensional",
+    "en_US": "Dimensional rule"
+  },
+  "Deslocamento (mm)": {
+    "pt_BR": "Deslocamento (mm)",
+    "en_US": "Offset (mm)"
+  },
+  "Incluir": {
+    "pt_BR": "Incluir",
+    "en_US": "Include"
+  },
+  "Adotar como armário": {
+    "pt_BR": "Adotar como armário",
+    "en_US": "Adopt as cabinet"
+  },
+  "Registra uma montagem livre sem modificar malhas ou acabamentos": {
+    "pt_BR": "Registra uma montagem livre sem modificar malhas ou acabamentos",
+    "en_US": "Register a free assembly without changing meshes or finishes"
+  },
+  "Raiz existente": {
+    "pt_BR": "Raiz existente",
+    "en_US": "Existing root"
+  },
+  "Criar raiz para as peças soltas": {
+    "pt_BR": "Criar raiz para as peças soltas",
+    "en_US": "Create a root for loose parts"
+  },
+  "Definir porta deste armário": {
+    "pt_BR": "Definir porta deste armário",
+    "en_US": "Define door of this cabinet"
+  },
+  "Configura os membros móveis como uma única folha deste armário": {
+    "pt_BR": "Configura os membros móveis como uma única folha deste armário",
+    "en_US": "Configure moving members as one leaf of this cabinet"
+  },
+  "Chapa": {
+    "pt_BR": "Chapa",
+    "en_US": "Panel"
+  },
+  "Vidro com perfil": {
+    "pt_BR": "Vidro com perfil",
+    "en_US": "Framed glass"
+  },
+  "Frente fixa": {
+    "pt_BR": "Frente fixa",
+    "en_US": "Fixed front"
+  },
+  "Curso (mm)": {
+    "pt_BR": "Curso (mm)",
+    "en_US": "Travel (mm)"
+  },
+  "Pivô existente": {
+    "pt_BR": "Pivô existente",
+    "en_US": "Existing pivot"
+  },
+  "Esta é a pose fechada": {
+    "pt_BR": "Esta é a pose fechada",
+    "en_US": "This is the closed pose"
+  },
+  "Prévia": {
+    "pt_BR": "Prévia",
+    "en_US": "Preview"
+  },
+  "Abrir/fechar portas deste armário": {
+    "pt_BR": "Abrir/fechar portas deste armário",
+    "en_US": "Open/close doors of this cabinet"
+  },
+  "Abre ou fecha somente as folhas do armário ativo": {
+    "pt_BR": "Abre ou fecha somente as folhas do armário ativo",
+    "en_US": "Open or close only the leaves of the active cabinet"
+  },
+  "Adicionar ao componente": {
+    "pt_BR": "Adicionar ao componente",
+    "en_US": "Add to component"
+  },
+  "Adiciona ou transfere os objetos selecionados para o armário indicado": {
+    "pt_BR": "Adiciona ou transfere os objetos selecionados para o armário indicado",
+    "en_US": "Add or transfer selected objects to the specified cabinet"
+  },
+  "Transferir membro": {
+    "pt_BR": "Transferir membro",
+    "en_US": "Transfer member"
+  },
+  "Transfere membros para outro armário, mantendo a posição": {
+    "pt_BR": "Transfere membros para outro armário, mantendo a posição",
+    "en_US": "Transfer members to another cabinet, preserving position"
+  },
+  "Remover do componente": {
+    "pt_BR": "Remover do componente",
+    "en_US": "Remove from component"
+  },
+  "Desvincula membros mantendo posição e materiais": {
+    "pt_BR": "Desvincula membros mantendo posição e materiais",
+    "en_US": "Detach members preserving position and materials"
+  },
+  "Porta de correr": {
+    "pt_BR": "Porta de correr",
+    "en_US": "Sliding door"
+  },
+  "Armário autoral": {
+    "pt_BR": "Armário autoral",
+    "en_US": "Authored cabinet"
+  },
+  "Parte móvel": {
+    "pt_BR": "Parte móvel",
+    "en_US": "Moving part"
+  },
+  "Ferragem": {
+    "pt_BR": "Ferragem",
+    "en_US": "Hardware"
+  },
+  "Luz": {
+    "pt_BR": "Luz",
+    "en_US": "Light"
+  },
+  "Cortador": {
+    "pt_BR": "Cortador",
+    "en_US": "Cutter"
+  },
+  "Complemento": {
+    "pt_BR": "Complemento",
+    "en_US": "Filler"
+  },
+  "Fixo": {
+    "pt_BR": "Fixo",
+    "en_US": "Fixed"
+  },
+  "Ancorado": {
+    "pt_BR": "Ancorado",
+    "en_US": "Anchored"
+  },
+  "Ajustar entre referências": {
+    "pt_BR": "Ajustar entre referências",
+    "en_US": "Fit between references"
+  },
+  "Distribuir": {
+    "pt_BR": "Distribuir",
+    "en_US": "Distribute"
+  },
+  "{}: {} → {}": {
+    "pt_BR": "{}: {} → {}",
+    "en_US": "{}: {} → {}"
+  },
+  "Feche a folha antes de configurar": {
+    "pt_BR": "Feche a folha antes de configurar",
+    "en_US": "Close the leaf before configuring"
+  },
+  "Defina um armário autoral como dono": {
+    "pt_BR": "Defina um armário autoral como dono",
+    "en_US": "Specify an authored cabinet as owner"
+  },
+  "O membro não pode conter o dono": {
+    "pt_BR": "O membro não pode conter o dono",
+    "en_US": "A member cannot contain its owner"
+  },
+  "Tipo de objeto não aceito no componente": {
+    "pt_BR": "Tipo de objeto não aceito no componente",
+    "en_US": "Object type not supported in the component"
+  },
+  "Um armário não pode ser membro de outro": {
+    "pt_BR": "Um armário não pode ser membro de outro",
+    "en_US": "A cabinet cannot be a member of another cabinet"
+  },
+  "Feche a folha antes de transferir": {
+    "pt_BR": "Feche a folha antes de transferir",
+    "en_US": "Close the leaf before transferring"
+  },
+  "Revise os membros do armário": {
+    "pt_BR": "Revise os membros do armário",
+    "en_US": "Review the cabinet members"
+  },
+  "A raiz não pode ser um elemento do ambiente": {
+    "pt_BR": "A raiz não pode ser um elemento do ambiente",
+    "en_US": "The root cannot be a room element"
+  },
+  "Selecione membros de um armário autoral": {
+    "pt_BR": "Selecione membros de um armário autoral",
+    "en_US": "Select members of an authored cabinet"
+  },
+  "Confirme explicitamente a pose fechada": {
+    "pt_BR": "Confirme explicitamente a pose fechada",
+    "en_US": "Explicitly confirm the closed pose"
+  },
+  "Selecione as peças ou o conjunto, sem repetir descendentes": {
+    "pt_BR": "Selecione as peças ou o conjunto, sem repetir descendentes",
+    "en_US": "Select parts or the assembly without repeating descendants"
+  },
+  "Todos os membros móveis devem ter o mesmo dono": {
+    "pt_BR": "Todos os membros móveis devem ter o mesmo dono",
+    "en_US": "All moving members must have the same owner"
+  },
+  "Retire a parte fixa da seleção móvel": {
+    "pt_BR": "Retire a parte fixa da seleção móvel",
+    "en_US": "Remove the fixed part from the moving selection"
+  },
+  "O pivô deve ser um controle deste armário": {
+    "pt_BR": "O pivô deve ser um controle deste armário",
+    "en_US": "The pivot must be a control of this cabinet"
+  },
+  "Modificador": {
+    "pt_BR": "Modificador",
+    "en_US": "Modifier"
+  },
+  "Driver": {
+    "pt_BR": "Driver",
+    "en_US": "Driver"
+  }
+}

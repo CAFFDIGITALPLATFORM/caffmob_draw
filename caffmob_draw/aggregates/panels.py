@@ -17,8 +17,8 @@ from . import apply, install, leaf, limits, perforate
 
 def _active_aggregate(context):
     obj = context.active_object
-    if obj is not None and obj.get('btm_leaf'):
-        obj = bpy.data.objects.get(obj['btm_leaf'])
+    if obj is not None:
+        obj = next((c for c in obj.children if leaf.pivot_of(c) == obj), obj)
     node = obj
     while node is not None:                       # peça de um grupo: sobe até o grupo convertido (feature 007)
         agg = getattr(node, 'btm_aggregate', None)
@@ -53,6 +53,12 @@ def draw_aggregate(layout, context, include_import=True):
         row = layout.row(align=True)
         row.operator("caffmob.import_model", icon='IMPORT')
     col = layout.column(align=True)
+    col.operator('caffmob_draw.authored_adopt')
+    col.operator('caffmob_draw.member_add')
+    col.operator('caffmob_draw.member_remove')
+    col.operator('caffmob_draw.member_transfer')
+    col.operator('caffmob_draw.authored_leaf')
+    col.operator('caffmob_draw.authored_leaves_open')
     col.operator("caffmob.aggregate_convert", icon='LINKED')
     col.operator("caffmob.leaf_convert", icon='MOD_SIMPLEDEFORM')
     col.operator("caffmob.window_assemble", icon='MOD_BUILD')
@@ -67,6 +73,10 @@ def draw_aggregate(layout, context, include_import=True):
     agg = obj.btm_aggregate
     box = layout.box()
     box.label(text=tr("{} — pai: {}").format(obj.name, agg.parent_ref.name if agg.parent_ref else '—'), icon='OBJECT_DATA')
+    if obj.btm_member.owner is not None and agg.kind == 'LEAF':
+        box.operator('caffmob_draw.authored_leaf')
+        box.prop(agg, 'open_value', slider=True)
+        return
     if agg.kind == 'AGGREGATE':
         box.prop(agg, "face")
         box_p = apply.parent_box(obj)

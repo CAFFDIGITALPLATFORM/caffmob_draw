@@ -139,6 +139,9 @@ def _eligible(obj):
     """O objeto é dono do próprio movimento (o guarda limita) ou se move com outro (o guarda não mexe)?"""
     if scan._skip(obj):
         return False
+    member = getattr(obj, 'btm_member', None)
+    if getattr(member, 'owner', None) is not None:
+        return False
     agg = getattr(obj, 'btm_aggregate', None)
     if agg is not None and agg.is_aggregate:
         return agg.kind != 'LEAF'          # abrir folha é da onda 3 (RF-074)
@@ -161,7 +164,8 @@ def _profile(obj):
     if entry is not None:
         item = entry.item
         return item.kind, item.group, item.linked, item.override
-    return rules.ITEM, scan._top_name(obj), scan._links(obj), scan._override(obj)
+    root = obj.name if obj.get('IS_AUTHORED_CABINET') else scan._top_name(obj)
+    return rules.ITEM, root, scan._links(obj), scan._override(obj)
 
 
 def _body(obj, depsgraph):

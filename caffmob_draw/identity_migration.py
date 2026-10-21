@@ -37,7 +37,32 @@ def migrate_door(cage):
             used.add(index)
 
 
+def migrate_authored():
+    objects = [o for o in bpy.data.objects if o.library is None]
+    roots = [o for o in objects if o.btm_authored.is_authored]
+    stable_id.renew_duplicates([(o.session_uid, o.btm_authored) for o in roots])
+    members = [o for o in objects if o.btm_member.owner is not None or
+               (o.btm_aggregate.is_aggregate and o.btm_aggregate.kind == 'LEAF')]
+    stable_id.renew_duplicates([(o.session_uid, o.btm_member) for o in members])
+    for pivot in objects:
+        if 'btm_leaf' not in pivot:
+            continue
+        for obj in pivot.children:
+            agg = obj.btm_aggregate
+            if agg.is_aggregate and agg.kind == 'LEAF':
+                agg.pivot = pivot
+        del pivot['btm_leaf']
+    # As referências de membro também acompanham a renovação do uid após duplicação.
+    for obj in members:
+        for ref in obj.btm_member.refs:
+            if ref.target is not None:
+                uid = stable_id.ensure_uid(ref.target.btm_member)
+                if ref.uid != uid:
+                    ref.uid = uid
+
+
 def migrate():
+    migrate_authored()
     from .openings import sync
     cages = [o for o in bpy.data.objects if sync.is_opening(o) and o.library is None]
     stable_id.renew_duplicates([(o.session_uid, o.btm_opening_real) for o in cages])
@@ -57,6 +82,7 @@ def on_update(_scene, depsgraph):
         return
     _busy = True
     try:
+        migrate_authored()
         from .openings import sync
         cages = [o for o in bpy.data.objects if sync.is_opening(o) and o.library is None]
         renewed = stable_id.renew_duplicates([(o.session_uid, o.btm_opening_real) for o in cages])
