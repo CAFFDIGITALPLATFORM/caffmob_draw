@@ -1,0 +1,34 @@
+{
+  "Esses itens não colidem mais": {
+    "pt_BR": "Esses itens não colidem mais",
+    "en_US": "These items no longer collide"
+  },
+  "Diagnóstico técnico": {
+    "pt_BR": "Diagnóstico técnico",
+    "en_US": "Technical diagnosis"
+  },
+  "Diagnóstico técnico: calcula agora as colisões da cena e mostra a lista, com Ir para e Afastar": {
+    "pt_BR": "Diagnóstico técnico: calcula agora as colisões da cena e mostra a lista, com Ir para e Afastar",
+    "en_US": "Technical diagnosis: computes the scene collisions now and shows the list, with Go to and Push out"
+  },
+  "Recalcular": {
+    "pt_BR": "Recalcular",
+    "en_US": "Recalculate"
+  },
+  "Impedir atravessamento": {
+    "pt_BR": "Impedir atravessamento",
+    "en_US": "Block penetration"
+  },
+  "Medidas laterais": {
+    "pt_BR": "Medidas laterais",
+    "en_US": "Side dimensions"
+  },
+  "Ligado (padrão, também em projetos antigos), o movimento para no primeiro contato, sem aviso; desligado, a edição fica livre. Não muda as medidas laterais": {
+    "pt_BR": "Ligado (padrão, também em projetos antigos), o movimento para no primeiro contato, sem aviso; desligado, a edição fica livre. Não muda as medidas laterais",
+    "en_US": "On (default, also in older projects), movement stops at the first contact, without warnings; off, editing is free. Does not change the side dimensions"
+  },
+  "Mostra as duas cotas laterais do item ativo, pela vista: da superfície dele ao primeiro obstáculo de cada lado. Não muda a colisão": {
+    "pt_BR": "Mostra as duas cotas laterais do item ativo, pela vista: da superfície dele ao primeiro obstáculo de cada lado. Não muda a colisão",
+    "en_US": "Shows the two side dimensions of the active item, by the view: from its surface to the first obstacle on each side. Does not change collision"
+  }
+}

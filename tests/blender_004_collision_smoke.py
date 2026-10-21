@@ -3,8 +3,11 @@
 Run: blender --background --factory-startup --python-exit-code 1 --python tests/blender_004_collision_smoke.py
 
 Cobre: penetração de 20 mm na parede; balcões encostados sem ocorrência; porta de ambiente × parede e agregado × pai
-fora da lista; "Colisão: Desativada"; Ir para; Afastar até encostar; resultado desatualizado depois de mover;
-mensagem ao salvar; aviso ao soltar (verificação do item que se moveu); 200 itens em até 2 s.
+fora da lista; "Colisão: Desativada"; Ir para; Afastar até encostar; 200 itens em até 2 s.
+
+Feature 066 (T013): a lista virou diagnóstico técnico sob pedido. As penetrações do diagnóstico são montadas com
+"Impedir atravessamento" desligado (como num projeto antigo); com ele ligado, o mesmo movimento para no contato, sem
+ocorrência, aviso ou nota ao salvar. O "desatualizado" e o aviso ao soltar saíram: o diagnóstico recalcula ao abrir.
 """
 
 import sys
@@ -29,6 +32,7 @@ scene = ctx.scene
 state = ctx.window_manager.btm_collision
 env.clean_scene()
 magnet.preferences = lambda: (False, 0.05)      # o ímã não deve grudar os balcões de teste na parede
+scene.btm_settings.block_penetration = False    # monta penetrações de projeto antigo para o diagnóstico (066)
 
 
 def box_mesh(name, lo, hi, location=(0.0, 0.0, 0.0)):
@@ -110,26 +114,34 @@ names = {(p[1], p[2]) for p in pairs()}
 assert ('Porta', 'Parede') not in names and not any('Nicho' in n for n in names), pairs()
 assert [p[:3] for p in pairs()] == [('ITEM', 'Balcao', 'Vizinho')], pairs()
 
-# 6. Mover um item verificado deixa o resultado desatualizado; a mensagem ao salvar avisa.
-assert not state.stale
-assert save_feedback._collision_note() == "1 colisões pendentes", save_feedback._collision_note()
+# 6. Diagnóstico sob pedido (066, RF-024): sem "desatualizado" nem nota ao salvar; abrir recalcula a cena de agora.
+assert not hasattr(save_feedback, '_collision_note')
+assert not hasattr(scan, 'check_moved')
 balcao.location.z += 0.01
 env.settle()
-assert state.stale, "desatualizado depois de mover"
-assert save_feedback._collision_note() == "Colisões não verificadas desde a última mudança"
-
-# 7. Aviso ao soltar: verifica só quem se moveu e o resultado volta a estar em dia.
+assert bpy.ops.caffmob.collision_diagnose() == {'FINISHED'}
+assert [p[:3] for p in pairs()] == [('ITEM', 'Balcao', 'Vizinho')], pairs()
 balcao.location.z -= 0.01
 env.settle()
-found = scan.check_moved([balcao])
-assert [(c.name_a, c.name_b) for c in found] == [('Balcao', 'Vizinho')]
-assert not state.stale
 
-# 8. Colisão desligada: a verificação não roda.
+# 7. Com "Impedir atravessamento" ligado, o balcão levado 20 mm para dentro da parede para na face, em silêncio
+#    (RF-001, RF-021): nenhuma ocorrência nova, nada na barra de status.
+shown = []
+show = save_feedback.show
+save_feedback.show = shown.append
+bpy.ops.caffmob.collision_clear()
+scene.btm_settings.block_penetration = True
+balcao.location.y = 0.02
+env.settle()
+assert abs(balcao.location.y) < 1e-4, balcao.location.y
+assert not state.items and not shown, (pairs(), shown)
+save_feedback.show = show
+
+# 8. O antigo "Evitar Sobreposição" desligado não impede o diagnóstico (a chave saiu da interface, D-06).
 scene.btm_settings.collision_global = False
-assert bpy.ops.caffmob.check_collisions() == {'CANCELLED'}
-assert scan.check_moved([balcao]) == []
+assert bpy.ops.caffmob.check_collisions() == {'FINISHED'}
 scene.btm_settings.collision_global = True
+scene.btm_settings.block_penetration = False
 
 # 9. 200 itens em até 2 s.
 env.clean_scene()

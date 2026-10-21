@@ -215,8 +215,14 @@ with ctx.temp_override(active_object=placa, selected_objects=[placa]):
 copy = ctx.view_layer.objects.active
 assert copy != placa and close(copy.location.x, 0.8) and close(copy.btm_geometry.thickness, 0.025)
 with ctx.temp_override(active_object=copy):
+    # 066 (RN-03): com "Impedir atravessamento", espelhar a cópia para dentro da placa não acontece, sem mudar nada.
+    assert bpy.ops.caffmob.geometry_mirror() == {'CANCELLED'}
+assert close(copy.location.x, 0.8) and not copy.get('btm_mirrored')
+scene.btm_settings.block_penetration = False
+with ctx.temp_override(active_object=copy):
     bpy.ops.caffmob.geometry_mirror()
 assert close(copy.location.x, 0.0)
+scene.btm_settings.block_penetration = True
 name = copy.name
 with ctx.temp_override(active_object=copy):
     bpy.ops.caffmob.geometry_delete()

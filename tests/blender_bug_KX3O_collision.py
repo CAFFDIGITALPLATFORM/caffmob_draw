@@ -2,6 +2,10 @@
 BUG-20261011-7GRY, BUG-20261011-EWKD e BUG-20261011-ZEN6 (SRPV está em tests/test_collision_rules.py).
 
 Run: blender --background --factory-startup --python-exit-code 1 --python tests/blender_bug_KX3O_collision.py
+
+Feature 066 (T014): sem "desatualizado" e sem `check_moved`. Afastar confere o par na cena de agora (par que não
+colide mais é recusado) e a ordem e a limpeza do erro valem para o diagnóstico recalculado. As sobreposições de teste
+são montadas com "Impedir atravessamento" desligado, como num projeto antigo.
 """
 
 import sys
@@ -61,15 +65,18 @@ def push_selected():
     env.settle()
     check("KX3O: Afastar move o selecionado (o segundo do par)", (first.matrix_world.translation - where).length < 1e-6
           and not state().items, f"primeiro andou {(first.matrix_world.translation - where).length:.3f} m")
-    scan.check_all(ctx, 'ALL')
+    ctx.scene.btm_settings.block_penetration = False
     a.location.x = 0.1
     b.location.x = 0.4
     env.settle()
     scan.check_all(ctx, 'ALL')
-    a.location.x = 0.25
+    listed = len(state().items)
+    a.location.x = -1.0
     env.settle()
+    ctx.scene.btm_settings.block_penetration = True
     result = bpy.ops.caffmob.collision_push_out(index=0) if state().items else None
-    check("KX3O: com resultado desatualizado, recusa", state().stale and result == {'CANCELLED'}, str(result))
+    check("KX3O: com a lista vencida, Afastar confere a cena e recusa o par que não colide mais",
+          listed == 1 and result == {'CANCELLED'} and abs(a.location.x + 1.0) < 1e-6, f"{listed} {result}")
 
 
 def loose_group():
@@ -130,14 +137,16 @@ def moved_order_and_error():
     cube("C", (3, 0, 0.25))
     d = cube("D", (3.45, 0.05, 0.3))
     scan.check_all(ctx, 'ALL')
+    ctx.scene.btm_settings.block_penetration = False
     d.location.x = 3.2                                  # C × D fica mais fundo que A × B
     state().error = "erro antigo"
     env.settle()
-    scan.check_moved([d])
+    ctx.scene.btm_settings.block_penetration = True
+    assert bpy.ops.caffmob.collision_diagnose() == {'FINISHED'}
     keys = [rules.sort_key(rules.Conflict(r.kind, r.name_a, r.name_b, r.depth, tuple(r.push), tuple(r.location)))
             for r in state().items]
-    check("7GRY: check_moved deixa a lista na ordem", keys == sorted(keys), str([(r.name_a, round(r.depth, 3))
-                                                                                for r in state().items]))
+    check("7GRY: o diagnóstico recalculado deixa a lista na ordem", keys == sorted(keys),
+          str([(r.name_a, round(r.depth, 3)) for r in state().items]))
     check("7GRY: e limpa o erro antigo", state().error == "", repr(state().error))
 
 

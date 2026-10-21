@@ -46,24 +46,10 @@ def show(text):
     _show(text)
 
 
-def _collision_note():
-    """RF-27 (feature 004): colisões pendentes ou resultado desatualizado; nunca bloqueia o salvar (RN-15)."""
-    state = getattr(bpy.context.window_manager, 'btm_collision', None)
-    if state is None or state.checked < 0:
-        return ""
-    if state.stale:
-        return tr("Colisões não verificadas desde a última mudança")
-    if state.items:
-        return tr("{} colisões pendentes").format(len(state.items))
-    return ""
-
-
 @persistent
 def on_save_post(filepath, *_args):
     if filepath:
-        text = tr("Projeto salvo: {}").format(os.path.basename(filepath))
-        note = _collision_note()
-        _show(f"{text}  |  {note}" if note else text)
+        _show(tr("Projeto salvo: {}").format(os.path.basename(filepath)))     # sem nota de colisão (066, D-07)
 
 
 @persistent

@@ -7,6 +7,7 @@ que acaba com ela pelo caminho mais curto (usado pelo "Afastar até encostar").
 """
 
 import math
+from collections import namedtuple
 from dataclasses import dataclass
 
 _EPS = 1e-9
@@ -56,6 +57,20 @@ def _radius(box, axis):
     return sum(box.half[i] * abs(_dot(box.axes[i], axis)) for i in range(3))
 
 
+def _sat_axes(a, b):
+    """Os 15 eixos do teste de separação (3 de A, 3 de B e os 9 produtos vetoriais), unitários; os degenerados saem."""
+    axes = list(a.axes) + list(b.axes)
+    for i in range(3):
+        for j in range(3):
+            axes.append(_cross(a.axes[i], b.axes[j]))
+    out = []
+    for axis in axes:
+        length = math.sqrt(_dot(axis, axis))
+        if length >= 1e-6:
+            out.append((axis[0] / length, axis[1] / length, axis[2] / length))
+    return out
+
+
 def overlap(a, b):
     """None se as caixas não se sobrepõem; senão {'depth', 'push', 'axis'} (axis: 0-2 eixos de A, 3-5 de B, 6+)."""
     t = _sub(b.center, a.center)
@@ -84,3 +99,48 @@ def overlap(a, b):
 def aabb_overlap(a, b, margin=0.0):
     (alo, ahi), (blo, bhi) = a, b
     return all(alo[i] - margin <= bhi[i] and blo[i] - margin <= ahi[i] for i in range(3))
+
+
+# Feature 066 (T034, D-04): primeiro contato de A andando `delta` contra B parado.
+Sweep = namedtuple('Sweep', 't_enter t_exit t_touch normal')
+
+
+def _interval(c, v, r):
+    """Trecho de t em que |c − v·t| < r num eixo; (None, None) quando nunca, (−inf, inf) quando sempre."""
+    if abs(v) < 1e-12:
+        return (-math.inf, math.inf) if abs(c) < r else (None, None)
+    t0, t1 = (c - r) / v, (c + r) / v
+    return (t0, t1) if t0 <= t1 else (t1, t0)
+
+
+def sweep_toi(a, delta, b, tolerance=0.0):
+    """A anda `delta` (t de 0 a 1) e B fica parado; exato nos 15 eixos do SAT.
+
+    Devolve None quando, de t = 0 a t = 1, A não penetra B além de `tolerance` (encostar ou passar raspando não
+    conta). Senão
+    `Sweep(t_enter, t_exit, t_touch, normal)`:
+    - `t_enter`/`t_exit`: trecho em que a sobreposição passa de `tolerance` (pode começar antes de 0: já penetrado);
+    - `t_touch`: quando as caixas começam a se tocar (≤ `t_enter`), a posição de parada sem penetrar;
+    - `normal`: eixo do contato, unitário, de B para A (para onde A teria de recuar).
+    """
+    t = _sub(b.center, a.center)
+    enter, leave = -math.inf, math.inf
+    touch, normal = -math.inf, None
+    for axis in _sat_axes(a, b):
+        c, v = _dot(t, axis), _dot(delta, axis)
+        r = _radius(a, axis) + _radius(b, axis)
+        lo, hi = _interval(c, v, r - tolerance)
+        if lo is None:
+            return None
+        enter, leave = max(enter, lo), min(leave, hi)
+        if enter >= leave:
+            return None
+        lo_touch, _hi = _interval(c, v, r)
+        if lo_touch is not None and lo_touch > touch:
+            touch = lo_touch
+            side = c - v * lo_touch                  # B − A no eixo, no instante do toque
+            sign = -1.0 if side > 0 else 1.0
+            normal = (axis[0] * sign, axis[1] * sign, axis[2] * sign)
+    if leave <= 0.0 or enter >= 1.0:
+        return None
+    return Sweep(enter, leave, min(touch, enter), normal)

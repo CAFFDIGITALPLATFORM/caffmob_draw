@@ -177,14 +177,7 @@ class MoveOver:
         self.a.matrix_world = self.original_matrix
 
     def overlapping(self):
-        """Módulos (fora A) cuja caixa no mundo cruza a de A na posição atual (RN-11)."""
-        depsgraph = self.context.evaluated_depsgraph_get()
-        to_target = self._target_matrix() @ self.a.matrix_world.inverted_safe()
-        box = _box([to_target @ c for c in tree_corners(self.a, depsgraph)])
-        found = []
-        for obj in self.context.scene.objects:
-            if obj == self.a or not classify.module_library(obj):
-                continue
-            if align.overlaps(box, _box(tree_corners(obj, depsgraph)), tolerance=1e-3):
-                found.append(obj)
-        return found
+        """Objetos que A penetraria na posição atual: o coletor do guarda de colisão (feature 066, D-08), com
+        qualquer corpo físico como obstáculo (RF-002), não só módulos."""
+        from ..collision import guard
+        return guard.overlapping(self.a, self._target_matrix())

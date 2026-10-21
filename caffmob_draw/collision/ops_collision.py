@@ -1,4 +1,9 @@
-"""Operadores de colisão (feature 004, T039, T040; RF-20, RF-21, RF-26, D-14, D-18, D-19)."""
+"""Operadores do diagnóstico técnico de colisão (feature 004, T039, T040; feature 066, T075, D-07, RF-024).
+
+O diagnóstico só existe sob pedido: `caffmob.collision_diagnose` calcula na hora e abre a lista num popup, com "Ir para"
+e "Afastar até encostar". Nada fica desenhado na viewport, e nada é avisado ao mover: quem impede a penetração é o
+guarda (`guard.py`), em silêncio.
+"""
 
 import bpy  # type: ignore
 from mathutils import Vector  # type: ignore
@@ -30,9 +35,6 @@ class BTM_OT_CheckCollisions(bpy.types.Operator):
         default='ALL')  # type: ignore
 
     def execute(self, context):
-        if not scan.enabled(context.scene):
-            self.report({'WARNING'}, tr("Colisão desligada (Evitar Sobreposição)"))
-            return {'CANCELLED'}
         if self.scope == 'SELECTED' and not context.selected_objects:
             self.report({'WARNING'}, tr("Selecione um item"))
             return {'CANCELLED'}
@@ -113,14 +115,17 @@ class BTM_OT_CollisionPushOut(bpy.types.Operator):
         state = _state(context)
         if not (0 <= self.index < len(state.items)):
             return {'CANCELLED'}
-        if state.stale:                   # o resultado não vale mais (pergunta 32)
-            self.report({'WARNING'}, tr("Desatualizado, verifique de novo"))
-            return {'CANCELLED'}
         row = state.items[self.index]
-        name, push = row.name_a, Vector(row.push)
+        current = _current(context, row.name_a, row.name_b)     # a lista é de quando foi aberta: vale a cena de agora
+        if current is None:
+            self.report({'WARNING'}, tr("Esses itens não colidem mais"))
+            scan.check_all(context, state.scope)
+            return {'CANCELLED'}
+        name, push = current.name_a, Vector(current.push)
         chosen = {o.name for sel in context.selected_objects for o in [sel] + list(_ancestors(sel))}
-        if row.name_b in chosen and row.name_a not in chosen:
-            name, push = row.name_b, -push        # o selecionado é o segundo do par: ele é que sai
+        other = current.name_b
+        if other in chosen and name not in chosen:
+            name, push = other, -push             # o selecionado é o segundo do par: ele é que sai
         obj = bpy.data.objects.get(name)
         if obj is None:
             return {'CANCELLED'}
@@ -137,12 +142,50 @@ class BTM_OT_CollisionPushOut(bpy.types.Operator):
         context.view_layer.update()
         if stick_apply.linked(obj):
             stick_apply.project(obj)
-        scan.check_moved([obj])
+        context.view_layer.update()                  # o guarda confere o afastamento como qualquer movimento
+        scan.check_all(context, state.scope)
         self.report({'INFO'}, tr("{} afastado {:.1f} mm").format(obj.name, push.length * 1000.0))
         return {'FINISHED'}
 
 
-classes = (BTM_OT_CheckCollisions, BTM_OT_CollisionGoto, BTM_OT_CollisionClear, BTM_OT_CollisionPushOut)
+def _current(context, name_a, name_b):
+    """A ocorrência do par na cena de agora (ou None, quando não colidem mais)."""
+    found, _entries = scan.find(context, {name_a, name_b})
+    return next((c for c in found if {c.name_a, c.name_b} == {name_a, name_b}), None)
+
+
+class BTM_OT_CollisionDiagnose(bpy.types.Operator):
+    """Diagnóstico técnico: calcula agora as colisões da cena e mostra a lista, com Ir para e Afastar"""
+    bl_idname = "caffmob.collision_diagnose"
+    bl_label = "Diagnóstico técnico"
+    bl_options = {'REGISTER'}
+
+    scope: bpy.props.EnumProperty(
+        name="Escopo", items=[('ALL', "Cena", "Todos os itens da cena"),
+                              ('SELECTED', "Selecionado", "Só o item selecionado e o que ele toca")],
+        default='ALL')  # type: ignore
+
+    def _run(self, context):
+        if self.scope == 'SELECTED' and not context.selected_objects:
+            self.report({'WARNING'}, tr("Selecione um item"))
+            return False
+        return scan.check_all(context, self.scope) is not None or bool(_state(context).error)
+
+    def invoke(self, context, event):
+        if not self._run(context):
+            return {'CANCELLED'}
+        return context.window_manager.invoke_popup(self, width=480)
+
+    def execute(self, context):
+        return {'FINISHED'} if self._run(context) else {'CANCELLED'}
+
+    def draw(self, context):
+        from . import panels
+        panels.draw_collisions(self.layout, context)
+
+
+classes = (BTM_OT_CheckCollisions, BTM_OT_CollisionGoto, BTM_OT_CollisionClear, BTM_OT_CollisionPushOut,
+           BTM_OT_CollisionDiagnose)
 
 
 def register():

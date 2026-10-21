@@ -5,6 +5,11 @@ import bpy  # type: ignore
 # Update callbacks — regenerate geometry/drivers when property changes
 # ---------------------------------------------------------------------------
 
+def update_side_dimensions(self, context):
+    from ..overlays import side_cotas
+    side_cotas.update_enabled(self, context)
+
+
 def update_wall_geom(self, context):
     obj = self.id_data
     if obj and obj.type == 'MESH' and obj.get("caffmob_parede"):
@@ -751,11 +756,24 @@ class BTM_PG_SceneSettings(bpy.types.PropertyGroup):
         max=1.0,
         subtype='DISTANCE'
     )  # type: ignore
+    # Feature 066 (D-06): continua registrada para ler arquivos antigos, mas saiu da interface e o guarda não a lê.
     collision_global: bpy.props.BoolProperty(
         name="Evitar Sobreposição",
         description=("Ligado, nenhum módulo ocupa o espaço de outro nem atravessa paredes ao ser posicionado; "
                      "desligado, sobrepor é permitido (RN-13)"),
         default=True
+    )  # type: ignore
+    block_penetration: bpy.props.BoolProperty(
+        name="Impedir atravessamento",
+        description=("Ligado (padrão, também em projetos antigos), o movimento para no primeiro contato, sem aviso; "
+                     "desligado, a edição fica livre. Não muda as medidas laterais"),
+        default=True
+    )  # type: ignore
+    show_side_dimensions: bpy.props.BoolProperty(
+        name="Medidas laterais",
+        description=("Mostra as duas cotas laterais do item ativo, pela vista: da superfície dele ao primeiro "
+                     "obstáculo de cada lado. Não muda a colisão"),
+        default=False, update=update_side_dimensions
     )  # type: ignore
     stick_migrated: bpy.props.BoolProperty(
         name="Grudados migrados",

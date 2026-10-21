@@ -1,17 +1,19 @@
-"""Colisão de corpo entre itens e com paredes, piso e teto (feature 004, incremento I2).
+"""Colisão de corpo entre itens e com paredes, piso e teto (feature 004, incremento I2; feature 066, onda 1).
 
-- `obb`, `rules`: núcleos puros (caixa orientada, pares, classificação, ordem)
-- `props`: `WindowManager.btm_collision` (não salvo)
-- `scan`: itens da cena, confirmação pela malha e gravação do resultado
-- `stale`: marca o resultado como desatualizado; `overlay`: destaque na viewport
-- `ops_collision`, `panels`: verificar, ir para, limpar, afastar até encostar e os painéis
+- `obb`, `rules`: núcleos puros (caixa orientada, pares, classificação, ordem, primeiro contato)
+- `props`: `WindowManager.btm_collision` (não salvo), lista efêmera do diagnóstico
+- `scan`: itens da cena, confirmação pela malha e gravação do diagnóstico
+- `guard`: o movimento para no primeiro contato, em silêncio (066, D-03)
+- `ops_collision`, `panels`: diagnóstico técnico sob pedido (popup com Ir para e Afastar) e os painéis
+
+O destaque permanente na viewport (`overlay.py`) e o "desatualizado" (`stale.py`) saíram na 066 (D-07, RF-010).
 """
 
 
 def _modules():
     # Import tardio: `obb` e `rules` são usados nos testes fora do Blender sem carregar `bpy`.
-    from . import ops_collision, overlay, panels, props, stale
-    return (props, stale, ops_collision, overlay, panels)
+    from . import guard, ops_collision, panels, props
+    return (props, guard, ops_collision, panels)
 
 
 def register():

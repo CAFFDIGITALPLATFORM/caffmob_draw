@@ -59,11 +59,19 @@ class BTM_OT_GeometryMirror(_GeometryAction, bpy.types.Operator):
         obj = _active_geometry(context)
         x = mesh.size(*(getattr(obj.btm_geometry, k) for k in ('kind', 'plane', 'width', 'depth', 'height',
                                                                    'thickness')))[0]
-        if obj.get('btm_mirrored'):
-            obj.matrix_world = obj.matrix_world @ Matrix.Translation((x, 0.0, 0.0))
+        mirrored = bool(obj.get('btm_mirrored'))
+        start = obj.matrix_world.copy()
+        target = start @ Matrix.Translation((x if mirrored else -x, 0.0, 0.0))
+        from ..collision import guard
+        if guard.clamp(obj, start, target) != target:
+            return {'CANCELLED'}       # 066, RN-03: espelhar para dentro de outro corpo não acontece (em silêncio)
+        with guard.suspended():
+            obj.matrix_world = target
+            context.view_layer.update()
+            guard.accept(obj)
+        if mirrored:
             del obj['btm_mirrored']
         else:
-            obj.matrix_world = obj.matrix_world @ Matrix.Translation((-x, 0.0, 0.0))
             obj['btm_mirrored'] = True
         return {'FINISHED'}
 

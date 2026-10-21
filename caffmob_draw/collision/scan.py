@@ -9,19 +9,21 @@ cotas e objetos ocultos.
 Cada item leva a caixa orientada da caixa local avaliada. Quando o par envolve parede, obstáculo, abertura ou malha
 solta, a sobreposição é confirmada pela malha real (`BVHTree.overlap`), o que respeita o vão de uma porta na parede.
 
-`check_all` grava o resultado em `WindowManager.btm_collision`; `check_moved` refaz só os pares de quem acabou de se
-mover (assentar do grudar) e avisa "Colide com <outro>" sem mover nada (RF-23).
+`check_all` grava o resultado em `WindowManager.btm_collision`, só para o diagnóstico técnico aberto por botão
+(feature 066, RF-024). O aviso depois do movimento (`check_moved`, RF-23 da 004) saiu: quem impede a penetração é o
+guarda (`guard.py`), em silêncio.
+
+Feature 066 (D-09): qualquer malha, curva, texto ou metaball visível com corpo é obstáculo, com ou sem pai.
 """
 
-import bpy  # type: ignore
 from mathutils import Vector  # type: ignore
 from mathutils.bvhtree import BVHTree  # type: ignore
 
-from ..data.i18n import tr
 from ..selection import classify
 from . import obb, rules
 
-_SKIP_TAGS = ('IS_CUTTING_OBJ', 'IS_2D_ANNOTATION', 'IS_DIMENSION', 'obj_x')
+_SKIP_TAGS = ('IS_CUTTING_OBJ', 'IS_2D_ANNOTATION', 'IS_DIMENSION', 'IS_SNAP_LINE', 'obj_x')
+BODY_TYPES = {'MESH', 'CURVE', 'FONT', 'META'}
 _FINE_KINDS = {rules.WALL, rules.OBSTACLE}
 
 
@@ -41,10 +43,26 @@ def _skip(obj):
         return True
 
 
+def _local_body_box(obj, depsgraph):
+    # 066 RF-002: no 5.2 a caixa avaliada da curva pode incluir uma expansão que a malha não tem.
+    # Usa a conversão temporária, também para texto e metaball, sem aplicar modificadores no original.
+    if obj.type in {'CURVE', 'FONT', 'META'}:
+        evaluated = obj.evaluated_get(depsgraph)
+        mesh = evaluated.to_mesh()
+        try:
+            if mesh is not None and mesh.vertices:
+                return (tuple(min(v.co[k] for v in mesh.vertices) for k in range(3)),
+                        tuple(max(v.co[k] for v in mesh.vertices) for k in range(3)))
+            return (0.0, 0.0, 0.0), (0.0, 0.0, 0.0)
+        finally:
+            evaluated.to_mesh_clear()
+    from ..stick import apply as stick_apply
+    return stick_apply.local_box(obj, depsgraph)
+
+
 def box_of(obj, depsgraph):
     """Caixa orientada (mundo) da caixa local avaliada do objeto."""
-    from ..stick import apply as stick_apply
-    lo, hi = stick_apply.local_box(obj, depsgraph)
+    lo, hi = _local_body_box(obj, depsgraph)
     loc, rot, scale = obj.matrix_world.decompose()
     axes = tuple(tuple(c) for c in rot.to_matrix().col)
     lo = tuple(lo[i] * scale[i] for i in range(3))
@@ -87,7 +105,30 @@ def _links(obj):
     return frozenset(names)
 
 
-def _kind_of(obj):
+def _top_name(obj):
+    """Nome do ancestral mais alto: peças de uma mesma hierarquia solta não se bloqueiam (RF-005)."""
+    while obj.parent is not None:
+        obj = obj.parent
+    return obj.name
+
+
+def _has_body(obj, depsgraph=None):
+    """Malha comum, curva ou texto com corpo (feature 066, D-09): caixa avaliada com volume; plano sem espessura
+    (fundo fotográfico, curva sem extrusão) não é obstáculo."""
+    if obj.type not in BODY_TYPES or obj.display_type in {'WIRE', 'BOUNDS'}:
+        return False
+    try:
+        if depsgraph is not None and obj.type in {'CURVE', 'FONT', 'META'}:
+            corners = _local_body_box(obj, depsgraph)
+        else:
+            corners = [tuple(c) for c in obj.bound_box]
+    except (AttributeError, ReferenceError):
+        return False
+    size = [max(c[i] for c in corners) - min(c[i] for c in corners) for i in range(3)]
+    return min(abs(size[i] * obj.scale[i]) for i in range(3)) > 1e-6
+
+
+def _kind_of(obj, depsgraph=None):
     """(tipo para as regras, raiz, confirmar pela malha) ou None quando o objeto não entra sozinho."""
     if obj.get('btm_wall_segments') and obj.type == 'MESH':
         return rules.WALL, obj.name, True
@@ -97,7 +138,7 @@ def _kind_of(obj):
     if obj.get('IS_APPLIANCE'):
         return rules.ITEM, obj.name, False
     if obj.type == 'EMPTY' and classify.free_group(obj) is obj:
-        return rules.ITEM, obj.name, True          # grupo solto (SketchUp, biblioteca de objetos; pergunta 35)
+        return rules.ITEM, _top_name(obj), True     # grupo solto (SketchUp, biblioteca de objetos; pergunta 35)
     info = classify.classify(obj)
     if info is None or info.obj is not obj:
         return None
@@ -116,23 +157,30 @@ def _kind_of(obj):
         return rules.FLOOR, obj.name, False
     if kind == classify.CEILING:
         return rules.CEILING, obj.name, False
-    if kind == classify.OTHER and obj.type == 'MESH' and obj.parent is None and obj.display_type not in {'WIRE', 'BOUNDS'}:
-        return rules.ITEM, obj.name, True
+    if kind == classify.OTHER and _has_body(obj, depsgraph):
+        return rules.ITEM, _top_name(obj), True     # qualquer corpo físico, com ou sem pai (066, RF-002, RN-05)
     return None
+
+
+def entry_of(obj, depsgraph):
+    """Item de colisão do objeto (com a caixa avaliada no mundo), ou None quando ele não entra sozinho."""
+    if _skip(obj):
+        return None
+    found = _kind_of(obj, depsgraph)
+    if found is None:
+        return None
+    kind, root, fine = found
+    item = rules.Item(obj.name, box_of(obj, depsgraph), kind=kind, root=root, linked=_links(obj),
+                      override=_override(obj))
+    return _Entry(item, obj, fine or kind in _FINE_KINDS)
 
 
 def collect(scene, depsgraph):
     entries = []
     for obj in scene.objects:
-        if _skip(obj):
-            continue
-        found = _kind_of(obj)
-        if found is None:
-            continue
-        kind, root, fine = found
-        item = rules.Item(obj.name, box_of(obj, depsgraph), kind=kind, root=root, linked=_links(obj),
-                          override=_override(obj))
-        entries.append(_Entry(item, obj, fine or kind in _FINE_KINDS))
+        entry = entry_of(obj, depsgraph)
+        if entry is not None:
+            entries.append(entry)
     return entries
 
 
@@ -151,7 +199,7 @@ class _Meshes:
 
     def _build(self, entry):
         obj = entry.obj
-        if obj.type == 'MESH':
+        if obj.type in BODY_TYPES:
             evaluated = obj.evaluated_get(self.depsgraph)
             try:
                 mesh = evaluated.to_mesh()
@@ -200,11 +248,6 @@ def _confirm(by_name, meshes):
     return confirm
 
 
-def enabled(scene):
-    settings = getattr(scene, 'btm_settings', None)
-    return settings is None or settings.collision_global
-
-
 def find(context, only=None):
     """(ocorrências, itens verificados) da cena; `only` restringe aos pares que envolvem esses nomes."""
     depsgraph = context.evaluated_depsgraph_get()
@@ -226,8 +269,6 @@ def _store(state, found, names, scope):
     state.scope = scope
     state.stale = False
     state.error = ""
-    from . import stale
-    stale.reset()
 
 
 def selected_names(context):
@@ -251,46 +292,6 @@ def check_all(context, scope='ALL'):
         return None
     names = only if only is not None else {e.item.name for e in entries}
     _store(state, found, names, scope)
-    _redraw(context)
-    return found
-
-
-def check_moved(objs):
-    """Depois de um movimento: refaz os pares de quem se moveu; colidindo, avisa e destaca (RF-23, D-16)."""
-    context = bpy.context
-    if not enabled(context.scene):
-        return []
-    names = {o.name for o in objs if o.name in bpy.data.objects}
-    if not names:
-        return []
-    roots = set(names)
-    for obj in objs:                      # o que se move junto (agregados, itens grudados) também é verificado
-        names.update(c.name for c in obj.children_recursive)
-    try:
-        found, _entries = find(context, names)
-    except Exception:
-        return []
-    state = context.window_manager.btm_collision
-    keep = [(r.kind, r.name_a, r.name_b, r.depth, tuple(r.push), tuple(r.location)) for r in state.items
-            if r.name_a not in names and r.name_b not in names]
-    rows = [rules.Conflict(*entry) for entry in keep] + list(found)
-    rows.sort(key=rules.sort_key)                  # a mesma ordem da verificação completa (pergunta 81)
-    state.items.clear()
-    for c in rows:
-        row = state.items.add()
-        row.kind, row.name_a, row.name_b = c.kind, c.name_a, c.name_b
-        row.depth, row.push, row.location = c.depth, c.push, c.location
-    state.error = ""
-    if state.checked < 0:                  # sem "Verificar" antes: estes itens passam a ser os verificados (EC-04)
-        state.checked = len(roots)
-        state.checked_names = "\n".join(sorted(roots))
-    from . import stale
-    stale.rechecked(names)
-    if found:
-        from ..ui import save_feedback
-        for c in found:
-            moved, other = (c.name_a, c.name_b) if c.name_a in names else (c.name_b, c.name_a)
-            save_feedback.show(tr("{} colide com {}").format(moved, other))
     _redraw(context)
     return found
 

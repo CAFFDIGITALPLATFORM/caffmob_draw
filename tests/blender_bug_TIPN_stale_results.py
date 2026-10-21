@@ -3,8 +3,9 @@
 
 Run: blender --background --factory-startup --python-exit-code 1 --python tests/blender_bug_TIPN_stale_results.py
 
-- colisão: objeto novo, apagado ou renomeado depois de verificar deixa o resultado desatualizado; o aviso ao soltar
-  sem verificação prévia marca os itens como verificados (questions.md, pergunta 34);
+- colisão (reescrito na feature 066, T013): o "desatualizado" saiu com o diagnóstico sob pedido. Abrir o diagnóstico
+  depois de criar, renomear ou apagar um objeto mostra a cena de agora, sem resultado vencido; mover não grava
+  nada na lista nem avisa (o guarda bloqueia em silêncio);
 - interferência: malha que se move depois da verificação deixa o resultado desatualizado (pergunta 93).
 """
 
@@ -16,7 +17,6 @@ import bpy
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import _blender_env as env  # noqa: E402
-from caffmob_draw.collision import scan  # noqa: E402
 from caffmob_draw.inspection import interference  # noqa: E402
 
 ctx = bpy.context
@@ -37,45 +37,47 @@ def module(x):
     return obj
 
 
-def fresh_check():
+def overlapping_pair():
     env.clean_scene()
     bpy.ops.caffmob.collision_clear()
-    a, b = module(0.0), module(2.0)
-    assert bpy.ops.caffmob.check_collisions(scope='ALL') == {'FINISHED'}
-    env.settle()
-    state = ctx.window_manager.btm_collision
-    return state, a, b
+    ctx.scene.btm_settings.block_penetration = False         # par sobreposto de projeto antigo
+    a, b = module(0.0), module(0.3)
+    ctx.scene.btm_settings.block_penetration = True
+    return a, b
 
 
-def collision_stale():
-    state, _a, _b = fresh_check()
-    check("TIPN: logo depois de verificar, em dia", not state.stale)
-    module(4.0)
-    env.settle()
-    check("TIPN: módulo novo deixa desatualizado", state.stale)
+def names():
+    return {(r.name_a, r.name_b) for r in ctx.window_manager.btm_collision.items}
 
-    state, a, _b = fresh_check()
+
+def diagnosis_is_current():
+    a, b = overlapping_pair()
+    assert bpy.ops.caffmob.collision_diagnose() == {'FINISHED'}
+    check("TIPN: o diagnóstico mostra o par sobreposto", len(names()) == 1, str(names()))
+    ctx.scene.btm_settings.block_penetration = False
+    c = module(0.15)
+    ctx.scene.btm_settings.block_penetration = True
+    bpy.ops.caffmob.collision_diagnose()
+    check("TIPN: módulo novo entra no diagnóstico seguinte", any(c.name in p for p in names()), str(names()))
     a.name = "Balcão renomeado"
     env.settle()
-    check("TIPN: renomear deixa desatualizado", state.stale)
-
-    state, a, _b = fresh_check()
-    bpy.data.objects.remove(a, do_unlink=True)
+    bpy.ops.caffmob.collision_diagnose()
+    check("TIPN: renomear aparece com o nome novo", any("Balcão renomeado" in p for p in names()), str(names()))
+    for root in (c, b):                       # o módulo inteiro, com as peças
+        for obj in [root] + list(root.children_recursive):
+            bpy.data.objects.remove(obj, do_unlink=True)
     env.settle()
-    check("TIPN: apagar deixa desatualizado", state.stale)
+    bpy.ops.caffmob.collision_diagnose()
+    check("TIPN: apagar tira do diagnóstico, sem Limpar", not names(), str(names()))
 
 
-def moved_without_check():
-    env.clean_scene()
-    bpy.ops.caffmob.collision_clear()
-    a, _b = module(0.0), module(0.3)                 # os dois se sobrepõem
+def moving_is_silent():
+    _a, b = overlapping_pair()
     state = ctx.window_manager.btm_collision
-    scan.check_moved([a])
-    check("TIPN: aviso ao soltar sem verificar marca os itens verificados", state.checked >= 0 and bool(state.items),
-          f"checked={state.checked} linhas={len(state.items)}")
-    a.location.x = 1.5
+    b.location.x = 1.5
     env.settle()
-    check("TIPN: e esse resultado também fica desatualizado", state.stale)
+    check("TIPN: mover não grava ocorrência nem marca verificado", not state.items and state.checked < 0,
+          f"checked={state.checked} linhas={len(state.items)}")
 
 
 def interference_stale():
@@ -91,7 +93,7 @@ def interference_stale():
           f"em dia={fresh} desatualizado={state.stale}")
 
 
-for step in (collision_stale, moved_without_check, interference_stale):
+for step in (diagnosis_is_current, moving_is_silent, interference_stale):
     try:
         step()
     except Exception:

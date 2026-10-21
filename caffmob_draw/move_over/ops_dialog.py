@@ -7,7 +7,9 @@ Painel desenhado sobre a viewport (`POST_PIXEL`) por um modal:
   de B na frontal empilha A; com uma parede como B, a linha da face da parede;
 - distâncias de A a B (X, profundidade, altura) em campos digitáveis — clique no campo ou Tab, digite, Enter;
 - Confirmar (Enter) grava como um passo de desfazer; Cancelar (Esc) devolve A à posição original;
-- com "Evitar Sobreposição" ligado, o primeiro Confirmar avisa os módulos sobrepostos e o segundo confirma (RN-11).
+- feature 066 (D-08, RF-003): com "Impedir atravessamento" ligado, Confirmar grava a pose que o guarda de colisão
+  permite (`guard.clamp`): destino livre vale; destino que penetra para no primeiro contato do caminho. Não há aviso
+  nem segundo Confirmar.
 
 Feature 003 (Reposicionar, D-21/D-22; nome "Mover Sobre" mantido): campos Rotação (graus, pelo centro da base de A)
 e Passo; setas e Page Up/Down movem A pelo passo; "Relativa"/"Absoluta" troca o que os campos X/Y/Z mostram (a
@@ -78,7 +80,7 @@ class BTM_OT_MoveOverDialog(bpy.types.Operator):
         self.hot = {'top': [], 'front': [], 'stack': False}
         self.mouse = (event.mouse_region_x, event.mouse_region_y)
         self.typing, self.buffer = None, ""
-        self.warning, self.warned = "", False
+        self.warning = ""
         self.tolerance = context.window_manager.btm_move_over.tolerance_px
         self.state = context.window_manager.btm_move_over
         self._layout(context)
@@ -104,6 +106,8 @@ class BTM_OT_MoveOverDialog(bpy.types.Operator):
 
     def cancel(self, context):
         self.mo.restore()
+        from ..collision import guard
+        guard.accept(self.mo.a, self.mo.original_matrix)     # voltar à origem nunca é bloqueado
         self._finish(context)
 
     # Geometria do painel ----------------------------------------------------------------------------------
@@ -241,7 +245,7 @@ class BTM_OT_MoveOverDialog(bpy.types.Operator):
             targets = [align.Target(align.STACK, None)]
         if targets:
             self.mo.align_to(targets)
-            self.warned, self.warning = False, ""
+            self.warning = ""
             self._fit_views()
 
     def _saved_items(self):
@@ -257,7 +261,7 @@ class BTM_OT_MoveOverDialog(bpy.types.Operator):
 
     def _apply_saved(self, item):
         self.mo.apply_saved({'delta': tuple(item.delta), 'rotation': item.rotation, 'b_side': item.b_side})
-        self.warned, self.warning = False, tr("{} aplicada.").format(item.name)
+        self.warning = tr("{} aplicada.").format(item.name)
         self._fit_views()
 
     def _commit_typing(self):
@@ -284,19 +288,18 @@ class BTM_OT_MoveOverDialog(bpy.types.Operator):
         else:
             self.mo.set_world(self.typing, value)
         self.typing, self.buffer = None, ""
-        self.warned, self.warning = False, ""
+        self.warning = ""
         self._fit_views()
         return True
 
     def _confirm(self, context):
-        settings = getattr(context.scene, 'btm_settings', None)
-        if settings is not None and settings.collision_global and not self.warned:
-            overlapping = self.mo.overlapping()
-            if overlapping:
-                names = ", ".join(o.name for o in overlapping[:4])
-                self.warning = tr("Sobrepõe: {}. Confirme de novo para gravar mesmo assim.").format(names)
-                self.warned = True
-                return {'RUNNING_MODAL'}
+        from ..collision import guard
+        a = self.mo.a
+        target = a.matrix_world.copy()
+        allowed = guard.clamp(a, self.mo.original_matrix, target)      # em silêncio: sem aviso de sobreposição
+        if allowed != target:
+            a.matrix_world = allowed
+        guard.accept(a, allowed)
         self._finish(context)
         self.report({'INFO'}, tr("{} alinhado a {}.").format(self.mo.a.name, self.mo.b.name))
         return {'FINISHED'}
@@ -365,7 +368,7 @@ class BTM_OT_MoveOverDialog(bpy.types.Operator):
                 delta = reposition.step_delta(event.type, self.state.step)
                 if delta is not None:
                     self.mo.nudge(delta)
-                    self.warned, self.warning = False, ""      # o próximo Confirmar verifica de novo (pergunta 18)
+                    self.warning = ""
                     self._fit_views()
         return {'RUNNING_MODAL'}
 

@@ -48,7 +48,8 @@ class BTM_OT_ResizeWidth(bpy.types.Operator):
         from ..selection import resize
         el = _element(context)
         try:
-            resize.resize(context, el, self.width)
+            if resize.resize(context, el, self.width) is False:
+                return {'CANCELLED'}        # 066 RN-03: recusa silenciosa, sem toast por contato
         except ValueError as exc:
             self.report({'ERROR'}, str(exc))
             return {'CANCELLED'}
