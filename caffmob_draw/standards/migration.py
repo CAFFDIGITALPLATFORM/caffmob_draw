@@ -119,7 +119,7 @@ def stamp_standard_uid(scene):
         return 0
     count = 0
     for obj in scene.objects:
-        if classify.module_library(obj) and not obj.get(STANDARD_UID_PROP):
+        if classify.module_library(obj) not in (None, 'AUTHORED') and not obj.get(STANDARD_UID_PROP):
             obj[STANDARD_UID_PROP] = definition.uid
             count += 1
     return count

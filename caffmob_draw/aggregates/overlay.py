@@ -30,8 +30,7 @@ def _active_leaf(context):
     obj = context.active_object
     if obj is None:
         return None
-    if obj.get('btm_leaf'):
-        obj = bpy.data.objects.get(obj['btm_leaf'])
+    obj = next((c for c in obj.children if leaf.pivot_of(c) == obj), obj)
     node = obj
     while node is not None and not (getattr(node, 'btm_aggregate', None) is not None
                                     and node.btm_aggregate.is_aggregate and node.btm_aggregate.kind == 'LEAF'):

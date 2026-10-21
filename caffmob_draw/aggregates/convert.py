@@ -16,7 +16,7 @@ from . import apply, limits
 
 def can_convert(obj, parent):
     from . import group
-    if obj is None or (obj.type != 'MESH' and not group.is_group(obj)):      # grupo de peças: feature 007, D-05
+    if obj is None or obj.type not in group.MEMBER_TYPES:      # grupo de peças: feature 007, D-05
         return tr("Selecione um objeto de malha para converter")
     if parent is None:
         return tr("Selecione também o elemento pai (por último, como ativo)")

@@ -106,6 +106,9 @@ class BTM_PG_Aggregate(bpy.types.PropertyGroup):
     orig_matrix: bpy.props.FloatVectorProperty(size=16)  # type: ignore
     size: bpy.props.FloatVectorProperty(size=3, subtype='XYZ', unit='LENGTH')  # type: ignore
     rest_offset: bpy.props.FloatVectorProperty(size=3)  # type: ignore
+    construction: bpy.props.EnumProperty(name="Construção", items=[
+        ('PANEL', "Chapa", ""), ('GLASS', "Vidro", ""), ('GLASS_FRAMED', "Vidro com perfil", ""),
+        ('FIXED', "Frente fixa", "")], default='PANEL')  # type: ignore
     # Folha de porta
     leaf_index: bpy.props.IntProperty(default=-1)  # type: ignore
     motion: bpy.props.EnumProperty(name="Movimento", items=MOTION_ITEMS, default='SWING',

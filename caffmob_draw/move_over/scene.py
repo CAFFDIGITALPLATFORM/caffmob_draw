@@ -30,7 +30,7 @@ def tree_corners(obj, depsgraph):
     corners, stack = [], [obj]
     while stack and not obj.get('IS_WALL_BP'):
         node = stack.pop()
-        if node.type == 'MESH' and not node.hide_get() and node.display_type not in {'WIRE', 'BOUNDS'}:
+        if group.is_body(node) and not node.hide_get() and node.display_type not in {'WIRE', 'BOUNDS'}:
             local = [Vector(c) for c in node.evaluated_get(depsgraph).bound_box]
             if (local[6] - local[0]).length > 1e-9:          # diagonal da caixa (canto mín. → máx.)
                 corners += [node.matrix_world @ c for c in local]
