@@ -108,6 +108,8 @@ def resize(context, el, width):
     """066 RF-012: largura e agregados voltam juntos se o novo corpo penetrar."""
     if not can_resize(el) or not MIN_WIDTH <= width <= MAX_WIDTH:
         return _resize(context, el, width)       # mantém a validação e as mensagens de domínio
+    if el.info.library == 'AUTHORED':
+        return editing.set_dimension(context, el.info, 'width', width)
     from ..collision import guard
     old = element_size.size(el)[0]
     return guard.reconfigure(el.obj, lambda: _resize(context, el, width), lambda: _resize(context, el, old))

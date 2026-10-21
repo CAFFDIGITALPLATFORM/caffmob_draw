@@ -46,10 +46,17 @@ def external_references(objects):
                     target = getattr(mod, prop.identifier, None)
                     if isinstance(target, bpy.types.Object) and target not in inside:
                         out.append((obj, 'Modificador', target))
-            for key in mod.keys():
-                target = mod[key]
-                if isinstance(target, bpy.types.Object) and target not in inside:
-                    out.append((obj, 'Modificador', target))
+            if mod.type == 'NODES' and mod.node_group:
+                from .. import compat
+                for item in mod.node_group.interface.items_tree:
+                    if (item.item_type == 'SOCKET' and item.in_out == 'INPUT'
+                            and item.socket_type == 'NodeSocketObject'):
+                        target = compat.try_get_gn_input_by_id(mod, item.identifier)
+                        if target is not None and target not in inside:
+                            out.append((obj, 'Modificador', target))
+                for target in _node_objects(mod.node_group):
+                    if target not in inside:
+                        out.append((obj, 'Modificador', target))
         for holder in (obj, obj.data):
             animation = getattr(holder, 'animation_data', None)
             for curve in animation.drivers if animation else ():
@@ -57,7 +64,52 @@ def external_references(objects):
                     for target in variable.targets:
                         if target.id is not None and target.id not in inside:
                             out.append((obj, 'Driver', target.id))
+        for prop in obj.bl_rna.properties:
+            if prop.type == 'POINTER':
+                holder = getattr(obj, prop.identifier, None)
+                if isinstance(holder, bpy.types.PropertyGroup):
+                    for target in _property_objects(holder):
+                        if target not in inside:
+                            out.append((obj, 'Vínculo', target))
     return out
+
+
+def _property_objects(holder, visited=None):
+    visited = set() if visited is None else visited
+    key = holder.as_pointer()
+    if key in visited:
+        return
+    visited.add(key)
+    for prop in holder.bl_rna.properties:
+        if prop.identifier == 'rna_type':
+            continue
+        if prop.type == 'POINTER':
+            value = getattr(holder, prop.identifier, None)
+            if isinstance(value, bpy.types.Object):
+                yield value
+            elif isinstance(value, bpy.types.PropertyGroup):
+                yield from _property_objects(value, visited)
+        elif prop.type == 'COLLECTION':
+            for item in getattr(holder, prop.identifier):
+                if isinstance(item, bpy.types.PropertyGroup):
+                    yield from _property_objects(item, visited)
+
+
+def _node_objects(tree, visited=None):
+    visited = set() if visited is None else visited
+    if tree in visited:
+        return
+    visited.add(tree)
+    for node in tree.nodes:
+        for socket in node.inputs:
+            target = getattr(socket, 'default_value', None)
+            if isinstance(target, bpy.types.Object):
+                yield target
+            elif isinstance(target, bpy.types.Collection):
+                yield from target.all_objects
+        nested = getattr(node, 'node_tree', None)
+        if nested is not None:
+            yield from _node_objects(nested, visited)
 
 
 def local_size(root, objects):
