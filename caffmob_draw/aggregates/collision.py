@@ -63,6 +63,10 @@ def _excluded(obj):
         for other in leaf.sibling_leaves(obj):
             names |= _own(other)
         names.add(parent.name)
+        cage = parent.parent
+        if cage is not None and cage.get('IS_ENTRY_DOOR_BP'):
+            # Marco próprio por hierarquia: renomear não o transforma em obstáculo da própria folha.
+            names.update(c.name for c in parent.children_recursive)
         return names
     if parent is not None:
         root = fronts.module_root_of(parent)

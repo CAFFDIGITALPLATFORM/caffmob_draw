@@ -23,7 +23,6 @@ from ..inspection import room_door_leaf
 from . import build, door_core, props, window_core
 
 DOOR_FLAG, WINDOW_FLAG = 'IS_ENTRY_DOOR_BP', 'IS_WINDOW_BP'
-SWING_MAX = 90.0
 PART_PROP = 'btm_opening_part'       # objeto criado pela montagem (os demais são do usuário e ficam, DT-05)
 
 
@@ -91,7 +90,7 @@ def _remember(assembly):
     for obj in [assembly] + list(assembly.children_recursive):
         agg = getattr(obj, 'btm_aggregate', None)
         if agg is not None and agg.is_aggregate and agg.kind == 'LEAF':
-            opens[obj.name.split(".")[0]] = agg.open_value
+            opens[agg.leaf_index] = agg.open_value * (agg.max_angle if agg.motion == 'SWING' else 1.0)
         if agg is not None and agg.is_aggregate and agg.production_part:
             production.add(obj.name.split(".")[0])
     return opens, production
@@ -164,18 +163,32 @@ def sync(context, cage, force=False):
     """Monta (ou refaz) a porta ou janela real da caixa; devolve True se montou algo."""
     if not is_opening(cage):
         return False
+    from .. import identity_migration
+    identity_migration.migrate_door(cage)
     data = cage.btm_opening_real
     sig = signature(cage)
     if not force and data.signature == sig and data.assembly is not None and data.assembly.name in bpy.data.objects:
         return False
     kind = kind_of(cage)
     opens, production = _remember(data.assembly)
+    finishes = {}
+    if data.assembly:
+        for obj in data.assembly.children_recursive:
+            if obj.type == 'MESH' and obj.get('btm_opening_role'):
+                finishes[(obj['btm_opening_role'], obj.get('btm_opening_index', -1))] = list(obj.data.materials)
     clear(cage)
     room_door_leaf.remove_leaves(cage)      # folha cinza da porta de ambiente (005) de arquivos antigos
     collection = cage.users_collection[0] if cage.users_collection else context.scene.collection
     context.view_layer.update()
     built = build.build(_parts(cage, kind), collection)
-    for obj in built.values():
+    for (role, index), obj in built.items():
+        obj['btm_opening_role'] = role
+        obj['btm_opening_index'] = index if index is not None else -1
+        saved = finishes.get((role, index if index is not None else -1))
+        if saved:
+            obj.data.materials.clear()
+            for material in saved:
+                obj.data.materials.append(material)
         obj.name = "{} {}".format(cage.name.split(".")[0], obj.name)
     _to_world(cage, built.values())
     context.view_layer.update()
@@ -207,10 +220,12 @@ def sync(context, cage, force=False):
         else:
             hinge = ('RIGHT' if left else 'LEFT') if kind == 'DOOR' else ('LEFT' if index == 0 else 'RIGHT')
             sign = 'OUT' if inside or inside is None else 'IN'
-            leaf.make_leaf(sash, frame, 'SWING', hinge=hinge, swing_sign=sign, max_angle=SWING_MAX)
+            leaf.make_leaf(sash, frame, 'SWING', hinge=hinge, swing_sign=sign, max_angle=data.swing_limit)
+        sash.btm_aggregate.leaf_index = index
         base = sash.name.split(".")[0]
-        if base in opens and opens[base] > 0.0:
-            sash.btm_aggregate.open_value = opens[base]
+        if index in opens and opens[index] > 0.0:
+            scale = sash.btm_aggregate.max_angle if kind != 'WINDOW' else 1.0
+            sash.btm_aggregate.open_value = min(opens[index] / scale, 1.0)
         if base in production:
             sash.btm_aggregate.production_part = True
     for obj in [frame] + list(frame.children_recursive):
@@ -243,3 +258,21 @@ def outdated(scene):
     """Caixas sem a porta/janela real ou de uma versão anterior do gerador."""
     return [o for o in openings(scene) if o.btm_opening_real.model_version < props.MODEL_VERSION
             or o.btm_opening_real.assembly is None]
+
+
+def door_leaves(cage):
+    assembly = cage.btm_opening_real.assembly
+    return [o for o in assembly.children_recursive if o.btm_aggregate.is_aggregate
+            and o.btm_aggregate.kind == 'LEAF'] if assembly else []
+
+
+def update_limit(cage, context):
+    """Conserva os graus ao mudar o limite; acima do novo teto, fecha até ele pelo caminho com contato."""
+    for sash in door_leaves(cage):
+        agg = sash.btm_aggregate
+        if agg.motion != 'SWING':
+            continue
+        degrees = leaf.current_fraction(sash) * agg.max_angle
+        apply._write(sash, 'max_angle', cage.btm_opening_real.swing_limit)
+        leaf.apply_fraction(sash, 0.0)
+        sash.btm_aggregate.open_value = min(degrees / agg.max_angle, 1.0)

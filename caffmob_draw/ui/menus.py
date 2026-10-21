@@ -99,6 +99,63 @@ class HOME_BUILDER_MT_soffit_commands(bpy.types.Menu):
         layout.operator("caffmob_walls.delete_soffit", text="Delete Soffit", icon='X')
 
 
+def draw_door_controls(layout, context):
+    from ..openings.ops import door_of
+    from ..data.i18n import tr
+    door = door_of(context.active_object)
+    if door is None:
+        return
+    data = door.btm_opening_real
+    layout.label(text=tr("Limite de giro: {:.0f}°").format(data.swing_limit))
+    layout.prop(data, 'angle', slider=True)
+    row = layout.row(align=True)
+    for degrees in (0, 45, 90):
+        col = row.column(align=True)
+        col.enabled = degrees <= data.swing_limit
+        col.operator('caffmob.door_set_angle', text="{}°".format(degrees)).degrees = degrees
+    layout.operator_context = 'INVOKE_DEFAULT'
+    layout.operator('caffmob.door_move_to_wall', text="Mover para outra parede")
+    layout.operator('caffmob_doors_windows.flip_door_hand', text="Trocar dobradiça")
+    layout.operator('caffmob_doors_windows.flip_door_swing', text="Abrir para o outro lado")
+    if data.link_missing:
+        layout.label(text="Porta sem recorte vinculado", icon='ERROR')
+
+
+class BTM_OT_DoorSetAngle(bpy.types.Operator):
+    bl_idname = 'caffmob.door_set_angle'
+    bl_label = "Definir abertura da porta"
+    bl_options = {'REGISTER', 'UNDO'}
+    degrees: bpy.props.FloatProperty(name="Abertura (graus)", min=0.0, max=180.0)  # type: ignore
+
+    @classmethod
+    def poll(cls, context):
+        from ..openings.ops import door_of
+        return door_of(context.active_object) is not None
+
+    def execute(self, context):
+        from ..openings.ops import door_of
+        data = door_of(context.active_object).btm_opening_real
+        if self.degrees > data.swing_limit:
+            return {'CANCELLED'}
+        data.angle = self.degrees
+        return {'FINISHED'}
+
+
+class BTM_PT_Door(bpy.types.Panel):
+    bl_label = "Porta de ambiente"
+    bl_space_type = 'VIEW_3D'
+    bl_region_type = 'UI'
+    bl_category = 'CAFFMob Draw'
+
+    @classmethod
+    def poll(cls, context):
+        from ..openings.ops import door_of
+        return door_of(context.active_object) is not None
+
+    def draw(self, context):
+        draw_door_controls(self.layout, context)
+
+
 class HOME_BUILDER_MT_door_commands(bpy.types.Menu):
     bl_label = "Door Commands"
 
@@ -106,8 +163,7 @@ class HOME_BUILDER_MT_door_commands(bpy.types.Menu):
         layout = self.layout
         layout.operator("caffmob_doors_windows.door_prompts", text="Door Prompts")
         layout.separator()
-        layout.operator("caffmob_doors_windows.flip_door_swing", text="Flip Door Swing")
-        layout.operator("caffmob_doors_windows.flip_door_hand", text="Flip Door Hand")
+        draw_door_controls(layout, context)
         layout.operator("caffmob_doors_windows.toggle_double_door", text="Toggle Double Door")
         layout.separator()
         layout.operator("caffmob_doors_windows.duplicate_door", text="Duplicate Door")
@@ -672,6 +728,8 @@ def draw_home_builder_menu(self, context):
 
 
 classes = (
+    BTM_OT_DoorSetAngle,
+    BTM_PT_Door,
     HOME_BUILDER_OT_change_units,
     HOME_BUILDER_MT_change_units,
     HOME_BUILDER_MT_main_menu,

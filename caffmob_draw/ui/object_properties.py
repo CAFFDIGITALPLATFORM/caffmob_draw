@@ -209,6 +209,11 @@ def _draw_cotas(layout, edit, context):
 
 
 def _draw_open(layout, context, info):
+    from ..openings.ops import door_of
+    if door_of(context.active_object) is not None:
+        from .menus import draw_door_controls
+        draw_door_controls(layout, context)
+        return
     from ..inspection import fronts
     module = info.root
     module_fronts = fronts.fronts_of(module, context.scene)

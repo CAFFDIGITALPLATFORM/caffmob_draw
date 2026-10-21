@@ -1,0 +1,74 @@
+{
+  "Limite de giro: {:.0f}°": {
+    "pt_BR": "Limite de giro: {:.0f}°",
+    "en_US": "Swing limit: {:.0f}°"
+  },
+  "Mover para outra parede": {
+    "pt_BR": "Mover para outra parede",
+    "en_US": "Move to another wall"
+  },
+  "Trocar dobradiça": {
+    "pt_BR": "Trocar dobradiça",
+    "en_US": "Switch hinge"
+  },
+  "Abrir para o outro lado": {
+    "pt_BR": "Abrir para o outro lado",
+    "en_US": "Open toward the other side"
+  },
+  "Porta sem recorte vinculado": {
+    "pt_BR": "Porta sem recorte vinculado",
+    "en_US": "Door has no linked cutout"
+  },
+  "Definir abertura da porta": {
+    "pt_BR": "Definir abertura da porta",
+    "en_US": "Set door opening"
+  },
+  "Abertura (graus)": {
+    "pt_BR": "Abertura (graus)",
+    "en_US": "Opening (degrees)"
+  },
+  "O portal não cabe nesta posição": {
+    "pt_BR": "O portal não cabe nesta posição",
+    "en_US": "The doorway does not fit here"
+  },
+  "Distância ao canto (mm)": {
+    "pt_BR": "Distância ao canto (mm)",
+    "en_US": "Distance to corner (mm)"
+  },
+  "Referência ao canto": {
+    "pt_BR": "Referência ao canto",
+    "en_US": "Corner reference"
+  },
+  "Primeiro canto": {
+    "pt_BR": "Primeiro canto",
+    "en_US": "First corner"
+  },
+  "Segundo canto": {
+    "pt_BR": "Segundo canto",
+    "en_US": "Second corner"
+  },
+  "Aponte a parede | Clique: confirmar | Esc: cancelar": {
+    "pt_BR": "Aponte a parede | Clique: confirmar | Esc: cancelar",
+    "en_US": "Point at a wall | Click: confirm | Esc: cancel"
+  },
+  "Limite de giro": {
+    "pt_BR": "Limite de giro",
+    "en_US": "Swing limit"
+  },
+  "Canto escolhido": {
+    "pt_BR": "Canto escolhido",
+    "en_US": "Chosen corner"
+  },
+  "Troca o lado da parede para onde a porta abre": {
+    "pt_BR": "Troca o lado da parede para onde a porta abre",
+    "en_US": "Change which side of the wall the door opens toward"
+  },
+  "Troca a dobradiça entre esquerda e direita": {
+    "pt_BR": "Troca a dobradiça entre esquerda e direita",
+    "en_US": "Switch the hinge between left and right"
+  },
+  "Distância: {:.1f} mm | Tab: trocar canto": {
+    "pt_BR": "Distância: {:.1f} mm | Tab: trocar canto",
+    "en_US": "Distance: {:.1f} mm | Tab: switch corner"
+  }
+}

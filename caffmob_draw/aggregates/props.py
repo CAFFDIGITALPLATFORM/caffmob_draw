@@ -107,6 +107,7 @@ class BTM_PG_Aggregate(bpy.types.PropertyGroup):
     size: bpy.props.FloatVectorProperty(size=3, subtype='XYZ', unit='LENGTH')  # type: ignore
     rest_offset: bpy.props.FloatVectorProperty(size=3)  # type: ignore
     # Folha de porta
+    leaf_index: bpy.props.IntProperty(default=-1)  # type: ignore
     motion: bpy.props.EnumProperty(name="Movimento", items=MOTION_ITEMS, default='SWING',
                                    update=_guarded('motion', _leaf_setup))  # type: ignore
     hinge: bpy.props.EnumProperty(name="Eixo", items=HINGE_ITEMS, default='LEFT',
