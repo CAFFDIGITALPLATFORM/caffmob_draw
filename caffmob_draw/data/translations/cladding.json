@@ -1,0 +1,194 @@
+{
+  "Aplicar revestimento": {
+    "pt_BR": "Aplicar revestimento",
+    "en_US": "Apply cladding"
+  },
+  "Escolha a face, revise a prévia e confirme com Enter; Esc preserva a cena": {
+    "pt_BR": "Escolha a face, revise a prévia e confirme com Enter; Esc preserva a cena",
+    "en_US": "Choose the face, review the preview and confirm with Enter; Esc preserves the scene"
+  },
+  "Gerar": {
+    "pt_BR": "Gerar",
+    "en_US": "Generate"
+  },
+  "Adotar": {
+    "pt_BR": "Adotar",
+    "en_US": "Adopt"
+  },
+  "Reassociar": {
+    "pt_BR": "Reassociar",
+    "en_US": "Reassociate"
+  },
+  "Clique na face | Enter: confirmar | Esc: cancelar": {
+    "pt_BR": "Clique na face | Enter: confirmar | Esc: cancelar",
+    "en_US": "Click the face | Enter: confirm | Esc: cancel"
+  },
+  "Atualizar revestimento": {
+    "pt_BR": "Atualizar revestimento",
+    "en_US": "Update cladding"
+  },
+  "Carrega os parâmetros ou confirma a atualização do revestimento selecionado": {
+    "pt_BR": "Carrega os parâmetros ou confirma a atualização do revestimento selecionado",
+    "en_US": "Load parameters or confirm the update of the selected cladding"
+  },
+  "Preset de revestimento": {
+    "pt_BR": "Preset de revestimento",
+    "en_US": "Cladding preset"
+  },
+  "Grava ou reaplica um preset local de revestimento": {
+    "pt_BR": "Grava ou reaplica um preset local de revestimento",
+    "en_US": "Save or reuse a local cladding preset"
+  },
+  "Salvar": {
+    "pt_BR": "Salvar",
+    "en_US": "Save"
+  },
+  "Preset da empresa": {
+    "pt_BR": "Preset da empresa",
+    "en_US": "Company preset"
+  },
+  "Tábuas castanhas": {
+    "pt_BR": "Tábuas castanhas",
+    "en_US": "Brown boards"
+  },
+  "Ripado com MDF": {
+    "pt_BR": "Ripado com MDF",
+    "en_US": "Slats with MDF backing"
+  },
+  "Painel de veio horizontal": {
+    "pt_BR": "Painel de veio horizontal",
+    "en_US": "Horizontal grain panel"
+  },
+  "Nome do preset": {
+    "pt_BR": "Nome do preset",
+    "en_US": "Preset name"
+  },
+  "Revestimentos": {
+    "pt_BR": "Revestimentos",
+    "en_US": "Cladding"
+  },
+  "Vínculo quebrado": {
+    "pt_BR": "Vínculo quebrado",
+    "en_US": "Broken link"
+  },
+  "Carregar parâmetros": {
+    "pt_BR": "Carregar parâmetros",
+    "en_US": "Load parameters"
+  },
+  "Adotar revestimento": {
+    "pt_BR": "Adotar revestimento",
+    "en_US": "Adopt cladding"
+  },
+  "Salvar preset": {
+    "pt_BR": "Salvar preset",
+    "en_US": "Save preset"
+  },
+  "Abrir preset": {
+    "pt_BR": "Abrir preset",
+    "en_US": "Open preset"
+  },
+  "Tábuas": {
+    "pt_BR": "Tábuas",
+    "en_US": "Boards"
+  },
+  "Ripado": {
+    "pt_BR": "Ripado",
+    "en_US": "Slats"
+  },
+  "Painel liso": {
+    "pt_BR": "Painel liso",
+    "en_US": "Smooth panel"
+  },
+  "Placas": {
+    "pt_BR": "Placas",
+    "en_US": "Tiles"
+  },
+  "Junta (mm)": {
+    "pt_BR": "Junta (mm)",
+    "en_US": "Joint (mm)"
+  },
+  "Vão mínimo (mm)": {
+    "pt_BR": "Vão mínimo (mm)",
+    "en_US": "Minimum gap (mm)"
+  },
+  "Inclinada": {
+    "pt_BR": "Inclinada",
+    "en_US": "Angled"
+  },
+  "Inclinação (graus)": {
+    "pt_BR": "Inclinação (graus)",
+    "en_US": "Slope (degrees)"
+  },
+  "Extensão": {
+    "pt_BR": "Extensão",
+    "en_US": "Extent"
+  },
+  "Toda a face": {
+    "pt_BR": "Toda a face",
+    "en_US": "Whole face"
+  },
+  "Faixa parcial": {
+    "pt_BR": "Faixa parcial",
+    "en_US": "Partial band"
+  },
+  "Ponta da faixa": {
+    "pt_BR": "Ponta da faixa",
+    "en_US": "Band end"
+  },
+  "Início": {
+    "pt_BR": "Início",
+    "en_US": "Start"
+  },
+  "Fim": {
+    "pt_BR": "Fim",
+    "en_US": "End"
+  },
+  "Faixa (mm)": {
+    "pt_BR": "Faixa (mm)",
+    "en_US": "Band (mm)"
+  },
+  "Fundo de MDF": {
+    "pt_BR": "Fundo de MDF",
+    "en_US": "MDF backing"
+  },
+  "Material do fundo": {
+    "pt_BR": "Material do fundo",
+    "en_US": "Backing material"
+  },
+  "Chapa: comprimento (mm)": {
+    "pt_BR": "Chapa: comprimento (mm)",
+    "en_US": "Sheet: length (mm)"
+  },
+  "Chapa: largura (mm)": {
+    "pt_BR": "Chapa: largura (mm)",
+    "en_US": "Sheet: width (mm)"
+  },
+  "Chapa: espessura (mm)": {
+    "pt_BR": "Chapa: espessura (mm)",
+    "en_US": "Sheet: thickness (mm)"
+  },
+  "Imagem da textura": {
+    "pt_BR": "Imagem da textura",
+    "en_US": "Texture image"
+  },
+  "Tamanho da textura (mm)": {
+    "pt_BR": "Tamanho da textura (mm)",
+    "en_US": "Texture size (mm)"
+  },
+  "Veio (graus)": {
+    "pt_BR": "Veio (graus)",
+    "en_US": "Grain (degrees)"
+  },
+  "Material construtivo": {
+    "pt_BR": "Material construtivo",
+    "en_US": "Construction material"
+  },
+  "Madeira maciça": {
+    "pt_BR": "Madeira maciça",
+    "en_US": "Solid wood"
+  },
+  "Cerâmica": {
+    "pt_BR": "Cerâmica",
+    "en_US": "Ceramic"
+  }
+}
