@@ -4,6 +4,9 @@ Com um módulo (ou peça/frente dele) ativo, desenha no 3D as cotas de RN-04: an
 inferior até o piso e superior até o teto, com o mesmo desenho das cotas de posicionamento
 (`hb_placement.draw_placement_dimensions`). Módulo livre: só inferior e superior. O handler `POST_PIXEL` é adicionado
 no `register()` e removido no `unregister()`.
+
+Feature 066 (D-10, RF-014): com "Medidas laterais" ligado, este desenho é suprimido por inteiro;
+as únicas duas cotas vêm de `side_cotas.py`.
 """
 
 import bpy  # type: ignore
@@ -20,6 +23,8 @@ class _Specs:
 
 
 def _specs(context):
+    if getattr(context.scene.btm_settings, 'show_side_dimensions', False):
+        return []                 # 066 RF-014: só as duas laterais, inclusive na outra viewport
     from ..data import units
     from ..hb_placement import PlacementDimSpec
     from ..measure import cotas as cotas_mod
@@ -33,15 +38,16 @@ def _specs(context):
     values = mc.compute()
     p = mc.placement
     specs = []
+    side = getattr(context.scene.btm_settings, 'show_side_dimensions', False)    # 066 D-10: as laterais substituem
     if mc.on_wall:
         matrix = mc.wall.matrix_world
         y = p.back_y - mc.depth        # frente do módulo
         z_mid = p.z0 + p.height / 2.0
         left, right = cotas_mod.limits(p, mc.obstacles(), mc.wall_length)
-        if values.anterior and values.anterior > 1e-4:
+        if not side and values.anterior and values.anterior > 1e-4:
             specs.append(PlacementDimSpec(matrix @ Vector((left, y, z_mid)), matrix @ Vector((p.x0, y, z_mid)),
                                           units.format_value(values.anterior)))
-        if values.posterior and values.posterior > 1e-4:
+        if not side and values.posterior and values.posterior > 1e-4:
             x1 = p.x0 + p.width
             specs.append(PlacementDimSpec(matrix @ Vector((x1, y, z_mid)), matrix @ Vector((right, y, z_mid)),
                                           units.format_value(values.posterior)))

@@ -4,7 +4,9 @@ Run: blender --background --factory-startup --python-exit-code 1 --python tests/
 
 O modal é exercitado sem janela: um objeto falso recebe os métodos da classe e um MoveOver falso registra as chamadas.
 - Tab grava e vai ao próximo campo; inválido fica no campo com o aviso (questions.md, pergunta 15);
-- setas e Page Up/Down depois do aviso de sobreposição zeram o aviso (pergunta 18);
+- setas e Page Up/Down zeram o aviso da janela (pergunta 18); feature 066 (T014): não existe mais aviso de
+  sobreposição nem segundo Confirmar; Confirmar grava a pose que o guarda permite (`guard.clamp`), mesmo confirmando
+  duas vezes;
 - rotação inválida mostra mensagem traduzida, não o erro do float() (move_over EC-08).
 """
 
@@ -37,7 +39,7 @@ def dialog():
                                     nudge=lambda *a: calls.append(('nudge',) + a))
     fake.state = types.SimpleNamespace(step=0.01, show_relative=False)
     fake.panel = (0, 0, 0, 0)
-    fake.typing, fake.buffer, fake.warning, fake.warned = None, "", "", False
+    fake.typing, fake.buffer, fake.warning = None, "", ""
     fake._fit_views = lambda: None
     return fake, calls
 
@@ -62,9 +64,45 @@ def tab_moves_on():
 
 def arrows_reset_warning():
     fake, _calls = dialog()
-    fake.warned, fake.warning = True, "Sobrepõe: X"
+    fake.warning = "Posição 1 aplicada."
     press(fake, 'RIGHT_ARROW')
-    check("JMDR: seta depois do aviso zera o aviso", fake.warned is False, f"warned={fake.warned}")
+    check("JMDR: seta depois do aviso zera o aviso", fake.warning == "", f"aviso={fake.warning!r}")
+    check("066: a janela não tem mais o estado do segundo Confirmar", not hasattr(fake, 'warned'))
+
+
+def confirm_twice_never_overlaps():
+    """RF-003: Mover Sobre com o destino sobreposto; confirmar duas vezes grava a última pose sem penetração."""
+    import bpy
+    from mathutils import Vector
+    from caffmob_draw.collision import guard
+    from caffmob_draw.move_over.scene import MoveOver
+    ctx = bpy.context
+    _blender_env.clean_scene()
+    bpy.ops.mesh.primitive_cube_add(size=1.0, location=(0.0, 0.0, 0.5))
+    a = ctx.object
+    a.name = "A"
+    bpy.ops.mesh.primitive_cube_add(size=1.0, location=(3.0, 0.0, 0.5))
+    b = ctx.object
+    b.name = "B"
+    bpy.ops.mesh.primitive_cube_add(size=1.0, location=(1.5, 0.0, 0.5))
+    c = ctx.object
+    c.name = "C"                       # entre A e o destino
+    _blender_env.settle()
+    for o in (a, b):                   # A e B viram "geometria" para o Mover Sobre reconhecê-los
+        o.btm_plane.object_kind = 'GEOMETRY'
+    fake, _calls = dialog()
+    fake.mo = MoveOver(ctx, a, b)
+    fake.report = lambda *args: None
+    fake._finish = lambda context: None
+    fake.mo.delta = fake.mo.b_frame_inv @ Vector((1.2, 0.0, 0.5)) - fake.mo.origin_in_b    # A em x = 1,2: dentro de C
+    with guard.suspended():            # como com a janela aberta: o modal posiciona e o guarda não corrige no meio
+        fake.mo.preview()
+        first = fake._confirm(ctx)
+        second = fake._confirm(ctx)
+    _blender_env.settle()
+    x = a.matrix_world.translation.x
+    check("RF-003: confirmar duas vezes não atravessa", first == {'FINISHED'} and second == {'FINISHED'}
+          and abs(x - 0.5) < 1e-4, f"x={x:.4f}")
 
 
 def rotation_message():
@@ -75,7 +113,7 @@ def rotation_message():
           and "could not convert" not in fake.warning, repr(fake.warning))
 
 
-for step in (tab_moves_on, arrows_reset_warning, rotation_message):
+for step in (tab_moves_on, arrows_reset_warning, rotation_message, confirm_twice_never_overlaps):
     try:
         step()
     except Exception:

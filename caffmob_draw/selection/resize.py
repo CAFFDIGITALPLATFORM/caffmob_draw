@@ -105,6 +105,15 @@ def _set_width(context, el, width):
 
 
 def resize(context, el, width):
+    """066 RF-012: largura e agregados voltam juntos se o novo corpo penetrar."""
+    if not can_resize(el) or not MIN_WIDTH <= width <= MAX_WIDTH:
+        return _resize(context, el, width)       # mantém a validação e as mensagens de domínio
+    from ..collision import guard
+    old = element_size.size(el)[0]
+    return guard.reconfigure(el.obj, lambda: _resize(context, el, width), lambda: _resize(context, el, old))
+
+
+def _resize(context, el, width):
     """Muda a largura do elemento para `width` (m) e adapta os agregados; levanta ValueError se não der."""
     if not can_resize(el):
         raise ValueError(tr("Valor Inválido: este elemento não pode ser redimensionado por aqui."))

@@ -22,11 +22,32 @@ COMPONENT_ITEMS = [(c.code, c.label_pt, "") for c in schema.COMPONENTS]
 LIMIT_MIN, LIMIT_MAX = 0.001, 10.0
 
 
+_updating = set()
+
+
 def _update(self, context):
     obj = self.id_data
     if isinstance(obj, bpy.types.Object) and obj.type == 'MESH':
         from . import mesh
-        mesh.update(obj)
+        uid = obj.session_uid
+        if uid in _updating:
+            return
+        previous = mesh._parameters.get(uid)
+        _updating.add(uid)
+        try:
+            if previous is None or not mesh.is_geometry(obj):
+                mesh.update(obj)
+                return
+            from ..collision import guard
+
+            def restore():
+                for key, value in zip(('kind', 'plane', 'width', 'depth', 'height', 'thickness'), previous):
+                    setattr(self, key, value)
+                mesh.update(obj)
+
+            guard.reconfigure(obj, lambda: mesh.update(obj), restore)
+        finally:
+            _updating.discard(uid)
 
 
 def _length(name, default, description=""):

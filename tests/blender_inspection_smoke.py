@@ -117,7 +117,8 @@ settle()
 scene = bpy.context.scene
 assert all(v == 0 for v in values(scene).values()), values(scene)
 
-# 6. "Evitar Sobreposição" (RN-13): um módulo na parede bloqueia o vão só com a opção ligada.
+# 6. "Impedir atravessamento" (RN-13; feature 066, D-06, antes "Evitar Sobreposição"/`collision_global`): um módulo
+#    na parede bloqueia o vão só com a opção ligada.
 wall = hb_types.GeoNodeWall()
 # Sem a extensão instalada não há preferências do add-on; cria a parede pelo objeto GN genérico (sem a cor).
 hb_types.GeoNodeObject.create(wall, 'GeoNodeWall', "Parede")
@@ -129,9 +130,9 @@ blocker.obj.parent = wall.obj
 blocker.obj.location = (1.0, 0.0, 0.0)
 settle()
 mixin = hb_placement.PlacementMixin()
-scene.btm_settings.collision_global = True
+scene.btm_settings.block_penetration = True
 gap_on = mixin.find_placement_gap_by_side(wall.obj, 2.5, 0.6, True, 0.1)
-scene.btm_settings.collision_global = False
+scene.btm_settings.block_penetration = False
 gap_off = mixin.find_placement_gap_by_side(wall.obj, 2.5, 0.6, True, 0.1)
 assert gap_on[0] > 1.0, gap_on            # o vão começa depois do vizinho
 assert gap_off[0] == 0 and abs(gap_off[1] - 4.0) < 1e-6, gap_off   # parede inteira livre

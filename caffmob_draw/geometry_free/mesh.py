@@ -9,6 +9,7 @@ import bpy  # type: ignore
 from ..data.i18n import N_
 
 GEOMETRY_FLAG = 'IS_BTM_GEOMETRY'
+_parameters = {}      # session_uid → parâmetros da última malha construída
 
 
 def size(kind, plane, width, depth, height, thickness):
@@ -67,6 +68,7 @@ def update(obj):
     bm.to_mesh(obj.data)
     bm.free()
     obj.data.update()
+    _parameters[obj.session_uid] = _props(obj)
 
 
 def create_object(context, kind='PLACA', name=None):

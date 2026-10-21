@@ -1,50 +1,35 @@
-"""Painéis de colisão (feature 004, T042; RF-20, RF-21, RF-24, RF-25, D-14, D-18).
+"""Painéis de colisão (feature 004, T042; feature 066, T075/T076, RF-022, RF-024).
 
-- "Colisões" (aba CAFFMob Draw): verificar a cena ou o selecionado e a lista com "Ir para" e "Afastar até encostar".
-  Estados: colisão desligada, nunca verificado, erro, desatualizado, sem colisões, lista. Nunca diz "sem colisões"
-  com resultado desatualizado ou com erro (RN-14).
-- "Colisão" (no painel de propriedades do objeto): Herdar / Ativa / Desativada para o item selecionado.
+- "Colisões" (aba CAFFMob Draw): a chave "Impedir atravessamento" e o botão "Diagnóstico técnico". A lista com "Ir para"
+  e "Afastar até encostar" só aparece no popup do diagnóstico, calculada na hora; nada fica na barra nem na viewport.
+- "Colisão" (no painel de propriedades do objeto): Herdar / Ativa / Desativada para o item selecionado, sem "Colide
+  com" (o bloqueio é silencioso, RF-021).
 """
 
 import bpy  # type: ignore
 
 from ..data.i18n import tr
-from . import props, scan
+from . import props
 
 MAX_ROWS = 12
 _LABELS = {key: label for key, label, _desc in props.KIND_ITEMS}
 
 
 def draw_collisions(layout, context):
-    scene = context.scene
+    """Lista do diagnóstico técnico (popup de `caffmob.collision_diagnose`), calculada na hora em que abriu."""
     state = context.window_manager.btm_collision
     row = layout.row(align=True)
-    row.operator("caffmob.check_collisions", text=tr("Verificar colisões"), icon='MOD_PHYSICS').scope = 'ALL'
-    row.operator("caffmob.check_collisions", text=tr("Selecionado"), icon='RESTRICT_SELECT_OFF').scope = 'SELECTED'
-    if state.items or state.checked >= 0:
-        row.operator("caffmob.collision_clear", text="", icon='X')
-    if not scan.enabled(scene):
-        layout.label(text=tr("Colisão desligada (Evitar Sobreposição)"), icon='INFO')
-        layout.label(text=tr("Ligue em Produção/Projeto › Configurações"))
-        return
+    row.operator("caffmob.check_collisions", text=tr("Recalcular"), icon='FILE_REFRESH').scope = state.scope
     if state.error:
         box = layout.box()
         box.alert = True
         box.label(text=tr("Não foi possível calcular a colisão: {}").format(state.error), icon='ERROR')
         return
-    if state.checked < 0 and not state.items:
-        layout.label(text=tr("Ainda não verificado."), icon='INFO')
-        return
-    if state.stale:
-        warn = layout.box()
-        warn.alert = True
-        warn.label(text=tr("Desatualizado, verifique de novo"), icon='ERROR')
     if not state.items:
-        if not state.stale:
-            layout.label(text=tr("Sem colisões em {} item(ns).").format(state.checked), icon='CHECKMARK')
+        layout.label(text=tr("Sem colisões em {} item(ns).").format(max(0, state.checked)), icon='CHECKMARK')
         return
     col = layout.column(align=True)
-    col.alert = not state.stale
+    col.alert = True
     col.label(text=tr("{} colisão(ões):").format(len(state.items)), icon='ERROR')
     for index, item in enumerate(state.items[:MAX_ROWS]):
         line = col.row(align=True)                # na coluna em alerta: as linhas também ficam em destaque
@@ -56,6 +41,18 @@ def draw_collisions(layout, context):
         layout.label(text=tr("… e mais {}").format(len(state.items) - MAX_ROWS))
 
 
+def draw_tools(layout, context):
+    """Barra lateral (feature 066, RF-022/RF-024): a chave do guarda e o diagnóstico, que só abre por botão."""
+    settings = getattr(context.scene, 'btm_settings', None)
+    if settings is not None:
+        row = layout.row(align=True)
+        row.prop(settings, "block_penetration", text=tr("Impedir atravessamento"), toggle=True)
+        row.prop(settings, "show_side_dimensions", text=tr("Medidas laterais"), toggle=True)
+    row = layout.row(align=True)
+    row.operator("caffmob.collision_diagnose", text=tr("Diagnóstico técnico"), icon='MOD_PHYSICS').scope = 'ALL'
+    row.operator("caffmob.collision_diagnose", text=tr("Selecionado"), icon='RESTRICT_SELECT_OFF').scope = 'SELECTED'
+
+
 class BTM_PT_Collisions(bpy.types.Panel):
     bl_label = "Colisões"
     bl_idname = "BTM_PT_collisions"
@@ -65,7 +62,7 @@ class BTM_PT_Collisions(bpy.types.Panel):
     bl_options = {'DEFAULT_CLOSED'}
 
     def draw(self, context):
-        draw_collisions(self.layout, context)
+        draw_tools(self.layout, context)
 
 
 def _item(context):
@@ -96,15 +93,7 @@ class BTM_PT_ItemCollision(bpy.types.Panel):
         agg = getattr(active, 'btm_aggregate', None)
         if agg is not None and agg.is_aggregate:      # agregado: o override é dele, não do módulo (pergunta 35)
             item = active
-        layout = self.layout
-        layout.prop(item.btm_plane, "collision_override", text=tr("Colisão"))
-        state = context.window_manager.btm_collision
-        mine = [r for r in state.items if item.name in (r.name_a, r.name_b)]
-        for r in mine[:5]:
-            other = r.name_b if r.name_a == item.name else r.name_a
-            row = layout.row()
-            row.alert = True
-            row.label(text=tr("Colide com {}").format(other), icon='ERROR')
+        self.layout.prop(item.btm_plane, "collision_override", text=tr("Colisão"))
 
 
 # Desenhados na barra lateral única (feature 005) pelas funções de desenho e pelo proxy; não registrados.

@@ -128,8 +128,12 @@ def run():
     check("parede sem o corte e janela solta", frame.parent is None and not any(
         m.type == 'BOOLEAN' for m in wall.obj.modifiers))
 
+    # 066 (RN-03): a janela solta está dentro da parede fechada; levá-la de volta à origem atravessaria a parede.
+    # O ensaio a teletransporta com "Impedir atravessamento" desligado, só para comparar com a posição importada.
+    ctx.scene.btm_settings.block_penetration = False
     frame.location = (0.0, 0.0, 0.0)
     env.settle()
+    ctx.scene.btm_settings.block_penetration = True
     for o in ctx.selected_objects:
         o.select_set(False)
     ctx.view_layer.objects.active = frame

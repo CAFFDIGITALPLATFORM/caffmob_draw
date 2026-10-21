@@ -4,8 +4,10 @@ O handler de `apply.py` anota os objetos que se moveram; quando nenhum movimento
 posicionamento das bibliotecas, mover do plugin), `run` trata cada um uma vez:
 1. item grudado → volta ao plano da face na posição em que foi solto (RF-13);
 2. módulo novo posto na parede pela biblioteca (filho da parede, sem vínculo) → vira elemento filho dela (RF-19);
-3. módulo ou geometria solto perto de uma face plana → ímã (RF-12), com um passo de desfazer próprio;
-4. verificação de colisão só com os vizinhos do que se moveu; colidindo, avisa e destaca, sem mover (RF-23).
+3. módulo ou geometria solto perto de uma face plana → ímã (RF-12), com um passo de desfazer próprio.
+
+Feature 066 (T071, R4): o aviso de colisão depois de soltar saiu (o guarda impede a penetração durante o movimento).
+O ímã é reconferido pelo guarda: se o grudar criar penetração nova, o item desgruda e volta à pose de antes.
 """
 
 import bpy  # type: ignore
@@ -79,7 +81,7 @@ def run(names):
         wall = migrate.wall_of(obj)
         if wall is not None:
             link.link_in_place(obj, wall, migrate.wall_side(obj, wall))
-        elif magnet.try_stick(obj) is not None:
+        elif _stick_guarded(obj):
             stuck_now.append(obj)
         moved_roots.append(obj)
     for obj in moved_roots:
@@ -90,13 +92,22 @@ def run(names):
         for obj in stuck_now:
             save_feedback.show(tr("Elemento filho de: {}").format(link.face_label(obj)))
         _undo_push(tr("Grudar"))
-    if moved_roots:
-        _check_collisions(moved_roots)
 
 
-def _check_collisions(objs):
-    try:
-        from ..collision import scan
-    except ImportError:
-        return
-    scan.check_moved(objs)
+def _stick_guarded(obj):
+    """Ímã com o guarda de colisão antes e depois (066, R4): o ímã não puxa o item para dentro de outro."""
+    from ..collision import guard
+    before = obj.matrix_world.copy()
+    guard.accept(obj, before)                       # antes: a pose solta é a última válida
+    with guard.suspended():
+        if magnet.try_stick(obj) is None:
+            return False
+        bpy.context.view_layer.update()
+        if guard.penetrates(obj, before):           # depois: penetração nova desfaz o grudar
+            link.release(obj)
+            obj.matrix_world = before
+            bpy.context.view_layer.update()
+            guard.accept(obj)
+            return False
+        guard.accept(obj)
+    return True

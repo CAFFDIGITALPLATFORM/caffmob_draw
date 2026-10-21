@@ -75,6 +75,27 @@ def get_dimension(info, field):
 
 
 def set_dimension(context, info, field, value):
+    # 066 RF-012: os parâmetros também crescem sem mudar a matriz; não basta vigiar transformações.
+    if field not in editable_dimensions(info):
+        return _set_dimension(context, info, field, value)
+    _check(field, value, DIM_LABELS[field])
+    from ..collision import guard
+    obj = info.root if info.kind == classify.MODULE else info.obj
+    old = get_dimension(info, field)
+    overrides = obj.get('btm_overrides')
+
+    def restore():
+        _set_dimension(context, info, field, old)
+        if overrides is None:
+            if 'btm_overrides' in obj:
+                del obj['btm_overrides']
+        else:
+            obj['btm_overrides'] = overrides
+
+    return guard.reconfigure(obj, lambda: _set_dimension(context, info, field, value), restore)
+
+
+def _set_dimension(context, info, field, value):
     if field not in editable_dimensions(info):
         raise ValueError(tr("Valor Inválido: {} não é editável para este objeto.").format(tr(DIM_LABELS[field])))
     _check(field, value, DIM_LABELS[field])

@@ -830,14 +830,15 @@ class PlacementMixin:
 
     @staticmethod
     def avoid_overlap(context=None):
-        """RN-13 "Evitar Sobreposição" (`btm_settings.collision_global`); sem a propriedade, vale ligado (T071).
+        """RN-13 "Impedir atravessamento" (`btm_settings.block_penetration`, feature 066 D-06; antes
+        `collision_global`); sem a propriedade, vale ligado (T071).
 
         Desligado, o posicionamento de módulos ignora os outros módulos e as paredes como obstáculos (sobrepor é
         permitido); portas, janelas e linhas de encaixe continuam valendo.
         """
         scene = getattr(context or bpy.context, 'scene', None)
         settings = getattr(scene, 'btm_settings', None) if scene is not None else None
-        return True if settings is None else bool(settings.collision_global)
+        return True if settings is None else bool(settings.block_penetration)
 
     def find_placement_gap_by_side(self, wall_obj, cursor_x: float,
                                    object_width: float,
@@ -1752,6 +1753,20 @@ def draw_placement_dimensions(operator, context):
             else:
                 cx = mx
                 cy = my + half_h + 6.0
+            if getattr(operator, '_placement_dim_safe_labels', False):
+                # 066 RF-023: mantém os valores no espaço útil, fora da barra lateral e das ferramentas.
+                margin = 8.0 * ui_scale
+                left, right = margin, region.width - margin
+                for panel in context.area.regions:
+                    if panel.type in {'UI', 'TOOLS'} and panel.width > 1:
+                        if panel.x < region.x + region.width / 2:
+                            left = max(left, panel.x + panel.width - region.x + margin)
+                        else:
+                            right = min(right, panel.x - region.x - margin)
+                if right - left < 2 * half_w or region.height < 2 * (half_h + margin):
+                    continue
+                cx = min(max(cx, left + half_w), right - half_w)
+                cy = min(max(cy, margin + half_h), region.height - margin - half_h)
             verts = ((cx - half_w, cy - half_h), (cx + half_w, cy - half_h),
                      (cx + half_w, cy + half_h), (cx - half_w, cy + half_h))
             shader.uniform_float("color", label_bg)

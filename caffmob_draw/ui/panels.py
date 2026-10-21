@@ -186,7 +186,8 @@ def draw_settings(layout, context):
     col.prop(settings, "snap_grid", text="Atrair ao Grid (Snap)")
     if settings.snap_grid:
         col.prop(settings, "snap_increment", text="Incremento do Snap")
-    col.prop(settings, "collision_global", text="Evitar Sobreposição")
+    col.prop(settings, "block_penetration", text="Impedir atravessamento")      # 066, RF-022: controles próprios
+    col.prop(settings, "show_side_dimensions", text="Medidas laterais")
 
     draw_standards_box(layout, context)
 
@@ -300,7 +301,8 @@ class BTM_PT_EnvironmentBuilder(bpy.types.Panel):
             col.prop(settings, "snap_grid", text="Atrair ao Grid (Snap)")
             if settings.snap_grid:
                 col.prop(settings, "snap_increment", text="Incremento do Snap")
-            col.prop(settings, "collision_global", text="Evitar Sobreposição")
+            col.prop(settings, "block_penetration", text="Impedir atravessamento")      # 066, RF-022
+            col.prop(settings, "show_side_dimensions", text="Medidas laterais")
 
             # 2. Padrão de Dimensões (Configurador de Dimensões)
             draw_standards_box(layout, context)
