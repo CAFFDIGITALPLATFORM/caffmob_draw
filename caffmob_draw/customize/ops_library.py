@@ -43,6 +43,8 @@ class BTM_OT_ModuleSave(bpy.types.Operator):
     def invoke(self, context, event):
         root = adapters.module_root(context.active_object)
         self.module_name = root.name
+        if root.btm_authored.is_authored:
+            self.category = library_io.AUTHORED_CATEGORY
         self.overwrite = False
         return context.window_manager.invoke_props_dialog(self, width=360)
 

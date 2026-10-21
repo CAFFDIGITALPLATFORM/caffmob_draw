@@ -12,7 +12,7 @@ import tempfile
 
 import bpy  # type: ignore
 
-from ..data.i18n import tr
+from ..data.i18n import N_, tr
 from ..library_common import thumbnail as _thumbnail
 from ..library_common import world_box
 from ..selection import classify
@@ -21,6 +21,7 @@ from .adapters import common
 
 MODULES_DIR = "modules"
 GENERAL = "Geral"
+AUTHORED_CATEGORY = N_("Armários autorais")
 
 
 def _package():
@@ -28,7 +29,9 @@ def _package():
 
 
 def modules_root():
-    return bpy.utils.extension_path_user(_package(), path=MODULES_DIR, create=True)
+    folder = bpy.utils.extension_path_user(_package(), path=MODULES_DIR, create=True)
+    os.makedirs(os.path.join(folder, AUTHORED_CATEGORY), exist_ok=True)
+    return folder
 
 
 def paths_for(name, category):
@@ -103,6 +106,14 @@ def _addon_version():
 def build_manifest(root, name, category):
     adapter = adapters.for_root(root)
     current = adapter.read(root)
+    if adapter.LIBRARY == 'AUTHORED':
+        from . import authored_io
+        block = authored_io.build(root)
+        size = block['size_local_mm']
+        return manifest.build(name, category or GENERAL, 'AUTHORED', root.name, current, authored=block,
+                              dimensions_mm=dict(zip(('width', 'depth', 'height'), size)),
+                              created=datetime.datetime.now().astimezone().isoformat(timespec="seconds"),
+                              addon_version=_addon_version())
     lo, hi = world_box(_tree(root))
     size = hi - lo
     door_styles = sorted({o.door_style for o in current.openings if o.door_style} |
@@ -137,6 +148,17 @@ def _renew_divisions(context, root):
 
 
 def save(context, root, name, category, thumbnail=True):
+    if classify.module_library(root) == 'AUTHORED':
+        from . import authored_io
+        try:
+            with authored_io.closed(context, root), authored_io.packed_images(root):
+                return _save(context, root, name, category, thumbnail)
+        except (RuntimeError, OSError) as exc:
+            return None, [tr("Não foi possível gravar o módulo em {}: {}").format(category, exc)]
+    return _save(context, root, name, category, thumbnail)
+
+
+def _save(context, root, name, category, thumbnail=True):
     """Grava `.blend` + `.json` (+ `.png`). Devolve (caminhos, mensagens de erro). Erro → nada parcial fica."""
     if adapters.for_root(root) is None:
         return None, [tr("O objeto selecionado não é um módulo")]
@@ -146,6 +168,9 @@ def save(context, root, name, category, thumbnail=True):
     try:
         os.makedirs(folder, exist_ok=True)
         data = build_manifest(root, name, category)
+        errors = manifest.validate(data)
+        if errors:
+            return None, errors
         fd, tmp_blend = tempfile.mkstemp(suffix=".blend", dir=folder)
         os.close(fd)
         written.append(tmp_blend)
@@ -156,13 +181,15 @@ def save(context, root, name, category, thumbnail=True):
         written.append(tmp_json)
         _replace_pair(folder, tmp_blend, tmp_json, paths)
         written = []
-    except (OSError, RuntimeError) as exc:
+    except (OSError, RuntimeError, ValueError) as exc:
         for path in written:
             if os.path.exists(path):
                 os.remove(path)
         return None, [tr("Não foi possível gravar o módulo em {}: {}").format(folder, exc)]
     if thumbnail:
         _thumbnail(context, _tree(root), paths["png"])
+    from ..library_panel import categories
+    categories.invalidate()
     return paths, []
 
 
@@ -222,6 +249,7 @@ def load(context, entry):
             data, _spec, errors = manifest.loads(handle.read())
         if errors:
             return None, [], [tr("Manifesto inválido: {}").format("; ".join(errors))]
+    before_ids = set(bpy.data.all_ids)
     with bpy.data.libraries.load(entry["blend"], link=False) as (data_from, data_to):
         data_to.objects = data_from.objects
     loaded = [obj for obj in data_to.objects if obj is not None]
@@ -229,14 +257,32 @@ def load(context, entry):
         context.scene.collection.objects.link(obj)
     roots = [obj for obj in loaded if obj.parent is None and classify.module_library(obj)]
     root = roots[0] if roots else None
+    if root is not None and classify.module_library(root) == 'AUTHORED' and (
+            data is None or data.get('library') != 'AUTHORED'):
+        bpy.data.batch_remove(list(set(bpy.data.all_ids) - before_ids))
+        return None, [], [tr("O armário autoral exige manifesto 1.2.0")]
     for ref in _geo_node_refs(loaded):
         ref.hide_set(True)
         ref.hide_viewport = True
         ref.hide_render = True
-    if data is not None:
+    if data is not None and data.get('library') != 'AUTHORED':
         missing = _missing_styles(data)
         if missing:
             warnings.append(tr("Estilos ausentes neste arquivo (mantida a geometria salva): {}").format(", ".join(missing)))
+    if data is not None and data.get('library') == 'AUTHORED':
+        from . import authored_io
+        from ..collision import guard
+        try:
+            if root is None or classify.module_library(root) != 'AUTHORED':
+                raise ValueError("Raiz AUTHORED ausente no arquivo")
+            with guard.suspended():
+                authored_io.renew(root, data['authored'])
+                context.view_layer.update()
+                guard.accept(root)
+        except (ValueError, KeyError, RuntimeError) as exc:
+            bpy.data.batch_remove(list(set(bpy.data.all_ids) - before_ids))
+            return None, [], [str(exc)]
+        return root, loaded, []
     if root is not None and data is not None:
         warnings += reapply.reapply(context, root)
     if root is not None:

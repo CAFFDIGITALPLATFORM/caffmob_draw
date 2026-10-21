@@ -48,6 +48,25 @@ def _fmt(context, value):
     return units.format_value(value, context.scene)
 
 
+def _draw_member_rule(layout, context):
+    obj = context.active_object
+    if obj is None or obj.btm_member.owner is None:
+        return
+    data = obj.btm_member
+    box = layout.box()
+    box.label(text=tr("Regra dimensional do membro"))
+    for name in ('role', 'rule', 'axis', 'offset_mm'):
+        box.prop(data, name)
+    if data.rule == 'DISTRIBUTE':
+        box.prop(data, 'count')
+    for index, ref in enumerate(data.refs):
+        row = box.row(align=True)
+        row.prop(ref, 'target', text='')
+        row.prop(ref, 'face', text='')
+        row.operator('caffmob_draw.authored_rule_reference', text='', icon='X').index = index
+    box.operator('caffmob_draw.authored_rule_reference', text=tr("Adicionar referência"), icon='ADD')
+
+
 def draw_aggregate(layout, context, include_import=True):
     if include_import:        # na barra lateral da 005, importar fica em Inserir
         row = layout.row(align=True)
@@ -59,6 +78,7 @@ def draw_aggregate(layout, context, include_import=True):
     col.operator('caffmob_draw.member_transfer')
     col.operator('caffmob_draw.authored_leaf')
     col.operator('caffmob_draw.authored_leaves_open')
+    col.operator('caffmob_draw.authored_update_links')
     col.operator("caffmob.aggregate_convert", icon='LINKED')
     col.operator("caffmob.leaf_convert", icon='MOD_SIMPLEDEFORM')
     col.operator("caffmob.window_assemble", icon='MOD_BUILD')
@@ -66,6 +86,7 @@ def draw_aggregate(layout, context, include_import=True):
     row.operator("caffmob.group_create", icon='GROUP')
     row.operator("caffmob.group_dissolve", text=tr("Desfazer grupo"), icon='X')
     _draw_frame(layout, context)
+    _draw_member_rule(layout, context)
     obj = _active_aggregate(context)
     if obj is None:
         layout.label(text="Selecione a malha e, por último, o elemento pai.", icon='INFO')

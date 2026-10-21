@@ -15,8 +15,13 @@ FRONT_ITEMS = [(key, label, '') for key, label in (
     ('NEG_Y', '−Y'), ('POS_Y', '+Y'), ('NEG_X', '−X'), ('POS_X', '+X'))]
 
 
+def _ref_target(self, context):
+    from ..stable_id import ensure_uid
+    self.uid = ensure_uid(self.target.btm_member) if self.target is not None else ''
+
+
 class BTM_PG_MemberRef(bpy.types.PropertyGroup):
-    target: bpy.props.PointerProperty(type=bpy.types.Object)  # type: ignore
+    target: bpy.props.PointerProperty(type=bpy.types.Object, update=_ref_target)  # type: ignore
     uid: bpy.props.StringProperty()  # type: ignore
     face: bpy.props.EnumProperty(items=FACE_ITEMS, default='NEG_Y')  # type: ignore
 
