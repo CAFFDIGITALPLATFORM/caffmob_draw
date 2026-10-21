@@ -56,7 +56,7 @@ onda.
 | `_reversa_sdd/selection/` | Dimensões | regra-alterada | A medida que faria penetrar volta ao valor anterior, em silêncio. |
 | `_reversa_sdd/architecture.md` | Re-extração 2026-10-10 — arquitetura atual, Limites e organização | componente-novo | `cladding/` com núcleo puro, presets, controlador `btm_cladding`, região, gerador, sincronização, material e adoção. |
 | `_reversa_sdd/openings/` | Transferência | regra-alterada | Mover a porta sincroniza o revestimento das duas paredes no mesmo Desfazer. |
-| `_reversa_sdd/deployment.md` | Versão | delta-de-contrato-externo | Versões 1.3.0, 1.4.0, 1.5.0 e 1.6.0, uma por onda. |
+| `_reversa_sdd/deployment.md` | Re-extração 2026-10-10 — arquitetura atual (`blender_manifest.toml`) | delta-de-contrato-externo | Versões 1.3.0, 1.4.0, 1.5.0 e 1.6.0, uma por onda. |
 
 ## Regras sob vigilância
 
