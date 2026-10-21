@@ -56,6 +56,8 @@ def editable_dimensions(info):
 def get_dimension(info, field):
     obj = info.root if info.kind in (classify.MODULE, classify.FRONT, classify.PART) else info.obj
     library = info.library
+    if library == 'AUTHORED':
+        return obj.btm_authored.size_local[{'width': 0, 'depth': 1, 'height': 2}[field]] / 1000
     if info.kind == classify.MODULE or info.kind in (classify.FRONT, classify.PART):
         if library == 'FACE_FRAME' and getattr(obj, 'face_frame_cabinet', None) is not None:
             return getattr(obj.face_frame_cabinet, field)
@@ -75,6 +77,12 @@ def get_dimension(info, field):
 
 
 def set_dimension(context, info, field, value):
+    if info.library == 'AUTHORED':
+        _check(field, value, DIM_LABELS[field])
+        from ..aggregates import stretch
+        size = list(info.root.btm_authored.size_local)
+        size[{'width': 0, 'depth': 1, 'height': 2}[field]] = value * 1000
+        return stretch.resize(context, info.root, size)
     # 066 RF-012: os parâmetros também crescem sem mudar a matriz; não basta vigiar transformações.
     if field not in editable_dimensions(info):
         return _set_dimension(context, info, field, value)

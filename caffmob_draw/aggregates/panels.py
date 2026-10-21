@@ -17,8 +17,8 @@ from . import apply, install, leaf, limits, perforate
 
 def _active_aggregate(context):
     obj = context.active_object
-    if obj is not None and obj.get('btm_leaf'):
-        obj = bpy.data.objects.get(obj['btm_leaf'])
+    if obj is not None:
+        obj = next((c for c in obj.children if leaf.pivot_of(c) == obj), obj)
     node = obj
     while node is not None:                       # peça de um grupo: sobe até o grupo convertido (feature 007)
         agg = getattr(node, 'btm_aggregate', None)
@@ -48,11 +48,37 @@ def _fmt(context, value):
     return units.format_value(value, context.scene)
 
 
+def _draw_member_rule(layout, context):
+    obj = context.active_object
+    if obj is None or obj.btm_member.owner is None:
+        return
+    data = obj.btm_member
+    box = layout.box()
+    box.label(text=tr("Regra dimensional do membro"))
+    for name in ('role', 'rule', 'axis', 'offset_mm'):
+        box.prop(data, name)
+    if data.rule == 'DISTRIBUTE':
+        box.prop(data, 'count')
+    for index, ref in enumerate(data.refs):
+        row = box.row(align=True)
+        row.prop(ref, 'target', text='')
+        row.prop(ref, 'face', text='')
+        row.operator('caffmob_draw.authored_rule_reference', text='', icon='X').index = index
+    box.operator('caffmob_draw.authored_rule_reference', text=tr("Adicionar referência"), icon='ADD')
+
+
 def draw_aggregate(layout, context, include_import=True):
     if include_import:        # na barra lateral da 005, importar fica em Inserir
         row = layout.row(align=True)
         row.operator("caffmob.import_model", icon='IMPORT')
     col = layout.column(align=True)
+    col.operator('caffmob_draw.authored_adopt')
+    col.operator('caffmob_draw.member_add')
+    col.operator('caffmob_draw.member_remove')
+    col.operator('caffmob_draw.member_transfer')
+    col.operator('caffmob_draw.authored_leaf')
+    col.operator('caffmob_draw.authored_leaves_open')
+    col.operator('caffmob_draw.authored_update_links')
     col.operator("caffmob.aggregate_convert", icon='LINKED')
     col.operator("caffmob.leaf_convert", icon='MOD_SIMPLEDEFORM')
     col.operator("caffmob.window_assemble", icon='MOD_BUILD')
@@ -60,6 +86,7 @@ def draw_aggregate(layout, context, include_import=True):
     row.operator("caffmob.group_create", icon='GROUP')
     row.operator("caffmob.group_dissolve", text=tr("Desfazer grupo"), icon='X')
     _draw_frame(layout, context)
+    _draw_member_rule(layout, context)
     obj = _active_aggregate(context)
     if obj is None:
         layout.label(text="Selecione a malha e, por último, o elemento pai.", icon='INFO')
@@ -67,6 +94,10 @@ def draw_aggregate(layout, context, include_import=True):
     agg = obj.btm_aggregate
     box = layout.box()
     box.label(text=tr("{} — pai: {}").format(obj.name, agg.parent_ref.name if agg.parent_ref else '—'), icon='OBJECT_DATA')
+    if obj.btm_member.owner is not None and agg.kind == 'LEAF':
+        box.operator('caffmob_draw.authored_leaf')
+        box.prop(agg, 'open_value', slider=True)
+        return
     if agg.kind == 'AGGREGATE':
         box.prop(agg, "face")
         box_p = apply.parent_box(obj)

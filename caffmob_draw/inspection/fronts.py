@@ -18,10 +18,11 @@ FLIP_UP = 'FLIP_UP'
 FLIP_DOWN = 'FLIP_DOWN'
 DRAWER = 'DRAWER'
 PULLOUT = 'PULLOUT'
+SLIDING = 'SLIDING'
 
 HINGED = frozenset({DOOR, FLIP_UP, FLIP_DOWN})
 KIND_LABELS = {DOOR: N_("Porta"), FLIP_UP: N_("Basculante"), FLIP_DOWN: N_("Basculante p/ baixo"), DRAWER: N_("Gaveta"),
-               PULLOUT: N_("Pullout")}
+               PULLOUT: N_("Pullout"), SLIDING: N_("Porta de correr")}
 
 
 class Front:
@@ -120,7 +121,7 @@ def front_for_object(obj, scene):
 def module_root_of(obj):
     """Raiz do módulo que contém `obj`, em qualquer linha."""
     tags = ('IS_FRAMELESS_CABINET_CAGE', 'IS_FACE_FRAME_CABINET_CAGE', 'IS_CLOSET_STARTER_CAGE',
-            'IS_ENTRY_DOOR_BP')        # porta de ambiente: a própria porta faz o papel do módulo (D-20)
+            'IS_ENTRY_DOOR_BP', 'IS_AUTHORED_CABINET')  # porta de ambiente também faz o papel de módulo (D-20)
     current = obj
     while current is not None:
         if any(current.get(tag) for tag in tags):

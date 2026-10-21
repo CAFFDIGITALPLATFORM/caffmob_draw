@@ -13,12 +13,15 @@ from mathutils import Vector  # type: ignore
 
 from ...data.i18n import tr
 from ...aggregates import leaf
+from ...aggregates.front_kind import front_kind
+from ...stable_id import ensure_uid
 from .. import fronts, pivot_math
 
 
 def is_leaf(obj):
     agg = getattr(obj, 'btm_aggregate', None)
-    return agg is not None and agg.is_aggregate and agg.kind == 'LEAF' and leaf.pivot_of(obj) is not None
+    return (agg is not None and agg.is_aggregate and agg.kind == 'LEAF'
+            and getattr(agg, 'construction', 'PANEL') != 'FIXED' and leaf.pivot_of(obj) is not None)
 
 
 class AggregateLeafFront(fronts.Front):
@@ -26,9 +29,9 @@ class AggregateLeafFront(fronts.Front):
 
     def __init__(self, obj):
         agg = obj.btm_aggregate
-        kind = fronts.DOOR if agg.motion == 'SWING' else fronts.DRAWER
+        kind = front_kind(agg.motion, agg.hinge)
         root = fronts.module_root_of(agg.parent_ref) or agg.parent_ref
-        super().__init__(kind, root, obj, f"LEAF:{obj.name}")
+        super().__init__(kind, root, obj, f"LEAF:{ensure_uid(obj.btm_member)}")
 
     @property
     def label(self):
@@ -62,7 +65,7 @@ class AggregateLeafFront(fronts.Front):
 
     def hinge_frame(self):
         agg = self.obj.btm_aggregate
-        world = agg.parent_ref.matrix_world
+        world = agg.parent_ref.matrix_world @ leaf.front_frame(agg.parent_ref)
         base = Vector(leaf.pivot_of(self.obj)['btm_leaf_base'])
         rot = world.to_3x3()
         if agg.motion == 'SLIDE':
@@ -99,8 +102,8 @@ def front_for_object(obj, scene):
     while current is not None:
         if is_leaf(current):
             return AggregateLeafFront(current)
-        pivot_leaf = current.get('btm_leaf') if hasattr(current, 'get') else None
-        if pivot_leaf and bpy.data.objects.get(pivot_leaf) is not None and is_leaf(bpy.data.objects[pivot_leaf]):
-            return AggregateLeafFront(bpy.data.objects[pivot_leaf])
+        for child in current.children:
+            if is_leaf(child) and leaf.pivot_of(child) == current:
+                return AggregateLeafFront(child)
         current = current.parent
     return None

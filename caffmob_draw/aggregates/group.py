@@ -9,13 +9,24 @@ import bpy  # type: ignore
 from mathutils import Matrix, Vector  # type: ignore
 
 
+MEMBER_TYPES = {'MESH', 'CURVE', 'FONT', 'SURFACE', 'EMPTY', 'LIGHT'}
+BODY_TYPES = {'MESH', 'CURVE', 'FONT'}
+
+
+def is_body(obj):
+    member = getattr(obj, 'btm_member', None)
+    return (obj.type in BODY_TYPES and getattr(member, 'role', '') != 'CUTTER'
+            and not obj.get('IS_CUTTING_OBJ'))
+
+
 def is_group(obj):
     group = getattr(obj, 'btm_group', None) if obj is not None else None
     return group is not None and group.is_group
 
 
 def members(group):
-    return [m.obj for m in group.btm_group.members if m.obj is not None and m.obj.name in bpy.data.objects]
+    return [m.obj for m in group.btm_group.members if m.obj is not None and m.obj.name in bpy.data.objects
+            and m.obj in group.children_recursive]
 
 
 def _world_corners(obj, depsgraph):
@@ -29,14 +40,14 @@ def object_corners(obj, depsgraph):
     if obj.type != 'EMPTY':
         return [Vector(c) for c in obj.evaluated_get(depsgraph).bound_box]
     to_local = obj.matrix_world.inverted_safe()
-    corners = [to_local @ p for child in obj.children_recursive if child.type == 'MESH'
+    corners = [to_local @ p for child in obj.children_recursive if is_body(child)
                for p in _world_corners(child, depsgraph)]
     return corners or [Vector()] * 8
 
 
 def world_box(objs):
     depsgraph = bpy.context.evaluated_depsgraph_get()
-    pts = [p for o in objs if o.type == 'MESH' for p in _world_corners(o, depsgraph)]
+    pts = [p for o in objs if is_body(o) for p in _world_corners(o, depsgraph)]
     if not pts:
         return None
     return Vector([min(p[i] for p in pts) for i in range(3)]), Vector([max(p[i] for p in pts) for i in range(3)])
@@ -46,7 +57,9 @@ def group_box(group, space=None):
     """Caixa (lo, hi) das peças do grupo no espaço da matriz `space` (padrão: o próprio grupo)."""
     depsgraph = bpy.context.evaluated_depsgraph_get()
     to_space = (space if space is not None else group.matrix_world).inverted_safe()
-    pts = [to_space @ p for o in members(group) if o.type == 'MESH' for p in _world_corners(o, depsgraph)]
+    bodies = dict.fromkeys(c for m in members(group)
+                           for c in ([m] if m.type in BODY_TYPES else [m] + list(m.children_recursive)))
+    pts = [to_space @ p for o in bodies if is_body(o) for p in _world_corners(o, depsgraph)]
     if not pts:
         return None
     return Vector([min(p[i] for p in pts) for i in range(3)]), Vector([max(p[i] for p in pts) for i in range(3)])
@@ -54,10 +67,10 @@ def group_box(group, space=None):
 
 def create_group(objs, kind='PLAIN', name="Grupo"):
     """Agrupa `objs` (malhas) num Empty novo; devolve o grupo."""
-    objs = [o for o in objs if o.type == 'MESH']
+    objs = [o for o in objs if o.type in MEMBER_TYPES]
     if not objs:
         return None
-    lo, hi = world_box(objs)
+    lo, hi = world_box(objs) or (Vector(), Vector())
     group = bpy.data.objects.new(name, None)
     group.empty_display_type = 'CUBE'
     group.empty_display_size = 0.05
@@ -75,10 +88,16 @@ def create_group(objs, kind='PLAIN', name="Grupo"):
     bpy.context.view_layer.update()
     data = group.btm_group
     data.is_group, data.kind = True, kind
+    selected = set(objs)
     for obj in objs:
         entry = data.members.add()
         entry.obj, entry.orig_parent = obj, obj.parent
         entry.orig_matrix = [v for row in obj.matrix_world for v in row]
+        ancestor = obj.parent
+        while ancestor is not None and ancestor not in selected:
+            ancestor = ancestor.parent
+        if ancestor is not None:
+            continue                    # hierarquia móvel interna, inclusive pivô manual, permanece intacta
         world = obj.matrix_world.copy()
         obj.parent = group
         obj.matrix_parent_inverse = Matrix.Identity(4)

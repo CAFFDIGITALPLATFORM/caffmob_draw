@@ -15,8 +15,8 @@ from ...selection import classify
 
 
 def _adapters():
-    from . import btm, closets, face_frame, frameless
-    return (frameless, face_frame, closets, btm)
+    from . import authored, btm, closets, face_frame, frameless
+    return (frameless, face_frame, closets, btm, authored)
 
 
 def module_root(obj):

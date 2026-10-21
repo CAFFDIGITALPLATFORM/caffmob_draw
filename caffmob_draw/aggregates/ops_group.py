@@ -16,7 +16,8 @@ ROLE_ITEMS = [('FRAME', "Esquadria", "Parte fixa"), ('SLIDE', "Folha de correr",
 
 
 def _meshes(context):
-    return [o for o in context.selected_objects if o.type == 'MESH' and not group.is_group(o.parent)]
+    return [o for o in context.selected_objects if o.type in group.MEMBER_TYPES
+            and not group.is_group(o) and not group.is_group(o.parent)]
 
 
 def _import_groups(context):
@@ -27,7 +28,7 @@ def _import_groups(context):
 def _assemble_meshes(context):
     meshes = _meshes(context)
     for source in _import_groups(context):
-        meshes += [m for m in group.members(source) if m.type == 'MESH' and m not in meshes]
+        meshes += [m for m in group.members(source) if m.type in group.MEMBER_TYPES and m not in meshes]
     return meshes
 
 
@@ -67,8 +68,8 @@ class BTM_OT_GroupCreate(bpy.types.Operator):
 
 def _active_group(context):
     obj = context.active_object
-    if obj is not None and obj.get('btm_leaf'):
-        obj = bpy.data.objects.get(obj['btm_leaf'])
+    if obj is not None:
+        obj = next((c for c in obj.children if leaf.pivot_of(c) == obj), obj)
     while obj is not None and not group.is_group(obj):
         obj = obj.parent
     return obj

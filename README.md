@@ -16,6 +16,31 @@ The project follows a modular structure to maintain clean separation of concerns
   - `geometry/` - Low-level bmesh generator scripts and shader graph configurations.
   - `cutting/` - 2D nesting optimization logic (computes sheet cuts programmatically).
 
+## Tools added in 1.3 to 1.6
+
+UI labels are in Portuguese, as they appear in Blender.
+
+- **Collision (1.3):** **Impedir atravessamento** is on by default, also in old files. Moving, inserting, Mover Sobre
+  and resizing stop at the first contact, silently, with no "colide com" warning. **Verificar colisões** in the
+  **Diagnóstico técnico** panel lists overlaps on demand.
+- **Side dimensions (1.3):** **Medidas laterais** shows up to two side dimensions for the selection, based on the view.
+- **Doors (1.4):**
+  - each door has its own swing limit, 90° by default and up to 180°;
+  - the door, its wall and its cut are linked by a stable id, so renaming keeps them together;
+  - **Mover para outra parede** moves a door to another wall in a single Undo step, and Esc leaves nothing behind.
+- **Hand-built cabinets (1.5):**
+  - **Adotar como armário** turns a hand-built cabinet into a component without touching mesh, UV or material;
+  - **Adicionar ao componente**, **Remover do componente** and **Transferir membro** manage its pieces;
+  - **Definir porta deste armário** sets hinged, flip-up, flip-down or sliding doors;
+  - **Salvar como módulo** stores the cabinet in the library (manifest 1.2.0);
+  - resizing stretches pieces by rule instead of scaling them, and **Atualizar vínculos** refills gaps between
+    components.
+- **Cladding (1.6):**
+  - the **Revestimentos** panel covers a wall or ceiling face with boards, slats or panels around doors and windows,
+    with presets and physical-scale textures;
+  - **Atualizar revestimento** updates only the affected pieces, and manually edited pieces are kept;
+  - a deleted host wall leaves a broken link with an offer to reassociate.
+
 ## Blender API Knowledge Base (RAG)
 
 `docs/rag/` contains the full Blender 5.2 Python API reference as searchable Markdown plus curated, project-specific

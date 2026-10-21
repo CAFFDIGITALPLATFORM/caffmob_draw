@@ -20,7 +20,7 @@ from mathutils import Vector  # type: ignore
 from mathutils.bvhtree import BVHTree  # type: ignore
 
 from ..inspection import fronts
-from . import leaf
+from . import leaf, group
 
 SHRINK = 0.001
 OPENING_FRAME_PROP = 'btm_opening_frame'     # feature 010: peça do marco de uma porta/janela real
@@ -63,10 +63,14 @@ def _excluded(obj):
         for other in leaf.sibling_leaves(obj):
             names |= _own(other)
         names.add(parent.name)
+        cage = parent.parent
+        if cage is not None and cage.get('IS_ENTRY_DOOR_BP'):
+            # Marco próprio por hierarquia: renomear não o transforma em obstáculo da própria folha.
+            names.update(c.name for c in parent.children_recursive)
         return names
     if parent is not None:
         root = fronts.module_root_of(parent)
-        if root is not None:                       # pai fora de módulo: só o pai sai (questions.md, pergunta 29)
+        if root is not None and not root.get('IS_AUTHORED_CABINET'):
             names.add(root.name)
             names.update(c.name for c in root.children_recursive)
         names.add(parent.name)
@@ -83,7 +87,7 @@ def _targets(obj):
     own_frame = parent.name if parent is not None else None
     items = []
     for other in bpy.context.scene.objects:
-        if other.name in skip or other.type != 'MESH' or other.display_type in _SKIP_DISPLAY:
+        if other.name in skip or not group.is_body(other) or other.display_type in _SKIP_DISPLAY:
             continue
         if other.get('IS_CUTTING_OBJ') or other.get('IS_2D_ANNOTATION') or not other.visible_get():
             continue
@@ -116,7 +120,7 @@ class Tester:
     def __init__(self, obj):
         self.obj = obj
         self.agg = obj.btm_aggregate
-        self.parent_world = self.agg.parent_ref.matrix_world.copy()
+        self.parent_world = self.agg.parent_ref.matrix_world @ leaf.front_frame(self.agg.parent_ref)
         self.base = leaf._base(obj)
         self.local = obj.matrix_basis.copy()          # folha no espaço do pivô (fixo)
         corners = leaf.local_corners(obj)

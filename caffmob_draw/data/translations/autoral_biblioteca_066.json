@@ -1,0 +1,66 @@
+{
+  "O armário autoral usa regras dos membros; a personalização paramétrica não se aplica": {
+    "pt_BR": "O armário autoral usa regras dos membros; a personalização paramétrica não se aplica",
+    "en_US": "Authored cabinets use member rules; parametric customization does not apply"
+  },
+  "Autoral inválido em {}: {}": {
+    "pt_BR": "Autoral inválido em {}: {}",
+    "en_US": "Invalid authored cabinet at {}: {}"
+  },
+  "Armários autorais": {
+    "pt_BR": "Armários autorais",
+    "en_US": "Authored cabinets"
+  },
+  "Não é possível esticar este membro: {}": {
+    "pt_BR": "Não é possível esticar este membro: {}",
+    "en_US": "Cannot stretch this member: {}"
+  },
+  "A topologia do membro mudou: {}": {
+    "pt_BR": "A topologia do membro mudou: {}",
+    "en_US": "Member topology changed: {}"
+  },
+  "Referência dimensional ausente: {}": {
+    "pt_BR": "Referência dimensional ausente: {}",
+    "en_US": "Missing dimensional reference: {}"
+  },
+  "Quantidade incompatível com os membros distribuídos": {
+    "pt_BR": "Quantidade incompatível com os membros distribuídos",
+    "en_US": "Count does not match the distributed members"
+  },
+  "Não foi possível aplicar as regras: {}": {
+    "pt_BR": "Não foi possível aplicar as regras: {}",
+    "en_US": "Could not apply dimensional rules: {}"
+  },
+  "Atualizar vínculos": {
+    "pt_BR": "Atualizar vínculos",
+    "en_US": "Update links"
+  },
+  "Recalcula as regras e os vãos referenciados sem escalar os membros": {
+    "pt_BR": "Recalcula as regras e os vãos referenciados sem escalar os membros",
+    "en_US": "Recalculates rules and referenced gaps without scaling members"
+  },
+  "O armário autoral exige manifesto 1.2.0": {
+    "pt_BR": "O armário autoral exige manifesto 1.2.0",
+    "en_US": "Authored cabinets require a 1.2.0 manifest"
+  },
+  "Referência dimensional": {
+    "pt_BR": "Referência dimensional",
+    "en_US": "Dimensional reference"
+  },
+  "Acrescenta ou remove uma referência da regra do membro ativo": {
+    "pt_BR": "Acrescenta ou remove uma referência da regra do membro ativo",
+    "en_US": "Adds or removes a rule reference for the active member"
+  },
+  "Regra dimensional do membro": {
+    "pt_BR": "Regra dimensional do membro",
+    "en_US": "Member dimensional rule"
+  },
+  "Adicionar referência": {
+    "pt_BR": "Adicionar referência",
+    "en_US": "Add reference"
+  },
+  "Use coordenadas UV ou de objeto antes de esticar: {}": {
+    "pt_BR": "Use coordenadas UV ou de objeto antes de esticar: {}",
+    "en_US": "Use UV or object coordinates before stretching: {}"
+  }
+}

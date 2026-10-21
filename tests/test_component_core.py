@@ -97,5 +97,16 @@ class RootTest(unittest.TestCase):
         self.assertEqual(c.collapse([]), [])
 
 
+class AuthoredComponentTest(unittest.TestCase):
+    def test_vidro_sobe_ao_armario(self):
+        root = Obj('Torre', IS_AUTHORED_CABINET=True)
+        pivot = Obj('Controle', root)
+        leaf = Obj('Composta', pivot, aggregate='LEAF', leaf_of=root)
+        leaf.btm_member = types.SimpleNamespace(owner=root)
+        glass = Obj('Vidro', leaf)
+        self.assertIs(c.component_root(glass), root)
+        self.assertIs(c.component_root(glass, {'AUTHORED': False}), glass)
+
+
 if __name__ == "__main__":
     unittest.main()
