@@ -30,6 +30,13 @@ class BTM_PG_MoveOverState(bpy.types.PropertyGroup):
         name="Visualizar posição relativa",
         description="Ligado: os campos mostram a distância à referência. Desligado: a posição no projeto",
         default=True)  # type: ignore
+    snap_on: bpy.props.BoolProperty(
+        name="Ímã (snap) ligado",
+        description="Na janela Encostar, o objeto arrastado nas vistas é puxado para encostar, alinhar ou centralizar",
+        default=True)  # type: ignore
+    glue: bpy.props.BoolProperty(
+        name="Grudar", description="Na janela Encostar, grudar o objeto na referência para mover junto com ela",
+        default=False)  # type: ignore
 
 
 class BTM_PG_SavedPosition(bpy.types.PropertyGroup):

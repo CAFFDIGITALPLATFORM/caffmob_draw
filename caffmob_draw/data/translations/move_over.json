@@ -1,7 +1,31 @@
 {
+ " e grudado": {
+  "pt_BR": " e grudado",
+  "en_US": " and stuck"
+ },
+ "Afastamento entre 0 e 5000 mm": {
+  "pt_BR": "Afastamento entre 0 e 5000 mm",
+  "en_US": "Gap between 0 and 5000 mm"
+ },
+ "Alinha o objeto arrastado ao objeto de referência pelas vistas frontal e planta baixa": {
+  "pt_BR": "Alinha o objeto arrastado ao objeto de referência pelas vistas frontal e planta baixa",
+  "en_US": "Aligns the dragged object to the reference object using the front and plan views"
+ },
  "Alinha o objeto arrastado ao objeto de referência pelas vistas superior e frontal": {
   "pt_BR": "Alinha o objeto arrastado ao objeto de referência pelas vistas superior e frontal",
   "en_US": "Aligns the dragged object to the reference object using the top and front views"
+ },
+ "Alinhar na altura": {
+  "pt_BR": "Alinhar na altura",
+  "en_US": "Align on height"
+ },
+ "Alinhar na largura": {
+  "pt_BR": "Alinhar na largura",
+  "en_US": "Align on width"
+ },
+ "Alinhar na profund.": {
+  "pt_BR": "Alinhar na profund.",
+  "en_US": "Align on depth"
  },
  "Anterior {} | Posterior {} | Inferior {} | Shift: altura | Clique confirma | Esc cancela": {
   "pt_BR": "Anterior {} | Posterior {} | Inferior {} | Shift: altura | Clique confirma | Esc cancela",
@@ -15,6 +39,18 @@
   "pt_BR": "Arraste com o botão direito de um objeto até outro para abrir a janela \"Mover Sobre\"",
   "en_US": "Drag with the right button from one object to another to open the \"Move Over\" window"
  },
+ "Arraste o móvel laranja nas vistas. Com o ímã, ele puxa para encostar, alinhar ou centralizar. Shift solta o ímã momentaneamente.": {
+  "pt_BR": "Arraste o móvel laranja nas vistas. Com o ímã, ele puxa para encostar, alinhar ou centralizar. Shift solta o ímã momentaneamente.",
+  "en_US": "Drag the orange piece in the views. With the magnet on, it pulls to touch, align or center. Hold Shift to release the magnet."
+ },
+ "Atrás": {
+  "pt_BR": "Atrás",
+  "en_US": "Behind"
+ },
+ "Centralizado": {
+  "pt_BR": "Centralizado",
+  "en_US": "Centered"
+ },
  "Com o modo ligado, arraste um objeto sobre outro com o botão direito para alinhá-los. O botão direito deixa de abrir o menu de contexto enquanto o modo estiver ligado": {
   "pt_BR": "Com o modo ligado, arraste um objeto sobre outro com o botão direito para alinhá-los. O botão direito deixa de abrir o menu de contexto enquanto o modo estiver ligado",
   "en_US": "With the mode on, drag one object over another with the right button to align them. The right button does not open the context menu while the mode is on"
@@ -27,9 +63,29 @@
   "pt_BR": "Distância em pixels para considerar um clique perto de um alvo",
   "en_US": "Distance in pixels to consider a click near a target"
  },
+ "Em cima": {
+  "pt_BR": "Em cima",
+  "en_US": "On top"
+ },
+ "Embaixo": {
+  "pt_BR": "Embaixo",
+  "en_US": "Below"
+ },
  "Empilhar": {
   "pt_BR": "Empilhar",
   "en_US": "Stack"
+ },
+ "Encostar": {
+  "pt_BR": "Encostar",
+  "en_US": "Place"
+ },
+ "Encostar  |  Arraste o laranja nas vistas (Shift solta o ímã)  |  Clique perto de um lado  |  Enter: encostar  |  Esc: cancelar": {
+  "pt_BR": "Encostar  |  Arraste o laranja nas vistas (Shift solta o ímã)  |  Clique perto de um lado  |  Enter: encostar  |  Esc: cancelar",
+  "en_US": "Place against  |  Drag the orange piece in the views (Shift releases the magnet)  |  Click near a side  |  Enter: place  |  Esc: cancel"
+ },
+ "Encostar “{}” em “{}”": {
+  "pt_BR": "Encostar “{}” em “{}”",
+  "en_US": "Place “{}” against “{}”"
  },
  "Escolha um módulo da biblioteca do usuário": {
   "pt_BR": "Escolha um módulo da biblioteca do usuário",
@@ -38,6 +94,18 @@
  "Esses objetos não podem ser usados no Mover Sobre.": {
   "pt_BR": "Esses objetos não podem ser usados no Mover Sobre.",
   "en_US": "These objects cannot be used in Move Over."
+ },
+ "FRONTAL": {
+  "pt_BR": "FRONTAL",
+  "en_US": "FRONT"
+ },
+ "Folga até “{}”: largura {} · altura {} · profundidade {} mm. Deslocamento: X {} · Y {} · Z {} mm": {
+  "pt_BR": "Folga até “{}”: largura {} · altura {} · profundidade {} mm. Deslocamento: X {} · Y {} · Z {} mm",
+  "en_US": "Clearance to “{}”: width {} · height {} · depth {} mm. Offset: X {} · Y {} · Z {} mm"
+ },
+ "Grudar (move junto com “{}”)": {
+  "pt_BR": "Grudar (move junto com “{}”)",
+  "en_US": "Stick (moves together with “{}”)"
  },
  "Liga ou desliga o \"Mover Sobre\": arraste um objeto sobre outro com o botão direito para alinhá-los": {
   "pt_BR": "Liga ou desliga o \"Mover Sobre\": arraste um objeto sobre outro com o botão direito para alinhá-los",
@@ -50,6 +118,18 @@
  "Limpar plano de inserção": {
   "pt_BR": "Limpar plano de inserção",
   "en_US": "Clear insertion plane"
+ },
+ "Mais opções": {
+  "pt_BR": "Mais opções",
+  "en_US": "More options"
+ },
+ "Manter": {
+  "pt_BR": "Manter",
+  "en_US": "Keep"
+ },
+ "Menos opções": {
+  "pt_BR": "Menos opções",
+  "en_US": "Fewer options"
  },
  "Mover Sobre  |  Clique perto de um lado ou de uma linha  |  Tab: digitar  |  Setas/PgUp/PgDn: passo  |  Enter: confirmar  |  Esc: cancelar": {
   "pt_BR": "Mover Sobre  |  Clique perto de um lado ou de uma linha  |  Tab: digitar  |  Setas/PgUp/PgDn: passo  |  Enter: confirmar  |  Esc: cancelar",
@@ -75,6 +155,18 @@
   "pt_BR": "Mover Sobre: solte o botão direito sobre o objeto de referência  |  Esc: cancelar  ({})",
   "en_US": "Move Over: release the right button over the reference object  |  Esc: cancel  ({})"
  },
+ "Na frente": {
+  "pt_BR": "Na frente",
+  "en_US": "In front"
+ },
+ "Na janela Encostar, grudar o objeto na referência para mover junto com ela": {
+  "pt_BR": "Na janela Encostar, grudar o objeto na referência para mover junto com ela",
+  "en_US": "In the Place against window, stick the object to the reference so it moves with it"
+ },
+ "Na janela Encostar, o objeto arrastado nas vistas é puxado para encostar, alinhar ou centralizar": {
+  "pt_BR": "Na janela Encostar, o objeto arrastado nas vistas é puxado para encostar, alinhar ou centralizar",
+  "en_US": "In the Place against window, the object dragged in the views is pulled to touch, align or center"
+ },
  "Nenhum módulo salvo": {
   "pt_BR": "Nenhum módulo salvo",
   "en_US": "No saved module"
@@ -91,6 +183,10 @@
   "pt_BR": "Origem",
   "en_US": "Origin"
  },
+ "PLANTA BAIXA": {
+  "pt_BR": "PLANTA BAIXA",
+  "en_US": "PLAN"
+ },
  "Parede, piso, teto, porta, janela e cota não se movem no Mover Sobre.": {
   "pt_BR": "Parede, piso, teto, porta, janela e cota não se movem no Mover Sobre.",
   "en_US": "Walls, floors, ceilings, doors, windows and dimensions cannot be moved with Move Over."
@@ -98,6 +194,30 @@
  "Passo": {
   "pt_BR": "Passo",
   "en_US": "Step"
+ },
+ "Pela base": {
+  "pt_BR": "Pela base",
+  "en_US": "By the base"
+ },
+ "Pela direita": {
+  "pt_BR": "Pela direita",
+  "en_US": "By the right"
+ },
+ "Pela esquerda": {
+  "pt_BR": "Pela esquerda",
+  "en_US": "By the left"
+ },
+ "Pela frente": {
+  "pt_BR": "Pela frente",
+  "en_US": "By the front"
+ },
+ "Pelo fundo": {
+  "pt_BR": "Pelo fundo",
+  "en_US": "By the back"
+ },
+ "Pelo topo": {
+  "pt_BR": "Pelo topo",
+  "en_US": "By the top"
  },
  "Plano de inserção  |  Clique na face  |  Esc/botão direito: cancelar": {
   "pt_BR": "Plano de inserção  |  Clique na face  |  Esc/botão direito: cancelar",
@@ -114,6 +234,10 @@
  "Posição absoluta": {
   "pt_BR": "Posição absoluta",
   "en_US": "Absolute position"
+ },
+ "Posição livre (arrastada).": {
+  "pt_BR": "Posição livre (arrastada).",
+  "en_US": "Free position (dragged)."
  },
  "Posição relativa": {
   "pt_BR": "Posição relativa",
@@ -187,6 +311,42 @@
   "pt_BR": "Volta as inserções para o piso",
   "en_US": "Sends insertions back to the floor"
  },
+ "alinhado": {
+  "pt_BR": "alinhado",
+  "en_US": "aligned"
+ },
+ "atrás de": {
+  "pt_BR": "atrás de",
+  "en_US": "behind"
+ },
+ "centralizado": {
+  "pt_BR": "centralizado",
+  "en_US": "centered"
+ },
+ "em cima de": {
+  "pt_BR": "em cima de",
+  "en_US": "on top of"
+ },
+ "embaixo de": {
+  "pt_BR": "embaixo de",
+  "en_US": "below"
+ },
+ "encostado": {
+  "pt_BR": "encostado",
+  "en_US": "touching"
+ },
+ "encostado + {} mm": {
+  "pt_BR": "encostado + {} mm",
+  "en_US": "touching + {} mm"
+ },
+ "na frente de": {
+  "pt_BR": "na frente de",
+  "en_US": "in front of"
+ },
+ "sobrepõe {}": {
+  "pt_BR": "sobrepõe {}",
+  "en_US": "overlaps {}"
+ },
  "{} alinhado a {}.": {
   "pt_BR": "{} alinhado a {}.",
   "en_US": "{} aligned to {}."
@@ -202,5 +362,29 @@
  "{} substituído por {}": {
   "pt_BR": "{} substituído por {}",
   "en_US": "{} replaced with {}"
+ },
+ "À direita": {
+  "pt_BR": "À direita",
+  "en_US": "On the right"
+ },
+ "À esquerda": {
+  "pt_BR": "À esquerda",
+  "en_US": "On the left"
+ },
+ "Ímã (snap) ligado": {
+  "pt_BR": "Ímã (snap) ligado",
+  "en_US": "Magnet (snap) on"
+ },
+ "à direita de": {
+  "pt_BR": "à direita de",
+  "en_US": "to the right of"
+ },
+ "à esquerda de": {
+  "pt_BR": "à esquerda de",
+  "en_US": "to the left of"
+ },
+ "“{}” posicionado {} “{}” (folga {} mm)": {
+  "pt_BR": "“{}” posicionado {} “{}” (folga {} mm)",
+  "en_US": "“{}” placed {} “{}” (gap {} mm)"
  }
 }
