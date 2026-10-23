@@ -77,8 +77,8 @@ def run():
     allowed = guard.clamp(root, start, proposed)
     assert abs(allowed.translation.x - .6925) < .002
     ae.select([light])
-    specs = side_cotas.specs(bpy.context, (1, 0, 0))
-    assert len(specs) == 1
+    lateral = {k for k in side_cotas.records(bpy.context) if k in ('LEFT', 'RIGHT')}   # cotas fixas (HYCE)
+    assert len(lateral) == 1, lateral
     print('OK seleção, Mover Sobre, corpo efetivo, contato e cota lateral do autoral', flush=True)
     # Transferir/remover: pose e dono mudam sem agregado por face.
     other, _ = ae.tower('Destino', x=4)

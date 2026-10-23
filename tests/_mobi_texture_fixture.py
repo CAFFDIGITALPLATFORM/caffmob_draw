@@ -42,10 +42,10 @@ class TextureServer:
         self.wait(lambda: bool(catalog.manufacturers()))
         catalog.refresh()
         self.wait(lambda: not catalog._cache['busy'])
-        while catalog.has_more():
+        while catalog._cache['next']:          # páginas da conta (a grade não pagina mais, BUG-20261023-EIAR)
             catalog.refresh(more=True)
             self.wait(lambda: not catalog._cache['busy'])
-        return catalog.search()
+        return list(catalog._cache['items'])      # a listagem da conta; a busca da grade é local (BUG-20261023-EIAR)
 
     def download(self, tid, entry=None):
         from caffmob_draw.texture_library import downloads

@@ -97,6 +97,26 @@ def _cota_setter(field):
     return set_
 
 
+# Cotas fixas (BUG-20261023-HYCE): leem o último cálculo das medidas; editar move o conjunto pela diferença.
+
+def _fixed_getter(name):
+    def get(_self):
+        from ..overlays import side_cotas
+        try:
+            record = side_cotas.records(bpy.context, compute=False).get(name)
+        except (AttributeError, ReferenceError):
+            record = None
+        return float(record[0]) if record is not None else 0.0
+    return get
+
+
+def _fixed_setter(name):
+    def set_(_self, value):
+        from ..overlays import side_cotas
+        _guard(lambda: side_cotas.apply_fixed(bpy.context, name, value))
+    return set_
+
+
 # Parede e peitoril -----------------------------------------------------------------------------------------
 
 def _wall_getter(field):
@@ -152,6 +172,14 @@ class BTM_PG_SelectionEdit(bpy.types.PropertyGroup):
                       N_("Do piso até a base do módulo"))  # type: ignore
     superior: _length(N_("Cota superior"), _cota_getter('superior'), _cota_setter('superior'),
                       N_("Do topo do módulo até o teto"))  # type: ignore
+    cota_esquerda: _length(N_("Esquerda"), _fixed_getter('LEFT'), _fixed_setter('LEFT'),
+                           N_("Do lado esquerdo até a referência mais próxima, no eixo da parede ou do móvel"))  # type: ignore
+    cota_direita: _length(N_("Direita"), _fixed_getter('RIGHT'), _fixed_setter('RIGHT'),
+                          N_("Do lado direito até a referência mais próxima, no eixo da parede ou do móvel"))  # type: ignore
+    cota_superior: _length(N_("Superior"), _fixed_getter('TOP'), _fixed_setter('TOP'),
+                           N_("Do topo até a referência mais próxima acima, ou o teto"))  # type: ignore
+    cota_inferior: _length(N_("Inferior"), _fixed_getter('BOTTOM'), _fixed_setter('BOTTOM'),
+                           N_("Da base até a referência mais próxima abaixo, ou o piso"))  # type: ignore
     sill: _length(N_("Peitoril"), _get_sill, _set_sill)  # type: ignore
     wall_length: _length(N_("Comprimento"), _wall_getter('length'), _wall_setter('length'))  # type: ignore
     wall_height: _length(N_("Pé-direito inicial"), _wall_getter('height'), _wall_setter('height'))  # type: ignore
@@ -194,7 +222,29 @@ def _draw_dimensions(layout, edit, info):
         box.operator("caffmob.cabinet_editor", text="Abrir editor de armário", icon='MOD_BUILD')   # feature 004
 
 
+def _draw_fixed_cotas(layout, edit, context):
+    """As quatro cotas fixas com o nome da referência (BUG-20261023-HYCE); lado sem referência: só o aviso."""
+    from ..overlays import side_cotas
+    found = side_cotas.records(context, compute=False)
+    if not found:
+        return False
+    box = layout.box()
+    box.label(text=tr("Cotas fixas"), icon='DRIVER_DISTANCE')
+    col = box.column(align=True)
+    for name, field in (('TOP', 'cota_superior'), ('LEFT', 'cota_esquerda'), ('RIGHT', 'cota_direita'),
+                        ('BOTTOM', 'cota_inferior')):
+        row = col.row(align=True)
+        if name in found:
+            row.prop(edit, field)
+            row.label(text=tr("até {}").format(found[name][1]))
+        else:
+            row.label(text=tr("{}: sem referência").format(tr(side_cotas.tr_label(name, ""))))
+    return True
+
+
 def _draw_cotas(layout, edit, context):
+    if getattr(context.scene.btm_settings, 'show_side_dimensions', False) and _draw_fixed_cotas(layout, edit, context):
+        return
     mc = scene_cotas.for_object(context.active_object, context.scene)
     if mc is None:
         return

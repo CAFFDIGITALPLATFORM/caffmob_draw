@@ -3,6 +3,50 @@
   "pt_BR": "Cota desconhecida: {}",
   "en_US": "Unknown dimension: {}"
  },
+ "Cota {} até {}": {
+  "pt_BR": "Cota {} até {}",
+  "en_US": "{} dimension to {}"
+ },
+ "Cotas fixas": {
+  "pt_BR": "Cotas fixas",
+  "en_US": "Fixed dimensions"
+ },
+ "Da base até a referência mais próxima abaixo, ou o piso": {
+  "pt_BR": "Da base até a referência mais próxima abaixo, ou o piso",
+  "en_US": "From the base to the nearest reference below, or the floor"
+ },
+ "Do lado direito até a referência mais próxima, no eixo da parede ou do móvel": {
+  "pt_BR": "Do lado direito até a referência mais próxima, no eixo da parede ou do móvel",
+  "en_US": "From the right side to the nearest reference, along the wall or furniture axis"
+ },
+ "Do lado esquerdo até a referência mais próxima, no eixo da parede ou do móvel": {
+  "pt_BR": "Do lado esquerdo até a referência mais próxima, no eixo da parede ou do móvel",
+  "en_US": "From the left side to the nearest reference, along the wall or furniture axis"
+ },
+ "Do topo até a referência mais próxima acima, ou o teto": {
+  "pt_BR": "Do topo até a referência mais próxima acima, ou o teto",
+  "en_US": "From the top to the nearest reference above, or the ceiling"
+ },
+ "Edita a distância da cota clicada; o conjunto anda pela diferença": {
+  "pt_BR": "Edita a distância da cota clicada; o conjunto anda pela diferença",
+  "en_US": "Edits the clicked dimension; the set moves by the difference"
+ },
+ "Editar cota": {
+  "pt_BR": "Editar cota",
+  "en_US": "Edit dimension"
+ },
+ "Este lado não tem referência para medir.": {
+  "pt_BR": "Este lado não tem referência para medir.",
+  "en_US": "This side has no reference to measure."
+ },
+ "O item ou a posição mudou durante a edição; nada foi alterado.": {
+  "pt_BR": "O item ou a posição mudou durante a edição; nada foi alterado.",
+  "en_US": "The item or its position changed during editing; nothing was changed."
+ },
+ "Valor Inválido: a cota precisa ser um número positivo.": {
+  "pt_BR": "Valor Inválido: a cota precisa ser um número positivo.",
+  "en_US": "Invalid value: the dimension must be a positive number."
+ },
  "Valor Inválido: módulo livre (sem parede) não tem cota anterior, posterior ou afastamento.": {
   "pt_BR": "Valor Inválido: módulo livre (sem parede) não tem cota anterior, posterior ou afastamento.",
   "en_US": "Invalid Value: a free module (no wall) has no left, right or wall offset dimension."
@@ -26,5 +70,13 @@
  "Valor Inválido: {} tira o módulo da parede.": {
   "pt_BR": "Valor Inválido: {} tira o módulo da parede.",
   "en_US": "Invalid Value: {} moves the module off the wall."
+ },
+ "até {}": {
+  "pt_BR": "até {}",
+  "en_US": "to {}"
+ },
+ "{}: sem referência": {
+  "pt_BR": "{}: sem referência",
+  "en_US": "{}: no reference"
  }
 }

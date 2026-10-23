@@ -1,423 +1,95 @@
 {
- "Mostrar bibliotecas herdadas": {
-  "pt_BR": "Mostrar bibliotecas herdadas",
-  "en_US": "Show legacy libraries"
- },
- "Mostra a interface das bibliotecas frameless, face frame, closets e de molduras, que foram substituídas pelos armários CAFFMob. Use só para suporte ou para comparar uma conversão": {
-  "pt_BR": "Mostra a interface das bibliotecas frameless, face frame, closets e de molduras, que foram substituídas pelos armários CAFFMob. Use só para suporte ou para comparar uma conversão",
-  "en_US": "Shows the interface of the frameless, face frame, closets and molding libraries, which were replaced by CAFFMob cabinets. Use only for support or to compare a conversion"
- },
- "Avançado": {
-  "pt_BR": "Avançado",
-  "en_US": "Advanced"
- },
- "Só armários CAFFMob têm montagem": {
-  "pt_BR": "Só armários CAFFMob têm montagem",
-  "en_US": "Only CAFFMob cabinets have an assembly"
- },
- "Montagem": {
-  "pt_BR": "Montagem",
-  "en_US": "Assembly"
- },
- "Padrão próprio: difere do Padrão de Dimensões global": {
-  "pt_BR": "Padrão próprio: difere do Padrão de Dimensões global",
-  "en_US": "Own standard: differs from the global Dimension Standard"
- },
- "Lateral passante": {
-  "pt_BR": "Lateral passante",
-  "en_US": "Full-height sides"
- },
- "As laterais vão do piso ao topo; base e tampo ficam entre elas": {
-  "pt_BR": "As laterais vão do piso ao topo; base e tampo ficam entre elas",
-  "en_US": "Sides run from floor to top; bottom and top sit between them"
- },
- "Base passante": {
-  "pt_BR": "Base passante",
-  "en_US": "Full-width bottom"
- },
  "A base ocupa a largura toda; as laterais ficam em cima dela": {
   "pt_BR": "A base ocupa a largura toda; as laterais ficam em cima dela",
   "en_US": "The bottom spans the full width; the sides sit on it"
  },
- "Linha do Padrão de Dimensões que dá as chapas e as medidas do módulo": {
-  "pt_BR": "Linha do Padrão de Dimensões que dá as chapas e as medidas do módulo",
-  "en_US": "Dimension Standard line that gives the module's sheets and sizes"
- },
- "Cozinha": {
-  "pt_BR": "Cozinha",
-  "en_US": "Kitchen"
- },
- "Dormitório": {
-  "pt_BR": "Dormitório",
-  "en_US": "Bedroom"
- },
- "Banheiro": {
-  "pt_BR": "Banheiro",
-  "en_US": "Bathroom"
- },
- "Sala": {
-  "pt_BR": "Sala",
-  "en_US": "Living room"
- },
- "Escritório": {
-  "pt_BR": "Escritório",
-  "en_US": "Office"
+ "Aberto": {
+  "pt_BR": "Aberto",
+  "en_US": "Open"
  },
  "Agregados presos ao armário": {
   "pt_BR": "Agregados presos ao armário",
   "en_US": "Aggregates attached to the cabinet"
  },
- "sem perdas": {
-  "pt_BR": "sem perdas",
-  "en_US": "nothing lost"
- },
- "perdas: {}": {
-  "pt_BR": "perdas: {}",
-  "en_US": "lost: {}"
- },
- "Tipo de armário aproximado": {
-  "pt_BR": "Tipo de armário aproximado",
-  "en_US": "Approximate cabinet type"
- },
- "Painéis fixos": {
-  "pt_BR": "Painéis fixos",
-  "en_US": "Fixed panels"
- },
- "Frentes especiais (basculante de puxar, painel embutido, eletrodoméstico)": {
-  "pt_BR": "Frentes especiais (basculante de puxar, painel embutido, eletrodoméstico)",
-  "en_US": "Special fronts (pull-out, inset panel, appliance)"
- },
- "Portas além de duas": {
-  "pt_BR": "Portas além de duas",
-  "en_US": "Doors beyond two"
- },
- "Grupo {}": {
-  "pt_BR": "Grupo {}",
-  "en_US": "Group {}"
- },
- "nenhum armário de biblioteca antiga no grupo": {
-  "pt_BR": "nenhum armário de biblioteca antiga no grupo",
-  "en_US": "no legacy-library cabinet in the group"
- },
- "Não foi possível abrir o grupo {}: {}": {
-  "pt_BR": "Não foi possível abrir o grupo {}: {}",
-  "en_US": "Could not open group {}: {}"
- },
- "{} armário(s) de bibliotecas antigas: use Converter para CAFFMob na barra lateral": {
-  "pt_BR": "{} armário(s) de bibliotecas antigas: use Converter para CAFFMob na barra lateral",
-  "en_US": "{} legacy-library cabinet(s): use Convert to CAFFMob in the sidebar"
- },
- "Converter para CAFFMob": {
-  "pt_BR": "Converter para CAFFMob",
-  "en_US": "Convert to CAFFMob"
- },
- "Converte armários frameless, face frame e closets em armários CAFFMob, com o relatório do que se perdeu": {
-  "pt_BR": "Converte armários frameless, face frame e closets em armários CAFFMob, com o relatório do que se perdeu",
-  "en_US": "Converts frameless, face frame and closets cabinets into CAFFMob cabinets, reporting what was lost"
- },
- "Só o armário selecionado": {
-  "pt_BR": "Só o armário selecionado",
-  "en_US": "Selected cabinet only"
- },
- "{} armário(s) de bibliotecas antigas viram armários CAFFMob. Ctrl+Z desfaz.": {
-  "pt_BR": "{} armário(s) de bibliotecas antigas viram armários CAFFMob. Ctrl+Z desfaz.",
-  "en_US": "{} legacy-library cabinet(s) become CAFFMob cabinets. Ctrl+Z undoes."
- },
- "Converter": {
-  "pt_BR": "Converter",
-  "en_US": "Convert"
- },
- "Selecione um armário de biblioteca antiga": {
-  "pt_BR": "Selecione um armário de biblioteca antiga",
-  "en_US": "Select a legacy-library cabinet"
- },
- "{} armário(s) convertidos; {} com perdas": {
-  "pt_BR": "{} armário(s) convertidos; {} com perdas",
-  "en_US": "{} cabinet(s) converted; {} with losses"
- },
- "Conversão para CAFFMob": {
-  "pt_BR": "Conversão para CAFFMob",
-  "en_US": "Conversion to CAFFMob"
- },
- "Converter grupos antigos": {
-  "pt_BR": "Converter grupos antigos",
-  "en_US": "Convert old groups"
- },
- "Converte os grupos salvos nas bibliotecas antigas em módulos CAFFMob da categoria Geral": {
-  "pt_BR": "Converte os grupos salvos nas bibliotecas antigas em módulos CAFFMob da categoria Geral",
-  "en_US": "Converts the groups saved in the legacy libraries into CAFFMob modules in the General category"
- },
- "Nenhum grupo antigo para converter": {
-  "pt_BR": "Nenhum grupo antigo para converter",
-  "en_US": "No old group to convert"
- },
- "{} grupo(s) salvos nas bibliotecas antigas viram módulos CAFFMob em Geral. Os arquivos originais ficam na pasta.": {
-  "pt_BR": "{} grupo(s) salvos nas bibliotecas antigas viram módulos CAFFMob em Geral. Os arquivos originais ficam na pasta.",
-  "en_US": "{} group(s) saved in the legacy libraries become CAFFMob modules in General. The original files stay in the folder."
- },
- "{} módulo(s) salvos em Geral": {
-  "pt_BR": "{} módulo(s) salvos em Geral",
-  "en_US": "{} module(s) saved in General"
- },
- "Conversão dos grupos antigos": {
-  "pt_BR": "Conversão dos grupos antigos",
-  "en_US": "Old groups conversion"
- },
- "Digite um nome para a categoria": {
-  "pt_BR": "Digite um nome para a categoria",
-  "en_US": "Type a name for the category"
- },
- "Já existe uma categoria com esse nome": {
-  "pt_BR": "Já existe uma categoria com esse nome",
-  "en_US": "A category with this name already exists"
- },
- "Arquivo de categorias inválido; as categorias do usuário foram ignoradas": {
-  "pt_BR": "Arquivo de categorias inválido; as categorias do usuário foram ignoradas",
-  "en_US": "Invalid categories file; user categories were ignored"
- },
- "Categoria sem nome ignorada": {
-  "pt_BR": "Categoria sem nome ignorada",
-  "en_US": "Unnamed category ignored"
- },
- "Categoria repetida ignorada: {}": {
-  "pt_BR": "Categoria repetida ignorada: {}",
-  "en_US": "Repeated category ignored: {}"
- },
- "Linha desconhecida na categoria {}: usada Cozinha": {
-  "pt_BR": "Linha desconhecida na categoria {}: usada Cozinha",
-  "en_US": "Unknown line in category {}: Kitchen used"
- },
- "Criar armário": {
-  "pt_BR": "Criar armário",
-  "en_US": "Create cabinet"
- },
- "Criar categoria": {
-  "pt_BR": "Criar categoria",
-  "en_US": "Create category"
- },
- "Catálogo de modelos inválido": {
-  "pt_BR": "Catálogo de modelos inválido",
-  "en_US": "Invalid model catalog"
- },
- "Modelo sem identificador ignorado": {
-  "pt_BR": "Modelo sem identificador ignorado",
-  "en_US": "Model without identifier ignored"
- },
- "Modelo {}: tipo desconhecido": {
-  "pt_BR": "Modelo {}: tipo desconhecido",
-  "en_US": "Model {}: unknown type"
- },
- "Modelo {}: frente desconhecida": {
-  "pt_BR": "Modelo {}: frente desconhecida",
-  "en_US": "Model {}: unknown front"
- },
- "Catálogo de modelos não encontrado": {
-  "pt_BR": "Catálogo de modelos não encontrado",
-  "en_US": "Model catalog not found"
- },
- "Torre": {
-  "pt_BR": "Torre",
-  "en_US": "Tall"
- },
- "Cria um armário CAFFMob pelo Padrão de Dimensões e abre o editor de armário nele": {
-  "pt_BR": "Cria um armário CAFFMob pelo Padrão de Dimensões e abre o editor de armário nele",
-  "en_US": "Creates a CAFFMob cabinet from the Dimension Standard and opens the cabinet editor on it"
- },
- "Linha do padrão": {
-  "pt_BR": "Linha do padrão",
-  "en_US": "Standard line"
- },
- "Criar": {
-  "pt_BR": "Criar",
-  "en_US": "Create"
+ "Altura (mm)": {
+  "pt_BR": "Altura (mm)",
+  "en_US": "Height (mm)"
  },
  "Altura {} · profundidade {} (do padrão)": {
   "pt_BR": "Altura {} · profundidade {} (do padrão)",
   "en_US": "Height {} · depth {} (from the standard)"
  },
- "Cria uma categoria na biblioteca do usuário, com a linha do Padrão de Dimensões que os armários dela usam": {
-  "pt_BR": "Cria uma categoria na biblioteca do usuário, com a linha do Padrão de Dimensões que os armários dela usam",
-  "en_US": "Creates a category in the user library, with the Dimension Standard line its cabinets use"
- },
- "Categoria criada: {}": {
-  "pt_BR": "Categoria criada: {}",
-  "en_US": "Category created: {}"
- },
- "Trocar linha": {
-  "pt_BR": "Trocar linha",
-  "en_US": "Change line"
- },
- "Troca a linha do Padrão de Dimensões da categoria": {
-  "pt_BR": "Troca a linha do Padrão de Dimensões da categoria",
-  "en_US": "Changes the category's Dimension Standard line"
- },
- "Só as categorias do usuário trocam de linha": {
-  "pt_BR": "Só as categorias do usuário trocam de linha",
-  "en_US": "Only user categories change line"
- },
- "Biblioteca CAFFMob": {
-  "pt_BR": "Biblioteca CAFFMob",
-  "en_US": "CAFFMob Library"
- },
- "Clique no painel BIBLIOTECA CAFFMOB": {
-  "pt_BR": "Clique no painel BIBLIOTECA CAFFMOB",
-  "en_US": "Click on the BIBLIOTECA CAFFMOB panel"
- },
- "Biblioteca CAFFMob (hover)": {
-  "pt_BR": "Biblioteca CAFFMob (hover)",
-  "en_US": "CAFFMob Library (hover)"
- },
- "Fechar biblioteca": {
-  "pt_BR": "Fechar biblioteca",
-  "en_US": "Close library"
- },
- "Fecha o painel BIBLIOTECA CAFFMOB": {
-  "pt_BR": "Fecha o painel BIBLIOTECA CAFFMOB",
-  "en_US": "Closes the BIBLIOTECA CAFFMOB panel"
- },
- "Modelos prontos": {
-  "pt_BR": "Modelos prontos",
-  "en_US": "Ready-made models"
- },
- "Nenhum módulo salvo nesta categoria": {
-  "pt_BR": "Nenhum módulo salvo nesta categoria",
-  "en_US": "No module saved in this category"
- },
- "Inserir modelo": {
-  "pt_BR": "Inserir modelo",
-  "en_US": "Insert model"
- },
- "Insere o modelo pronto com as medidas, as chapas e a montagem do Padrão de Dimensões da linha": {
-  "pt_BR": "Insere o modelo pronto com as medidas, as chapas e a montagem do Padrão de Dimensões da linha",
-  "en_US": "Inserts the ready-made model with the sizes, sheets and assembly of the line's Dimension Standard"
- },
- "Modelo não encontrado: {}": {
-  "pt_BR": "Modelo não encontrado: {}",
-  "en_US": "Model not found: {}"
- },
- "Sem porta": {
-  "pt_BR": "Sem porta",
-  "en_US": "No door"
- },
- "Cria um módulo de armário CAFFMob com as medidas, as chapas e a montagem do Padrão de Dimensões": {
-  "pt_BR": "Cria um módulo de armário CAFFMob com as medidas, as chapas e a montagem do Padrão de Dimensões",
-  "en_US": "Creates a CAFFMob cabinet module with the Dimension Standard sizes, sheets and assembly"
- },
  "Ao aplicar, o sistema pergunta se os módulos da cena devem mudar.": {
   "pt_BR": "Ao aplicar, o sistema pergunta se os módulos da cena devem mudar.",
   "en_US": "When applying, you will be asked whether the scene modules should change."
  },
- "Definir": {
-  "pt_BR": "Definir",
-  "en_US": "Set"
- },
- "Depois o sistema pergunta se os módulos da cena devem mudar.": {
-  "pt_BR": "Depois o sistema pergunta se os módulos da cena devem mudar.",
-  "en_US": "Then you will be asked whether the scene modules should change."
- },
- "{} módulo(s) seguem o padrão global": {
-  "pt_BR": "{} módulo(s) seguem o padrão global",
-  "en_US": "{} module(s) follow the global standard"
- },
- "{} com padrão diferente do global anterior": {
-  "pt_BR": "{} com padrão diferente do global anterior",
-  "en_US": "{} with a standard different from the previous global one"
- },
- "{} não aplicável(is): itens importados ou armários antigos": {
-  "pt_BR": "{} não aplicável(is): itens importados ou armários antigos",
-  "en_US": "{} not applicable: imported items or legacy cabinets"
- },
- "Converta os armários antigos para CAFFMob para que recebam o padrão": {
-  "pt_BR": "Converta os armários antigos para CAFFMob para que recebam o padrão",
-  "en_US": "Convert the legacy cabinets to CAFFMob so they receive the standard"
- },
- "Aplicar a todos os módulos existentes na cena?": {
-  "pt_BR": "Aplicar a todos os módulos existentes na cena?",
-  "en_US": "Apply to all modules in the scene?"
+ "Aplica a textura do catálogo à seleção (baixa antes, se precisar)": {
+  "pt_BR": "Aplica a textura do catálogo à seleção (baixa antes, se precisar)",
+  "en_US": "Applies the catalog texture to the selection (downloads it first if needed)"
  },
  "Aplica o Padrão de Dimensões global aos módulos que já estão na cena": {
   "pt_BR": "Aplica o Padrão de Dimensões global aos módulos que já estão na cena",
   "en_US": "Applies the global Dimension Standard to the modules already in the scene"
  },
- "Aplicar também nos que diferem": {
-  "pt_BR": "Aplicar também nos que diferem",
-  "en_US": "Also apply to those that differ"
+ "Aplica o padrão global também aos módulos com padrão próprio ou de outro padrão": {
+  "pt_BR": "Aplica o padrão global também aos módulos com padrão próprio ou de outro padrão",
+  "en_US": "Also applies the global standard to modules with their own standard or from another standard"
  },
- "Sem diálogo (scripts): já responde Sim à segunda pergunta": {
-  "pt_BR": "Sem diálogo (scripts): já responde Sim à segunda pergunta",
-  "en_US": "Without dialog (scripts): answers Yes to the second question"
- },
- "Nenhum módulo CAFFMob na cena; {} item(ns) não aplicável(is)": {
-  "pt_BR": "Nenhum módulo CAFFMob na cena; {} item(ns) não aplicável(is)",
-  "en_US": "No CAFFMob module in the scene; {} item(s) not applicable"
- },
- "Cancelar = Não: só os armários novos usam o padrão": {
-  "pt_BR": "Cancelar = Não: só os armários novos usam o padrão",
-  "en_US": "Cancel = No: only new cabinets use the standard"
- },
- "{} módulo(s) atualizados": {
-  "pt_BR": "{} módulo(s) atualizados",
-  "en_US": "{} module(s) updated"
+ "Aplicar a todos os módulos existentes na cena?": {
+  "pt_BR": "Aplicar a todos os módulos existentes na cena?",
+  "en_US": "Apply to all modules in the scene?"
  },
  "Aplicar também nos móveis que diferem do padrão global anterior?": {
   "pt_BR": "Aplicar também nos móveis que diferem do padrão global anterior?",
   "en_US": "Also apply to furniture that differs from the previous global standard?"
  },
- "Aplica o padrão global também aos módulos com padrão próprio ou de outro padrão": {
-  "pt_BR": "Aplica o padrão global também aos módulos com padrão próprio ou de outro padrão",
-  "en_US": "Also applies the global standard to modules with their own standard or from another standard"
+ "Aplicar também nos que diferem": {
+  "pt_BR": "Aplicar também nos que diferem",
+  "en_US": "Also apply to those that differ"
  },
- "e mais {}": {
-  "pt_BR": "e mais {}",
-  "en_US": "and {} more"
- },
- "Cancelar = Não: esses ficam como estão": {
-  "pt_BR": "Cancelar = Não: esses ficam como estão",
-  "en_US": "Cancel = No: those stay as they are"
- },
- "Sem Padrão de Dimensões ativo: medidas de fábrica": {
-  "pt_BR": "Sem Padrão de Dimensões ativo: medidas de fábrica",
-  "en_US": "No active Dimension Standard: factory sizes"
- },
- "O padrão não tem a linha {}: medidas de fábrica": {
-  "pt_BR": "O padrão não tem a linha {}: medidas de fábrica",
-  "en_US": "The standard has no line {}: factory sizes"
- },
- "Montagem desconhecida: {}; usada lateral passante": {
-  "pt_BR": "Montagem desconhecida: {}; usada lateral passante",
-  "en_US": "Unknown assembly: {}; full-height sides used"
- },
- "Regra de montagem da caixa dos armários": {
-  "pt_BR": "Regra de montagem da caixa dos armários",
-  "en_US": "Cabinet box assembly rule"
- },
- "{} armário(s) de bibliotecas antigas": {
-  "pt_BR": "{} armário(s) de bibliotecas antigas",
-  "en_US": "{} legacy-library cabinet(s)"
- },
- "Biblioteca no topo da viewport: BIBLIOTECA CAFFMOB": {
-  "pt_BR": "Biblioteca no topo da viewport: BIBLIOTECA CAFFMOB",
-  "en_US": "Library at the top of the viewport: BIBLIOTECA CAFFMOB"
- },
- "Padrão: {}": {
-  "pt_BR": "Padrão: {}",
-  "en_US": "Standard: {}"
+ "Aplicar textura": {
+  "pt_BR": "Aplicar textura",
+  "en_US": "Apply texture"
  },
  "Armário de biblioteca antiga": {
   "pt_BR": "Armário de biblioteca antiga",
   "en_US": "Legacy-library cabinet"
  },
- "Converter este para CAFFMob": {
-  "pt_BR": "Converter este para CAFFMob",
-  "en_US": "Convert this one to CAFFMob"
+ "Arquivo baixado não confere com o catálogo": {
+  "pt_BR": "Arquivo baixado não confere com o catálogo",
+  "en_US": "Downloaded file does not match the catalog"
  },
- "Balcão 1 porta": {
-  "pt_BR": "Balcão 1 porta",
-  "en_US": "Base 1 door"
+ "Arquivo de categorias inválido guardado como {}.bak": {
+  "pt_BR": "Arquivo de categorias inválido guardado como {}.bak",
+  "en_US": "Invalid categories file kept as {}.bak"
  },
- "Balcão 2 portas": {
-  "pt_BR": "Balcão 2 portas",
-  "en_US": "Base 2 doors"
+ "Arquivo de categorias inválido; as categorias do usuário foram ignoradas": {
+  "pt_BR": "Arquivo de categorias inválido; as categorias do usuário foram ignoradas",
+  "en_US": "Invalid categories file; user categories were ignored"
+ },
+ "Arrastar da biblioteca": {
+  "pt_BR": "Arrastar da biblioteca",
+  "en_US": "Drag from the library"
+ },
+ "Arraste para a cena": {
+  "pt_BR": "Arraste para a cena",
+  "en_US": "Drag into the scene"
+ },
+ "Arraste para aplicar": {
+  "pt_BR": "Arraste para aplicar",
+  "en_US": "Drag to apply"
+ },
+ "Arraste uma textura ou um bloco da biblioteca para a cena": {
+  "pt_BR": "Arraste uma textura ou um bloco da biblioteca para a cena",
+  "en_US": "Drag a texture or a block from the library into the scene"
+ },
+ "As laterais vão do piso ao topo; base e tampo ficam entre elas": {
+  "pt_BR": "As laterais vão do piso ao topo; base e tampo ficam entre elas",
+  "en_US": "Sides run from floor to top; bottom and top sit between them"
+ },
+ "Avançado": {
+  "pt_BR": "Avançado",
+  "en_US": "Advanced"
  },
  "Aéreo 1 porta": {
   "pt_BR": "Aéreo 1 porta",
@@ -427,213 +99,269 @@
   "pt_BR": "Aéreo 2 portas",
   "en_US": "Wall 2 doors"
  },
- "Frentes não lidas": {
-  "pt_BR": "Frentes não lidas",
-  "en_US": "Fronts not read"
+ "Baixa as texturas para usar sem rede (a categoria escolhida na Biblioteca ou todas)": {
+  "pt_BR": "Baixa as texturas para usar sem rede (a categoria escolhida na Biblioteca ou todas)",
+  "en_US": "Downloads the textures to use without network (the category chosen in the Library, or all)"
  },
- "Não foi possível converter {}: {}": {
-  "pt_BR": "Não foi possível converter {}: {}",
-  "en_US": "Could not convert {}: {}"
- },
- "O nome não pode ter < > : \" / \\ | ? * nem terminar em ponto": {
-  "pt_BR": "O nome não pode ter < > : \" / \\ | ? * nem terminar em ponto",
-  "en_US": "The name cannot contain < > : \" / \\ | ? * or end with a period"
- },
- "Arquivo de categorias inválido guardado como {}.bak": {
-  "pt_BR": "Arquivo de categorias inválido guardado como {}.bak",
-  "en_US": "Invalid categories file kept as {}.bak"
- },
- "Modelo {}: {} não numérico ignorado": {
-  "pt_BR": "Modelo {}: {} não numérico ignorado",
-  "en_US": "Model {}: non-numeric {} ignored"
- },
- "Blocos": {
-  "pt_BR": "Blocos",
-  "en_US": "Blocks"
- },
- "Texturas": {
-  "pt_BR": "Texturas",
-  "en_US": "Textures"
- },
- "Entrar com a conta CAFF Mob": {
-  "pt_BR": "Entrar com a conta CAFF Mob",
-  "en_US": "Sign in with your CAFF Mob account"
- },
- "Buscar acabamento…": {
-  "pt_BR": "Buscar acabamento…",
-  "en_US": "Search finish…"
- },
- "Fabricantes": {
-  "pt_BR": "Fabricantes",
-  "en_US": "Manufacturers"
+ "Baixa todas as texturas para usar sem internet (só para contas com essa permissão)": {
+  "pt_BR": "Baixa todas as texturas para usar sem internet (só para contas com essa permissão)",
+  "en_US": "Downloads all textures to use offline (only for accounts with this permission)"
  },
  "Baixada": {
   "pt_BR": "Baixada",
   "en_US": "Downloaded"
  },
- "Não baixada": {
-  "pt_BR": "Não baixada",
-  "en_US": "Not downloaded"
- },
- "Arraste para aplicar": {
-  "pt_BR": "Arraste para aplicar",
-  "en_US": "Drag to apply"
- },
- "Baixando {}%": {
-  "pt_BR": "Baixando {}%",
-  "en_US": "Downloading {}%"
- },
- "Falhou · tentar de novo": {
-  "pt_BR": "Falhou · tentar de novo",
-  "en_US": "Failed · try again"
- },
- "Nenhum resultado para “{}”": {
-  "pt_BR": "Nenhum resultado para “{}”",
-  "en_US": "No results for “{}”"
- },
- "Confira a escrita ou busque em todos os fabricantes.": {
-  "pt_BR": "Confira a escrita ou busque em todos os fabricantes.",
-  "en_US": "Check the spelling or search all manufacturers."
- },
- "Os blocos da categoria aparecem aqui.": {
-  "pt_BR": "Os blocos da categoria aparecem aqui.",
-  "en_US": "The category's blocks appear here."
- },
  "Baixando {} de {} · {} de {} MB": {
   "pt_BR": "Baixando {} de {} · {} de {} MB",
   "en_US": "Downloading {} of {} · {} of {} MB"
- },
- "Texturas não instaladas": {
-  "pt_BR": "Texturas não instaladas",
-  "en_US": "Textures not installed"
- },
- "Catálogo de texturas inválido": {
-  "pt_BR": "Catálogo de texturas inválido",
-  "en_US": "Invalid texture catalog"
- },
- "Imagem ilegível ignorada: {}": {
-  "pt_BR": "Imagem ilegível ignorada: {}",
-  "en_US": "Unreadable image skipped: {}"
- },
- "Textura com o mesmo nome na coleção, renomeada: {}": {
-  "pt_BR": "Textura com o mesmo nome na coleção, renomeada: {}",
-  "en_US": "Texture with the same name in the collection, renamed: {}"
- },
- "Minimizado": {
-  "pt_BR": "Minimizado",
-  "en_US": "Minimized"
- },
- "Só o rótulo BIBLIOTECA CAFFMOB": {
-  "pt_BR": "Só o rótulo BIBLIOTECA CAFFMOB",
-  "en_US": "Only the BIBLIOTECA CAFFMOB label"
- },
- "Aberto": {
-  "pt_BR": "Aberto",
-  "en_US": "Open"
- },
- "Coluna de categorias": {
-  "pt_BR": "Coluna de categorias",
-  "en_US": "Category column"
- },
- "Maximizado": {
-  "pt_BR": "Maximizado",
-  "en_US": "Maximized"
- },
- "Retângulo com a grade": {
-  "pt_BR": "Retângulo com a grade",
-  "en_US": "Rectangle with the grid"
- },
- "Solte a textura sobre uma peça, frente, módulo ou objeto": {
-  "pt_BR": "Solte a textura sobre uma peça, frente, módulo ou objeto",
-  "en_US": "Drop the texture on a part, front, module or object"
- },
- "Textura fora do catálogo": {
-  "pt_BR": "Textura fora do catálogo",
-  "en_US": "Texture not in the catalog"
- },
- "Textura {} aplicada em {} peça(s)": {
-  "pt_BR": "Textura {} aplicada em {} peça(s)",
-  "en_US": "Texture {} applied to {} part(s)"
- },
- "Textura {} não aplicada: {}": {
-  "pt_BR": "Textura {} não aplicada: {}",
-  "en_US": "Texture {} not applied: {}"
- },
- "Baixando {}… a textura entra quando o download terminar": {
-  "pt_BR": "Baixando {}… a textura entra quando o download terminar",
-  "en_US": "Downloading {}… the texture is applied when the download finishes"
- },
- "Aplicar textura": {
-  "pt_BR": "Aplicar textura",
-  "en_US": "Apply texture"
- },
- "O acesso foi recusado no navegador": {
-  "pt_BR": "O acesso foi recusado no navegador",
-  "en_US": "Access was denied in the browser"
- },
- "O código venceu antes da confirmação. Entre de novo": {
-  "pt_BR": "O código venceu antes da confirmação. Entre de novo",
-  "en_US": "The code expired before confirmation. Sign in again"
- },
- "Não foi possível entrar com a conta CAF Mob": {
-  "pt_BR": "Não foi possível entrar com a conta CAF Mob",
-  "en_US": "Could not sign in with the CAF Mob account"
- },
- "Arquivo baixado não confere com o catálogo": {
-  "pt_BR": "Arquivo baixado não confere com o catálogo",
-  "en_US": "Downloaded file does not match the catalog"
- },
- "O acesso à internet do Blender está desligado (Preferências › Sistema › Rede)": {
-  "pt_BR": "O acesso à internet do Blender está desligado (Preferências › Sistema › Rede)",
-  "en_US": "Blender's internet access is off (Preferences › System › Network)"
- },
- "Servidor de texturas não configurado nas preferências do CAFFMob Draw": {
-  "pt_BR": "Servidor de texturas não configurado nas preferências do CAFFMob Draw",
-  "en_US": "Texture server not set in the CAFFMob Draw preferences"
- },
- "Textura não disponível no servidor": {
-  "pt_BR": "Textura não disponível no servidor",
-  "en_US": "Texture not available on the server"
- },
- "Entre com a sua conta CAF Mob para baixar texturas": {
-  "pt_BR": "Entre com a sua conta CAF Mob para baixar texturas",
-  "en_US": "Sign in with your CAF Mob account to download textures"
- },
- "Sem resposta do servidor de texturas": {
-  "pt_BR": "Sem resposta do servidor de texturas",
-  "en_US": "No response from the texture server"
- },
- "{} textura(s) deste projeto não estão no catálogo instalado: {}": {
-  "pt_BR": "{} textura(s) deste projeto não estão no catálogo instalado: {}",
-  "en_US": "{} texture(s) in this project are not in the installed catalog: {}"
- },
- "Código {}: confirme no navegador que abriu": {
-  "pt_BR": "Código {}: confirme no navegador que abriu",
-  "en_US": "Code {}: confirm it in the browser that opened"
- },
- "Conta CAF Mob conectada: {}": {
-  "pt_BR": "Conta CAF Mob conectada: {}",
-  "en_US": "CAF Mob account connected: {}"
- },
- "Você saiu da conta CAF Mob": {
-  "pt_BR": "Você saiu da conta CAF Mob",
-  "en_US": "You signed out of the CAF Mob account"
- },
- "Sua conta não tem permissão para baixar todas as texturas": {
-  "pt_BR": "Sua conta não tem permissão para baixar todas as texturas",
-  "en_US": "Your account is not allowed to download all textures"
- },
- "Todas as texturas baixadas": {
-  "pt_BR": "Todas as texturas baixadas",
-  "en_US": "All textures downloaded"
  },
  "Baixando {} texturas ({:.0f} MB)": {
   "pt_BR": "Baixando {} texturas ({:.0f} MB)",
   "en_US": "Downloading {} textures ({:.0f} MB)"
  },
+ "Baixando {}%": {
+  "pt_BR": "Baixando {}%",
+  "en_US": "Downloading {}%"
+ },
+ "Baixando {}… a textura entra quando o download terminar": {
+  "pt_BR": "Baixando {}… a textura entra quando o download terminar",
+  "en_US": "Downloading {}… the texture is applied when the download finishes"
+ },
+ "Baixar": {
+  "pt_BR": "Baixar",
+  "en_US": "Download"
+ },
+ "Baixar a categoria escolhida": {
+  "pt_BR": "Baixar a categoria escolhida",
+  "en_US": "Download the chosen category"
+ },
+ "Baixar todas as categorias": {
+  "pt_BR": "Baixar todas as categorias",
+  "en_US": "Download all categories"
+ },
+ "Baixar todas as texturas": {
+  "pt_BR": "Baixar todas as texturas",
+  "en_US": "Download all textures"
+ },
  "Baixar todas as texturas que faltam (cerca de {:.0f} MB)?": {
   "pt_BR": "Baixar todas as texturas que faltam (cerca de {:.0f} MB)?",
   "en_US": "Download all missing textures (about {:.0f} MB)?"
+ },
+ "Baixar {} texturas para usar sem rede? O tamanho total não é informado pelo servidor.": {
+  "pt_BR": "Baixar {} texturas para usar sem rede? O tamanho total não é informado pelo servidor.",
+  "en_US": "Download {} textures to use without network? The server does not report the total size."
+ },
+ "Balcão 1 porta": {
+  "pt_BR": "Balcão 1 porta",
+  "en_US": "Base 1 door"
+ },
+ "Balcão 2 portas": {
+  "pt_BR": "Balcão 2 portas",
+  "en_US": "Base 2 doors"
+ },
+ "Banheiro": {
+  "pt_BR": "Banheiro",
+  "en_US": "Bathroom"
+ },
+ "Base passante": {
+  "pt_BR": "Base passante",
+  "en_US": "Full-width bottom"
+ },
+ "Biblioteca CAFFMob": {
+  "pt_BR": "Biblioteca CAFFMob",
+  "en_US": "CAFFMob Library"
+ },
+ "Biblioteca CAFFMob (bloqueio)": {
+  "pt_BR": "Biblioteca CAFFMob (bloqueio)",
+  "en_US": "CAFFMob Library (block)"
+ },
+ "Biblioteca CAFFMob (hover)": {
+  "pt_BR": "Biblioteca CAFFMob (hover)",
+  "en_US": "CAFFMob Library (hover)"
+ },
+ "Biblioteca no topo da viewport: BIBLIOTECA CAFFMOB": {
+  "pt_BR": "Biblioteca no topo da viewport: BIBLIOTECA CAFFMOB",
+  "en_US": "Library at the top of the viewport: BIBLIOTECA CAFFMOB"
+ },
+ "Blocos": {
+  "pt_BR": "Blocos",
+  "en_US": "Blocks"
+ },
+ "Botão direito, do meio e gestos do trackpad sobre o painel não chegam à cena": {
+  "pt_BR": "Botão direito, do meio e gestos do trackpad sobre o painel não chegam à cena",
+  "en_US": "Right, middle and trackpad gestures over the panel do not reach the scene"
+ },
+ "Buscar acabamento…": {
+  "pt_BR": "Buscar acabamento…",
+  "en_US": "Search finish…"
+ },
+ "Buscar na biblioteca": {
+  "pt_BR": "Buscar na biblioteca",
+  "en_US": "Search the library"
+ },
+ "Cancela os downloads de textura em andamento (o que já baixou fica)": {
+  "pt_BR": "Cancela os downloads de textura em andamento (o que já baixou fica)",
+  "en_US": "Cancels the texture downloads in progress (what was already downloaded stays)"
+ },
+ "Cancelar = Não: esses ficam como estão": {
+  "pt_BR": "Cancelar = Não: esses ficam como estão",
+  "en_US": "Cancel = No: those stay as they are"
+ },
+ "Cancelar = Não: só os armários novos usam o padrão": {
+  "pt_BR": "Cancelar = Não: só os armários novos usam o padrão",
+  "en_US": "Cancel = No: only new cabinets use the standard"
+ },
+ "Cancelar downloads": {
+  "pt_BR": "Cancelar downloads",
+  "en_US": "Cancel downloads"
+ },
+ "Categoria criada: {}": {
+  "pt_BR": "Categoria criada: {}",
+  "en_US": "Category created: {}"
+ },
+ "Categoria escolhida": {
+  "pt_BR": "Categoria escolhida",
+  "en_US": "Chosen category"
+ },
+ "Categoria repetida ignorada: {}": {
+  "pt_BR": "Categoria repetida ignorada: {}",
+  "en_US": "Repeated category ignored: {}"
+ },
+ "Categoria sem nome ignorada": {
+  "pt_BR": "Categoria sem nome ignorada",
+  "en_US": "Unnamed category ignored"
+ },
+ "Categorias": {
+  "pt_BR": "Categorias",
+  "en_US": "Categories"
+ },
+ "Catálogo de modelos inválido": {
+  "pt_BR": "Catálogo de modelos inválido",
+  "en_US": "Invalid model catalog"
+ },
+ "Catálogo de modelos não encontrado": {
+  "pt_BR": "Catálogo de modelos não encontrado",
+  "en_US": "Model catalog not found"
+ },
+ "Catálogo de texturas inválido": {
+  "pt_BR": "Catálogo de texturas inválido",
+  "en_US": "Invalid texture catalog"
+ },
+ "Clique no painel BIBLIOTECA CAFFMOB": {
+  "pt_BR": "Clique no painel BIBLIOTECA CAFFMOB",
+  "en_US": "Click on the BIBLIOTECA CAFFMOB panel"
+ },
+ "Coluna de categorias": {
+  "pt_BR": "Coluna de categorias",
+  "en_US": "Category column"
+ },
+ "Confira a escrita ou busque em todos os fabricantes.": {
+  "pt_BR": "Confira a escrita ou busque em todos os fabricantes.",
+  "en_US": "Check the spelling or search all manufacturers."
+ },
+ "Conta CAF Mob": {
+  "pt_BR": "Conta CAF Mob",
+  "en_US": "CAF Mob account"
+ },
+ "Conta CAF Mob conectada: {}": {
+  "pt_BR": "Conta CAF Mob conectada: {}",
+  "en_US": "CAF Mob account connected: {}"
+ },
+ "Conta CAF Mob e downloads de textura": {
+  "pt_BR": "Conta CAF Mob e downloads de textura",
+  "en_US": "CAF Mob account and texture downloads"
+ },
+ "Conversão dos grupos antigos": {
+  "pt_BR": "Conversão dos grupos antigos",
+  "en_US": "Old groups conversion"
+ },
+ "Conversão para CAFFMob": {
+  "pt_BR": "Conversão para CAFFMob",
+  "en_US": "Conversion to CAFFMob"
+ },
+ "Converta os armários antigos para CAFFMob para que recebam o padrão": {
+  "pt_BR": "Converta os armários antigos para CAFFMob para que recebam o padrão",
+  "en_US": "Convert the legacy cabinets to CAFFMob so they receive the standard"
+ },
+ "Converte armários frameless, face frame e closets em armários CAFFMob, com o relatório do que se perdeu": {
+  "pt_BR": "Converte armários frameless, face frame e closets em armários CAFFMob, com o relatório do que se perdeu",
+  "en_US": "Converts frameless, face frame and closets cabinets into CAFFMob cabinets, reporting what was lost"
+ },
+ "Converte os grupos salvos nas bibliotecas antigas em módulos CAFFMob da categoria Geral": {
+  "pt_BR": "Converte os grupos salvos nas bibliotecas antigas em módulos CAFFMob da categoria Geral",
+  "en_US": "Converts the groups saved in the legacy libraries into CAFFMob modules in the General category"
+ },
+ "Converter": {
+  "pt_BR": "Converter",
+  "en_US": "Convert"
+ },
+ "Converter este para CAFFMob": {
+  "pt_BR": "Converter este para CAFFMob",
+  "en_US": "Convert this one to CAFFMob"
+ },
+ "Converter grupos antigos": {
+  "pt_BR": "Converter grupos antigos",
+  "en_US": "Convert old groups"
+ },
+ "Converter para CAFFMob": {
+  "pt_BR": "Converter para CAFFMob",
+  "en_US": "Convert to CAFFMob"
+ },
+ "Cozinha": {
+  "pt_BR": "Cozinha",
+  "en_US": "Kitchen"
+ },
+ "Cria um armário CAFFMob pelo Padrão de Dimensões e abre o editor de armário nele": {
+  "pt_BR": "Cria um armário CAFFMob pelo Padrão de Dimensões e abre o editor de armário nele",
+  "en_US": "Creates a CAFFMob cabinet from the Dimension Standard and opens the cabinet editor on it"
+ },
+ "Cria um módulo de armário CAFFMob com as medidas, as chapas e a montagem do Padrão de Dimensões": {
+  "pt_BR": "Cria um módulo de armário CAFFMob com as medidas, as chapas e a montagem do Padrão de Dimensões",
+  "en_US": "Creates a CAFFMob cabinet module with the Dimension Standard sizes, sheets and assembly"
+ },
+ "Cria uma categoria na biblioteca do usuário, com a linha do Padrão de Dimensões que os armários dela usam": {
+  "pt_BR": "Cria uma categoria na biblioteca do usuário, com a linha do Padrão de Dimensões que os armários dela usam",
+  "en_US": "Creates a category in the user library, with the Dimension Standard line its cabinets use"
+ },
+ "Criar": {
+  "pt_BR": "Criar",
+  "en_US": "Create"
+ },
+ "Criar armário": {
+  "pt_BR": "Criar armário",
+  "en_US": "Create cabinet"
+ },
+ "Criar categoria": {
+  "pt_BR": "Criar categoria",
+  "en_US": "Create category"
+ },
+ "Código {}: confirme no navegador que abriu": {
+  "pt_BR": "Código {}: confirme no navegador que abriu",
+  "en_US": "Code {}: confirm it in the browser that opened"
+ },
+ "Definir": {
+  "pt_BR": "Definir",
+  "en_US": "Set"
+ },
+ "Depois o sistema pergunta se os módulos da cena devem mudar.": {
+  "pt_BR": "Depois o sistema pergunta se os módulos da cena devem mudar.",
+  "en_US": "Then you will be asked whether the scene modules should change."
+ },
+ "Digitar a busca da biblioteca": {
+  "pt_BR": "Digitar a busca da biblioteca",
+  "en_US": "Type the library search"
+ },
+ "Digite um nome para a categoria": {
+  "pt_BR": "Digite um nome para a categoria",
+  "en_US": "Type a name for the category"
+ },
+ "Dormitório": {
+  "pt_BR": "Dormitório",
+  "en_US": "Bedroom"
+ },
+ "Endereço do servidor de texturas da CAF Mob (sem o /v1 do final)": {
+  "pt_BR": "Endereço do servidor de texturas da CAF Mob (sem o /v1 do final)",
+  "en_US": "Address of the CAF Mob texture server (without the trailing /v1)"
  },
  "Entrar com a conta CAF Mob": {
   "pt_BR": "Entrar com a conta CAF Mob",
@@ -643,6 +371,274 @@
   "pt_BR": "Entrar com a conta CAF Mob (abre o navegador; a senha não passa pelo Blender)",
   "en_US": "Sign in with the CAF Mob account (opens the browser; the password never goes through Blender)"
  },
+ "Entrar com a conta CAFF Mob": {
+  "pt_BR": "Entrar com a conta CAFF Mob",
+  "en_US": "Sign in with your CAFF Mob account"
+ },
+ "Entre com a sua conta CAF Mob para baixar texturas": {
+  "pt_BR": "Entre com a sua conta CAF Mob para baixar texturas",
+  "en_US": "Sign in with your CAF Mob account to download textures"
+ },
+ "Escolha um fabricante (e, se quiser, uma coleção) na Biblioteca antes.": {
+  "pt_BR": "Escolha um fabricante (e, se quiser, uma coleção) na Biblioteca antes.",
+  "en_US": "Pick a manufacturer (and, optionally, a collection) in the Library first."
+ },
+ "Escolha uma categoria": {
+  "pt_BR": "Escolha uma categoria",
+  "en_US": "Choose a category"
+ },
+ "Escritório": {
+  "pt_BR": "Escritório",
+  "en_US": "Office"
+ },
+ "Fabricantes": {
+  "pt_BR": "Fabricantes",
+  "en_US": "Manufacturers"
+ },
+ "Falhou · tentar de novo": {
+  "pt_BR": "Falhou · tentar de novo",
+  "en_US": "Failed · try again"
+ },
+ "Fecha o painel BIBLIOTECA CAFFMOB": {
+  "pt_BR": "Fecha o painel BIBLIOTECA CAFFMOB",
+  "en_US": "Closes the BIBLIOTECA CAFFMOB panel"
+ },
+ "Fechar biblioteca": {
+  "pt_BR": "Fechar biblioteca",
+  "en_US": "Close library"
+ },
+ "Frentes especiais (basculante de puxar, painel embutido, eletrodoméstico)": {
+  "pt_BR": "Frentes especiais (basculante de puxar, painel embutido, eletrodoméstico)",
+  "en_US": "Special fronts (pull-out, inset panel, appliance)"
+ },
+ "Frentes não lidas": {
+  "pt_BR": "Frentes não lidas",
+  "en_US": "Fronts not read"
+ },
+ "Grupo {}": {
+  "pt_BR": "Grupo {}",
+  "en_US": "Group {}"
+ },
+ "Imagem ilegível ignorada: {}": {
+  "pt_BR": "Imagem ilegível ignorada: {}",
+  "en_US": "Unreadable image skipped: {}"
+ },
+ "Insere o modelo pronto com as medidas, as chapas e a montagem do Padrão de Dimensões da linha": {
+  "pt_BR": "Insere o modelo pronto com as medidas, as chapas e a montagem do Padrão de Dimensões da linha",
+  "en_US": "Inserts the ready-made model with the sizes, sheets and assembly of the line's Dimension Standard"
+ },
+ "Inserir modelo": {
+  "pt_BR": "Inserir modelo",
+  "en_US": "Insert model"
+ },
+ "Já existe uma categoria com esse nome": {
+  "pt_BR": "Já existe uma categoria com esse nome",
+  "en_US": "A category with this name already exists"
+ },
+ "Largura (mm)": {
+  "pt_BR": "Largura (mm)",
+  "en_US": "Width (mm)"
+ },
+ "Lateral passante": {
+  "pt_BR": "Lateral passante",
+  "en_US": "Full-height sides"
+ },
+ "Linha desconhecida na categoria {}: usada Cozinha": {
+  "pt_BR": "Linha desconhecida na categoria {}: usada Cozinha",
+  "en_US": "Unknown line in category {}: Kitchen used"
+ },
+ "Linha do Padrão de Dimensões que dá as chapas e as medidas do módulo": {
+  "pt_BR": "Linha do Padrão de Dimensões que dá as chapas e as medidas do módulo",
+  "en_US": "Dimension Standard line that gives the module's sheets and sizes"
+ },
+ "Linha do padrão": {
+  "pt_BR": "Linha do padrão",
+  "en_US": "Standard line"
+ },
+ "Manter a proporção": {
+  "pt_BR": "Manter a proporção",
+  "en_US": "Keep proportions"
+ },
+ "Maximizado": {
+  "pt_BR": "Maximizado",
+  "en_US": "Maximized"
+ },
+ "Meu módulo": {
+  "pt_BR": "Meu módulo",
+  "en_US": "My module"
+ },
+ "Minimizado": {
+  "pt_BR": "Minimizado",
+  "en_US": "Minimized"
+ },
+ "Modelo não encontrado: {}": {
+  "pt_BR": "Modelo não encontrado: {}",
+  "en_US": "Model not found: {}"
+ },
+ "Modelo pronto": {
+  "pt_BR": "Modelo pronto",
+  "en_US": "Ready-made model"
+ },
+ "Modelo sem identificador ignorado": {
+  "pt_BR": "Modelo sem identificador ignorado",
+  "en_US": "Model without identifier ignored"
+ },
+ "Modelo {}: frente desconhecida": {
+  "pt_BR": "Modelo {}: frente desconhecida",
+  "en_US": "Model {}: unknown front"
+ },
+ "Modelo {}: tipo desconhecido": {
+  "pt_BR": "Modelo {}: tipo desconhecido",
+  "en_US": "Model {}: unknown type"
+ },
+ "Modelo {}: {} não numérico ignorado": {
+  "pt_BR": "Modelo {}: {} não numérico ignorado",
+  "en_US": "Model {}: non-numeric {} ignored"
+ },
+ "Modelos prontos": {
+  "pt_BR": "Modelos prontos",
+  "en_US": "Ready-made models"
+ },
+ "Montagem": {
+  "pt_BR": "Montagem",
+  "en_US": "Assembly"
+ },
+ "Montagem desconhecida: {}; usada lateral passante": {
+  "pt_BR": "Montagem desconhecida: {}; usada lateral passante",
+  "en_US": "Unknown assembly: {}; full-height sides used"
+ },
+ "Mostra a interface das bibliotecas frameless, face frame, closets e de molduras, que foram substituídas pelos armários CAFFMob. Use só para suporte ou para comparar uma conversão": {
+  "pt_BR": "Mostra a interface das bibliotecas frameless, face frame, closets e de molduras, que foram substituídas pelos armários CAFFMob. Use só para suporte ou para comparar uma conversão",
+  "en_US": "Shows the interface of the frameless, face frame, closets and molding libraries, which were replaced by CAFFMob cabinets. Use only for support or to compare a conversion"
+ },
+ "Mostrar bibliotecas herdadas": {
+  "pt_BR": "Mostrar bibliotecas herdadas",
+  "en_US": "Show legacy libraries"
+ },
+ "Muda quanto a textura mede de verdade (largura e altura em mm) nas peças selecionadas": {
+  "pt_BR": "Muda quanto a textura mede de verdade (largura e altura em mm) nas peças selecionadas",
+  "en_US": "Changes how big the texture really is (width and height in mm) on the selected parts"
+ },
+ "Nenhum grupo antigo para converter": {
+  "pt_BR": "Nenhum grupo antigo para converter",
+  "en_US": "No old group to convert"
+ },
+ "Nenhum módulo CAFFMob na cena; {} item(ns) não aplicável(is)": {
+  "pt_BR": "Nenhum módulo CAFFMob na cena; {} item(ns) não aplicável(is)",
+  "en_US": "No CAFFMob module in the scene; {} item(s) not applicable"
+ },
+ "Nenhum módulo salvo nesta categoria": {
+  "pt_BR": "Nenhum módulo salvo nesta categoria",
+  "en_US": "No module saved in this category"
+ },
+ "Nenhum resultado para “{}”": {
+  "pt_BR": "Nenhum resultado para “{}”",
+  "en_US": "No results for “{}”"
+ },
+ "Não baixada": {
+  "pt_BR": "Não baixada",
+  "en_US": "Not downloaded"
+ },
+ "Não foi possível abrir o grupo {}: {}": {
+  "pt_BR": "Não foi possível abrir o grupo {}: {}",
+  "en_US": "Could not open group {}: {}"
+ },
+ "Não foi possível carregar o catálogo do MOBI. Tentaremos novamente.": {
+  "pt_BR": "Não foi possível carregar o catálogo do MOBI. Tentaremos novamente.",
+  "en_US": "Could not load the MOBI catalog. We will try again."
+ },
+ "Não foi possível converter {}: {}": {
+  "pt_BR": "Não foi possível converter {}: {}",
+  "en_US": "Could not convert {}: {}"
+ },
+ "Não foi possível entrar com a conta CAF Mob": {
+  "pt_BR": "Não foi possível entrar com a conta CAF Mob",
+  "en_US": "Could not sign in with the CAF Mob account"
+ },
+ "O acesso foi recusado no navegador": {
+  "pt_BR": "O acesso foi recusado no navegador",
+  "en_US": "Access was denied in the browser"
+ },
+ "O acesso à internet do Blender está desligado (Preferências › Sistema › Rede)": {
+  "pt_BR": "O acesso à internet do Blender está desligado (Preferências › Sistema › Rede)",
+  "en_US": "Blender's internet access is off (Preferences › System › Network)"
+ },
+ "O código venceu antes da confirmação. Entre de novo": {
+  "pt_BR": "O código venceu antes da confirmação. Entre de novo",
+  "en_US": "The code expired before confirmation. Sign in again"
+ },
+ "O nome não pode ter < > : \" / \\ | ? * nem terminar em ponto": {
+  "pt_BR": "O nome não pode ter < > : \" / \\ | ? * nem terminar em ponto",
+  "en_US": "The name cannot contain < > : \" / \\ | ? * or end with a period"
+ },
+ "O objeto ativo não tem textura de imagem": {
+  "pt_BR": "O objeto ativo não tem textura de imagem",
+  "en_US": "The active object has no image texture"
+ },
+ "O padrão não tem a linha {}: medidas de fábrica": {
+  "pt_BR": "O padrão não tem a linha {}: medidas de fábrica",
+  "en_US": "The standard has no line {}: factory sizes"
+ },
+ "Offline": {
+  "pt_BR": "Offline",
+  "en_US": "Offline"
+ },
+ "Offline: {} de {} prontas, {} com falha": {
+  "pt_BR": "Offline: {} de {} prontas, {} com falha",
+  "en_US": "Offline: {} of {} ready, {} failed"
+ },
+ "Os blocos da categoria aparecem aqui.": {
+  "pt_BR": "Os blocos da categoria aparecem aqui.",
+  "en_US": "The category's blocks appear here."
+ },
+ "Os modelos prontos e os seus módulos salvos aparecem aqui.": {
+  "pt_BR": "Os modelos prontos e os seus módulos salvos aparecem aqui.",
+  "en_US": "Ready-made models and your saved modules appear here."
+ },
+ "Padrão próprio: difere do Padrão de Dimensões global": {
+  "pt_BR": "Padrão próprio: difere do Padrão de Dimensões global",
+  "en_US": "Own standard: differs from the global Dimension Standard"
+ },
+ "Padrão: {}": {
+  "pt_BR": "Padrão: {}",
+  "en_US": "Standard: {}"
+ },
+ "Painéis fixos": {
+  "pt_BR": "Painéis fixos",
+  "en_US": "Fixed panels"
+ },
+ "Para de agendar as próximas texturas do lote offline (o que já baixou fica)": {
+  "pt_BR": "Para de agendar as próximas texturas do lote offline (o que já baixou fica)",
+  "en_US": "Stops scheduling the next textures of the offline batch (what was downloaded stays)"
+ },
+ "Parar o lote offline": {
+  "pt_BR": "Parar o lote offline",
+  "en_US": "Stop the offline batch"
+ },
+ "Portas além de duas": {
+  "pt_BR": "Portas além de duas",
+  "en_US": "Doors beyond two"
+ },
+ "Preparar texturas offline": {
+  "pt_BR": "Preparar texturas offline",
+  "en_US": "Prepare textures for offline use"
+ },
+ "Regra de montagem da caixa dos armários": {
+  "pt_BR": "Regra de montagem da caixa dos armários",
+  "en_US": "Cabinet box assembly rule"
+ },
+ "Retângulo com a grade": {
+  "pt_BR": "Retângulo com a grade",
+  "en_US": "Rectangle with the grid"
+ },
+ "Rola a grade da BIBLIOTECA CAFFMOB pela roda do mouse": {
+  "pt_BR": "Rola a grade da BIBLIOTECA CAFFMOB pela roda do mouse",
+  "en_US": "Scrolls the BIBLIOTECA CAFFMOB grid with the mouse wheel"
+ },
+ "Rolar biblioteca": {
+  "pt_BR": "Rolar biblioteca",
+  "en_US": "Scroll library"
+ },
  "Sair da conta CAF Mob": {
   "pt_BR": "Sair da conta CAF Mob",
   "en_US": "Sign out of the CAF Mob account"
@@ -651,105 +647,41 @@
   "pt_BR": "Sair da conta CAF Mob neste computador (apaga a sessão guardada)",
   "en_US": "Sign out of the CAF Mob account on this computer (deletes the saved session)"
  },
- "Baixar todas as texturas": {
-  "pt_BR": "Baixar todas as texturas",
-  "en_US": "Download all textures"
+ "Sala": {
+  "pt_BR": "Sala",
+  "en_US": "Living room"
  },
- "Baixa todas as texturas para usar sem internet (só para contas com essa permissão)": {
-  "pt_BR": "Baixa todas as texturas para usar sem internet (só para contas com essa permissão)",
-  "en_US": "Downloads all textures to use offline (only for accounts with this permission)"
+ "Selecione um armário de biblioteca antiga": {
+  "pt_BR": "Selecione um armário de biblioteca antiga",
+  "en_US": "Select a legacy-library cabinet"
  },
- "Baixar": {
-  "pt_BR": "Baixar",
-  "en_US": "Download"
+ "Sem Padrão de Dimensões ativo: medidas de fábrica": {
+  "pt_BR": "Sem Padrão de Dimensões ativo: medidas de fábrica",
+  "en_US": "No active Dimension Standard: factory sizes"
  },
- "Cancelar downloads": {
-  "pt_BR": "Cancelar downloads",
-  "en_US": "Cancel downloads"
+ "Sem diálogo (scripts): já responde Sim à segunda pergunta": {
+  "pt_BR": "Sem diálogo (scripts): já responde Sim à segunda pergunta",
+  "en_US": "Without dialog (scripts): answers Yes to the second question"
  },
- "Cancela os downloads de textura em andamento (o que já baixou fica)": {
-  "pt_BR": "Cancela os downloads de textura em andamento (o que já baixou fica)",
-  "en_US": "Cancels the texture downloads in progress (what was already downloaded stays)"
+ "Sem porta": {
+  "pt_BR": "Sem porta",
+  "en_US": "No door"
  },
- "Conta CAF Mob": {
-  "pt_BR": "Conta CAF Mob",
-  "en_US": "CAF Mob account"
+ "Sem resposta do servidor de texturas": {
+  "pt_BR": "Sem resposta do servidor de texturas",
+  "en_US": "No response from the texture server"
  },
- "Conta CAF Mob e downloads de textura": {
-  "pt_BR": "Conta CAF Mob e downloads de textura",
-  "en_US": "CAF Mob account and texture downloads"
+ "Servidor de texturas": {
+  "pt_BR": "Servidor de texturas",
+  "en_US": "Texture server"
  },
- "O objeto ativo não tem textura de imagem": {
-  "pt_BR": "O objeto ativo não tem textura de imagem",
-  "en_US": "The active object has no image texture"
+ "Servidor de texturas não configurado nas preferências do CAFFMob Draw": {
+  "pt_BR": "Servidor de texturas não configurado nas preferências do CAFFMob Draw",
+  "en_US": "Texture server not set in the CAFFMob Draw preferences"
  },
- "Aplica a textura do catálogo à seleção (baixa antes, se precisar)": {
-  "pt_BR": "Aplica a textura do catálogo à seleção (baixa antes, se precisar)",
-  "en_US": "Applies the catalog texture to the selection (downloads it first if needed)"
- },
- "{} peça(s) com a textura": {
-  "pt_BR": "{} peça(s) com a textura",
-  "en_US": "{} part(s) with the texture"
- },
- "Tamanho real da textura": {
-  "pt_BR": "Tamanho real da textura",
-  "en_US": "Real texture size"
- },
- "Muda quanto a textura mede de verdade (largura e altura em mm) nas peças selecionadas": {
-  "pt_BR": "Muda quanto a textura mede de verdade (largura e altura em mm) nas peças selecionadas",
-  "en_US": "Changes how big the texture really is (width and height in mm) on the selected parts"
- },
- "Largura (mm)": {
-  "pt_BR": "Largura (mm)",
-  "en_US": "Width (mm)"
- },
- "Altura (mm)": {
-  "pt_BR": "Altura (mm)",
-  "en_US": "Height (mm)"
- },
- "Manter a proporção": {
-  "pt_BR": "Manter a proporção",
-  "en_US": "Keep proportions"
- },
- "{} peça(s) com a textura em {:g} × {:g} mm": {
-  "pt_BR": "{} peça(s) com a textura em {:g} × {:g} mm",
-  "en_US": "{} part(s) with the texture at {:g} × {:g} mm"
- },
- "Escolha uma categoria": {
-  "pt_BR": "Escolha uma categoria",
-  "en_US": "Choose a category"
- },
- "Os modelos prontos e os seus módulos salvos aparecem aqui.": {
-  "pt_BR": "Os modelos prontos e os seus módulos salvos aparecem aqui.",
-  "en_US": "Ready-made models and your saved modules appear here."
- },
- "Categorias": {
-  "pt_BR": "Categorias",
-  "en_US": "Categories"
- },
- "Modelo pronto": {
-  "pt_BR": "Modelo pronto",
-  "en_US": "Ready-made model"
- },
- "Meu módulo": {
-  "pt_BR": "Meu módulo",
-  "en_US": "My module"
- },
- "Arraste para a cena": {
-  "pt_BR": "Arraste para a cena",
-  "en_US": "Drag into the scene"
- },
- "Rolar biblioteca": {
-  "pt_BR": "Rolar biblioteca",
-  "en_US": "Scroll library"
- },
- "Rola a grade da BIBLIOTECA CAFFMOB pela roda do mouse": {
-  "pt_BR": "Rola a grade da BIBLIOTECA CAFFMOB pela roda do mouse",
-  "en_US": "Scrolls the BIBLIOTECA CAFFMOB grid with the mouse wheel"
- },
- "Solte sobre uma peça, frente, módulo ou objeto": {
-  "pt_BR": "Solte sobre uma peça, frente, módulo ou objeto",
-  "en_US": "Drop on a part, front, module or object"
+ "Solte a textura sobre uma peça, frente, módulo ou objeto": {
+  "pt_BR": "Solte a textura sobre uma peça, frente, módulo ou objeto",
+  "en_US": "Drop the texture on a part, front, module or object"
  },
  "Solte na cena para inserir": {
   "pt_BR": "Solte na cena para inserir",
@@ -759,36 +691,160 @@
   "pt_BR": "Solte sobre a peça para aplicar a textura",
   "en_US": "Drop on the part to apply the texture"
  },
- "Arrastar da biblioteca": {
-  "pt_BR": "Arrastar da biblioteca",
-  "en_US": "Drag from the library"
+ "Solte sobre uma peça, frente, módulo ou objeto": {
+  "pt_BR": "Solte sobre uma peça, frente, módulo ou objeto",
+  "en_US": "Drop on a part, front, module or object"
  },
- "Arraste uma textura ou um bloco da biblioteca para a cena": {
-  "pt_BR": "Arraste uma textura ou um bloco da biblioteca para a cena",
-  "en_US": "Drag a texture or a block from the library into the scene"
+ "Sua conta não tem permissão para baixar todas as texturas": {
+  "pt_BR": "Sua conta não tem permissão para baixar todas as texturas",
+  "en_US": "Your account is not allowed to download all textures"
  },
- "Buscar na biblioteca": {
-  "pt_BR": "Buscar na biblioteca",
-  "en_US": "Search the library"
+ "Só armários CAFFMob têm montagem": {
+  "pt_BR": "Só armários CAFFMob têm montagem",
+  "en_US": "Only CAFFMob cabinets have an assembly"
  },
- "Digitar a busca da biblioteca": {
-  "pt_BR": "Digitar a busca da biblioteca",
-  "en_US": "Type the library search"
+ "Só as categorias do usuário trocam de linha": {
+  "pt_BR": "Só as categorias do usuário trocam de linha",
+  "en_US": "Only user categories change line"
  },
- "Servidor de texturas": {
-  "pt_BR": "Servidor de texturas",
-  "en_US": "Texture server"
+ "Só o armário selecionado": {
+  "pt_BR": "Só o armário selecionado",
+  "en_US": "Selected cabinet only"
  },
- "Endereço do servidor de texturas da CAF Mob (sem o /v1 do final)": {
-  "pt_BR": "Endereço do servidor de texturas da CAF Mob (sem o /v1 do final)",
-  "en_US": "Address of the CAF Mob texture server (without the trailing /v1)"
+ "Só o rótulo BIBLIOTECA CAFFMOB": {
+  "pt_BR": "Só o rótulo BIBLIOTECA CAFFMOB",
+  "en_US": "Only the BIBLIOTECA CAFFMOB label"
+ },
+ "Tamanho real da textura": {
+  "pt_BR": "Tamanho real da textura",
+  "en_US": "Real texture size"
+ },
+ "Textura com o mesmo nome na coleção, renomeada: {}": {
+  "pt_BR": "Textura com o mesmo nome na coleção, renomeada: {}",
+  "en_US": "Texture with the same name in the collection, renamed: {}"
+ },
+ "Textura fora do catálogo": {
+  "pt_BR": "Textura fora do catálogo",
+  "en_US": "Texture not in the catalog"
+ },
+ "Textura não disponível no servidor": {
+  "pt_BR": "Textura não disponível no servidor",
+  "en_US": "Texture not available on the server"
+ },
+ "Textura {} aplicada em {} peça(s)": {
+  "pt_BR": "Textura {} aplicada em {} peça(s)",
+  "en_US": "Texture {} applied to {} part(s)"
+ },
+ "Textura {} não aplicada: {}": {
+  "pt_BR": "Textura {} não aplicada: {}",
+  "en_US": "Texture {} not applied: {}"
+ },
+ "Texturas": {
+  "pt_BR": "Texturas",
+  "en_US": "Textures"
+ },
+ "Texturas não instaladas": {
+  "pt_BR": "Texturas não instaladas",
+  "en_US": "Textures not installed"
+ },
+ "Tipo de armário aproximado": {
+  "pt_BR": "Tipo de armário aproximado",
+  "en_US": "Approximate cabinet type"
+ },
+ "Todas as categorias": {
+  "pt_BR": "Todas as categorias",
+  "en_US": "All categories"
+ },
+ "Todas as texturas baixadas": {
+  "pt_BR": "Todas as texturas baixadas",
+  "en_US": "All textures downloaded"
+ },
+ "Torre": {
+  "pt_BR": "Torre",
+  "en_US": "Tall"
+ },
+ "Troca a linha do Padrão de Dimensões da categoria": {
+  "pt_BR": "Troca a linha do Padrão de Dimensões da categoria",
+  "en_US": "Changes the category's Dimension Standard line"
+ },
+ "Trocar linha": {
+  "pt_BR": "Trocar linha",
+  "en_US": "Change line"
+ },
+ "Você saiu da conta CAF Mob": {
+  "pt_BR": "Você saiu da conta CAF Mob",
+  "en_US": "You signed out of the CAF Mob account"
+ },
+ "e mais {}": {
+  "pt_BR": "e mais {}",
+  "en_US": "and {} more"
+ },
+ "nenhum armário de biblioteca antiga no grupo": {
+  "pt_BR": "nenhum armário de biblioteca antiga no grupo",
+  "en_US": "no legacy-library cabinet in the group"
+ },
+ "perdas: {}": {
+  "pt_BR": "perdas: {}",
+  "en_US": "lost: {}"
+ },
+ "sem perdas": {
+  "pt_BR": "sem perdas",
+  "en_US": "nothing lost"
  },
  "{}  ·  Esc: cancelar": {
   "pt_BR": "{}  ·  Esc: cancelar",
   "en_US": "{}  ·  Esc: cancel"
  },
- "Não foi possível carregar o catálogo do MOBI. Tentaremos novamente.": {
-  "pt_BR": "Não foi possível carregar o catálogo do MOBI. Tentaremos novamente.",
-  "en_US": "Could not load the MOBI catalog. We will try again."
+ "{} armário(s) convertidos; {} com perdas": {
+  "pt_BR": "{} armário(s) convertidos; {} com perdas",
+  "en_US": "{} cabinet(s) converted; {} with losses"
+ },
+ "{} armário(s) de bibliotecas antigas": {
+  "pt_BR": "{} armário(s) de bibliotecas antigas",
+  "en_US": "{} legacy-library cabinet(s)"
+ },
+ "{} armário(s) de bibliotecas antigas viram armários CAFFMob. Ctrl+Z desfaz.": {
+  "pt_BR": "{} armário(s) de bibliotecas antigas viram armários CAFFMob. Ctrl+Z desfaz.",
+  "en_US": "{} legacy-library cabinet(s) become CAFFMob cabinets. Ctrl+Z undoes."
+ },
+ "{} armário(s) de bibliotecas antigas: use Converter para CAFFMob na barra lateral": {
+  "pt_BR": "{} armário(s) de bibliotecas antigas: use Converter para CAFFMob na barra lateral",
+  "en_US": "{} legacy-library cabinet(s): use Convert to CAFFMob in the sidebar"
+ },
+ "{} com padrão diferente do global anterior": {
+  "pt_BR": "{} com padrão diferente do global anterior",
+  "en_US": "{} with a standard different from the previous global one"
+ },
+ "{} grupo(s) salvos nas bibliotecas antigas viram módulos CAFFMob em Geral. Os arquivos originais ficam na pasta.": {
+  "pt_BR": "{} grupo(s) salvos nas bibliotecas antigas viram módulos CAFFMob em Geral. Os arquivos originais ficam na pasta.",
+  "en_US": "{} group(s) saved in the legacy libraries become CAFFMob modules in General. The original files stay in the folder."
+ },
+ "{} módulo(s) atualizados": {
+  "pt_BR": "{} módulo(s) atualizados",
+  "en_US": "{} module(s) updated"
+ },
+ "{} módulo(s) salvos em Geral": {
+  "pt_BR": "{} módulo(s) salvos em Geral",
+  "en_US": "{} module(s) saved in General"
+ },
+ "{} módulo(s) seguem o padrão global": {
+  "pt_BR": "{} módulo(s) seguem o padrão global",
+  "en_US": "{} module(s) follow the global standard"
+ },
+ "{} não aplicável(is): itens importados ou armários antigos": {
+  "pt_BR": "{} não aplicável(is): itens importados ou armários antigos",
+  "en_US": "{} not applicable: imported items or legacy cabinets"
+ },
+ "{} peça(s) com a textura": {
+  "pt_BR": "{} peça(s) com a textura",
+  "en_US": "{} part(s) with the texture"
+ },
+ "{} peça(s) com a textura em {:g} × {:g} mm": {
+  "pt_BR": "{} peça(s) com a textura em {:g} × {:g} mm",
+  "en_US": "{} part(s) with the texture at {:g} × {:g} mm"
+ },
+ "{} textura(s) deste projeto não estão no catálogo instalado: {}": {
+  "pt_BR": "{} textura(s) deste projeto não estão no catálogo instalado: {}",
+  "en_US": "{} texture(s) in this project are not in the installed catalog: {}"
  }
 }

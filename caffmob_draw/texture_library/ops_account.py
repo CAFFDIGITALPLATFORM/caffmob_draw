@@ -1,6 +1,7 @@
 """Conta e cancelamento das texturas (063 RN-02, RN-12; D-05, D-08).
 
-A grade usa a mesma sessão de aparelho do MOBI. Não há download do catálogo inteiro.
+A grade usa a mesma sessão de aparelho do MOBI. Baixar uma categoria inteira (ou todas) só por pedido, na seção
+Offline, com confirmação (BUG-20261023-AFC5, `offline.py`).
 """
 
 import bpy  # type: ignore
@@ -11,6 +12,10 @@ from . import auth, catalog, downloads
 CODE_HINT = N_("Código {}: confirme no navegador que abriu")
 CONNECTED = N_("Conta CAF Mob conectada: {}")
 SIGNED_OUT = N_("Você saiu da conta CAF Mob")
+OFFLINE_TITLE = N_("Preparar texturas offline")
+OFFLINE_CONFIRM = N_("Baixar {} texturas para usar sem rede? O tamanho total não é informado pelo servidor.")
+OFFLINE_PICK = N_("Escolha um fabricante (e, se quiser, uma coleção) na Biblioteca antes.")
+OFFLINE_PROGRESS = N_("Offline: {} de {} prontas, {} com falha")
 
 
 def _notify(text):
@@ -100,6 +105,75 @@ def draw_account(layout):
         row.operator(BTM_OT_TextureLogin.bl_idname, icon='USER')
     if downloads.summary() is not None:
         layout.operator(BTM_OT_TextureDownloadCancel.bl_idname, icon='CANCEL')
+    if email:
+        draw_offline(layout)
+
+
+class BTM_OT_TextureOfflinePrepare(bpy.types.Operator):
+    """Baixa as texturas para usar sem rede (a categoria escolhida na Biblioteca ou todas)"""
+    bl_idname = "caffmob.texture_offline_prepare"
+    bl_label = "Preparar texturas offline"
+    bl_options = {'INTERNAL'}
+
+    scope: bpy.props.EnumProperty(items=[('SELECTED', "Categoria escolhida", ""), ('ALL', "Todas as categorias", "")],
+                                  options={'SKIP_SAVE'})  # type: ignore
+
+    @classmethod
+    def poll(cls, context):
+        return auth.signed_in() and not downloads.unavailable_reason()
+
+    def _filter(self, context):
+        state = getattr(context.window_manager, 'btm_library', None)
+        if self.scope == 'ALL' or state is None:
+            return '', ''
+        return state.manufacturer, state.collection
+
+    def invoke(self, context, event):
+        from . import offline
+        man, col = self._filter(context)
+        if self.scope == 'SELECTED' and not man:
+            self.report({'WARNING'}, tr(OFFLINE_PICK))
+            return {'CANCELLED'}
+        self._count = offline.count(man, col)
+        return context.window_manager.invoke_confirm(self, event, title=tr(OFFLINE_TITLE),
+                                                     message=tr(OFFLINE_CONFIRM).format(self._count))
+
+    def execute(self, context):
+        from . import offline
+        man, col = self._filter(context)
+        offline.start(offline.slugs(man, col))
+        _redraw()
+        return {'FINISHED'}
+
+
+class BTM_OT_TextureOfflineCancel(bpy.types.Operator):
+    """Para de agendar as próximas texturas do lote offline (o que já baixou fica)"""
+    bl_idname = "caffmob.texture_offline_cancel"
+    bl_label = "Parar o lote offline"
+    bl_options = {'INTERNAL'}
+
+    def execute(self, context):
+        from . import offline
+        offline.cancel()
+        _redraw()
+        return {'FINISHED'}
+
+
+def draw_offline(layout):
+    """Seção Offline do menu da conta: preparar a categoria ou todas, e o progresso do lote."""
+    from . import offline
+    layout.separator()
+    layout.label(text=tr("Offline"), icon='DISK_DRIVE')
+    status = offline.status()
+    if status['running']:
+        layout.label(text=tr(OFFLINE_PROGRESS).format(status['done'], status['total'], status['failed']), icon='TIME')
+        layout.operator(BTM_OT_TextureOfflineCancel.bl_idname, icon='CANCEL')
+        return
+    if status['total']:
+        layout.label(text=tr(OFFLINE_PROGRESS).format(status['done'], status['total'], status['failed']),
+                     icon='CHECKMARK' if not status['failed'] else 'ERROR')
+    layout.operator(BTM_OT_TextureOfflinePrepare.bl_idname, text=tr("Baixar a categoria escolhida")).scope = 'SELECTED'
+    layout.operator(BTM_OT_TextureOfflinePrepare.bl_idname, text=tr("Baixar todas as categorias")).scope = 'ALL'
 
 
 class BTM_OT_TextureAccountMenu(bpy.types.Operator):
@@ -117,7 +191,7 @@ class BTM_OT_TextureAccountMenu(bpy.types.Operator):
 
 
 classes = (BTM_OT_TextureLogin, BTM_OT_TextureLogout, BTM_OT_TextureDownloadCancel,
-           BTM_OT_TextureAccountMenu)
+           BTM_OT_TextureOfflinePrepare, BTM_OT_TextureOfflineCancel, BTM_OT_TextureAccountMenu)
 
 
 def register():
@@ -126,6 +200,8 @@ def register():
 
 
 def unregister():
+    from . import offline
+    offline.shutdown()
     for cls in reversed(classes):
         if cls.is_registered:
             bpy.utils.unregister_class(cls)

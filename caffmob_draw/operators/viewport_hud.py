@@ -575,6 +575,14 @@ def _rows():
     ]
 
 
+def _library_label(context, area, nav_right):
+    try:
+        from ..library_panel import draw as library
+        return library.label_rect(context, area, nav_right)
+    except (AttributeError, ImportError, ReferenceError):
+        return None
+
+
 def compute_layout(context, area):
     """Return [(widget, rect), ...] for every currently-visible widget, in
     WINDOW-local pixel coords. Shared by the draw handler and the click
@@ -594,11 +602,17 @@ def compute_layout(context, area):
     # The scene-navigator button is left-anchored just past the toolbar,
     # not part of the centered rows -- a fixed spot makes it easy to find
     # and its panel opens directly below it.
+    nav_right = None
     if _NAV_BUTTON.visible(context):
         placed.append((_NAV_BUTTON, (x_min + margin_x, top_y,
                                      _NAV_BUTTON.width, btn_h)))
+        nav_right = x_min + margin_x + _NAV_BUTTON.width
 
+    # The BIBLIOTECA CAFFMOB label sits right of the nav button on the top line. A centered row that would run
+    # under it starts past the label when it fits; otherwise the rows drop one line (BUG-20261023-EI4W).
+    label = _library_label(context, area, nav_right)
     cursor_y = top_y
+    first = True
     for row in _rows():
         groups = [[w for w in g if w.visible(context)] for g in row]
         groups = [g for g in groups if g]
@@ -608,6 +622,14 @@ def compute_layout(context, area):
         for g in groups:
             row_w += sum(w.width for w in g) + btn_gap * (len(g) - 1)
         cursor_x = x_min + (visible_w - row_w) / 2.0
+        if first and label is not None and cursor_x < label[0] + label[2] + group_gap \
+                and cursor_y < label[1] + label[3] and label[1] < cursor_y + btn_h:
+            shifted = label[0] + label[2] + group_gap
+            if shifted + row_w <= x_max - margin_x:
+                cursor_x = shifted
+            else:
+                cursor_y -= btn_h + row_gap
+        first = False
         for gi, group in enumerate(groups):
             if gi > 0:
                 cursor_x += group_gap

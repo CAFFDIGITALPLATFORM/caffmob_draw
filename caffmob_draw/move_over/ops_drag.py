@@ -65,6 +65,9 @@ class BTM_OT_MoveOverDrag(bpy.types.Operator):
                 and context.region.type == 'WINDOW' and mode_enabled(context))
 
     def invoke(self, context, event):
+        from ..library_panel import ops_click
+        if ops_click.covers(context, event):
+            return {'PASS_THROUGH'}      # sobre a Biblioteca, o clique é dela (BUG-20261023-NS3U)
         start = (event.mouse_region_x, event.mouse_region_y)
         hit = raycast(context, start)
         self.a = classify.movable_root(hit) if hit else None

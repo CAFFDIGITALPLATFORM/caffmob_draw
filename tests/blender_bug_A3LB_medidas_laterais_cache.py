@@ -60,7 +60,8 @@ try:
     per_draw = (time.perf_counter() - t0) / 20 * 1000
     guard._index.refresh = real_refresh
     print(f"MEDIDA: {per_draw:.3f} ms por desenho repetido, {len(ctx.scene.objects)} objetos", flush=True)
-    check("cotas calculadas dos dois lados", len(first) == 2, values(first))
+    check("cotas calculadas dos dois lados (e as verticais, BUG-20261023-HYCE)", len(first) == 4
+          and [v[2] for v in values(first)[:2]] == ['900 mm', '900 mm'], values(first))
     check("reprodução: desenhar de novo sem mudança não recalcula", calls[0] == before, (before, calls[0]))
     check("o resultado repetido é igual", values(again) == values(first))
 

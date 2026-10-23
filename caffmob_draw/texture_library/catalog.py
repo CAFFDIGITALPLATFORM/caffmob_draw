@@ -47,11 +47,6 @@ def embedded():
     return _local
 
 
-def remote_source():
-    from . import auth, downloads
-    return bool(auth.signed_in() and not downloads.unavailable_reason() and _cache['available'] is not False)
-
-
 def from_mobi(item):
     px = [item['largura'], item['altura']]
     return dict(item, name=item['nome'], ext='jpg' if item['formato'] == 'jpeg' else item['formato'],
@@ -92,8 +87,8 @@ def invalidate():
 
 
 def load():
-    if remote_source():
-        return _cache['catalog'], _cache['warnings']
+    """Árvore da navegação: sempre o catálogo local, conectado ou não (BUG-20261023-EIAR, RF01). A conta só entra ao
+    aplicar ou soltar a textura (`resolve`)."""
     local = embedded()
     return local['catalog'], _cache['warnings'] + local['warnings']
 
@@ -120,8 +115,6 @@ def remember(raw):
 
 
 def search(text='', manufacturer='', collection=''):
-    if remote_source():
-        return list(_cache['items'])
     return catalog_core.search(embedded()['catalog'], text, manufacturer, collection)
 
 
@@ -162,6 +155,8 @@ def _page(path, done):
     return downloads.request('GET', path, headers=headers, callback=received, response_headers=True)
 
 
+# Listagem da conta (páginas e fabricantes). A navegação não usa mais (BUG-20261023-EIAR); fica para a mesclagem das
+# texturas exclusivas da conta nas categorias do catálogo local, pendente na auditoria da biblioteca.
 def refresh(text='', manufacturer='', collection='', more=False, callback=None, force=False):
     query = (text.strip(), manufacturer, collection)
     if query[0] and not 2 <= len(query[0]) <= 80:
@@ -241,7 +236,7 @@ def cancel(manufacturers=False):
 
 
 def has_more():
-    return remote_source() and bool(_cache['next'])
+    return False             # a navegação é local, sem páginas da conta (BUG-20261023-EIAR)
 
 
 def resolve(item_id, callback):
@@ -255,13 +250,22 @@ def resolve(item_id, callback):
     if remote:
         callback(remote, None)
         return
+    from . import offline
+    saved = offline.lookup(item_id)
+    if saved is not None and downloads.unavailable_reason():      # sem rede: o índice da conta (BUG-20261023-AFC5)
+        callback(remember(saved), None)
+        return
 
     def received(status, body):
         try:
             if status != 200 or body.get('id') != entry['mobi_id']:
                 raise ValueError('Textura indisponível no MOBI')
             remote = remember(body)
+            offline.remember(item_id, body)
         except (KeyError, TypeError, ValueError, AttributeError):
+            if saved is not None:
+                callback(remember(saved), None)           # a rede falhou: vale o que já foi resolvido
+                return
             callback(None, {'message': LOAD_FAILED})
             return
         callback(remote, None)

@@ -1,4 +1,7 @@
-"""Regressão #30 e #31: timer real, falhas recuperáveis e catálogo sem rede."""
+"""Regressão #30 e #31: catálogo embutido, slug → UUID ao aplicar e falhas recuperáveis.
+
+Desde BUG-20261023-EIAR (#153) a navegação é sempre local: conectar não troca o catálogo nem pede páginas, fabricantes
+ou miniaturas à conta; a conta só entra ao aplicar ou soltar a textura (`resolve`)."""
 import shutil
 import unicodedata
 import sys
@@ -70,48 +73,16 @@ class Grade(unittest.TestCase):
                 self.answer(ticket)
         self.tick()
 
-    def test_00_timer_real_sem_revision_semeada(self):
-        self.populate()
-        self.assertTrue(catalog.manufacturers())
-        self.assertEqual([i['id'] for i in draw.texture_items(self.state)], [ITEM['id']])
-        self.assertTrue(self.images, 'O timer precisa pedir miniaturas visíveis')
-
-    def test_01_fabricantes_tentados_de_novo(self):
-        self.tick()
-        ticket = next(t for t in self.pending if 'fabricantes' in t['path'])
-        self.answer(ticket, 503, {})
-        self.assertTrue(catalog.load()[1])
-        self.tick(10)
-        self.assertEqual(sum('fabricantes' in t['path'] for t in self.pending), 2)
-
-    def test_02_miniatura_falha_libera_pedido(self):
-        self.populate()
-        item_id, callback, entry = self.images[-1]
-        self.assertIsNotNone(callback)
-        callback(None, {'code': 'network', 'message': 'Falha'})
-        self.assertNotIn(item_id, draw._remote['thumbs'])
-        self.tick(10)
-        self.assertGreater(len(self.images), 1)
-
-    def test_03_reabrir_revalida_e_restaura_304(self):
-        self.populate()
-        ticket = next(t for t in self.pending if 'fabricantes' not in t['path'])
-        self.answer(ticket, headers={'etag': '"grade"'})
-        self.state.tab = 'BLOCKS'; self.tick()
-        self.state.tab = 'TEXTURES'; self.tick(); self.tick()
-        again = [t for t in self.pending if 'fabricantes' not in t['path']][-1]
-        self.assertIsNot(ticket, again)
-        self.assertEqual(again['headers'].get('If-None-Match'), '"grade"')
-        self.answer(again, 304, {})
-        self.assertEqual(catalog.search()[0]['id'], ITEM['id'])
-
-    def test_04_http_json_e_corpo_invalidos_avisam(self):
-        for status, body in [(403, {}), (200, {}), (200, []), (200, {'itens': [{}]})]:
-            catalog.invalidate(); self.tick(); self.tick()
-            ticket = next(t for t in reversed(self.pending) if 'fabricantes' not in t['path'])
-            self.answer(ticket, status, body)
-            self.assertTrue(catalog.load()[1], (status, body))
-            self.assertFalse(catalog._cache['busy'])
+    def test_00_conectado_navega_no_catalogo_local_sem_rede(self):
+        self.state.manufacturer, self.state.collection = 'arauco', 'colecao-realce'
+        for _ in range(4):
+            self.tick()
+        self.assertEqual([m[0] for m in catalog.manufacturers()][:1], ['arauco'])
+        self.assertEqual(len(draw.texture_items(self.state)), 14)
+        self.assertEqual((self.state.manufacturer, self.state.collection), ('arauco', 'colecao-realce'))
+        self.assertFalse(self.pending, 'Navegar não chama a conta')
+        self.assertFalse(self.images, 'As miniaturas são as do catálogo local')
+        self.assertFalse(catalog.has_more())
 
     def test_05_callback_falho_avisa(self):
         def broken(*args):
@@ -132,12 +103,6 @@ class Grade(unittest.TestCase):
             self.state.manufacturer = draw.texture_tree()[0][0]
             self.assertLess(len(draw.texture_items(self.state)), 1209)
             self.assertFalse(catalog.has_more())
-
-    def test_07_mobi_fora_usa_embutido_com_aviso(self):
-        self.tick(); self.tick()
-        for ticket in list(self.pending): self.answer(ticket, 503, {})
-        self.assertEqual(len(draw.texture_items(self.state)), 1209)
-        self.assertTrue(catalog.load()[1])
 
     def test_08_slug_resolve_uuid_e_metadados_atuais(self):
         with patch.object(auth, 'signed_in', return_value=False):
@@ -177,19 +142,6 @@ class Grade(unittest.TestCase):
         self.assertEqual(mat['btm_texture_id'], expected)
         self.assertEqual(mat['btm_texture_sha256'], ITEM['sha256_trabalho'])
 
-    def test_09_recuperar_fabricantes_retorna_ao_mobi(self):
-        self.tick(); self.tick()
-        man = next(t for t in self.pending if 'fabricantes' in t['path'])
-        page = next(t for t in self.pending if 'fabricantes' not in t['path'])
-        self.answer(man, 503, {})
-        self.answer(page)
-        self.assertEqual(len(catalog.search()), 1209)
-        self.tick(10)
-        man = next(t for t in reversed(self.pending) if 'fabricantes' in t['path'])
-        self.answer(man, body={'itens': [{'fabricante': 'Fabricante', 'total': 1, 'linhas': []}]})
-        self.assertEqual([i['id'] for i in catalog.search()], [ITEM['id']])
-        self.assertFalse(catalog.load()[1])
-
     def test_10_ligacao_nfc_e_item_ausente_no_mobi(self):
         with patch.object(auth, 'signed_in', return_value=False):
             items = draw.texture_items(self.state)
@@ -211,6 +163,6 @@ addon.register()
 try:
     result = unittest.TextTestRunner(verbosity=2).run(unittest.defaultTestLoader.loadTestsFromTestCase(Grade))
     assert result.wasSuccessful(), 'REGRESSAO_GRADE_FALHOU'
-    print('REGRESSAO_GRADE_OK: timer real, falhas, reabertura, embutido e ids')
+    print('REGRESSAO_GRADE_OK: catálogo local conectado, embutido e ids')
 finally:
     addon.unregister()
