@@ -19,6 +19,10 @@
   "pt_BR": "Com o modo ligado, arraste um objeto sobre outro com o botão direito para alinhá-los. O botão direito deixa de abrir o menu de contexto enquanto o modo estiver ligado",
   "en_US": "With the mode on, drag one object over another with the right button to align them. The right button does not open the context menu while the mode is on"
  },
+ "Câmera, luz e objeto sem corpo não se movem no Mover Sobre.": {
+  "pt_BR": "Câmera, luz e objeto sem corpo não se movem no Mover Sobre.",
+  "en_US": "Cameras, lights and objects without a body cannot be moved with Move Over."
+ },
  "Distância em pixels para considerar um clique perto de um alvo": {
   "pt_BR": "Distância em pixels para considerar um clique perto de um alvo",
   "en_US": "Distance in pixels to consider a click near a target"
@@ -86,6 +90,10 @@
  "Origem": {
   "pt_BR": "Origem",
   "en_US": "Origin"
+ },
+ "Parede, piso, teto, porta, janela e cota não se movem no Mover Sobre.": {
+  "pt_BR": "Parede, piso, teto, porta, janela e cota não se movem no Mover Sobre.",
+  "en_US": "Walls, floors, ceilings, doors, windows and dimensions cannot be moved with Move Over."
  },
  "Passo": {
   "pt_BR": "Passo",

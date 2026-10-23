@@ -69,6 +69,9 @@ class BTM_OT_MoveOverDrag(bpy.types.Operator):
         hit = raycast(context, start)
         self.a = classify.movable_root(hit) if hit else None
         if self.a is None:
+            denial = classify.move_over_denial(hit)
+            if denial:
+                self.report({'INFO'}, tr(denial))
             return {'FINISHED'}   # modo ligado: o botão direito não abre menu (RN-10)
         self.start = start
         self.cursor = start

@@ -55,6 +55,20 @@ class ClassifyTest(unittest.TestCase):
         self.assertIsNone(c.classify(None))
         self.assertEqual(c.classify(Obj("Solto")).kind, c.OTHER)
 
+    def test_objeto_solto_no_mover_sobre(self):
+        """BUG-20261022-7KFP: o objeto solto com corpo move a si mesmo e serve de referência; o sem corpo, não."""
+        torneira = Obj("Torneira")
+        torneira.type = 'MESH'
+        self.assertIs(c.movable_root(torneira), torneira)
+        self.assertIs(c.reference_root(torneira), torneira)
+        self.assertIsNone(c.move_over_denial(torneira))
+        camera = Obj("Camera")
+        camera.type = 'CAMERA'
+        self.assertIsNone(c.movable_root(camera))
+        self.assertIsNotNone(c.move_over_denial(camera))
+        self.assertIsNotNone(c.move_over_denial(wall))
+        self.assertIsNone(c.move_over_denial(puxador))
+
 
 if __name__ == "__main__":
     unittest.main()
