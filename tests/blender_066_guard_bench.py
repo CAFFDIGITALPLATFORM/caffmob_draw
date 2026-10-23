@@ -21,6 +21,9 @@ from mathutils import Matrix, Vector
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import _blender_env as env  # noqa: E402
+from caffmob_draw.collision import guard as _guard  # noqa: E402
+# Estes cenários movem por código no lugar do G: o guarda só limita G e gizmo (BUG-20261023-TAMR, RF01).
+_guard._direct_move_running = lambda: True
 from caffmob_draw.collision import guard, obb  # noqa: E402
 
 ctx = bpy.context

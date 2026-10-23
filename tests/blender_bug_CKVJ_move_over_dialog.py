@@ -96,14 +96,16 @@ def confirm_twice_never_overlaps():
     fake.report = lambda *args: None
     fake._finish = lambda context: None
     fake.mo.delta = fake.mo.b_frame_inv @ Vector((1.2, 0.0, 0.5)) - fake.mo.origin_in_b    # A em x = 1,2: dentro de C
+    fake.typing = None
     with guard.suspended():            # como com a janela aberta: o modal posiciona e o guarda não corrige no meio
         fake.mo.preview()
         first = fake._confirm(ctx)
         second = fake._confirm(ctx)
+    # BUG-20261023-TAMR (RF02): o Encostar é ferramenta assistida; o destino pedido vale, mesmo dentro de C.
     _blender_env.settle()
     x = a.matrix_world.translation.x
-    check("RF-003: confirmar duas vezes não atravessa", first == {'FINISHED'} and second == {'FINISHED'}
-          and abs(x - 0.5) < 1e-4, f"x={x:.4f}")
+    check("RF02: confirmar grava o destino pedido", first == {'FINISHED'} and second == {'FINISHED'}
+          and abs(x - 1.2) < 1e-4, f"{first} {second} x={x:.4f}")
 
 
 def rotation_message():

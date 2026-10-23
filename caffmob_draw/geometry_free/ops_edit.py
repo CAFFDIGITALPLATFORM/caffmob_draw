@@ -63,9 +63,7 @@ class BTM_OT_GeometryMirror(_GeometryAction, bpy.types.Operator):
         start = obj.matrix_world.copy()
         target = start @ Matrix.Translation((x if mirrored else -x, 0.0, 0.0))
         from ..collision import guard
-        if guard.clamp(obj, start, target) != target:
-            return {'CANCELLED'}       # 066, RN-03: espelhar para dentro de outro corpo não acontece (em silêncio)
-        with guard.suspended():
+        with guard.suspended():        # espelhar é ferramenta assistida: o destino vale (BUG-20261023-TAMR, RF02)
             obj.matrix_world = target
             context.view_layer.update()
             guard.accept(obj)

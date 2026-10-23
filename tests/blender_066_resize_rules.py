@@ -117,9 +117,10 @@ check(all(abs(v.uv[k] - base[k]) < 1e-6 for v, base in zip(panel.data.uv_layers.
 # A parede está fora da pose original e dentro da nova medida.
 wall = a.cube('Obstáculo', (.05, 1, 3), (.8, 0, 1.5))
 a.env.settle()
-check(not editing.set_dimension(bpy.context, classify.classify(root), 'width', .835), 'RF-012 recusa penetração')
-check(abs(root.btm_authored.size_local[0] - 615) < .01, 'RF-012 restaura medida anterior em silêncio')
-check(abs((box(panel)[1][0] - box(panel)[0][0]) - 585) < .05, 'RF-012 restaura geometria')
+# BUG-20261023-TAMR (RF03): a medida que sobrepõe vale; editar medida não é deslocamento.
+check(editing.set_dimension(bpy.context, classify.classify(root), 'width', .835), 'RF03 aceita a medida que sobrepõe')
+check(abs(root.btm_authored.size_local[0] - 835) < .01, 'RF03 grava a medida pedida')
+check(resize.resize(bpy.context, element_size.element(panel), .615), 'voltar à medida anterior')
 bpy.data.objects.remove(wall, do_unlink=True)
 # Regras impossíveis e coordenadas Generated não deixam uma edição parcial.
 ref = left.btm_member.refs.add()
