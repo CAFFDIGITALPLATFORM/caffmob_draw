@@ -220,28 +220,18 @@ with tempfile.TemporaryDirectory() as directory, patch.object(downloads, 'reques
     reply(200, doc, {'X-Caffmob-Contrato':'ambiente/v2, modulo/v1'})
     assert set(o.name for o in bpy.context.scene.objects) == before
     assert state.situacao == respostas.message(200, doc, {'X-Caffmob-Contrato':'ambiente/v2, modulo/v1'})
-    # T031: timer faz busca remota e miniatura visível, sem buscar a imagem de trabalho.
-    from caffmob_draw.library_panel import draw, ops_click
+    # T031 com BUG-20261023-EIAR: conectado, o timer não busca páginas, fabricantes nem miniaturas na conta.
+    from caffmob_draw.library_panel import draw
     library = bpy.context.window_manager.btm_library
     library.mode, library.tab, library.search = 'MAX', 'TEXTURES', 'madeira'
-    library.manufacturer, library.collection = 'Berneck', 'Linha'
-    entry['sha256_miniatura'] = 'b'*64
-    catalog._cache.update(items=[entry], next='p2', available=True)
+    library.manufacturer, library.collection = 'berneck', ''
     with patch.object(auth,'signed_in',return_value=True), patch.object(downloads,'unavailable_reason',return_value=''), \
          patch.object(catalog,'refresh') as refresh, patch.object(downloads,'fetch') as fetch, \
-         patch.object(catalog,'refresh_manufacturers'), patch.object(draw.time,'monotonic') as clock, \
-         patch.object(draw.grid_core,'visible_cells',return_value=[(0,(0,0,100,100))]):
-        clock.return_value = 10.0
+         patch.object(catalog,'refresh_manufacturers') as manufacturers:
         draw._remote_tick()
-        clock.return_value = 10.5
         draw._remote_tick()
-        refresh.assert_called_with('madeira','Berneck','Linha',force=True)
-        assert fetch.call_args.kwargs['entry']['url'].endswith('tamanho=miniatura')
-        assert draw.texture_items(library)[-1]['id'] == draw._more_id
-        from types import SimpleNamespace
-        with patch.object(ops_click.grid_core,'hit_cell',return_value=1):
-            assert ops_click.cell_at(bpy.context,SimpleNamespace(grid=(0,0,300,300)),1,1) == ''
-        assert refresh.call_args.kwargs['more'] is True
+        assert not refresh.called and not manufacturers.called and not fetch.called
+        assert all(i['id'] != draw._more_id for i in draw.texture_items(library))
     library.mode = 'MIN'
     # T041: as duas bibliotecas trazem miniaturas; cancelar o modelo conserva a cena.
     def preview(item_id, callback=None, entry=None):
