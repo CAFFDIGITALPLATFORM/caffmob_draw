@@ -1,5 +1,6 @@
 """Reprodução e regressão de BUG-20261023-5ATK (#143): o Encostar é um salto, não um arraste. Destino livre vale
-mesmo com B no caminho; destino que atravessa mantém a janela aberta e diz com quem colidiria.
+mesmo com B no caminho; destino que sobrepõe também vale, porque o Encostar é ferramenta assistida
+(BUG-20261023-TAMR, RF02).
 
 Run: blender --background --factory-startup --python-exit-code 1 --python tests/blender_bug_5ATK_encostar_colisao.py
 """
@@ -42,21 +43,25 @@ try:
     check("encostar à direita fecha com a mensagem do lado pedido", result == {'FINISHED'} and fake.finished
           and "à direita" in fake.reports[-1], (result, fake.reports))
 
-    # Destino que atravessa: C ocupa o lugar à direita de B.
+    # Destino que sobrepõe: C ocupa o lugar à direita de B; o Encostar grava mesmo assim (RF02).
     a, b = scene()
     c = fx.cube("C", (0.4, 0.6, 0.8), (1.3, 0.3, 0.4))
     fx.settle()
-    origin = a.matrix_world.copy()
     fake = fx.dialog(a, b)
     fake._set_side(encostar.RIGHT)
     result = fake._confirm(fx.ctx)
-    check("destino que atravessa: a janela continua aberta", result == {'RUNNING_MODAL'} and not fake.finished,
-          (result, fake.finished))
-    check("destino que atravessa: o aviso diz com quem", "C" in fake.warning and bool(fake.warning), fake.warning)
-    check("destino que atravessa: nada é anunciado como posicionado", not fake.reports, fake.reports)
+    fx.settle()
+    check("destino que sobrepõe: grava o pedido e fecha", result == {'FINISHED'} and abs(a.location.x - 1.2) < 1e-4,
+          (result, a.location.x))
+
+    # Cancelar devolve A à origem.
+    a, b = scene()
+    origin = a.matrix_world.copy()
+    fake = fx.dialog(a, b)
+    fake._set_side(encostar.RIGHT)
     fake.cancel(fx.CTX)
     fx.settle()
-    check("Cancelar depois do aviso devolve A à origem", a.matrix_world == origin)
+    check("Cancelar devolve A à origem", a.matrix_world == origin)
 
     # Regressão: destino livre sem nada no caminho continua igual; com o guarda desligado, grava o destino.
     a, b = scene()

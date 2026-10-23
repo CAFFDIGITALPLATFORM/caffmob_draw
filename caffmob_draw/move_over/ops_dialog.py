@@ -565,9 +565,9 @@ class BTM_OT_MoveOverDialog(bpy.types.Operator):
         return True
 
     def _confirm(self, context):
-        """Grava a pose pedida. O Encostar é um salto, não um arraste: o destino livre vale mesmo com algo no
-        caminho; o destino que atravessaria outro objeto não é gravado, e a janela fica aberta dizendo com quem
-        (BUG-20261023-5ATK). O campo em edição é gravado antes; valor inválido mantém a janela (BUG-20261023-AMQ5)."""
+        """Grava a pose pedida. O Encostar é um salto, não um arraste, e ferramenta assistida: o destino vale mesmo
+        com algo no caminho ou sobrepondo (BUG-20261023-5ATK; BUG-20261023-TAMR, RF02). O campo em edição é gravado
+        antes; valor inválido mantém a janela (BUG-20261023-AMQ5)."""
         from ..collision import guard
         if self.typing is not None and not self._commit_typing():
             return {'RUNNING_MODAL'}
@@ -575,16 +575,10 @@ class BTM_OT_MoveOverDialog(bpy.types.Operator):
         side = self._shown_side()
         gap = max(0.0, encostar.gaps(self.mo.box_a(), self.mo.box_b)[encostar.SIDE_AXIS[side]])
         target = self.mo._target_matrix()
-        with guard.suspended():                  # o guarda não corrige a prévia no meio da conferência
+        with guard.suspended():
             a.matrix_world = target
             context.view_layer.update()
-            blocked = guard.penetrates(a, self.mo.original_matrix)
-            names = ", ".join(f"“{o.name}”" for o in guard.overlapping(a, target)[:4]) if blocked else ""
-        if blocked:
-            self.warning = tr("Nessa posição, “{}” atravessaria {}. Mude o lado, o afastamento ou o alinhamento."
-                              ).format(a.name, names or tr("outro objeto"))
-            return {'RUNNING_MODAL'}
-        guard.accept(a, target)
+            guard.accept(a, target)
         message = tr("“{}” posicionado {} “{}” (folga {} mm)").format(
             a.name, tr(encostar.SIDE_PHRASES[side]), b.name, _mm(gap))
         if self.glue:

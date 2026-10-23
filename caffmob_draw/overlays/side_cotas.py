@@ -6,15 +6,29 @@ posicionamento (`hb_placement.draw_placement_dimensions`: unidade, precisão, co
 Sem eixo lateral estável, nada é desenhado; lado livre não tem cota.
 
 Desenha só na viewport da operação, capturada ao ligar a chave ou mover o ativo (RF-020).
+O cálculo só roda quando a cena muda (`_revision`, por atualização do depsgraph, abrir, desfazer e refazer): desenhar
+de novo ou girar a vista reaproveita o corpo e os obstáculos, e o resultado do mesmo eixo (BUG-20261023-A3LB).
 Nada durante o render nem com as sobreposições desligadas.
 A chave não mexe na colisão, e a colisão não mexe nela (RF-013).
 """
 
 import bpy  # type: ignore
+from bpy.app.handlers import persistent  # type: ignore
 from mathutils import Vector  # type: ignore
 
 _handles = []
 _owner = [None]        # ponteiro da área que desenha as cotas
+_revision = [0]        # muda a cada alteração da cena: invalida os caches abaixo
+_scene_cache = {}      # chave (revisão, cena, ativo) → (corpo em cantos, obstáculos em cantos, normal do plano)
+_specs_cache = {}      # chave + eixo → cotas
+_HANDLERS = ('depsgraph_update_post', 'load_post', 'undo_post', 'redo_post')
+
+
+@persistent
+def _changed(*_args):
+    _revision[0] += 1
+    _scene_cache.clear()
+    _specs_cache.clear()
 
 
 def claims(area_ptr, alive):
@@ -79,23 +93,38 @@ def specs(context, view_right):
     if obj is None or not obj.select_get():
         return []
     mover = _mover(obj)
-    depsgraph = context.evaluated_depsgraph_get()
-    guard._index.refresh(context.scene, depsgraph, {})
-    body = guard._body(mover, depsgraph)
-    if not body:
+    key = (_revision[0], context.scene.as_pointer(), mover.session_uid)
+    if key not in _scene_cache:
+        _scene_cache.clear()
+        depsgraph = context.evaluated_depsgraph_get()
+        guard._index.refresh(context.scene, depsgraph, {})
+        body = guard._body(mover, depsgraph)
+        if body:
+            skip = guard._subtree_uids([mover])
+            everywhere = ((-1.0e9,) * 3, (1.0e9,) * 3)
+            obstacles = [e.item.box.corners() for e in guard._index.near(everywhere, skip)
+                         if not any(rules.excluded(it, e.item) for it in body)]
+            _scene_cache[key] = ([c for it in body for c in it.box.corners()], obstacles, _plane_normal(mover))
+        else:
+            _scene_cache[key] = None
+    cached = _scene_cache[key]
+    if cached is None:
         return []
-    axis = side.lateral_axis(tuple(view_right), plane_normal=_plane_normal(mover))
+    body_corners, obstacles, normal = cached
+    axis = side.lateral_axis(tuple(view_right), plane_normal=normal)
     if axis is None:
         return []
-    skip = guard._subtree_uids([mover])
-    everywhere = ((-1.0e9,) * 3, (1.0e9,) * 3)
-    obstacles = [e.item.box.corners() for e in guard._index.near(everywhere, skip)
-                 if not any(rules.excluded(it, e.item) for it in body)]
-    result = side.gaps(axis, [c for it in body for c in it.box.corners()], obstacles)
+    axis_key = key + tuple(round(v, 3) for v in axis)        # girar a vista um pouco não refaz a conta
+    if axis_key in _specs_cache:
+        return _specs_cache[axis_key]
+    result = side.gaps(axis, body_corners, obstacles)
     out = []
     for gap in (result.left, result.right) if result is not None else ():
         if gap is not None:
             out.append(PlacementDimSpec(Vector(gap.start), Vector(gap.end), units.format_value(gap.value)))
+    if len(_specs_cache) > 64:
+        _specs_cache.clear()
+    _specs_cache[axis_key] = out
     return out
 
 
@@ -131,9 +160,18 @@ def _draw():
 def register():
     if not _handles:
         _handles.append(bpy.types.SpaceView3D.draw_handler_add(_draw, (), 'WINDOW', 'POST_PIXEL'))
+    for name in _HANDLERS:
+        handlers = getattr(bpy.app.handlers, name)
+        if _changed not in handlers:
+            handlers.append(_changed)
 
 
 def unregister():
     while _handles:
         bpy.types.SpaceView3D.draw_handler_remove(_handles.pop(), 'WINDOW')
+    for name in _HANDLERS:
+        handlers = getattr(bpy.app.handlers, name)
+        if _changed in handlers:
+            handlers.remove(_changed)
+    _changed()
     release()

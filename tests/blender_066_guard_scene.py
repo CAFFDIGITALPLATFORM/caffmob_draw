@@ -22,6 +22,9 @@ from mathutils import Vector
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import _blender_env as env  # noqa: E402
+from caffmob_draw.collision import guard as _guard  # noqa: E402
+# Estes cenários movem por código no lugar do G: o guarda só limita G e gizmo (BUG-20261023-TAMR, RF01).
+_guard._direct_move_running = lambda: True
 
 ctx = bpy.context
 FAILURES = []
@@ -199,8 +202,8 @@ def parameter_resize():
     old = editing.get_dimension(info, 'width')
     editing.set_dimension(ctx, info, 'width', 2.2)
     env.settle()
-    check("RF-012: largura paramétrica que penetra volta à anterior",
-          abs(editing.get_dimension(info, 'width') - old) < 1e-6)
+    # BUG-20261023-TAMR (RF03): medida não é deslocamento; a largura que sobrepõe vale.
+    check("RF03: largura paramétrica que sobrepõe vale", abs(editing.get_dimension(info, 'width') - 2.2) < 1e-6)
     editing.set_dimension(ctx, info, 'width', 0.7)
     env.settle()
     check("RF-012: largura paramétrica livre fica", abs(editing.get_dimension(info, 'width') - 0.7) < 1e-6)
@@ -215,8 +218,8 @@ def parameter_resize():
     try:
         result = bpy.ops.caffmob.resize_width(width=2.2)
         env.settle()
-        check("RF-012/RN-03: Redimensionar recusa em silêncio, sem toast",
-              result == {'CANCELLED'} and not shown and abs(editing.get_dimension(info, 'width') - 0.7) < 1e-6)
+        check("RF03: Redimensionar que sobrepõe vale", result == {'FINISHED'}
+              and abs(editing.get_dimension(info, 'width') - 2.2) < 1e-6, (result, editing.get_dimension(info, 'width')))
     finally:
         element_toast.show = real
     env.clean_scene()
@@ -227,8 +230,9 @@ def parameter_resize():
     old = obj.btm_geometry.width
     obj.btm_geometry.width = 1.5
     env.settle()
-    check("RF-012: dimensão da geometria livre restaura parâmetro e malha",
-          abs(obj.btm_geometry.width - old) < 1e-6 and abs(obj.dimensions.x - old) < 1e-6)
+    check("RF03: dimensão da geometria livre que sobrepõe vale",
+          abs(obj.btm_geometry.width - 1.5) < 1e-6 and abs(obj.dimensions.x - 1.5) < 1e-6,
+          (old, obj.btm_geometry.width, obj.dimensions.x))
 
 
 def broad_obstacles():

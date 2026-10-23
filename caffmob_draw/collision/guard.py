@@ -1,7 +1,9 @@
 """Guarda de colisão: o movimento para no primeiro contato, em silêncio (feature 066, T039/T071; D-03, D-04, D-05).
 
-Handler `depsgraph_update_post` (`@persistent`, com trava de reentrada). Pega todo caminho que muda a pose de um
-objeto: G, gizmo, eixo travado, digitação, campos do painel e Python (RF-001, RF-003).
+Handler `depsgraph_update_post` (`@persistent`, com trava de reentrada). Limita só o deslocamento direto: G ou gizmo
+de translação em andamento, com eixo travado e digitação dentro do G (`_direct_move_running`). Ferramentas assistidas
+(Encostar, ímã, espelhar, posicionar), edição dimensional, giro, escala, painel e Python têm o destino respeitado
+(BUG-20261023-TAMR, RF01 a RF04 da auditoria de desempenho; substitui RF-001 e RF-003 da 066 nesse ponto).
 
 - Conjunto móvel: os objetos que se moveram sem que um ancestral também se movesse, e que são donos do próprio
   movimento (módulo, geometria, obstáculo, porta/janela, agregado que não é folha, corpo solto). Peças e frentes
@@ -14,13 +16,13 @@ objeto: G, gizmo, eixo travado, digitação, campos do painel e Python (RF-001, 
   chapa de 15 mm para antes dela (RF-004). Par com vão (parede, malha solta) é conferido pela malha real com
   `aggregates/sweep.sweep` (RF-006). Parado pela caixa, desliza na tangente do contato, sem sair dos eixos que o
   movimento já usava (eixo travado) e sem empurrar nada (RF-007).
-- Giro e escala: a pose pedida que cria penetração nova volta à última pose válida (RF-012, só pela matriz).
 - Esc volta à pose de antes do gesto; Desfazer, Refazer e abrir arquivo recomeçam da cena como está (RF-008).
 - Falha segura: qualquer exceção devolve a última pose válida e vai só para o console.
 - Silêncio (RF-021): nada é desenhado, escrito na barra de status ou relatado por contato.
 
 Os modais que posicionam por conta própria (posicionar da biblioteca, editor de módulo, janela Mover Sobre) não são
-corrigidos no meio; a pose deles é aceita e a janela Mover Sobre confere a pose final por `clamp`.
+corrigidos; a pose deles é aceita. A edição dimensional (`reconfigure`) não é recusada por sobreposição: erro
+restaura e propaga.
 """
 
 import math
@@ -453,6 +455,23 @@ def _gesture_running():
     return apply.modal_running()
 
 
+def _direct_move_running():
+    """G ou gizmo de translação em andamento: o único movimento que o guarda geral limita. Ferramentas assistidas
+    (Encostar, ímã, espelhar, posicionar) e a edição dimensional têm o destino respeitado (BUG-20261023-TAMR)."""
+    from ..stick import settle
+    try:
+        windows = bpy.context.window_manager.windows
+    except AttributeError:
+        return False
+    for window in windows:
+        for op in getattr(window, 'modal_operators', ()):
+            name = settle._idname(op)
+            if name == 'transform.translate' or (name == 'transform.transform'
+                                                 and getattr(op.properties, 'mode', '') == 'TRANSLATION'):
+                return True
+    return False
+
+
 # Handler ---------------------------------------------------------------------------------------------------------
 def _parent_uid(obj):
     return obj.parent.session_uid if obj.parent is not None else 0
@@ -530,7 +549,7 @@ def _process(scene, depsgraph):
         _anchor.pop(uid, None)
     _index.refresh(scene, depsgraph, dirty, full)
     corrected = {}
-    if enabled(scene) and moved and not _self_managed():
+    if enabled(scene) and moved and not _self_managed() and _direct_move_running():
         movers = []
         for uid, obj in moved.items():
             last = _last.get(uid)
@@ -565,12 +584,18 @@ def _process(scene, depsgraph):
 def on_depsgraph_update(scene, depsgraph):
     if _busy[0]:
         return
+    if not any(isinstance(u.id, (bpy.types.Object, bpy.types.Collection)) or u.is_updated_geometry
+               for u in depsgraph.updates):
+        return                            # nada que mova ou mude um corpo: sem varrer o arquivo (BUG-20261023-TU4V)
     _busy[0] = True
     try:
         _kids[0] = _children_map()
         _process(scene, depsgraph)
     except Exception:
-        # Inclui falha na coleta ou no índice, antes de `_limit`: nenhum movimento fica sem proteção.
+        if not _direct_move_running():
+            _index.reset()
+            return
+        # Inclui falha na coleta ou no índice, antes de `_limit`: nenhum G/gizmo fica sem proteção.
         movers = [o for o in scene.objects if o.session_uid in _last and _eligible(o)
                   and not _same(o.matrix_world, _last[o.session_uid])]
         for obj in movers:
@@ -610,33 +635,20 @@ def _check_context(obj):
 
 
 def reconfigure(obj, apply, restore):
-    """Mudança dimensional atômica: testa o corpo anterior e o novo; penetração ou erro restaura (RF-012)."""
-    if _busy[0] or not enabled(bpy.context.scene):
-        apply()
-        return True
+    """Mudança dimensional atômica. Sobrepor não é recusado: medida não é deslocamento (BUG-20261023-TAMR, RF03);
+    erro restaura o estado anterior e é propagado (RF04)."""
     with suspended():
         try:
-            scene, depsgraph = _check_context(obj)
-            before = _body(obj, depsgraph)
             apply()
             bpy.context.view_layer.update()
-            depsgraph = bpy.context.evaluated_depsgraph_get()
-            _index.refresh(scene, depsgraph, {}, full=True)
-            now = _body(obj, depsgraph)
-            entries = _index.near(_bounds([before, now]), _subtree_uids([obj])) if before or now else []
-            blocked = any(
-                any(not rules.excluded(it, e.item) and _deep(it, e, depsgraph) for it in now)
-                and not any(not rules.excluded(it, e.item) and _deep(it, e, depsgraph) for it in before)
-                for e in entries)
         except Exception:
-            _fail([])
-            blocked = True
-        if blocked:
             restore()
             bpy.context.view_layer.update()
-        _index.reset()
-        accept(obj)
-        return not blocked
+            raise
+        finally:
+            _index.reset()
+            accept(obj)
+    return True
 
 
 def penetrates(obj, start):

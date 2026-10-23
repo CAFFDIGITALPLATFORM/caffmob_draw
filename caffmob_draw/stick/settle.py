@@ -95,7 +95,8 @@ def run(names):
 
 
 def _stick_guarded(obj):
-    """Ímã com o guarda de colisão antes e depois (066, R4): o ímã não puxa o item para dentro de outro."""
+    """Ímã sob o guarda suspenso (066, R4). O grudar vale mesmo sobrepondo: o ímã é ferramenta assistida e o destino
+    dele é respeitado (BUG-20261023-TAMR, RF02)."""
     from ..collision import guard
     before = obj.matrix_world.copy()
     guard.accept(obj, before)                       # antes: a pose solta é a última válida
@@ -103,11 +104,5 @@ def _stick_guarded(obj):
         if magnet.try_stick(obj) is None:
             return False
         bpy.context.view_layer.update()
-        if guard.penetrates(obj, before):           # depois: penetração nova desfaz o grudar
-            link.release(obj)
-            obj.matrix_world = before
-            bpy.context.view_layer.update()
-            guard.accept(obj)
-            return False
         guard.accept(obj)
     return True

@@ -6,6 +6,7 @@ from bpy.app.handlers import persistent  # type: ignore
 from . import stable_id
 
 _busy = False
+_known = [None]        # quantos objetos o arquivo tinha na última migração; None = rodar na próxima atualização
 
 
 def migrate_door(cage):
@@ -73,6 +74,12 @@ def migrate():
 @persistent
 def on_load(*_args):
     migrate()
+    _known[0] = len(bpy.data.objects)
+
+
+@persistent
+def on_undo(*_args):
+    _known[0] = None
 
 
 @persistent
@@ -80,6 +87,10 @@ def on_update(_scene, depsgraph):
     global _busy
     if _busy or not any(isinstance(u.id, bpy.types.Object) for u in depsgraph.updates):
         return
+    count = len(bpy.data.objects)
+    if count == _known[0]:
+        return            # sem objeto novo (duplicar, importar, colar): nada a renovar (BUG-20261023-TU4V)
+    _known[0] = count
     _busy = True
     try:
         migrate_authored()
@@ -93,15 +104,19 @@ def on_update(_scene, depsgraph):
         _busy = False
 
 
+_HANDLERS = (('load_post', on_load), ('depsgraph_update_post', on_update), ('undo_post', on_undo),
+             ('redo_post', on_undo))
+
+
 def register():
-    for handlers, callback in ((bpy.app.handlers.load_post, on_load),
-                               (bpy.app.handlers.depsgraph_update_post, on_update)):
+    for name, callback in _HANDLERS:
+        handlers = getattr(bpy.app.handlers, name)
         if callback not in handlers:
             handlers.append(callback)
 
 
 def unregister():
-    for handlers, callback in ((bpy.app.handlers.load_post, on_load),
-                               (bpy.app.handlers.depsgraph_update_post, on_update)):
+    for name, callback in _HANDLERS:
+        handlers = getattr(bpy.app.handlers, name)
         if callback in handlers:
             handlers.remove(callback)

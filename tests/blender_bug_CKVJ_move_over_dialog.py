@@ -101,13 +101,11 @@ def confirm_twice_never_overlaps():
         fake.mo.preview()
         first = fake._confirm(ctx)
         second = fake._confirm(ctx)
-    # BUG-20261023-5ATK: destino que atravessa não é gravado nem parado no caminho; a janela fica aberta com o aviso.
-    check("RF-003: confirmar duas vezes não atravessa", first == {'RUNNING_MODAL'} and second == {'RUNNING_MODAL'}
-          and "C" in fake.warning, f"{first} {second} {fake.warning!r}")
-    fake.cancel(ctx)
+    # BUG-20261023-TAMR (RF02): o Encostar é ferramenta assistida; o destino pedido vale, mesmo dentro de C.
     _blender_env.settle()
     x = a.matrix_world.translation.x
-    check("RF-003: Cancelar devolve A à origem", abs(x) < 1e-4, f"x={x:.4f}")
+    check("RF02: confirmar grava o destino pedido", first == {'FINISHED'} and second == {'FINISHED'}
+          and abs(x - 1.2) < 1e-4, f"{first} {second} x={x:.4f}")
 
 
 def rotation_message():
