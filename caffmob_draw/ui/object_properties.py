@@ -77,7 +77,7 @@ def _dim_setter(field):
 
 def _cota_getter(field):
     def get(_self):
-        obj = bpy.context.active_object
+        obj = getattr(bpy.context, 'active_object', None)    # timer, salvamento: sem objeto ativo (BUG-20261023-7YO4)
         try:
             mc = scene_cotas.for_object(obj, bpy.context.scene) if obj else None
             value = getattr(mc.compute(), field) if mc is not None else None
@@ -89,7 +89,7 @@ def _cota_getter(field):
 
 def _cota_setter(field):
     def set_(_self, value):
-        obj = bpy.context.active_object
+        obj = getattr(bpy.context, 'active_object', None)
         mc = scene_cotas.for_object(obj, bpy.context.scene) if obj else None
         if mc is not None:
             _guard(lambda: mc.apply(field, value))

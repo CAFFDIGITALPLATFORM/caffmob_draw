@@ -96,14 +96,18 @@ def confirm_twice_never_overlaps():
     fake.report = lambda *args: None
     fake._finish = lambda context: None
     fake.mo.delta = fake.mo.b_frame_inv @ Vector((1.2, 0.0, 0.5)) - fake.mo.origin_in_b    # A em x = 1,2: dentro de C
+    fake.typing = None
     with guard.suspended():            # como com a janela aberta: o modal posiciona e o guarda não corrige no meio
         fake.mo.preview()
         first = fake._confirm(ctx)
         second = fake._confirm(ctx)
+    # BUG-20261023-5ATK: destino que atravessa não é gravado nem parado no caminho; a janela fica aberta com o aviso.
+    check("RF-003: confirmar duas vezes não atravessa", first == {'RUNNING_MODAL'} and second == {'RUNNING_MODAL'}
+          and "C" in fake.warning, f"{first} {second} {fake.warning!r}")
+    fake.cancel(ctx)
     _blender_env.settle()
     x = a.matrix_world.translation.x
-    check("RF-003: confirmar duas vezes não atravessa", first == {'FINISHED'} and second == {'FINISHED'}
-          and abs(x - 0.5) < 1e-4, f"x={x:.4f}")
+    check("RF-003: Cancelar devolve A à origem", abs(x) < 1e-4, f"x={x:.4f}")
 
 
 def rotation_message():

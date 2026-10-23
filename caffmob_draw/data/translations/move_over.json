@@ -175,6 +175,10 @@
   "pt_BR": "Nenhuma face sob o cursor",
   "en_US": "No face under the cursor"
  },
+ "Nessa posição, “{}” atravessaria {}. Mude o lado, o afastamento ou o alinhamento.": {
+  "pt_BR": "Nessa posição, “{}” atravessaria {}. Mude o lado, o afastamento ou o alinhamento.",
+  "en_US": "In this position, “{}” would go through {}. Change the side, the gap or the alignment."
+ },
  "Não foi possível projetar o mouse na parede.": {
   "pt_BR": "Não foi possível projetar o mouse na parede.",
   "en_US": "Could not project the mouse onto the wall."
@@ -342,6 +346,10 @@
  "na frente de": {
   "pt_BR": "na frente de",
   "en_US": "in front of"
+ },
+ "outro objeto": {
+  "pt_BR": "outro objeto",
+  "en_US": "another object"
  },
  "sobrepõe {}": {
   "pt_BR": "sobrepõe {}",

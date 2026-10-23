@@ -198,6 +198,10 @@ class BTM_OT_MoveOverDialog(bpy.types.Operator):
         width, height = 840 * s, height_units * s
         x = max(8, (region.width - width) / 2.0)
         y = max(8, (region.height - height) / 2.0)
+        origin = getattr(self, 'panel_origin', None)       # arrastada pelo título (BUG-20261023-WWZT)
+        if origin is not None:
+            x = max(8, min(origin[0], region.width - width - 8))
+            y = max(8, min(origin[1] + origin[2] - height, region.height - height - 8))
         pad = 18 * s
         self.panel = (x, y, width, height)
         top = y + height
@@ -561,15 +565,26 @@ class BTM_OT_MoveOverDialog(bpy.types.Operator):
         return True
 
     def _confirm(self, context):
+        """Grava a pose pedida. O Encostar é um salto, não um arraste: o destino livre vale mesmo com algo no
+        caminho; o destino que atravessaria outro objeto não é gravado, e a janela fica aberta dizendo com quem
+        (BUG-20261023-5ATK). O campo em edição é gravado antes; valor inválido mantém a janela (BUG-20261023-AMQ5)."""
         from ..collision import guard
+        if self.typing is not None and not self._commit_typing():
+            return {'RUNNING_MODAL'}
         a, b = self.mo.a, self.mo.b
         side = self._shown_side()
         gap = max(0.0, encostar.gaps(self.mo.box_a(), self.mo.box_b)[encostar.SIDE_AXIS[side]])
-        target = a.matrix_world.copy()
-        allowed = guard.clamp(a, self.mo.original_matrix, target)      # em silêncio: sem aviso de sobreposição
-        if allowed != target:
-            a.matrix_world = allowed
-        guard.accept(a, allowed)
+        target = self.mo._target_matrix()
+        with guard.suspended():                  # o guarda não corrige a prévia no meio da conferência
+            a.matrix_world = target
+            context.view_layer.update()
+            blocked = guard.penetrates(a, self.mo.original_matrix)
+            names = ", ".join(f"“{o.name}”" for o in guard.overlapping(a, target)[:4]) if blocked else ""
+        if blocked:
+            self.warning = tr("Nessa posição, “{}” atravessaria {}. Mude o lado, o afastamento ou o alinhamento."
+                              ).format(a.name, names or tr("outro objeto"))
+            return {'RUNNING_MODAL'}
+        guard.accept(a, target)
         message = tr("“{}” posicionado {} “{}” (folga {} mm)").format(
             a.name, tr(encostar.SIDE_PHRASES[side]), b.name, _mm(gap))
         if self.glue:
@@ -639,6 +654,21 @@ class BTM_OT_MoveOverDialog(bpy.types.Operator):
         over_panel = point_in_rect(pixel[0], pixel[1], self.panel)
         if event.type in NAV_EVENTS and not over_panel:
             return {'PASS_THROUGH'}
+        window_drag = getattr(self, 'window_drag', None)
+        if window_drag:                                      # arrastando a janela pelo título (BUG-20261023-WWZT)
+            start_origin, start_pixel = window_drag
+            if event.type == 'MOUSEMOVE':
+                self.panel_origin = (start_origin[0] + pixel[0] - start_pixel[0],
+                                     start_origin[1] + pixel[1] - start_pixel[1], start_origin[2])
+                self._layout(context)
+                self._fit_views()
+            elif event.type == 'LEFTMOUSE' and event.value == 'RELEASE':
+                self.window_drag = None
+            elif event.type in {'ESC', 'RIGHTMOUSE'} and event.value == 'PRESS':
+                self.panel_origin, self.window_drag = start_origin, None
+                self._layout(context)
+                self._fit_views()
+            return {'RUNNING_MODAL'}
         if event.type == 'MOUSEMOVE':
             self.mouse = pixel
             if getattr(self, 'drag', None):
@@ -647,7 +677,12 @@ class BTM_OT_MoveOverDialog(bpy.types.Operator):
         if event.type == 'LEFTMOUSE' and event.value == 'RELEASE' and getattr(self, 'drag', None):
             self._drag_end()
             return {'RUNNING_MODAL'}
-        if self.typing is not None and event.value == 'PRESS':
+        if self.typing is not None and event.type == 'LEFTMOUSE' and event.value == 'PRESS':
+            # Clique fora do campo grava o que foi digitado e segue para o clique (BUG-20261023-AMQ5); o Encostar
+            # faz isso por conta própria, para manter a janela aberta se o valor for inválido.
+            if not point_in_rect(*pixel, self.button_ok) and not self._commit_typing():
+                return {'RUNNING_MODAL'}
+        elif self.typing is not None and event.value == 'PRESS':
             if event.type in {'RET', 'NUMPAD_ENTER'}:
                 self._commit_typing()
             elif event.type == 'ESC':
@@ -664,6 +699,10 @@ class BTM_OT_MoveOverDialog(bpy.types.Operator):
                 self.buffer += event.unicode
             return {'RUNNING_MODAL'}
         if event.type == 'LEFTMOUSE' and event.value == 'PRESS':
+            if point_in_rect(*pixel, self.title_bar) and not point_in_rect(*pixel, self.button_close):
+                x, y, _w, h = self.panel
+                self.window_drag = ((x, y, h), pixel)
+                return {'RUNNING_MODAL'}
             if over_panel:
                 result = self._click(context, pixel)
                 if result is not None:
