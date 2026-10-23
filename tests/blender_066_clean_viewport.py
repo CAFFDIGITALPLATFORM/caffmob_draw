@@ -82,25 +82,25 @@ def side_dimensions():
     env.settle()
     _select(body)
     ctx.scene.btm_settings.show_side_dimensions = True
-    front = side_cotas.specs(ctx, Vector((1.0, 0.0, 0.0)))
-    texts = [s.text for s in front]
-    check("RF-014: no máximo duas cotas, mesmo com 23 ocorrências antigas", len(front) == 2, str(texts))
-    lefts = sorted(front, key=lambda s: s.start.x)
-    values = [round((s.end - s.start).length, 4) for s in lefts]
-    check("RF-016: de superfície a superfície", values == [0.1, 0.2], str(values))
-    back = side_cotas.specs(ctx, Vector((-1.0, 0.0, 0.0)))
-    check("RF-015: girar a vista 180° troca os lados com os mesmos valores",
-          [s.text for s in back] == list(reversed(texts)), f"{texts} → {[s.text for s in back]}")
-    check("RF-019: vista degenerada não mostra cota", side_cotas.specs(ctx, Vector((0.02, 0.0, 1.0))) == [])
+    # BUG-20261023-HYCE: quatro cotas fixas (eixo do móvel), iguais em qualquer vista, com o nome da referência.
+    rec = side_cotas.records(ctx)
+    values = {k: (round(v, 4), name) for k, (v, name) in rec.items()}
+    check("HYCE: quatro cotas, mesmo com 23 ocorrências antigas", set(rec) == {'LEFT', 'RIGHT', 'TOP', 'BOTTOM'},
+          str(values))
+    check("RF-016: de superfície a superfície, com o nome", values.get('LEFT') == (0.1, "Esquerda")
+          and values.get('RIGHT') == (0.2, "Direita") and values.get('TOP') == (1.25, "Aéreo"), str(values))
+    texts = [s.text for s in side_cotas.specs(ctx, Vector((1.0, 0.0, 0.0)))]
+    for view in (Vector((-1.0, 0.0, 0.0)), Vector((0.02, 0.0, 1.0))):
+        check(f"HYCE: a vista {tuple(view)} não muda as cotas", [s.text for s in side_cotas.specs(ctx, view)] == texts)
     bpy.data.objects.remove(bpy.data.objects["Direita"], do_unlink=True)
     env.settle()
-    free = side_cotas.specs(ctx, Vector((1.0, 0.0, 0.0)))
-    check("RF-019: lado livre não mostra 0 fictício", len(free) == 1 and free[0].start.x < 0, str(free))
+    free = side_cotas.records(ctx)
+    check("RF-019: lado livre não mostra 0 fictício", 'RIGHT' not in free and 'LEFT' in free, str(free))
     body.location.x = -0.1
     env.settle()
-    touch = side_cotas.specs(ctx, Vector((1.0, 0.0, 0.0)))
-    check("RF-019: contato mostra 0", len(touch) == 1 and (touch[0].end - touch[0].start).length < 1e-6,
-          str([s.text for s in touch]))
+    touch = side_cotas.records(ctx)
+    check("RF-019: contato mostra 0", touch.get('LEFT', (None,))[0] is not None and touch['LEFT'][0] < 1e-6,
+          str(touch))
 
 
 def viewport_scope():
@@ -116,12 +116,12 @@ def viewport_scope():
     check("RF-020: a área dona sumiu, a outra assume", side_cotas.claims(2, {2}))
     calls = []
     real = side_cotas.specs
-    side_cotas.specs = lambda *a: calls.append(a) or []
+    side_cotas.specs = lambda *a, **k: calls.append(a) or []
     try:
         space = types.SimpleNamespace(overlay=types.SimpleNamespace(show_overlays=False))
         area = types.SimpleNamespace(as_pointer=lambda: 2)
         fake = types.SimpleNamespace(scene=ctx.scene, area=area, region_data=object(), space_data=space,
-                                     window_manager=ctx.window_manager)
+                                     window_manager=ctx.window_manager, region=types.SimpleNamespace(as_pointer=lambda: 2))
         side_cotas.bpy = types.SimpleNamespace(context=fake, types=bpy.types, app=bpy.app)
         side_cotas._draw()
         check("RF-020: sem sobreposições (render da viewport) nada é calculado nem desenhado", not calls)

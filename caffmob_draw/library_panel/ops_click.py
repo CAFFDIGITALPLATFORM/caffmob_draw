@@ -319,7 +319,8 @@ class BTM_OT_LibraryClose(bpy.types.Operator):
 
 
 class BTM_OT_LibraryBlock(bpy.types.Operator):
-    """Botão direito, do meio e gestos do trackpad sobre o painel não chegam à cena (BUG-20261023-NS3U)"""
+    """Botão direito, do meio e gestos do trackpad sobre o painel não chegam à cena"""
+    # BUG-20261023-NS3U
     bl_idname = "caffmob.library_block"
     bl_label = "Biblioteca CAFFMob (bloqueio)"
     bl_options = {'INTERNAL'}
