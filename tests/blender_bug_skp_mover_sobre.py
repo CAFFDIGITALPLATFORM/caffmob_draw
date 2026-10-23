@@ -61,7 +61,8 @@ try:
     check("clique na ferragem acha o grupo de topo", classify.movable_root(knob) == leaf_group,
           getattr(classify.movable_root(knob), 'name', None))
     check("clique na folha acha o grupo de topo", classify.movable_root(leaf) == leaf_group)
-    check("parede/objeto solto continua fora", classify.movable_root(box_mesh("Solto", (1, 1, 1), (9, 9, 0))) is None)
+    solto = box_mesh("Solto", (1, 1, 1), (9, 9, 0))
+    check("objeto solto move a si mesmo (BUG-20261022-7KFP)", classify.movable_root(solto) == solto)
 
     mo = MoveOver(ctx, knob, b)
     lo, hi = mo.a_local_box

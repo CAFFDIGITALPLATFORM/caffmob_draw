@@ -143,17 +143,36 @@ def free_group(obj):
     return top
 
 
+BODY_TYPES = frozenset({'MESH', 'CURVE', 'FONT'})
+
+
 def movable_root(obj):
-    """Objeto que se move no "Mover Sobre" (RN-05): o módulo para frentes e peças; geometria e obstáculo; o grupo
-    de peças solto (SketchUp, biblioteca de objetos); None para parede, piso, teto, cota e objetos não reconhecidos."""
+    """Objeto que se move no "Mover Sobre" (RN-05): o módulo para frentes e peças; geometria e obstáculo; para o
+    objeto solto, o item da biblioteca de objetos, o grupo de peças (SketchUp) ou ele mesmo, se tiver corpo
+    (BUG-20261022-7KFP); None para parede, piso, teto, porta, janela, cota, câmera, luz e empty sem grupo."""
     info = classify(obj)
     if info is None:
         return None
     if info.kind in (FRONT, PART, MODULE, GEOMETRY, OBSTACLE):
         return info.root
     if info.kind == OTHER:
-        return free_group(obj)
+        for node in _ancestors(obj):
+            if getattr(getattr(node, 'btm_object_item', None), 'is_item', False):
+                return node
+        group = free_group(obj)
+        if group is not None:
+            return group
+        return obj if getattr(obj, 'type', None) in BODY_TYPES else None
     return None
+
+
+def move_over_denial(obj):
+    """Motivo (msgid) de `obj` não poder ser arrastado no "Mover Sobre"; None se pode."""
+    if obj is None or movable_root(obj) is not None:
+        return None
+    if classify(obj).kind == OTHER:
+        return N_("Câmera, luz e objeto sem corpo não se movem no Mover Sobre.")
+    return N_("Parede, piso, teto, porta, janela e cota não se movem no Mover Sobre.")
 
 
 def reference_root(obj):
