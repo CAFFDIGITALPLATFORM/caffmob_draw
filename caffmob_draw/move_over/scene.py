@@ -121,6 +121,13 @@ class MoveOver:
     def gaps(self):
         return align.gaps(self.box_a(), self.box_b)
 
+    def set_min(self, point):
+        """Põe o canto mínimo de A em `point` (referencial de B), como a janela Encostar (BUG-20261022-RQR5)."""
+        lo = self.box_a()[0]
+        for i in range(3):
+            self.delta[i] += point[i] - lo[i]
+        self.preview()
+
     # Cena -----------------------------------------------------------------------------------------------
     def _target_matrix(self):
         local = self.origin_in_b + self.delta

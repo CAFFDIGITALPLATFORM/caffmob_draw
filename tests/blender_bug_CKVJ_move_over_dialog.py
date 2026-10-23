@@ -37,7 +37,8 @@ def dialog():
                                     set_gap=lambda *a: calls.append(('gap',) + a),
                                     set_rotation=lambda *a: calls.append(('rot',) + a),
                                     nudge=lambda *a: calls.append(('nudge',) + a))
-    fake.state = types.SimpleNamespace(step=0.01, show_relative=False)
+    fake.state = types.SimpleNamespace(step=0.01, show_relative=False, snap_on=True, glue=False)
+    fake.side, fake.glue, fake.snap_on = None, False, True         # janela Encostar (BUG-20261022-RQR5)
     fake.panel = (0, 0, 0, 0)
     fake.typing, fake.buffer, fake.warning = None, "", ""
     fake._fit_views = lambda: None
