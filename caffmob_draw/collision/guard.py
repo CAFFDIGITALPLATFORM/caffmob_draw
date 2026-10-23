@@ -114,6 +114,16 @@ class _Index:
             self.trees.pop(uid, None)
             self.pending[uid] = obj
 
+    def mark(self, obj):
+        """O objeto mudou fora do handler (guarda suspenso): refazer a caixa dele na próxima consulta."""
+        uid = obj.session_uid
+        if self.signature is None:
+            return                       # índice vazio: a próxima consulta já refaz tudo
+        self.entries.pop(uid, None)
+        self.aabbs.pop(uid, None)
+        self.trees.pop(uid, None)
+        self.pending[uid] = obj
+
     def near(self, box, skip):
         """Entradas cuja caixa toca `box` (alinhada ao mundo), fora as de `skip` (session_uid)."""
         for uid in [u for u in self.pending if u not in skip]:
@@ -619,12 +629,15 @@ def suspended():
 
 
 def accept(obj, matrix=None):
-    """A pose atual (ou `matrix`) passa a ser a última válida do objeto e da hierarquia dele."""
+    """A pose atual (ou `matrix`) passa a ser a última válida do objeto e da hierarquia dele. Quem move com o guarda
+    suspenso passa por aqui: a caixa deles no índice é refeita na próxima consulta (BUG-20261023-5O7K)."""
     _last[obj.session_uid] = (matrix if matrix is not None else obj.matrix_world).copy()
     _parent[obj.session_uid] = _parent_uid(obj)
+    _index.mark(obj)
     for child in _descendants(obj):
         _last[child.session_uid] = child.matrix_world.copy()
         _parent[child.session_uid] = _parent_uid(child)
+        _index.mark(child)
 
 
 def _check_context(obj):

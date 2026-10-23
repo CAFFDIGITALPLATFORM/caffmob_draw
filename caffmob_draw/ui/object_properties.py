@@ -17,6 +17,7 @@ cada edição vira um passo de Ctrl+Z (RN-03). Valor inválido não é aplicado 
 import math
 
 import bpy  # type: ignore
+from bpy.app.handlers import persistent  # type: ignore
 
 from ..data import units
 from ..data.i18n import N_, tr
@@ -130,8 +131,10 @@ def _set_sill(_self, value):
 
 
 def _length(name, getter, setter, description=""):
+    # Sem 'ANIMATABLE': o campo escreve no objeto ativo; um driver nele move o ativo a cada avaliação e derruba o
+    # Blender (BUG-20261023-GAVK).
     return bpy.props.FloatProperty(name=name, description=description, subtype='DISTANCE', unit='LENGTH',
-                                   precision=1, get=getter, set=setter)
+                                   precision=1, get=getter, set=setter, options=set())
 
 
 class BTM_PG_SelectionEdit(bpy.types.PropertyGroup):
@@ -530,6 +533,25 @@ class BTM_PT_ObjectLimits(_ChildPanel, bpy.types.Panel):
             col.label(text=tr("Grade: {}").format(units.format_value(overlay.grid_scale, scene)))
 
 
+@persistent
+def quarantine_virtual_drivers(*_args):
+    """Tira drivers e keyframes gravados por versões antigas nos campos virtuais (`btm_selection.*`), anotando no
+    console o que foi removido; os dos móveis ficam (BUG-20261023-GAVK)."""
+    for scene in bpy.data.scenes:
+        anim = scene.animation_data
+        if anim is None:
+            continue
+        for fc in [fc for fc in anim.drivers if fc.data_path.startswith('btm_selection.')]:
+            variables = [(v.name, v.type) for v in fc.driver.variables]
+            print(f"CAFFMob Draw: driver removido de {scene.name}.{fc.data_path} "
+                  f"(expressão {fc.driver.expression!r}, variáveis {variables})")
+            anim.drivers.remove(fc)
+        curves = getattr(anim.action, 'fcurves', None) if anim.action is not None else None
+        for fc in [fc for fc in (curves or ()) if fc.data_path.startswith('btm_selection.')]:
+            print(f"CAFFMob Draw: animação removida de {scene.name}.{fc.data_path}")
+            curves.remove(fc)
+
+
 # Os painéis `_ChildPanel` são desenhados como grupos de Selecionado (feature 005, `ui/sidebar_selected.py`).
 classes = (BTM_PG_SelectionEdit,)
 
@@ -538,9 +560,13 @@ def register():
     for cls in classes:
         bpy.utils.register_class(cls)
     bpy.types.Scene.btm_selection = bpy.props.PointerProperty(type=BTM_PG_SelectionEdit)
+    if quarantine_virtual_drivers not in bpy.app.handlers.load_post:
+        bpy.app.handlers.load_post.append(quarantine_virtual_drivers)
 
 
 def unregister():
+    if quarantine_virtual_drivers in bpy.app.handlers.load_post:
+        bpy.app.handlers.load_post.remove(quarantine_virtual_drivers)
     if hasattr(bpy.types.Scene, 'btm_selection'):
         del bpy.types.Scene.btm_selection
     for cls in reversed(classes):
