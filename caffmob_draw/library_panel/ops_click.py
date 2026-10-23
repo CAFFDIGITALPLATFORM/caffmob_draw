@@ -37,6 +37,18 @@ def _hit_max(context, event):
     return lay, layout_core.hit_max(lay, event.mouse_region_x, event.mouse_region_y, draw._scale(context))
 
 
+def covers(context, event):
+    """O mouse está sobre o painel (rótulo, coluna ou retângulo MAX)? Quem pega eventos da vista consulta isto."""
+    if not _in_viewport(context):
+        return False
+    try:
+        if context.window_manager.btm_library.mode == 'MAX':
+            return _hit_max(context, event)[1] is not None
+        return _hit(context, event)[1] is not None
+    except (AttributeError, ReferenceError):
+        return False
+
+
 def _run(op_idname, **props):
     namespace, name = op_idname.split('.')
     operator = getattr(getattr(bpy.ops, namespace, None), name, None)
@@ -306,10 +318,35 @@ class BTM_OT_LibraryClose(bpy.types.Operator):
         return {'FINISHED'}
 
 
-classes = (BTM_OT_LibraryClick, BTM_OT_LibraryHover, BTM_OT_LibraryScroll, BTM_OT_LibraryClose)
+class BTM_OT_LibraryBlock(bpy.types.Operator):
+    """Botão direito, do meio e gestos do trackpad sobre o painel não chegam à cena (BUG-20261023-NS3U)"""
+    bl_idname = "caffmob.library_block"
+    bl_label = "Biblioteca CAFFMob (bloqueio)"
+    bl_options = {'INTERNAL'}
+
+    @classmethod
+    def poll(cls, context):
+        return _in_viewport(context)
+
+    def invoke(self, context, event):
+        return {'FINISHED'} if covers(context, event) else {'PASS_THROUGH'}
+
+
+classes = (BTM_OT_LibraryClick, BTM_OT_LibraryHover, BTM_OT_LibraryScroll, BTM_OT_LibraryClose, BTM_OT_LibraryBlock)
+
+# Mapas processados antes do "3D View" (os mesmos do Mover Sobre): sem os atalhos neles, o clique direito abre o
+# menu da cena e o botão do meio gira a vista por cima do painel (BUG-20261023-NS3U).
+_EVENTS = ((BTM_OT_LibraryClick.bl_idname, 'LEFTMOUSE', 'PRESS'),
+           (BTM_OT_LibraryScroll.bl_idname, 'WHEELUPMOUSE', 'PRESS'),
+           (BTM_OT_LibraryScroll.bl_idname, 'WHEELDOWNMOUSE', 'PRESS'),
+           (BTM_OT_LibraryBlock.bl_idname, 'RIGHTMOUSE', 'PRESS'),
+           (BTM_OT_LibraryBlock.bl_idname, 'MIDDLEMOUSE', 'PRESS'),
+           (BTM_OT_LibraryBlock.bl_idname, 'TRACKPADPAN', 'ANY'),
+           (BTM_OT_LibraryBlock.bl_idname, 'TRACKPADZOOM', 'ANY'))
 
 
 def register():
+    from ..move_over.ops_drag import VIEW3D_MODE_KEYMAPS
     for cls in classes:
         bpy.utils.register_class(cls)
     wm = bpy.context.window_manager
@@ -317,13 +354,15 @@ def register():
     if kc is None:
         return
     km = kc.keymaps.new(name='3D View', space_type='VIEW_3D')
-    for idname, event, value in ((BTM_OT_LibraryClick.bl_idname, 'LEFTMOUSE', 'PRESS'),
-                                 (BTM_OT_LibraryHover.bl_idname, 'MOUSEMOVE', 'ANY'),
-                                 (BTM_OT_LibraryScroll.bl_idname, 'WHEELUPMOUSE', 'PRESS'),
-                                 (BTM_OT_LibraryScroll.bl_idname, 'WHEELDOWNMOUSE', 'PRESS'),
-                                 (BTM_OT_LibraryClose.bl_idname, 'ESC', 'PRESS')):
+    for idname, event, value in _EVENTS[:3] + ((BTM_OT_LibraryHover.bl_idname, 'MOUSEMOVE', 'ANY'),
+                                               (BTM_OT_LibraryClose.bl_idname, 'ESC', 'PRESS')) + _EVENTS[3:]:
         kmi = km.keymap_items.new(idname, event, value, any=(event in ('LEFTMOUSE', 'MOUSEMOVE')), head=True)
         _addon_keymaps.append((km, kmi))
+    for name in VIEW3D_MODE_KEYMAPS:
+        km = kc.keymaps.new(name=name, space_type='EMPTY')
+        for idname, event, value in _EVENTS:
+            kmi = km.keymap_items.new(idname, event, value, any=(event == 'LEFTMOUSE'), head=True)
+            _addon_keymaps.append((km, kmi))
 
 
 def unregister():
