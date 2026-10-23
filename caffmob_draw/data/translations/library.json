@@ -99,6 +99,10 @@
   "pt_BR": "Aéreo 2 portas",
   "en_US": "Wall 2 doors"
  },
+ "Baixa as texturas para usar sem rede (a categoria escolhida na Biblioteca ou todas)": {
+  "pt_BR": "Baixa as texturas para usar sem rede (a categoria escolhida na Biblioteca ou todas)",
+  "en_US": "Downloads the textures to use without network (the category chosen in the Library, or all)"
+ },
  "Baixa todas as texturas para usar sem internet (só para contas com essa permissão)": {
   "pt_BR": "Baixa todas as texturas para usar sem internet (só para contas com essa permissão)",
   "en_US": "Downloads all textures to use offline (only for accounts with this permission)"
@@ -127,6 +131,14 @@
   "pt_BR": "Baixar",
   "en_US": "Download"
  },
+ "Baixar a categoria escolhida": {
+  "pt_BR": "Baixar a categoria escolhida",
+  "en_US": "Download the chosen category"
+ },
+ "Baixar todas as categorias": {
+  "pt_BR": "Baixar todas as categorias",
+  "en_US": "Download all categories"
+ },
  "Baixar todas as texturas": {
   "pt_BR": "Baixar todas as texturas",
   "en_US": "Download all textures"
@@ -134,6 +146,10 @@
  "Baixar todas as texturas que faltam (cerca de {:.0f} MB)?": {
   "pt_BR": "Baixar todas as texturas que faltam (cerca de {:.0f} MB)?",
   "en_US": "Download all missing textures (about {:.0f} MB)?"
+ },
+ "Baixar {} texturas para usar sem rede? O tamanho total não é informado pelo servidor.": {
+  "pt_BR": "Baixar {} texturas para usar sem rede? O tamanho total não é informado pelo servidor.",
+  "en_US": "Download {} textures to use without network? The server does not report the total size."
  },
  "Balcão 1 porta": {
   "pt_BR": "Balcão 1 porta",
@@ -202,6 +218,10 @@
  "Categoria criada: {}": {
   "pt_BR": "Categoria criada: {}",
   "en_US": "Category created: {}"
+ },
+ "Categoria escolhida": {
+  "pt_BR": "Categoria escolhida",
+  "en_US": "Chosen category"
  },
  "Categoria repetida ignorada: {}": {
   "pt_BR": "Categoria repetida ignorada: {}",
@@ -358,6 +378,10 @@
  "Entre com a sua conta CAF Mob para baixar texturas": {
   "pt_BR": "Entre com a sua conta CAF Mob para baixar texturas",
   "en_US": "Sign in with your CAF Mob account to download textures"
+ },
+ "Escolha um fabricante (e, se quiser, uma coleção) na Biblioteca antes.": {
+  "pt_BR": "Escolha um fabricante (e, se quiser, uma coleção) na Biblioteca antes.",
+  "en_US": "Pick a manufacturer (and, optionally, a collection) in the Library first."
  },
  "Escolha uma categoria": {
   "pt_BR": "Escolha uma categoria",
@@ -555,6 +579,14 @@
   "pt_BR": "O padrão não tem a linha {}: medidas de fábrica",
   "en_US": "The standard has no line {}: factory sizes"
  },
+ "Offline": {
+  "pt_BR": "Offline",
+  "en_US": "Offline"
+ },
+ "Offline: {} de {} prontas, {} com falha": {
+  "pt_BR": "Offline: {} de {} prontas, {} com falha",
+  "en_US": "Offline: {} of {} ready, {} failed"
+ },
  "Os blocos da categoria aparecem aqui.": {
   "pt_BR": "Os blocos da categoria aparecem aqui.",
   "en_US": "The category's blocks appear here."
@@ -575,9 +607,21 @@
   "pt_BR": "Painéis fixos",
   "en_US": "Fixed panels"
  },
+ "Para de agendar as próximas texturas do lote offline (o que já baixou fica)": {
+  "pt_BR": "Para de agendar as próximas texturas do lote offline (o que já baixou fica)",
+  "en_US": "Stops scheduling the next textures of the offline batch (what was downloaded stays)"
+ },
+ "Parar o lote offline": {
+  "pt_BR": "Parar o lote offline",
+  "en_US": "Stop the offline batch"
+ },
  "Portas além de duas": {
   "pt_BR": "Portas além de duas",
   "en_US": "Doors beyond two"
+ },
+ "Preparar texturas offline": {
+  "pt_BR": "Preparar texturas offline",
+  "en_US": "Prepare textures for offline use"
  },
  "Regra de montagem da caixa dos armários": {
   "pt_BR": "Regra de montagem da caixa dos armários",
@@ -706,6 +750,10 @@
  "Tipo de armário aproximado": {
   "pt_BR": "Tipo de armário aproximado",
   "en_US": "Approximate cabinet type"
+ },
+ "Todas as categorias": {
+  "pt_BR": "Todas as categorias",
+  "en_US": "All categories"
  },
  "Todas as texturas baixadas": {
   "pt_BR": "Todas as texturas baixadas",

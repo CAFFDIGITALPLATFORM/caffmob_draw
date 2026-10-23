@@ -41,7 +41,7 @@ def fake_download(item_id):
 
 
 def item_where(pred):
-    for item in catalog.search():
+    for item in catalog._cache['items']:        # a listagem da conta do servidor de teste
         if pred(item):
             return item["id"]
     raise AssertionError("nenhum item do catálogo atende")

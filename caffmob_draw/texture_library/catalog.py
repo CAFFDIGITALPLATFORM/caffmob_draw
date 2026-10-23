@@ -250,13 +250,22 @@ def resolve(item_id, callback):
     if remote:
         callback(remote, None)
         return
+    from . import offline
+    saved = offline.lookup(item_id)
+    if saved is not None and downloads.unavailable_reason():      # sem rede: o índice da conta (BUG-20261023-AFC5)
+        callback(remember(saved), None)
+        return
 
     def received(status, body):
         try:
             if status != 200 or body.get('id') != entry['mobi_id']:
                 raise ValueError('Textura indisponível no MOBI')
             remote = remember(body)
+            offline.remember(item_id, body)
         except (KeyError, TypeError, ValueError, AttributeError):
+            if saved is not None:
+                callback(remember(saved), None)           # a rede falhou: vale o que já foi resolvido
+                return
             callback(None, {'message': LOAD_FAILED})
             return
         callback(remote, None)

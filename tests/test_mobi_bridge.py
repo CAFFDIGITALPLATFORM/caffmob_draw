@@ -90,12 +90,12 @@ class Ponte(unittest.TestCase):
             self.assertIn('cursor=p2', calls[-1][0][1])
             self.catalog.cancel()
             calls[-1][1]['callback'](200, {'itens':[dict(ITEM,id='outro')], 'proximo':None}, {})
-            self.assertEqual([i['id'] for i in self.catalog.search()], ['uuid'])
+            self.assertEqual([i['id'] for i in self.catalog._cache['items']], ['uuid'])
             self.catalog._cache['query'] = None
             self.catalog.refresh('madeira', 'Berneck', 'Linha')
             self.assertEqual(calls[-1][1]['headers'], {'If-None-Match':'"primeira"'})
             calls[-1][1]['callback'](304, {}, {})
-            self.assertEqual(self.catalog.search()[0]['id'], 'uuid')
+            self.assertEqual(self.catalog._cache['items'][0]['id'], 'uuid')
 
     def test_cache_de_imagem_com_etag_fraco_e_forte(self):
         import hashlib
@@ -127,7 +127,7 @@ class Ponte(unittest.TestCase):
             self.catalog.refresh('fraco')
             self.assertEqual(calls[-1]['headers'], {'If-None-Match':'W/"pagina"'})
             calls[-1]['callback'](304, {}, {})
-            self.assertEqual(self.catalog.search()[0]['id'], ITEM['id'])
+            self.assertEqual(self.catalog._cache['items'][0]['id'], ITEM['id'])
 
     def test_cancelar_pedido_suprime_resposta(self):
         seen = []
