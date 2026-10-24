@@ -8,7 +8,7 @@ from bpy.app.handlers import persistent  # type: ignore
 # Hot-reload submodules during active development
 _submodule_names = [
     "compat", "data", "standards", "geometry", "cutting", "inspection", "move_over", "walls2d", "geometry_free", "customize", "aggregates", "stick", "collision", "cabinet_editor",
-    "compat_identity",
+    "compat_identity", "target",
     "ui", "overlays",
     "hb_props", "hb_project", "hb_props_obstacles", "ops",
     "view3d_sidebar", "menu_apend", "menus",
@@ -42,6 +42,7 @@ from . import object_library
 from . import openings
 from . import cladding
 from .selection import component_props, component_select, component_pick
+from . import target  # feature 067: alvo da seleção, depois de selection e antes de ui
 from . import legacy
 from . import library_panel
 from . import texture_library
@@ -321,6 +322,7 @@ def register():
     move_over.register()
     walls2d.register()
     geometry_free.register()
+    target.register()
     ui.register()
     overlays.register()
     customize.register()
@@ -402,6 +404,7 @@ def unregister():
     customize.unregister()
     overlays.unregister()
     ui.unregister()
+    target.unregister()
     geometry_free.unregister()
     walls2d.unregister()
     move_over.unregister()

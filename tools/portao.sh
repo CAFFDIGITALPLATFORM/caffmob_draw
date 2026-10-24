@@ -8,6 +8,10 @@ blender=${BLENDER_BIN:-/tmp/claude-0/-home-dev-workspace-caff-systems/8948a4a0-7
 export BLENDER_USER_RESOURCES=${BLENDER_USER_RESOURCES:-$entrega/blender-usuario}
 # Nenhum teste deste portão pode usar um MOBI externo.
 unset CAFFMOB_ENSAIO_URL
+# (067 D-35) O banco do Padrão de Dimensões do portão é descartável: nunca o do titular.
+standards_tmp=$(mktemp -d)
+trap 'rm -rf -- "$standards_tmp"' EXIT
+export CAFFMOB_DRAW_STANDARDS_DB="$standards_tmp/padroes.sqlite3"
 mkdir -p "$root/test-results" "$BLENDER_USER_RESOURCES"
 log="$root/test-results/portao-$(date -u +%Y%m%dT%H%M%SZ).log"
 run_gate() {
