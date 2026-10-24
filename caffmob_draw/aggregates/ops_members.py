@@ -127,10 +127,19 @@ class BTM_OT_MemberRemove(bpy.types.Operator):
     bl_label = "Remover do componente"
     bl_options = {'REGISTER', 'UNDO'}
 
+    @classmethod
+    def poll(cls, context):
+        # (067 D-08) Habilitado só onde executa; sem membro, o motivo aparece na dica do botão.
+        from ..target import capabilities, snapshot
+        return capabilities.poll(cls, 'member_remove', snapshot.current(context))
+
     def execute(self, context):
-        for obj in context.selected_objects:
-            if obj.btm_member.owner is not None:
-                remove_member(obj)
+        members = [obj for obj in context.selected_objects if obj.btm_member.owner is not None]
+        if not members:
+            self.report({'WARNING'}, tr("Nenhum selecionado é membro de armário autoral."))
+            return {'CANCELLED'}
+        for obj in members:
+            remove_member(obj)
         return {'FINISHED'}
 
 

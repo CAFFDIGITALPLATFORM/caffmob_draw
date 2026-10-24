@@ -1,0 +1,154 @@
+{
+ "Abrir folhas do armário": {
+  "pt_BR": "Abrir folhas do armário",
+  "en_US": "Open cabinet leaves"
+ },
+ "Adicionar membro": {
+  "pt_BR": "Adicionar membro",
+  "en_US": "Add member"
+ },
+ "Adotar como autoral": {
+  "pt_BR": "Adotar como autoral",
+  "en_US": "Adopt as authored"
+ },
+ "Adotar vale para módulo, peça, geometria ou objeto solto fora de armário autoral.": {
+  "pt_BR": "Adotar vale para módulo, peça, geometria ou objeto solto fora de armário autoral.",
+  "en_US": "Adopting applies to a module, part, geometry or loose object outside an authored cabinet."
+ },
+ "As cotas medem e movem a peça selecionada": {
+  "pt_BR": "As cotas medem e movem a peça selecionada",
+  "en_US": "Dimensions measure and move the selected part"
+ },
+ "As cotas medem e movem o conjunto da peça": {
+  "pt_BR": "As cotas medem e movem o conjunto da peça",
+  "en_US": "Dimensions measure and move the part's assembly"
+ },
+ "Completa": {
+  "pt_BR": "Completa",
+  "en_US": "Complete"
+ },
+ "Conjunto": {
+  "pt_BR": "Conjunto",
+  "en_US": "Assembly"
+ },
+ "Converter em agregado vale para objeto solto ou geometria.": {
+  "pt_BR": "Converter em agregado vale para objeto solto ou geometria.",
+  "en_US": "Converting to an aggregate applies to a loose object or geometry."
+ },
+ "Converter em folha": {
+  "pt_BR": "Converter em folha",
+  "en_US": "Convert to leaf"
+ },
+ "Converter em folha vale para peça, geometria ou objeto solto.": {
+  "pt_BR": "Converter em folha vale para peça, geometria ou objeto solto.",
+  "en_US": "Converting to a leaf applies to a part, geometry or loose object."
+ },
+ "Câmera": {
+  "pt_BR": "Câmera",
+  "en_US": "Camera"
+ },
+ "Escopo das cotas": {
+  "pt_BR": "Escopo das cotas",
+  "en_US": "Dimension scope"
+ },
+ "Essencial": {
+  "pt_BR": "Essencial",
+  "en_US": "Essential"
+ },
+ "Essencial mostra o que mais se usa; Completa mostra todos os campos e ações do selecionado": {
+  "pt_BR": "Essencial mostra o que mais se usa; Completa mostra todos os campos e ações do selecionado",
+  "en_US": "Essential shows what is used most; Complete shows every field and action of the selection"
+ },
+ "Este tipo não tem cotas de posição.": {
+  "pt_BR": "Este tipo não tem cotas de posição.",
+  "en_US": "This type has no position dimensions."
+ },
+ "Folha do armário autoral": {
+  "pt_BR": "Folha do armário autoral",
+  "en_US": "Authored cabinet leaf"
+ },
+ "Modo do painel": {
+  "pt_BR": "Modo do painel",
+  "en_US": "Panel mode"
+ },
+ "Montar janela": {
+  "pt_BR": "Montar janela",
+  "en_US": "Assemble window"
+ },
+ "Montar vale para porta ou janela de ambiente.": {
+  "pt_BR": "Montar vale para porta ou janela de ambiente.",
+  "en_US": "Assembling applies to a room door or window."
+ },
+ "Nenhum selecionado é membro de armário autoral.": {
+  "pt_BR": "Nenhum selecionado é membro de armário autoral.",
+  "en_US": "No selected object is a member of an authored cabinet."
+ },
+ "O selecionado não está num grupo.": {
+  "pt_BR": "O selecionado não está num grupo.",
+  "en_US": "The selection is not in a group."
+ },
+ "O selecionado não tem conjunto dono.": {
+  "pt_BR": "O selecionado não tem conjunto dono.",
+  "en_US": "The selection has no owning assembly."
+ },
+ "Parede, piso, teto, porta, janela, cota, luz e câmera não se movem no Mover Sobre.": {
+  "pt_BR": "Parede, piso, teto, porta, janela, cota, luz e câmera não se movem no Mover Sobre.",
+  "en_US": "Walls, floors, ceilings, doors, windows, dimensions, lights and cameras do not move with Move Over."
+ },
+ "Peça sem veio": {
+  "pt_BR": "Peça sem veio",
+  "en_US": "Part without grain"
+ },
+ "Remover membro": {
+  "pt_BR": "Remover membro",
+  "en_US": "Remove member"
+ },
+ "Revestimento": {
+  "pt_BR": "Revestimento",
+  "en_US": "Cladding"
+ },
+ "Selecionar conjunto": {
+  "pt_BR": "Selecionar conjunto",
+  "en_US": "Select assembly"
+ },
+ "Selecione dois ou mais objetos para agrupar.": {
+  "pt_BR": "Selecione dois ou mais objetos para agrupar.",
+  "en_US": "Select two or more objects to group."
+ },
+ "Selecione um armário autoral ou uma peça dele.": {
+  "pt_BR": "Selecione um armário autoral ou uma peça dele.",
+  "en_US": "Select an authored cabinet or one of its parts."
+ },
+ "Selecione um objeto na viewport.": {
+  "pt_BR": "Selecione um objeto na viewport.",
+  "en_US": "Select an object in the viewport."
+ },
+ "Seleção múltipla": {
+  "pt_BR": "Seleção múltipla",
+  "en_US": "Multiple selection"
+ },
+ "Só o que mais se usa": {
+  "pt_BR": "Só o que mais se usa",
+  "en_US": "Only what is used most"
+ },
+ "Todos os campos e ações do selecionado": {
+  "pt_BR": "Todos os campos e ações do selecionado",
+  "en_US": "Every field and action of the selection"
+ },
+ "Veio": {
+  "pt_BR": "Veio",
+  "en_US": "Grain"
+ },
+ "Veio na horizontal da peça instalada": {
+  "pt_BR": "Veio na horizontal da peça instalada",
+  "en_US": "Grain along the horizontal of the installed part"
+ },
+ "Veio na vertical da peça instalada": {
+  "pt_BR": "Veio na vertical da peça instalada",
+  "en_US": "Grain along the vertical of the installed part"
+ },
+ "{} objetos": {
+  "pt_BR": "{} objetos",
+  "en_US": "{} objects"
+ }
+}

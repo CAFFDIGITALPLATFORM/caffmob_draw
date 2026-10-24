@@ -9,12 +9,13 @@ Fonte única de medidas externas, materiais, espessuras, limites de chapa e fita
 - `io_json` / `io_promob`: arquivos `.btmdim.json` e `DIMENSIONEXPORT`
 - `sync`: propagação para as bibliotecas legadas
 - `migration` / `previews`: migração em `load_post` e imagens de referência
+- `store_core` / `store`: banco local `padroes.sqlite3` com o padrão da marcenaria (feature 067)
 """
 
-from . import migration, model, previews
+from . import migration, model, previews, store
 
 # Submódulos com registro próprio, na ordem de registro.
-_MODULES = [model, previews, migration]
+_MODULES = [model, previews, migration, store]
 
 
 def register():

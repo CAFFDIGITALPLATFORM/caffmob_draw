@@ -104,7 +104,9 @@ def animatable_fields(source, class_name):
 
 def opens_real_standards_db(source):
     """O ensaio toca o banco do Padrão de Dimensões sem `banco_temporario()` nem `CAFFMOB_DRAW_STANDARDS_DB`."""
-    touches = ('padroes.sqlite3' in source or re.search(r'standards(\.|\s+import\s+)store\b', source) is not None)
+    # `store_core` com caminho injetado é o uso certo; o banco real vem de `store` ou do caminho do usuário.
+    touches = ('extension_path_user' in source
+               or re.search(r'standards(\.|\s+import\s+)store\b', source) is not None)
     guarded = 'banco_temporario' in source or 'CAFFMOB_DRAW_STANDARDS_DB' in source
     return touches and not guarded
 
@@ -127,6 +129,7 @@ class ControlesPositivos(unittest.TestCase):
             ['a', 'b'])
         self.assertTrue(opens_real_standards_db("from caffmob_draw.standards import store\nstore.open()\n"))
         self.assertFalse(opens_real_standards_db("from caffmob_draw.standards import store\nwith banco_temporario():\n"))
+        self.assertFalse(opens_real_standards_db("from caffmob_draw.standards.store_core import StandardsStore\n"))
 
 
 class RegrasDoPacoteTarget(unittest.TestCase):

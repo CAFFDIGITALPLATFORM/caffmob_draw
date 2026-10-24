@@ -5,13 +5,16 @@
 - `commands`: CommandRouter dos botões
 - `view`: ViewModel puro que o painel desenha
 - `adapters/`: um adaptador por tipo e o fallback rotulado
+- `props`: `Object.btm_part` e `WindowManager.btm_target`
+- `snapshot`: o alvo resolvido fora do draw, por cena e view layer
 """
 
 _registered = False
 
 
 def _modules():
-    return ()
+    from . import props, snapshot
+    return (props, snapshot)
 
 
 def register():

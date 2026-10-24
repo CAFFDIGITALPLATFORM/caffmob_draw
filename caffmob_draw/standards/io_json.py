@@ -158,6 +158,43 @@ def document_to_values(document):
 
 
 # ----------------------------------------------------------------------------------------------------------------
+# Pacote com todas as definições (feature 067, D-28): `.btmdim-pack.json`
+# ----------------------------------------------------------------------------------------------------------------
+
+PACK_FORMAT = "caffmob_draw.dimension-standards-pack"
+PACK_SCHEMA_VERSION = 1
+PACK_EXTENSION = ".btmdim-pack.json"
+
+
+def pack_documents(documents, exported_at):
+    """Pacote de exportação: a lista dos mesmos documentos de um `.btmdim.json`."""
+    return {
+        "schema": PACK_FORMAT,
+        "schema_version": PACK_SCHEMA_VERSION,
+        "exported_at": exported_at,
+        "definitions": list(documents),
+    }
+
+
+def unpack_documents(document):
+    """Documentos de um pacote ou de um `.btmdim.json` solto, cada um validado por `document_to_values`."""
+    if isinstance(document, dict) and document.get("schema") == PACK_FORMAT:
+        version = document.get("schema_version")
+        if not isinstance(version, int) or isinstance(version, bool):
+            raise StandardFileError(tr("Versão do formato ausente."))
+        if version > PACK_SCHEMA_VERSION:
+            raise StandardFileError(tr("Arquivo criado por uma versão mais nova da extensão: atualize o CAFFMob Draw."))
+        items = document.get("definitions")
+        if not isinstance(items, list):
+            raise StandardFileError(tr("Estrutura do arquivo inválida em {}.").format("definitions"))
+    else:
+        items = [document]
+    for item in items:
+        document_to_values(item)
+    return items
+
+
+# ----------------------------------------------------------------------------------------------------------------
 # Arquivo
 # ----------------------------------------------------------------------------------------------------------------
 

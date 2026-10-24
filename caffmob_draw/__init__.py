@@ -156,6 +156,18 @@ class BTM_AddonPreferences(bpy.types.AddonPreferences):
         default=False,
     )  # type: ignore
 
+    # Feature 067 (D-05): o modo da janela de propriedades é do usuário, não do arquivo: fora da cena e do Undo.
+    panel_mode: bpy.props.EnumProperty(
+        name="Modo do painel",
+        description="Essencial mostra o que mais se usa; Completa mostra todos os campos e ações do selecionado",
+        items=[
+            ('ESSENTIAL', "Essencial", "Só o que mais se usa"),
+            ('COMPLETE', "Completa", "Todos os campos e ações do selecionado"),
+        ],
+        default='ESSENTIAL',
+        update=_update_use_viewport_hud,
+    )  # type: ignore
+
     wall_color: bpy.props.FloatVectorProperty(name="Cor das Paredes", size=4, min=0, max=1, default=(0.252832, 0.500434, 0.735662, 1.0), subtype="COLOR")  # type: ignore
     cabinet_color: bpy.props.FloatVectorProperty(name="Cor dos Armários", size=4, min=0, max=1, default=(0.0, 0.5, 0.7, 0.3), subtype="COLOR")  # type: ignore
     door_window_color: bpy.props.FloatVectorProperty(name="Cor de Portas/Janelas", size=4, min=0, max=1, default=(0.0, 0.5, 0.7, 0.1), subtype="COLOR")  # type: ignore
@@ -322,7 +334,6 @@ def register():
     move_over.register()
     walls2d.register()
     geometry_free.register()
-    target.register()
     ui.register()
     overlays.register()
     customize.register()
@@ -336,6 +347,8 @@ def register():
     # Seleção por componente (feature 011)
     for _module in (component_props, component_select, component_pick):
         _module.register()
+    # Feature 067 (D-02): depois da seleção por componente, para o snapshot ver a seleção já promovida ao dono.
+    target.register()
     legacy.register()           # feature 012: bibliotecas herdadas fora da interface e conversão
     library_panel.register()    # feature 012: painel BIBLIOTECA CAFFMOB
     texture_library.register()  # feature 014: texturas dos fabricantes, conta CAF Mob e download
@@ -392,6 +405,7 @@ def unregister():
     texture_library.unregister()
     library_panel.unregister()
     legacy.unregister()
+    target.unregister()
     for _module in (component_pick, component_select, component_props):
         _module.unregister()
     cladding.unregister()
@@ -404,7 +418,6 @@ def unregister():
     customize.unregister()
     overlays.unregister()
     ui.unregister()
-    target.unregister()
     geometry_free.unregister()
     walls2d.unregister()
     move_over.unregister()

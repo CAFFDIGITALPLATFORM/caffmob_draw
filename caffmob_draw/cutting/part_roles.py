@@ -113,3 +113,13 @@ def classify(name, role=None, cabinet_type=None, component=None):
 
 def is_unclassified(component):
     return component == UNCLASSIFIED
+
+
+# (067 D-13) Veio gravado na peça: `Object.btm_part.grain` NONE/H/V vira o `grain_direction` do corte.
+GRAIN_FROM_PART = {'H': 'HORIZONTAL', 'V': 'VERTICAL'}
+
+
+def part_grain(obj):
+    """Veio da peça para o `PartRecord`; sem `btm_part` (arquivo antigo) ou NONE → 'NONE'."""
+    part = getattr(obj, 'btm_part', None)
+    return GRAIN_FROM_PART.get(getattr(part, 'grain', 'NONE'), 'NONE')
