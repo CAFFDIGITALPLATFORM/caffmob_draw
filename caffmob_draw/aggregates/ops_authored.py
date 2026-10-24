@@ -192,6 +192,12 @@ class BTM_OT_AuthoredAdopt(bpy.types.Operator):
     size_local: bpy.props.FloatVectorProperty(name="Medidas locais (mm)", size=3, min=0)  # type: ignore
     entries: bpy.props.CollectionProperty(type=BTM_PG_AdoptEntry)  # type: ignore
 
+    @classmethod
+    def poll(cls, context):
+        # (067 D-08) Habilitado só onde executa; o motivo aparece na dica do botão.
+        from ..target import capabilities, snapshot
+        return capabilities.poll(cls, 'authored_adopt', snapshot.current(context))
+
     def _review(self, context):
         self.entries.clear()
         for obj in candidates(None if self.new_root else bpy.data.objects.get(self.root), context.selected_objects):

@@ -32,6 +32,8 @@ SCOPE_LABELS = {SCOPE_PART: N_("Peça"), SCOPE_LEAF: N_("Folha"), SCOPE_ASSEMBLY
                 SCOPE_OBJECT: N_("Objeto"), SCOPE_MULTIPLE: N_("{} objetos")}
 # Tipos com adaptador próprio; o resto cai no fallback rotulado (RN-04).
 ADAPTED = frozenset(KINDS) - {OBSTACLE}
+# Tipos cujo painel mostra as medidas próprias da chapa (RF-006, RF-011, RF-014, RF-016).
+SHEET_KINDS = frozenset({PART, MEMBER, FRONT, LEAF, GEOMETRY})
 
 
 @dataclass(frozen=True)
@@ -52,6 +54,10 @@ class Target:
     has_member: bool = False        # algum selecionado é membro de armário autoral
     in_group: bool = False          # o alvo está num grupo de peças (btm_group)
     detail: str = ''                # subtipo: tipo de luz, LIBRARY/AUTHORED da peça, DOOR/WINDOW da abertura
+    measures: object = None         # PartMeasures da chapa (preenchido pelo snapshot, que lê a malha)
+    measure_error: str = ''         # motivo quando a medida foi recusada (shear, escala zero…)
+    multi_thickness: tuple = ()     # espessuras das chapas da seleção múltipla, na ordem de `selected_uids`
+    has_leaf: bool = False          # porta com folha gerada (`openings.ops.door_of`; preenchido pelo snapshot)
 
     @property
     def adapter(self):
@@ -99,17 +105,16 @@ def _opening_type(obj, info):
     return getattr(opening, 'opening_type', 'WINDOW') if opening is not None else 'WINDOW'
 
 
-def _single(obj):
+def _single(obj, cladding_controller=None):
+    if obj.get('btm_cladding_piece') and cladding_controller is not None:
+        controller = cladding_controller(obj)       # peça gerada: o painel edita o revestimento dono
+        if controller is not None:
+            target = _single(controller)
+            return Target(**{**target.__dict__, 'detail': 'PIECE', 'selected_uids': (uid_of(obj),)})
     uid = uid_of(obj)
     move = cls.movable_root(obj)
     base = dict(uid=uid, name=_name(obj), move_uid=uid_of(move), selected_uids=(uid,),
                 in_group=cls.free_group(obj) is not None)
-    obj_type = getattr(obj, 'type', '')
-    if obj_type == 'LIGHT':
-        light = getattr(obj, 'data', None)
-        return Target(kind=LIGHT, scope=SCOPE_OBJECT, detail=getattr(light, 'type', ''), **{**base, 'move_uid': 0})
-    if obj_type == 'CAMERA':
-        return Target(kind=CAMERA, scope=SCOPE_OBJECT, **{**base, 'move_uid': 0})
     if _is_cladding(obj):
         host = getattr(obj.btm_cladding, 'host', None)
         return Target(kind=CLADDING, scope=SCOPE_OBJECT, owner_uid=uid_of(host), owner_name=_name(host),
@@ -122,6 +127,13 @@ def _single(obj):
                       path=(_name(owner), _name(obj)), authored_owner=True, has_member=True, detail='AUTHORED',
                       **base)
 
+    # Luz e câmera soltas; dentro de um módulo ou armário (membro, peça) valem como parte dele (RN-01, 066).
+    obj_type = getattr(obj, 'type', '')
+    if obj_type in ('LIGHT', 'CAMERA') and cls.module_root(obj)[0] is None:
+        if obj_type == 'LIGHT':
+            light = getattr(obj, 'data', None)
+            return Target(kind=LIGHT, scope=SCOPE_OBJECT, detail=getattr(light, 'type', ''), **{**base, 'move_uid': 0})
+        return Target(kind=CAMERA, scope=SCOPE_OBJECT, **{**base, 'move_uid': 0})
     info = cls.classify(obj)
     root = info.root
     owned = dict(owner_uid=uid_of(root), owner_name=_name(root), path=(_name(root), _name(info.obj)))
@@ -150,15 +162,16 @@ def _single(obj):
                   **{**base, 'uid': uid_of(target_obj), 'name': _name(target_obj)})
 
 
-def resolve(active, selected=()):
-    """Alvo da seleção. `active` é o objeto ativo; `selected`, os selecionados (o ativo pode não estar entre eles)."""
+def resolve(active, selected=(), cladding_controller=None):
+    """Alvo da seleção. `active` é o objeto ativo; `selected`, os selecionados (o ativo pode não estar entre eles).
+    `cladding_controller(peça)` acha o revestimento dono de uma peça gerada (precisa da cena; vem do snapshot)."""
     others = [o for o in selected if o is not None and o is not active]
     if active is None and not others:
         return None
     objects = ([active] if active is not None else []) + others
     if len(objects) == 1:
-        return _single(objects[0])
-    primary = _single(objects[0])
+        return _single(objects[0], cladding_controller)
+    primary = _single(objects[0], cladding_controller)
     uids = tuple(uid_of(o) for o in objects)
     return Target(uid=primary.uid, kind=MULTIPLE, name=primary.name, scope=SCOPE_MULTIPLE, selected_uids=uids,
                   count=len(objects), move_uid=primary.move_uid,

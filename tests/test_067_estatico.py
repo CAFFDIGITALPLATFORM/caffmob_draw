@@ -155,12 +155,9 @@ class RegrasDoPacoteTarget(unittest.TestCase):
 
 
 class RegraDaJanelaDePropriedades(unittest.TestCase):
-    # Os getters de cota e o draw do painel ainda leem o objeto ativo. A T087 (draw do ViewModel) os tira daí;
-    # quando isso acontecer, o "sucesso inesperado" reprova a suíte e obriga a retirar esta marca.
-    @unittest.expectedFailure
+    # Vermelho até a T087 (marcado como falha esperada na T012); verde desde que o draw lê o ViewModel do snapshot.
     def test_sem_active_object_em_getter_setter_ou_draw(self):
         self.assertEqual(active_object_in_accessors(OBJECT_PROPERTIES.read_text(encoding='utf-8')), [])
-
 
 if __name__ == '__main__':
     unittest.main()

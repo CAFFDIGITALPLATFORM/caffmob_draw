@@ -132,6 +132,9 @@ def run(scene=None):
         return []
     try:
         applied = migrate_scene(scene)
+        from . import store                          # 067 D-27: o padrão da marcenaria vem do banco local
+        if store.load_into(scene):
+            applied.append('banco')
         if stamp_standard_uid(scene):
             applied.append('M-03')
         return applied

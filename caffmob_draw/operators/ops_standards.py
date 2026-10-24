@@ -62,6 +62,50 @@ def _sync_report_message(report):
 
 
 # ----------------------------------------------------------------------------------------------------------------
+# Banco local do padrão da marcenaria (feature 067, D-26, D-27, R11)
+# ----------------------------------------------------------------------------------------------------------------
+
+def _persist(operator, context, definition):
+    """Grava a definição no banco depois da mudança no arquivo. Versão mais antiga que a do banco: pergunta antes."""
+    from ..standards import store
+    status = store.persist(context.scene, definition)
+    if status == 'OLDER':
+        if bpy.app.background or context.window is None:
+            operator.report({'WARNING'}, tr("O banco tem uma versão mais nova de \"{}\"; nada foi gravado nele.")
+                            .format(definition.name))
+        else:
+            bpy.ops.caffmob.standards_store_overwrite('INVOKE_DEFAULT', uid=definition.uid)
+    elif status == 'UNAVAILABLE':
+        operator.report({'WARNING'}, tr("O padrão ficou só neste arquivo: o banco local está indisponível."))
+    return status
+
+
+class BTM_OT_StandardsStoreOverwrite(bpy.types.Operator):
+    """Grava no banco local uma definição mais antiga que a versão guardada nele"""
+    bl_idname = "caffmob.standards_store_overwrite"
+    bl_label = "Gravar versão mais antiga?"
+    bl_options = {'REGISTER', 'INTERNAL'}
+
+    uid: bpy.props.StringProperty(options={'HIDDEN'})  # type: ignore
+
+    def invoke(self, context, event):
+        definition = api.find_definition(context.scene, uid=self.uid)
+        name = definition.name if definition is not None else self.uid
+        return context.window_manager.invoke_confirm(
+            self, event, title=tr("Gravar versão mais antiga?"),
+            message=tr("O banco do padrão tem uma versão mais nova de \"{}\". Substituir pela deste arquivo?").format(name),
+            confirm_text=tr("Substituir"), icon='WARNING')
+
+    def execute(self, context):
+        from ..standards import store
+        definition = api.find_definition(context.scene, uid=self.uid)
+        if definition is None:
+            return {'CANCELLED'}
+        store.persist(context.scene, definition, confirmed=True)
+        return {'FINISHED'}
+
+
+# ----------------------------------------------------------------------------------------------------------------
 # Configurador
 # ----------------------------------------------------------------------------------------------------------------
 
@@ -170,6 +214,7 @@ class BTM_OT_StandardsConfigurator(bpy.types.Operator):
         except api.StandardsError as exc:
             self.report({'ERROR'}, str(exc))
             return {'CANCELLED'}
+        _persist(self, context, definition)
         ask_apply(context, definition.uid)
         return {'FINISHED'}
 
@@ -188,6 +233,7 @@ class BTM_OT_StandardsApply(bpy.types.Operator):
         except api.StandardsError as exc:
             self.report({'ERROR'}, str(exc))
             return {'CANCELLED'}
+        _persist(self, context, definition)
         ask_apply(context, definition.uid if definition is not None else "")
         return {'FINISHED'}
 
@@ -236,6 +282,8 @@ class BTM_OT_StandardsSetActive(bpy.types.Operator):
         previous = api.active_definition(scene)
         previous_uid = previous.uid if previous is not None else ""
         api.set_active(scene, definition)
+        from ..standards import store
+        store.remember_active(definition.uid)                    # 067 D-26: arquivo novo abre com ela
         sync.apply_definition(scene, definition, modules=[])     # propriedades de cena; módulos pelas perguntas
         ask_apply(context, previous_uid)
         return {'FINISHED'}
@@ -260,6 +308,9 @@ class BTM_OT_StandardsDuplicate(bpy.types.Operator):
             # Configurador aberto sobre a embutida: o rascunho passa a editar a cópia.
             draft.definition_uid = new.uid
             draft.definition_name = new.name
+        if _persist(self, context, new) == 'SAVED':
+            from ..standards import store
+            store.remember_active(new.uid)
         self.report({'INFO'}, tr("Definição \"{}\" criada e ativa.").format(new.name))
         return {'FINISHED'}
 
@@ -289,6 +340,7 @@ class BTM_OT_StandardsRename(bpy.types.Operator):
         definition = api.active_definition(context.scene)
         if name != definition.name:
             definition.name = api.unique_name(context.scene, name)
+            _persist(self, context, definition)
         return {'FINISHED'}
 
 
@@ -310,11 +362,18 @@ class BTM_OT_StandardsDelete(bpy.types.Operator):
             confirm_text="Excluir", icon='WARNING')
 
     def execute(self, context):
+        definition = api.active_definition(context.scene)
+        uid = definition.uid if definition is not None else ""
         try:
-            api.remove_definition(context.scene, api.active_definition(context.scene))
+            api.remove_definition(context.scene, definition)
         except api.StandardsError as exc:
             self.report({'ERROR'}, str(exc))
             return {'CANCELLED'}
+        from ..standards import store
+        store.forget(uid)
+        active = api.active_definition(context.scene)
+        if active is not None:
+            store.remember_active(active.uid)
         return {'FINISHED'}
 
 
@@ -373,6 +432,7 @@ class BTM_OT_StandardsImportJSON(bpy.types.Operator, ImportHelper):
         except (io_json.StandardFileError, api.StandardsError) as exc:
             self.report({'ERROR'}, str(exc))
             return {'CANCELLED'}
+        _persist(self, context, definition)
         _set_report("Definição importada", [tr("Definição: {}").format(definition.name)] + [tr("  {}").format(w) for w in warnings])
         self.report({'INFO'}, tr("Definição \"{}\" importada ({} aviso(s)).").format(definition.name, len(warnings)))
         _show_report(context)
@@ -427,6 +487,7 @@ class BTM_OT_StandardsImportPromob(bpy.types.Operator, ImportHelper):
             lines.append(rep['assembly_warning'])
         lines.extend(rep.get('caff_warnings') or [])
         lines.append(tr("Use \"Definir ativa\" para aplicar esta definição ao projeto."))
+        _persist(self, context, definition)
         _set_report(tr("Importação do Promob"), lines)
         self.report({'INFO'}, tr("\"{}\": {} de {} atributos reconhecidos.").format(name, rep['mapped'], rep['total']))
         _show_report(context)
@@ -459,6 +520,125 @@ class BTM_OT_StandardsExportPromob(bpy.types.Operator, ExportHelper):
             self.report({'ERROR'}, tr("Não foi possível gravar: {}").format(exc))
             return {'CANCELLED'}
         self.report({'INFO'}, tr("Exportado para o Promob: {}").format(self.filepath))
+        return {'FINISHED'}
+
+
+# Tudo de uma vez (067 D-28, RF-033) -----------------------------------------------------------------------------
+
+def _all_documents(scene):
+    """O padrão da marcenaria: as definições do banco e as não embutidas do arquivo (a do arquivo vale no uid igual)."""
+    from ..standards import store
+    documents = {}
+    try:
+        for document in store.get().documents():
+            documents[document["uid"]] = document
+    except (store.StoreError, OSError):
+        pass
+    data = api.standards(scene)
+    for definition in (data.definitions if data is not None else ()):
+        if not definition.builtin:
+            documents[definition.uid] = io_json.definition_document(definition)
+    return sorted(documents.values(), key=lambda d: str(d.get("name", "")))
+
+
+class BTM_OT_StandardsExportAll(bpy.types.Operator, ExportHelper):
+    """Exporta todas as definições do padrão da marcenaria num arquivo .btmdim-pack.json"""
+    bl_idname = "caffmob.standards_export_all"
+    bl_label = "Exportar todas as definições"
+    bl_options = {'REGISTER'}
+
+    filename_ext = io_json.PACK_EXTENSION
+    filter_glob: bpy.props.StringProperty(default="*.btmdim-pack.json", options={'HIDDEN'})  # type: ignore
+
+    def execute(self, context):
+        from ..standards import store_core
+        documents = _all_documents(context.scene)
+        if not documents:
+            self.report({'WARNING'}, tr("Nenhuma definição própria para exportar."))
+            return {'CANCELLED'}
+        try:
+            io_json.write_document(self.filepath, io_json.pack_documents(documents, store_core.now_utc()))
+        except OSError as exc:
+            self.report({'ERROR'}, tr("Não foi possível gravar: {}").format(exc))
+            return {'CANCELLED'}
+        self.report({'INFO'}, tr("{} definição(ões) exportada(s): {}").format(len(documents), self.filepath))
+        return {'FINISHED'}
+
+
+class BTM_PG_ImportChoice(bpy.types.PropertyGroup):
+    uid: bpy.props.StringProperty()  # type: ignore
+    label: bpy.props.StringProperty()  # type: ignore
+    replace: bpy.props.BoolProperty(name="Substituir", default=False)  # type: ignore
+
+
+class BTM_OT_StandardsImportAll(bpy.types.Operator, ImportHelper):
+    """Importa um pacote .btmdim-pack.json (ou um .btmdim.json); nenhuma definição existente é substituída sem marcar"""
+    bl_idname = "caffmob.standards_import_all"
+    bl_label = "Importar definições"
+    bl_options = {'REGISTER', 'UNDO'}
+
+    filename_ext = io_json.PACK_EXTENSION
+    filter_glob: bpy.props.StringProperty(default="*.btmdim-pack.json;*.btmdim.json;*.json", options={'HIDDEN'})  # type: ignore
+    choices: bpy.props.CollectionProperty(type=BTM_PG_ImportChoice)  # type: ignore
+    reviewed: bpy.props.BoolProperty(default=False, options={'HIDDEN', 'SKIP_SAVE'})  # type: ignore
+
+    def _documents(self):
+        return io_json.unpack_documents(io_json.read_document(self.filepath))
+
+    def _conflicts(self, context, documents):
+        """Uid já existente (no arquivo ou no banco) com conteúdo diferente."""
+        from ..standards.store_core import same_content
+        current = {d["uid"]: d for d in _all_documents(context.scene)}
+        return [d for d in documents if d.get("uid") in current and not same_content(current[d["uid"]], d)]
+
+    def execute(self, context):
+        try:
+            documents = self._documents()
+        except io_json.StandardFileError as exc:
+            self.report({'ERROR'}, str(exc))
+            return {'CANCELLED'}
+        conflicts = self._conflicts(context, documents)
+        if conflicts and not self.reviewed and context.window is not None and not bpy.app.background:
+            self.choices.clear()
+            for document in conflicts:
+                item = self.choices.add()
+                item.uid, item.label = document["uid"], str(document.get("name", document["uid"]))
+            self.reviewed = True
+            return context.window_manager.invoke_props_dialog(self, width=420, title=tr("Definições já existentes"))
+        replace = {c.uid for c in self.choices if c.replace}
+        return self._apply(context, documents, replace)
+
+    def draw(self, context):
+        layout = self.layout
+        layout.label(text=tr("Estas definições já existem com valores diferentes. Marque as que devem ser substituídas:"))
+        for item in self.choices:
+            layout.prop(item, "replace", text=item.label)
+
+    def _apply(self, context, documents, replace):
+        """Conflito não marcado não entra em lugar nenhum (nem no banco, nem no arquivo)."""
+        from ..standards import store
+        from ..standards.store_core import BUILTIN_UIDS
+        scene = context.scene
+        conflicts = {d["uid"] for d in self._conflicts(context, documents)}
+        chosen = [d for d in documents if d.get("uid") not in BUILTIN_UIDS
+                  and (d.get("uid") not in conflicts or d.get("uid") in replace)]
+        try:
+            store.get().import_documents(chosen, replace=replace)
+        except (store.StoreError, OSError) as exc:
+            self.report({'WARNING'}, tr("O banco local está indisponível: {}").format(exc))
+        added = replaced = 0
+        for document in chosen:
+            existing = api.find_definition(scene, uid=document["uid"])
+            if existing is not None:
+                if document["uid"] not in replace:
+                    continue                     # mesmo conteúdo: nada a fazer
+                api.remove_definition(scene, existing)
+                replaced += 1
+            else:
+                added += 1
+            io_json.definition_from_document(scene, document)
+        self.report({'INFO'}, tr("Importadas: {}; substituídas: {}; mantidas sem marcar: {}.").format(
+            added, replaced, len(conflicts - set(replace))))
         return {'FINISHED'}
 
 
@@ -608,6 +788,10 @@ class BTM_OT_StandardsApplyDiffer(bpy.types.Operator):
 
 
 classes = (
+    BTM_PG_ImportChoice,
+    BTM_OT_StandardsStoreOverwrite,
+    BTM_OT_StandardsExportAll,
+    BTM_OT_StandardsImportAll,
     BTM_OT_StandardsApplyScene,
     BTM_OT_StandardsApplyDiffer,
     BTM_OT_StandardsConfigurator,

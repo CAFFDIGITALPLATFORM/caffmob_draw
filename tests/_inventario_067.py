@@ -24,8 +24,10 @@ def _menu(recorder, errors, name):
                 errors.append(f"{name}: menu {func.__name__}: {exc}")
 
 
-def capture():
+def capture(mode=None):
     from caffmob_draw.ui import object_properties
+    if mode is not None:                                   # sem a extensão instalada não há preferências
+        object_properties.panel_mode = lambda _context: mode
     s = fx.scene_15()
     bpy.context.scene.btm_component_select = False      # a peça fica ativa (sem subir ao módulo)
     result, errors = {}, []

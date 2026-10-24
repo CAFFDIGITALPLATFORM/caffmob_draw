@@ -11,6 +11,7 @@ import json
 import sqlite3
 
 from . import builtin
+from ..data.i18n import N_
 
 SCHEMA = 1
 BUILTIN_UIDS = frozenset(uid for uid, _name, _market in builtin.BUILTINS)
@@ -38,9 +39,9 @@ def now_utc():
 def _uid_of(document):
     uid = document.get("uid") if isinstance(document, dict) else None
     if not isinstance(uid, str) or not uid:
-        raise StoreError("Definição sem identificador.")
+        raise StoreError(N_("Definição sem identificador."))
     if uid in BUILTIN_UIDS:
-        raise StoreError("As definições embutidas não são gravadas no banco.")
+        raise StoreError(N_("As definições embutidas não são gravadas no banco."))
     return uid
 
 
@@ -139,7 +140,7 @@ class StandardsStore:
         with self._transaction() as db:
             document = self.get(uid)
             if document is None:
-                raise StoreError("Definição não encontrada no banco.")
+                raise StoreError(N_("Definição não encontrada no banco."))
             document["name"] = str(name)
             self._put(db, uid, document)
 
@@ -157,10 +158,15 @@ class StandardsStore:
             if self.meta('ultima_ativa') == uid:
                 db.execute("DELETE FROM meta WHERE chave = 'ultima_ativa'")
 
+    def set_meta(self, key, value):
+        with self._transaction() as db:
+            db.execute("INSERT INTO meta (chave, valor) VALUES (?, ?) "
+                       "ON CONFLICT(chave) DO UPDATE SET valor = excluded.valor", (key, str(value)))
+
     def set_last_active(self, uid):
         """Guarda a definição ativa (uid do banco ou de uma embutida); `None` apaga."""
         if uid is not None and uid not in BUILTIN_UIDS and self.get(uid) is None:
-            raise StoreError("Definição não encontrada no banco.")
+            raise StoreError(N_("Definição não encontrada no banco."))
         with self._transaction() as db:
             if uid is None:
                 db.execute("DELETE FROM meta WHERE chave = 'ultima_ativa'")

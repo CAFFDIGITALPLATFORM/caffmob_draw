@@ -24,12 +24,17 @@ _revision = [0]
 
 
 class _Entry:
-    __slots__ = ('signature', 'target', 'objects')
+    __slots__ = ('signature', 'target', 'objects', 'pose')
 
     def __init__(self, signature, target, objects):
         self.signature = signature
         self.target = target
         self.objects = objects
+        self.pose = None
+
+
+def _pose(obj):
+    return tuple(round(v, 6) for row in obj.matrix_world for v in row) if obj is not None else None
 
 
 def _key(context):
@@ -57,10 +62,79 @@ def refresh(context):
         return entry.target
     active = view_layer.objects.active
     selected = list(view_layer.objects.selected)
-    target = resolver.resolve(active, selected)
+    from ..cladding import ops_adopt
+    target = resolver.resolve(active, selected, cladding_controller=ops_adopt.controller_for)
     objects = {o.session_uid: o for o in ([active] if active is not None else []) + selected}
     _cache[key] = _Entry(sig, target, objects)
+    if target is not None and target.kind in resolver.SHEET_KINDS:
+        target = _with_measures(context, target)
+    elif target is not None and target.kind == resolver.MULTIPLE:
+        target = _with_multi(context, target)
+    elif target is not None and target.kind == resolver.OPENING and target.detail == 'DOOR':
+        import dataclasses
+        from ..openings.ops import door_of
+        target = dataclasses.replace(target, has_leaf=door_of(object_for(context, target.uid)) is not None)
+    elif target is not None and target.kind == resolver.CLADDING:
+        _load_cladding_draft(context, target)
+    entry = _cache[key]
+    entry.target = target
+    entry.pose = _pose(object_for(context, target.uid)) if target is not None else None
     return target
+
+
+def _load_cladding_draft(context, target):
+    """O rascunho do painel recebe os valores do revestimento selecionado (só quando troca de revestimento)."""
+    draft = getattr(context.window_manager, 'btm_cladding_draft', None)
+    root = object_for(context, target.uid)
+    if draft is None or root is None or draft.uid == root.btm_cladding.uid:
+        return
+    from ..cladding.ops import copy_settings
+    copy_settings(root.btm_cladding, draft)
+    draft.uid = root.btm_cladding.uid
+
+
+def pose_matches(context, target):
+    """O objeto do alvo continua onde estava quando o snapshot foi feito (D-04: o setter confere a pose)."""
+    key = _key(context)
+    entry = _cache.get(key) if key is not None else None
+    if entry is None or entry.target is None or entry.target.uid != target.uid:
+        return False
+    return entry.pose == _pose(object_for(context, target.uid))
+
+
+def sheet_target(context, obj):
+    """Alvo com medidas de um objeto qualquer da seleção (edição em lote da seleção múltipla)."""
+    target = resolver.resolve(obj, [obj])
+    return _with_measures(context, target) if target is not None and target.kind in resolver.SHEET_KINDS else target
+
+
+def _with_multi(context, target):
+    import dataclasses
+    values = []
+    for uid in target.selected_uids:
+        obj = object_for(context, uid)
+        sheet = sheet_target(context, obj) if obj is not None else None
+        values.append(sheet.measures.thickness.value if sheet is not None and sheet.measures is not None else None)
+    return dataclasses.replace(target, multi_thickness=tuple(values))
+
+
+def _with_measures(context, target):
+    """Medidas semânticas da chapa (D-11): caixa local da malha e matriz mundial, no referencial do dono."""
+    import dataclasses
+    from . import part_geometry
+    obj = object_for(context, target.uid)
+    if obj is None or obj.type != 'MESH':
+        return target
+    corners = [tuple(c) for c in obj.bound_box]
+    low = tuple(min(c[i] for c in corners) for i in range(3))
+    high = tuple(max(c[i] for c in corners) for i in range(3))
+    owner = object_for(context, target.owner_uid) if target.owner_uid else None
+    reference = owner.matrix_world.to_3x3().normalized() if owner is not None else None
+    try:
+        measures = part_geometry.measure(low, high, obj.matrix_world, reference)
+    except part_geometry.PartGeometryError as exc:
+        return dataclasses.replace(target, measure_error=str(exc))
+    return dataclasses.replace(target, measures=measures)
 
 
 def current(context):

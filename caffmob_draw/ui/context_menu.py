@@ -11,26 +11,39 @@ from ..selection import classify
 from .sidebar_vocab import draw_action
 
 def item_actions(context):
-    """[(chave do vocabulário, argumentos)] das ações frequentes do objeto ativo, em ordem de uso."""
-    obj = context.active_object
-    from ..stick.ops_stick import item_of, stickable
-    if not stickable(obj):
+    """[(chave do vocabulário, argumentos)] das ações frequentes do alvo, em ordem de uso.
+
+    (067 D-09) Vem do CommandRouter para o snapshot do alvo, o mesmo que o painel usa: só o que executa nele, e na
+    chapa as ações da chapa, nunca as do módulo (RF-005).
+    """
+    from ..target import commands, snapshot
+    target = snapshot.current(context)
+    obj = snapshot.object_for(context, target.uid) if target is not None else None
+    if obj is None:
         return []
-    info = classify.classify(obj)
-    item = item_of(obj)
-    stuck = item is not None and item.btm_stick.is_stuck
-    actions = [('RELEASE', {}), ('STICK_MOVE', {})] if stuck else [('STICK', {})]
-    actions.append(('MOVE_OVER', {}))
-    if info.kind in (classify.MODULE, classify.FRONT, classify.PART):
+    enabled = {entry.operator for entry in commands.menu_items(target)}
+    actions = []
+    if 'caffmob.stick_to_face' in enabled:
+        from ..stick.ops_stick import item_of, stickable
+        if stickable(obj):
+            item = item_of(obj)
+            stuck = item is not None and item.btm_stick.is_stuck
+            actions += [('RELEASE', {}), ('STICK_MOVE', {})] if stuck else [('STICK', {})]
+    if 'caffmob.move_over_toggle' in enabled:
+        actions.append(('MOVE_OVER', {}))
+    if 'caffmob.cabinet_editor' in enabled:
         from ..customize import adapters
         if adapters.for_object(obj)[1] is not None:
             actions.append(('CABINET_EDITOR', {}))
-    actions.append(('CHECK_ITEM', {'scope': 'SELECTED'}))
-    if info.kind in (classify.MODULE, classify.FRONT, classify.PART):
+    if 'caffmob.check_collisions' in enabled:
+        actions.append(('CHECK_ITEM', {'scope': 'SELECTED'}))
+    if target.kind in (classify.MODULE, classify.FRONT):
         from ..inspection import fronts
-        if fronts.fronts_of(info.root, context.scene):
-            actions.append(('FRONTS_OPEN', {'scope': 'ACTIVE_MODULE', 'mode': 'OPEN_DEFAULT'}))
-            actions.append(('FRONTS_CLOSE', {'scope': 'ACTIVE_MODULE', 'mode': 'CLOSE'}))
+        root = snapshot.object_for(context, target.owner_uid) if target.kind == classify.FRONT else obj
+        scope = 'SELECTED' if target.kind == classify.FRONT else 'ACTIVE_MODULE'
+        if root is not None and fronts.fronts_of(root, context.scene):
+            actions.append(('FRONTS_OPEN', {'scope': scope, 'mode': 'OPEN_DEFAULT'}))
+            actions.append(('FRONTS_CLOSE', {'scope': scope, 'mode': 'CLOSE'}))
     return actions
 
 

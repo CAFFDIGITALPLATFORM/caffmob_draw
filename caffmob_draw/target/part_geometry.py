@@ -11,13 +11,14 @@ As matrizes são lidas por índice `m[linha][coluna]`, o que serve tanto para `m
 
 import math
 from dataclasses import dataclass
+from ..data.i18n import N_
 
 WIDTH, HEIGHT, DEPTH, THICKNESS = 'WIDTH', 'HEIGHT', 'DEPTH', 'THICKNESS'
 _EPS_SCALE = 1e-9
 _SHEAR_TOL = 1e-5
 
 
-class PartGeometryError(Exception):
+class PartGeometryError(ValueError):
     """Medida recusada (mensagem pronta para o usuário)."""
 
 
@@ -68,21 +69,21 @@ def scale_axes(matrix_world):
     """Direções unitárias e escalas dos três eixos locais no mundo. Recusa escala zero, shear e não finito."""
     columns = [_column(matrix_world, i) for i in range(3)]
     if not _finite(*(v for c in columns for v in c)):
-        raise PartGeometryError("A transformação da peça tem valor não finito.")
+        raise PartGeometryError(N_("A transformação da peça tem valor não finito."))
     scales = [_length(c) for c in columns]
     if min(scales) < _EPS_SCALE:
-        raise PartGeometryError("A peça tem escala zero num eixo: aplique a escala antes de editar.")
+        raise PartGeometryError(N_("A peça tem escala zero num eixo: aplique a escala antes de editar."))
     units = [tuple(v / s for v in c) for c, s in zip(columns, scales)]
     for i, j in ((0, 1), (0, 2), (1, 2)):
         if abs(_dot(units[i], units[j])) > _SHEAR_TOL:
-            raise PartGeometryError("A peça está distorcida (shear): aplique a transformação antes de editar.")
+            raise PartGeometryError(N_("A peça está distorcida (shear): aplique a transformação antes de editar."))
     return units, scales
 
 
 def measure(local_min, local_max, matrix_world, reference=None):
     """Medidas da chapa a partir da caixa local da malha e da matriz mundial (com a escala dos ancestrais)."""
     if not _finite(*local_min, *local_max):
-        raise PartGeometryError("A malha da peça tem coordenada não finita.")
+        raise PartGeometryError(N_("A malha da peça tem coordenada não finita."))
     units, scales = scale_axes(matrix_world)
     lengths = [abs(float(local_max[i]) - float(local_min[i])) * scales[i] for i in range(3)]
     thickness_axis = min(range(3), key=lambda i: (lengths[i], i))
@@ -108,9 +109,9 @@ def validate_length(value):
     try:
         number = float(value)
     except (TypeError, ValueError):
-        raise PartGeometryError("Medida inválida.") from None
+        raise PartGeometryError(N_("Medida inválida.")) from None
     if not math.isfinite(number):
-        raise PartGeometryError("Medida não finita.")
+        raise PartGeometryError(N_("Medida não finita."))
     if number <= 0.0:
-        raise PartGeometryError("A medida precisa ser maior que zero.")
+        raise PartGeometryError(N_("A medida precisa ser maior que zero."))
     return number

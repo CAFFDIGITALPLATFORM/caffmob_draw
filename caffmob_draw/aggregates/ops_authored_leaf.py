@@ -153,6 +153,12 @@ class BTM_OT_AuthoredLeaf(bpy.types.Operator):
     preview_error: bpy.props.StringProperty(options={'HIDDEN', 'SKIP_SAVE'})  # type: ignore
     preview: bpy.props.FloatProperty(name="Prévia", min=0, max=1, update=_preview)  # type: ignore
 
+    @classmethod
+    def poll(cls, context):
+        # (067 D-08) Habilitado só onde executa; o motivo aparece na dica do botão.
+        from ..target import capabilities, snapshot
+        return capabilities.poll(cls, 'authored_leaf', snapshot.current(context))
+
     def _configure(self):
         objects = getattr(self, '_objects', list(bpy.context.selected_objects))
         owner = owner_of(objects[0]) if objects else None
@@ -214,6 +220,12 @@ class BTM_OT_AuthoredLeavesOpen(bpy.types.Operator):
     bl_label = "Abrir/fechar portas deste armário"
     bl_options = {'REGISTER', 'UNDO'}
     opening: bpy.props.FloatProperty(name="Abertura", min=0, max=1, default=1)  # type: ignore
+
+    @classmethod
+    def poll(cls, context):
+        # (067 D-08) Habilitado só onde executa; o motivo aparece na dica do botão.
+        from ..target import capabilities, snapshot
+        return capabilities.poll(cls, 'authored_leaves_open', snapshot.current(context))
 
     def invoke(self, context, event):
         return context.window_manager.invoke_props_dialog(self)

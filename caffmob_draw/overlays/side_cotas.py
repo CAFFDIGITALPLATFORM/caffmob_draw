@@ -11,8 +11,9 @@ muda (`_revision`, por atualização do depsgraph, abrir, desfazer e refazer) ou
 o leem (RF08). Editar uma cota (rótulo clicável, `caffmob.fixed_cota_edit`, ou o campo nas propriedades) move o
 conjunto pela diferença, sem redimensionar, como ferramenta assistida: o guarda de colisão não limita (RF05, RF06).
 
-Desenha só na viewport da operação, capturada ao ligar a chave ou mover o ativo (RF-020). Nada durante o render nem
-com as sobreposições desligadas. A chave não mexe na colisão, e a colisão não mexe nela (RF-013).
+Desenha só na viewport da operação, capturada ao mover o alvo (RF-020). Nada durante o render nem com as sobreposições
+desligadas. (067 D-07) Sem chave: as cotas aparecem sempre, só para a seleção, no alvo do snapshot e no escopo Peça ou
+Conjunto de `btm_target.cota_scope`; peça gerada pelo módulo nunca é alvo móvel.
 """
 
 import bpy  # type: ignore
@@ -55,13 +56,8 @@ def bind(context):
 
 
 def update_enabled(settings, context):
-    release()
-    if settings.show_side_dimensions:
-        bind(context)
-    for window in context.window_manager.windows:
-        for area in window.screen.areas:
-            if area.type == 'VIEW_3D':
-                area.tag_redraw()
+    """(067 D-07) A chave "Medidas laterais" continua registrada (arquivos antigos a gravam), mas não muda nada: as
+    cotas fixas aparecem sempre, só para a seleção."""
 
 
 def _alive(context):
@@ -92,12 +88,42 @@ def _ref_name(obj):
     return root.name
 
 
-def _key(context):
-    obj = getattr(context, 'active_object', None)
-    if obj is None or not obj.select_get():
+# (067 D-07) Peças que andam sozinhas no escopo Peça; peça gerada pelo módulo nunca é alvo móvel (volta ao conjunto).
+_PART_SCOPE_KINDS = ('MEMBER', 'GEOMETRY', 'OTHER')
+
+
+def moving_object(context, refresh=False):
+    """O que as cotas medem e movem: o alvo do snapshot no escopo de `btm_target.cota_scope`; None sem alvo móvel.
+    `refresh` (timer, operador, campo; nunca o desenho) refaz o snapshot se a seleção mudou."""
+    from ..target import snapshot
+    target = snapshot.ensure(context) if refresh else snapshot.current(context)
+    if target is None or not target.move_uid:
+        return None
+    scope = getattr(getattr(context.window_manager, 'btm_target', None), 'cota_scope', 'PART')
+    own = target.kind in _PART_SCOPE_KINDS or (target.kind == 'PART' and target.detail == 'AUTHORED')
+    if scope == 'PART' and own:
+        from ..selection import classify
+        obj = snapshot.object_for(context, target.uid)
+        if obj is not None and obj.type in classify.BODY_TYPES:      # luz ou empty membro: a cota é do conjunto
+            return obj
+    return snapshot.object_for(context, target.move_uid)
+
+
+def _key(context, refresh=False):
+    mover = moving_object(context, refresh)
+    if mover is None:
         return None, None
-    mover = _mover(obj)
-    return (_revision[0], context.scene.as_pointer(), mover.session_uid), mover
+    scope = getattr(getattr(context.window_manager, 'btm_target', None), 'cota_scope', 'PART')
+    return (_revision[0], context.scene.as_pointer(), mover.session_uid, scope), mover
+
+
+def check_unchanged(context, mover_uid, pose):
+    """Recusa (ValueError) se o alvo móvel trocou ou andou desde que a cota foi lida: operador e campo usam a mesma."""
+    from ..data.i18n import tr
+    _key_now, mover = _key(context, refresh=True)
+    if mover is None or mover.session_uid != mover_uid or (mover.matrix_world.translation - Vector(pose)).length > 1e-6:
+        raise ValueError(tr("O item ou a posição mudou durante a edição; nada foi alterado."))
+    return mover
 
 
 def _compute(context, mover):
@@ -133,7 +159,7 @@ def _compute(context, mover):
 
 def snapshot(context, compute=True):
     """O último cálculo do ativo; com `compute`, refaz se a cena ou o ativo mudaram (nunca no desenho nem nos campos)."""
-    key, mover = _key(context)
+    key, mover = _key(context, refresh=compute)
     if key is None:
         return {}
     if compute and _snap['key'] != key:
@@ -171,7 +197,7 @@ def apply_fixed(context, name, value):
     record = snap.get('gaps', {}).get(name)
     if record is None:
         raise ValueError(tr("Este lado não tem referência para medir."))
-    key, mover = _key(context)
+    key, mover = _key(context, refresh=True)
     delta = value - record[0].value
     axis = Vector(snap['axis'])
     up = Vector((0.0, 0.0, 1.0))
@@ -211,10 +237,6 @@ def _label_rects(context, region, rv3d, items):
 
 def _draw():
     context = bpy.context
-    settings = getattr(context.scene, 'btm_settings', None)
-    if settings is None or not settings.show_side_dimensions:
-        release()
-        return
     area, region, rv3d = context.area, context.region, context.region_data
     overlay = getattr(context.space_data, 'overlay', None)
     if area is None or rv3d is None or (overlay is not None and not overlay.show_overlays):
@@ -248,7 +270,7 @@ def _tick():
         context = bpy.context
         if bpy.app.is_job_running('RENDER') or getattr(context, 'scene', None) is None:
             return TICK
-        key, _mover_obj = _key(context)
+        key, _mover_obj = _key(context, refresh=True)
         if key is not None and key != _snap['key']:
             snapshot(context, compute=True)
             for window in context.window_manager.windows:
@@ -274,8 +296,7 @@ class BTM_OT_FixedCotaEdit(bpy.types.Operator):
 
     @classmethod
     def poll(cls, context):
-        settings = getattr(context.scene, 'btm_settings', None)
-        return settings is not None and settings.show_side_dimensions
+        return moving_object(context) is not None          # 067 D-07: sem chave; parede e luz soltas não têm cota
 
     def invoke(self, context, event):
         region = context.region
@@ -284,7 +305,7 @@ class BTM_OT_FixedCotaEdit(bpy.types.Operator):
         if name is None:
             return {'PASS_THROUGH'}
         record = records(context, compute=False).get(name)
-        key, mover = _key(context)
+        key, mover = _key(context, refresh=True)
         if record is None or mover is None:
             return {'PASS_THROUGH'}
         self.side, self.value = name, record[0]
@@ -292,13 +313,9 @@ class BTM_OT_FixedCotaEdit(bpy.types.Operator):
         return context.window_manager.invoke_props_dialog(self, title=tr_label(name, record[1]))
 
     def execute(self, context):
-        from ..data.i18n import tr
-        _key_now, mover = _key(context)
-        if self.mover_uid and (mover is None or mover.session_uid != self.mover_uid
-                               or (mover.matrix_world.translation - Vector(self.pose)).length > 1e-6):
-            self.report({'WARNING'}, tr("O item ou a posição mudou durante a edição; nada foi alterado."))
-            return {'CANCELLED'}
         try:
+            if self.mover_uid:
+                check_unchanged(context, self.mover_uid, self.pose)
             apply_fixed(context, self.side, self.value)
         except ValueError as exc:
             self.report({'WARNING'}, str(exc))

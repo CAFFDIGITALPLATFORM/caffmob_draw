@@ -7,14 +7,15 @@
 - `adapters/`: um adaptador por tipo e o fallback rotulado
 - `props`: `Object.btm_part` e `WindowManager.btm_target`
 - `snapshot`: o alvo resolvido fora do draw, por cena e view layer
+- `ops`: "Selecionar conjunto" e "Aplicar" do revestimento
 """
 
 _registered = False
 
 
 def _modules():
-    from . import props, snapshot
-    return (props, snapshot)
+    from . import ops, props, snapshot
+    return (props, snapshot, ops)
 
 
 def register():

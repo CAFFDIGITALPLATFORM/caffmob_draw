@@ -4,6 +4,7 @@
   dado: a textura não gira.
 - `WindowManager.btm_target`: estado de interface fora do arquivo e do Undo: o escopo das cotas (Peça ou Conjunto,
   D-07) e o último erro de um setter (D-04).
+- `WindowManager.btm_cladding_draft`: rascunho do revestimento selecionado (RF-020), carregado pelo snapshot.
 """
 
 import bpy  # type: ignore
@@ -30,6 +31,9 @@ class BTM_PG_Target(bpy.types.PropertyGroup):
     cota_scope: bpy.props.EnumProperty(name=N_("Escopo das cotas"), items=COTA_SCOPE_ITEMS, default='PART',
                                        options=set())  # type: ignore
     error: bpy.props.StringProperty(name=N_("Erro"), options=set())  # type: ignore
+    legacy_cotas: bpy.props.BoolProperty(
+        name=N_("Cotas antigas"), description=N_("Mostra as cotas de afastamento e Mover na Parede do módulo"),
+        default=False, options=set())  # type: ignore
 
 
 _CLASSES = (BTM_PG_Part, BTM_PG_Target)
@@ -40,10 +44,14 @@ def register():
         bpy.utils.register_class(cls)
     bpy.types.Object.btm_part = bpy.props.PointerProperty(type=BTM_PG_Part)
     bpy.types.WindowManager.btm_target = bpy.props.PointerProperty(type=BTM_PG_Target)
+    # Rascunho do revestimento selecionado (RF-020): digitar aqui não refaz nada; "Aplicar" leva ao revestimento.
+    from ..cladding import props as cladding_props
+    bpy.types.WindowManager.btm_cladding_draft = bpy.props.PointerProperty(type=cladding_props.BTM_PG_Cladding)
 
 
 def unregister():
-    for owner, name in ((bpy.types.WindowManager, 'btm_target'), (bpy.types.Object, 'btm_part')):
+    for owner, name in ((bpy.types.WindowManager, 'btm_cladding_draft'), (bpy.types.WindowManager, 'btm_target'),
+                        (bpy.types.Object, 'btm_part')):
         if hasattr(owner, name):
             delattr(owner, name)
     for cls in reversed(_CLASSES):

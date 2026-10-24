@@ -214,6 +214,10 @@ def product_tabs():
 
 
 def capture_all():
+    # 067 RF-004: toda capacidade da 1.8.0 fica na Completa (o Essencial mostra só o necessário do tipo); sem a
+    # extensão instalada não há preferências, então o modo é fixado aqui.
+    from caffmob_draw.ui import object_properties
+    object_properties.panel_mode = lambda _context: 'COMPLETE'
     contexts = build_scene()
     # 063: exercita os botões contextuais das listas, sem iniciar pedidos.
     state = ctx.window_manager.btm_caffmob

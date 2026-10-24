@@ -9,19 +9,16 @@ from caffmob_draw.target import resolver as r
 
 # Onde cada botão de "Agregados e folhas" executa (o resto fica cinza com motivo).
 EXPECTED = {
-    'authored_adopt': {'btm_module', 'hb_module', 'part', 'front', 'geometry', 'free'},
+    'authored_adopt': {'btm_module', 'hb_module', 'part', 'front', 'leaf', 'geometry', 'free', 'light', 'obstacle'},
     'member_add': {'authored', 'member'},
     'member_remove': {'member'},
     'member_transfer': {'member'},
     'authored_leaf': {'member'},
     'authored_leaves_open': {'authored', 'member'},
     'authored_update_links': {'authored', 'member'},
-    'aggregate_convert': {'geometry', 'free'},
-    'leaf_convert': {'part', 'geometry', 'free'},
-    'window_assemble': {'room_door', 'btm_door', 'window'},
-    'group_create': set(),
-    'group_dissolve': set(),
 }
+# Botões com `poll` próprio no operador: a tabela não os decide (RF-002 pelo próprio operador).
+DELEGATED = {'aggregate_convert', 'leaf_convert', 'window_assemble', 'group_create', 'group_dissolve'}
 TYPES = ('btm_module', 'hb_module', 'authored', 'member', 'part', 'geometry', 'front', 'leaf', 'wall', 'room_door',
          'btm_door', 'window', 'cladding', 'floor', 'ceiling', 'light', 'camera', 'annotation', 'free', 'obstacle')
 
@@ -33,7 +30,8 @@ class CapabilitiesTest(unittest.TestCase):
 
     def test_tabela_comandos_por_tipo(self):
         self.assertGreaterEqual(len(caps.AGGREGATE_COMMANDS), 11)
-        self.assertEqual(set(caps.AGGREGATE_COMMANDS), set(EXPECTED))
+        self.assertEqual(set(caps.AGGREGATE_COMMANDS), set(EXPECTED) | DELEGATED)
+        self.assertEqual(caps.DELEGATED, DELEGATED)
         for command, where in EXPECTED.items():
             for name, target in self.targets.items():
                 ok, reason = caps.check(command, target)
@@ -47,12 +45,19 @@ class CapabilitiesTest(unittest.TestCase):
         self.assertFalse(ok)
         self.assertIn("membro", reason)
 
-    def test_selecao_multipla_e_grupo(self):
+    def test_selecao_multipla(self):
         s = stubs.scene()
         multiple = r.resolve(s.part, [s.part, s.free])
-        self.assertTrue(caps.check('group_create', multiple)[0])
+        self.assertTrue(caps.check('authored_adopt', multiple)[0])
         self.assertFalse(caps.check('member_remove', multiple)[0])
         self.assertTrue(caps.check('member_remove', r.resolve(s.part, [s.part, s.member]))[0])
+
+    def test_botoes_sem_poll_ganham_poll_e_os_com_poll_ficam_com_o_deles(self):
+        from caffmob_draw.target import commands
+        for command in DELEGATED:
+            self.assertIsNone(commands.BY_OPERATOR[caps.BY_ID[command].operator].condition, command)
+        for command in EXPECTED:
+            self.assertIsNotNone(commands.BY_OPERATOR[caps.BY_ID[command].operator].condition, command)
 
     def test_cabecalho_mover_e_cotas(self):
         t = self.targets
@@ -75,6 +80,7 @@ class CapabilitiesTest(unittest.TestCase):
         self.assertFalse(caps.poll(Op, 'member_remove', self.targets['wall']))
         self.assertTrue(Op.message)
         self.assertTrue(caps.poll(Op, 'member_remove', self.targets['member']))
+        self.assertTrue(caps.poll(Op, 'member_remove', None))       # snapshot velho: o execute decide
 
 
 if __name__ == '__main__':
