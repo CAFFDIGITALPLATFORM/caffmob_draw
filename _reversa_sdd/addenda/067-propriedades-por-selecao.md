@@ -69,3 +69,33 @@ W001, W002, W003, W004 e W005, em `caff_systems:_reversa_forward/067-propriedade
 - `caff_systems:_reversa_forward/067-propriedades-por-selecao/requirements.md`
 - `caff_systems:_reversa_forward/067-propriedades-por-selecao/roadmap.md` (D-02 a D-13, D-26 a D-29, D-32)
 - `caff_systems:_reversa_forward/067-propriedades-por-selecao/progress.jsonl`
+
+## Atualização 2026-10-25 (onda 2, addon 1.10.0)
+
+Onda 2 da 067 (acabamentos por domínio, soltar textura com pergunta, assistente de classificação e o U): ações T009,
+T023 a T026, T057 a T064, T096 a T099, T132, T174 e T175, na branch `feat/067-onda2-acabamentos`.
+
+| Artefato | Seção | Tipo de impacto | Delta |
+|----------|-------|-----------------|-------|
+| `_reversa_sdd/customize/requirements.md` | RN-13 (grupos de material pela função da peça) | regra-alterada | Os grupos viram os domínios INTERNAL, EXTERNAL, FRONTS e EDGE (`customize/finish_core`); ver RN-13 (-v002) abaixo |
+| `_reversa_sdd/domain.md` | RN-CUSTOMIZE-10 (grupos de material) | regra-alterada | A parte dos grupos vira domínio por face ou por peça; a parte do veio (`ROTATED`) muda na onda 3 |
+| `_reversa_sdd/customize/` | Personalização do armário autoral | regra-alterada | Materiais habilitados quando há papéis de acabamento cadastrados; frentes, puxadores, divisões e estilos continuam recusados |
+| `_reversa_sdd/library_panel/` | Soltar textura | regra-alterada | Soltar abre "Onde deseja aplicar a textura?" (`caffmob.finish_drop`); o download espera o OK |
+| `_reversa_sdd/geometry/` | Construtor BTM (`mesh_gen`) | delta-de-dados | Atributo de face `btm_face_role` (1 interna, 2 aparente, 3 borda) gravado pelo construtor |
+| `_reversa_sdd/aggregates/` | Criar componente | componente-novo | `caffmob.component_from_selection` (U em Object Mode) sobre `ops_authored.adopt` |
+| n/a | `Object.btm_finish`, `btm_part.finish_role` | delta-de-dados | Atribuição por domínio na raiz do dono ou na peça; M-03 migra os grupos antigos com origem MIGRATED, sem mudar a aparência |
+
+### Versões `-v002` das regras superadas na onda 2 (067 D-32, RF-143)
+
+- **customize RN-13 (-v002):** o acabamento de um móvel é por domínio. Interno cobre as faces internas da caixa e do
+  fundo, prateleiras e divisórias; Externo cobre as faces aparentes da caixa (inclusive a face de trás do fundo) e as
+  frentes; Frentes cobre só as frentes, que nascem com veio V e têm o veio próprio; Fita cobre as bordas das chapas.
+  O papel vem do construtor: por face no atributo `btm_face_role` do módulo BTM, por peça nas bibliotecas HB (pelo
+  componente do Padrão de Dimensões, `spec.group_of_component`, o fundo seguindo a caixa) e no armário autoral (pelo
+  assistente ou pelo papel do membro). Peça sem papel não recebe acabamento por suposição: o assistente classifica.
+  A escolha fica em `btm_finish` (dono ou peça) e volta depois do rebuild.
+- **RN-CUSTOMIZE-10 (-v002, parte dos grupos):** os grupos CAIXA, FUNDO, INTERNO e FRENTES de `btm_custom` são lidos
+  só pela migração M-03 e pelo caminho antigo de reaplicação dos arquivos que ainda não tiveram acabamento novo; a
+  parte do veio pela variante `<nome> ROTATED` continua valendo até a onda 3.
+
+Regras sob vigilância desta onda: ver `regression-watch.md` da 067 (itens da onda 2).
