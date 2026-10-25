@@ -67,6 +67,9 @@ def draw_standards_box(layout, context):
     row = sub.row(align=True)
     row.operator("caffmob.standards_import_promob", text="Importar do Promob", icon='IMPORT')
     row.operator("caffmob.standards_export_promob", text="Exportar p/ Promob", icon='EXPORT')
+    row = sub.row(align=True)                       # 067 RF-033: o padrão da marcenaria inteiro
+    row.operator("caffmob.standards_import_all", text=tr("Importar todas"), icon='IMPORT')
+    row.operator("caffmob.standards_export_all", text=tr("Exportar todas"), icon='EXPORT')
 
 
 def draw_inspection_box(layout, context):
@@ -187,7 +190,6 @@ def draw_settings(layout, context):
     if settings.snap_grid:
         col.prop(settings, "snap_increment", text="Incremento do Snap")
     col.prop(settings, "block_penetration", text="Impedir atravessamento")      # 066, RF-022: controles próprios
-    col.prop(settings, "show_side_dimensions", text="Medidas laterais")
 
     draw_standards_box(layout, context)
 
@@ -302,8 +304,7 @@ class BTM_PT_EnvironmentBuilder(bpy.types.Panel):
             if settings.snap_grid:
                 col.prop(settings, "snap_increment", text="Incremento do Snap")
             col.prop(settings, "block_penetration", text="Impedir atravessamento")      # 066, RF-022
-            col.prop(settings, "show_side_dimensions", text="Medidas laterais")
-
+        
             # 2. Padrão de Dimensões (Configurador de Dimensões)
             draw_standards_box(layout, context)
 

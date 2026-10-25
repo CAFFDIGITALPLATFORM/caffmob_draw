@@ -14,22 +14,54 @@ Os campos editáveis são propriedades virtuais em `Scene.btm_selection` (com `g
 cada edição vira um passo de Ctrl+Z (RN-03). Valor inválido não é aplicado e a mensagem aparece no painel.
 """
 
-import math
-
 import bpy  # type: ignore
 from bpy.app.handlers import persistent  # type: ignore
 
-from ..data import units
 from ..data.i18n import N_, tr
-from ..measure import cotas as cotas_mod
 from ..measure import scene_cotas
 from ..selection import classify, editing
 
 ERROR_KEY = 'btm_selection_error'
 
 
+# (067 D-04) Os campos leem e escrevem no objeto do snapshot do alvo (`target/snapshot.py`), nunca no ativo: o
+# snapshot é refeito fora do draw, e o setter confere se o alvo que o painel mostrou ainda é o mesmo e está parado.
+_drawn = {'uid': 0}
+
+
+def remember_drawn(target):
+    """O draw anota o alvo que mostrou (dicionário Python, não dado do Blender) para o setter conferir."""
+    _drawn['uid'] = target.uid if target is not None else 0
+
+
+def _target():
+    from ..target import snapshot
+    return snapshot.current(bpy.context)
+
+
+def _target_object(target):
+    from ..target import snapshot
+    return snapshot.object_for(bpy.context, target.uid) if target is not None else None
+
+
 def _info():
-    return classify.classify(bpy.context.active_object)
+    obj = _target_object(_target())
+    return classify.classify(obj) if obj is not None else None
+
+
+def _edit_target():
+    """Alvo para um setter: recusa se a seleção mudou desde que o painel foi desenhado ou se o alvo se moveu."""
+    from ..target import snapshot
+    target = _target()
+    if target is None or (_drawn['uid'] and target.uid != _drawn['uid']):
+        raise ValueError(tr("A seleção mudou: confira o painel e digite de novo."))
+    if not snapshot.pose_matches(bpy.context, target):
+        raise ValueError(tr("O objeto mudou de posição: confira o painel e digite de novo."))
+    return target
+
+
+def _edit_info():
+    return classify.classify(_target_object(_edit_target()))
 
 
 def _set_error(message):
@@ -49,7 +81,16 @@ def _guard(apply):
         apply()
         _clear_error()
     except ValueError as exc:
+        _set_error(tr(str(exc)))            # recusas puras (chapa, banco) chegam com o msgid; as outras já traduzidas
+
+
+def _guarded_info():
+    """`_edit_info()` com a recusa no canal de erro do painel; None quando recusou."""
+    try:
+        return _edit_info()
+    except ValueError as exc:
         _set_error(str(exc))
+        return None
 
 
 # Dimensões -------------------------------------------------------------------------------------------------
@@ -68,7 +109,7 @@ def _dim_getter(field):
 
 def _dim_setter(field):
     def set_(_self, value):
-        info = _info()
+        info = _guarded_info()
         if info is not None:
             _guard(lambda: editing.set_dimension(bpy.context, info, field, value))
     return set_
@@ -78,7 +119,7 @@ def _dim_setter(field):
 
 def _cota_getter(field):
     def get(_self):
-        obj = getattr(bpy.context, 'active_object', None)    # timer, salvamento: sem objeto ativo (BUG-20261023-7YO4)
+        obj = _target_object(_target())          # timer, salvamento: sem alvo (BUG-20261023-7YO4)
         try:
             mc = scene_cotas.for_object(obj, bpy.context.scene) if obj else None
             value = getattr(mc.compute(), field) if mc is not None else None
@@ -90,7 +131,8 @@ def _cota_getter(field):
 
 def _cota_setter(field):
     def set_(_self, value):
-        obj = getattr(bpy.context, 'active_object', None)
+        info = _guarded_info()
+        obj = info.obj if info is not None else None
         mc = scene_cotas.for_object(obj, bpy.context.scene) if obj else None
         if mc is not None:
             _guard(lambda: mc.apply(field, value))
@@ -133,7 +175,7 @@ def _wall_getter(field):
 
 def _wall_setter(field):
     def set_(_self, value):
-        info = _info()
+        info = _guarded_info()
         if info is not None and info.kind == classify.WALL:
             _guard(lambda: editing.set_wall(info, field, value))
     return set_
@@ -145,9 +187,53 @@ def _get_sill(_self):
 
 
 def _set_sill(_self, value):
-    info = _info()
+    info = _guarded_info()
     if info is not None:
         _guard(lambda: editing.set_sill(info, value))
+
+
+# Chapa (067 D-11, D-12): medidas semânticas do snapshot; editar passa por `target/part_edit`.
+
+_PART_INDEX = {'part_a': 0, 'part_b': 1}
+
+
+def _part_getter(field):
+    def get(_self):
+        target = _target()
+        measures = target.measures if target is not None else None
+        if measures is None:
+            return 0.0
+        item = measures.face[_PART_INDEX[field]] if field in _PART_INDEX else measures.thickness
+        return float(item.value)
+    return get
+
+
+def _part_setter(field):
+    def set_(_self, value):
+        def apply():
+            from ..target import part_edit
+            target = _edit_target()
+            part_edit.resize(target, _target_object(target), field, value)
+        _guard(apply)
+    return set_
+
+
+def _multi_thickness_get(_self):
+    target = _target()
+    values = [v for v in (target.multi_thickness if target is not None else ()) if v is not None]
+    return float(values[0]) if values else 0.0
+
+
+def _multi_thickness_set(_self, value):
+    def apply():
+        from ..target import part_edit, snapshot
+        target = _edit_target()
+        for uid in target.selected_uids:              # um só passo de Desfazer: o da edição do campo (RF-026)
+            obj = snapshot.object_for(bpy.context, uid)
+            sheet = snapshot.sheet_target(bpy.context, obj) if obj is not None else None
+            if sheet is not None and sheet.measures is not None:
+                part_edit.resize(sheet, obj, 'part_thickness', value)
+    _guard(apply)
 
 
 def _length(name, getter, setter, description=""):
@@ -185,52 +271,128 @@ class BTM_PG_SelectionEdit(bpy.types.PropertyGroup):
     wall_height: _length(N_("Pé-direito inicial"), _wall_getter('height'), _wall_setter('height'))  # type: ignore
     wall_end_height: _length(N_("Pé-direito final"), _wall_getter('end_height'), _wall_setter('end_height'))  # type: ignore
     wall_thickness: _length(N_("Espessura"), _wall_getter('thickness'), _wall_setter('thickness'))  # type: ignore
+    # 067: medidas da própria chapa (rótulos pela orientação, no painel) e a espessura comum da seleção múltipla.
+    part_a: _length(N_("Medida A"), _part_getter('part_a'), _part_setter('part_a'))  # type: ignore
+    part_b: _length(N_("Medida B"), _part_getter('part_b'), _part_setter('part_b'))  # type: ignore
+    part_thickness: _length(N_("Espessura"), _part_getter('part_thickness'), _part_setter('part_thickness'))  # type: ignore
+    multi_thickness: _length(N_("Espessura"), _multi_thickness_get, _multi_thickness_set)  # type: ignore
 
 
-# Painel ----------------------------------------------------------------------------------------------------
+# Painel (067 T087): desenha o ViewModel do alvo (`target/view.py`) ----------------------------------------------
 
-def _status_line(info):
-    obj = info.obj
-    if info.kind in (classify.MODULE, classify.FRONT, classify.PART):
-        try:
-            module = classify.classify(info.root)
-            dims = [editing.get_dimension(module, f) for f in ('width', 'height', 'depth')]
-        except Exception:
-            dims = [obj.dimensions.x, obj.dimensions.z, obj.dimensions.y]
-    else:
-        dims = [obj.dimensions.x, obj.dimensions.z, obj.dimensions.y]
-    size = " × ".join(units.format_value(d) for d in dims)
-    rotation = math.degrees(obj.matrix_world.to_euler().z) % 360.0
-    return tr("{}: {} ({}) — rotação {:.0f}°").format(tr(classify.KIND_LABELS[info.kind]), obj.name, size, rotation)
+_SECTION_ICONS = {
+    'sheet': 'MESH_PLANE', 'dimensions': 'FIXED_SIZE', 'cotas': 'DRIVER_DISTANCE', 'position': 'ORIENTATION_GLOBAL',
+    'module': 'MODIFIER', 'geometry': 'MESH_CUBE', 'material': 'MATERIAL', 'wall': 'MOD_BUILD', 'opening': 'MOD_BOOLEAN',
+    'leaf': 'MOD_SIMPLEDEFORM', 'member': 'CON_SIZELIMIT', 'front': 'HIDE_OFF', 'cladding': 'MOD_ARRAY',
+    'surface': 'MESH_GRID', 'light': 'LIGHT', 'camera': 'CAMERA_DATA', 'multiple': 'OBJECT_DATA', 'limits': 'INFO',
+    'fallback': 'QUESTION', 'aggregates': 'LINKED', 'legacy_cotas': 'DRIVER_DISTANCE',
+}
 
 
-def _draw_dimensions(layout, edit, info):
-    fields = editing.editable_dimensions(info)
-    box = layout.box()
-    box.label(text="Dimensões", icon='FIXED_SIZE')
-    col = box.column(align=True)
-    if fields:
-        for field in fields:
-            col.prop(edit, field)
-    else:
-        d = info.obj.dimensions
-        col.label(text=f"{units.format_value(d.x)} × {units.format_value(d.z)} × {units.format_value(d.y)}")
-    if info.kind == classify.WINDOW and info.library == 'HB':
-        col.prop(edit, 'sill')
-    if (info.kind in (classify.MODULE, classify.FRONT, classify.PART)
-            and bpy.types.Operator.bl_rna_get_subclass_py('CAFFMOB_OT_cabinet_editor') is not None):
-        box.operator("caffmob.cabinet_editor", text="Abrir editor de armário", icon='MOD_BUILD')   # feature 004
+def panel_mode(context):
+    """Essencial ou Completa, das preferências do usuário (fora da cena e do Desfazer, D-05)."""
+    addon = context.preferences.addons.get(__package__.rsplit('.', 1)[0])
+    prefs = getattr(addon, 'preferences', None)
+    return getattr(prefs, 'panel_mode', 'ESSENTIAL')
 
 
-def _draw_fixed_cotas(layout, edit, context):
-    """As quatro cotas fixas com o nome da referência (BUG-20261023-HYCE); lado sem referência: só o aviso."""
+def _data(context, obj, key):
+    wm = context.window_manager
+    if key == 'selection':
+        return context.scene.btm_selection
+    if key in ('move_over', 'target', 'cladding'):
+        return getattr(wm, {'move_over': 'btm_move_over', 'target': 'btm_target',
+                            'cladding': 'btm_cladding_draft'}[key], None)
+    if obj is None:
+        return None
+    if key == 'object':
+        return obj
+    if key in ('light', 'camera'):
+        return obj.data
+    return getattr(obj, {'part': 'btm_part', 'geometry': 'btm_geometry', 'aggregate': 'btm_aggregate',
+                         'member': 'btm_member', 'cladding': 'btm_cladding', 'door': 'btm_opening_real',
+                         'wall': 'btm_wall', 'btm_opening': 'btm_opening', 'insertion': 'btm_plane'}.get(key, key),
+                   None)
+
+
+def _note_args(context, target, obj, args):
+    from ..target import resolver, snapshot
+    values = []
+    for arg in args:
+        if arg == 'target.move_name':
+            moving = snapshot.object_for(context, target.move_uid)
+            values.append(moving.name if moving is not None else "—")
+        elif arg == 'target.kind_label':
+            values.append(tr(resolver.KIND_LABELS.get(target.kind, "")))
+        elif arg == 'cladding.diagnostic':
+            values.append(getattr(getattr(obj, 'btm_cladding', None), 'diagnostic', "") or tr("sem avisos"))
+        else:
+            values.append(tr(arg))
+    return values
+
+
+def _draw_field(layout, context, target, obj, field):
+    data = _data(context, obj, field.data)
+    if data is None or field.prop not in data.bl_rna.properties:
+        return
+    row = layout.row(align=True)
+    row.enabled = not field.read_only
+    kwargs = {}
+    if field.label:
+        kwargs['text'] = tr(field.label)
+    if field.index >= 0:
+        kwargs['index'] = field.index
+    row.prop(data, field.prop, **kwargs)
+    if field.mixed and len({round(v, 6) for v in target.multi_thickness if v is not None}) > 1:
+        row.label(text=tr("Múltiplos"), icon='DOCUMENTS')
+
+
+def _draw_action(layout, action):
+    row = layout.row()
+    row.enabled = action.enabled
+    op = row.operator(action.operator, text=tr(action.label)) if action.label else row.operator(action.operator)
+    for name, value in action.args:
+        setattr(op, name, value)
+
+
+def _draw_note(layout, context, target, obj, note):
+    text = tr(note.text)
+    if note.args:
+        text = text.format(*_note_args(context, target, obj, note.args))
+    layout.label(text=text, icon=note.icon)
+
+
+def _draw_items(layout, context, target, obj, items):
+    from ..target import view
+    col = layout.column(align=True)
+    for item in items:
+        if isinstance(item, view.Field):
+            _draw_field(col, context, target, obj, item)
+        elif isinstance(item, view.Action):
+            _draw_action(col, item)
+        else:
+            _draw_note(col, context, target, obj, item)
+
+
+def _draw_cotas(layout, context, target, section):
+    """Cotas fixas do alvo móvel com o nome da referência; lado sem referência diz isso, nunca 0 (RF-028)."""
     from ..overlays import side_cotas
-    found = side_cotas.records(context, compute=False)
-    if not found:
-        return False
-    box = layout.box()
-    box.label(text=tr("Cotas fixas"), icon='DRIVER_DISTANCE')
-    col = box.column(align=True)
+    from ..target import view
+    notes = [i for i in section.items if isinstance(i, view.Note)]
+    if notes:
+        _draw_items(layout, context, target, None, notes)
+        return
+    edit = context.scene.btm_selection
+    layout.prop(context.window_manager.btm_target, 'cota_scope', expand=True)
+    moving = _target_object(target)
+    from ..target import snapshot
+    moving = snapshot.object_for(context, target.move_uid) or moving
+    layout.label(text=tr("Mover: {}").format(moving.name if moving is not None else "—"), icon='ORIENTATION_VIEW')
+    try:
+        found = side_cotas.records(context, compute=False)
+    except (AttributeError, ReferenceError):
+        found = {}
+    col = layout.column(align=True)
     for name, field in (('TOP', 'cota_superior'), ('LEFT', 'cota_esquerda'), ('RIGHT', 'cota_direita'),
                         ('BOTTOM', 'cota_inferior')):
         row = col.row(align=True)
@@ -239,144 +401,108 @@ def _draw_fixed_cotas(layout, edit, context):
             row.label(text=tr("até {}").format(found[name][1]))
         else:
             row.label(text=tr("{}: sem referência").format(tr(side_cotas.tr_label(name, ""))))
-    return True
 
 
-def _draw_cotas(layout, edit, context):
-    if getattr(context.scene.btm_settings, 'show_side_dimensions', False) and _draw_fixed_cotas(layout, edit, context):
-        return
-    mc = scene_cotas.for_object(context.active_object, context.scene)
-    if mc is None:
-        return
-    box = layout.box()
-    box.label(text="Cotas", icon='DRIVER_DISTANCE')
-    col = box.column(align=True)
-    if mc.on_wall:
-        for field in cotas_mod.FIELDS:
-            col.prop(edit, field)
-        box.operator("caffmob.move_on_wall", text="Mover na Parede", icon='ARROW_LEFTRIGHT')
-    else:
-        col.label(text="Módulo livre (sem parede): só cotas verticais.", icon='INFO')
-        col.prop(edit, 'inferior')
-        col.prop(edit, 'superior')
+def _draw_module(layout, context, target, section):
+    """Ações do módulo dono (escopo Conjunto numa peça): editor, Personalizar e abrir frentes, como na 1.8.0."""
+    from . import sidebar_proxy
+    from ..customize import panels as customize_panels
+    enabled = {a.operator for a in section.items if getattr(a, 'enabled', False)}
+    if 'caffmob.cabinet_editor' in enabled:
+        layout.operator("caffmob.cabinet_editor", text=tr("Abrir editor de armário"), icon='MOD_BUILD')
+    if sidebar_proxy.visible(customize_panels.BTM_PT_CustomizeModule, context):
+        sidebar_proxy.draw_panel(customize_panels.BTM_PT_CustomizeModule, layout, context)
+    elif 'caffmob.module_save' in enabled:
+        layout.operator("caffmob.module_save")
+    if 'caffmob.fronts_set_open' in enabled and target.kind == 'MODULE':
+        row = layout.row(align=True)
+        for label, mode in (("Abrir 90°", 'OPEN_90'), ("45°", 'OPEN_45'), ("Fechar", 'CLOSE')):
+            op = row.operator("caffmob.fronts_set_open", text=tr(label))
+            op.scope, op.mode = 'ACTIVE_MODULE', mode
 
 
-def _draw_open(layout, context, info):
-    from ..openings.ops import door_of
-    if door_of(context.active_object) is not None:
-        from .menus import draw_door_controls
-        draw_door_controls(layout, context)
-        return
-    from ..inspection import fronts
-    module = info.root
-    module_fronts = fronts.fronts_of(module, context.scene)
-    if not module_fronts:
-        return
-    box = layout.box()
-    box.label(text="Abrir", icon='HIDE_OFF')
-    if info.kind == classify.FRONT:
-        box.label(text=tr("Módulo: {}").format(module.name))
-        scope = 'SELECTED'
-    else:
-        scope = 'ACTIVE_MODULE'
-    row = box.row(align=True)
-    for label, mode in (("Abrir 90°", 'OPEN_90'), ("45°", 'OPEN_45'), ("Fechar", 'CLOSE')):
-        op = row.operator("caffmob.fronts_set_open", text=label)
-        op.scope, op.mode = scope, mode
+def _draw_position(layout, context, target, obj, section):
+    from ..target import view
+    from ..stick import panels as stick_panels
+    from ..collision import panels as collision_panels
+    from . import sidebar_proxy
+    operators = {a.operator for a in section.items if isinstance(a, view.Action) and a.enabled}
+    collision_panel = ('caffmob.check_collisions' in operators
+                       and sidebar_proxy.visible(collision_panels.BTM_PT_ItemCollision, context))
+    # O painel de colisão já mostra a colisão do objeto; sem ele, o campo aparece aqui.
+    fields = [i for i in section.items if not isinstance(i, view.Action)
+              and not (collision_panel and getattr(i, 'data', '') == 'insertion')]
+    _draw_items(layout, context, target, obj, fields)
+    if 'caffmob.stick_to_face' in operators:
+        sidebar_proxy.draw_panel(stick_panels.BTM_PT_Stick, layout, context)
+    if 'caffmob.set_insertion_plane' in operators:
+        plane = context.window_manager.btm_insertion_plane
+        row = layout.row(align=True)
+        row.operator_context = 'INVOKE_DEFAULT'
+        row.operator("caffmob.set_insertion_plane", text=tr("Plano de inserção"), icon='SNAP_FACE')
+        if plane.active:
+            row.operator("caffmob.clear_insertion_plane", text="", icon='X')
+            layout.label(text=tr("Plano ativo: face de {}").format(plane.source_name), icon='INFO')
+    for operator in ('caffmob.move_over_toggle', 'caffmob.resize_width'):
+        if operator in operators:
+            layout.operator(operator)
+    if collision_panel:
+        sidebar_proxy.draw_panel(collision_panels.BTM_PT_ItemCollision, layout, context)
+    elif 'caffmob.check_collisions' in operators:
+        layout.operator('caffmob.check_collisions')
 
 
-def _draw_wall(layout, edit, info):
-    box = layout.box()
-    box.label(text="Parede", icon='MOD_BUILD')
-    col = box.column(align=True)
-    if info.library == 'HB':
-        for field in ('wall_length', 'wall_height', 'wall_end_height', 'wall_thickness'):
-            col.prop(edit, field)
-    else:
-        wall = info.obj.btm_wall
-        for field in ('length', 'thickness', 'height_start', 'height_end', 'offset'):
-            col.prop(wall, field)
-    if info.library == 'HB':
-        row = box.row(align=True)
-        lowered = bool(info.obj.get('btm_wall_lowered'))
-        row.operator("caffmob.wall_lower", text="Restaurar Altura" if lowered else "Rebaixar", icon='TRIA_DOWN_BAR')
-        row.operator_menu_enum("caffmob.wall_visibility", "mode", text="Visibilidade", icon='HIDE_OFF')
-        row = box.row()
-        row.alert = True
-        row.operator("caffmob.wall_remove", text="Remover Parede…", icon='TRASH')
-
-
-def _draw_geometry(layout, info):
-    g = getattr(info.obj, 'btm_geometry', None)
-    if g is None:
-        _draw_dimensions(layout, None, info)
-        return
-    box = layout.box()
-    box.label(text="Geometria", icon='MESH_CUBE')
-    col = box.column(align=True)
-    col.prop(g, 'kind')
-    if g.kind == 'PLACA':
-        col.prop(g, 'plane')
-    for field in ('width', 'depth', 'height'):
-        if g.kind == 'PLACA' and {'XY': 'height', 'XZ': 'depth', 'YZ': 'width'}[g.plane] == field:
-            continue
-        col.prop(g, field)
-    col.prop(g, 'thickness')
-    from ..geometry_free import mesh
-    if mesh.thinner_than_thickness(g.kind, g.plane, g.width, g.depth, g.height, g.thickness):
-        col.label(text="Uma medida da placa é menor que a espessura", icon='ERROR')
-    col.prop(info.obj, 'location', text="Posição")
-    fab = layout.box()
-    fab.prop(g, 'fabrication')
-    sub = fab.column(align=True)
-    sub.enabled = g.fabrication
-    for field in ('component', 'material', 'finish'):
-        sub.prop(g, field)
+def _draw_wall_actions(layout, obj):
     row = layout.row(align=True)
-    row.operator("caffmob.geometry_duplicate", text="Duplicar", icon='DUPLICATE')
-    row.operator("caffmob.geometry_mirror", text="Espelhar", icon='MOD_MIRROR')
-    row.operator("caffmob.geometry_delete", text="Excluir", icon='TRASH')
-
-
-def _draw_btm_opening(layout, info):
-    opening = getattr(info.obj, 'btm_opening', None)
-    if opening is None:
-        return
-    box = layout.box()
-    box.label(text="Abertura", icon='MOD_BOOLEAN')
-    col = box.column(align=True)
-    for field in ('opening_type', 'width', 'height', 'sill_height'):
-        col.prop(opening, field)
-    row = box.row()
+    lowered = bool(obj.get('btm_wall_lowered'))
+    row.operator("caffmob.wall_lower", text=tr("Restaurar Altura") if lowered else tr("Rebaixar"), icon='TRIA_DOWN_BAR')
+    row.operator_menu_enum("caffmob.wall_visibility", "mode", text=tr("Visibilidade"), icon='HIDE_OFF')
+    row = layout.row()
     row.alert = True
-    row.operator("caffmob.remove_opening", text="Remover Abertura", icon='TRASH')
+    row.operator("caffmob.wall_remove", text=tr("Remover Parede…"), icon='TRASH')
 
 
-def _draw_other(layout, info):
-    box = layout.box()
-    box.label(text="Outras", icon='INFO')
-    col = box.column(align=True)
-    library = classify.LIBRARY_LABELS.get(info.library, "")
-    if library:
-        col.label(text=tr("Linha: {}").format(library))
-    col.label(text=tr("Coleção: {}").format(', '.join(c.name for c in info.obj.users_collection) or '—'))
+def _draw_section(layout, context, target, obj, section):
+    from ..target import view
+    from .sidebar import group_scope
+    with group_scope(layout, context, f"sel_{section.id}", section.label, _SECTION_ICONS.get(section.id, 'DOT')) \
+            as body:
+        if body is None:
+            return
+        if section.scope:
+            body.label(text=tr("Escopo: {}").format(tr(section.scope)), icon='GROUP')
+        if section.id == 'cotas':
+            _draw_cotas(body, context, target, section)
+        elif section.id == 'module':
+            _draw_module(body, context, target, section)
+        elif section.id == 'position':
+            _draw_position(body, context, target, obj, section)
+        elif section.id == 'aggregates':
+            from ..aggregates import panels as aggregate_panels
+            aggregate_panels.draw_aggregate(body, context, include_import=False)
+        elif section.id == 'wall':
+            _draw_items(body, context, target, obj, [i for i in section.items if not isinstance(i, view.Action)])
+            if obj is not None and any(isinstance(i, view.Action) and i.enabled for i in section.items):
+                _draw_wall_actions(body, obj)
+        elif section.id == 'opening' and target.detail == 'DOOR' and target.has_leaf:
+            _draw_items(body, context, target, obj, [i for i in section.items if not isinstance(i, view.Action)])
+            from .menus import draw_door_controls
+            draw_door_controls(body, context)
+        else:
+            _draw_items(body, context, target, obj, section.items)
 
 
-def _draw_actions(layout, info):
-    menu_id = info.root.get('MENU_ID') or info.obj.get('MENU_ID')
-    if not menu_id or getattr(bpy.types, menu_id, None) is None and bpy.types.Menu.bl_rna_get_subclass_py(menu_id) is None:
-        return
-    box = layout.box()
-    box.label(text="Ações", icon='TOOL_SETTINGS')
-    box.menu_contents(menu_id)
-
-
-def _status(layout, context, info):
-    selected = len(context.selected_objects)
-    status = layout.column(align=True)
-    status.label(text=_status_line(info), icon='OBJECT_DATA')
-    if selected > 1:
-        status.label(text=tr("{} objetos selecionados — editando o ativo.").format(selected))
+def _draw_header(layout, context, header):
+    col = layout.column(align=True)
+    kind = tr(header.kind_label)
+    if len(header.path) >= 2:
+        col.label(text=tr("{} · {} · em {}").format(kind, header.name, header.path[0]), icon='OBJECT_DATA')
+    else:
+        col.label(text=tr("{} · {}").format(kind, header.name), icon='OBJECT_DATA')
+    scope = tr(header.scope_label).format(*header.scope_args) if header.scope_args else tr(header.scope_label)
+    col.label(text=tr("Escopo: {}").format(scope))
+    if header.select_owner is not None:
+        col.operator(header.select_owner.operator, text=tr("Selecionar conjunto"), icon='RESTRICT_SELECT_OFF')
     error = context.window_manager.get(ERROR_KEY)
     if error:
         row = layout.row()
@@ -384,203 +510,43 @@ def _status(layout, context, info):
         row.label(text=error, icon='ERROR')
 
 
-def _main_groups(layout, context, info, edit):
-    """Os grupos abertos por padrão (no máximo 4, RN-05 da feature 005)."""
-    from . import sidebar_proxy
-    from .sidebar import group_scope
-    kind = info.kind
-    if kind in (classify.MODULE, classify.FRONT, classify.PART):
-        module = classify.classify(info.root)
-        with group_scope(layout, context, 'sel_dimensions', N_("Medidas e cotas"), 'FIXED_SIZE') as body:
-            if body is not None:
-                _draw_dimensions(body, edit, module)
-                _draw_cotas(body, edit, context)
-                sidebar_proxy.draw_panel(BTM_PT_ObjectLimits, body, context)
-        from ..customize import panels as customize_panels
-        if sidebar_proxy.visible(customize_panels.BTM_PT_CustomizeModule, context):
-            with group_scope(layout, context, 'sel_customize', N_("Personalizar"), 'MODIFIER') as body:
-                if body is not None:
-                    sidebar_proxy.draw_panel(customize_panels.BTM_PT_CustomizeModule, body, context)
-        _position_group(layout, context)
-        with group_scope(layout, context, 'sel_open', N_("Abrir"), 'HIDE_OFF') as body:
-            if body is not None:
-                _draw_open(body, context, info)
-        return
-    with group_scope(layout, context, 'sel_dimensions', _GROUP_TITLE.get(kind, N_("Medidas")), 'FIXED_SIZE') as body:
-        if body is not None:
-            if kind in (classify.ROOM_DOOR, classify.WINDOW):
-                if info.library == 'BTM':
-                    _draw_btm_opening(body, info)
-                else:
-                    _draw_dimensions(body, edit, info)
-            elif kind == classify.WALL:
-                _draw_wall(body, edit, info)
-            elif kind == classify.GEOMETRY:
-                _draw_geometry(body, info)
-            elif kind in (classify.OBSTACLE, classify.FLOOR, classify.CEILING):
-                _draw_dimensions(body, edit, info)
-            else:
-                d = info.obj.dimensions
-                body.label(text=f"{units.format_value(d.x)} × {units.format_value(d.z)} × {units.format_value(d.y)}")
-            sidebar_proxy.draw_panel(BTM_PT_ObjectLimits, body, context)
-    if kind not in (classify.WALL, classify.FLOOR, classify.CEILING):
-        _position_group(layout, context)
-    if kind == classify.ROOM_DOOR:
-        with group_scope(layout, context, 'sel_open', N_("Abrir"), 'HIDE_OFF') as body:
-            if body is not None:
-                _draw_open(body, context, info)       # folha 3D criada no primeiro "Abrir" (D-20 da 002)
-
-
-_GROUP_TITLE = {classify.WALL: N_("Parede"), classify.GEOMETRY: N_("Geometria"), classify.ROOM_DOOR: N_("Abertura"),
-                classify.WINDOW: N_("Abertura"), classify.OBSTACLE: N_("Obstáculo"), classify.FLOOR: N_("Piso"),
-                classify.CEILING: N_("Teto")}
-
-
-def _position_group(layout, context):
-    from . import sidebar_proxy
-    from .sidebar import group_scope
-    from ..stick import panels as stick_panels
-    with group_scope(layout, context, 'sel_position', N_("Posição e vínculo"), 'ORIENTATION_GLOBAL') as body:
-        if body is not None:
-            sidebar_proxy.draw_panel(BTM_PT_ObjectMovement, body, context)
-            sidebar_proxy.draw_panel(stick_panels.BTM_PT_Stick, body, context)
-
-
-def _folded_groups(layout, context, info):
-    """Grupos recolhidos por padrão: agregados, colisão do item, arranjo, outras e ações, opções do face frame."""
-    from . import sidebar_proxy
-    from .sidebar import group_scope
-    from ..aggregates import panels as aggregate_panels
-    from ..collision import panels as collision_panels
-    with group_scope(layout, context, 'sel_aggregates', N_("Agregados e folhas"), 'LINKED') as body:
-        if body is not None:
-            aggregate_panels.draw_aggregate(body, context, include_import=False)
-    if sidebar_proxy.visible(collision_panels.BTM_PT_ItemCollision, context):
-        with group_scope(layout, context, 'sel_collision', N_("Colisão"), 'MOD_PHYSICS') as body:
-            if body is not None:
-                sidebar_proxy.draw_panel(collision_panels.BTM_PT_ItemCollision, body, context)
-    with group_scope(layout, context, 'sel_arrangement', N_("Arranjo"), 'OUTLINER') as body:
-        if body is not None:
-            sidebar_proxy.draw_panel(BTM_PT_ObjectArrangement, body, context)
-    with group_scope(layout, context, 'sel_actions', N_("Outras e ações"), 'TOOL_SETTINGS') as body:
-        if body is not None:
-            _draw_other(body, info)
-            _draw_actions(body, info)
+def _draw_other(layout, obj):
+    info = classify.classify(obj)
+    col = layout.column(align=True)
+    library = classify.LIBRARY_LABELS.get(info.library, "")
+    if library:
+        col.label(text=tr("Linha: {}").format(library))
+    col.label(text=tr("Coleção: {}").format(', '.join(c.name for c in obj.users_collection) or '—'))
+    menu_id = info.root.get('MENU_ID') or obj.get('MENU_ID')
+    if menu_id and (getattr(bpy.types, menu_id, None) is not None
+                    or bpy.types.Menu.bl_rna_get_subclass_py(menu_id) is not None):
+        layout.menu_contents(menu_id)
 
 
 def draw_selected(layout, context):
-    """Seção Selecionado da barra lateral (feature 005, T016; RN-05, D-07): só o que vale para o tipo do objeto ativo,
-    com no máximo 4 grupos abertos; o resto fica recolhido."""
-    info = classify.classify(context.active_object)
-    if info is None:
-        layout.label(text=tr("Selecione um objeto na viewport"), icon='INFO')
+    """Seção Selecionado da barra lateral: o ViewModel do alvo do snapshot (067 T087; RF-003, RF-004).
+
+    O draw só lê o snapshot (`target/snapshot.current`); sem snapshot válido, diz "Calculando…" e não calcula nada.
+    """
+    from ..target import snapshot, view
+    from .sidebar import group_scope
+    target = snapshot.current(context)
+    remember_drawn(target)
+    view_layer = context.view_layer
+    has_selection = view_layer is not None and view_layer.objects.active is not None
+    mode = panel_mode(context)
+    model = view.build(target, mode, calculating=target is None and has_selection)
+    if model.header is None:
+        layout.label(text=tr(model.empty), icon='INFO')
         return
-    _status(layout, context, info)
-    edit = context.scene.btm_selection
-    _main_groups(layout, context, info, edit)
-    _folded_groups(layout, context, info)
-
-
-# Seções Arranjo / Movimentação / Limites (feature 003, T061; RF-29, RF-30, D-25). "Modelos" é o painel
-# "Personalizar módulo" (`customize/panels.py`) e "Agregados e folhas" fica em `aggregates/panels.py`.
-
-class _ChildPanel:
-    bl_space_type = 'VIEW_3D'
-    bl_region_type = 'UI'
-    bl_category = "CAFFMob Draw"
-    bl_parent_id = "BTM_PT_object_properties"
-    bl_options = {'DEFAULT_CLOSED'}
-
-    @classmethod
-    def poll(cls, context):
-        return context.active_object is not None
-
-
-class BTM_PT_ObjectArrangement(_ChildPanel, bpy.types.Panel):
-    bl_label = "Arranjo"
-    bl_idname = "BTM_PT_object_arrangement"
-
-    def draw(self, context):
-        layout = self.layout
-        info = classify.classify(context.active_object)
-        root = info.root if info is not None else context.active_object
-        col = layout.column(align=True)
-        col.label(text=tr("Objeto: {}").format(root.name), icon='OBJECT_DATA')
-        col.label(text=tr("Pai: {}").format(root.parent.name if root.parent else '—'), icon='LINKED')
-        children = [c for c in root.children if not c.hide_get()]
-        col.label(text=tr("Filhos: {}").format(len(children)), icon='OUTLINER')
-        aggregates = [c for c in root.children_recursive if getattr(c, 'btm_aggregate', None) is not None
-                      and c.btm_aggregate.is_aggregate]
-        if aggregates:
-            box = layout.box()
-            box.label(text=tr("Agregados ({})").format(len(aggregates)), icon='LINKED')
-            for obj in aggregates[:12]:
-                kind = "folha" if obj.btm_aggregate.kind == 'LEAF' else "agregado"
-                box.label(text=f"{obj.name} ({kind})")
-
-
-class BTM_PT_ObjectMovement(_ChildPanel, bpy.types.Panel):
-    bl_label = "Movimentação"
-    bl_idname = "BTM_PT_object_movement"
-
-    def draw(self, context):
-        layout = self.layout
-        info = classify.classify(context.active_object)
-        root = info.root if info is not None else context.active_object
-        col = layout.column(align=True)
-        col.prop(root, "location", text="Posição")
-        col.prop(root, "rotation_euler", index=2, text="Rotação Z")
-        state = context.window_manager.btm_move_over
-        layout.prop(state, "enabled", text="Mover Sobre (botão direito + arraste)", toggle=True, icon='ORIENTATION_VIEW')
-        row = layout.row(align=True)
-        row.prop(state, "step")
-        row.prop(state, "show_relative", text="Relativa")
-        plane = context.window_manager.btm_insertion_plane
-        row = layout.row(align=True)
-        row.operator_context = 'INVOKE_DEFAULT'
-        row.operator("caffmob.set_insertion_plane", text="Plano de inserção", icon='SNAP_FACE')
-        if plane.active:
-            row.operator("caffmob.clear_insertion_plane", text="", icon='X')
-            layout.label(text=tr("Plano ativo: face de {}").format(plane.source_name), icon='INFO')
-
-
-def _range(owner, name):
-    prop = owner.bl_rna.properties[name]
-    return prop.hard_min, prop.hard_max
-
-
-class BTM_PT_ObjectLimits(_ChildPanel, bpy.types.Panel):
-    bl_label = "Dimensões e limites"
-    bl_idname = "BTM_PT_object_limits"
-
-    def draw(self, context):
-        layout = self.layout
-        obj = context.active_object
-        scene = context.scene
-        info = classify.classify(obj)
-        root = info.root if info is not None else obj
-        col = layout.column(align=True)
-        cabinet = getattr(root, 'btm_cabinet', None)
-        if info is not None and info.library == 'BTM' and cabinet is not None:
-            for name, label in (('width', "Largura"), ('height', "Altura"), ('depth', "Profundidade")):
-                lo, hi = _range(cabinet, name)
-                col.label(text=tr("{}: {}  (mín. {}, máx. {})").format(label, units.format_value(getattr(cabinet, name), scene), units.format_value(lo, scene), units.format_value(hi, scene)))
-        else:
-            dims = root.dimensions
-            col.label(text=f"L × A × P: {units.format_value(dims.x, scene)} × {units.format_value(dims.z, scene)} × "
-                           f"{units.format_value(dims.y, scene)}")
-            col.label(text="Limites: definidos pela biblioteca do módulo", icon='INFO')
-        agg = getattr(obj, 'btm_aggregate', None)
-        if agg is not None and agg.is_aggregate and agg.kind == 'AGGREGATE':
-            from ..aggregates import apply, limits
-            box_p = apply.parent_box(obj)
-            if box_p is not None:
-                lim = limits.limits(box_p, tuple(agg.size), agg.face)
-                col.label(text=tr("Agregado: horizontal até {}, vertical até {}, afunda até {}").format(units.format_value(lim['u'][1], scene), units.format_value(lim['v'][1], scene), units.format_value(-lim['offset'][0], scene)))
-        space = context.space_data
-        overlay = getattr(space, 'overlay', None)
-        if overlay is not None:
-            col.label(text=tr("Grade: {}").format(units.format_value(overlay.grid_scale, scene)))
+    obj = _target_object(target)
+    _draw_header(layout, context, model.header)
+    for section in model.sections:
+        _draw_section(layout, context, target, obj, section)
+    if mode == view.COMPLETE and obj is not None:
+        with group_scope(layout, context, 'sel_actions', N_("Outras e ações"), 'TOOL_SETTINGS') as body:
+            if body is not None:
+                _draw_other(body, obj)
 
 
 @persistent

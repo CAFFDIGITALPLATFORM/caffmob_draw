@@ -63,7 +63,16 @@ def _draw_legacy(layout, context):
     op.only_active = True
 
 
+def _draw_mode(layout, context):
+    """Essencial ou Completa (067 D-05, RF-004): preferência do usuário, então trocar não gera passo de Desfazer."""
+    addon = context.preferences.addons.get(__package__.rsplit('.', 1)[0])
+    prefs = getattr(addon, 'preferences', None)
+    if prefs is not None and 'panel_mode' in prefs.bl_rna.properties:
+        layout.row(align=True).prop(prefs, 'panel_mode', expand=True)
+
+
 def draw(layout, context):
+    _draw_mode(layout, context)
     object_properties.draw_selected(layout, context)
     if context.active_object is not None:
         from ..legacy import gate

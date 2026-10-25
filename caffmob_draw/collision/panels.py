@@ -47,7 +47,6 @@ def draw_tools(layout, context):
     if settings is not None:
         row = layout.row(align=True)
         row.prop(settings, "block_penetration", text=tr("Impedir atravessamento"), toggle=True)
-        row.prop(settings, "show_side_dimensions", text=tr("Medidas laterais"), toggle=True)
     row = layout.row(align=True)
     row.operator("caffmob.collision_diagnose", text=tr("Diagnóstico técnico"), icon='MOD_PHYSICS').scope = 'ALL'
     row.operator("caffmob.collision_diagnose", text=tr("Selecionado"), icon='RESTRICT_SELECT_OFF').scope = 'SELECTED'

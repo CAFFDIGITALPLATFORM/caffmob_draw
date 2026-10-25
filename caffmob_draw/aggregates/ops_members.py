@@ -88,6 +88,12 @@ class BTM_OT_MemberAdd(bpy.types.Operator):
     owner: bpy.props.StringProperty(name="Armário dono")  # type: ignore
     role: bpy.props.EnumProperty(name="Papel", items=ROLE_ITEMS, default='CARCASS')  # type: ignore
 
+    @classmethod
+    def poll(cls, context):
+        # (067 D-08) Habilitado só onde executa; o motivo aparece na dica do botão.
+        from ..target import capabilities, snapshot
+        return capabilities.poll(cls, 'member_add', snapshot.current(context))
+
     def invoke(self, context, event):
         owner = owner_of(context.object)
         self.owner = owner.name if owner else ''
@@ -120,6 +126,12 @@ class BTM_OT_MemberTransfer(BTM_OT_MemberAdd):
     bl_idname = 'caffmob_draw.member_transfer'
     bl_label = "Transferir membro"
 
+    @classmethod
+    def poll(cls, context):
+        # (067 D-08) Transferir vale só para quem já é membro; o motivo aparece na dica do botão.
+        from ..target import capabilities, snapshot
+        return capabilities.poll(cls, 'member_transfer', snapshot.current(context))
+
 
 class BTM_OT_MemberRemove(bpy.types.Operator):
     """Desvincula membros mantendo posição e materiais"""
@@ -127,10 +139,19 @@ class BTM_OT_MemberRemove(bpy.types.Operator):
     bl_label = "Remover do componente"
     bl_options = {'REGISTER', 'UNDO'}
 
+    @classmethod
+    def poll(cls, context):
+        # (067 D-08) Habilitado só onde executa; sem membro, o motivo aparece na dica do botão.
+        from ..target import capabilities, snapshot
+        return capabilities.poll(cls, 'member_remove', snapshot.current(context))
+
     def execute(self, context):
-        for obj in context.selected_objects:
-            if obj.btm_member.owner is not None:
-                remove_member(obj)
+        members = [obj for obj in context.selected_objects if obj.btm_member.owner is not None]
+        if not members:
+            self.report({'WARNING'}, tr("Nenhum selecionado é membro de armário autoral."))
+            return {'CANCELLED'}
+        for obj in members:
+            remove_member(obj)
         return {'FINISHED'}
 
 

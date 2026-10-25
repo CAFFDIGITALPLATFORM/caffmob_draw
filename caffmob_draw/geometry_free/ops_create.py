@@ -203,7 +203,54 @@ class BTM_OT_GeometryCreate(bpy.types.Operator):
         self._cancel(context)
 
 
-classes = (BTM_OT_GeometryCreate,)
+# Construir → Chapa (067 D-29, RF-012): sem modal, a chapa nasce do Padrão de Dimensões ativo.
+SHEET_COMPONENTS = (
+    ('LAT', "Lateral", "Espessura e tipo da Lateral do padrão ativo"),
+    ('PRAT', "Prateleira", "Espessura e tipo da Prateleira do padrão ativo"),
+    ('POR', "Portas", "Espessura e tipo das Portas do padrão ativo"),
+)
+SHEET_WIDTH, SHEET_HEIGHT = 0.6, 0.4
+
+
+def sheet_spec(scene, component='LAT', line='COZ'):
+    """(espessura em metros, tipo de material) da chapa `component` da linha `line` na definição ativa."""
+    from ..standards import api
+    api.ensure_ready(scene)                  # arquivo novo: garante as embutidas antes de ler
+    definition = api.active_definition(scene)
+    thickness = float(api.get_definition_value(definition, f"{line}.sheets.{component}.thickness")) / 1000.0
+    material = str(api.get_definition_value(definition, f"{line}.sheets.{component}.material"))
+    return thickness, material
+
+
+class BTM_OT_GeometrySheet(bpy.types.Operator):
+    """Cria uma chapa em pé no cursor 3D com a espessura e o tipo do Padrão de Dimensões ativo"""
+    bl_idname = "caffmob.geometry_sheet"
+    bl_label = "Chapa"
+    bl_options = {'REGISTER', 'UNDO'}
+
+    component: bpy.props.EnumProperty(name="Chapa do padrão", items=SHEET_COMPONENTS, default='LAT')  # type: ignore
+
+    def execute(self, context):
+        from . import materials
+        thickness, material_kind = sheet_spec(context.scene, self.component)
+        obj = mesh.create_object(context, 'PLACA', name=tr("Chapa"))
+        g = obj.btm_geometry
+        g.plane = 'XZ'                       # em pé, face para −Y
+        g.width, g.height, g.thickness = SHEET_WIDTH, SHEET_HEIGHT, thickness
+        g.material = material_kind
+        mesh.update(obj)
+        cursor = context.scene.cursor.location
+        obj.location = (cursor.x - SHEET_WIDTH / 2.0, cursor.y, cursor.z)
+        obj.data.materials.append(materials.ensure_mdf_branco())
+        obj.btm_part.grain = 'NONE'
+        for other in context.selected_objects:
+            other.select_set(False)
+        obj.select_set(True)
+        context.view_layer.objects.active = obj
+        return {'FINISHED'}
+
+
+classes = (BTM_OT_GeometryCreate, BTM_OT_GeometrySheet)
 
 
 def register():

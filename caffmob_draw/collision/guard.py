@@ -538,7 +538,7 @@ def _process(scene, depsgraph):
                 updated[obj.session_uid] = obj
     if not updated and not full:
         return
-    if moved and getattr(scene.btm_settings, 'show_side_dimensions', False):
+    if moved:                                 # 067 D-07: as cotas fixas não dependem mais da chave
         from ..overlays import side_cotas
         side_cotas.bind(bpy.context)
     dirty = dict(updated)

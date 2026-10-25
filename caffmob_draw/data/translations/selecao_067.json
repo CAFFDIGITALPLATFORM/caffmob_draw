@@ -1,0 +1,562 @@
+{
+ "A malha da peça tem coordenada não finita.": {
+  "pt_BR": "A malha da peça tem coordenada não finita.",
+  "en_US": "The part's mesh has a non-finite coordinate."
+ },
+ "A malha da peça vem de outro arquivo (linked): edite no arquivo de origem.": {
+  "pt_BR": "A malha da peça vem de outro arquivo (linked): edite no arquivo de origem.",
+  "en_US": "The part's mesh comes from another file (linked): edit it in the source file."
+ },
+ "A medida precisa ser maior que zero.": {
+  "pt_BR": "A medida precisa ser maior que zero.",
+  "en_US": "The measurement must be greater than zero."
+ },
+ "A peça está distorcida (shear): aplique a transformação antes de editar.": {
+  "pt_BR": "A peça está distorcida (shear): aplique a transformação antes de editar.",
+  "en_US": "The part is sheared: apply the transform before editing."
+ },
+ "A peça não tem malha para editar.": {
+  "pt_BR": "A peça não tem malha para editar.",
+  "en_US": "The part has no mesh to edit."
+ },
+ "A peça tem escala zero num eixo: aplique a escala antes de editar.": {
+  "pt_BR": "A peça tem escala zero num eixo: aplique a escala antes de editar.",
+  "en_US": "The part has zero scale on an axis: apply the scale before editing."
+ },
+ "A peça vem de outro arquivo (linked): edite no arquivo de origem.": {
+  "pt_BR": "A peça vem de outro arquivo (linked): edite no arquivo de origem.",
+  "en_US": "The part comes from another file (linked): edit it in the source file."
+ },
+ "A seleção mudou: confira o painel e digite de novo.": {
+  "pt_BR": "A seleção mudou: confira o painel e digite de novo.",
+  "en_US": "The selection changed: check the panel and type again."
+ },
+ "A transformação da peça tem valor não finito.": {
+  "pt_BR": "A transformação da peça tem valor não finito.",
+  "en_US": "The part's transform has a non-finite value."
+ },
+ "Aberturas e revestimentos desta parede aparecem ao selecioná-los.": {
+  "pt_BR": "Aberturas e revestimentos desta parede aparecem ao selecioná-los.",
+  "en_US": "Openings and claddings of this wall show up when you select them."
+ },
+ "Abrir Inserir": {
+  "pt_BR": "Abrir Inserir",
+  "en_US": "Open Insert"
+ },
+ "Abrir folhas do armário": {
+  "pt_BR": "Abrir folhas do armário",
+  "en_US": "Open cabinet leaves"
+ },
+ "Abrir todas as frentes do módulo": {
+  "pt_BR": "Abrir todas as frentes do módulo",
+  "en_US": "Open all fronts of the module"
+ },
+ "Adicionar membro": {
+  "pt_BR": "Adicionar membro",
+  "en_US": "Add member"
+ },
+ "Adotar como autoral": {
+  "pt_BR": "Adotar como autoral",
+  "en_US": "Adopt as authored"
+ },
+ "Adotar vale para módulo, peça, geometria ou objeto solto fora de armário autoral.": {
+  "pt_BR": "Adotar vale para módulo, peça, geometria ou objeto solto fora de armário autoral.",
+  "en_US": "Adopting applies to a module, part, geometry or loose object outside an authored cabinet."
+ },
+ "Adotar vale para módulo, peça, geometria, luz ou objeto solto fora de armário autoral.": {
+  "pt_BR": "Adotar vale para módulo, peça, geometria, luz ou objeto solto fora de armário autoral.",
+  "en_US": "Adopting applies to a module, part, geometry, light or loose object outside an authored cabinet."
+ },
+ "As cotas medem e movem a peça selecionada": {
+  "pt_BR": "As cotas medem e movem a peça selecionada",
+  "en_US": "Dimensions measure and move the selected part"
+ },
+ "As cotas medem e movem o conjunto da peça": {
+  "pt_BR": "As cotas medem e movem o conjunto da peça",
+  "en_US": "Dimensions measure and move the part's assembly"
+ },
+ "As definições embutidas não são gravadas no banco.": {
+  "pt_BR": "As definições embutidas não são gravadas no banco.",
+  "en_US": "Built-in definitions are not saved to the database."
+ },
+ "As medidas seguem o contorno das paredes.": {
+  "pt_BR": "As medidas seguem o contorno das paredes.",
+  "en_US": "The measurements follow the outline of the walls."
+ },
+ "Calculando…": {
+  "pt_BR": "Calculando…",
+  "en_US": "Calculating…"
+ },
+ "Campos com valores diferentes mostram \"Múltiplos\"; editar aplica a todos num passo de Desfazer.": {
+  "pt_BR": "Campos com valores diferentes mostram \"Múltiplos\"; editar aplica a todos num passo de Desfazer.",
+  "en_US": "Fields with different values show \"Multiple\"; editing applies to all of them in one Undo step."
+ },
+ "Chapa do padrão": {
+  "pt_BR": "Chapa do padrão",
+  "en_US": "Standard sheet"
+ },
+ "Chapas e peças": {
+  "pt_BR": "Chapas e peças",
+  "en_US": "Sheets and parts"
+ },
+ "Completa": {
+  "pt_BR": "Completa",
+  "en_US": "Complete"
+ },
+ "Comuns aos selecionados": {
+  "pt_BR": "Comuns aos selecionados",
+  "en_US": "Common to the selection"
+ },
+ "Conjunto": {
+  "pt_BR": "Conjunto",
+  "en_US": "Assembly"
+ },
+ "Converter em agregado vale para objeto solto ou geometria.": {
+  "pt_BR": "Converter em agregado vale para objeto solto ou geometria.",
+  "en_US": "Converting to an aggregate applies to a loose object or geometry."
+ },
+ "Converter em folha": {
+  "pt_BR": "Converter em folha",
+  "en_US": "Convert to leaf"
+ },
+ "Converter em folha vale para peça, geometria ou objeto solto.": {
+  "pt_BR": "Converter em folha vale para peça, geometria ou objeto solto.",
+  "en_US": "Converting to a leaf applies to a part, geometry or loose object."
+ },
+ "Cotas antigas": {
+  "pt_BR": "Cotas antigas",
+  "en_US": "Legacy dimensions"
+ },
+ "Cotas: indisponível para {}.": {
+  "pt_BR": "Cotas: indisponível para {}.",
+  "en_US": "Dimensions: unavailable for {}."
+ },
+ "Cria uma chapa em pé no cursor 3D com a espessura e o tipo do Padrão de Dimensões ativo": {
+  "pt_BR": "Cria uma chapa em pé no cursor 3D com a espessura e o tipo do Padrão de Dimensões ativo",
+  "en_US": "Creates a standing sheet at the 3D cursor with the thickness and type of the active Dimension Standard"
+ },
+ "Câmera": {
+  "pt_BR": "Câmera",
+  "en_US": "Camera"
+ },
+ "Definição não encontrada no banco.": {
+  "pt_BR": "Definição não encontrada no banco.",
+  "en_US": "Definition not found in the database."
+ },
+ "Definição sem identificador.": {
+  "pt_BR": "Definição sem identificador.",
+  "en_US": "Definition without an identifier."
+ },
+ "Definições já existentes": {
+  "pt_BR": "Definições já existentes",
+  "en_US": "Existing definitions"
+ },
+ "Diagnóstico: {}": {
+  "pt_BR": "Diagnóstico: {}",
+  "en_US": "Diagnostics: {}"
+ },
+ "Escala": {
+  "pt_BR": "Escala",
+  "en_US": "Scale"
+ },
+ "Escopo das cotas": {
+  "pt_BR": "Escopo das cotas",
+  "en_US": "Dimension scope"
+ },
+ "Escopo: {}": {
+  "pt_BR": "Escopo: {}",
+  "en_US": "Scope: {}"
+ },
+ "Essencial": {
+  "pt_BR": "Essencial",
+  "en_US": "Essential"
+ },
+ "Essencial mostra o que mais se usa; Completa mostra todos os campos e ações do selecionado": {
+  "pt_BR": "Essencial mostra o que mais se usa; Completa mostra todos os campos e ações do selecionado",
+  "en_US": "Essential shows what is used most; Complete shows every field and action of the selection"
+ },
+ "Esta peça é gerada pelo módulo.": {
+  "pt_BR": "Esta peça é gerada pelo módulo.",
+  "en_US": "This part is generated by the module."
+ },
+ "Esta peça é gerada pelo módulo: {}": {
+  "pt_BR": "Esta peça é gerada pelo módulo: {}",
+  "en_US": "This part is generated by the module: {}"
+ },
+ "Estas definições já existem com valores diferentes. Marque as que devem ser substituídas:": {
+  "pt_BR": "Estas definições já existem com valores diferentes. Marque as que devem ser substituídas:",
+  "en_US": "These definitions already exist with different values. Check the ones to replace:"
+ },
+ "Este tipo não gruda em face.": {
+  "pt_BR": "Este tipo não gruda em face.",
+  "en_US": "This type does not stick to faces."
+ },
+ "Este tipo não tem colisão.": {
+  "pt_BR": "Este tipo não tem colisão.",
+  "en_US": "This type has no collision."
+ },
+ "Este tipo não tem cotas de posição.": {
+  "pt_BR": "Este tipo não tem cotas de posição.",
+  "en_US": "This type has no position dimensions."
+ },
+ "Exporta todas as definições do padrão da marcenaria num arquivo .btmdim-pack.json": {
+  "pt_BR": "Exporta todas as definições do padrão da marcenaria num arquivo .btmdim-pack.json",
+  "en_US": "Exports every definition of the workshop's standard to a .btmdim-pack.json file"
+ },
+ "Exportar todas": {
+  "pt_BR": "Exportar todas",
+  "en_US": "Export all"
+ },
+ "Exportar todas as definições": {
+  "pt_BR": "Exportar todas as definições",
+  "en_US": "Export all definitions"
+ },
+ "Fechar todas as frentes do módulo": {
+  "pt_BR": "Fechar todas as frentes do módulo",
+  "en_US": "Close all fronts of the module"
+ },
+ "Folha do armário autoral": {
+  "pt_BR": "Folha do armário autoral",
+  "en_US": "Authored cabinet leaf"
+ },
+ "Grava no banco local uma definição mais antiga que a versão guardada nele": {
+  "pt_BR": "Grava no banco local uma definição mais antiga que a versão guardada nele",
+  "en_US": "Saves to the local database a definition older than the version stored there"
+ },
+ "Gravar versão mais antiga?": {
+  "pt_BR": "Gravar versão mais antiga?",
+  "en_US": "Save older version?"
+ },
+ "Iluminação": {
+  "pt_BR": "Iluminação",
+  "en_US": "Lighting"
+ },
+ "Importa um pacote .btmdim-pack.json (ou um .btmdim.json); nenhuma definição existente é substituída sem marcar": {
+  "pt_BR": "Importa um pacote .btmdim-pack.json (ou um .btmdim.json); nenhuma definição existente é substituída sem marcar",
+  "en_US": "Imports a .btmdim-pack.json package (or a .btmdim.json); no existing definition is replaced unless checked"
+ },
+ "Importadas: {}; substituídas: {}; mantidas sem marcar: {}.": {
+  "pt_BR": "Importadas: {}; substituídas: {}; mantidas sem marcar: {}.",
+  "en_US": "Imported: {}; replaced: {}; kept unchecked: {}."
+ },
+ "Importar definições": {
+  "pt_BR": "Importar definições",
+  "en_US": "Import definitions"
+ },
+ "Importar todas": {
+  "pt_BR": "Importar todas",
+  "en_US": "Import all"
+ },
+ "Lente": {
+  "pt_BR": "Lente",
+  "en_US": "Lens"
+ },
+ "Limites": {
+  "pt_BR": "Limites",
+  "en_US": "Limits"
+ },
+ "Medida A": {
+  "pt_BR": "Medida A",
+  "en_US": "Measure A"
+ },
+ "Medida B": {
+  "pt_BR": "Medida B",
+  "en_US": "Measure B"
+ },
+ "Medida da frente gerada pelo módulo: {}": {
+  "pt_BR": "Medida da frente gerada pelo módulo: {}",
+  "en_US": "Front measurement generated by the module: {}"
+ },
+ "Medida da peça indisponível.": {
+  "pt_BR": "Medida da peça indisponível.",
+  "en_US": "Part measurement unavailable."
+ },
+ "Medida inválida.": {
+  "pt_BR": "Medida inválida.",
+  "en_US": "Invalid measurement."
+ },
+ "Medida não finita.": {
+  "pt_BR": "Medida não finita.",
+  "en_US": "Non-finite measurement."
+ },
+ "Modo do painel": {
+  "pt_BR": "Modo do painel",
+  "en_US": "Panel mode"
+ },
+ "Montar janela": {
+  "pt_BR": "Montar janela",
+  "en_US": "Assemble window"
+ },
+ "Montar vale para porta ou janela de ambiente.": {
+  "pt_BR": "Montar vale para porta ou janela de ambiente.",
+  "en_US": "Assembling applies to a room door or window."
+ },
+ "Mostra as cotas de afastamento e Mover na Parede do módulo": {
+  "pt_BR": "Mostra as cotas de afastamento e Mover na Parede do módulo",
+  "en_US": "Shows the module's wall offset dimensions and Move on Wall"
+ },
+ "Mover": {
+  "pt_BR": "Mover",
+  "en_US": "Move"
+ },
+ "Mover e cotas atuam em: {}": {
+  "pt_BR": "Mover e cotas atuam em: {}",
+  "en_US": "Move and dimensions act on: {}"
+ },
+ "Mover: {}": {
+  "pt_BR": "Mover: {}",
+  "en_US": "Move: {}"
+ },
+ "Módulos, armários e modelos entram por Inserir": {
+  "pt_BR": "Módulos, armários e modelos entram por Inserir",
+  "en_US": "Modules, cabinets and models come in through Insert"
+ },
+ "Móveis": {
+  "pt_BR": "Móveis",
+  "en_US": "Furniture"
+ },
+ "Múltiplos": {
+  "pt_BR": "Múltiplos",
+  "en_US": "Multiple"
+ },
+ "Nenhum selecionado é membro de armário autoral.": {
+  "pt_BR": "Nenhum selecionado é membro de armário autoral.",
+  "en_US": "No selected object is a member of an authored cabinet."
+ },
+ "Nenhuma definição própria para exportar.": {
+  "pt_BR": "Nenhuma definição própria para exportar.",
+  "en_US": "No custom definition to export."
+ },
+ "O banco do Padrão de Dimensões não está disponível neste Blender.": {
+  "pt_BR": "O banco do Padrão de Dimensões não está disponível neste Blender.",
+  "en_US": "The Dimension Standard database is not available in this Blender."
+ },
+ "O banco do padrão tem uma versão mais nova de \"{}\". Substituir pela deste arquivo?": {
+  "pt_BR": "O banco do padrão tem uma versão mais nova de \"{}\". Substituir pela deste arquivo?",
+  "en_US": "The standard database has a newer version of \"{}\". Replace it with this file's?"
+ },
+ "O banco local está indisponível: {}": {
+  "pt_BR": "O banco local está indisponível: {}",
+  "en_US": "The local database is unavailable: {}"
+ },
+ "O banco tem uma versão mais nova de \"{}\"; nada foi gravado nele.": {
+  "pt_BR": "O banco tem uma versão mais nova de \"{}\"; nada foi gravado nele.",
+  "en_US": "The database has a newer version of \"{}\"; nothing was saved to it."
+ },
+ "O contorno segue as paredes do ambiente.": {
+  "pt_BR": "O contorno segue as paredes do ambiente.",
+  "en_US": "The outline follows the room's walls."
+ },
+ "O movimento desta frente é editado no módulo; aqui ele só é mostrado.": {
+  "pt_BR": "O movimento desta frente é editado no módulo; aqui ele só é mostrado.",
+  "en_US": "This front's motion is edited on the module; here it is only shown."
+ },
+ "O objeto mudou de posição: confira o painel e digite de novo.": {
+  "pt_BR": "O objeto mudou de posição: confira o painel e digite de novo.",
+  "en_US": "The object moved: check the panel and type again."
+ },
+ "O padrão ficou só neste arquivo: o banco local está indisponível.": {
+  "pt_BR": "O padrão ficou só neste arquivo: o banco local está indisponível.",
+  "en_US": "The standard stayed only in this file: the local database is unavailable."
+ },
+ "O selecionado não está num grupo.": {
+  "pt_BR": "O selecionado não está num grupo.",
+  "en_US": "The selection is not in a group."
+ },
+ "O selecionado não tem conjunto dono.": {
+  "pt_BR": "O selecionado não tem conjunto dono.",
+  "en_US": "The selection has no owning assembly."
+ },
+ "Objeto sem corpo: não se move no Mover Sobre.": {
+  "pt_BR": "Objeto sem corpo: não se move no Mover Sobre.",
+  "en_US": "Object without a body: it does not move with Move Over."
+ },
+ "Para editá-la, adote o módulo como armário autoral.": {
+  "pt_BR": "Para editá-la, adote o módulo como armário autoral.",
+  "en_US": "To edit it, adopt the module as an authored cabinet."
+ },
+ "Parede, piso, teto, porta, janela, cota, luz e câmera não se movem no Mover Sobre.": {
+  "pt_BR": "Parede, piso, teto, porta, janela, cota, luz e câmera não se movem no Mover Sobre.",
+  "en_US": "Walls, floors, ceilings, doors, windows, dimensions, lights and cameras do not move with Move Over."
+ },
+ "Personalizar vale para módulo de biblioteca e módulo rápido.": {
+  "pt_BR": "Personalizar vale para módulo de biblioteca e módulo rápido.",
+  "en_US": "Customize applies to library modules and quick modules."
+ },
+ "Peça sem veio": {
+  "pt_BR": "Peça sem veio",
+  "en_US": "Part without grain"
+ },
+ "Porta sem folha gerada.": {
+  "pt_BR": "Porta sem folha gerada.",
+  "en_US": "Door without a generated leaf."
+ },
+ "Potência": {
+  "pt_BR": "Potência",
+  "en_US": "Power"
+ },
+ "Projeção": {
+  "pt_BR": "Projeção",
+  "en_US": "Projection"
+ },
+ "Raio": {
+  "pt_BR": "Raio",
+  "en_US": "Radius"
+ },
+ "Refaz o revestimento selecionado com os valores digitados no painel": {
+  "pt_BR": "Refaz o revestimento selecionado com os valores digitados no painel",
+  "en_US": "Rebuilds the selected cladding with the values typed in the panel"
+ },
+ "Regra do membro": {
+  "pt_BR": "Regra do membro",
+  "en_US": "Member rule"
+ },
+ "Remover membro": {
+  "pt_BR": "Remover membro",
+  "en_US": "Remove member"
+ },
+ "Revestimento": {
+  "pt_BR": "Revestimento",
+  "en_US": "Cladding"
+ },
+ "Seleciona o conjunto dono do selecionado (o módulo, o armário autoral ou a parede)": {
+  "pt_BR": "Seleciona o conjunto dono do selecionado (o módulo, o armário autoral ou a parede)",
+  "en_US": "Selects the assembly that owns the selection (the module, the authored cabinet or the wall)"
+ },
+ "Selecionar conjunto": {
+  "pt_BR": "Selecionar conjunto",
+  "en_US": "Select assembly"
+ },
+ "Selecione dois ou mais objetos para agrupar.": {
+  "pt_BR": "Selecione dois ou mais objetos para agrupar.",
+  "en_US": "Select two or more objects to group."
+ },
+ "Selecione um armário autoral ou uma peça dele.": {
+  "pt_BR": "Selecione um armário autoral ou uma peça dele.",
+  "en_US": "Select an authored cabinet or one of its parts."
+ },
+ "Selecione um objeto na viewport.": {
+  "pt_BR": "Selecione um objeto na viewport.",
+  "en_US": "Select an object in the viewport."
+ },
+ "Selecione um revestimento.": {
+  "pt_BR": "Selecione um revestimento.",
+  "en_US": "Select a cladding."
+ },
+ "Seleção múltipla": {
+  "pt_BR": "Seleção múltipla",
+  "en_US": "Multiple selection"
+ },
+ "Só o que mais se usa": {
+  "pt_BR": "Só o que mais se usa",
+  "en_US": "Only what is used most"
+ },
+ "Tipo sem painel próprio: {}. Só a posição pode ser editada aqui.": {
+  "pt_BR": "Tipo sem painel próprio: {}. Só a posição pode ser editada aqui.",
+  "en_US": "Type without its own panel: {}. Only the position can be edited here."
+ },
+ "Todos os campos e ações do selecionado": {
+  "pt_BR": "Todos os campos e ações do selecionado",
+  "en_US": "Every field and action of the selection"
+ },
+ "Vale para abertura da camada nova.": {
+  "pt_BR": "Vale para abertura da camada nova.",
+  "en_US": "Applies to openings of the new layer."
+ },
+ "Vale para folha convertida.": {
+  "pt_BR": "Vale para folha convertida.",
+  "en_US": "Applies to converted leaves."
+ },
+ "Vale para geometria livre.": {
+  "pt_BR": "Vale para geometria livre.",
+  "en_US": "Applies to free geometry."
+ },
+ "Vale para membro de armário autoral.": {
+  "pt_BR": "Vale para membro de armário autoral.",
+  "en_US": "Applies to members of an authored cabinet."
+ },
+ "Vale para módulo das bibliotecas e para as peças dele.": {
+  "pt_BR": "Vale para módulo das bibliotecas e para as peças dele.",
+  "en_US": "Applies to library modules and their parts."
+ },
+ "Vale para módulo e para as peças dele.": {
+  "pt_BR": "Vale para módulo e para as peças dele.",
+  "en_US": "Applies to modules and their parts."
+ },
+ "Vale para parede.": {
+  "pt_BR": "Vale para parede.",
+  "en_US": "Applies to walls."
+ },
+ "Vale para porta de ambiente.": {
+  "pt_BR": "Vale para porta de ambiente.",
+  "en_US": "Applies to room doors."
+ },
+ "Veio": {
+  "pt_BR": "Veio",
+  "en_US": "Grain"
+ },
+ "Veio guardado na peça e enviado ao corte; o visual é aplicado na onda 3.": {
+  "pt_BR": "Veio guardado na peça e enviado ao corte; o visual é aplicado na onda 3.",
+  "en_US": "Grain stored on the part and sent to the cut list; the visual is applied in wave 3."
+ },
+ "Veio na horizontal da peça instalada": {
+  "pt_BR": "Veio na horizontal da peça instalada",
+  "en_US": "Grain along the horizontal of the installed part"
+ },
+ "Veio na vertical da peça instalada": {
+  "pt_BR": "Veio na vertical da peça instalada",
+  "en_US": "Grain along the vertical of the installed part"
+ },
+ "cota e anotação": {
+  "pt_BR": "cota e anotação",
+  "en_US": "dimension and annotation"
+ },
+ "câmera": {
+  "pt_BR": "câmera",
+  "en_US": "camera"
+ },
+ "este tipo": {
+  "pt_BR": "este tipo",
+  "en_US": "this type"
+ },
+ "luz: ela não se move no Mover Sobre": {
+  "pt_BR": "luz: ela não se move no Mover Sobre",
+  "en_US": "light: it does not move with Move Over"
+ },
+ "objeto sem corpo": {
+  "pt_BR": "objeto sem corpo",
+  "en_US": "object without a body"
+ },
+ "parede: ela não se move no Mover Sobre": {
+  "pt_BR": "parede: ela não se move no Mover Sobre",
+  "en_US": "wall: it does not move with Move Over"
+ },
+ "piso e teto": {
+  "pt_BR": "piso e teto",
+  "en_US": "floor and ceiling"
+ },
+ "porta e janela: elas andam com a parede, não no Mover Sobre": {
+  "pt_BR": "porta e janela: elas andam com a parede, não no Mover Sobre",
+  "en_US": "door and window: they move with the wall, not with Move Over"
+ },
+ "revestimento: ele segue a parede": {
+  "pt_BR": "revestimento: ele segue a parede",
+  "en_US": "cladding: it follows the wall"
+ },
+ "sem avisos": {
+  "pt_BR": "sem avisos",
+  "en_US": "no warnings"
+ },
+ "{} definição(ões) exportada(s): {}": {
+  "pt_BR": "{} definição(ões) exportada(s): {}",
+  "en_US": "{} definition(s) exported: {}"
+ },
+ "{} objetos": {
+  "pt_BR": "{} objetos",
+  "en_US": "{} objects"
+ },
+ "{} · {} · em {}": {
+  "pt_BR": "{} · {} · em {}",
+  "en_US": "{} · {} · in {}"
+ }
+}

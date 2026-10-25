@@ -12,12 +12,19 @@ GROUPS = (
     # Construir
     ('walls', False), ('openings', False), ('floor', False), ('obstacles', False), ('lights', False),
     ('stairs', False), ('reference', False), ('geometry', False),
+    # Construir por finalidade (067 RF-013): os grupos acima ficam dentro destes, com os mesmos ids
+    ('build_room', True), ('build_furniture', False), ('build_sheets', True), ('build_lighting', False),
     # Inserir
     ('my_modules', False), ('objects', False),
     # Selecionado (módulo: 4 abertos)
     ('sel_dimensions', True), ('sel_customize', True), ('sel_position', True), ('sel_open', True),
     ('sel_aggregates', False), ('sel_collision', False), ('sel_arrangement', False), ('sel_actions', False),
     ('sel_library', False), ('sel_retexture', False),
+    # Selecionado da 067 (seções do ViewModel; os detalhes técnicos começam recolhidos)
+    ('sel_sheet', True), ('sel_cotas', True), ('sel_module', False), ('sel_geometry', True), ('sel_material', True),
+    ('sel_wall', True), ('sel_opening', True), ('sel_leaf', True), ('sel_member', True), ('sel_front', True),
+    ('sel_cladding', True), ('sel_surface', True), ('sel_light', True), ('sel_camera', True), ('sel_multiple', True),
+    ('sel_limits', True), ('sel_fallback', True), ('sel_legacy_cotas', False),
     # Verificar
     ('check_fronts', True), ('check_collisions', True),
     # Produção/Projeto

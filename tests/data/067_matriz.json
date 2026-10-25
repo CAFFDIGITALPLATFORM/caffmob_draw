@@ -1,0 +1,215 @@
+{
+ "fonte": "_reversa_bugs/caff-mob-draw/intake/auditoria-propriedades-por-tipo-20261023.md §(c) (caff_systems)",
+ "colunas": [
+  "UX-01",
+  "UX-02",
+  "UX-03",
+  "UX-04",
+  "UX-05",
+  "MAT-01",
+  "MAT-02",
+  "MAT-03",
+  "CMP-01"
+ ],
+ "colunas_por_onda": {
+  "1": [
+   "UX-01",
+   "UX-02",
+   "UX-04"
+  ],
+  "2": [
+   "MAT-03",
+   "CMP-01"
+  ],
+  "3": [
+   "UX-03",
+   "MAT-01"
+  ],
+  "4": [
+   "MAT-02"
+  ],
+  "5": [
+   "UX-05"
+  ],
+  "6": []
+ },
+ "nota_ondas": "Mapa coluna -> onda tirado do roadmap da 067 (D-14 a D-24); a onda 6 (Mover Sobre) refina UX-04.",
+ "linha_de_base_1_8_0": {
+  "part": {
+   "UX-01": "FALTA",
+   "UX-02": "FALTA",
+   "UX-03": "FALTA",
+   "UX-04": "PARCIAL",
+   "UX-05": "N/A",
+   "MAT-01": "FALTA",
+   "MAT-02": "FALTA",
+   "MAT-03": "PARCIAL",
+   "CMP-01": "PARCIAL"
+  },
+  "geometry": {
+   "UX-01": "FALTA",
+   "UX-02": "PARCIAL",
+   "UX-03": "FALTA",
+   "UX-04": "PARCIAL",
+   "UX-05": "N/A",
+   "MAT-01": "FALTA",
+   "MAT-02": "FALTA",
+   "MAT-03": "FALTA",
+   "CMP-01": "PARCIAL"
+  },
+  "front": {
+   "UX-01": "FALTA",
+   "UX-02": "PARCIAL",
+   "UX-03": "FALTA",
+   "UX-04": "PARCIAL",
+   "UX-05": "PARCIAL",
+   "MAT-01": "FALTA",
+   "MAT-02": "FALTA",
+   "MAT-03": "PARCIAL",
+   "CMP-01": "N/A"
+  },
+  "module": {
+   "UX-01": "FALTA",
+   "UX-02": "OK",
+   "UX-03": "FALTA",
+   "UX-04": "PARCIAL",
+   "UX-05": "PARCIAL",
+   "MAT-01": "FALTA",
+   "MAT-02": "FALTA",
+   "MAT-03": "PARCIAL",
+   "CMP-01": "N/A"
+  },
+  "authored": {
+   "UX-01": "FALTA",
+   "UX-02": "PARCIAL",
+   "UX-03": "FALTA",
+   "UX-04": "PARCIAL",
+   "UX-05": "PARCIAL",
+   "MAT-01": "FALTA",
+   "MAT-02": "FALTA",
+   "MAT-03": "FALTA",
+   "CMP-01": "PARCIAL"
+  },
+  "leaf": {
+   "UX-01": "FALTA",
+   "UX-02": "PARCIAL",
+   "UX-03": "FALTA",
+   "UX-04": "PARCIAL",
+   "UX-05": "PARCIAL",
+   "MAT-01": "FALTA",
+   "MAT-02": "FALTA",
+   "MAT-03": "FALTA",
+   "CMP-01": "N/A"
+  },
+  "wall": {
+   "UX-01": "FALTA",
+   "UX-02": "PARCIAL",
+   "UX-03": "N/A",
+   "UX-04": "FALTA",
+   "UX-05": "N/A",
+   "MAT-01": "N/A",
+   "MAT-02": "N/A",
+   "MAT-03": "N/A",
+   "CMP-01": "N/A"
+  },
+  "room_door": {
+   "UX-01": "FALTA",
+   "UX-02": "PARCIAL",
+   "UX-03": "N/A",
+   "UX-04": "FALTA",
+   "UX-05": "PARCIAL",
+   "MAT-01": "N/A",
+   "MAT-02": "N/A",
+   "MAT-03": "N/A",
+   "CMP-01": "N/A"
+  },
+  "window": {
+   "UX-01": "FALTA",
+   "UX-02": "PARCIAL",
+   "UX-03": "N/A",
+   "UX-04": "FALTA",
+   "UX-05": "FALTA",
+   "MAT-01": "N/A",
+   "MAT-02": "N/A",
+   "MAT-03": "N/A",
+   "CMP-01": "N/A"
+  },
+  "cladding": {
+   "UX-01": "FALTA",
+   "UX-02": "PARCIAL",
+   "UX-03": "PARCIAL",
+   "UX-04": "FALTA",
+   "UX-05": "N/A",
+   "MAT-01": "N/A",
+   "MAT-02": "N/A",
+   "MAT-03": "N/A",
+   "CMP-01": "N/A"
+  },
+  "floor": {
+   "UX-01": "FALTA",
+   "UX-02": "PARCIAL",
+   "UX-03": "N/A",
+   "UX-04": "FALTA",
+   "UX-05": "N/A",
+   "MAT-01": "N/A",
+   "MAT-02": "N/A",
+   "MAT-03": "N/A",
+   "CMP-01": "N/A"
+  },
+  "light": {
+   "UX-01": "FALTA",
+   "UX-02": "FALTA",
+   "UX-03": "N/A",
+   "UX-04": "FALTA",
+   "UX-05": "N/A",
+   "MAT-01": "N/A",
+   "MAT-02": "N/A",
+   "MAT-03": "N/A",
+   "CMP-01": "N/A"
+  },
+  "camera": {
+   "UX-01": "FALTA",
+   "UX-02": "FALTA",
+   "UX-03": "N/A",
+   "UX-04": "FALTA",
+   "UX-05": "N/A",
+   "MAT-01": "N/A",
+   "MAT-02": "N/A",
+   "MAT-03": "N/A",
+   "CMP-01": "N/A"
+  },
+  "free": {
+   "UX-01": "FALTA",
+   "UX-02": "PARCIAL",
+   "UX-03": "N/A",
+   "UX-04": "PARCIAL",
+   "UX-05": "N/A",
+   "MAT-01": "FALTA",
+   "MAT-02": "N/A",
+   "MAT-03": "PARCIAL",
+   "CMP-01": "PARCIAL"
+  },
+  "annotation": {
+   "UX-01": "FALTA",
+   "UX-02": "PARCIAL",
+   "UX-03": "N/A",
+   "UX-04": "N/A",
+   "UX-05": "N/A",
+   "MAT-01": "N/A",
+   "MAT-02": "N/A",
+   "MAT-03": "N/A",
+   "CMP-01": "N/A"
+  },
+  "multiple": {
+   "UX-01": "FALTA",
+   "UX-02": "FALTA",
+   "UX-03": "FALTA",
+   "UX-04": "FALTA",
+   "UX-05": "N/A",
+   "MAT-01": "FALTA",
+   "MAT-02": "FALTA",
+   "MAT-03": "PARCIAL",
+   "CMP-01": "PARCIAL"
+  }
+ }
+}

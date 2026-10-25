@@ -181,7 +181,7 @@ def _cutpart_found(module):
             name=part_roles.base_name(obj.name), component=component,
             length=length, width=width, thickness=thickness, finish=finish, edges_present=edges,
             machining=cuts, machining_clipped=clipped, material=str(obj.get(RAW_MATERIAL_PROP, "") or ""),
-            key=obj.name)))
+            grain=part_roles.part_grain(obj), key=obj.name)))
     return found
 
 
@@ -349,7 +349,7 @@ def geometry_records(scene):
                 uid=f"{uid}/{g.component}/{index}", module_uid=None, module_name=obj.name, line="",
                 name=name if g.kind == 'CAIXA' else obj.name, component=g.component,
                 length=length * 1000.0, width=width * 1000.0, thickness=thickness * 1000.0,
-                finish=g.finish, source="FREE_GEOMETRY", material=g.material))
+                finish=g.finish, source="FREE_GEOMETRY", material=g.material, grain=part_roles.part_grain(obj)))
     # Agregados marcados como peça de produção (feature 003, RN-13): uma placa com as medidas da caixa deles.
     # Geometria livre convertida em agregado já saiu como geometria (questions.md, pergunta 67).
     from ..aggregates import production
@@ -365,7 +365,7 @@ def geometry_records(scene):
         records.append(PartRecord(
             uid=f"{uid}/{g.component}/0", module_uid=None, module_name=name, line="", name=name,
             component=g.component, length=length * 1000.0, width=width * 1000.0, thickness=thickness * 1000.0,
-            finish=g.finish, source="FREE_GEOMETRY", material=g.material))
+            finish=g.finish, source="FREE_GEOMETRY", material=g.material, grain=part_roles.part_grain(obj)))
     return records
 
 

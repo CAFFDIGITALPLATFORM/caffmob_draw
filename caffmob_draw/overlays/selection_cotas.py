@@ -23,8 +23,10 @@ class _Specs:
 
 
 def _specs(context):
-    if getattr(context.scene.btm_settings, 'show_side_dimensions', False):
-        return []                 # 066 RF-014: só as duas laterais, inclusive na outra viewport
+    # 067 D-07, RF-030: as cotas antigas aparecem só quando pedidas na Completa ("Cotas antigas"), nunca pela chave.
+    target_state = getattr(context.window_manager, 'btm_target', None)
+    if target_state is None or not target_state.legacy_cotas:
+        return []
     from ..data import units
     from ..hb_placement import PlacementDimSpec
     from ..measure import cotas as cotas_mod
@@ -38,7 +40,7 @@ def _specs(context):
     values = mc.compute()
     p = mc.placement
     specs = []
-    side = getattr(context.scene.btm_settings, 'show_side_dimensions', False)    # 066 D-10: as laterais substituem
+    side = False                  # 067: com as cotas antigas pedidas, desenha todas elas
     if mc.on_wall:
         matrix = mc.wall.matrix_world
         y = p.back_y - mc.depth        # frente do módulo

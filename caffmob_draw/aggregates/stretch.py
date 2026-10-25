@@ -369,6 +369,12 @@ class BTM_OT_UpdateLinks(bpy.types.Operator):
     bl_label = "Atualizar vínculos"
     bl_options = {'REGISTER', 'UNDO'}
 
+    @classmethod
+    def poll(cls, context):
+        # (067 D-08) Habilitado só onde executa; o motivo aparece na dica do botão.
+        from ..target import capabilities, snapshot
+        return capabilities.poll(cls, 'authored_update_links', snapshot.current(context))
+
     def execute(self, context):
         try:
             update_links(context)

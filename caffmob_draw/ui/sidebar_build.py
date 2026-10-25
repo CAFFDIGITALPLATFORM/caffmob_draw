@@ -1,8 +1,9 @@
 """Seção Construir (feature 005, T012; RF-02, RN-07, D-05).
 
-Primeiro a ação principal (Editor de Paredes); depois grupos recolhidos com o conteúdo dos painéis do Room Layout
-(desenhados pelo proxy, sem reescrever a lógica): Paredes, Aberturas, Piso e teto, Obstáculos, Luzes, Escadas, Imagem
-de referência e Geometrias. Sem nenhuma parede, Aberturas e Piso e teto ficam desabilitados com o motivo (R-01 da UI).
+Primeiro a ação principal (Editor de Paredes); depois os grupos por finalidade (067 RF-013): Ambiente (Paredes,
+Aberturas, Piso e teto, Obstáculos, Escadas, Imagem de referência), Móveis (aponta para Inserir), Chapas e peças (a
+Chapa do Padrão de Dimensões e as Geometrias) e Iluminação (Luzes). O conteúdo vem dos painéis do Room Layout,
+desenhados pelo proxy. Sem nenhuma parede, Aberturas e Piso e teto ficam desabilitados com o motivo (R-01 da UI).
 """
 
 from ..data.i18n import N_, tr
@@ -82,6 +83,36 @@ def draw(layout, context):
     if not sidebar_proxy.visible(vs.HOME_BUILDER_PT_room_layout, context):
         empty_state(layout, N_("Em vistas de layout e de detalhe, volte a um ambiente para construir"))
         return
+    # (067 RF-013) Por finalidade. Os grupos de antes ficam dentro dela com os mesmos ids, então o estado aberto ou
+    # fechado de cada um continua o mesmo (M-01: nenhum id antigo muda).
+    with group_scope(layout, context, 'build_room', N_("Ambiente"), 'HOME') as room:
+        if room is not None:
+            _draw_room(room, context, walls)
+    with group_scope(layout, context, 'build_furniture', N_("Móveis"), 'OUTLINER_OB_MESH') as furniture:
+        if furniture is not None:
+            hint = furniture.row()
+            hint.active = False
+            hint.label(text=tr("Módulos, armários e modelos entram por Inserir"), icon='INFO')
+            furniture.prop(context.window_manager.btm_sidebar, "open_insert", text=tr("Abrir Inserir"), toggle=True)
+    with group_scope(layout, context, 'build_sheets', N_("Chapas e peças"), 'MESH_PLANE') as sheets:
+        if sheets is not None:
+            row = sheets.row(align=True)
+            row.scale_y = 1.2
+            row.operator("caffmob.geometry_sheet", text=N_("Chapa"), icon='MESH_PLANE')
+            with group_scope(sheets, context, 'geometry', N_("Geometrias"), 'MESH_CUBE') as body:
+                if body is not None:
+                    row = body.row(align=True)
+                    row.operator("caffmob.geometry_create", text=N_("Placa"), icon='MESH_PLANE').kind = 'PLACA'
+                    row.operator("caffmob.geometry_create", text=N_("Caixa"), icon='MESH_CUBE').kind = 'CAIXA'
+    with group_scope(layout, context, 'build_lighting', N_("Iluminação"), 'LIGHT') as lighting:
+        if lighting is not None:
+            with group_scope(lighting, context, 'lights', N_("Luzes"), 'LIGHT') as body:
+                if body is not None:
+                    sidebar_proxy.draw_panel(vs.HOME_BUILDER_PT_room_layout_lighting, body, context)
+
+
+def _draw_room(layout, context, walls):
+    vs = view3d_sidebar
     with group_scope(layout, context, 'walls', N_("Paredes"), 'GREASEPENCIL') as body:
         if body is not None:
             sidebar_proxy.draw_panel(vs.HOME_BUILDER_PT_room_layout_walls, body, context)
@@ -106,17 +137,9 @@ def draw(layout, context):
     with group_scope(layout, context, 'obstacles', N_("Obstáculos"), 'ERROR') as body:
         if body is not None:
             sidebar_proxy.draw_panel(vs.HOME_BUILDER_PT_room_layout_obstacles, body, context)
-    with group_scope(layout, context, 'lights', N_("Luzes"), 'LIGHT') as body:
-        if body is not None:
-            sidebar_proxy.draw_panel(vs.HOME_BUILDER_PT_room_layout_lighting, body, context)
     with group_scope(layout, context, 'stairs', N_("Escadas"), 'IPO_CONSTANT') as body:
         if body is not None:
             sidebar_proxy.draw_panel(vs.HOME_BUILDER_PT_room_layout_stairs, body, context)
     with group_scope(layout, context, 'reference', N_("Imagem de referência"), 'IMAGE_REFERENCE') as body:
         if body is not None:
             sidebar_proxy.draw_panel(vs.HOME_BUILDER_PT_room_layout_reference_image, body, context)
-    with group_scope(layout, context, 'geometry', N_("Geometrias"), 'MESH_CUBE') as body:
-        if body is not None:
-            row = body.row(align=True)
-            row.operator("caffmob.geometry_create", text=N_("Placa"), icon='MESH_PLANE').kind = 'PLACA'
-            row.operator("caffmob.geometry_create", text=N_("Caixa"), icon='MESH_CUBE').kind = 'CAIXA'

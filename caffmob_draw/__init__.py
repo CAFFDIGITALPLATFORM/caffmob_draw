@@ -8,7 +8,7 @@ from bpy.app.handlers import persistent  # type: ignore
 # Hot-reload submodules during active development
 _submodule_names = [
     "compat", "data", "standards", "geometry", "cutting", "inspection", "move_over", "walls2d", "geometry_free", "customize", "aggregates", "stick", "collision", "cabinet_editor",
-    "compat_identity",
+    "compat_identity", "target",
     "ui", "overlays",
     "hb_props", "hb_project", "hb_props_obstacles", "ops",
     "view3d_sidebar", "menu_apend", "menus",
@@ -42,6 +42,7 @@ from . import object_library
 from . import openings
 from . import cladding
 from .selection import component_props, component_select, component_pick
+from . import target  # feature 067: alvo da seleção, depois de selection e antes de ui
 from . import legacy
 from . import library_panel
 from . import texture_library
@@ -153,6 +154,18 @@ class BTM_AddonPreferences(bpy.types.AddonPreferences):
         description=("Mostra a interface das bibliotecas frameless, face frame, closets e de molduras, que foram "
                      "substituídas pelos armários CAFFMob. Use só para suporte ou para comparar uma conversão"),
         default=False,
+    )  # type: ignore
+
+    # Feature 067 (D-05): o modo da janela de propriedades é do usuário, não do arquivo: fora da cena e do Undo.
+    panel_mode: bpy.props.EnumProperty(
+        name="Modo do painel",
+        description="Essencial mostra o que mais se usa; Completa mostra todos os campos e ações do selecionado",
+        items=[
+            ('ESSENTIAL', "Essencial", "Só o que mais se usa"),
+            ('COMPLETE', "Completa", "Todos os campos e ações do selecionado"),
+        ],
+        default='ESSENTIAL',
+        update=_update_use_viewport_hud,
     )  # type: ignore
 
     wall_color: bpy.props.FloatVectorProperty(name="Cor das Paredes", size=4, min=0, max=1, default=(0.252832, 0.500434, 0.735662, 1.0), subtype="COLOR")  # type: ignore
@@ -334,6 +347,8 @@ def register():
     # Seleção por componente (feature 011)
     for _module in (component_props, component_select, component_pick):
         _module.register()
+    # Feature 067 (D-02): depois da seleção por componente, para o snapshot ver a seleção já promovida ao dono.
+    target.register()
     legacy.register()           # feature 012: bibliotecas herdadas fora da interface e conversão
     library_panel.register()    # feature 012: painel BIBLIOTECA CAFFMOB
     texture_library.register()  # feature 014: texturas dos fabricantes, conta CAF Mob e download
@@ -390,6 +405,7 @@ def unregister():
     texture_library.unregister()
     library_panel.unregister()
     legacy.unregister()
+    target.unregister()
     for _module in (component_pick, component_select, component_props):
         _module.unregister()
     cladding.unregister()

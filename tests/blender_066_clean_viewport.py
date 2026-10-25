@@ -4,8 +4,9 @@ Run: blender --background --factory-startup --python-exit-code 1 --python tests/
 
 - com 23 ocorrências antigas e desatualizadas na lista, nada de colisão se desenha: o pacote de colisão não tem
   handler de desenho, e o único handler de depsgraph dele é o guarda (RF-010, RF-021);
-- as medidas laterais dão no máximo duas cotas, trocam de lado ao girar a vista 180°, somem na vista degenerada e com
-  a chave desligada; ligadas, as cotas anterior e posterior saem (RF-014, RF-015, RF-019);
+- as medidas laterais dão no máximo duas cotas, trocam de lado ao girar a vista 180° e somem na vista degenerada
+  (RF-015, RF-019); desde a 067 (D-07) não há chave: as cotas fixas aparecem sempre para a seleção e as antigas só
+  quando pedidas em "Cotas antigas" (RF-027, RF-030);
 - só a área dona desenha; outra área 3D e o render (sobreposições desligadas) não (RF-020).
 """
 
@@ -81,7 +82,6 @@ def side_dimensions():
     cube("Aéreo", (0.0, 0.0, 2.5), (3.0, 1.0, 0.5))               # fora da faixa de altura
     env.settle()
     _select(body)
-    ctx.scene.btm_settings.show_side_dimensions = True
     # BUG-20261023-HYCE: quatro cotas fixas (eixo do móvel), iguais em qualquer vista, com o nome da referência.
     rec = side_cotas.records(ctx)
     values = {k: (round(v, 4), name) for k, (v, name) in rec.items()}
@@ -107,9 +107,8 @@ def viewport_scope():
     side_cotas.release()
     area = next(a for a in ctx.window.screen.areas if a.type == 'VIEW_3D')
     with ctx.temp_override(area=area):
-        ctx.scene.btm_settings.show_side_dimensions = False
-        ctx.scene.btm_settings.show_side_dimensions = True
-    check("RF-020: ligar pela interface captura a área da ação", side_cotas._owner[0] == area.as_pointer())
+        side_cotas.bind(ctx)           # 067 D-07: sem chave, a área é capturada ao mover o alvo (o guarda chama bind)
+    check("RF-020: a ação na viewport captura a área", side_cotas._owner[0] == area.as_pointer())
     side_cotas.release()
     check("RF-020: a primeira área fica com as cotas", side_cotas.claims(1, {1, 2}))
     check("RF-020: outra área 3D não desenha", not side_cotas.claims(2, {1, 2}))
@@ -120,15 +119,18 @@ def viewport_scope():
     try:
         space = types.SimpleNamespace(overlay=types.SimpleNamespace(show_overlays=False))
         area = types.SimpleNamespace(as_pointer=lambda: 2)
-        fake = types.SimpleNamespace(scene=ctx.scene, area=area, region_data=object(), space_data=space,
+        fake = types.SimpleNamespace(scene=ctx.scene, view_layer=ctx.view_layer, area=area, region_data=object(),
+                                     space_data=space,
                                      window_manager=ctx.window_manager, region=types.SimpleNamespace(as_pointer=lambda: 2))
         side_cotas.bpy = types.SimpleNamespace(context=fake, types=bpy.types, app=bpy.app)
         side_cotas._draw()
         check("RF-020: sem sobreposições (render da viewport) nada é calculado nem desenhado", not calls)
+        # 067 D-07, RF-027: a chave "Medidas laterais" não existe mais na interface e não muda nada; com a seleção,
+        # as cotas são desenhadas (a regra RF-013 da 066, "chave desligada não desenha", foi superada).
         ctx.scene.btm_settings.show_side_dimensions = False
         space.overlay.show_overlays = True
         side_cotas._draw()
-        check("RF-013: chave desligada não desenha", not calls and side_cotas._owner[0] is None)
+        check("067 RF-027: sem chave, as cotas da seleção são desenhadas", bool(calls))
     finally:
         side_cotas.bpy = bpy
         side_cotas.specs = real
@@ -146,13 +148,16 @@ def selection_without_front_back():
     cab.obj.location = (1.0, 0.0, 0.0)
     env.settle()
     _select(cab.obj)
-    ctx.scene.btm_settings.show_side_dimensions = False
-    plain = selection_cotas._specs(ctx)
-    ctx.scene.btm_settings.show_side_dimensions = True
+    # 067 D-07, RF-030: as cotas antigas saem por padrão (as fixas são sempre desenhadas) e voltam só quando pedidas
+    # em "Cotas antigas", na Completa; supera a RF-014 da 066 (a chave "Medidas laterais" as suprimia).
+    state = ctx.window_manager.btm_target
+    state.legacy_cotas = False
     reduced = selection_cotas._specs(ctx)
-    check("RF-014: medidas laterais suprimem todas as cotas de seleção", len(plain) >= 2 and reduced == [],
+    state.legacy_cotas = True
+    plain = selection_cotas._specs(ctx)
+    state.legacy_cotas = False
+    check("067 RF-030: cotas antigas só quando pedidas", len(plain) >= 2 and reduced == [],
           f"{[s.text for s in plain]} → {[s.text for s in reduced]}")
-    ctx.scene.btm_settings.show_side_dimensions = False
 
 
 for step in (no_collision_drawing, side_dimensions, viewport_scope, selection_without_front_back):
