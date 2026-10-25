@@ -197,3 +197,23 @@ T086, T110 a T112, T137, T176 e T125, na branch `feat/067-onda6-mover-sobre`.
   base; depois desloca A para repetir o `delta`. A M-07, no carregamento, grava nas posições antigas a orientação
   equivalente a `rotation` e pivô e âncora `BASE_CENTER`. Continuam em `Scene.btm_saved_positions`, com as 4 últimas
   na janela.
+
+## Atualização 2026-10-25 (onda 7, addon 1.15.0 depois da publicação do MOBI)
+
+Onda 7 da 067 (sincronia do Padrão de Dimensões com o MOBI da marcenaria): ações T139 a T141, T149, T150 e T160 a T163,
+na branch `feat/067-onda7-sincronia`. O servidor fica no `caff_systems` (`feat/067-onda7-padroes-mobi`). A versão
+1.15.0 só sai depois que a produção anunciar a capacidade `padroes_de_dimensao` (T167, T168). A onda não muda regra
+🟢 da extração além da que a onda 1 já superou no `standards/` (D-32).
+
+| Artefato | Seção | Tipo de impacto | Delta |
+|----------|-------|-----------------|-------|
+| `_reversa_sdd/standards/` | banco local `padroes.sqlite3` (onda 1) | delta-de-dados | Esquema 2: `operacao_pendente` (a `Idempotency-Key` da escrita pendente) e a tabela `conflito`; o banco do esquema 1 migra ao abrir |
+| n/a | `standards/sync_core.py`, `standards/sync_cloud.py` | componente-novo | Decisão por uid com o documento sem o envelope (`version`, `updated_at`, `source`) e a ordem das chamadas a `/api/draw/v2/padroes-de-dimensao` |
+| `_reversa_sdd/standards/` | operadores e painel do padrão | regra-nova | "Conflitos de padrão" no painel, com "Manter a minha"/"Manter a da nuvem" e "Manter apagado"/"Manter a edição"; nada muda antes da escolha |
+| n/a | descoberta na conexão (`mobi/api_v2.na_conexao`) | regra-nova | Conectar dispara a sincronia do padrão; sem a capacidade, ela não faz nada |
+
+Regras da sincronia (RF-034, RF-035): conteúdo igual dos dois lados adota a versão da nuvem, sem conflito, também na
+primeira vez; só um lado mudou segue sozinho (baixar, ou enviar com `If-Match`); os dois mudaram é conflito de edição;
+um apagou e o outro editou é conflito apagar × editar; apagado de um lado e intacto do outro propaga a exclusão. O
+disparo é no login, na abertura com conta ligada e 5 s depois da última gravação no banco, sempre num timer. Sem
+rede, sem conta ou sem a capacidade, as linhas continuam `sujo`.

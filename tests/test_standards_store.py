@@ -45,7 +45,7 @@ class StoreTest(unittest.TestCase):
         with StandardsStore(self.path) as other:
             self.assertEqual(other.get("u1")["lines"]["COZ"]["sheets"]["LAT"]["thickness"], 18.0)
             self.assertEqual(other.last_active, "u1")
-            self.assertEqual(other.schema(), 1)
+            self.assertEqual(other.schema(), 2)
         self.store = StandardsStore(self.path)
 
     def test_documento_continua_valido_para_o_io_json(self):
@@ -118,6 +118,74 @@ class StoreTest(unittest.TestCase):
         self.assertTrue(same_content(a, b))
         self.store.put(a)
         self.assertEqual(self.store.import_documents([b])['unchanged'], ["u1"])
+
+
+class SyncStateTest(unittest.TestCase):
+    """Esquema 2 do banco (onda 7, T150; D-34): chave pendente, conflitos e migração do esquema 1."""
+
+    def setUp(self):
+        self._dir = tempfile.TemporaryDirectory()
+        self.path = Path(self._dir.name) / "padroes.sqlite3"
+
+    def tearDown(self):
+        self._dir.cleanup()
+
+    def test_migra_o_esquema_1_no_proprio_banco(self):
+        db = sqlite3.connect(self.path)
+        db.execute("CREATE TABLE definicao (uid TEXT PRIMARY KEY, documento TEXT NOT NULL, atualizado_em TEXT NOT NULL,"
+                   " versao_remota INTEGER, sujo INTEGER NOT NULL DEFAULT 1, excluida INTEGER NOT NULL DEFAULT 0)")
+        db.execute("CREATE TABLE meta (chave TEXT PRIMARY KEY, valor TEXT)")
+        db.execute("INSERT INTO meta VALUES ('esquema', '1')")
+        db.execute("INSERT INTO definicao (uid, documento, atualizado_em, versao_remota, sujo) VALUES (?, ?, 'x', 4, 0)",
+                   ("u1", '{"uid": "u1", "name": "Antiga"}'))
+        db.commit()
+        db.close()
+        with StandardsStore(self.path) as store:
+            self.assertEqual(store.schema(), 2)
+            self.assertEqual(store.get("u1")["name"], "Antiga")
+            self.assertEqual(store.state("u1")["versao_remota"], 4)
+            self.assertEqual(store.conflicts(), [])
+            self.assertTrue(store.pending_key("u1"))
+        with StandardsStore(self.path) as store:            # abrir de novo não migra outra vez
+            self.assertEqual(store.schema(), 2)
+
+    def test_chave_pendente_vale_ate_confirmar_ou_mudar(self):
+        with StandardsStore(self.path) as store:
+            store.put(_document("u1"))
+            key = store.pending_key("u1")
+            self.assertEqual(store.pending_key("u1"), key)      # repetição usa a mesma chave
+            store.put(_document("u1", lateral=18.0))
+            changed = store.pending_key("u1")
+            self.assertNotEqual(changed, key)                    # conteúdo novo, chave nova
+            store.mark_synced("u1", 2)
+            self.assertNotEqual(store.pending_key("u1"), changed)
+            with self.assertRaises(StoreError):
+                store.pending_key("nao-existe")
+
+    def test_conflito_sobrevive_e_sai_quando_resolvido(self):
+        with StandardsStore(self.path) as store:
+            store.put(_document("u1"))
+            store.add_conflict("u1", "EDIT_CONFLICT", '', 5, _document("u1", lateral=25.0))
+        with StandardsStore(self.path) as store:
+            [conflict] = store.conflicts()
+            self.assertEqual((conflict['uid'], conflict['tipo'], conflict['versao_remota']), ("u1", "EDIT_CONFLICT", 5))
+            self.assertEqual(conflict['documento_remoto']["lines"], _document("u1", lateral=25.0)["lines"])
+            self.assertEqual(store.state("u1")["sujo"], True)   # nada mudou na definição antes da escolha
+            store.apply_remote(conflict['documento_remoto'], 5)  # "Manter a da nuvem"
+            self.assertIsNone(store.conflict("u1"))
+            self.assertEqual((store.state("u1")["sujo"], store.state("u1")["versao_remota"]), (False, 5))
+
+    def test_linhas_excluidas_e_purge(self):
+        with StandardsStore(self.path) as store:
+            store.put(_document("u1"))
+            store.mark_synced("u1", 1)
+            store.delete("u1")
+            [(uid, document, state)] = store.rows()
+            self.assertEqual((uid, state['excluida'], state['sujo']), ("u1", True, True))
+            self.assertEqual(store.local_document("u1")["uid"], "u1")
+            store.add_conflict("u1", "DELETE_CONFLICT", 'LOCAL', 2)
+            store.purge("u1")
+            self.assertEqual((store.rows(), store.conflicts()), ([], []))
 
 
 class PackTest(unittest.TestCase):

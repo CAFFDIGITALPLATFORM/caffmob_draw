@@ -23,6 +23,11 @@ Onda 5:
 
 Onda 6:
 - salvar e reabrir conserva as posições salvas com `pivot`, `anchor` e `orientation`.
+
+Onda 7:
+- recarregar o addon 3× não duplica o timer nem deixa a tarefa de sincronia presa;
+- `sujo`, `versao_remota` e os conflitos ficam no banco: fechar a conexão e abrir outro arquivo traz os conflitos de
+  volta à lista (o banco fica fora do `.blend`; fechar o Blender equivale a fechar a conexão).
 """
 
 import os
@@ -241,6 +246,44 @@ def wave_6(folder):
     check(found == [expected], "salvar e reabrir conserva pivô, âncora e orientação da posição salva", str(found))
 
 
+def wave_7(folder):
+    import uuid
+    from caffmob_draw.standards import io_json, store, sync_cloud
+    sync_cloud.schedule()
+    sync_cloud._state['running'] = True                 # uma tarefa em andamento no meio da recarga
+    for _ in range(3):
+        addon.unregister()
+        addon.register()
+    check(not bpy.app.timers.is_registered(sync_cloud._tick) and not sync_cloud._state['running'],
+          "recarregar 3× não deixa timer nem tarefa de sincronia presos")
+    sync_cloud.schedule()
+    sync_cloud.schedule()
+    check(bpy.app.timers.is_registered(sync_cloud._tick), "depois da recarga o disparo volta a ser um só")
+    bpy.app.timers.unregister(sync_cloud._tick)
+
+    uid_dirty, uid_conflict = str(uuid.uuid4()), str(uuid.uuid4())
+    db = store.get()
+    for uid in (uid_dirty, uid_conflict):
+        db.put(io_json.values_to_document("Ciclo " + uid[:4], uid, 'BR', 'USER', 1, "2026-10-25T10:00:00-03:00",
+                                          {'COZ.sheets.LAT.thickness': 15.0, 'COZ.sheets.LAT.material': 'MDF'}))
+    db.mark_synced(uid_conflict, 4)
+    db.put(db.get(uid_conflict))
+    db.add_conflict(uid_conflict, 'EDIT_CONFLICT', '', 5, dict(db.get(uid_conflict), name="Da nuvem"))
+    store.close()
+    sync_cloud._state['conflicts'] = ()
+    env.clean_scene()
+    path = os.path.join(folder, "ciclo_onda7.blend")
+    bpy.ops.wm.save_as_mainfile(filepath=path, copy=True)
+    bpy.ops.wm.open_mainfile(filepath=path)               # load_post: a migração relê os conflitos
+    db = store.get()
+    check(db.state(uid_dirty)['sujo'] is True and db.state(uid_dirty)['versao_remota'] is None,
+          "sujo e versão remota sobrevivem a fechar e abrir")
+    check(db.state(uid_conflict)['versao_remota'] == 4 and db.state(uid_conflict)['sujo'] is True,
+          "a versão remota da linha em conflito sobrevive")
+    check([c['uid'] for c in sync_cloud.conflicts()] == [uid_conflict], "o conflito volta à lista na abertura",
+          str(sync_cloud.conflicts()))
+
+
 try:
     with fx.banco_temporario(), tempfile.TemporaryDirectory(prefix="caffmob_067_ciclo_") as folder:
         wave_1(folder)
@@ -249,6 +292,7 @@ try:
         wave_4(folder)
         wave_5(folder)
         wave_6(folder)
+        wave_7(folder)
 except Exception:
     traceback.print_exc()
     FAILURES.append("exceção")

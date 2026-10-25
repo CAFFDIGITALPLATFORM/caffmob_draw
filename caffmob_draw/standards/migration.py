@@ -137,6 +137,7 @@ def run(scene=None):
             applied.append('banco')
         if stamp_standard_uid(scene):
             applied.append('M-03')
+        _sync_on_open()
         return applied
     except api.StandardsError as exc:
         print(f"CAFFMob Draw: migração do Padrão de Dimensões não aplicada: {exc}")
@@ -146,6 +147,14 @@ def run(scene=None):
         print("CAFFMob Draw: falha inesperada na migração do Padrão de Dimensões")
         traceback.print_exc()
         return []
+
+
+def _sync_on_open():
+    """067 onda 7 (D-34): abrir com a conta ligada sincroniza o banco com o MOBI, num timer, fora do load."""
+    from . import sync_cloud
+    sync_cloud.refresh_conflicts()
+    if not sync_cloud.unavailable():
+        sync_cloud.schedule(2.0)
 
 
 def _startup_timer():

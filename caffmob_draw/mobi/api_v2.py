@@ -58,6 +58,8 @@ def na_conexao(context, mensagem):
         job.finish(mensagem)
         if base == downloads.server_url() and not resultado.mensagem:
             retomar_texturas(context)
+            from ..standards import sync_cloud      # 067 onda 7: o login sincroniza o Padrão de Dimensões
+            sync_cloud.schedule(0.1)
     cliente(context, job).descobrir(recebido)
     return job
 
