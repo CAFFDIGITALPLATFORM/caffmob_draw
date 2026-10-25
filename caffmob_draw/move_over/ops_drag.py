@@ -8,6 +8,10 @@
 - O arraste desenha uma linha do ponto de partida até o cursor e o nome do objeto sob o cursor; soltar sobre um
   objeto de referência (B) abre a janela `caffmob.move_over_dialog`; soltar no vazio, sobre A ou após um clique sem arraste
   não faz nada.
+- 067 (onda 6, T086; RF-128) gesto de face: com o botão direito segurado, um clique esquerdo fixa o pivô no ponto da
+  face sob o cursor (o raio acha o primeiro ponto visível do polígono; ponto oculto é recusado); soltar sobre o
+  objeto dessa face faz dele o pai do movido, com a matriz mundial preservada, num passo de Desfazer. Objeto com
+  constraints não entra no gesto (passa ao caminho de sempre, a janela). Esc desfaz o pivô e não mexe em nada.
 """
 
 import bpy  # type: ignore
@@ -24,6 +28,35 @@ _addon_keymaps = []
 def mode_enabled(context):
     state = getattr(context.window_manager, 'btm_move_over', None)
     return bool(state and state.enabled)
+
+
+def pin_from_ray(scene, depsgraph, origin, direction, target=None):
+    """Ponto da face sob o raio: (objeto, ponto, normal, polígono) do primeiro acerto, ou None. Com `target`, o primeiro
+    acerto precisa ser dele: ponto escondido atrás de outro objeto é recusado (RF-128)."""
+    hit, location, normal, index, obj, _matrix = scene.ray_cast(depsgraph, origin, direction)
+    if not hit or index < 0 or obj is None:
+        return None
+    obj = obj.original if hasattr(obj, 'original') else obj
+    if target is not None and obj != target:
+        return None
+    return obj, location.copy(), normal.copy(), index
+
+
+def parent_keep_world(child, parent):
+    """`child` vira filho de `parent` sem sair do lugar no mundo; devolve (pai, matriz) de antes para o Esc."""
+    before = (child.parent, child.matrix_world.copy(), child.matrix_parent_inverse.copy())
+    world = child.matrix_world.copy()
+    child.parent = parent
+    child.matrix_parent_inverse = parent.matrix_world.inverted_safe()
+    child.matrix_world = world
+    return before
+
+
+def restore_parent(child, before):
+    parent, world, inverse = before
+    child.parent = parent
+    child.matrix_parent_inverse = inverse
+    child.matrix_world = world
 
 
 def raycast(context, mouse_region):
@@ -79,6 +112,7 @@ class BTM_OT_MoveOverDrag(bpy.types.Operator):
         self.start = start
         self.cursor = start
         self.b = None
+        self.pin = None                   # gesto de face (067 RF-128)
         self._handle = bpy.types.SpaceView3D.draw_handler_add(self._draw, (), 'WINDOW', 'POST_PIXEL')
         context.window_manager.modal_handler_add(self)
         context.workspace.status_text_set(
@@ -91,6 +125,8 @@ class BTM_OT_MoveOverDrag(bpy.types.Operator):
         draw.lines(sh, draw.dashed(self.start, self.cursor), color)
         label = f"{self.a.name} → {self.b.name}" if self.b is not None else self.a.name
         draw.text(self.cursor[0] + 12, self.cursor[1] + 10, label, color)
+        if self.pin is not None:
+            draw.circle(sh, self.pin_px, 6, draw.COLORS['reference'], draw.COLORS['moving'])
         draw.end()
 
     def _finish(self, context):
@@ -115,17 +151,46 @@ class BTM_OT_MoveOverDrag(bpy.types.Operator):
             self.b = candidate if candidate is not None and candidate != self.a else None
             context.area.tag_redraw()
             return {'RUNNING_MODAL'}
+        if event.type == 'LEFTMOUSE' and event.value == 'PRESS':
+            self._pin(context, (event.mouse_region_x, event.mouse_region_y))
+            return {'RUNNING_MODAL'}
         if event.type == 'RIGHTMOUSE' and event.value == 'RELEASE':
             moved = abs(self.cursor[0] - self.start[0]) + abs(self.cursor[1] - self.start[1])
-            a, b = self.a, self.b
+            a, b, pin = self.a, self.b, self.pin
             self._finish(context)
+            if pin is not None and b is not None and pin[0] in (b, *b.children_recursive) and not a.constraints:
+                parent_keep_world(a, pin[0])                     # a face vira o pai, sem salto (RF-128)
+                try:
+                    bpy.ops.ed.undo_push(message=tr("Prender na face"))
+                except RuntimeError:
+                    pass
+                self.report({'INFO'}, tr("“{}” preso na face de “{}”").format(a.name, pin[0].name))
+                return {'FINISHED'}
             if moved >= DRAG_THRESHOLD_PX and b is not None:
                 bpy.ops.caffmob.move_over_dialog('INVOKE_DEFAULT', a_name=a.name, b_name=b.name)
             return {'FINISHED'}
         if event.type == 'ESC':
+            self.pin = None
             self._finish(context)
             return {'CANCELLED'}
         return {'RUNNING_MODAL'}
+
+
+    def _pin(self, context, pixel):
+        """Clique esquerdo durante o arraste: fixa o pivô no ponto visível da face sob o cursor (RF-128)."""
+        region, rv3d = context.region, context.region_data
+        if region is None or rv3d is None or self.a.constraints:
+            if self.a.constraints:
+                self.report({'INFO'}, tr("Objeto com constraints: o gesto de face fica com o Blender"))
+            return
+        origin = view3d_utils.region_2d_to_origin_3d(region, rv3d, pixel)
+        direction = view3d_utils.region_2d_to_vector_3d(region, rv3d, pixel)
+        pin = pin_from_ray(context.scene, context.evaluated_depsgraph_get(), origin, direction)
+        if pin is None or pin[0] == self.a or pin[0] in self.a.children_recursive:
+            self.report({'INFO'}, tr("Clique numa face visível do objeto de referência"))
+            return
+        self.pin, self.pin_px = pin, pixel
+        context.area.tag_redraw()
 
 
 classes = (BTM_OT_MoveOverToggle, BTM_OT_MoveOverDrag)

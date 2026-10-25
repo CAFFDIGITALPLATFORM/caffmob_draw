@@ -54,7 +54,10 @@ def scene():
 
 
 def dialog(a, b):
-    methods = {k: v for k, v in vars(ops_dialog.BTM_OT_MoveOverDialog).items() if callable(v)}
+    methods = {}
+    for klass in reversed(ops_dialog.BTM_OT_MoveOverDialog.__mro__):      # 067: o mixin da rotação também
+        if klass.__module__.startswith('caffmob_draw'):
+            methods.update({k: v for k, v in vars(klass).items() if callable(v)})
     fake = type('Dialog', (), methods)()
     fake.mo = MoveOver(ctx, a, b)
     fake.report = lambda *args: None

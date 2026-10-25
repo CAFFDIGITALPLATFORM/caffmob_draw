@@ -20,6 +20,9 @@ Onda 4:
 
 Onda 5:
 - salvar e reabrir conserva o papel e a dobradiça das frentes, o caminho do subvão e os mecanismos.
+
+Onda 6:
+- salvar e reabrir conserva as posições salvas com `pivot`, `anchor` e `orientation`.
 """
 
 import os
@@ -222,6 +225,22 @@ def wave_5(folder):
           "salvar e reabrir conserva os mecanismos")
 
 
+def wave_6(folder):
+    env.clean_scene()
+    from caffmob_draw.move_over import rotation as rot
+    item = bpy.context.scene.btm_saved_positions.add()
+    item.name, item.rotation, item.b_side = "Posição com giro", 30.0, 'RIGHT'
+    item.pivot, item.anchor = 'C100', 'C011'
+    item.orientation = rot.axis_angle(rot.AXES['Y'], 30.0)
+    expected = (item.pivot, item.anchor, tuple(round(v, 6) for v in item.orientation))
+    path = os.path.join(folder, "ciclo_onda6.blend")
+    bpy.ops.wm.save_as_mainfile(filepath=path, copy=True)
+    bpy.ops.wm.open_mainfile(filepath=path)
+    found = [(i.pivot, i.anchor, tuple(round(v, 6) for v in i.orientation))
+             for i in bpy.context.scene.btm_saved_positions if i.name == "Posição com giro"]
+    check(found == [expected], "salvar e reabrir conserva pivô, âncora e orientação da posição salva", str(found))
+
+
 try:
     with fx.banco_temporario(), tempfile.TemporaryDirectory(prefix="caffmob_067_ciclo_") as folder:
         wave_1(folder)
@@ -229,6 +248,7 @@ try:
         wave_3(folder)
         wave_4(folder)
         wave_5(folder)
+        wave_6(folder)
 except Exception:
     traceback.print_exc()
     FAILURES.append("exceção")

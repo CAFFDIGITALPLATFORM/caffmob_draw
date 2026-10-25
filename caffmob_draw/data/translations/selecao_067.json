@@ -191,6 +191,10 @@
   "pt_BR": "Classifique as peças no assistente de acabamento para aplicar materiais neste armário",
   "en_US": "Classify the parts in the finish assistant to apply materials to this cabinet"
  },
+ "Clique numa face visível do objeto de referência": {
+  "pt_BR": "Clique numa face visível do objeto de referência",
+  "en_US": "Click a visible face of the reference object"
+ },
  "Completa": {
   "pt_BR": "Completa",
   "en_US": "Complete"
@@ -695,6 +699,10 @@
   "pt_BR": "O vão {} não existe mais",
   "en_US": "Space {} no longer exists"
  },
+ "Objeto com constraints: o gesto de face fica com o Blender": {
+  "pt_BR": "Objeto com constraints: o gesto de face fica com o Blender",
+  "en_US": "Object with constraints: the face gesture is left to Blender"
+ },
  "Objeto sem corpo: não se move no Mover Sobre.": {
   "pt_BR": "Objeto sem corpo: não se move no Mover Sobre.",
   "en_US": "Object without a body: it does not move with Move Over."
@@ -751,6 +759,10 @@
   "pt_BR": "Peças ({}):",
   "en_US": "Parts ({}):"
  },
+ "Pivô": {
+  "pt_BR": "Pivô",
+  "en_US": "Pivot"
+ },
  "Porta sem folha gerada.": {
   "pt_BR": "Porta sem folha gerada.",
   "en_US": "Door without a generated leaf."
@@ -758,6 +770,10 @@
  "Potência": {
   "pt_BR": "Potência",
   "en_US": "Power"
+ },
+ "Prender na face": {
+  "pt_BR": "Prender na face",
+  "en_US": "Attach to face"
  },
  "Projeção": {
   "pt_BR": "Projeção",
@@ -975,6 +991,10 @@
   "pt_BR": "Vale para porta de ambiente.",
   "en_US": "Applies to room doors."
  },
+ "Valor Inválido: o ângulo precisa ser um número em graus (recebido: {}).": {
+  "pt_BR": "Valor Inválido: o ângulo precisa ser um número em graus (recebido: {}).",
+  "en_US": "Invalid value: the angle must be a number in degrees (got: {})."
+ },
  "Veio": {
   "pt_BR": "Veio",
   "en_US": "Grain"
@@ -1126,5 +1146,13 @@
  "{}: vem de outro arquivo (linked)": {
   "pt_BR": "{}: vem de outro arquivo (linked)",
   "en_US": "{}: comes from another file (linked)"
+ },
+ "Âncora": {
+  "pt_BR": "Âncora",
+  "en_US": "Anchor"
+ },
+ "“{}” preso na face de “{}”": {
+  "pt_BR": "“{}” preso na face de “{}”",
+  "en_US": "“{}” attached to the face of “{}”"
  }
 }
