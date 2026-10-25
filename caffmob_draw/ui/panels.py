@@ -70,6 +70,44 @@ def draw_standards_box(layout, context):
     row = sub.row(align=True)                       # 067 RF-033: o padrão da marcenaria inteiro
     row.operator("caffmob.standards_import_all", text=tr("Importar todas"), icon='IMPORT')
     row.operator("caffmob.standards_export_all", text=tr("Exportar todas"), icon='EXPORT')
+    draw_standards_conflicts(box)
+
+
+# Escolhas de cada tipo de conflito (rótulo do botão) — 067 onda 7, RF-035.
+_CONFLICT_BUTTONS = {
+    'EDIT_CONFLICT': (('KEEP_MINE', "Manter a minha"), ('KEEP_CLOUD', "Manter a da nuvem")),
+    'DELETE_CONFLICT': (('KEEP_DELETED', "Manter apagado"), ('KEEP_EDIT', "Manter a edição")),
+}
+
+
+def draw_standards_conflicts(layout):
+    """Lista "Conflitos de padrão": some sem conflito. Lê a cópia de `sync_cloud` (nunca o banco no draw)."""
+    from ..standards import sync_cloud
+    items = sync_cloud.conflicts()
+    if not items:
+        return
+    box = layout.box()
+    box.label(text=tr("Conflitos de padrão"), icon='ERROR')
+    for item in items:
+        local, remote = item['documento_local'] or {}, item['documento_remoto'] or {}
+        col = box.column(align=True)
+        col.label(text=str(local.get('name') or remote.get('name') or item['uid']), icon='PRESET')
+        if item['tipo'] == 'DELETE_CONFLICT':
+            deleted_here = item['lado'] == 'LOCAL'
+            col.label(text=tr("Neste computador: apagada") if deleted_here else
+                      tr("Neste computador: editada ({})").format(local.get('name') or ''))
+            col.label(text=tr("Na nuvem: editada (versão {})").format(item['versao_remota']) if deleted_here else
+                      tr("Na nuvem: apagada"))
+        else:
+            col.label(text=tr("Neste computador: {}").format(local.get('name') or ''))
+            col.label(text=tr("Na nuvem: {} (versão {})").format(remote.get('name') or '', item['versao_remota']))
+            if item['campos']:
+                col.label(text=tr("Diferem: {}").format(", ".join(item['campos'])))
+        col.label(text=tr("Detectado em {}").format(item['detectado_em']))
+        row = col.row(align=True)
+        for choice, label in _CONFLICT_BUTTONS.get(item['tipo'], ()):
+            op = row.operator("caffmob.standards_conflict_resolve", text=tr(label))
+            op.uid, op.choice = item['uid'], choice
 
 
 def draw_inspection_box(layout, context):

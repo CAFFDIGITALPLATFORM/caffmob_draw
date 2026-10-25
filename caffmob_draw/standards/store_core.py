@@ -4,17 +4,32 @@ O padrão da marcenaria vive fora do `.blend`, num `padroes.sqlite3`, para não 
 arquivo (RN-15). Python puro com `sqlite3` da biblioteca padrão e caminho injetado; a ligação com o Blender (onde
 fica o arquivo) é de `standards/store.py`. Cada definição é guardada como o documento de `io_json.values_to_document`.
 As embutidas nunca entram. Toda gravação é uma transação.
+
+Onda 7 (T150; D-34): esquema 2. Cada linha guarda a `Idempotency-Key` da escrita pendente na nuvem
+(`operacao_pendente`, reaproveitada na repetição e trocada quando o conteúdo muda) e a tabela `conflito` guarda o que
+a sincronia não decide sozinha (RF-035), com o documento remoto, até o usuário escolher. Banco do esquema 1 migra no
+próprio banco, ao abrir.
 """
 
 import datetime
 import json
 import sqlite3
+import uuid
 
 from . import builtin
 from ..data.i18n import N_
 
-SCHEMA = 1
+SCHEMA = 2
 BUILTIN_UIDS = frozenset(uid for uid, _name, _market in builtin.BUILTINS)
+
+_CONFLICT_DDL = (
+    "CREATE TABLE IF NOT EXISTS conflito ("
+    " uid TEXT PRIMARY KEY,"
+    " tipo TEXT NOT NULL,"
+    " lado TEXT NOT NULL DEFAULT '',"
+    " versao_remota INTEGER,"
+    " documento_remoto TEXT,"
+    " detectado_em TEXT NOT NULL)")
 
 _DDL = (
     "CREATE TABLE IF NOT EXISTS definicao ("
@@ -23,8 +38,10 @@ _DDL = (
     " atualizado_em TEXT NOT NULL,"
     " versao_remota INTEGER,"
     " sujo INTEGER NOT NULL DEFAULT 1,"
-    " excluida INTEGER NOT NULL DEFAULT 0)",
+    " excluida INTEGER NOT NULL DEFAULT 0,"
+    " operacao_pendente TEXT)",
     "CREATE TABLE IF NOT EXISTS meta (chave TEXT PRIMARY KEY, valor TEXT)",
+    _CONFLICT_DDL,
 )
 
 
@@ -45,6 +62,15 @@ def _uid_of(document):
     return uid
 
 
+def _migrate(db):
+    """Esquema 1 → 2: a coluna da chave pendente (a tabela `conflito` já veio do `_DDL`)."""
+    columns = {row[1] for row in db.execute("PRAGMA table_info(definicao)")}
+    if 'operacao_pendente' not in columns:
+        db.execute("ALTER TABLE definicao ADD COLUMN operacao_pendente TEXT")
+    db.execute("INSERT INTO meta (chave, valor) VALUES ('esquema', ?) "
+               "ON CONFLICT(chave) DO UPDATE SET valor = excluded.valor", (str(SCHEMA),))
+
+
 def _version(document):
     try:
         return int(document.get("version") or 1)
@@ -58,10 +84,13 @@ class StandardsStore:
     def __init__(self, path):
         self.path = str(path)
         self._db = sqlite3.connect(self.path, isolation_level=None)
-        with self._transaction():
+        with self._transaction() as db:
+            existed = db.execute("SELECT 1 FROM sqlite_master WHERE name = 'definicao'").fetchone() is not None
             for statement in _DDL:
-                self._db.execute(statement)
-            self._db.execute("INSERT OR IGNORE INTO meta (chave, valor) VALUES ('esquema', ?)", (str(SCHEMA),))
+                db.execute(statement)
+            if existed:
+                _migrate(db)
+            db.execute("INSERT OR IGNORE INTO meta (chave, valor) VALUES ('esquema', ?)", (str(SCHEMA),))
 
     def close(self):
         if self._db is not None:
@@ -133,7 +162,7 @@ class StandardsStore:
         db.execute(
             "INSERT INTO definicao (uid, documento, atualizado_em, sujo, excluida) VALUES (?, ?, ?, 1, 0) "
             "ON CONFLICT(uid) DO UPDATE SET documento = excluded.documento, atualizado_em = excluded.atualizado_em, "
-            "sujo = 1, excluida = 0",
+            "sujo = 1, excluida = 0, operacao_pendente = NULL",
             (uid, json.dumps(document, ensure_ascii=False, sort_keys=True), now_utc()))
 
     def rename(self, uid, name):
@@ -153,7 +182,8 @@ class StandardsStore:
             if row[0] is None:
                 db.execute("DELETE FROM definicao WHERE uid = ?", (uid,))
             else:
-                db.execute("UPDATE definicao SET excluida = 1, sujo = 1, atualizado_em = ? WHERE uid = ?",
+                db.execute("UPDATE definicao SET excluida = 1, sujo = 1, operacao_pendente = NULL, atualizado_em = ? "
+                           "WHERE uid = ?",
                            (now_utc(), uid))
             if self.meta('ultima_ativa') == uid:
                 db.execute("DELETE FROM meta WHERE chave = 'ultima_ativa'")
@@ -174,10 +204,87 @@ class StandardsStore:
                 db.execute("INSERT INTO meta (chave, valor) VALUES ('ultima_ativa', ?) "
                            "ON CONFLICT(chave) DO UPDATE SET valor = excluded.valor", (uid,))
 
-    def mark_synced(self, uid, remote_version):
-        """A nuvem aceitou ou entregou esta versão (onda 7): limpa `sujo` e guarda a versão remota."""
+    def mark_synced(self, uid, remote_version, dirty=False):
+        """A nuvem aceitou ou entregou esta versão (onda 7): limpa `sujo` e guarda a versão remota. Com `dirty`, só
+        guarda a versão (o conteúdo mudou enquanto o pedido estava no ar e ainda precisa subir)."""
         with self._transaction() as db:
-            db.execute("UPDATE definicao SET sujo = 0, versao_remota = ? WHERE uid = ?", (int(remote_version), uid))
+            db.execute("UPDATE definicao SET sujo = ?, versao_remota = ?, operacao_pendente = NULL WHERE uid = ?",
+                       (1 if dirty else 0, int(remote_version), uid))
+
+    # Sincronia com a nuvem (onda 7) -------------------------------------------------------------------------
+
+    def rows(self):
+        """Todas as linhas, inclusive as excluídas à espera da nuvem: (uid, documento, estado)."""
+        rows = self._db.execute("SELECT uid, documento, versao_remota, sujo, excluida FROM definicao ORDER BY uid")
+        return [(r[0], json.loads(r[1]), {'versao_remota': r[2], 'sujo': bool(r[3]), 'excluida': bool(r[4])})
+                for r in rows.fetchall()]
+
+    def pending_key(self, uid):
+        """`Idempotency-Key` da escrita pendente: a mesma até a nuvem confirmar ou o conteúdo mudar."""
+        with self._transaction() as db:
+            row = db.execute("SELECT operacao_pendente FROM definicao WHERE uid = ?", (uid,)).fetchone()
+            if row is None:
+                raise StoreError(N_("Definição não encontrada no banco."))
+            if row[0]:
+                return row[0]
+            key = str(uuid.uuid4())
+            db.execute("UPDATE definicao SET operacao_pendente = ? WHERE uid = ?", (key, uid))
+            return key
+
+    def drop_pending_key(self, uid):
+        """A nuvem recusou a chave (`CHAVE_REUTILIZADA`): a próxima tentativa gera outra."""
+        with self._transaction() as db:
+            db.execute("UPDATE definicao SET operacao_pendente = NULL WHERE uid = ?", (uid,))
+
+    def apply_remote(self, document, remote_version):
+        """Grava o documento que veio da nuvem, já sincronizado (não fica `sujo`)."""
+        uid = _uid_of(document)
+        with self._transaction() as db:
+            db.execute(
+                "INSERT INTO definicao (uid, documento, atualizado_em, versao_remota, sujo, excluida) "
+                "VALUES (?, ?, ?, ?, 0, 0) ON CONFLICT(uid) DO UPDATE SET documento = excluded.documento, "
+                "atualizado_em = excluded.atualizado_em, versao_remota = excluded.versao_remota, sujo = 0, "
+                "excluida = 0, operacao_pendente = NULL",
+                (uid, json.dumps(document, ensure_ascii=False, sort_keys=True), now_utc(), int(remote_version)))
+            db.execute("DELETE FROM conflito WHERE uid = ?", (uid,))
+
+    def purge(self, uid):
+        """Tira a linha de vez (a exclusão chegou aos dois lados)."""
+        with self._transaction() as db:
+            db.execute("DELETE FROM definicao WHERE uid = ?", (uid,))
+            db.execute("DELETE FROM conflito WHERE uid = ?", (uid,))
+            if self.meta('ultima_ativa') == uid:
+                db.execute("DELETE FROM meta WHERE chave = 'ultima_ativa'")
+
+    def add_conflict(self, uid, kind, side='', remote_version=None, remote_document=None):
+        """Registra (ou atualiza) o conflito do uid; nada muda na definição até o usuário escolher (RF-035)."""
+        remote = None if remote_document is None else json.dumps(remote_document, ensure_ascii=False, sort_keys=True)
+        with self._transaction() as db:
+            db.execute(
+                "INSERT INTO conflito (uid, tipo, lado, versao_remota, documento_remoto, detectado_em) "
+                "VALUES (?, ?, ?, ?, ?, ?) ON CONFLICT(uid) DO UPDATE SET tipo = excluded.tipo, lado = excluded.lado, "
+                "versao_remota = excluded.versao_remota, documento_remoto = excluded.documento_remoto, "
+                "detectado_em = excluded.detectado_em",
+                (uid, str(kind), str(side or ''), remote_version, remote, now_utc()))
+
+    def conflicts(self):
+        rows = self._db.execute("SELECT uid, tipo, lado, versao_remota, documento_remoto, detectado_em "
+                                "FROM conflito ORDER BY uid").fetchall()
+        return [_conflict(row) for row in rows]
+
+    def conflict(self, uid):
+        row = self._db.execute("SELECT uid, tipo, lado, versao_remota, documento_remoto, detectado_em "
+                               "FROM conflito WHERE uid = ?", (uid,)).fetchone()
+        return _conflict(row) if row else None
+
+    def local_document(self, uid):
+        """Documento local, inclusive o da linha excluída (o conflito mostra as duas versões)."""
+        row = self._db.execute("SELECT documento FROM definicao WHERE uid = ?", (uid,)).fetchone()
+        return json.loads(row[0]) if row else None
+
+    def remove_conflict(self, uid):
+        with self._transaction() as db:
+            db.execute("DELETE FROM conflito WHERE uid = ?", (uid,))
 
     def import_documents(self, documents, replace=()):
         """Importa numa transação. Uid novo entra; igual não muda; uid existente com conteúdo diferente só é
@@ -203,6 +310,11 @@ class StandardsStore:
                 else:
                     report['pending'].append(uid)
         return report
+
+
+def _conflict(row):
+    return {'uid': row[0], 'tipo': row[1], 'lado': row[2], 'versao_remota': row[3],
+            'documento_remoto': json.loads(row[4]) if row[4] else None, 'detectado_em': row[5]}
 
 
 def same_content(a, b):

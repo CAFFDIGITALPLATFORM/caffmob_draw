@@ -211,6 +211,14 @@
   "pt_BR": "Comuns aos selecionados",
   "en_US": "Common to the selection"
  },
+ "Confirma a exclusão nos dois lados": {
+  "pt_BR": "Confirma a exclusão nos dois lados",
+  "en_US": "Confirms the deletion on both sides"
+ },
+ "Conflitos de padrão": {
+  "pt_BR": "Conflitos de padrão",
+  "en_US": "Standard conflicts"
+ },
  "Conjunto": {
   "pt_BR": "Conjunto",
   "en_US": "Assembly"
@@ -307,9 +315,21 @@
   "pt_BR": "Desconhecido",
   "en_US": "Unknown"
  },
+ "Desfaz a exclusão com a versão editada": {
+  "pt_BR": "Desfaz a exclusão com a versão editada",
+  "en_US": "Undoes the deletion with the edited version"
+ },
+ "Detectado em {}": {
+  "pt_BR": "Detectado em {}",
+  "en_US": "Detected at {}"
+ },
  "Diagnóstico: {}": {
   "pt_BR": "Diagnóstico: {}",
   "en_US": "Diagnostics: {}"
+ },
+ "Diferem: {}": {
+  "pt_BR": "Diferem: {}",
+  "en_US": "Differ: {}"
  },
  "Disponível em Object Mode": {
   "pt_BR": "Disponível em Object Mode",
@@ -338,6 +358,10 @@
  "Em Edit Mode, marca as faces como borda (fita)": {
   "pt_BR": "Em Edit Mode, marca as faces como borda (fita)",
   "en_US": "In Edit Mode, marks the faces as edge (edge band)"
+ },
+ "Envia a versão deste computador por cima da versão da nuvem": {
+  "pt_BR": "Envia a versão deste computador por cima da versão da nuvem",
+  "en_US": "Uploads this computer's version over the cloud version"
  },
  "Escala": {
   "pt_BR": "Escala",
@@ -406,6 +430,10 @@
  "Estas definições já existem com valores diferentes. Marque as que devem ser substituídas:": {
   "pt_BR": "Estas definições já existem com valores diferentes. Marque as que devem ser substituídas:",
   "en_US": "These definitions already exist with different values. Check the ones to replace:"
+ },
+ "Este conflito já foi resolvido.": {
+  "pt_BR": "Este conflito já foi resolvido.",
+  "en_US": "This conflict has already been resolved."
  },
  "Este móvel não tem papéis de acabamento: classifique as peças no assistente": {
   "pt_BR": "Este móvel não tem papéis de acabamento: classifique as peças no assistente",
@@ -487,6 +515,10 @@
   "pt_BR": "Frente: recebe os acabamentos Externo e Frentes",
   "en_US": "Front: receives the External and Fronts finishes"
  },
+ "Grava no banco local a versão que está na nuvem": {
+  "pt_BR": "Grava no banco local a versão que está na nuvem",
+  "en_US": "Saves the cloud version to the local database"
+ },
  "Grava no banco local uma definição mais antiga que a versão guardada nele": {
   "pt_BR": "Grava no banco local uma definição mais antiga que a versão guardada nele",
   "en_US": "Saves to the local database a definition older than the version stored there"
@@ -534,6 +566,22 @@
  "Malha visual: não entra no plano de corte nem na colisão": {
   "pt_BR": "Malha visual: não entra no plano de corte nem na colisão",
   "en_US": "Visual mesh: not part of the cutting plan or of collision"
+ },
+ "Manter a da nuvem": {
+  "pt_BR": "Manter a da nuvem",
+  "en_US": "Keep the cloud version"
+ },
+ "Manter a edição": {
+  "pt_BR": "Manter a edição",
+  "en_US": "Keep the edit"
+ },
+ "Manter a minha": {
+  "pt_BR": "Manter a minha",
+  "en_US": "Keep mine"
+ },
+ "Manter apagado": {
+  "pt_BR": "Manter apagado",
+  "en_US": "Keep deleted"
  },
  "Marca o papel de acabamento das peças (Object Mode) ou das faces (Edit Mode) selecionadas": {
   "pt_BR": "Marca o papel de acabamento das peças (Object Mode) ou das faces (Edit Mode) selecionadas",
@@ -619,6 +667,18 @@
   "pt_BR": "Múltiplos",
   "en_US": "Multiple"
  },
+ "Na nuvem: apagada": {
+  "pt_BR": "Na nuvem: apagada",
+  "en_US": "In the cloud: deleted"
+ },
+ "Na nuvem: editada (versão {})": {
+  "pt_BR": "Na nuvem: editada (versão {})",
+  "en_US": "In the cloud: edited (version {})"
+ },
+ "Na nuvem: {} (versão {})": {
+  "pt_BR": "Na nuvem: {} (versão {})",
+  "en_US": "In the cloud: {} (version {})"
+ },
  "Nenhum selecionado é membro de armário autoral.": {
   "pt_BR": "Nenhum selecionado é membro de armário autoral.",
   "en_US": "No selected object is a member of an authored cabinet."
@@ -635,9 +695,25 @@
   "pt_BR": "Nenhuma face ou peça do alvo pertence aos domínios escolhidos",
   "en_US": "No face or part of the target belongs to the chosen domains"
  },
+ "Neste computador: apagada": {
+  "pt_BR": "Neste computador: apagada",
+  "en_US": "On this computer: deleted"
+ },
+ "Neste computador: editada ({})": {
+  "pt_BR": "Neste computador: editada ({})",
+  "en_US": "On this computer: edited ({})"
+ },
+ "Neste computador: {}": {
+  "pt_BR": "Neste computador: {}",
+  "en_US": "On this computer: {}"
+ },
  "Novo componente": {
   "pt_BR": "Novo componente",
   "en_US": "New component"
+ },
+ "Não foi possível resolver o conflito.": {
+  "pt_BR": "Não foi possível resolver o conflito.",
+  "en_US": "The conflict could not be resolved."
  },
  "O banco do Padrão de Dimensões não está disponível neste Blender.": {
   "pt_BR": "O banco do Padrão de Dimensões não está disponível neste Blender.",
@@ -714,6 +790,14 @@
  "Onde deseja aplicar a textura? Escolha os domínios e o escopo; nada muda antes de confirmar": {
   "pt_BR": "Onde deseja aplicar a textura? Escolha os domínios e o escopo; nada muda antes de confirmar",
   "en_US": "Where do you want to apply the texture? Choose the domains and the scope; nothing changes before you confirm"
+ },
+ "Padrão de Dimensões: a nuvem não respondeu; a sincronia tenta de novo depois": {
+  "pt_BR": "Padrão de Dimensões: a nuvem não respondeu; a sincronia tenta de novo depois",
+  "en_US": "Dimension Standard: the cloud did not answer; sync will try again later"
+ },
+ "Padrão de Dimensões: o MOBI recusou \"{}\" ({})": {
+  "pt_BR": "Padrão de Dimensões: o MOBI recusou \"{}\" ({})",
+  "en_US": "Dimension Standard: MOBI refused \"{}\" ({})"
  },
  "Papel no acabamento": {
   "pt_BR": "Papel no acabamento",
@@ -807,6 +891,14 @@
   "pt_BR": "Remover membro",
   "en_US": "Remove member"
  },
+ "Resolve um conflito do Padrão de Dimensões com a nuvem": {
+  "pt_BR": "Resolve um conflito do Padrão de Dimensões com a nuvem",
+  "en_US": "Resolve a Dimension Standard conflict with the cloud"
+ },
+ "Resolver conflito de padrão": {
+  "pt_BR": "Resolver conflito de padrão",
+  "en_US": "Resolve standard conflict"
+ },
  "Revestimento": {
   "pt_BR": "Revestimento",
   "en_US": "Cladding"
@@ -870,6 +962,10 @@
  "Seleção múltipla": {
   "pt_BR": "Seleção múltipla",
   "en_US": "Multiple selection"
+ },
+ "Sem conexão com o MOBI: a escolha fica para quando a nuvem responder": {
+  "pt_BR": "Sem conexão com o MOBI: a escolha fica para quando a nuvem responder",
+  "en_US": "No connection to MOBI: the choice waits until the cloud answers"
  },
  "Sem executor nesta versão: o item ainda não pode ser inserido": {
   "pt_BR": "Sem executor nesta versão: o item ainda não pode ser inserido",

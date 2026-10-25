@@ -81,6 +81,7 @@ def persist(scene, definition, confirmed=False):
     except (StoreError, OSError) as exc:
         _print_unavailable(exc)
         return 'UNAVAILABLE'
+    changed()
     return 'SAVED'
 
 
@@ -113,6 +114,14 @@ def forget(uid):
         get().delete(uid)
     except (StoreError, OSError) as exc:
         _print_unavailable(exc)
+        return
+    changed()
+
+
+def changed():
+    """Gravação no banco: a sincronia com o MOBI dispara 5 s depois da última (067 onda 7, D-34)."""
+    from . import sync_cloud
+    sync_cloud.schedule()
 
 
 def load_into(scene):

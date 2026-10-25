@@ -10,12 +10,13 @@ Fonte única de medidas externas, materiais, espessuras, limites de chapa e fita
 - `sync`: propagação para as bibliotecas legadas
 - `migration` / `previews`: migração em `load_post` e imagens de referência
 - `store_core` / `store`: banco local `padroes.sqlite3` com o padrão da marcenaria (feature 067)
+- `sync_core` / `sync_cloud`: sincronia do banco com o MOBI (feature 067, onda 7)
 """
 
-from . import migration, model, previews, store
+from . import migration, model, previews, store, sync_cloud
 
 # Submódulos com registro próprio, na ordem de registro.
-_MODULES = [model, previews, migration, store]
+_MODULES = [model, previews, migration, store, sync_cloud]
 
 
 def register():

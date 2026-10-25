@@ -624,6 +624,7 @@ class BTM_OT_StandardsImportAll(bpy.types.Operator, ImportHelper):
                   and (d.get("uid") not in conflicts or d.get("uid") in replace)]
         try:
             store.get().import_documents(chosen, replace=replace)
+            store.changed()                     # 067 onda 7: a importação também sobe para a nuvem
         except (store.StoreError, OSError) as exc:
             self.report({'WARNING'}, tr("O banco local está indisponível: {}").format(exc))
         added = replaced = 0
@@ -645,6 +646,46 @@ class BTM_OT_StandardsImportAll(bpy.types.Operator, ImportHelper):
 # ----------------------------------------------------------------------------------------------------------------
 # Relatório (T045)
 # ----------------------------------------------------------------------------------------------------------------
+
+CONFLICT_CHOICES = (
+    ('KEEP_MINE', "Manter a minha", "Envia a versão deste computador por cima da versão da nuvem"),
+    ('KEEP_CLOUD', "Manter a da nuvem", "Grava no banco local a versão que está na nuvem"),
+    ('KEEP_DELETED', "Manter apagado", "Confirma a exclusão nos dois lados"),
+    ('KEEP_EDIT', "Manter a edição", "Desfaz a exclusão com a versão editada"),
+)
+
+
+class BTM_OT_StandardsConflictResolve(bpy.types.Operator):
+    """Resolve um conflito do Padrão de Dimensões com a nuvem"""
+    bl_idname = "caffmob.standards_conflict_resolve"
+    bl_label = "Resolver conflito de padrão"
+    bl_options = {'INTERNAL'}
+
+    uid: bpy.props.StringProperty()  # type: ignore
+    choice: bpy.props.EnumProperty(items=CONFLICT_CHOICES)  # type: ignore
+
+    @classmethod
+    def description(cls, _context, properties):
+        return next((tr(d) for key, _l, d in CONFLICT_CHOICES if key == properties.choice), "")
+
+    def execute(self, context):
+        from ..standards import sync_cloud, sync_core
+        conflict = next((c for c in sync_cloud.conflicts() if c['uid'] == self.uid), None)
+        if conflict is None or self.choice not in sync_core.CHOICES.get(conflict['tipo'], ()):
+            self.report({'WARNING'}, tr("Este conflito já foi resolvido."))
+            return {'CANCELLED'}
+        result = {}
+
+        def done(ok, message):
+            result.update(ok=ok, message=message)
+            if not ok and message:
+                print(f"CAFFMob Draw: {message}")
+        sync_cloud.resolve(self.uid, self.choice, done)
+        if result and not result['ok']:                 # resposta imediata (escolha local ou sem nuvem)
+            self.report({'WARNING'}, result['message'] or tr("Não foi possível resolver o conflito."))
+            return {'CANCELLED'}
+        return {'FINISHED'}
+
 
 class BTM_OT_StandardsReport(bpy.types.Operator):
     """Mostra o relatório da última aplicação ou importação do Padrão de Dimensões"""
@@ -805,6 +846,7 @@ classes = (
     BTM_OT_StandardsImportPromob,
     BTM_OT_StandardsExportPromob,
     BTM_OT_StandardsReport,
+    BTM_OT_StandardsConflictResolve,
 )
 
 
