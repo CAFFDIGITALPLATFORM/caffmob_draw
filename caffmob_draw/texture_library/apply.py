@@ -31,6 +31,8 @@ DOWNLOADING = N_("Baixando {}… a textura entra quando o download terminar")
 def _meshes(objs):
     seen, out = set(), []
     for obj in objs:
+        if getattr(obj, 'btm_cut_exclude', False):         # fita visual não é alvo de textura (067 RN-11)
+            continue
         if obj is not None and obj.type == 'MESH' and obj.name not in seen:
             seen.add(obj.name)
             out.append(obj)

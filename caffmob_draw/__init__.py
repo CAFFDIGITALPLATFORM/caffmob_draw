@@ -41,6 +41,7 @@ from . import cabinet_editor
 from . import object_library
 from . import openings
 from . import cladding
+from . import edgeband  # feature 067 onda 4: fita de borda visual
 from .selection import component_props, component_select, component_pick
 from . import target  # feature 067: alvo da seleção, depois de selection e antes de ui
 from . import legacy
@@ -344,6 +345,7 @@ def register():
     object_library.register()
     openings.register()
     cladding.register()
+    edgeband.register()
     # Seleção por componente (feature 011)
     for _module in (component_props, component_select, component_pick):
         _module.register()
@@ -408,6 +410,7 @@ def unregister():
     target.unregister()
     for _module in (component_pick, component_select, component_props):
         _module.unregister()
+    edgeband.unregister()
     cladding.unregister()
     openings.unregister()
     object_library.unregister()

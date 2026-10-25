@@ -116,7 +116,15 @@ def _with_finish(context, target):
     except (AttributeError, ReferenceError, RuntimeError):
         return target
     rows = tuple((domain, summary[domain][0], summary[domain][1]) for domain in summary if summary[domain][1])
-    return dataclasses.replace(target, finish=rows, finish_roles=roles, finish_scope_part=part)
+    band_state = ()
+    try:
+        from ..edgeband import ops as band_ops
+        state, missing = band_ops.state_for(owner, obj if part and target.kind != resolver.MULTIPLE else None)
+        band_state = (state, len(missing))
+    except (AttributeError, ReferenceError, RuntimeError, ValueError):
+        pass
+    return dataclasses.replace(target, finish=rows, finish_roles=roles, finish_scope_part=part,
+                               edgeband_state=band_state)
 
 
 def _load_cladding_draft(context, target):

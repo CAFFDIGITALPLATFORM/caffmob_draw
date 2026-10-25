@@ -311,8 +311,22 @@ def _data(context, obj, key):
         return obj.data
     return getattr(obj, {'part': 'btm_part', 'geometry': 'btm_geometry', 'aggregate': 'btm_aggregate',
                          'member': 'btm_member', 'cladding': 'btm_cladding', 'door': 'btm_opening_real',
-                         'wall': 'btm_wall', 'btm_opening': 'btm_opening', 'insertion': 'btm_plane'}.get(key, key),
+                         'wall': 'btm_wall', 'btm_opening': 'btm_opening', 'insertion': 'btm_plane',
+                         'edgeband': 'btm_edgeband'}.get(key, key),
                    None)
+
+
+def _edgeband_arg(obj, arg):
+    """Valores da fita visual para as notas do painel (onda 4, RF-084)."""
+    from ..edgeband import core
+    data = getattr(obj, 'btm_edgeband', None)
+    if data is None:
+        return "—"
+    if arg == 'edgeband.edges':
+        return str(len(core.loads(data.edge_keys)))
+    if arg == 'edgeband.owner':
+        return data.owner.name if data.owner is not None else tr("sem componente")
+    return tr({'GENERATED': "gerada", 'EXISTING': "existente"}.get(data.state, data.state or "gerada"))
 
 
 def _note_args(context, target, obj, args):
@@ -326,6 +340,8 @@ def _note_args(context, target, obj, args):
             values.append(tr(resolver.KIND_LABELS.get(target.kind, "")))
         elif arg == 'cladding.diagnostic':
             values.append(getattr(getattr(obj, 'btm_cladding', None), 'diagnostic', "") or tr("sem avisos"))
+        elif arg.startswith('edgeband.'):
+            values.append(_edgeband_arg(obj, arg))
         else:
             values.append(tr(arg))
     return values
