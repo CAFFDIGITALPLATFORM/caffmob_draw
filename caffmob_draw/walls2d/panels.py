@@ -6,6 +6,8 @@ Só aparecem na área do Image Editor marcada como editor (`window.is_editor_are
   tipo); ângulo do arco desabilitado, porque as paredes do Home Builder 5 são retas;
 - Grid: tamanho e linhas magnéticas; padrões do lápis;
 - OK / Cancelar, com o erro do último campo e a lista de itens que não cabem.
+
+Na cena do CAFF MOBI os mesmos painéis (mais "Portas e Janelas") são desenhados por `classico_v2`, sobre o documento v2.
 """
 
 import bpy  # type: ignore
@@ -21,8 +23,17 @@ class _EditorPanel:
 
     @classmethod
     def poll(cls, context):
-        s = props.session()
-        return window.is_editor_area(context) and (not s or not s.v2 or cls.bl_idname == "BTM_PT_wall_editor_segment")
+        return window.is_editor_area(context)
+
+
+def _v2(context, layout, nome):
+    """Cena do CAFF MOBI: o mesmo painel, desenhado por `classico_v2` sobre o documento v2. Devolve se desenhou."""
+    s = props.session()
+    if not (s and s.v2):
+        return False
+    from . import classico_v2
+    getattr(classico_v2, 'painel_' + nome)(layout, context, s)
+    return True
 
 
 class BTM_PT_WallEditorTools(_EditorPanel, bpy.types.Panel):
@@ -31,6 +42,8 @@ class BTM_PT_WallEditorTools(_EditorPanel, bpy.types.Panel):
     bl_order = 0
 
     def draw(self, context):
+        if _v2(context, self.layout, 'ferramentas'):
+            return
         state = context.window_manager.btm_wall_editor
         col = self.layout.column(align=True)
         col.prop(state, "tool", expand=True)
@@ -44,12 +57,10 @@ class BTM_PT_WallEditorSegment(_EditorPanel, bpy.types.Panel):
 
     def draw(self, context):
         layout = self.layout
+        if _v2(context, layout, 'trecho'):
+            return
         state = context.window_manager.btm_wall_editor
         s = props.session()
-        if s and s.v2:
-            from .studio_ui import painel
-            painel(layout, context, s)
-            return
         chain, i = s.segment() if s else (None, None)
         if chain is None:
             layout.label(text="Selecione um trecho na planta.", icon='INFO')
@@ -73,13 +84,29 @@ class BTM_PT_WallEditorSegment(_EditorPanel, bpy.types.Panel):
         layout.prop(state, "wall_type")
 
 
+class BTM_PT_WallEditorOpenings(_EditorPanel, bpy.types.Panel):
+    bl_label = "Portas e Janelas"
+    bl_idname = "BTM_PT_wall_editor_openings"
+    bl_order = 2
+
+    @classmethod
+    def poll(cls, context):
+        s = props.session()
+        return window.is_editor_area(context) and bool(s and s.v2)      # só a cena do CAFF MOBI guarda aberturas aqui
+
+    def draw(self, context):
+        _v2(context, self.layout, 'aberturas')
+
+
 class BTM_PT_WallEditorGrid(_EditorPanel, bpy.types.Panel):
     bl_label = "Grid"
     bl_idname = "BTM_PT_wall_editor_grid"
-    bl_order = 2
+    bl_order = 3
 
     def draw(self, context):
         layout = self.layout
+        if _v2(context, layout, 'grade'):
+            return
         state = context.window_manager.btm_wall_editor
         layout.use_property_split = True
         layout.use_property_decorate = False
@@ -99,6 +126,8 @@ class BTM_PT_WallEditorConfirm(_EditorPanel, bpy.types.Panel):
 
     def draw(self, context):
         layout = self.layout
+        if _v2(context, layout, 'confirmar'):
+            return
         s = props.session()
         if s is not None and s.error:
             layout.label(text=s.error, icon='ERROR')
@@ -134,7 +163,8 @@ class BTM_PT_WallEditorConfirm(_EditorPanel, bpy.types.Panel):
         row.operator("caffmob.wall_editor_cancel", text="Cancelar", icon='CANCEL')
 
 
-classes = (BTM_PT_WallEditorTools, BTM_PT_WallEditorSegment, BTM_PT_WallEditorGrid, BTM_PT_WallEditorConfirm)
+classes = (BTM_PT_WallEditorTools, BTM_PT_WallEditorSegment, BTM_PT_WallEditorOpenings, BTM_PT_WallEditorGrid,
+           BTM_PT_WallEditorConfirm)
 
 
 def register():

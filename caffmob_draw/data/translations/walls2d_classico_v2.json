@@ -1,0 +1,106 @@
+{
+ "Clique numa parede, porta ou janela; arraste vértices, arestas e aberturas; digite a medida e Enter. Arraste no vazio para selecionar; Delete remove.": {
+  "pt_BR": "Clique numa parede, porta ou janela; arraste vértices, arestas e aberturas; digite a medida e Enter. Arraste no vazio para selecionar; Delete remove.",
+  "en_US": "Click a wall, door or window; drag vertices, edges and openings; type the length and press Enter. Drag on empty space to select; Delete removes."
+ },
+ "Clique o ponto inicial, digite o comprimento e Enter (setas mudam a direção). Clique no início para fechar. Esc termina.": {
+  "pt_BR": "Clique o ponto inicial, digite o comprimento e Enter (setas mudam a direção). Clique no início para fechar. Esc termina.",
+  "en_US": "Click the start point, type the length and press Enter (arrows change the direction). Click the start to close. Esc finishes."
+ },
+ "Clique numa parede para inverter o lado da espessura.": {
+  "pt_BR": "Clique numa parede para inverter o lado da espessura.",
+  "en_US": "Click a wall to flip the thickness side."
+ },
+ "Clique num trecho para dividi-lo no ponto clicado.": {
+  "pt_BR": "Clique num trecho para dividi-lo no ponto clicado.",
+  "en_US": "Click a segment to split it at the clicked point."
+ },
+ "Medida: {}▏ (Enter aplica, Esc limpa)": {
+  "pt_BR": "Medida: {}▏ (Enter aplica, Esc limpa)",
+  "en_US": "Length: {}▏ (Enter applies, Esc clears)"
+ },
+ "Escolha Construir Parede e clique o ponto inicial": {
+  "pt_BR": "Escolha Construir Parede e clique o ponto inicial",
+  "en_US": "Choose Build Wall and click the start point"
+ },
+ "Medida pela face interna (tracejada)": {
+  "pt_BR": "Medida pela face interna (tracejada)",
+  "en_US": "Measured on the inner face (dashed)"
+ },
+ "Medida pela face externa": {
+  "pt_BR": "Medida pela face externa",
+  "en_US": "Measured on the outer face"
+ },
+ "Medida pelo eixo da parede": {
+  "pt_BR": "Medida pelo eixo da parede",
+  "en_US": "Measured on the wall axis"
+ },
+ "O fim": {
+  "pt_BR": "O fim",
+  "en_US": "The end"
+ },
+ "Ao mudar o comprimento, o fim do trecho se move": {
+  "pt_BR": "Ao mudar o comprimento, o fim do trecho se move",
+  "en_US": "When the length changes, the end of the segment moves"
+ },
+ "O início": {
+  "pt_BR": "O início",
+  "en_US": "The start"
+ },
+ "Ao mudar o comprimento, o início do trecho se move": {
+  "pt_BR": "Ao mudar o comprimento, o início do trecho se move",
+  "en_US": "When the length changes, the start of the segment moves"
+ },
+ "A espessura cresce para a esquerda da linha desenhada": {
+  "pt_BR": "A espessura cresce para a esquerda da linha desenhada",
+  "en_US": "The thickness grows to the left of the drawn line"
+ },
+ "A espessura cresce para a direita da linha desenhada": {
+  "pt_BR": "A espessura cresce para a direita da linha desenhada",
+  "en_US": "The thickness grows to the right of the drawn line"
+ },
+ "Flecha do Arco": {
+  "pt_BR": "Flecha do Arco",
+  "en_US": "Arc Rise"
+ },
+ "Elevação": {
+  "pt_BR": "Elevação",
+  "en_US": "Elevation"
+ },
+ "Selecionar abertura": {
+  "pt_BR": "Selecionar abertura",
+  "en_US": "Select opening"
+ },
+ "Seleciona a porta ou janela do trecho para editar as medidas dela": {
+  "pt_BR": "Seleciona a porta ou janela do trecho para editar as medidas dela",
+  "en_US": "Selects the segment's door or window to edit its measurements"
+ },
+ "Continuar parede": {
+  "pt_BR": "Continuar parede",
+  "en_US": "Continue wall"
+ },
+ "Excluir vértice": {
+  "pt_BR": "Excluir vértice",
+  "en_US": "Delete vertex"
+ },
+ "Nenhuma porta ou janela neste trecho.": {
+  "pt_BR": "Nenhuma porta ou janela neste trecho.",
+  "en_US": "No door or window on this segment."
+ },
+ "Porta {}": {
+  "pt_BR": "Porta {}",
+  "en_US": "Door {}"
+ },
+ "Janela {}": {
+  "pt_BR": "Janela {}",
+  "en_US": "Window {}"
+ },
+ "{} parede(s) · {} de parede": {
+  "pt_BR": "{} parede(s) · {} de parede",
+  "en_US": "{} wall(s) · {} of wall"
+ },
+ "Portas e Janelas": {
+  "pt_BR": "Portas e Janelas",
+  "en_US": "Doors and Windows"
+ }
+}

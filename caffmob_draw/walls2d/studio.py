@@ -212,7 +212,7 @@ class Prancheta:
 
     def alcas(self, escala):
         p, i, s = self.trecho()
-        if p is None or len(self.selecionadas) > 1:
+        if p is None or len(self.selecionadas) > 1 or getattr(self, 'sem_alcas', False):   # o editor clássico não as tem
             return {}
         a, b = trechos_da_parede(p)[i]
         l = math.dist(a, b) or 1

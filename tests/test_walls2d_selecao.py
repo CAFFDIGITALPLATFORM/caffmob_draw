@@ -388,17 +388,6 @@ class PainelStudioTest(Base):
             c = d['cartao']
             self.assertTrue(c[0] <= r[0] and r[0] + r[2] <= c[0] + c[2] and c[1] <= r[1] and r[1] + r[3] <= c[1] + c[3])
 
-    def test_fonte_sora_do_pacote(self):
-        pasta = Path(sp.__file__).resolve().parents[1] / 'data' / 'fontes' / 'studio'
-        nomes = ('sora-latin-400-normal.woff2', 'sora-latin-600-normal.woff2', 'LICENSE-Sora.txt')
-        for nome in nomes:
-            self.assertTrue((pasta / nome).is_file(), nome)
-        mobi = Path(__file__).resolve().parents[2] / 'caff-mobi' / 'client' / 'public' / 'fontes' / 'studio'
-        if not mobi.is_dir():
-            self.skipTest('Fontes do MOBI só presentes na entrega da feature.')
-        for nome in nomes:
-            self.assertEqual((pasta / nome).read_bytes(), (mobi / nome).read_bytes(), nome)
-
     def test_nucleo_sem_bpy(self):
         for modulo in (sp, interacao):
             self.assertNotRegex(Path(modulo.__file__).read_text(), r'(?m)^\s*(import|from)\s+(bpy|mathutils|blf|gpu)\b')

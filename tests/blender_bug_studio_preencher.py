@@ -1,4 +1,4 @@
-"""Editor de Paredes no modo Studio (cena v2 do CAFF MOBI): o preenchimento do corpo das paredes.
+"""Editor de Paredes sobre a cena v2 do CAFF MOBI: o preenchimento de polígonos (recorte das aberturas).
 
 `mathutils.geometry.tessellate_polygon` devolve trincas de índices, e o `preencher` lia `.x` de cada índice: o desenho
 do editor caía a cada quadro, sem paredes, cotas nem painel. Roda em segundo plano, com o lote do GPU capturado:
@@ -11,7 +11,7 @@ from types import SimpleNamespace
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import _blender_env  # noqa: E402,F401
-from caffmob_draw.walls2d import studio_ui  # noqa: E402
+from caffmob_draw.walls2d import classico_v2 as studio_ui  # noqa: E402
 
 lotes = []
 studio_ui.batch_for_shader = lambda sh, tipo, dados: lotes.append((tipo, dados['pos'])) or SimpleNamespace(draw=lambda sh: None)

@@ -125,11 +125,15 @@ try:
     conferir(s.undo() and s.redo() and v.documento == final, 'Desfaz e refaz o documento integral')
     conferir(context.scene['caffmob_ambiente'] == antes, 'Nada chega à cena antes de Aplicar')
     # Desenho GPU é ensaiado pelo mesmo apresentador, substituindo só as primitivas GPU.
-    with patch.object(ui, 'preencher'), patch.object(ui.draw, 'begin', return_value=None), patch.object(ui.draw, 'end'), \
-         patch.object(ui.draw, 'outline'), patch.object(ui.draw, 'lines') as linhas, patch.object(ui.draw, 'rect'), \
-         patch.object(ui.draw, 'text'), patch.object(ui.draw, 'text_width', return_value=50):
-        ui.desenhar(SimpleNamespace(region=SimpleNamespace(width=1100, height=800)), s, s.view)
-        conferir(linhas.call_count > 40, 'Apresentador desenha paredes, vãos, folha e arco da porta')
+    classico = import_module(PACKAGE + '.walls2d.classico_v2')
+    with patch.object(classico, 'preencher'), patch.object(classico.draw, 'begin', return_value=None), patch.object(classico.draw, 'end'), \
+         patch.object(classico.draw, 'outline'), patch.object(classico.draw, 'lines') as linhas, patch.object(classico.draw, 'rect'), \
+         patch.object(classico.draw, 'text'), patch.object(classico.draw, 'text_width', return_value=50):
+        classico.desenhar(SimpleNamespace(region=SimpleNamespace(width=1100, height=800), window_manager=context.window_manager), s, s.view)
+        pontos_desenhados = sum(len(c.args[1]) for c in linhas.call_args_list)
+        cor_do_vao = editor.COLORS['node']
+        conferir(pontos_desenhados > 80 and any(c.args[2] == cor_do_vao for c in linhas.call_args_list),
+                 'Editor clássico desenha paredes, vãos, folha e arco da porta')
     root = scene_v2.aplicar(context, s)
     conferir(not validar(v.documento), 'Contrato final passa pela validação v2')
     conferir(context.scene['caffmob_ambiente'] == serializar(v.documento), 'Aplicar grava o contrato atualizado na cena')
