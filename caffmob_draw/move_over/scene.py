@@ -6,9 +6,12 @@
   tem a face da frente em Y = 0 (os módulos ficam do lado −Y).
 - Se B está numa parede, A passa a ser filho dessa parede (mantendo a posição no mundo), para as cotas continuarem
   valendo. `restore()` devolve pai e posição originais.
+- 067 (onda 6, D-24; RF-121 a RF-125): a orientação de A no referencial de B é um quaternion (`orientation`), e o
+  giro é em torno de um pivô escolhido entre os cantos e o centro da caixa local de A (`pivot`), pelo eixo da vista
+  (planta: vertical; frontal: profundidade), com `M = T(P)·R(N,θ)·T(−P)·M0` (`rotation.rotate_about`). Escolher o
+  pivô ou a âncora não move nada. `rotation` (graus em Z) continua valendo para quem já usava, pelo centro da base.
 """
 
-import math
 
 from mathutils import Matrix, Vector  # type: ignore
 
@@ -16,6 +19,7 @@ from ..aggregates import group
 from ..data.i18n import tr
 from ..selection import classify
 from . import align, reposition
+from . import rotation as rot
 
 
 def _frame(obj):
@@ -73,7 +77,80 @@ class MoveOver:
         _loc, _rot, self.a_scale = self.a.matrix_world.decompose()
         self.origin_in_b = self.b_frame_inv @ self.original_matrix.translation
         self.delta = Vector((0.0, 0.0, 0.0))
-        self.rotation = 0.0       # graus em torno do eixo vertical, pelo centro da base de A (feature 003, D-21)
+        self.orientation = rot.IDENTITY        # quaternion de A no referencial de B (067 D-24)
+        self.pivot = 'BASE_CENTER'             # pivô do giro (ponto local de A)
+        self.anchor = 'C000'                   # âncora das coordenadas (ponto local de A)
+
+    # Orientação, pivô e âncora (067 onda 6) -------------------------------------------------------------
+    @property
+    def rotation(self):
+        """Graus em torno do vertical (o campo Rotação e as posições salvas antigas)."""
+        return rot.angle_about(self.orientation, 'Z') % 360.0
+
+    @rotation.setter
+    def rotation(self, degrees):
+        self.set_axis_angle('plan', degrees, pivot='BASE_CENTER', preview=False)
+
+    def origin(self):
+        return tuple(self.origin_in_b + self.delta)
+
+    def _set_origin(self, origin):
+        self.delta = Vector(origin) - self.origin_in_b
+
+    def point_local(self, key):
+        return rot.local_point(self.a_local_box, key)
+
+    def point_in_b(self, key):
+        return rot.world_point(self.origin(), self.orientation, self.point_local(key))
+
+    def set_pivot(self, key):
+        rot.local_point(self.a_local_box, key)                 # valida; nada se move (RF-121)
+        self.pivot = key
+
+    def set_anchor(self, key):
+        rot.local_point(self.a_local_box, key)
+        self.anchor = key
+
+    def rotate(self, view, degrees, pivot=None, preview=True):
+        """Gira `degrees` no eixo da vista em torno do pivô (que fica parado)."""
+        origin, self.orientation = rot.rotate_about(self.origin(), self.orientation,
+                                                    self.point_local(pivot or self.pivot),
+                                                    rot.AXES[rot.VIEW_AXIS[view]], degrees)
+        self._set_origin(origin)
+        if preview:
+            self.preview()
+
+    def set_axis_angle(self, view, degrees, pivot=None, preview=True):
+        """Leva o giro no eixo da vista ao ângulo `degrees` (o campo de ângulo da vista)."""
+        current = rot.angle_about(self.orientation, rot.VIEW_AXIS[view])
+        self.rotate(view, float(degrees) - current, pivot, preview)
+
+    def set_orientation(self, orientation, preview=True):
+        """Orientação absoluta, com o pivô parado (posições salvas, reset, histórico)."""
+        pivot_point = self.point_in_b(self.pivot)
+        self.orientation = rot.normalize(tuple(orientation))
+        local = rot.rotate_vector(self.orientation, self.point_local(self.pivot))
+        self._set_origin(rot.sub(pivot_point, local))
+        if preview:
+            self.preview()
+
+    def state(self):
+        """Instantâneo para o histórico local do diálogo (RF-127)."""
+        return (tuple(self.delta), tuple(self.orientation), self.pivot, self.anchor)
+
+    def set_state(self, state, preview=True):
+        delta, orientation, self.pivot, self.anchor = state
+        self.delta = Vector(delta)
+        self.orientation = tuple(orientation)
+        if preview:
+            self.preview()
+
+    def anchor_coords(self, relative=True):
+        """Coordenadas da âncora: relativas a B (`Rb⁻¹(world(pA) − world(pB))`) ou absolutas no projeto."""
+        local = Vector(self.point_in_b(self.anchor))
+        if relative:
+            return tuple(local - Vector(self.box_b[0]))
+        return tuple(self.b_frame @ local)
 
     # Caixas ---------------------------------------------------------------------------------------------
     def _unrotated_box(self, delta=None):
@@ -83,9 +160,15 @@ class MoveOver:
         return (tuple(lo[i] + offset[i] for i in range(3)), tuple(hi[i] + offset[i] for i in range(3)))
 
     def box_a(self, delta=None):
-        """Caixa de A no referencial de B, com a rotação de B, a rotação pedida e o deslocamento atual."""
-        box = self._unrotated_box(delta)
-        return reposition.rotated_box(box, self.rotation) if self.rotation else box
+        """Caixa de A no referencial de B, com a rotação de B, a orientação pedida e o deslocamento atual."""
+        if self.orientation == rot.IDENTITY:
+            return self._unrotated_box(delta)
+        d = self.delta if delta is None else Vector(delta)
+        origin = tuple(self.origin_in_b + d)
+        lo, hi = self.a_local_box
+        corners = [rot.world_point(origin, self.orientation, (x, y, z))
+                   for x in (lo[0], hi[0]) for y in (lo[1], hi[1]) for z in (lo[2], hi[2])]
+        return _box(corners)
 
     def original_box_a(self):
         """Caixa de A como está antes de mexer (rotação original), no referencial de B — para a tela inicial."""
@@ -130,19 +213,15 @@ class MoveOver:
 
     # Cena -----------------------------------------------------------------------------------------------
     def _target_matrix(self):
-        local = self.origin_in_b + self.delta
-        if self.rotation:
-            local = Vector(reposition.origin_after_rotation(tuple(local), self._unrotated_box(), self.rotation))
-        loc = self.b_frame @ local
-        _l, rot, _s = self.b_frame.decompose()
-        if self.rotation:
-            rot = rot @ Matrix.Rotation(math.radians(self.rotation), 3, 'Z').to_quaternion()
-        return Matrix.LocRotScale(loc, rot, self.a_scale)
+        from mathutils import Quaternion  # type: ignore
+        loc = self.b_frame @ (self.origin_in_b + self.delta)
+        _l, b_rot, _s = self.b_frame.decompose()
+        return Matrix.LocRotScale(loc, b_rot @ Quaternion(self.orientation), self.a_scale)
 
     # Reposicionar (feature 003, RF-22 a RF-26) --------------------------------------------------------------
     def set_rotation(self, degrees):
-        self.rotation = float(degrees) % 360.0
-        self.preview()
+        """Rotação em Z pelo centro da base (feature 003); o pivô escolhido fica como estava."""
+        self.set_axis_angle('plan', float(degrees) % 360.0, pivot='BASE_CENTER')
 
     def nudge(self, delta):
         for i in range(3):
@@ -162,10 +241,17 @@ class MoveOver:
         self.preview()
 
     def saved(self):
-        return reposition.save_position(self.box_a(), self.box_b, self.rotation)
+        data = reposition.save_position(self.box_a(), self.box_b, self.rotation)
+        data.update(orientation=tuple(self.orientation), pivot=self.pivot, anchor=self.anchor)   # 067 RF-127
+        return data
 
     def apply_saved(self, saved):
-        self.rotation = float(saved['rotation']) % 360.0
+        if saved.get('orientation') and any(saved['orientation']):
+            self.pivot = saved.get('pivot') or self.pivot
+            self.anchor = saved.get('anchor') or self.anchor
+            self.set_orientation(saved['orientation'], preview=False)
+        else:
+            self.set_axis_angle('plan', float(saved['rotation']) % 360.0, pivot='BASE_CENTER', preview=False)
         step = reposition.apply_position(saved, self.box_a(), self.box_b)
         for i in range(3):
             self.delta[i] += step[i]

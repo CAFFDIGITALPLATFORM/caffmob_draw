@@ -27,6 +27,7 @@ from ..canvas2d.view import View2D
 from ..data import units
 from ..hb_gpu_draw import point_in_rect
 from . import encostar, reposition
+from .dialog_rotate import RotateMixin
 from .scene import MoveOver
 
 NAV_EVENTS = {'MIDDLEMOUSE', 'WHEELUPMOUSE', 'WHEELDOWNMOUSE', 'TRACKPADPAN', 'TRACKPADZOOM', 'MOUSEROTATE',
@@ -60,7 +61,7 @@ def _dashed_rect(r):
     return [p for i, c in enumerate(corners) for p in draw.dashed(c, corners[(i + 1) % 4], 5.0, 4.0)]
 
 
-class BTM_OT_MoveOverDialog(bpy.types.Operator):
+class BTM_OT_MoveOverDialog(RotateMixin, bpy.types.Operator):
     """Alinha o objeto arrastado ao objeto de referência pelas vistas frontal e planta baixa"""
     bl_idname = "caffmob.move_over_dialog"
     bl_label = "Mover Sobre"
@@ -117,6 +118,7 @@ class BTM_OT_MoveOverDialog(bpy.types.Operator):
         self.side = encostar.initial_side(self.original_box, self.mo.box_b)
         self.align = encostar.default_align(self.side)
         self._apply()
+        self._init_rotate(context)          # 067 onda 6: giro, pivô, navegação e histórico local
 
     def _finish(self, context):
         if self._handle is not None:
@@ -212,6 +214,9 @@ class BTM_OT_MoveOverDialog(bpy.types.Operator):
         pane_y = top - 56 * s - pad - pane_h
         self.pane_front = (x + pad, pane_y, pane_w, pane_h)
         self.pane_plan = (x + 2 * pad + pane_w, pane_y, pane_w, pane_h)
+        field_w, field_h = 86 * s, 24 * s                 # ângulo digitável junto de cada vista (067 RF-123)
+        self.angle_fields = {key: (rect[0] + rect[2] - field_w - 8 * s, rect[1] + 8 * s, field_w, field_h)
+                             for key, rect in (('front', self.pane_front), ('plan', self.pane_plan))}
         self.snap_box = (x + pad, pane_y - pad - 18 * s, 18 * s, 18 * s)
         self.form_top = self.snap_box[1] - 14 * s
         self.footer = (x, y, width, 60 * s)
@@ -265,8 +270,10 @@ class BTM_OT_MoveOverDialog(bpy.types.Operator):
 
     def _fit_views(self):
         """Enquadra A original, B e A na posição nova; durante o arraste a escala fica parada (como o artefato)."""
-        if getattr(self, 'drag', None):
-            return
+        if getattr(self, 'drag', None) or getattr(self, 'rotating', None):
+            return                                    # quadro congelado no arraste e no giro (067 RF-122)
+        if getattr(self, 'user_view', False) and hasattr(self, 'view_front'):
+            return                                    # o usuário fez pan ou zoom: a vista fica onde ele deixou
         boxes = (self.original_box, self.mo.box_a(), self.mo.box_b)
         inset = 14 * self.s
         for key, rect in (('front', self.pane_front), ('plan', self.pane_plan)):
@@ -411,6 +418,7 @@ class BTM_OT_MoveOverDialog(bpy.types.Operator):
                 draw.lines(sh, draw.dashed((x0, py), (x0 + w, py)), L['blue'])
                 draw.pill(sh, x0 + 44 * self.s, py + 12 * self.s, label, L['blue'], L['paper'], size=self._font(10))
         self._draw_gap(sh, view, box, h, v)
+        self._draw_rotate_layer(sh, key)              # 067: arestas, alças, pivô, âncora, origem e ângulo
 
     def _draw_gap(self, sh, view, box, h, v):
         """Cota de proximidade dos dois na vista, como o artefato: no eixo de maior folga não negativa."""
@@ -518,10 +526,13 @@ class BTM_OT_MoveOverDialog(bpy.types.Operator):
         item = items.add()
         item.name = tr("Posição {}").format(len(items))
         item.delta, item.rotation, item.b_side = saved['delta'], saved['rotation'], saved['b_side']
+        item.orientation, item.pivot, item.anchor = saved['orientation'], saved['pivot'], saved['anchor']
         self.warning = tr("{} salva ({} em relação a {}).").format(item.name, self.mo.a.name, self.mo.b.name)
 
     def _apply_saved(self, item):
-        self.mo.apply_saved({'delta': tuple(item.delta), 'rotation': item.rotation, 'b_side': item.b_side})
+        self.mo.apply_saved({'delta': tuple(item.delta), 'rotation': item.rotation, 'b_side': item.b_side,
+                             'orientation': tuple(item.orientation), 'pivot': item.pivot, 'anchor': item.anchor})
+        self._push_history()
         self.side = None
         self.warning = tr("{} aplicada.").format(item.name)
         self._fit_views()
@@ -531,6 +542,14 @@ class BTM_OT_MoveOverDialog(bpy.types.Operator):
             if not self._set_gap_typed(self.buffer):
                 return False
             self.typing, self.buffer = None, ""
+            self._push_history()
+            self._fit_views()
+            return True
+        if isinstance(self.typing, str) and self.typing.startswith('ANGLE_'):
+            if not self._commit_angle(self.typing[len('ANGLE_'):], self.buffer):
+                return False
+            self.typing, self.buffer = None, ""
+            self.warning = ""
             self._fit_views()
             return True
         try:
@@ -561,6 +580,7 @@ class BTM_OT_MoveOverDialog(bpy.types.Operator):
             self.side = None
         self.typing, self.buffer = None, ""
         self.warning = ""
+        self._push_history()
         self._fit_views()
         return True
 
@@ -638,7 +658,7 @@ class BTM_OT_MoveOverDialog(bpy.types.Operator):
             if point_in_rect(*pixel, self.button_substitute):
                 return self._substitute(context)
         pane = self._pane_at(pixel)
-        if pane:
+        if pane and (not hasattr(self, 'history') or not self._pane_click(pane, pixel)):
             self._drag_begin(pane, pixel)
         return None
 
@@ -663,13 +683,22 @@ class BTM_OT_MoveOverDialog(bpy.types.Operator):
                 self._layout(context)
                 self._fit_views()
             return {'RUNNING_MODAL'}
+        self.alt = bool(getattr(event, 'alt', False))
+        self.ctrl = bool(getattr(event, 'ctrl', False) or getattr(event, 'oskey', False))
+        handled = self._modal_rotate(context, event, pixel)
+        if handled is not None:
+            return handled
         if event.type == 'MOUSEMOVE':
             self.mouse = pixel
             if getattr(self, 'drag', None):
                 self._drag_move(pixel, shift=event.shift)
+            elif hasattr(self, 'history'):
+                self._hover_update(pixel)
             return {'RUNNING_MODAL'}
         if event.type == 'LEFTMOUSE' and event.value == 'RELEASE' and getattr(self, 'drag', None):
             self._drag_end()
+            self._push_history()
+            self.mode = 'IDLE'
             return {'RUNNING_MODAL'}
         if self.typing is not None and event.type == 'LEFTMOUSE' and event.value == 'PRESS':
             # Clique fora do campo grava o que foi digitado e segue para o clique (BUG-20261023-AMQ5); o Encostar
@@ -686,7 +715,8 @@ class BTM_OT_MoveOverDialog(bpy.types.Operator):
                 current = self.typing
                 if self.buffer and not self._commit_typing():
                     return {'RUNNING_MODAL'}
-                self.typing, self.buffer = (None if current == GAP else (current + 1) % FIELD_COUNT), ""
+                self.typing, self.buffer = (None if current == GAP or isinstance(current, str)
+                                            else (current + 1) % FIELD_COUNT), ""
             elif event.type == 'BACK_SPACE':
                 self.buffer = self.buffer[:-1]
             elif event.unicode and event.unicode in "0123456789,.-mc °":
@@ -718,6 +748,50 @@ class BTM_OT_MoveOverDialog(bpy.types.Operator):
                     self.warning = ""
                     self._fit_views()
         return {'RUNNING_MODAL'}
+
+    def _modal_rotate(self, context, event, pixel):
+        """Giro, pan, zoom, enquadrar, zerar e histórico local (067 onda 6); None = segue o modal de sempre."""
+        if not hasattr(self, 'history'):
+            return None                                # janela montada por fora (ensaios antigos)
+        if self.rotating:
+            if event.type == 'MOUSEMOVE':
+                self.mouse = pixel
+                self._rotate_move(pixel, fine=event.shift)
+            elif event.type == 'LEFTMOUSE' and event.value == 'RELEASE':
+                self._rotate_end()
+            elif event.type in {'ESC', 'RIGHTMOUSE'} and event.value == 'PRESS':
+                self._rotate_end(cancel=True)
+            return {'RUNNING_MODAL'}
+        if self.panning:
+            if event.type == 'MOUSEMOVE':
+                self._pan_move(pixel)
+            elif event.type == 'MIDDLEMOUSE' and event.value == 'RELEASE':
+                self.panning = None
+            return {'RUNNING_MODAL'}
+        if self.typing is not None:
+            return None
+        pane = self._pane_at(pixel)
+        if pane and event.type in {'WHEELUPMOUSE', 'WHEELDOWNMOUSE'}:
+            self._zoom(pane, pixel, 1.15 if event.type == 'WHEELUPMOUSE' else 1 / 1.15)
+            return {'RUNNING_MODAL'}
+        if pane and event.type == 'MIDDLEMOUSE' and event.value == 'PRESS':
+            self._pan_begin(pane, pixel)
+            return {'RUNNING_MODAL'}
+        if event.value != 'PRESS':
+            return None
+        ctrl = bool(getattr(event, 'ctrl', False) or getattr(event, 'oskey', False))
+        if ctrl and event.type == 'Z':
+            (self._redo_local if event.shift else self._undo_local)()
+            self._fit_views()
+            return {'RUNNING_MODAL'}
+        if pane and event.type in {'F', 'HOME'}:
+            self._reset_views()
+            return {'RUNNING_MODAL'}
+        if pane and event.type == 'R':
+            self._reset_orientation()
+            self._fit_views()
+            return {'RUNNING_MODAL'}
+        return None
 
     def _substitute(self, context):
         """Fecha a janela com a posição atual e abre a escolha do módulo que vai ocupar o lugar de A (D-23)."""
