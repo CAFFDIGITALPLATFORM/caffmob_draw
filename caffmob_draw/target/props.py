@@ -1,7 +1,7 @@
 """Propriedades do alvo da seleção (feature 067, data-delta §1).
 
-- `Object.btm_part.grain`: veio da peça (NONE/H/V), guardado por objeto e lido pelo corte (D-13). Até a onda 3 é só
-  dado: a textura não gira.
+- `Object.btm_part.grain`: veio da peça (NONE/H/V), guardado por objeto e lido pelo corte (D-13). Desde a onda 3 a
+  textura gira junto (`texture_library/grain`, RF-064).
 - `Object.btm_part.finish_role`: papel da peça nos acabamentos (onda 2, D-14), gravado pelo assistente.
 - `WindowManager.btm_target`: estado de interface fora do arquivo e do Undo: o escopo das cotas (Peça ou Conjunto,
   D-07) e o último erro de um setter (D-04).
@@ -30,9 +30,16 @@ COTA_SCOPE_ITEMS = (
 )
 
 
+def _grain_changed(self, context):
+    # (onda 3, RF-064) O veio visual acompanha o de corte: o serviço de veio gira a textura desta peça.
+    from ..texture_library import grain
+    grain.on_grain_changed(self, context)
+
+
 class BTM_PG_Part(bpy.types.PropertyGroup):
     # Sem 'ANIMATABLE': o veio é intenção de fabricação, não muda por quadro (RNF da 067).
-    grain: bpy.props.EnumProperty(name=N_("Veio"), items=GRAIN_ITEMS, default='NONE', options=set())  # type: ignore
+    grain: bpy.props.EnumProperty(name=N_("Veio"), items=GRAIN_ITEMS, default='NONE', options=set(),
+                                  update=_grain_changed)  # type: ignore
     # (onda 2, D-14) Papel da peça nos acabamentos, onde não há papel por face (bibliotecas HB e autoral).
     finish_role: bpy.props.EnumProperty(name=N_("Papel no acabamento"), items=FINISH_ROLE_ITEMS, default='UNKNOWN',
                                         options=set())  # type: ignore

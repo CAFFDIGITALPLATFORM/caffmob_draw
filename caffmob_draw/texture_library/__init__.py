@@ -4,6 +4,7 @@
 - `download_core`, `downloader`, `downloads`: download em subprocesso, sem travar o Blender (D-11);
 - `auth_core`, `auth`: conta CAF Mob por código de dispositivo (D-12, D-13);
 - `ops_finish_drop`: o diálogo do soltar textura, por domínio (067 onda 2);
+- `grain_core`, `grain`, `ops_grain`, `grain_migration`: o veio por objeto, a calibração da imagem e a M-05 (067 onda 3);
 - `apply`, `ops_apply`, `bump`: aplicar textura (com o relevo, quando há) e ajustar o tamanho real; `ops_account`: entrar, revogar e cancelar downloads;
 - `handlers`: caminhos das imagens ao abrir um arquivo e encerramento da rede ao trocar de arquivo.
 
@@ -12,8 +13,8 @@ O `unregister` desfaz tudo (princípio VII): operadores, handlers, timers e o su
 
 
 def _modules():
-    from . import handlers, ops_account, ops_apply, ops_finish_drop
-    return (ops_account, ops_apply, ops_finish_drop, handlers)
+    from . import grain_migration, handlers, ops_account, ops_apply, ops_finish_drop, ops_grain
+    return (ops_account, ops_apply, ops_finish_drop, ops_grain, grain_migration, handlers)
 
 
 def register():

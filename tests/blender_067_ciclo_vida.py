@@ -10,6 +10,9 @@ Onda 1:
 Onda 2:
 - salvar e reabrir conserva `btm_finish`, `btm_part.finish_role` e o atributo `btm_face_role`;
 - recarregar o addon 3× deixa um único atalho U.
+
+Onda 3:
+- salvar e reabrir conserva `btm_grain_rot`, `btm_part.grain` e a calibração do material.
 """
 
 import os
@@ -110,10 +113,41 @@ def wave_2(folder):
     check(module is not None and finish.face_roles(module) is not None, "salvar e reabrir conserva btm_face_role")
 
 
+def wave_3(folder):
+    env.clean_scene()
+    from caffmob_draw.texture_library import grain
+    mat = bpy.data.materials.new("Textura 067")
+    img_path = os.path.join(folder, "veio.png")
+    img = bpy.data.images.new("veio", 8, 16)
+    img.filepath_raw, img.file_format = img_path, 'PNG'
+    img.save()
+    from caffmob_draw.object_library import retexture
+    mat = retexture.image_material(img_path, 300, 600)
+    check(mat.get(grain.CALIBRATION) == 'V', "imagem em pé nasce calibrada V", str(mat.get(grain.CALIBRATION)))
+    grain.calibrate(mat, 'H')
+    bpy.ops.mesh.primitive_cube_add(size=1.0)
+    plate = bpy.context.object
+    plate.data.transform(__import__('mathutils').Matrix.Diagonal((0.4, 0.018, 0.7, 1.0)))
+    plate.data.materials.append(mat)
+    bpy.context.view_layer.update()                 # a caixa da malha só vale depois do update
+    plate.btm_part.grain = 'V'
+    value = tuple(plate.get(grain.ATTR))
+    names = (plate.name, mat.name)
+    path = os.path.join(folder, "ciclo_onda3.blend")
+    bpy.ops.wm.save_as_mainfile(filepath=path, copy=True)
+    bpy.ops.wm.open_mainfile(filepath=path)
+    plate, mat = bpy.data.objects.get(names[0]), bpy.data.materials.get(names[1])
+    check(plate is not None and plate.btm_part.grain == 'V', "salvar e reabrir conserva btm_part.grain")
+    check(plate is not None and tuple(plate.get(grain.ATTR, ())) == value and any(value),
+          "salvar e reabrir conserva btm_grain_rot", str(value))
+    check(mat is not None and mat.get(grain.CALIBRATION) == 'H', "salvar e reabrir conserva a calibração")
+
+
 try:
     with fx.banco_temporario(), tempfile.TemporaryDirectory(prefix="caffmob_067_ciclo_") as folder:
         wave_1(folder)
         wave_2(folder)
+        wave_3(folder)
 except Exception:
     traceback.print_exc()
     FAILURES.append("exceção")

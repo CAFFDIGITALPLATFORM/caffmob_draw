@@ -5,7 +5,7 @@ Roda em segundo plano:
 
 Com catálogo remoto e imagens sintéticas baixadas do servidor falso local do MOBI:
 - peça: material de imagem do catálogo (`btm_texture_id`) e gravado na personalização da peça;
-- imagem em pé numa peça: variante `ROTATED` (veio); objeto solto não gira;
+- imagem em pé numa peça: sem variante `ROTATED` (067 onda 3: o veio gira por objeto); objeto solto não gira;
 - frente: todas as malhas da frente; módulo: todas as peças; mesma textura de novo reaproveita o material;
 - sem alvo válido e sem internet com a imagem fora do cache: aviso, nada muda.
 """
@@ -99,8 +99,9 @@ def main():
               and part.btm_custom.material in names and not part.btm_custom.material.endswith("ROTATED"),
               f"{part.btm_custom.material} {names}")
         apply.apply([part], tall)
-        check("imagem em pé numa peça usa a variante ROTATED (RN-06)", any(n.endswith("ROTATED") for n in mats(part)),
-              str(mats(part)))
+        # 067 onda 3 (RF-063): sem variante ROTATED; o veio gira por objeto (`btm_grain_rot`).
+        check("imagem em pé numa peça não cria variante ROTATED", not any(n.endswith("ROTATED") for n in mats(part))
+              and 'btm_grain_rot' in part, str(mats(part)))
 
     bpy.ops.mesh.primitive_cube_add()
     cube = ctx.active_object
