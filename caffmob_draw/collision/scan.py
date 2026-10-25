@@ -37,6 +37,8 @@ class _Entry:
 def _skip(obj):
     if getattr(getattr(obj, 'btm_member', None), 'role', '') == 'CUTTER':
         return True
+    if getattr(obj, 'btm_cut_exclude', False):          # fita de borda visual (067 RN-11)
+        return True
     if any(obj.get(tag) for tag in _SKIP_TAGS):
         return True
     try:

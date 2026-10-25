@@ -16,8 +16,9 @@ from ..selection import classify as cls
 MODULE, MEMBER, PART, GEOMETRY, FRONT, LEAF = 'MODULE', 'MEMBER', 'PART', 'GEOMETRY', 'FRONT', 'LEAF'
 WALL, OPENING, CLADDING, FLOOR, CEILING = 'WALL', 'OPENING', 'CLADDING', 'FLOOR', 'CEILING'
 LIGHT, CAMERA, ANNOTATION, OTHER, OBSTACLE, MULTIPLE = 'LIGHT', 'CAMERA', 'ANNOTATION', 'OTHER', 'OBSTACLE', 'MULTIPLE'
+EDGEBAND = 'EDGEBAND'           # fita de borda visual (onda 4, RF-084)
 KINDS = (MODULE, MEMBER, PART, GEOMETRY, FRONT, LEAF, WALL, OPENING, CLADDING, FLOOR, CEILING, LIGHT, CAMERA,
-         ANNOTATION, OTHER, OBSTACLE, MULTIPLE)
+         ANNOTATION, OTHER, OBSTACLE, MULTIPLE, EDGEBAND)
 
 # Escopo mostrado no cabeçalho (RF-003): o que uma edição atinge.
 SCOPE_PART, SCOPE_LEAF, SCOPE_ASSEMBLY, SCOPE_OBJECT, SCOPE_MULTIPLE = 'PART', 'LEAF', 'ASSEMBLY', 'OBJECT', 'MULTIPLE'
@@ -27,6 +28,7 @@ KIND_LABELS = {
     LEAF: N_("Folha"), WALL: N_("Parede"), OPENING: N_("Abertura"), CLADDING: N_("Revestimento"), FLOOR: N_("Piso"),
     CEILING: N_("Teto"), LIGHT: N_("Luz"), CAMERA: N_("Câmera"), ANNOTATION: N_("Cota / anotação"),
     OTHER: N_("Objeto"), OBSTACLE: N_("Obstáculo"), MULTIPLE: N_("Seleção múltipla"),
+    EDGEBAND: N_("Fita de borda"),
 }
 SCOPE_LABELS = {SCOPE_PART: N_("Peça"), SCOPE_LEAF: N_("Folha"), SCOPE_ASSEMBLY: N_("Conjunto"),
                 SCOPE_OBJECT: N_("Objeto"), SCOPE_MULTIPLE: N_("{} objetos")}
@@ -61,6 +63,7 @@ class Target:
     finish: tuple = ()              # ((domínio, material ou MULTIPLE ou '', ((peça, material), …)), …) (onda 2)
     finish_roles: bool = False      # o dono tem papéis de acabamento; sem eles, o assistente (RF-042)
     finish_scope_part: bool = False     # o resumo é da peça selecionada (Peça), não do móvel inteiro
+    edgeband_state: tuple = ()      # (CREATE | CHANGE | MIXED, bordas faltantes) da fita no escopo (onda 4, RF-080)
 
     @property
     def adapter(self):
@@ -114,6 +117,13 @@ def _single(obj, cladding_controller=None):
         if controller is not None:
             target = _single(controller)
             return Target(**{**target.__dict__, 'detail': 'PIECE', 'selected_uids': (uid_of(obj),)})
+    band = getattr(obj, 'btm_edgeband', None)
+    if band is not None and getattr(band, 'visual', False):
+        # A fita visual acompanha o componente: não se move sozinha (RF-083, RF-084).
+        owner = band.owner
+        return Target(uid=uid_of(obj), kind=EDGEBAND, name=_name(obj), scope=SCOPE_OBJECT, selected_uids=(uid_of(obj),),
+                      owner_uid=uid_of(owner), owner_name=_name(owner),
+                      path=(_name(owner), _name(obj)) if owner is not None else ())
     uid = uid_of(obj)
     move = cls.movable_root(obj)
     base = dict(uid=uid, name=_name(obj), move_uid=uid_of(move), selected_uids=(uid,),

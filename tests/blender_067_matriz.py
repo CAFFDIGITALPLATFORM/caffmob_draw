@@ -18,7 +18,9 @@ como "pendente". Os critérios por coluna:
 - UX-03 (onda 3): o veio é editável no próprio alvo: a chapa tem o campo do veio e a calibração da imagem; módulo e
   seleção múltipla, o veio das frentes nos acabamentos; o revestimento, o ângulo do veio;
 - MAT-01 (onda 3): soltar uma textura no alvo tem destino semântico (dono com acabamentos e peças que recebem a
-  textura), com a seção Acabamentos para escolher o domínio.
+  textura), com a seção Acabamentos para escolher o domínio;
+- MAT-02 (onda 4): a seção Acabamentos tem o botão da fita de borda com o rótulo do estado (criar, mudar cor ou
+  misto) e, no misto, quantas bordas faltam.
 """
 
 import json
@@ -123,7 +125,20 @@ def mat01(target):
     return owner is not None and bool(apply.targets(obj) or finish.pieces_of(owner))
 
 
-CHECKS = {'UX-01': ux01, 'UX-02': ux02, 'UX-04': ux04, 'MAT-03': mat03, 'CMP-01': cmp01, 'UX-03': ux03,
+def mat02(target):
+    from caffmob_draw.target import adapters
+    section = next((s for s in view.build(target, view.COMPLETE).sections if s.id == 'finish'), None)
+    if section is None or not target.edgeband_state:
+        return False
+    state, missing = target.edgeband_state
+    labels = {i.label for i in section.items if isinstance(i, view.Action) and i.operator == 'caffmob.edgeband_apply'}
+    ok = labels == {adapters.EDGEBAND_LABELS[state]}
+    if state == 'MIXED':
+        ok &= any(isinstance(i, view.Note) and str(missing) in i.args for i in section.items)
+    return ok
+
+
+CHECKS = {'MAT-02': mat02, 'UX-01': ux01, 'UX-02': ux02, 'UX-04': ux04, 'MAT-03': mat03, 'CMP-01': cmp01, 'UX-03': ux03,
           'MAT-01': mat01}
 
 

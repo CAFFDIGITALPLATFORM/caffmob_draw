@@ -4,13 +4,14 @@ Cada módulo expõe `sections(target)` para os tipos que atende (`KINDS`); o tip
 rotulado de `other.fallback` (RN-04). Python puro: só lê o `Target`.
 """
 
+from ...data.i18n import N_
 from .. import resolver as r
 
 
 def _registry():
-    from . import environment, front, geometry, module, other, room
+    from . import edgeband, environment, front, geometry, module, other, room
     table = {}
-    for adapter in (module, geometry, front, room, environment, other):
+    for adapter in (module, geometry, front, room, environment, other, edgeband):
         for kind in adapter.KINDS:
             table[kind] = adapter.sections
     return table
@@ -60,6 +61,7 @@ def finish_section(target, essential=False):
                           'INFO', True))
         items.append(Action('caffmob.finish_classify', N_("Classificar peças"), True, '', True))
         items.append(Action('caffmob.finish_classify_preview', N_("Prévia dos papéis"), True, '', False))
+        items += edgeband_items(target)          # a fita é geométrica: não depende de papel de acabamento
         return Section('finish', N_("Acabamentos"), tuple(items), essential)
     items += [Field('finish_draft', 'domain', N_("Aplicar em"), essential=True),
               Field('finish_draft', 'material', N_("Material"), essential=True),
@@ -68,7 +70,24 @@ def finish_section(target, essential=False):
         items.append(Field('finish_draft', 'scope', N_("Escopo"), essential=True))
     items += [Action('caffmob.finish_apply_draft', N_("Aplicar acabamento"), True, '', True),
               Action('caffmob.finish_classify_preview', N_("Prévia dos papéis"), True, '', False)]
+    items += edgeband_items(target)
     return Section('finish', N_("Acabamentos"), tuple(items), essential)
+
+
+EDGEBAND_LABELS = {'CREATE': N_("Criar e aplicar fita de borda"), 'CHANGE': N_("Mudar cor da fita"),
+                   'MIXED': N_("Criar nas bordas faltantes e mudar a cor")}
+
+
+def edgeband_items(target):
+    """O botão da fita com o rótulo do estado (RF-080); no caso misto, quantas bordas faltam."""
+    from ..view import Action, Note
+    if not target.edgeband_state:
+        return []
+    state, missing = target.edgeband_state
+    items = [Action('caffmob.edgeband_apply', EDGEBAND_LABELS[state], True, '', False)]
+    if state == 'MIXED':
+        items.append(Note(N_("Bordas sem fita: {}"), 'INFO', False, (str(missing),)))
+    return items
 
 
 def unavailable_cotas(reason):

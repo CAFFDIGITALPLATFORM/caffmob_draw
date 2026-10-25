@@ -159,6 +159,8 @@ def _cutpart_found(module):
     for obj in module.obj.children_recursive:
         if obj.type != 'MESH' or not _visible(obj) or obj.get('btm_hardware'):
             continue
+        if getattr(obj, 'btm_cut_exclude', False):     # fita de borda visual (067 RN-11, D-22)
+            continue
         mod = _cutpart_modifier(obj)
         if mod is None:
             continue
@@ -339,7 +341,8 @@ def geometry_records(scene):
     records, seen = [], set()
     objects = sorted(scene.objects, key=lambda o: o.name)      # a cópia ("Placa.001") cede o uid ao original
     for obj in objects:
-        if not mesh.is_geometry(obj) or not obj.btm_geometry.fabrication or not _visible(obj):
+        if not mesh.is_geometry(obj) or not obj.btm_geometry.fabrication or not _visible(obj) \
+                or getattr(obj, 'btm_cut_exclude', False):
             continue
         g = obj.btm_geometry
         uid = _unique_uid(obj, seen)
@@ -355,6 +358,8 @@ def geometry_records(scene):
     from ..aggregates import production
     for obj in objects:
         if mesh.is_geometry(obj):
+            continue
+        if getattr(obj, 'btm_cut_exclude', False):
             continue
         sheet = production.sheet(obj) if getattr(obj, 'btm_aggregate', None) is not None else None
         if sheet is None or not _visible(obj):

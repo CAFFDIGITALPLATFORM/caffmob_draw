@@ -13,6 +13,10 @@ Onda 2:
 
 Onda 3:
 - salvar e reabrir conserva `btm_grain_rot`, `btm_part.grain` e a calibração do material.
+
+Onda 4:
+- salvar e reabrir conserva `btm_edgeband` e `btm_cut_exclude`;
+- recarregar o addon 3× não duplica o handler da sincronia da fita.
 """
 
 import os
@@ -143,11 +147,49 @@ def wave_3(folder):
     check(mat is not None and mat.get(grain.CALIBRATION) == 'H', "salvar e reabrir conserva a calibração")
 
 
+def wave_4(folder):
+    from caffmob_draw.edgeband import sync as band_sync
+    for _ in range(3):
+        addon.unregister()
+        addon.register()
+    count = sum(1 for h in bpy.app.handlers.depsgraph_update_post if h.__name__ == band_sync.on_update.__name__
+                and h.__module__ == band_sync.on_update.__module__)
+    check(count == 1, "recarregar 3× deixa uma única sincronia da fita", str(count))
+    env.clean_scene()
+    import _authored_env as authored_env
+    from caffmob_draw.aggregates import ops_authored
+    from caffmob_draw.edgeband import core, pieces
+    root = bpy.data.objects.new("Componente fita", None)
+    bpy.context.collection.objects.link(root)
+    plates = [authored_env.cube(f"Chapa fita {i}", (0.6, 0.4, 0.015), (0, 0, 0.0075 + i * 0.015), root)
+              for i in range(2)]
+    env.settle()
+    ops_authored.adopt(root, [root] + plates)
+    authored_env.select([root])
+    bpy.context.view_layer.update()
+    mat = bpy.data.materials.new("Fita ciclo")
+    assert bpy.ops.caffmob.edgeband_apply('EXEC_DEFAULT', material=mat.name) == {'FINISHED'}
+    before = sorted((o.btm_edgeband.uid, o.btm_edgeband.edge_keys, round(o.btm_edgeband.coverage_width, 6))
+                    for o in pieces.bands_of(root))
+    path = os.path.join(folder, "ciclo_onda4.blend")
+    bpy.ops.wm.save_as_mainfile(filepath=path, copy=True)
+    bpy.ops.wm.open_mainfile(filepath=path)
+    root = bpy.data.objects.get("Componente fita")
+    bands = pieces.bands_of(root)
+    after = sorted((o.btm_edgeband.uid, o.btm_edgeband.edge_keys, round(o.btm_edgeband.coverage_width, 6))
+                   for o in bands)
+    check(after == before and len(after) == 4, "salvar e reabrir conserva btm_edgeband")
+    check(all(o.btm_cut_exclude and o.btm_edgeband.owner == root for o in bands),
+          "salvar e reabrir conserva btm_cut_exclude e o vínculo")
+    check(all(core.loads(o.btm_edgeband.edge_keys) for o in bands), "as chaves das bordas voltam")
+
+
 try:
     with fx.banco_temporario(), tempfile.TemporaryDirectory(prefix="caffmob_067_ciclo_") as folder:
         wave_1(folder)
         wave_2(folder)
         wave_3(folder)
+        wave_4(folder)
 except Exception:
     traceback.print_exc()
     FAILURES.append("exceção")

@@ -123,3 +123,16 @@ T165, na branch `feat/067-onda3-veio`.
   → (Y, X); UV: (X, Y)), medidos por render no protótipo T008. A variante `<nome> ROTATED` não é mais criada; a que
   já existe é lida, e a M-05 dá à peça o veio V e o giro equivalente, trocando pelo material de origem na primeira
   edição de veio. Os `ROTATED` internos das bibliotecas HB (montantes e travessas) não mudam.
+
+## Atualização 2026-10-25 (onda 4, addon 1.12.0)
+
+Onda 4 da 067 (fita de borda visual): ações T010, T028, T029, T068 a T072, T104 a T106, T134, na branch
+`feat/067-onda4-fita`. A onda não muda regra 🟢 da extração (D-32); só acrescenta.
+
+| Artefato | Seção | Tipo de impacto | Delta |
+|----------|-------|-----------------|-------|
+| n/a | `edgeband/` | componente-novo | Fita de borda visual: bordas expostas por geometria no referencial do componente, faixa única para bordas coplanares (0,1 mm), sincronia por `params_hash` num timer |
+| `_reversa_sdd/cutting/` | `part_sources` | regra-nova | Objeto com `btm_cut_exclude` não entra no plano de corte; as linhas `Edge L1/L2/W1/W2` e o `edges_present` não mudam (D-22) |
+| `_reversa_sdd/collision/` | `scan._skip` | regra-nova | A fita visual fica fora da colisão |
+| `_reversa_sdd/texture_library/` | `apply._meshes` | regra-nova | A fita visual não é alvo de textura do módulo |
+| n/a | `Object.btm_edgeband`, `Object.btm_cut_exclude` | delta-de-dados | Metadados da faixa (dono, chaves das bordas, espessura, largura aparente, material ou cor lisa) |
