@@ -3,11 +3,10 @@
 Run: blender --background --factory-startup --python-exit-code 1 --python tests/blender_014_image_material.py
 
 - a chamada antiga `image_material(caminho, mm)` continua quadrada e reaproveitada;
-- chapa retangular escala cada eixo pelo seu lado; o veio girado tem o nome '<nome> ROTATED' e rotação de 90°;
+- chapa retangular escala cada eixo pelo seu lado; o veio não cria variante '<nome> ROTATED' (067 onda 3);
 - o mesmo arquivo, tamanho e veio reaproveitam o material; o id do catálogo fica no material.
 """
 
-import math
 import os
 import sys
 import tempfile
@@ -52,14 +51,12 @@ def main():
     check("chapa: id do catálogo", sheet.get('btm_texture_id') == "arauco/tons-do-brasil/matt-jalapao")
     check("chapa: material diferente do quadrado", sheet != square)
 
+    # 067 onda 3 (RF-063): a variante ROTATED não é mais criada; o veio gira por objeto (`texture_library/grain`).
     turned = retexture.image_material(path, 1850.0, 2750.0, rotated=True)
-    rotation = round(math.degrees(mapping_of(turned).inputs['Rotation'].default_value[2]), 3)
-    check("veio: nome ROTATED e 90°", turned.name == sheet.name + " ROTATED" and rotation == 90.0,
-          f"{turned.name} {rotation}")
-    check("veio: common.rotated acha a variante", common.rotated(sheet) == turned)
-    check("veio: reaproveitado sem trocar com o normal",
-          retexture.image_material(path, 1850.0, 2750.0, rotated=True) == turned
-          and retexture.image_material(path, 1850.0, 2750.0) == sheet)
+    check("veio: sem variante ROTATED nova (devolve o material comum)", turned == sheet
+          and not any(m.name.endswith(" ROTATED") for m in bpy.data.materials), turned.name)
+    check("veio: o material tem o giro por objeto", sheet.node_tree.nodes.get('btm_grain_rotate') is not None)
+    check("veio: common.rotated sem variante devolve o próprio", common.rotated(sheet) == sheet)
 
 
 try:

@@ -14,7 +14,11 @@ como "pendente". Os critérios por coluna:
 - MAT-03 (onda 2): seção Acabamentos com o material efetivo por domínio e o rascunho para aplicar, ou, sem papéis,
   o assistente de classificação;
 - CMP-01 (onda 2): o comando equivalente ao U está no painel (na seção de agregados), executa na seleção múltipla
-  de chapas e mostra o motivo nos outros tipos.
+  de chapas e mostra o motivo nos outros tipos;
+- UX-03 (onda 3): o veio é editável no próprio alvo: a chapa tem o campo do veio e a calibração da imagem; módulo e
+  seleção múltipla, o veio das frentes nos acabamentos; o revestimento, o ângulo do veio;
+- MAT-01 (onda 3): soltar uma textura no alvo tem destino semântico (dono com acabamentos e peças que recebem a
+  textura), com a seção Acabamentos para escolher o domínio.
 """
 
 import json
@@ -94,7 +98,33 @@ def cmp01(target):
     return shown and (entry.enabled if target.kind == r.MULTIPLE else bool(entry.reason))
 
 
-CHECKS = {'UX-01': ux01, 'UX-02': ux02, 'UX-04': ux04, 'MAT-03': mat03, 'CMP-01': cmp01}
+def ux03(target):
+    model = view.build(target, view.COMPLETE)
+    fields = {(f.data, f.prop) for f in view.fields(model) if not f.read_only}
+    operators = {a.operator for a in view.actions(model)}
+    if target.kind in r.SHEET_KINDS:
+        return ('part', 'grain') in fields and 'caffmob.grain_calibrate' in operators
+    if target.kind == r.CLADDING:
+        return ('cladding', 'grain_angle') in fields
+    if not target.finish_roles:             # sem papéis, o veio das frentes espera o assistente (RF-042)
+        return 'caffmob.finish_classify' in operators
+    return ('finish_draft', 'grain') in fields
+
+
+def mat01(target):
+    from caffmob_draw.customize import finish
+    from caffmob_draw.texture_library import apply
+    obj = snapshot.object_for(bpy.context, target.uid)
+    sections = {s.id for s in view.build(target, view.COMPLETE).sections}
+    if obj is None or 'finish' not in sections:
+        return False
+    owner = finish.owner_of(obj)
+    # O soltar acha peças que recebem a textura (no autoral, os membros; sem papéis, o assistente decide).
+    return owner is not None and bool(apply.targets(obj) or finish.pieces_of(owner))
+
+
+CHECKS = {'UX-01': ux01, 'UX-02': ux02, 'UX-04': ux04, 'MAT-03': mat03, 'CMP-01': cmp01, 'UX-03': ux03,
+          'MAT-01': mat01}
 
 
 def build_targets():

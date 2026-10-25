@@ -11,6 +11,10 @@
   "pt_BR": "A medida precisa ser maior que zero.",
   "en_US": "The measurement must be greater than zero."
  },
+ "A peça ativa não tem textura de imagem": {
+  "pt_BR": "A peça ativa não tem textura de imagem",
+  "en_US": "The active part has no image texture"
+ },
  "A peça está distorcida (shear): aplique a transformação antes de editar.": {
   "pt_BR": "A peça está distorcida (shear): aplique a transformação antes de editar.",
   "en_US": "The part is sheared: apply the transform before editing."
@@ -131,6 +135,10 @@
   "pt_BR": "Calculando…",
   "en_US": "Calculating…"
  },
+ "Calibrar o veio da imagem": {
+  "pt_BR": "Calibrar o veio da imagem",
+  "en_US": "Calibrate the image grain"
+ },
  "Campos com valores diferentes mostram \"Múltiplos\"; editar aplica a todos num passo de Desfazer.": {
   "pt_BR": "Campos com valores diferentes mostram \"Múltiplos\"; editar aplica a todos num passo de Desfazer.",
   "en_US": "Fields with different values show \"Multiple\"; editing applies to all of them in one Undo step."
@@ -250,6 +258,10 @@
  "Disponível em Object Mode": {
   "pt_BR": "Disponível em Object Mode",
   "en_US": "Available in Object Mode"
+ },
+ "Diz em que eixo corre o veio na imagem da textura (H ou V); as peças com essa textura giram de novo": {
+  "pt_BR": "Diz em que eixo corre o veio na imagem da textura (H ou V); as peças com essa textura giram de novo",
+  "en_US": "Sets the axis the grain runs along in the texture image (H or V); the parts using that texture rotate again"
  },
  "Domínio": {
   "pt_BR": "Domínio",
@@ -551,6 +563,18 @@
   "pt_BR": "O selecionado não tem conjunto dono.",
   "en_US": "The selection has no owning assembly."
  },
+ "O veio corre na altura da imagem": {
+  "pt_BR": "O veio corre na altura da imagem",
+  "en_US": "The grain runs along the image height"
+ },
+ "O veio corre na largura da imagem": {
+  "pt_BR": "O veio corre na largura da imagem",
+  "en_US": "The grain runs along the image width"
+ },
+ "O veio gira a textura da peça e vai ao plano de corte (o mesmo dado).": {
+  "pt_BR": "O veio gira a textura da peça e vai ao plano de corte (o mesmo dado).",
+  "en_US": "The grain rotates the part texture and goes to the cutting plan (the same data)."
+ },
  "Objeto sem corpo: não se move no Mover Sobre.": {
   "pt_BR": "Objeto sem corpo: não se move no Mover Sobre.",
   "en_US": "Object without a body: it does not move with Move Over."
@@ -787,6 +811,18 @@
   "pt_BR": "Veio",
   "en_US": "Grain"
  },
+ "Veio da imagem: horizontal": {
+  "pt_BR": "Veio da imagem: horizontal",
+  "en_US": "Image grain: horizontal"
+ },
+ "Veio da imagem: vertical": {
+  "pt_BR": "Veio da imagem: vertical",
+  "en_US": "Image grain: vertical"
+ },
+ "Veio da imagem: {}; {} peça(s) refeitas": {
+  "pt_BR": "Veio da imagem: {}; {} peça(s) refeitas",
+  "en_US": "Image grain: {}; {} part(s) updated"
+ },
  "Veio das frentes": {
   "pt_BR": "Veio das frentes",
   "en_US": "Front grain"
@@ -802,6 +838,10 @@
  "Veio na horizontal da peça instalada": {
   "pt_BR": "Veio na horizontal da peça instalada",
   "en_US": "Grain along the horizontal of the installed part"
+ },
+ "Veio na imagem": {
+  "pt_BR": "Veio na imagem",
+  "en_US": "Grain in the image"
  },
  "Veio na vertical da peça instalada": {
   "pt_BR": "Veio na vertical da peça instalada",

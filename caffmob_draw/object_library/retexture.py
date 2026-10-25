@@ -89,20 +89,28 @@ def material_name(path, width_mm, height_mm, rotated=False):
 
 
 def image_material(path, size_mm, height_mm=None, rotated=False, texture_id=""):
-    """Material de textura com escala real; reaproveita um igual (mesmo arquivo, tamanho e veio).
+    """Material de textura com escala real; reaproveita um igual (mesmo arquivo e tamanho).
 
     `size_mm` é a largura (e a altura, se `height_mm` faltar); chapa retangular escala cada eixo pelo seu lado
-    (feature 014, D-08). `rotated` gira o veio 90° e dá o nome '<nome> ROTATED', que `common.set_cutpart_material`
-    procura para montantes e travessas. `texture_id` marca o material como do catálogo de texturas (D-09).
+    (feature 014, D-08). `texture_id` marca o material como do catálogo de texturas (D-09).
+
+    067 (onda 3, D-20; RF-063): o veio é girado por objeto pelo serviço de veio (`texture_library/grain`), num
+    material só por textura. A variante '<nome> ROTATED' não é mais criada: `rotated` só reaproveita uma que já exista
+    no arquivo (arquivos antigos, M-05); sem ela, devolve o material comum.
     """
+    from ..texture_library import grain, grain_core
     path = os.path.abspath(path)
     width = float(size_mm)
     height = float(height_mm) if height_mm is not None else width
-    for mat in bpy.data.materials:
-        if mat.get(PATH_PROP) == path and bool(mat.get(ROTATED_PROP, False)) == bool(rotated):
-            w, h = _size_of(mat)
-            if abs(w - width) < 1e-6 and abs(h - height) < 1e-6:
-                return mat
+    for wanted in ((True, False) if rotated else (False,)):
+        for mat in bpy.data.materials:
+            if mat.get(PATH_PROP) == path and bool(mat.get(ROTATED_PROP, False)) == wanted:
+                w, h = _size_of(mat)
+                if abs(w - width) < 1e-6 and abs(h - height) < 1e-6:
+                    if not wanted:
+                        grain.ensure_graph(mat)
+                    return mat
+    rotated = False
     image = bpy.data.images.load(path, check_existing=True)
     mat = bpy.data.materials.new(material_name(path, width, height, rotated))
     mat[PATH_PROP] = path
@@ -127,6 +135,9 @@ def image_material(path, size_mm, height_mm=None, rotated=False, texture_id=""):
     tree.links.new(coords.outputs['Object'], mapping.inputs['Vector'])
     tree.links.new(mapping.outputs['Vector'], tex.inputs['Vector'])
     tree.links.new(tex.outputs['Color'], bsdf.inputs['Base Color'])
+    # Calibração inicial pela proporção da imagem (RF-061; editável no painel da peça).
+    mat[grain.CALIBRATION] = grain_core.calibration_from_size(*image.size)
+    grain.ensure_graph(mat)
     return mat
 
 

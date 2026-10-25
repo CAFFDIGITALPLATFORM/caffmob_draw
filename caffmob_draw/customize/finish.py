@@ -174,6 +174,9 @@ def apply_to(objs, domains, material, inside=None):
         roles = face_roles(obj)
         done = _apply_faces(obj, roles, domains, material) if roles is not None else _apply_piece(obj, domains,
                                                                                                  material)
+        if done:
+            from ..texture_library import grain
+            grain.sync(obj)                     # intenção de veio guardada sem material vira giro (D-30, RF-065)
         changed += bool(done)
     return changed
 

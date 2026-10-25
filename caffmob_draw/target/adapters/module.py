@@ -6,7 +6,7 @@ from ..view import Action, Field, Note, Section
 from . import cotas_section, finish_section, position_section
 
 KINDS = (r.MODULE, r.PART, r.MEMBER)
-GRAIN_NOTE = N_("Veio guardado na peça e enviado ao corte; o visual é aplicado na onda 3.")
+GRAIN_NOTE = N_("O veio gira a textura da peça e vai ao plano de corte (o mesmo dado).")
 
 
 def library_reason(target):
@@ -33,6 +33,9 @@ def sheet_section(target, read_only_reason='', essential=True, grain=True):
     if grain:
         items.append(Field('part', 'grain', N_("Veio"), essential=essential))
         items.append(Note(GRAIN_NOTE, 'INFO', False))
+        # Calibração da imagem (RF-061): em que eixo corre o veio na imagem da textura.
+        items += [Action('caffmob.grain_calibrate', N_("Veio da imagem: horizontal"), True, '', False, (('axis', 'H'),)),
+                  Action('caffmob.grain_calibrate', N_("Veio da imagem: vertical"), True, '', False, (('axis', 'V'),))]
     return Section('sheet', N_("Chapa"), tuple(items), True)
 
 

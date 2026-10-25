@@ -99,3 +99,27 @@ T023 a T026, T057 a T064, T096 a T099, T132, T174 e T175, na branch `feat/067-on
   parte do veio pela variante `<nome> ROTATED` continua valendo até a onda 3.
 
 Regras sob vigilância desta onda: ver `regression-watch.md` da 067 (itens da onda 2).
+
+## Atualização 2026-10-25 (onda 3, addon 1.11.0)
+
+Onda 3 da 067 (veio por objeto, sem a variante `ROTATED`): ações T008, T027, T065 a T067, T101 a T103, T133 e
+T165, na branch `feat/067-onda3-veio`.
+
+| Artefato | Seção | Tipo de impacto | Delta |
+|----------|-------|-----------------|-------|
+| `_reversa_sdd/domain.md` | RN-CUSTOMIZE-10 (veio pela variante `<nome> ROTATED`) | regra-alterada | O veio é girado por objeto pelo serviço de veio; a variante não é mais criada (ver -v003 abaixo) |
+| `_reversa_sdd/object_library/` | `retexture.image_material` | regra-alterada | Um material por textura, com o grafo Attribute (Object `btm_grain_rot`) → Vector Rotate → Mapping; calibração `btm_image_grain_axis` |
+| `_reversa_sdd/texture_library/` | `apply` (RN-06 do veio) | regra-alterada | Sai a variante girada pela proporção da imagem; o giro sai de `btm_part.grain` e da calibração |
+| `_reversa_sdd/cutting/` | veio no corte | regra-alterada | O veio visual e o de corte são o mesmo dado (`btm_part.grain`); mudar um muda o outro |
+| n/a | `Object["btm_grain_rot"]`, `Material["btm_image_grain_axis"]` | delta-de-dados | Giro Euler por objeto e calibração da imagem; M-05 converte objetos com `<nome> ROTATED` |
+
+### Versões novas das regras superadas na onda 3 (067 D-32, RF-143)
+
+- **RN-CUSTOMIZE-10 (-v003, parte do veio; a parte dos grupos ficou na -v002 da onda 2):** o veio de uma peça é
+  `btm_part.grain` (NONE, H ou V na face semântica da peça instalada). A textura gira por objeto: o material de imagem
+  é um só, e o nó Attribute (tipo Object) lê `btm_grain_rot` (Euler XYZ) antes da escala métrica do Mapping, que
+  todas as imagens do material compartilham. O giro é calculado pela calibração da imagem (`btm_image_grain_axis`, H
+  ou V; o palpite inicial vem da proporção) e pelos eixos da projeção (BOX: face X → (Z, Y), face Y → (X, Z), face Z
+  → (Y, X); UV: (X, Y)), medidos por render no protótipo T008. A variante `<nome> ROTATED` não é mais criada; a que
+  já existe é lida, e a M-05 dá à peça o veio V e o giro equivalente, trocando pelo material de origem na primeira
+  edição de veio. Os `ROTATED` internos das bibliotecas HB (montantes e travessas) não mudam.

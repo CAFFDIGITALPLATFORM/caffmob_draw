@@ -8,8 +8,8 @@
   (`_reversa_sdd/customize/requirements.md#RN-05`): peça das bibliotecas herdadas em `btm_custom.material` (vence o
   grupo e o vão); armário CAFFMob na caixa (grupo "CAIXA") ou nas frentes (`front_material`, todas as portas dele).
   Sem a imagem, enfileira o download (`downloads.fetch`) e aplica ao concluir, numa etapa de desfazer própria.
-- Veio (RN-06, 🟡): a peça tem o comprimento no eixo X local; o veio da imagem segue o lado maior dela. Imagem em pé
-  (mais alta que larga) numa peça usa a variante girada `<nome> ROTATED`, a mesma convenção da personalização.
+- Veio (067 onda 3, RF-063, RF-065): um material só por textura; o giro é por objeto (`texture_library/grain`), a
+  partir de `btm_part.grain` e da calibração da imagem. A variante `<nome> ROTATED` não é mais criada.
 """
 
 import bpy  # type: ignore
@@ -83,27 +83,21 @@ def size_mm(item_id):
     return catalog.default_size(entry) if entry else (catalog.catalog_core.DEFAULT_SIZE_MM,) * 2
 
 
-def grain_rotated(obj, entry):
-    """Variante de veio girado para esta peça? (RN-06: só peça; imagem em pé)."""
-    if not common.is_cutpart(obj):
-        return False
-    px = entry.get("px") or (0, 0)
-    return float(px[1]) > float(px[0])
-
-
 def apply_cached(objs, item_id, path, size=None):
     """Aplica a imagem já baixada; devolve quantas malhas mudaram."""
     entry = catalog.item(item_id) or {}
     width, height = size or size_mm(item_id)
     changed = 0
     for obj in _meshes(objs):
-        mat = retexture.image_material(path, width, height, rotated=grain_rotated(obj, entry), texture_id=item_id)
+        mat = retexture.image_material(path, width, height, texture_id=item_id)
         if entry.get("sha256"):
             mat["btm_texture_sha256"] = entry["sha256"]
             mat["btm_texture_formato"] = entry.get("formato", entry.get("ext", "jpg"))
         bump.request(mat, entry)                       # relevo, quando o fabricante tem (T045)
         if common.set_cutpart_material(obj, mat):
             changed += 1
+            from . import grain
+            grain.sync(obj)                            # a intenção de veio da peça entra no material (D-30)
             if obj.get("caffmob_modulo"):
                 from ..mobi.texturas import remember
                 remember(obj, item_id)
