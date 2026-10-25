@@ -307,6 +307,8 @@ def _data(context, obj, key):
         return None
     if key == 'object':
         return obj
+    if key == 'front_cabinet':                    # a porta do módulo rápido abre pelo módulo (onda 5, RF-100)
+        return getattr(obj.parent, 'btm_cabinet', None) if obj.parent is not None else None
     if key in ('light', 'camera'):
         return obj.data
     return getattr(obj, {'part': 'btm_part', 'geometry': 'btm_geometry', 'aggregate': 'btm_aggregate',
@@ -430,6 +432,11 @@ def _draw_module(layout, context, target, section):
         sidebar_proxy.draw_panel(customize_panels.BTM_PT_CustomizeModule, layout, context)
     elif 'caffmob.module_save' in enabled:
         layout.operator("caffmob.module_save")
+    if 'caffmob.mechanism_set' in enabled:            # 067 onda 5: editor animado do componente (RF-100)
+        row = layout.row(align=True)
+        for label, percent in (("Abrir folhas", 100.0), ("50%", 50.0), ("Fechar folhas", 0.0)):
+            op = row.operator("caffmob.mechanism_set", text=tr(label))
+            op.percent, op.scope = percent, 'COMPONENT'
     if 'caffmob.fronts_set_open' in enabled and target.kind == 'MODULE':
         row = layout.row(align=True)
         for label, mode in (("Abrir 90°", 'OPEN_90'), ("45°", 'OPEN_45'), ("Fechar", 'CLOSE')):

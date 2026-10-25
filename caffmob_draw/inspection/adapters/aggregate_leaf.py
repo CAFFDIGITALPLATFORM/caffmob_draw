@@ -71,6 +71,9 @@ class AggregateLeafFront(fronts.Front):
         if agg.motion == 'SLIDE':
             axis = Vector((0.0, 0.0, 1.0))
             reference = Vector((1.0 if agg.slide_dir == 'POS_X' else -1.0, 0.0, 0.0))
+        elif agg.motion == 'DRAWER':                   # 067: a gaveta corre em profundidade
+            axis = Vector((0.0, 0.0, 1.0))
+            reference = Vector((0.0, -1.0, 0.0))
         else:
             axis = Vector((0.0, 0.0, 1.0)) if agg.hinge in ('LEFT', 'RIGHT') else Vector((1.0, 0.0, 0.0))
             axis *= math.copysign(1.0, leaf.swing_angle(agg, 1.0) or 1.0)

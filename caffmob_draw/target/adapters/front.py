@@ -1,5 +1,6 @@
-"""Adaptadores de frente e folha (feature 067, T047; RF-014, RF-017): medidas próprias, movimento atual somente leitura
-até a onda 5, presets Abrir e Fechar, e a folha com seção própria."""
+"""Adaptadores de frente e folha (feature 067, T047; RF-014, RF-017): medidas próprias, presets Abrir e Fechar, e a
+folha com seção própria. Onda 5 (T108, RF-100): a frente do módulo rápido edita a abertura pelo editor animado
+(`mechanisms`); a frente das bibliotecas HB continua pelos presets do módulo."""
 
 from ...data.i18n import N_
 from .. import resolver as r
@@ -25,8 +26,12 @@ def sections(target):
     reason = N_("Medida da frente gerada pelo módulo: {}").format(target.owner_name)
     sheet = sheet_section(target, reason)          # o veio é de cada frente (RF-041), editável aqui
     if target.kind == r.FRONT:
-        motion = Section('front', N_("Frente"), (Note(MOTION_NOTE, 'INFO', False),) + _presets(True), True,
-                         N_("Peça"))
+        if target.library == 'BTM':
+            editor = (Field('front_cabinet', 'door_open', N_("Abertura"), essential=True),
+                      Field('front_cabinet', 'door_swing', N_("Tipo de abertura")))
+        else:
+            editor = (Note(MOTION_NOTE, 'INFO', False),)
+        motion = Section('front', N_("Frente"), editor + _presets(True), True, N_("Peça"))
         return [sheet, motion, finish_section(target), cotas_section(target),
                 position_section(target, read_only_reason=reason, essential=False)]
     leaf = Section('leaf', N_("Folha"), (

@@ -93,8 +93,11 @@ class BTM_OT_CustomizeSetFront(_OpeningOperator, bpy.types.Operator):
         root, adapter, opening = self.resolve(context)
         if opening is None:
             return {'CANCELLED'}
-        messages = adapter.set_front(context, root, opening, self.front, self.drawer_count)
-        messages += reapply.reapply(context, root)
+        refused = adapter.set_front(context, root, opening, self.front, self.drawer_count)
+        if refused:                                   # 067 RF-104: recusa nunca termina como sucesso
+            self.report({'WARNING'}, " | ".join(refused))
+            return {'CANCELLED'}
+        messages = reapply.reapply(context, root)
         _report(self, messages, tr("Frente trocada para {}").format(tr(spec.FRONT_LABELS[self.front])))
         return {'FINISHED'}
 

@@ -16,7 +16,8 @@ _guard = set()
 FACE_ITEMS = [(f, limits.FACE_LABELS[f], "") for f in limits.FACES]
 KIND_ITEMS = [('AGGREGATE', "Agregado", "Peça presa ao pai"), ('LEAF', "Folha de porta", "Folha que abre e fecha")]
 MOTION_ITEMS = [('SWING', "Giro", "A folha gira em torno de um eixo"),
-                ('SLIDE', "Correr", "A folha desliza num trilho")]
+                ('SLIDE', "Correr", "A folha desliza num trilho"),
+                ('DRAWER', "Gaveta", "A gaveta corre em profundidade, para fora da frente")]     # 067 RF-101
 HINGE_ITEMS = [('LEFT', "Esquerda", ""), ('RIGHT', "Direita", ""), ('TOP', "Topo", ""), ('BOTTOM', "Base", "")]
 SWING_ITEMS = [('OUT', "Para fora", "Abre para o lado da frente"), ('IN', "Para dentro", "Abre para o lado de trás")]
 SLIDE_ITEMS = [('POS_X', "Para a direita", ""), ('NEG_X', "Para a esquerda", "")]

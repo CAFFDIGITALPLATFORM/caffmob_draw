@@ -1,4 +1,8 @@
 {
+ "A gaveta corre em profundidade, para fora da frente": {
+  "pt_BR": "A gaveta corre em profundidade, para fora da frente",
+  "en_US": "The drawer runs in depth, out of the front"
+ },
  "A malha da peça tem coordenada não finita.": {
   "pt_BR": "A malha da peça tem coordenada não finita.",
   "en_US": "The part's mesh has a non-finite coordinate."
@@ -39,13 +43,29 @@
   "pt_BR": "A transformação da peça tem valor não finito.",
   "en_US": "The part's transform has a non-finite value."
  },
+ "Abertura (%)": {
+  "pt_BR": "Abertura (%)",
+  "en_US": "Opening (%)"
+ },
+ "Abertura: {}%": {
+  "pt_BR": "Abertura: {}%",
+  "en_US": "Opening: {}%"
+ },
  "Aberturas e revestimentos desta parede aparecem ao selecioná-los.": {
   "pt_BR": "Aberturas e revestimentos desta parede aparecem ao selecioná-los.",
   "en_US": "Openings and claddings of this wall show up when you select them."
  },
+ "Abre ou fecha a frente, a folha ou a gaveta selecionada (ou todas as do componente)": {
+  "pt_BR": "Abre ou fecha a frente, a folha ou a gaveta selecionada (ou todas as do componente)",
+  "en_US": "Opens or closes the selected front, leaf or drawer (or all of the component)"
+ },
  "Abrir Inserir": {
   "pt_BR": "Abrir Inserir",
   "en_US": "Open Insert"
+ },
+ "Abrir folhas": {
+  "pt_BR": "Abrir folhas",
+  "en_US": "Open leaves"
  },
  "Abrir folhas do armário": {
   "pt_BR": "Abrir folhas do armário",
@@ -295,6 +315,10 @@
   "pt_BR": "Diz em que eixo corre o veio na imagem da textura (H ou V); as peças com essa textura giram de novo",
   "en_US": "Sets the axis the grain runs along in the texture image (H or V); the parts using that texture rotate again"
  },
+ "Dobradiça": {
+  "pt_BR": "Dobradiça",
+  "en_US": "Hinge"
+ },
  "Domínio": {
   "pt_BR": "Domínio",
   "en_US": "Domain"
@@ -302,6 +326,10 @@
  "Domínios": {
   "pt_BR": "Domínios",
   "en_US": "Domains"
+ },
+ "Eixo horizontal": {
+  "pt_BR": "Eixo horizontal",
+  "en_US": "Horizontal axis"
  },
  "Em Edit Mode, marca as faces como borda (fita)": {
   "pt_BR": "Em Edit Mode, marca as faces como borda (fita)",
@@ -414,6 +442,10 @@
  "Faces internas da caixa e do fundo, prateleiras e divisórias": {
   "pt_BR": "Faces internas da caixa e do fundo, prateleiras e divisórias",
   "en_US": "Inner faces of the carcass and back, shelves and dividers"
+ },
+ "Fechar folhas": {
+  "pt_BR": "Fechar folhas",
+  "en_US": "Close leaves"
  },
  "Fechar todas as frentes do módulo": {
   "pt_BR": "Fechar todas as frentes do módulo",
@@ -627,6 +659,10 @@
   "pt_BR": "O movimento desta frente é editado no módulo; aqui ele só é mostrado.",
   "en_US": "This front's motion is edited on the module; here it is only shown."
  },
+ "O módulo não tem vão interno para gavetas": {
+  "pt_BR": "O módulo não tem vão interno para gavetas",
+  "en_US": "The module has no inner space for drawers"
+ },
  "O objeto mudou de posição: confira o painel e digite de novo.": {
   "pt_BR": "O objeto mudou de posição: confira o painel e digite de novo.",
   "en_US": "The object moved: check the panel and type again."
@@ -654,6 +690,10 @@
  "O veio gira a textura da peça e vai ao plano de corte (o mesmo dado).": {
   "pt_BR": "O veio gira a textura da peça e vai ao plano de corte (o mesmo dado).",
   "en_US": "The grain rotates the part texture and goes to the cutting plan (the same data)."
+ },
+ "O vão {} não existe mais": {
+  "pt_BR": "O vão {} não existe mais",
+  "en_US": "Space {} no longer exists"
  },
  "Objeto sem corpo: não se move no Mover Sobre.": {
   "pt_BR": "Objeto sem corpo: não se move no Mover Sobre.",
@@ -703,6 +743,10 @@
   "pt_BR": "Peça sem veio",
   "en_US": "Part without grain"
  },
+ "Peças": {
+  "pt_BR": "Peças",
+  "en_US": "Parts"
+ },
  "Peças ({}):": {
   "pt_BR": "Peças ({}):",
   "en_US": "Parts ({}):"
@@ -722,6 +766,10 @@
  "Prévia dos papéis": {
   "pt_BR": "Prévia dos papéis",
   "en_US": "Role preview"
+ },
+ "Quantidade de gavetas fora de 1 a {}": {
+  "pt_BR": "Quantidade de gavetas fora de 1 a {}",
+  "en_US": "Number of drawers outside 1 to {}"
  },
  "Raio": {
   "pt_BR": "Raio",
@@ -750,6 +798,10 @@
  "Seleciona o conjunto dono do selecionado (o módulo, o armário autoral ou a parede)": {
   "pt_BR": "Seleciona o conjunto dono do selecionado (o módulo, o armário autoral ou a parede)",
   "en_US": "Selects the assembly that owns the selection (the module, the authored cabinet or the wall)"
+ },
+ "Selecionada": {
+  "pt_BR": "Selecionada",
+  "en_US": "Selected"
  },
  "Selecionar conjunto": {
   "pt_BR": "Selecionar conjunto",
@@ -791,6 +843,10 @@
   "pt_BR": "Selecione um revestimento.",
   "en_US": "Select a cladding."
  },
+ "Selecione uma porta, folha ou gaveta": {
+  "pt_BR": "Selecione uma porta, folha ou gaveta",
+  "en_US": "Select a door, leaf or drawer"
+ },
  "Seleção grande demais: {} objetos (o limite é {})": {
   "pt_BR": "Seleção grande demais: {} objetos (o limite é {})",
   "en_US": "Selection too large: {} objects (the limit is {})"
@@ -799,6 +855,10 @@
   "pt_BR": "Seleção múltipla",
   "en_US": "Multiple selection"
  },
+ "Sem executor nesta versão: o item ainda não pode ser inserido": {
+  "pt_BR": "Sem executor nesta versão: o item ainda não pode ser inserido",
+  "en_US": "No executor in this version: the item cannot be inserted yet"
+ },
  "Sem papel: o assistente de classificação marca": {
   "pt_BR": "Sem papel: o assistente de classificação marca",
   "en_US": "No role: the classification assistant sets it"
@@ -806,6 +866,10 @@
  "Sem papéis de acabamento: classifique as peças (Object Mode) ou as faces (Edit Mode).": {
   "pt_BR": "Sem papéis de acabamento: classifique as peças (Object Mode) ou as faces (Edit Mode).",
   "en_US": "No finish roles: classify the parts (Object Mode) or the faces (Edit Mode)."
+ },
+ "Só a frente ou folha selecionada": {
+  "pt_BR": "Só a frente ou folha selecionada",
+  "en_US": "Only the selected front or leaf"
  },
  "Só a peça em que a textura caiu": {
   "pt_BR": "Só a peça em que a textura caiu",
@@ -839,6 +903,10 @@
   "pt_BR": "Textura {} aplicada",
   "en_US": "Texture {} applied"
  },
+ "Tipo de abertura": {
+  "pt_BR": "Tipo de abertura",
+  "en_US": "Opening type"
+ },
  "Tipo sem painel próprio: {}. Só a posição pode ser editada aqui.": {
   "pt_BR": "Tipo sem painel próprio: {}. Só a posição pode ser editada aqui.",
   "en_US": "Type without its own panel: {}. Only the position can be edited here."
@@ -850,6 +918,10 @@
  "Todas as bordas expostas do componente": {
   "pt_BR": "Todas as bordas expostas do componente",
   "en_US": "All exposed edges of the component"
+ },
+ "Todas as folhas e portas do componente": {
+  "pt_BR": "Todas as folhas e portas do componente",
+  "en_US": "All leaves and doors of the component"
  },
  "Todas as peças do móvel nos domínios escolhidos": {
   "pt_BR": "Todas as peças do móvel nos domínios escolhidos",
@@ -890,6 +962,10 @@
  "Vale para módulo e para as peças dele.": {
   "pt_BR": "Vale para módulo e para as peças dele.",
   "en_US": "Applies to modules and their parts."
+ },
+ "Vale para o módulo com folhas ou portas.": {
+  "pt_BR": "Vale para o módulo com folhas ou portas.",
+  "en_US": "Applies to the module with leaves or doors."
  },
  "Vale para parede.": {
   "pt_BR": "Vale para parede.",

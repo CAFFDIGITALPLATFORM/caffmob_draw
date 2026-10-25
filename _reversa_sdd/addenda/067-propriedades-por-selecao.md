@@ -136,3 +136,34 @@ Onda 4 da 067 (fita de borda visual): ações T010, T028, T029, T068 a T072, T10
 | `_reversa_sdd/collision/` | `scan._skip` | regra-nova | A fita visual fica fora da colisão |
 | `_reversa_sdd/texture_library/` | `apply._meshes` | regra-nova | A fita visual não é alvo de textura do módulo |
 | n/a | `Object.btm_edgeband`, `Object.btm_cut_exclude` | delta-de-dados | Metadados da faixa (dono, chaves das bordas, espessura, largura aparente, material ou cor lisa) |
+
+## Atualização 2026-10-25 (onda 5, addon 1.13.0)
+
+Onda 5 da 067 (gavetas e frentes por subvão no módulo rápido, mecanismos e editor animado, contato real da folha,
+editor de armário e frente pelo papel): ações T011, T128, T030 a T032, T073 a T079, T107 a T109, T135, T136, T145,
+T154 a T157, T166 e T173, na branch `feat/067-onda5-animados`.
+
+| Artefato | Seção | Tipo de impacto | Delta |
+|----------|-------|-----------------|-------|
+| `_reversa_sdd/customize/requirements.md` | RN-07 (frentes do `btm` sem gavetas) | regra-alterada | O módulo rápido aceita DRAWERS (caixas reais) e frentes por subvão (ver -v002) |
+| `_reversa_sdd/domain.md` | RN-AGGREGATES-07 (contato da folha pela caixa) | regra-alterada | A folha é testada pelas malhas reais das peças; o vidro fixo do próprio autoral sai por papel (ver -v002) |
+| `_reversa_sdd/selection/requirements.md` | RN-03 (frente pelo sufixo do nome) | regra-alterada | Frente só por tag ou papel; M-08 grava o papel nas portas antigas (ver -v002) |
+| `_reversa_sdd/cutting/` | aviso de corte desatualizado | regra-alterada | A porta do módulo rápido pela dobradiça e o Empty pela marca, não pelo nome |
+| `_reversa_sdd/inspection/` | adaptador do módulo rápido | regra-alterada | Empty pela marca, porta direita pela dobradiça; corrige a posição do Empty (a porta não girava) |
+| `_reversa_sdd/cabinet_editor/` | `library_opening`, catálogo e vista | regra-alterada | No módulo rápido a frente vai no subvão pelo caminho dele; catálogo só com executor validado; arraste de divisória com um passo e Esc |
+| n/a | `mechanisms/`, `geometry/subspace_fronts.py`, `geometry/door_names.py` | componente-novo | Registro de mecanismos (giro, basculante, correr, gaveta) pelos dados; frentes por vão; sufixos só no construtor |
+| n/a | `hb_part_role`, `btm_front_hinge`, `btm_door_controller`, `btm_space_fronts` | delta-de-dados | Papel, dobradiça e marca gravados pelo construtor e pela M-08; pedido de frente por vão na raiz |
+
+### Versões novas das regras superadas na onda 5 (067 D-32, RF-143)
+
+- **customize RN-07 (-v002):** o `btm` aceita `DOOR_LEFT`, `DOOR_RIGHT`, `DOUBLE_DOORS`, `FLIP_UP`, `DRAWERS` e
+  `OPEN`. DRAWERS gera caixas reais (frente e caixa), com `Spec.front == DRAWERS` e a contagem; pedido não suportado é
+  recusado e o operador termina `CANCELLED`. No editor, a frente vai no subvão escolhido, pelo caminho dele, e
+  convive com a frente de outro subvão.
+- **RN-AGGREGATES-07 (-v002):** o contato da folha é testado pelas malhas reais das peças dela (também quando a
+  folha é um grupo), cada uma encolhida 1 mm; saem do teste a folha, o pivô, os descendentes, as folhas irmãs, o pai
+  (esquadria) ou a raiz do módulo do pai e, no armário autoral, a raiz e o vidro fixo (membro Frente fixa); a lateral
+  e as outras peças do autoral continuam contando.
+- **selection RN-03 (-v002):** frente = marca de `FRONT_TAGS` ou `hb_part_role` ∈ {`DOOR`, `DRAWER_FRONT`,
+  `PULLOUT_FRONT`, `TILT_OUT`, `FRONT_PIVOT`, `CLOSET_DOOR_FRONT`, `CLOSET_DRAWER_FRONT`}. O nome não conta. As portas
+  do módulo rápido ganham o papel e a dobradiça do construtor, e a M-08 grava os mesmos campos nos arquivos antigos.

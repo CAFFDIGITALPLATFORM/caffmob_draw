@@ -20,7 +20,6 @@ FRONT_ROLES = frozenset({
     'DOOR', 'DRAWER_FRONT', 'PULLOUT_FRONT', 'TILT_OUT', 'FRONT_PIVOT',            # face frame
     'CLOSET_DOOR_FRONT', 'CLOSET_DRAWER_FRONT', 'CLOSET_DRAWER_BOX',              # closets
 })
-BTM_FRONT_SUFFIXES = ('_Door_L', '_Door_R', '_Door_Flip', '_Controller')         # módulo rápido
 
 _skip_next = [False]
 
@@ -36,7 +35,8 @@ def _is_front_part(obj):
     while current is not None and not current.get(UID_PROP):
         if any(current.get(tag) for tag in FRONT_TAGS) or current.get('hb_part_role') in FRONT_ROLES:
             return True
-        if current.name.endswith(BTM_FRONT_SUFFIXES):
+        # Módulo rápido (067 D-25): a porta pela dobradiça e o Empty pela marca, que conta como parte da frente.
+        if current.get('btm_front_hinge') or current.get('btm_door_controller'):
             return True
         current = current.parent
     return False

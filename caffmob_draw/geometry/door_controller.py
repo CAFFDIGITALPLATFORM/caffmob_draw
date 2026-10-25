@@ -1,5 +1,6 @@
 import bpy  # type: ignore
 from .mesh_gen import generate_door_mesh
+from . import door_names
 
 
 def delete_object(obj):
@@ -110,11 +111,11 @@ def update_door_geometry_and_controller(cabinet_obj):
     swing = cabinet.door_swing
     opening = cabinet.door_open
 
-    # Nomes dos filhos esperados
-    door_l_suffix = "_Door_L"
-    door_r_suffix = "_Door_R"
-    door_flip_suffix = "_Door_Flip"
-    controller_suffix = "_Controller"
+    # Nomes dos filhos que o próprio construtor cria (067 D-25: os sufixos moram em `door_names`)
+    door_l_suffix = door_names.DOOR_L
+    door_r_suffix = door_names.DOOR_R
+    door_flip_suffix = door_names.DOOR_FLIP
+    controller_suffix = door_names.CONTROLLER_SUFFIX
 
     # Se 'NONE', exclui filhos geométricos de portas e controladores
     if swing == 'NONE':
@@ -134,6 +135,7 @@ def update_door_geometry_and_controller(cabinet_obj):
         controller_obj.empty_display_type = 'CUBE'
         cabinet_obj.users_collection[0].objects.link(controller_obj)
         controller_obj.parent = cabinet_obj
+    controller_obj[door_names.CONTROLLER_PROP] = True     # 067 D-25: os leitores acham o Empty pela marca
 
     # Mesmo referencial do layout/carcass_parts: frente em -profundidade, fundo em 0.
     # O controlador parte da face externa da folha e corre para fora da caixa (-Y).
@@ -171,6 +173,7 @@ def update_door_geometry_and_controller(cabinet_obj):
             door_obj = bpy.data.objects.new(f"{cabinet_obj.name}{door_l_suffix}", mesh)
             cabinet_obj.users_collection[0].objects.link(door_obj)
             door_obj.parent = cabinet_obj
+        mark_door(door_obj, door_l_suffix)
 
         generate_door_mesh(door_obj, w_door, h_door, t)
 
@@ -194,6 +197,7 @@ def update_door_geometry_and_controller(cabinet_obj):
             door_obj = bpy.data.objects.new(f"{cabinet_obj.name}{door_r_suffix}", mesh)
             cabinet_obj.users_collection[0].objects.link(door_obj)
             door_obj.parent = cabinet_obj
+        mark_door(door_obj, door_r_suffix)
 
         # Para rotacionar do lado direito, geramos a folha com largura negativa
         generate_door_mesh(door_obj, -w_door, h_door, t)
@@ -218,6 +222,7 @@ def update_door_geometry_and_controller(cabinet_obj):
             door_obj = bpy.data.objects.new(f"{cabinet_obj.name}{door_flip_suffix}", mesh)
             cabinet_obj.users_collection[0].objects.link(door_obj)
             door_obj.parent = cabinet_obj
+        mark_door(door_obj, door_flip_suffix)
 
         # Basculante rotaciona no eixo X.
         # Geramos a malha de modo que a dobradiça fique no topo (Z=0 local e abre subindo)
@@ -246,7 +251,7 @@ def update_door_rotation_from_property(cabinet_obj):
     'door_open' pelo slider na UI. Isso evita recursão cíclica de drivers.
     """
     cabinet = cabinet_obj.btm_cabinet
-    controller_obj = get_child_by_name(cabinet_obj, "_Controller")
+    controller_obj = controller_of(cabinet_obj)
     if controller_obj:
         # Move o Empty. Os drivers das portas lerão a nova posição e rotacionarão!
         controller_obj.location.y = closed_door_y(cabinet_obj) - cabinet.door_open * 0.2
@@ -258,13 +263,25 @@ def update_door_rotation_from_property(cabinet_obj):
 # Puxadores e materiais das portas (feature 003, D-07, D-08)
 # ---------------------------------------------------------------------------
 
-DOOR_SUFFIXES = ("_Door_L", "_Door_R", "_Door_Flip")
-PULL_SUFFIX = "_Puxador"
+DOOR_SUFFIXES = door_names.DOOR_SUFFIXES
+PULL_SUFFIX = door_names.PULL_SUFFIX
 PULL_EDGE = 0.05     # distância do puxador às bordas (m)
 
 
 def doors_of(cabinet_obj):
     return [c for c in cabinet_obj.children if c.type == 'MESH' and c.name.endswith(DOOR_SUFFIXES)]
+
+
+def mark_door(door_obj, suffix):
+    """Papel e dobradiça gravados pelo construtor (067 D-25): os leitores de fora não olham o nome."""
+    door_obj['hb_part_role'] = door_names.ROLE_BY_SUFFIX[suffix]
+    door_obj[door_names.HINGE_PROP] = door_names.HINGE_BY_SUFFIX[suffix]
+
+
+def controller_of(cabinet_obj):
+    """O Empty controlador pela marca; arquivo antigo ainda sem a marca, pelo nome que o construtor deu."""
+    marked = next((c for c in cabinet_obj.children if c.get(door_names.CONTROLLER_PROP)), None)
+    return marked or get_child_by_name(cabinet_obj, door_names.CONTROLLER_SUFFIX)
 
 
 def _door_extent(door_obj):
@@ -294,7 +311,7 @@ def set_door_pull(cabinet_obj, door_obj, pull_source, position='DEFAULT', pull_l
     pull.data = pull_source.data
     x0, x1, z0, z1 = _door_extent(door_obj)
     thickness = cabinet_obj.btm_cabinet.thickness
-    flip = door_obj.name.endswith("_Door_Flip")
+    flip = door_obj.get(door_names.HINGE_PROP) == 'FLIP' or door_obj.name.endswith(door_names.DOOR_FLIP)
     # Lado de fora: oposto ao centro da caixa, no eixo Y da porta.
     outward = 1.0 if door_obj.location.y >= 0.0 else -1.0
     y = thickness if outward > 0 else 0.0

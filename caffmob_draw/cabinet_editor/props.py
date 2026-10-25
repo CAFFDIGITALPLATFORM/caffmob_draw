@@ -392,6 +392,7 @@ class BTM_PG_CabinetEditorState(bpy.types.PropertyGroup):
     adjustments: bpy.props.CollectionProperty(type=BTM_PG_CabinetEditorAdjustment)  # type: ignore
     # Feature 006
     tab: bpy.props.EnumProperty(name="Aba", items=TAB_ITEMS, default='STRUCTURE')  # type: ignore
+    measures_open: bpy.props.BoolProperty(name="Medidas", default=True)  # type: ignore   # 067 RF-106
     new_orientation: bpy.props.EnumProperty(
         name="Orientação", items=[('VERTICAL', "Vertical", "Chapa em pé: separa esquerda e direita", 'SNAP_EDGE', 0),
                                   ('HORIZONTAL', "Horizontal", "Chapa deitada: separa cima e baixo", 'SNAP_FACE',

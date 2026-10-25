@@ -4,4 +4,6 @@
 def front_kind(motion, hinge):
     if motion == 'SLIDE':
         return 'SLIDING'
+    if motion == 'DRAWER':
+        return 'DRAWER'
     return {'TOP': 'FLIP_UP', 'BOTTOM': 'FLIP_DOWN'}.get(hinge, 'DOOR')

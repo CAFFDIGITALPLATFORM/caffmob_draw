@@ -350,6 +350,7 @@ class BTM_OT_CabinetEditorModal(bpy.types.Operator):
         if props.session() is None:
             return {'CANCELLED'}
         self.tab_ready = False
+        self.drag = None                   # arraste de divisória em curso (067 RF-106)
         self._timer = context.window_manager.event_timer_add(TIMER_STEP, window=context.window)
         context.window_manager.modal_handler_add(self)
         return {'RUNNING_MODAL'}
@@ -406,11 +407,40 @@ class BTM_OT_CabinetEditorModal(bpy.types.Operator):
                 _win, area, _region = window.editor_area(context)
                 self.tab_ready = window.focus_tab(area)
             return {'PASS_THROUGH'}
+        if self._handle_drag(context, event, s):
+            return {'RUNNING_MODAL'}
         if self._handle_undo(event, s):
             return {'RUNNING_MODAL'}
         if self._handle_arrows(context, event, s):
             return {'RUNNING_MODAL'}
         return self._handle_click(context, event, s)
+
+    def _handle_drag(self, context, event, s):
+        """Arraste da divisória (067 RF-106): move ao vivo, um passo ao soltar, Esc restaura."""
+        from . import division_drag
+        drag = getattr(self, 'drag', None)
+        if drag is None:
+            return False
+        root = s.root()
+        _win, area, region = window.editor_area(context)
+        if root is None or region is None:
+            self.drag = None
+            return False
+        if event.type == 'ESC' and event.value == 'PRESS':
+            division_drag.cancel(context, s, root, drag, refresh)
+            self.drag = None
+        elif event.type == 'LEFTMOUSE' and event.value == 'RELEASE':
+            division_drag.end(context, s, root, drag, refresh)
+            self.drag = None
+        elif event.type in ('MOUSEMOVE', 'INBETWEEN_MOUSEMOVE'):
+            view = window.ensure_view(region, area)
+            x, z = view.to_world((event.mouse_x - region.x, event.mouse_y - region.y))
+            division_drag.update(context, s, root, drag, x, z)
+            _sync_ui(context, s)
+        else:
+            return False
+        s.redraw()
+        return True
 
     _ARROWS = {'LEFT_ARROW': ('X', -1), 'RIGHT_ARROW': ('X', +1), 'DOWN_ARROW': ('Z', -1), 'UP_ARROW': ('Z', +1)}
 
@@ -446,6 +476,10 @@ class BTM_OT_CabinetEditorModal(bpy.types.Operator):
             board = elevation.hit(_boards(s, x, z), x, z)
             if board is not None:
                 s.selected = board                                         # peça: chapa sob o clique (D-06)
+                from . import division_drag
+                root = s.root()
+                obj = division_drag.division_of(s, root, board) if root is not None else None
+                self.drag = division_drag.begin(context, s, root, obj, x, z) if obj is not None else None
             else:
                 s.selected = None
                 s.space = dv.space_at(s.spaces, x, z) or s.space          # vão: área livre ou frente

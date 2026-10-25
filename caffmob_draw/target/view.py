@@ -36,6 +36,7 @@ DATA_OWNERS = {
     'btm_opening': 'BTM_PG_OpeningProperties',  # Object.btm_opening da abertura da camada nova
     'finish_draft': 'BTM_PG_FinishDraft',     # WindowManager.btm_finish_draft: rascunho dos acabamentos (RF-043)
     'edgeband': 'BTM_PG_EdgeBand',            # Object.btm_edgeband da fita visual (onda 4, RF-084)
+    'front_cabinet': 'BTM_PG_CabinetProperties',  # btm_cabinet do módulo rápido dono da porta (onda 5, RF-100)
 }
 
 

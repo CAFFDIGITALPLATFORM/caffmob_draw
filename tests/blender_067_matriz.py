@@ -20,7 +20,10 @@ como "pendente". Os critérios por coluna:
 - MAT-01 (onda 3): soltar uma textura no alvo tem destino semântico (dono com acabamentos e peças que recebem a
   textura), com a seção Acabamentos para escolher o domínio;
 - MAT-02 (onda 4): a seção Acabamentos tem o botão da fita de borda com o rótulo do estado (criar, mudar cor ou
-  misto) e, no misto, quantas bordas faltam.
+  misto) e, no misto, quantas bordas faltam;
+- UX-05 (onda 5): o movimento é editável no próprio alvo: a folha pelo mecanismo (campos da folha), a frente do
+  módulo rápido pela abertura, o módulo e o armário autoral pelo editor animado do componente, a porta de ambiente
+  pelos controles da porta; a janela, sem folha gerada, diz isso.
 """
 
 import json
@@ -138,7 +141,23 @@ def mat02(target):
     return ok
 
 
-CHECKS = {'MAT-02': mat02, 'UX-01': ux01, 'UX-02': ux02, 'UX-04': ux04, 'MAT-03': mat03, 'CMP-01': cmp01, 'UX-03': ux03,
+def ux05(target):
+    model = view.build(target, view.COMPLETE)
+    fields = {(f.data, f.prop) for f in view.fields(model) if not f.read_only}
+    operators = {a.operator for a in view.actions(model)}
+    if target.kind == r.LEAF:
+        return ('aggregate', 'open_value') in fields
+    if target.kind == r.FRONT:
+        return ('front_cabinet', 'door_open') in fields or 'caffmob.fronts_set_open' in operators
+    if target.kind == r.MODULE:
+        return 'caffmob.fronts_set_open' in operators or 'caffmob.mechanism_set' in operators
+    if target.kind == r.OPENING:
+        sections = {s.id for s in model.sections}
+        return 'opening' in sections
+    return False
+
+
+CHECKS = {'UX-05': ux05, 'MAT-02': mat02, 'UX-01': ux01, 'UX-02': ux02, 'UX-04': ux04, 'MAT-03': mat03, 'CMP-01': cmp01, 'UX-03': ux03,
           'MAT-01': mat01}
 
 

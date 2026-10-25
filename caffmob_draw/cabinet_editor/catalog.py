@@ -202,6 +202,26 @@ ITEMS = tuple([
 _BY_ID = {item.id: item for item in ITEMS}
 
 
+# 067 (T079; RF-107): só é oferecido o item cuja ação tem executor validado no editor (`bridge.EDIT_006`/`EDIT_008`;
+# o distanciador e o roupeiro passam pelos executores da divisão e do interior). O resto aparece com o motivo.
+EXECUTOR_OF = {'ADD_DIVISION': 'ADD_DIVISION', 'ADD_SPACER': 'ADD_DIVISION', 'INSERT_DRAWERS': 'INSERT_DRAWERS',
+               'INSERT_DOORS': 'INSERT_DOORS', 'INSERT_INTERIOR': 'INSERT_INTERIOR',
+               'INSERT_WARDROBE': 'INSERT_INTERIOR', 'INSERT_SLIDES': 'INSERT_SLIDES', 'SET_BACK': 'SET_BACK'}
+NO_EXECUTOR = "Sem executor nesta versão: o item ainda não pode ser inserido"
+INTERNAL_ONLY_FRAMELESS = "Gaveta interna só existe no frameless"
+
+
+def unavailable_reason(item, library=""):
+    """Por que o item não pode ser inserido (msgid), ou None."""
+    if item.id in DISABLED:
+        return DISABLED[item.id]
+    if not item.action or item.action not in EXECUTOR_OF:
+        return NO_EXECUTOR
+    if item.tab == 'DRAWERS' and item.group == 'INTERNAL' and library and library != 'FRAMELESS':
+        return INTERNAL_ONLY_FRAMELESS
+    return None
+
+
 def get(item_id):
     return _BY_ID.get(item_id)
 
