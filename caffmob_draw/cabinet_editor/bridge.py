@@ -145,6 +145,7 @@ def apply_state(context, root, target):
         messages += set_structure(context, root, target.structure_id, target.present)   # feature 015
     if adapter is None:
         return messages
+    migrate_paths(context, root, adapter, target.spec)
     wanted = spec.from_dict(target.spec)
     now = spec.from_dict(current.spec)
     openings = _openings(root, adapter)
@@ -202,6 +203,25 @@ def apply_state(context, root, target):
     if _slides_key(target.slides) != _slides_key(current.slides) or (geometry and target.slides):
         scene_slides.apply(context, root, target.slides)
     return messages
+
+
+def migrate_paths(context, root, adapter, data):
+    """M-06 (067 T107): vão do instantâneo sem caminho (ou com caminho que não existe mais) é lido pelo vão atual e
+    regravado com o caminho. No módulo rápido o vão atual de um pedido antigo é o módulo inteiro; nas bibliotecas,
+    o vão que contém o centro do subvão gravado (`space`), quando houver. Devolve quantos vãos foram regravados."""
+    known = {path for path, _o in adapter.openings(root)}
+    count = 0
+    for item in data.get('openings', []):
+        path = item.get('path', '')
+        if path in known:
+            continue
+        found = library_opening(context, root, item.get('space', '')) if item.get('space') else None
+        if found is None and getattr(adapter, 'LIBRARY', '') == 'BTM':
+            found = "module"
+        if found is not None and found != path:
+            item['path'] = found
+            count += 1
+    return count
 
 
 def _slides_key(state):
@@ -653,10 +673,22 @@ def remove_in_space(context, root, data):
 
 
 def library_opening(context, root, space_path):
-    """Caminho do vão da biblioteca que contém o centro do subvão `space_path` (D-05), ou None."""
+    """Caminho do vão da biblioteca que contém o centro do subvão `space_path` (D-05), ou None.
+
+    067 (D-23; RF-103): no módulo rápido a frente vai no próprio subvão, pelo caminho dele (o vão da biblioteca é o
+    vazio do subvão, criado aqui); o vão-raiz, sem divisão, é o módulo inteiro.
+    """
     adapter = adapter_of(root)
     if adapter is None or not space_path:
         return None
+    if getattr(adapter, 'LIBRARY', '') == 'BTM':
+        if space_path in division_context(context, root)[0]:
+            return "module"
+        from ..geometry import subspace_fronts
+        if space_path not in adapter.space_boxes(context, root):
+            return None
+        subspace_fronts.holder(root, space_path)
+        return space_path
     roots, core, _raw, _names = division_context(context, root)
     box = dv.resolve(roots, core)[0].get(space_path)
     if box is None:

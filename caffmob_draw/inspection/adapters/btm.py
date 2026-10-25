@@ -1,26 +1,26 @@
 """Adaptador do módulo rápido `btm_cabinet` (T060; D-32).
 
-As portas do módulo rápido (`<módulo>_Door_L`, `_Door_R`, `_Door_Flip`) giram por drivers que leem o Y local do
-Empty `<módulo>_Controller` (0 a 0,2 m → 0° a 90°; `geometry/door_controller.py`). O adaptador escreve nesse Empty;
+As portas do módulo rápido giram por drivers que leem o Y local do Empty controlador (0 a 0,2 m → 0° a 90°;
+`geometry/door_controller.py`). 067 D-25: o Empty é achado pela marca `btm_door_controller` e a porta pela
+dobradiça gravada (`btm_front_hinge`), nunca pelo nome. O adaptador escreve nesse Empty;
 `btm_cabinet.door_open` acompanha pelo driver de sincronização. Uma `Front` é o módulo inteiro (todas as folhas
 abrem juntas).
 """
 
 from mathutils import Vector  # type: ignore
 
+from ...geometry import door_controller
 from .. import fronts, pivot_math
 
-CONTROLLER_SUFFIX = '_Controller'
-DOOR_SUFFIXES = ('_Door_L', '_Door_R', '_Door_Flip')
 TRAVEL = 0.2  # m de curso do controlador para 90°
 
 
 def _controller(module):
-    return next((c for c in module.children if c.name.endswith(CONTROLLER_SUFFIX)), None)
+    return next((c for c in module.children if c.get('btm_door_controller')), None)
 
 
 def _doors(module):
-    return [c for c in module.children if c.name.endswith(DOOR_SUFFIXES)]
+    return [c for c in module.children if c.type == 'MESH' and c.get('btm_front_hinge') in ('L', 'R', 'FLIP')]
 
 
 def _is_module(obj):
@@ -42,12 +42,16 @@ class BtmFront(fronts.Front):
         controller = _controller(self.module_root)
         if controller is None:
             return 0.0
-        return pivot_math.fraction_to_degrees(controller.location.y / TRAVEL, pivot_math.BTM_MAX_ANGLE)
+        closed = door_controller.closed_door_y(self.module_root)
+        return pivot_math.fraction_to_degrees((closed - controller.location.y) / TRAVEL, pivot_math.BTM_MAX_ANGLE)
 
     def apply(self, value):
+        # O Empty parte da face da folha fechada e corre para fora (−Y); a posição antiga (a partir de 0) era desfeita
+        # pela limitação do Empty e a porta não girava (067 T136).
         controller = _controller(self.module_root)
         if controller is not None:
-            controller.location.y = pivot_math.degrees_to_fraction(value, pivot_math.BTM_MAX_ANGLE) * TRAVEL
+            closed = door_controller.closed_door_y(self.module_root)
+            controller.location.y = closed - pivot_math.degrees_to_fraction(value, pivot_math.BTM_MAX_ANGLE) * TRAVEL
 
     def commit(self, value):
         self.apply(value)
@@ -60,7 +64,7 @@ class BtmFront(fronts.Front):
         point = world @ Vector(door.location)
         if self.kind == fronts.FLIP_UP:
             return point, (rot @ Vector((-1.0, 0.0, 0.0))).normalized(), (rot @ Vector((0.0, 0.0, -1.0))).normalized()
-        if door.name.endswith('_Door_R'):
+        if door.get('btm_front_hinge') == 'R':
             return point, (rot @ Vector((0.0, 0.0, -1.0))).normalized(), (rot @ Vector((-1.0, 0.0, 0.0))).normalized()
         return point, (rot @ Vector((0.0, 0.0, 1.0))).normalized(), (rot @ Vector((1.0, 0.0, 0.0))).normalized()
 

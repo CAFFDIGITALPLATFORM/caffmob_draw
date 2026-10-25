@@ -27,7 +27,8 @@ pivot = Obj("Front Pivot", Obj("Opening", Obj("FF", wall, IS_FACE_FRAME_CABINET_
 janela = Obj("Janela", wall, IS_WINDOW_BP=True)
 vidro = Obj("Vidro", janela)
 rapido = Obj("BTM_Cabinet", kind='MODULE')
-rapido_porta = Obj("BTM_Cabinet_Door_L", rapido)
+rapido_porta = Obj("Painel qualquer", rapido, hb_part_role='DOOR', btm_front_hinge='L')     # 067: papel gravado
+so_nome = Obj("BTM_Cabinet_Door_L", rapido)                                               # 067: só o sufixo
 cota = Obj("Dimension", balcao, IS_2D_ANNOTATION=True)
 
 
@@ -45,6 +46,7 @@ class ClassifyTest(unittest.TestCase):
         self.check(wall, c.WALL, "Parede", 'HB')
         self.check(vidro, c.WINDOW, "Janela", 'HB')
         self.check(rapido_porta, c.FRONT, "BTM_Cabinet", 'BTM')
+        self.check(so_nome, c.PART, "BTM_Cabinet", 'BTM')        # 067 RF-102: o sufixo do nome não faz frente
         self.check(cota, c.ANNOTATION, "Dimension", 'HB')
 
     def test_mover_sobre(self):

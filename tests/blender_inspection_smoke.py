@@ -89,8 +89,10 @@ assert opened[('FRAMELESS', 'DRAWER')] == 1.0, opened
 assert abs(opening.face_frame_opening.swing_percent - 0.9) < 1e-6
 closet_doors = [o for o in scene.objects if o.get('hb_part_role') == tc.PART_ROLE_DOOR]
 assert closet_doors and all(abs(o['hb_door_open'] - 90 / 110) < 1e-6 for o in closet_doors)
-controller = next(c for c in quick.children if c.name.endswith('_Controller'))
-assert abs(controller.location.y - 0.2) < 1e-6
+controller = next(c for c in quick.children if c.get('btm_door_controller'))    # 067: pela marca
+from caffmob_draw.geometry import door_controller  # noqa: E402
+# 067 (T136): o Empty parte da folha fechada e corre 0,2 m para fora (−Y); antes ele ia a 0,2 e a porta não girava.
+assert abs(controller.location.y - (door_controller.closed_door_y(quick) - 0.2)) < 1e-6, controller.location.y
 assert not scene.btm_settings.cut_plan_stale, "abrir portas marcou o plano de corte como desatualizado"
 
 # 4. Interferência: obstáculo à frente da porta do balcão.

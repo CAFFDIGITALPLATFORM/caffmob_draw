@@ -416,6 +416,10 @@ def insert_reason(context, tab):
     item = catalog.get(ui.catalog_item)
     if tab in ('INTERIOR', 'SLIDING') and (item is None or item.tab != tab):     # item de outra aba (EC-05)
         return tr("Escolha um item do catálogo")
+    if item is not None and item.tab == tab:
+        reason = catalog.unavailable_reason(item, s.library)               # 067 RF-107
+        if reason:
+            return tr(reason)
     return None
 
 

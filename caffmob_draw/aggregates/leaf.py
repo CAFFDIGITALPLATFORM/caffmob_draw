@@ -98,7 +98,7 @@ def displacement(obj):
 
 def base_point(box, motion, hinge):
     lo, hi = box
-    if motion == 'SLIDE':
+    if motion in ('SLIDE', 'DRAWER'):
         return Vector(lo)
     if hinge == 'LEFT':
         return Vector((lo.x, lo.y, lo.z))
@@ -119,6 +119,9 @@ def pose_matrix(agg, base, fraction):
     if agg.motion == 'SLIDE':
         direction = Vector((1.0 if agg.slide_dir == 'POS_X' else -1.0, 0.0, 0.0))
         return Matrix.Translation(base + direction * agg.travel * max(0.0, min(1.0, fraction)))
+    if agg.motion == 'DRAWER':
+        # Gaveta (067 RF-101): corre em profundidade, para fora da frente (−Y no referencial canônico).
+        return Matrix.Translation(base + Vector((0.0, -1.0, 0.0)) * agg.travel * max(0.0, min(1.0, fraction)))
     axis = 'Z' if agg.hinge in ('LEFT', 'RIGHT') else 'X'
     return Matrix.Translation(base) @ Matrix.Rotation(swing_angle(agg, fraction), 4, axis)
 
@@ -264,7 +267,7 @@ def update_open(obj, context):
     from . import collision
     target = max(0.0, min(1.0, agg.open_value))
     current = current_fraction(obj)
-    if agg.motion == 'SLIDE':
+    if agg.motion in ('SLIDE', 'DRAWER'):
         scale, step, tolerance = agg.travel, sweep.SLIDE_STEP, sweep.SLIDE_TOLERANCE
     else:
         scale, step, tolerance = agg.max_angle, sweep.SWING_STEP, sweep.SWING_TOLERANCE

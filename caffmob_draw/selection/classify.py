@@ -39,7 +39,6 @@ MODULE_TAGS = (
 FRONT_TAGS = ('IS_DOOR_FRONT', 'IS_DRAWER_FRONT', 'IS_PULLOUT_FRONT', 'IS_FLIP_UP_DOOR', 'IS_CABINET_FRONT')
 FRONT_ROLES = frozenset({'DOOR', 'DRAWER_FRONT', 'PULLOUT_FRONT', 'TILT_OUT', 'FRONT_PIVOT',
                          'CLOSET_DOOR_FRONT', 'CLOSET_DRAWER_FRONT'})
-BTM_FRONT_SUFFIXES = ('_Door_L', '_Door_R', '_Door_Flip')
 
 
 def btm_kind(obj):
@@ -71,9 +70,9 @@ def module_library(obj):
 
 
 def _is_front(obj):
-    if any(obj.get(tag) for tag in FRONT_TAGS) or obj.get('hb_part_role') in FRONT_ROLES:
-        return True
-    return obj.name.endswith(BTM_FRONT_SUFFIXES)
+    # 067 D-25 (RF-102): frente só pela tag ou pelo papel gravado; o sufixo do nome não conta mais (M-08 gravou o
+    # papel nas portas antigas do módulo rápido).
+    return any(obj.get(tag) for tag in FRONT_TAGS) or obj.get('hb_part_role') in FRONT_ROLES
 
 
 def _ancestors(obj):

@@ -14,7 +14,7 @@ import bpy  # type: ignore
 from ..data import units
 from ..data.i18n import N_, tr
 from ..selection import classify
-from . import bridge, props, window
+from . import bridge, elevation, props, window
 from .ops_actions import selected_path
 
 _SEVERITY_ICON = {'ERROR': 'ERROR', 'WARNING': 'INFO', 'INFO': 'INFO'}
@@ -80,25 +80,40 @@ def target_box(layout, context, tab):
                   else tr("Este vão não pertence a um vão da biblioteca"), icon='MOD_WIREFRAME')
 
 
+def columns_for(region):
+    """1, 2 ou 3 colunas pela largura do painel (067 RF-106)."""
+    width = getattr(region, 'width', 0) or 0
+    return 1 if width < 260 else (2 if width < 460 else 3)
+
+
 def catalog_grid(layout, context, items, space_mm=None):
-    """Grade de 2 colunas com miniatura e nome; o item escolhido fica pressionado; o que não cabe, apagado."""
-    from . import previews
+    """Grade de 1 a 3 colunas com miniatura e nome; o item escolhido fica pressionado; o que não cabe, apagado.
+
+    067 (RF-107): item sem executor validado aparece apagado, com o motivo embaixo, e não pode ser escolhido.
+    """
+    from . import catalog, previews
     ui = context.window_manager.btm_cabinet_editor
     if not items:
         row = layout.row()
         row.active = False
         row.label(text=tr("Nenhum item nesta categoria"))
         return
-    grid = layout.grid_flow(row_major=True, columns=2, even_columns=True, align=False)
+    s = props.session()
+    library = getattr(s, 'library', "") if s is not None else ""
+    grid = layout.grid_flow(row_major=True, columns=columns_for(context.region), even_columns=True, align=False)
     for item in items:
         cell = grid.column(align=True)
         need = item.too_small(space_mm) if space_mm is not None else None
-        cell.enabled = need is None
-        cell.scale_y = 2.6
+        reason = catalog.unavailable_reason(item, library)
+        cell.enabled = need is None and reason is None
+        button = cell.column(align=True)
+        button.scale_y = 2.6
         icon = previews.icon_id(item.thumb)
         kwargs = {'icon_value': icon} if icon else {'icon': 'MESH_PLANE'}
-        cell.operator("caffmob.cabinet_editor_pick", text=tr(item.label), depress=ui.catalog_item == item.id,
-                      **kwargs).item = item.id
+        button.operator("caffmob.cabinet_editor_pick", text=tr(item.label), depress=ui.catalog_item == item.id,
+                        **kwargs).item = item.id
+        if reason:
+            cell.label(text=tr(reason), icon='INFO')
 
 
 def properties_box(layout, item):
@@ -201,6 +216,12 @@ class BTM_PT_CabinetEditorDimensions(_TabPanel, bpy.types.Panel):
         layout = self.layout
         unit = units.get_scene_length_unit(context.scene)
         layout.prop(ui, "bays")
+        # Medidas recolhíveis (067 RF-106).
+        header = layout.row()
+        header.prop(ui, "measures_open", text=tr("Medidas"), emboss=False,
+                    icon='DISCLOSURE_TRI_DOWN' if ui.measures_open else 'DISCLOSURE_TRI_RIGHT')
+        if not ui.measures_open:
+            return
         if ui.bays > 1:                                   # feature 015 (RN-14): largura do vão selecionado
             row = layout.row(align=True)
             row.enabled = props._bay_of_selection() is not None
@@ -218,6 +239,25 @@ class BTM_PT_CabinetEditorDimensions(_TabPanel, bpy.types.Panel):
             hint = col.row()
             hint.active = False
             hint.label(text=tr("faixa: {} – {}").format(units.format_length(lo, unit), units.format_length(hi, unit)))
+
+
+class BTM_UL_CabinetEditorParts(bpy.types.UIList):
+    """Lista rolável das peças do módulo (067 RF-106): escolher na lista seleciona a peça na vista."""
+
+    def draw_item(self, context, layout, data, item, icon, active_data, active_propname, index):
+        layout.label(text=item.label, icon='ERROR' if item.flagged else
+                     ('MESH_PLANE' if item.kind == elevation.OPENING else 'MESH_CUBE'))
+
+
+class BTM_PT_CabinetEditorParts(_TabPanel, bpy.types.Panel):
+    bl_label = "Peças"
+    bl_idname = "BTM_PT_cabinet_editor_parts"
+    bl_order = 2
+    TAB = 'STRUCTURE'
+
+    def draw(self, context):
+        ui = context.window_manager.btm_cabinet_editor
+        self.layout.template_list("BTM_UL_CabinetEditorParts", "", ui, "components", ui, "component_index", rows=6)
 
 
 def _edit(layout, action, text, icon, **values):
@@ -301,8 +341,9 @@ class BTM_PT_CabinetEditorConfirm(_EditorPanel, bpy.types.Panel):
         row.operator("caffmob.cabinet_editor_save_module", text=tr("Salvar como módulo"), icon='FILE_TICK')
 
 
-classes = (BTM_PT_CabinetEditorTabs, BTM_PT_CabinetEditorDimensions, BTM_PT_CabinetEditorMessages,
-           BTM_PT_CabinetEditorAdjustments, BTM_PT_CabinetEditorConfirm)
+classes = (BTM_UL_CabinetEditorParts, BTM_PT_CabinetEditorTabs, BTM_PT_CabinetEditorDimensions,
+           BTM_PT_CabinetEditorParts, BTM_PT_CabinetEditorMessages, BTM_PT_CabinetEditorAdjustments,
+           BTM_PT_CabinetEditorConfirm)
 
 
 def register():

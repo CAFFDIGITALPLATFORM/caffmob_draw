@@ -17,6 +17,9 @@ Onda 3:
 Onda 4:
 - salvar e reabrir conserva `btm_edgeband` e `btm_cut_exclude`;
 - recarregar o addon 3× não duplica o handler da sincronia da fita.
+
+Onda 5:
+- salvar e reabrir conserva o papel e a dobradiça das frentes, o caminho do subvão e os mecanismos.
 """
 
 import os
@@ -184,12 +187,48 @@ def wave_4(folder):
     check(all(core.loads(o.btm_edgeband.edge_keys) for o in bands), "as chaves das bordas voltam")
 
 
+def wave_5(folder):
+    env.clean_scene()
+    from caffmob_draw import mechanisms
+    from caffmob_draw.cabinet_editor import bridge
+    from caffmob_draw.customize.adapters import btm
+    from caffmob_draw.geometry import subspace_fronts
+    ctx = bpy.context
+    assert bpy.ops.caffmob.cabinet_builder(width=1.0, door_swing='DOUBLE') == {'FINISHED'}
+    quick = ctx.object
+    assert bpy.ops.caffmob.cabinet_builder(width=1.0, door_swing='NONE') == {'FINISHED'}
+    split = ctx.object
+    split.location.x = 2.0
+    env.settle()
+    root_path = next(iter(bridge.division_context(ctx, split)[0]))
+    bridge.add_division(ctx, split, {'space': root_path, 'orientation': 'VERTICAL'})
+    left = sorted(p for p in btm.space_boxes(ctx, split) if p not in ('module', root_path))[0]
+    bridge.edit(ctx, split, 'FRONT', {'path': bridge.library_opening(ctx, split, left), 'front': 'DRAWERS',
+                                      'drawer_count': 3})
+    hinges = sorted(d.get('btm_front_hinge') for d in quick.children if d.type == 'MESH')
+    names = (quick.name, split.name)
+    path = os.path.join(folder, "ciclo_onda5.blend")
+    bpy.ops.wm.save_as_mainfile(filepath=path, copy=True)
+    bpy.ops.wm.open_mainfile(filepath=path)
+    quick, split = (bpy.data.objects.get(n) for n in names)
+    check(sorted(d.get('btm_front_hinge') for d in quick.children if d.type == 'MESH') == hinges == ['L', 'R']
+          and all(d.get('hb_part_role') == 'DOOR' for d in quick.children if d.type == 'MESH'),
+          "salvar e reabrir conserva papel e dobradiça das portas")
+    drawers = [o for o in subspace_fronts.fronts_of(split, left) if o.get('hb_part_role') == 'DRAWER_FRONT']
+    check(len(drawers) == 3 and subspace_fronts.front_type(split, left) == ('DRAWERS', 3)
+          and subspace_fronts.holder(split, left, create=False) is not None,
+          "salvar e reabrir conserva o caminho do subvão e as gavetas")
+    check(all(mechanisms.of(d) is not None and mechanisms.of(d).kind == mechanisms.DRAWER for d in drawers),
+          "salvar e reabrir conserva os mecanismos")
+
+
 try:
     with fx.banco_temporario(), tempfile.TemporaryDirectory(prefix="caffmob_067_ciclo_") as folder:
         wave_1(folder)
         wave_2(folder)
         wave_3(folder)
         wave_4(folder)
+        wave_5(folder)
 except Exception:
     traceback.print_exc()
     FAILURES.append("exceção")

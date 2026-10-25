@@ -74,6 +74,8 @@ ROUTES = (
     Route('caffmob.customize_set_pull', S_MODULE, _module_customize),
     Route('caffmob.customize_clear', S_MODULE, _module_customize),
     Route('caffmob.customize_set_style', S_MODULE, _hb_module),
+    # Onda 5 (RF-100): o editor animado abre e fecha todas as folhas e portas do componente.
+    Route('caffmob.mechanism_set', S_MODULE, _kinds((r.MODULE,), N_("Vale para o módulo com folhas ou portas."))),
     # Posição e vínculo.
     Route('caffmob.move_over_toggle', S_POSITION, _cap('move_over'), essential=True),
     Route('caffmob.stick_to_face', S_POSITION, _kinds(_MOVABLE, N_("Este tipo não gruda em face."))),

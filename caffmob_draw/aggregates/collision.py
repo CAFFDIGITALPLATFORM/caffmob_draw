@@ -12,6 +12,11 @@ peças) e as outras folhas da mesma esquadria, cujo batente é o dos montantes (
 Feature 010 (D-10): nas portas e janelas reais da parede, o marco montado (`openings/sync.py`, marcado com
 `btm_opening_frame`) não conta para as folhas dele: a folha fechada encosta nas dobradiças e na contratesta. Paredes,
 móveis e outros objetos continuam contando.
+
+Feature 067 (D-23; RF-105, #141): a folha é testada pelas malhas reais das peças dela (vidro, puxador, ferragem),
+cada uma encolhida 1 mm, e não pela caixa envolvente, que incluía o vazio entre o vidro e o puxador e acusava contato
+falso. No armário autoral, a raiz e o vidro fixo do próprio armário (membro de papel Frente fixa) saem por papel; a
+lateral e as outras peças continuam contando, e o contato real com elas é acusado.
 """
 
 import bpy  # type: ignore
@@ -55,6 +60,15 @@ def invalidate(obj=None):
         _cache.pop(obj.name, None)
 
 
+FIXED_ROLES = frozenset({'FIXED_FRONT'})      # vidro fixo e frente fixa do próprio autoral (067 RF-105)
+
+
+def _authored_fixed(root):
+    return {m.name for m in root.children_recursive
+            if getattr(m, 'btm_member', None) is not None and m.btm_member.owner == root
+            and m.btm_member.role in FIXED_ROLES}
+
+
 def _excluded(obj):
     agg = obj.btm_aggregate
     parent = agg.parent_ref
@@ -73,6 +87,9 @@ def _excluded(obj):
         if root is not None and not root.get('IS_AUTHORED_CABINET'):
             names.add(root.name)
             names.update(c.name for c in root.children_recursive)
+        elif root is not None:
+            names.add(root.name)
+            names |= _authored_fixed(root)
         names.add(parent.name)
     return names
 
@@ -114,6 +131,51 @@ def _bvh(item):
     return item[2] or None
 
 
+def _shrunk(points):
+    center = sum(points, Vector()) / len(points)
+    return [p + (center - p).normalized() * SHRINK if (center - p).length > SHRINK else p for p in points]
+
+
+def _authored_leaf(obj):
+    """Folha de armário autoral (membro dele, ou folha cujo pai está num autoral): onde a folha composta mora."""
+    member = getattr(obj, 'btm_member', None)
+    if member is not None and member.owner is not None:
+        return True
+    parent = obj.btm_aggregate.parent_ref
+    root = fronts.module_root_of(parent) if parent is not None else None
+    return bool(root is not None and root.get('IS_AUTHORED_CABINET')) or bool(
+        parent is not None and parent.get('IS_AUTHORED_CABINET'))
+
+
+def _leaf_parts(obj):
+    """[(vértices no espaço da folha, polígonos)] das malhas reais da folha do armário autoral (peça única ou grupo de
+    peças), cada peça encolhida 1 mm (RF-105, #141). As outras folhas seguem pela caixa delas, como antes."""
+    if not _authored_leaf(obj):
+        return []                                  # porta de ambiente e esquadria: a caixa da folha, como antes
+    depsgraph = bpy.context.evaluated_depsgraph_get()
+    inverse = obj.matrix_world.inverted_safe()
+    parts = []
+    if group.is_group(obj):                        # folha que é grupo de peças (007): as peças do grupo
+        candidates = list(dict.fromkeys(c for m in group.members(obj)
+                                        for c in [m] + list(m.children_recursive)))
+    else:
+        candidates = [obj] + list(obj.children_recursive)
+    for part in candidates:
+        if part.type != 'MESH' or part.get('IS_CUTTING_OBJ') or part.display_type in _SKIP_DISPLAY:
+            continue
+        evaluated = part.evaluated_get(depsgraph)
+        mesh = evaluated.to_mesh()
+        try:
+            to_leaf = inverse @ evaluated.matrix_world
+            verts = [to_leaf @ v.co for v in mesh.vertices]
+            polys = [tuple(p.vertices) for p in mesh.polygons]
+        finally:
+            evaluated.to_mesh_clear()
+        if verts and polys:
+            parts.append((_shrunk(verts), polys))
+    return parts
+
+
 class Tester:
     """`hit(fração)` → objeto atingido ou None, para a varredura de `sweep.py`."""
 
@@ -124,19 +186,30 @@ class Tester:
         self.base = leaf._base(obj)
         self.local = obj.matrix_basis.copy()          # folha no espaço do pivô (fixo)
         corners = leaf.local_corners(obj)
-        center = sum(corners, Vector()) / 8.0
-        self.corners = [c + (center - c).normalized() * SHRINK if (center - c).length > SHRINK else c
-                        for c in corners]
+        self.corners = _shrunk(corners)
+        self.parts = _leaf_parts(obj)                  # sem malha nenhuma: vale a caixa, como antes
 
     def corners_at(self, fraction):
         matrix = self.parent_world @ leaf.pose_matrix(self.agg, self.base, fraction) @ self.local
         return [matrix @ c for c in self.corners]
+
+    def _trees(self, fraction):
+        matrix = self.parent_world @ leaf.pose_matrix(self.agg, self.base, fraction) @ self.local
+        for verts, polys in self.parts:
+            yield BVHTree.FromPolygons([matrix @ v for v in verts], polys)
 
     def hit(self, fraction):
         points = self.corners_at(fraction)
         box = _aabb(points)
         candidates = [item for item in _targets(self.obj) if _overlap(box, item[1])]
         if not candidates:
+            return None
+        if self.parts:
+            for tree in self._trees(fraction):
+                for item in candidates:
+                    other = _bvh(item)
+                    if other is not None and tree.overlap(other):
+                        return item[0]
             return None
         tree = BVHTree.FromPolygons(points, _BOX_FACES)
         for item in candidates:

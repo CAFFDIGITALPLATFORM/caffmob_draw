@@ -44,6 +44,8 @@ from . import cladding
 from . import edgeband  # feature 067 onda 4: fita de borda visual
 from .selection import component_props, component_select, component_pick
 from . import target  # feature 067: alvo da seleção, depois de selection e antes de ui
+from . import mechanisms  # feature 067 onda 5: mecanismos e editor animado
+from .selection import migration_front_roles  # feature 067 onda 5: M-08
 from . import legacy
 from . import library_panel
 from . import texture_library
@@ -351,6 +353,8 @@ def register():
         _module.register()
     # Feature 067 (D-02): depois da seleção por componente, para o snapshot ver a seleção já promovida ao dono.
     target.register()
+    migration_front_roles.register()
+    mechanisms.register()
     legacy.register()           # feature 012: bibliotecas herdadas fora da interface e conversão
     library_panel.register()    # feature 012: painel BIBLIOTECA CAFFMOB
     texture_library.register()  # feature 014: texturas dos fabricantes, conta CAF Mob e download
@@ -407,6 +411,8 @@ def unregister():
     texture_library.unregister()
     library_panel.unregister()
     legacy.unregister()
+    mechanisms.unregister()
+    migration_front_roles.unregister()
     target.unregister()
     for _module in (component_pick, component_select, component_props):
         _module.unregister()
