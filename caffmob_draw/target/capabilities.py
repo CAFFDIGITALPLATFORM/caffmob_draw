@@ -80,6 +80,9 @@ COMMANDS = (
     Command('window_assemble', 'caffmob.window_assemble', N_("Montar janela"), _delegated),
     Command('group_create', 'caffmob.group_create', N_("Criar grupo"), _delegated),
     Command('group_dissolve', 'caffmob.group_dissolve', N_("Desfazer grupo"), _delegated),
+    # (onda 2, D-19) O comando equivalente ao U: duas ou mais chapas selecionadas (RF-045, RF-046).
+    Command('component_u', 'caffmob.component_from_selection', N_("Criar componente (U)"),
+            _when(lambda t: t.kind == r.MULTIPLE and t.count >= 2, N_("Selecione 2 ou mais chapas."))),
 )
 BY_ID = {c.id: c for c in COMMANDS}
 BY_OPERATOR = {c.operator: c for c in COMMANDS if c.operator}

@@ -4,7 +4,7 @@ até a onda 5, presets Abrir e Fechar, e a folha com seção própria."""
 from ...data.i18n import N_
 from .. import resolver as r
 from ..view import Action, Field, Note, Section
-from . import cotas_section, position_section
+from . import cotas_section, finish_section, position_section
 from .module import sheet_section
 
 KINDS = (r.FRONT, r.LEAF)
@@ -23,14 +23,15 @@ def _presets(essential):
 
 def sections(target):
     reason = N_("Medida da frente gerada pelo módulo: {}").format(target.owner_name)
-    sheet = sheet_section(target, reason, grain=target.kind == r.LEAF)
+    sheet = sheet_section(target, reason)          # o veio é de cada frente (RF-041), editável aqui
     if target.kind == r.FRONT:
         motion = Section('front', N_("Frente"), (Note(MOTION_NOTE, 'INFO', False),) + _presets(True), True,
                          N_("Peça"))
-        return [sheet, motion, cotas_section(target),
+        return [sheet, motion, finish_section(target), cotas_section(target),
                 position_section(target, read_only_reason=reason, essential=False)]
     leaf = Section('leaf', N_("Folha"), (
         Field('aggregate', 'motion', N_("Movimento"), essential=True), Field('aggregate', 'hinge', essential=True),
         Field('aggregate', 'swing_sign'), Field('aggregate', 'max_angle'),
         Field('aggregate', 'open_value', N_("Abertura"), essential=True)), True, N_("Folha"))
-    return [leaf, sheet, cotas_section(target), position_section(target, read_only_reason=reason, essential=False)]
+    return [leaf, sheet, finish_section(target), cotas_section(target),
+            position_section(target, read_only_reason=reason, essential=False)]

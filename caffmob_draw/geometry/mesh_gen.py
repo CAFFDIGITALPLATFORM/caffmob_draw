@@ -241,6 +241,16 @@ def generate_floor_mesh(obj, size_x=5.0, size_y=5.0):
 SHELF_SETBACK = 0.02      # recuo frontal das prateleiras (m)
 # Índices de material da caixa (feature 003, D-08): os grupos de material do módulo usam os slots nesta ordem.
 MAT_CARCASS, MAT_SHELF, MAT_BACK = 0, 1, 2
+# (067 onda 2, D-14) Papel de cada face no atributo INT de face: 1 interna, 2 aparente, 3 borda (`finish_core`).
+FACE_ROLE_ATTR = 'btm_face_role'
+
+
+def _tag_box(layer, faces, lo, hi, inner, inside=None):
+    from ..customize import finish_core as fc
+    if inside is None:
+        inside = fc.inside_box(lo, hi, inner[0], inner[1])
+    for face, role in zip(faces, fc.box_face_roles(lo, hi, inner[0], inner[1], inside=inside)):
+        face[layer] = role
 
 
 def generate_cabinet_mesh(obj, w, h, d, t, shelves=0, structure=None, back_setback=0.0, assembly=None):
@@ -254,6 +264,8 @@ def generate_cabinet_mesh(obj, w, h, d, t, shelves=0, structure=None, back_setba
     `cabinet_editor/structure.layout`.
 
     `assembly` (feature 012, D-09): `LATERAL` ou `BASE`; sem ele, vale a do módulo (`btm_cabinet.assembly`).
+
+    067 (D-14): cada face ganha o papel no atributo `btm_face_role` (interna, aparente ou borda), pelo vão interno.
 
     Feature 015 (T026; D-02): módulo com estrutura de caixa (`btm_cabinet.structure_id` do catálogo) monta as peças
     de `structure.carcass_parts`, as mesmas do plano de corte; o recuo das prateleiras vem do Padrão de Dimensões.
@@ -298,6 +310,7 @@ def generate_cabinet_mesh(obj, w, h, d, t, shelves=0, structure=None, back_setba
     if assembly is None:
         assembly = getattr(getattr(obj, 'btm_cabinet', None), 'assembly', st.LATERAL)
     panels, inner = st.layout(w, h, d, thick, states, back_setback, assembly=assembly)
+    face_role = bm.faces.layers.int.new(FACE_ROLE_ATTR)
 
     # Laterais, base, tampo e fundo (na ordem de sempre)
     for role in ('LEFT', 'RIGHT', 'BOTTOM', 'TOP', 'BACK'):
@@ -306,6 +319,7 @@ def generate_cabinet_mesh(obj, w, h, d, t, shelves=0, structure=None, back_setba
             continue
         (x0, y0, z0), (x1, y1, z1) = box
         faces = add_box(bm, x0, x1, y0, y1, z0, z1)
+        _tag_box(face_role, faces, box[0], box[1], inner, inside=False)
         if role == 'BACK':
             for face in faces:
                 face.material_index = MAT_BACK
@@ -319,7 +333,9 @@ def generate_cabinet_mesh(obj, w, h, d, t, shelves=0, structure=None, back_setba
         gap = (span - count * shelf_t) / (count + 1)
         for i in range(count):
             z0 = iz0 + gap * (i + 1) + shelf_t * i
-            for face in add_box(bm, ix0, ix1, iy0 + SHELF_SETBACK, iy1, z0, z0 + shelf_t):
+            shelf = add_box(bm, ix0, ix1, iy0 + SHELF_SETBACK, iy1, z0, z0 + shelf_t)
+            _tag_box(face_role, shelf, (ix0, iy0 + SHELF_SETBACK, z0), (ix1, iy1, z0 + shelf_t), inner, inside=True)
+            for face in shelf:
                 face.material_index = MAT_SHELF
 
     bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
@@ -334,13 +350,18 @@ def _structured_cabinet_mesh(obj, found, t, shelves):
     from ..cabinet_editor import structure_inputs
     parts, inner = found
     bm = bmesh.new()
+    face_role = bm.faces.layers.int.new(FACE_ROLE_ATTR)
 
-    def box(lo, hi, material):
+    def box(lo, hi, material, inside=None):
         verts = [bm.verts.new(co) for co in ((lo[0], lo[1], lo[2]), (hi[0], lo[1], lo[2]), (hi[0], hi[1], lo[2]),
                                               (lo[0], hi[1], lo[2]), (lo[0], lo[1], hi[2]), (hi[0], lo[1], hi[2]),
                                               (hi[0], hi[1], hi[2]), (lo[0], hi[1], hi[2]))]
+        faces = []
         for a, b, c, d in ((0, 1, 2, 3), (4, 7, 6, 5), (0, 4, 5, 1), (1, 5, 6, 2), (2, 6, 7, 3), (3, 7, 4, 0)):
-            bm.faces.new((verts[a], verts[b], verts[c], verts[d])).material_index = material
+            face = bm.faces.new((verts[a], verts[b], verts[c], verts[d]))
+            face.material_index = material
+            faces.append(face)
+        _tag_box(face_role, faces, lo, hi, inner, inside)
 
     for part in parts:
         material = MAT_BACK if part.role in ('BACK', 'RAIL_LOW', 'RAIL_HIGH') else MAT_CARCASS
@@ -359,7 +380,7 @@ def _structured_cabinet_mesh(obj, found, t, shelves):
         gap = (span - count * shelf_t) / (count + 1)
         for i in range(count):
             z0 = iz0 + gap * (i + 1) + shelf_t * i
-            box((ix0, iy0 + setback, z0), (ix1, iy1, z0 + shelf_t), MAT_SHELF)
+            box((ix0, iy0 + setback, z0), (ix1, iy1, z0 + shelf_t), MAT_SHELF, inside=True)
     bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
     bm.to_mesh(obj.data)
     bm.free()

@@ -4,7 +4,7 @@ RF-026, RN-04)."""
 from ...data.i18n import N_
 from .. import resolver as r
 from ..view import Field, Note, Section
-from . import cotas_section, position_section, unavailable_cotas
+from . import cotas_section, finish_section, position_section, unavailable_cotas
 
 KINDS = (r.OTHER, r.ANNOTATION, r.MULTIPLE)
 
@@ -18,7 +18,8 @@ def sections(target):
         moving = Note(N_("Mover e cotas atuam em: {}"), 'INFO', True, ('target.move_name',))
         position = position_section(target, rotation_index=-1, scale=True)
         position = Section(position.id, position.label, (moving,) + position.items, True)
-        return [position, cotas_section(target)]
+        return [position, finish_section(target), cotas_section(target)] if target.finish else \
+            [position, cotas_section(target)]
     if target.kind == r.ANNOTATION:
         # Adaptador mínimo: sem colisão, limites nem Mover Sobre (RF-025).
         return [position_section(target, move_over=False, rotation_index=-1),
@@ -27,7 +28,7 @@ def sections(target):
         Field('selection', 'multi_thickness', N_("Espessura"), essential=True, mixed=True),
         Note(N_("Campos com valores diferentes mostram \"Múltiplos\"; editar aplica a todos num passo de Desfazer."),
              'INFO', False)), True)
-    return [common, cotas_section(target)]
+    return [common, finish_section(target), cotas_section(target)]
 
 
 def fallback(target):

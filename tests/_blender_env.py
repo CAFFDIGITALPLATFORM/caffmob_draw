@@ -40,13 +40,23 @@ def _install_wheels():
     marks = {'linux': ('manylinux',), 'win32': ('win_amd64',), 'darwin': ('macosx',)}.get(sys.platform, ())
     arch = 'arm64' if machine in ('arm64', 'aarch64') and sys.platform == 'darwin' else (
         'aarch64' if machine in ('arm64', 'aarch64') else ('x86_64' if sys.platform != 'win32' else 'amd64'))
-    target = tempfile.mkdtemp(prefix="caffmob_wheels_")
-    for wheel in sorted((ROOT / "caffmob_draw" / "wheels").glob("*.whl")):
-        name = wheel.name
-        pure = name.endswith("-none-any.whl")
-        if pure or (any(m in name for m in marks) and arch in name):
+    import hashlib
+    import shutil
+    wheels = [w for w in sorted((ROOT / "caffmob_draw" / "wheels").glob("*.whl"))
+              if w.name.endswith("-none-any.whl") or (any(m in w.name for m in marks) and arch in w.name)]
+    # (067) Uma pasta por conjunto de wheels, reaproveitada entre os ensaios: uma pasta nova a cada ensaio (9,7 MB)
+    # encheu o disco da máquina, porque os ensaios com janela saem por `os._exit` e nada era apagado.
+    key = hashlib.sha256("|".join(f"{w.name}:{w.stat().st_size}" for w in wheels).encode()).hexdigest()[:12]
+    target = os.path.join(tempfile.gettempdir(), f"caffmob_wheels_cache_{key}")
+    if not os.path.isdir(target):
+        staging = tempfile.mkdtemp(prefix="caffmob_wheels_")
+        for wheel in wheels:
             with zipfile.ZipFile(wheel) as archive:
-                archive.extractall(target)
+                archive.extractall(staging)
+        try:
+            os.rename(staging, target)
+        except OSError:                  # outro Blender chegou antes
+            shutil.rmtree(staging, ignore_errors=True)
     sys.path.insert(0, target)
 
 

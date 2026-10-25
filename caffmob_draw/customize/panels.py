@@ -75,7 +75,11 @@ def draw_customize(layout, context):
         if caps.get(section):
             _section(layout, caps, section)
     box = _section(layout, caps, 'MATERIALS')
-    if box is not None:
+    if box is not None and getattr(adapter, 'LIBRARY', '') == 'AUTHORED':
+        # (067 D-18) O autoral aplica por domínio, na seção Acabamentos do Selecionado; aqui só o atalho.
+        box.label(text=tr("Aplique Interno, Externo, Frentes e Fita na seção Acabamentos"), icon='INFO')
+        box.operator("caffmob.finish_classify_preview", icon='HIDE_OFF')
+    elif box is not None:
         col = box.column(align=True)
         for group in spec.GROUPS:
             op = col.operator("caffmob.customize_set_material",

@@ -73,6 +73,7 @@ def draw_aggregate(layout, context, include_import=True):
         row.operator("caffmob.import_model", icon='IMPORT')
     col = layout.column(align=True)
     col.operator('caffmob_draw.authored_adopt')
+    col.operator('caffmob.component_from_selection', icon='GROUP_VERTEX')      # 067: o mesmo do U
     col.operator('caffmob_draw.member_add')
     col.operator('caffmob_draw.member_remove')
     col.operator('caffmob_draw.member_transfer')

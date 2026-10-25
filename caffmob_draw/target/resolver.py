@@ -58,6 +58,9 @@ class Target:
     measure_error: str = ''         # motivo quando a medida foi recusada (shear, escala zero…)
     multi_thickness: tuple = ()     # espessuras das chapas da seleção múltipla, na ordem de `selected_uids`
     has_leaf: bool = False          # porta com folha gerada (`openings.ops.door_of`; preenchido pelo snapshot)
+    finish: tuple = ()              # ((domínio, material ou MULTIPLE ou '', ((peça, material), …)), …) (onda 2)
+    finish_roles: bool = False      # o dono tem papéis de acabamento; sem eles, o assistente (RF-042)
+    finish_scope_part: bool = False     # o resumo é da peça selecionada (Peça), não do móvel inteiro
 
     @property
     def adapter(self):

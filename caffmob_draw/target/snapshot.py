@@ -76,10 +76,47 @@ def refresh(context):
         target = dataclasses.replace(target, has_leaf=door_of(object_for(context, target.uid)) is not None)
     elif target is not None and target.kind == resolver.CLADDING:
         _load_cladding_draft(context, target)
+    if target is not None and target.kind in FINISH_KINDS:
+        target = _with_finish(context, target)
     entry = _cache[key]
     entry.target = target
     entry.pose = _pose(object_for(context, target.uid)) if target is not None else None
     return target
+
+
+# Tipos com seção Acabamentos (onda 2, RF-043).
+FINISH_KINDS = frozenset({resolver.MODULE, resolver.PART, resolver.MEMBER, resolver.FRONT, resolver.LEAF,
+                          resolver.GEOMETRY, resolver.OTHER, resolver.MULTIPLE})
+
+
+def _with_finish(context, target):
+    """Material efetivo de cada domínio, lido das faces e peças (fora do draw)."""
+    import dataclasses
+    from ..customize import finish
+    obj = object_for(context, target.uid)
+    if obj is None:
+        return target
+    if target.kind == resolver.MULTIPLE:
+        pieces = [o for o in (object_for(context, u) for u in target.selected_uids) if o is not None
+                  and o.type == 'MESH']
+        owner = finish.owner_of(obj)
+        part = True
+    elif target.kind == resolver.MODULE:
+        owner, pieces, part = obj, None, False
+    else:
+        owner = finish.owner_of(obj)
+        pieces = [obj] if obj.type == 'MESH' else []
+        part = owner is not obj
+    if owner is None or (pieces is not None and not pieces):
+        return target
+    try:
+        summary = finish.summary(owner, pieces)
+        # Linha no resumo já prova papel no dono; só sem linha é preciso olhar as outras peças.
+        roles = any(rows for _m, rows in summary.values()) or finish.has_roles(owner)
+    except (AttributeError, ReferenceError, RuntimeError):
+        return target
+    rows = tuple((domain, summary[domain][0], summary[domain][1]) for domain in summary if summary[domain][1])
+    return dataclasses.replace(target, finish=rows, finish_roles=roles, finish_scope_part=part)
 
 
 def _load_cladding_draft(context, target):
