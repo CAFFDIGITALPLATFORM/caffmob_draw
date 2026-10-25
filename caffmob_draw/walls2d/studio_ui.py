@@ -43,11 +43,12 @@ def medir(texto):
 
 
 def preencher(sh, ps, tinta):
+    # `tessellate_polygon` devolve trincas de índices dos pontos, não os pontos.
     triangulos = tessellate_polygon([[Vector((q[0], q[1], 0)) for q in ps]])
     if triangulos:
         sh.bind()
         sh.uniform_float('color', tinta)
-        batch_for_shader(sh, 'TRIS', {'pos': [(q.x, q.y) for t in triangulos for q in t]}).draw(sh)
+        batch_for_shader(sh, 'TRIS', {'pos': [tuple(ps[i][:2]) for t in triangulos for i in t]}).draw(sh)
 
 
 # Fonte e formas do Studio -------------------------------------------------------------------------------------

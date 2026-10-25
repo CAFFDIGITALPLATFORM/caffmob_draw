@@ -1,7 +1,7 @@
 schema_version = "1.0.0"
 
 id = "caffmob_draw"
-version = "1.15.0"
+version = "1.15.1"
 name = "CAFFMob Draw"
 tagline = "Parametric cabinetry and interior design CAD tools for Blender"
 maintainer = "TheLeoInfo"
