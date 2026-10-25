@@ -10,7 +10,11 @@ como "pendente". Os critérios por coluna:
   direito sai do mesmo CommandRouter;
 - UX-02: o painel mostra as propriedades do próprio selecionado (adaptador próprio; chapa com as medidas dela, nunca
   as do módulo);
-- UX-04: cotas com o alvo móvel, ou "indisponível para <motivo>".
+- UX-04: cotas com o alvo móvel, ou "indisponível para <motivo>";
+- MAT-03 (onda 2): seção Acabamentos com o material efetivo por domínio e o rascunho para aplicar, ou, sem papéis,
+  o assistente de classificação;
+- CMP-01 (onda 2): o comando equivalente ao U está no painel (na seção de agregados), executa na seleção múltipla
+  de chapas e mostra o motivo nos outros tipos.
 """
 
 import json
@@ -68,7 +72,29 @@ def ux04(target):
     return bool(fields) == bool(target.move_uid) and (bool(fields) or bool(notes))
 
 
-CHECKS = {'UX-01': ux01, 'UX-02': ux02, 'UX-04': ux04}
+def mat03(target):
+    section = next((s for s in view.build(target, view.COMPLETE).sections if s.id == 'finish'), None)
+    if section is None:
+        return False
+    actions = {i.operator for i in section.items if isinstance(i, view.Action)}
+    if not target.finish_roles or not target.finish:
+        return 'caffmob.finish_classify' in actions
+    fields = {(i.data, i.prop) for i in section.items if isinstance(i, view.Field)}
+    return bool(target.finish) and 'caffmob.finish_apply_draft' in actions and {
+        ('finish_draft', 'domain'), ('finish_draft', 'material'), ('finish_draft', 'scale_mm'),
+        ('finish_draft', 'grain')} <= fields
+
+
+def cmp01(target):
+    entry = next((e for e in commands.commands_for(target) if e.operator == 'caffmob.component_from_selection'),
+                 None)
+    if entry is None:
+        return False
+    shown = any(a.operator == entry.operator for a in view.actions(view.build(target, view.COMPLETE)))
+    return shown and (entry.enabled if target.kind == r.MULTIPLE else bool(entry.reason))
+
+
+CHECKS = {'UX-01': ux01, 'UX-02': ux02, 'UX-04': ux04, 'MAT-03': mat03, 'CMP-01': cmp01}
 
 
 def build_targets():

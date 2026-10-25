@@ -3,7 +3,7 @@
 from ...data.i18n import N_
 from .. import resolver as r
 from ..view import Action, Field, Note, Section
-from . import cotas_section, position_section
+from . import cotas_section, finish_section, position_section
 
 KINDS = (r.MODULE, r.PART, r.MEMBER)
 GRAIN_NOTE = N_("Veio guardado na peça e enviado ao corte; o visual é aplicado na onda 3.")
@@ -47,13 +47,13 @@ def sections(target):
             Field('target', 'legacy_cotas'), Field('selection', 'afastamento'), Field('selection', 'anterior'),
             Field('selection', 'posterior'), Field('selection', 'inferior'), Field('selection', 'superior'),
             Action('caffmob.move_on_wall', N_("Mover na Parede"))), False)
-        return [dims, cotas_section(target), position_section(target), legacy]
+        return [dims, finish_section(target), cotas_section(target), position_section(target), legacy]
     if target.kind == r.MEMBER:
         rule = Section('member', N_("Regra do membro"), (
             Field('member', 'rule', N_("Regra dimensional"), essential=True),
             Field('member', 'role', N_("Papel")), Field('member', 'axis'), Field('member', 'offset_mm')), True)
-        return [sheet_section(target), rule, cotas_section(target), position_section(target)]
+        return [sheet_section(target), rule, finish_section(target), cotas_section(target), position_section(target)]
     # Chapa de módulo: autoral edita a própria chapa; de biblioteca é somente leitura com o motivo (D-06).
     reason = '' if target.detail == 'AUTHORED' else library_reason(target)
-    return [sheet_section(target, reason), cotas_section(target),
+    return [sheet_section(target, reason), finish_section(target), cotas_section(target),
             position_section(target, read_only_reason=reason or '', essential=False)]

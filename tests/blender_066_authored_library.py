@@ -46,7 +46,11 @@ def main():
     from caffmob_draw.library_panel import categories
     check(any(c.name == library_io.AUTHORED_CATEGORY for c in categories.load()[0]),
           'painel da biblioteca oferece categoria de armários autorais')
-    check(all(adapters.for_root(root).capabilities(root).values()), 'personalização recusada com motivo')
+    # 067 RF-044 (D-18): Materiais vale quando há papéis de acabamento; o resto continua recusado com motivo.
+    from caffmob_draw.customize import finish
+    caps = adapters.for_root(root).capabilities(root)
+    check(all(v for k, v in caps.items() if k != 'MATERIALS') and (caps['MATERIALS'] is None) == finish.has_roles(root),
+          'personalização recusada com motivo')
     # A imagem de disco é empacotada temporariamente e sobrevive sem o arquivo de origem.
     texture_path = Path(a.env.USER_DIR) / 'textura_autoral.png'
     generated = bpy.data.images.new('Imagem do ensaio', width=2, height=2)

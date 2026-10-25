@@ -10,6 +10,9 @@ personalizado; depois de reaplicar, o adaptador reafirma remoções e espessuras
 Feature 008 (T045; D-11, D-12): peças das abas novas (extras, internos, deslizantes) e o fundo recuado também contam;
 com "Inserir automaticamente", o recuo do fundo é reafirmado, e as peças novas voltam ao lugar. Um fundo removido
 pelo projetista continua removido (a remoção é uma escolha explícita).
+
+Feature 067 (onda 2, D-15): os acabamentos por domínio (`btm_finish`, fora os migrados) também contam e voltam depois
+do adaptador, pela `customize/finish.reapply`.
 """
 
 from . import adapters
@@ -34,6 +37,8 @@ def has_custom(root):
     if root.btm_custom.group_materials or root.btm_custom.pull_all_fronts:
         return True
     for obj in [root] + list(root.children_recursive):
+        if any(item.source != 'MIGRATED' for item in getattr(obj, 'btm_finish', ())):
+            return True
         custom = getattr(obj, 'btm_custom', None)
         if custom is None:
             continue
@@ -50,7 +55,10 @@ def reapply(context, root):
         return []
     _running.add(root.name)
     try:
-        return adapter.reapply(context, root)
+        messages = adapter.reapply(context, root)
+        from . import finish
+        finish.reapply(root)
+        return messages
     finally:
         _running.discard(root.name)
 

@@ -4,7 +4,7 @@ posição uma vez só e nenhum texto de limites de biblioteca."""
 from ...data.i18n import N_
 from .. import resolver as r
 from ..view import Field, Section
-from . import cotas_section, position_section
+from . import cotas_section, finish_section, position_section
 from .module import sheet_section
 
 KINDS = (r.GEOMETRY,)
@@ -15,4 +15,4 @@ def sections(target):
         Field('geometry', 'material', N_("Material"), essential=True), Field('geometry', 'finish'),
         Field('geometry', 'fabrication'), Field('geometry', 'component'), Field('geometry', 'kind'),
         Field('geometry', 'plane')), True)
-    return [sheet_section(target), material, cotas_section(target), position_section(target)]
+    return [sheet_section(target), material, finish_section(target), cotas_section(target), position_section(target)]

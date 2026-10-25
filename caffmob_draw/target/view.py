@@ -34,6 +34,7 @@ DATA_OWNERS = {
     'camera': 'Camera',                       # Object.data da câmera
     'wall': 'BTM_PG_WallSegment',             # Object.btm_wall da parede da camada nova
     'btm_opening': 'BTM_PG_OpeningProperties',  # Object.btm_opening da abertura da camada nova
+    'finish_draft': 'BTM_PG_FinishDraft',     # WindowManager.btm_finish_draft: rascunho dos acabamentos (RF-043)
 }
 
 

@@ -155,18 +155,12 @@ class BTM_OT_LibraryDrag(bpy.types.Operator):
         if self.block:
             return self._drop_model(context, point)
         from ..texture_library import apply
-        targets = apply.targets(obj) if obj is not None else []
-        if not targets:
+        if obj is None or not apply.targets(obj):
             self.report({'WARNING'}, tr(EMPTY_DROP))
             return {'CANCELLED'}
-        status, value = apply.apply(targets, self.key)
-        if status == apply.ERROR:
-            self.report({'WARNING'}, value)
-            return {'CANCELLED'}
-        if status == apply.QUEUED:
-            return {'CANCELLED'}                          # aplica ao concluir o download, com o desfazer dele
-        self.report({'INFO'}, tr("Textura {} aplicada em {} peça(s)").format(self.entry.get("name", ""), value))
-        return {'FINISHED'}
+        # (067 RF-040) Pergunta onde aplicar; nada muda antes de confirmar, e o download espera o OK.
+        bpy.ops.caffmob.finish_drop('INVOKE_DEFAULT', key=self.key, object_name=obj.name)
+        return {'CANCELLED'}                              # o passo de Undo é o da aplicação
 
     def _drop_model(self, context, point):
         if self.entry.get("kind") != 'MODEL' or point is None:

@@ -14,9 +14,10 @@
 def _modules():
     # Import tardio: `limits` e `sweep` são usados nos testes fora do Blender sem carregar `bpy`.
     from . import (apply, authored_props, collision, group_props, ops_aggregate, ops_authored, ops_authored_leaf,
-                   ops_group, ops_import, ops_install, ops_members, overlay, panels, props, stretch, window_props)
-    return (props, authored_props, ops_authored, ops_members, ops_authored_leaf, group_props, window_props, apply,
-            collision, ops_import, ops_aggregate, ops_group, ops_install, stretch, overlay, panels)
+                   ops_component_u, ops_group, ops_import, ops_install, ops_members, overlay, panels, props, stretch,
+                   window_props)
+    return (props, authored_props, ops_authored, ops_members, ops_authored_leaf, ops_component_u, group_props,
+            window_props, apply, collision, ops_import, ops_aggregate, ops_group, ops_install, stretch, overlay, panels)
 
 
 def register():

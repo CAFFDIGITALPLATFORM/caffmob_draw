@@ -51,6 +51,14 @@
   "pt_BR": "Abrir todas as frentes do módulo",
   "en_US": "Open all fronts of the module"
  },
+ "Acabamento {} aplicado em {} peça(s)": {
+  "pt_BR": "Acabamento {} aplicado em {} peça(s)",
+  "en_US": "Finish {} applied to {} part(s)"
+ },
+ "Acabamentos": {
+  "pt_BR": "Acabamentos",
+  "en_US": "Finishes"
+ },
  "Adicionar membro": {
   "pt_BR": "Adicionar membro",
   "en_US": "Add member"
@@ -66,6 +74,34 @@
  "Adotar vale para módulo, peça, geometria, luz ou objeto solto fora de armário autoral.": {
   "pt_BR": "Adotar vale para módulo, peça, geometria, luz ou objeto solto fora de armário autoral.",
   "en_US": "Adopting applies to a module, part, geometry, light or loose object outside an authored cabinet."
+ },
+ "Agregar ao ativo": {
+  "pt_BR": "Agregar ao ativo",
+  "en_US": "Add to the active one"
+ },
+ "Alvo: {}": {
+  "pt_BR": "Alvo: {}",
+  "en_US": "Target: {}"
+ },
+ "Aplica o acabamento escolhido na seção Acabamentos ao selecionado": {
+  "pt_BR": "Aplica o acabamento escolhido na seção Acabamentos ao selecionado",
+  "en_US": "Applies the finish chosen in the Finishes section to the selection"
+ },
+ "Aplica um material nos domínios escolhidos (Interno, Externo, Frentes, Fita) do móvel ou da peça": {
+  "pt_BR": "Aplica um material nos domínios escolhidos (Interno, Externo, Frentes, Fita) do móvel ou da peça",
+  "en_US": "Applies a material to the chosen domains (Internal, External, Fronts, Edge band) of the furniture or part"
+ },
+ "Aplicar acabamento": {
+  "pt_BR": "Aplicar acabamento",
+  "en_US": "Apply finish"
+ },
+ "Aplique Interno, Externo, Frentes e Fita na seção Acabamentos": {
+  "pt_BR": "Aplique Interno, Externo, Frentes e Fita na seção Acabamentos",
+  "en_US": "Apply Internal, External, Fronts and Edge band in the Finishes section"
+ },
+ "As bordas das chapas": {
+  "pt_BR": "As bordas das chapas",
+  "en_US": "The panel edges"
  },
  "As cotas medem e movem a peça selecionada": {
   "pt_BR": "As cotas medem e movem a peça selecionada",
@@ -83,6 +119,14 @@
   "pt_BR": "As medidas seguem o contorno das paredes.",
   "en_US": "The measurements follow the outline of the walls."
  },
+ "As outras raízes entram como membros do armário ativo": {
+  "pt_BR": "As outras raízes entram como membros do armário ativo",
+  "en_US": "The other roots become members of the active cabinet"
+ },
+ "Borda": {
+  "pt_BR": "Borda",
+  "en_US": "Edge"
+ },
  "Calculando…": {
   "pt_BR": "Calculando…",
   "en_US": "Calculating…"
@@ -99,9 +143,29 @@
   "pt_BR": "Chapas e peças",
   "en_US": "Sheets and parts"
  },
+ "Classificar acabamento": {
+  "pt_BR": "Classificar acabamento",
+  "en_US": "Classify finish"
+ },
+ "Classificar peças": {
+  "pt_BR": "Classificar peças",
+  "en_US": "Classify parts"
+ },
+ "Classifique as peças no assistente de acabamento para aplicar materiais neste armário": {
+  "pt_BR": "Classifique as peças no assistente de acabamento para aplicar materiais neste armário",
+  "en_US": "Classify the parts in the finish assistant to apply materials to this cabinet"
+ },
  "Completa": {
   "pt_BR": "Completa",
   "en_US": "Complete"
+ },
+ "Componente existente": {
+  "pt_BR": "Componente existente",
+  "en_US": "Existing component"
+ },
+ "Componente {} criado com {} peça(s)": {
+  "pt_BR": "Componente {} criado com {} peça(s)",
+  "en_US": "Component {} created with {} part(s)"
  },
  "Comuns aos selecionados": {
   "pt_BR": "Comuns aos selecionados",
@@ -131,9 +195,29 @@
   "pt_BR": "Cotas: indisponível para {}.",
   "en_US": "Dimensions: unavailable for {}."
  },
+ "Cria um armário autoral com as raízes selecionadas": {
+  "pt_BR": "Cria um armário autoral com as raízes selecionadas",
+  "en_US": "Creates an authored cabinet with the selected roots"
+ },
+ "Cria um componente (armário autoral) com as chapas selecionadas, num passo de desfazer (U)": {
+  "pt_BR": "Cria um componente (armário autoral) com as chapas selecionadas, num passo de desfazer (U)",
+  "en_US": "Creates a component (authored cabinet) from the selected panels, in one undo step (U)"
+ },
  "Cria uma chapa em pé no cursor 3D com a espessura e o tipo do Padrão de Dimensões ativo": {
   "pt_BR": "Cria uma chapa em pé no cursor 3D com a espessura e o tipo do Padrão de Dimensões ativo",
   "en_US": "Creates a standing sheet at the 3D cursor with the thickness and type of the active Dimension Standard"
+ },
+ "Criar componente": {
+  "pt_BR": "Criar componente",
+  "en_US": "Create component"
+ },
+ "Criar componente (U)": {
+  "pt_BR": "Criar componente (U)",
+  "en_US": "Create component (U)"
+ },
+ "Criar conjunto pai": {
+  "pt_BR": "Criar conjunto pai",
+  "en_US": "Create parent set"
  },
  "Câmera": {
   "pt_BR": "Câmera",
@@ -151,13 +235,61 @@
   "pt_BR": "Definições já existentes",
   "en_US": "Existing definitions"
  },
+ "Dependentes que seguem na hierarquia: {}": {
+  "pt_BR": "Dependentes que seguem na hierarquia: {}",
+  "en_US": "Dependents kept in the hierarchy: {}"
+ },
+ "Desconhecido": {
+  "pt_BR": "Desconhecido",
+  "en_US": "Unknown"
+ },
  "Diagnóstico: {}": {
   "pt_BR": "Diagnóstico: {}",
   "en_US": "Diagnostics: {}"
  },
+ "Disponível em Object Mode": {
+  "pt_BR": "Disponível em Object Mode",
+  "en_US": "Available in Object Mode"
+ },
+ "Domínio": {
+  "pt_BR": "Domínio",
+  "en_US": "Domain"
+ },
+ "Domínios": {
+  "pt_BR": "Domínios",
+  "en_US": "Domains"
+ },
+ "Em Edit Mode, marca as faces como borda (fita)": {
+  "pt_BR": "Em Edit Mode, marca as faces como borda (fita)",
+  "en_US": "In Edit Mode, marks the faces as edge (edge band)"
+ },
  "Escala": {
   "pt_BR": "Escala",
   "en_US": "Scale"
+ },
+ "Escala (mm)": {
+  "pt_BR": "Escala (mm)",
+  "en_US": "Scale (mm)"
+ },
+ "Escolha ao menos um domínio": {
+  "pt_BR": "Escolha ao menos um domínio",
+  "en_US": "Choose at least one domain"
+ },
+ "Escolha o material fonte da textura": {
+  "pt_BR": "Escolha o material fonte da textura",
+  "en_US": "Choose the source material of the texture"
+ },
+ "Escolha um material": {
+  "pt_BR": "Escolha um material",
+  "en_US": "Choose a material"
+ },
+ "Escolha…": {
+  "pt_BR": "Escolha…",
+  "en_US": "Choose…"
+ },
+ "Escolhido no painel": {
+  "pt_BR": "Escolhido no painel",
+  "en_US": "Chosen in the panel"
  },
  "Escopo das cotas": {
   "pt_BR": "Escopo das cotas",
@@ -187,6 +319,10 @@
   "pt_BR": "Estas definições já existem com valores diferentes. Marque as que devem ser substituídas:",
   "en_US": "These definitions already exist with different values. Check the ones to replace:"
  },
+ "Este móvel não tem papéis de acabamento: classifique as peças no assistente": {
+  "pt_BR": "Este móvel não tem papéis de acabamento: classifique as peças no assistente",
+  "en_US": "This furniture has no finish roles: classify the parts in the assistant"
+ },
  "Este tipo não gruda em face.": {
   "pt_BR": "Este tipo não gruda em face.",
   "en_US": "This type does not stick to faces."
@@ -211,13 +347,37 @@
   "pt_BR": "Exportar todas as definições",
   "en_US": "Export all definitions"
  },
+ "Externo": {
+  "pt_BR": "Externo",
+  "en_US": "External"
+ },
+ "Faces aparentes da caixa, a face de trás do fundo e as frentes": {
+  "pt_BR": "Faces aparentes da caixa, a face de trás do fundo e as frentes",
+  "en_US": "Visible faces of the carcass, the rear face of the back and the fronts"
+ },
+ "Faces internas da caixa e do fundo, prateleiras e divisórias": {
+  "pt_BR": "Faces internas da caixa e do fundo, prateleiras e divisórias",
+  "en_US": "Inner faces of the carcass and back, shelves and dividers"
+ },
  "Fechar todas as frentes do módulo": {
   "pt_BR": "Fechar todas as frentes do módulo",
   "en_US": "Close all fronts of the module"
  },
+ "Fita": {
+  "pt_BR": "Fita",
+  "en_US": "Edge band"
+ },
  "Folha do armário autoral": {
   "pt_BR": "Folha do armário autoral",
   "en_US": "Authored cabinet leaf"
+ },
+ "Frente do móvel": {
+  "pt_BR": "Frente do móvel",
+  "en_US": "Furniture front"
+ },
+ "Frente: recebe os acabamentos Externo e Frentes": {
+  "pt_BR": "Frente: recebe os acabamentos Externo e Frentes",
+  "en_US": "Front: receives the External and Fronts finishes"
  },
  "Grava no banco local uma definição mais antiga que a versão guardada nele": {
   "pt_BR": "Grava no banco local uma definição mais antiga que a versão guardada nele",
@@ -251,9 +411,21 @@
   "pt_BR": "Lente",
   "en_US": "Lens"
  },
+ "Liga ou desliga a prévia por cor dos papéis de acabamento do móvel ativo": {
+  "pt_BR": "Liga ou desliga a prévia por cor dos papéis de acabamento do móvel ativo",
+  "en_US": "Toggles the color preview of the finish roles of the active furniture"
+ },
  "Limites": {
   "pt_BR": "Limites",
   "en_US": "Limits"
+ },
+ "Marca o papel de acabamento das peças (Object Mode) ou das faces (Edit Mode) selecionadas": {
+  "pt_BR": "Marca o papel de acabamento das peças (Object Mode) ou das faces (Edit Mode) selecionadas",
+  "en_US": "Sets the finish role of the selected parts (Object Mode) or faces (Edit Mode)"
+ },
+ "Material fonte": {
+  "pt_BR": "Material fonte",
+  "en_US": "Source material"
  },
  "Medida A": {
   "pt_BR": "Medida A",
@@ -278,6 +450,10 @@
  "Medida não finita.": {
   "pt_BR": "Medida não finita.",
   "en_US": "Non-finite measurement."
+ },
+ "Migrado": {
+  "pt_BR": "Migrado",
+  "en_US": "Migrated"
  },
  "Modo do painel": {
   "pt_BR": "Modo do painel",
@@ -327,6 +503,14 @@
   "pt_BR": "Nenhuma definição própria para exportar.",
   "en_US": "No custom definition to export."
  },
+ "Nenhuma face ou peça do alvo pertence aos domínios escolhidos": {
+  "pt_BR": "Nenhuma face ou peça do alvo pertence aos domínios escolhidos",
+  "en_US": "No face or part of the target belongs to the chosen domains"
+ },
+ "Novo componente": {
+  "pt_BR": "Novo componente",
+  "en_US": "New component"
+ },
  "O banco do Padrão de Dimensões não está disponível neste Blender.": {
   "pt_BR": "O banco do Padrão de Dimensões não está disponível neste Blender.",
   "en_US": "The Dimension Standard database is not available in this Blender."
@@ -371,6 +555,18 @@
   "pt_BR": "Objeto sem corpo: não se move no Mover Sobre.",
   "en_US": "Object without a body: it does not move with Move Over."
  },
+ "Onde deseja aplicar a textura?": {
+  "pt_BR": "Onde deseja aplicar a textura?",
+  "en_US": "Where do you want to apply the texture?"
+ },
+ "Onde deseja aplicar a textura? Escolha os domínios e o escopo; nada muda antes de confirmar": {
+  "pt_BR": "Onde deseja aplicar a textura? Escolha os domínios e o escopo; nada muda antes de confirmar",
+  "en_US": "Where do you want to apply the texture? Choose the domains and the scope; nothing changes before you confirm"
+ },
+ "Papel no acabamento": {
+  "pt_BR": "Papel no acabamento",
+  "en_US": "Finish role"
+ },
  "Para editá-la, adote o módulo como armário autoral.": {
   "pt_BR": "Para editá-la, adote o módulo como armário autoral.",
   "en_US": "To edit it, adopt the module as an authored cabinet."
@@ -383,9 +579,29 @@
   "pt_BR": "Personalizar vale para módulo de biblioteca e módulo rápido.",
   "en_US": "Customize applies to library modules and quick modules."
  },
+ "Peça aparente": {
+  "pt_BR": "Peça aparente",
+  "en_US": "Visible part"
+ },
+ "Peça aparente: recebe o acabamento Externo": {
+  "pt_BR": "Peça aparente: recebe o acabamento Externo",
+  "en_US": "Visible part: receives the External finish"
+ },
+ "Peça interna": {
+  "pt_BR": "Peça interna",
+  "en_US": "Inner part"
+ },
+ "Peça interna: recebe o acabamento Interno": {
+  "pt_BR": "Peça interna: recebe o acabamento Interno",
+  "en_US": "Inner part: receives the Internal finish"
+ },
  "Peça sem veio": {
   "pt_BR": "Peça sem veio",
   "en_US": "Part without grain"
+ },
+ "Peças ({}):": {
+  "pt_BR": "Peças ({}):",
+  "en_US": "Parts ({}):"
  },
  "Porta sem folha gerada.": {
   "pt_BR": "Porta sem folha gerada.",
@@ -399,9 +615,17 @@
   "pt_BR": "Projeção",
   "en_US": "Projection"
  },
+ "Prévia dos papéis": {
+  "pt_BR": "Prévia dos papéis",
+  "en_US": "Role preview"
+ },
  "Raio": {
   "pt_BR": "Raio",
   "en_US": "Radius"
+ },
+ "Raiz: {}": {
+  "pt_BR": "Raiz: {}",
+  "en_US": "Root: {}"
  },
  "Refaz o revestimento selecionado com os valores digitados no painel": {
   "pt_BR": "Refaz o revestimento selecionado com os valores digitados no painel",
@@ -427,6 +651,22 @@
   "pt_BR": "Selecionar conjunto",
   "en_US": "Select assembly"
  },
+ "Selecione 2 ou mais chapas": {
+  "pt_BR": "Selecione 2 ou mais chapas",
+  "en_US": "Select 2 or more panels"
+ },
+ "Selecione 2 ou mais chapas.": {
+  "pt_BR": "Selecione 2 ou mais chapas.",
+  "en_US": "Select 2 or more panels."
+ },
+ "Selecione as faces a classificar": {
+  "pt_BR": "Selecione as faces a classificar",
+  "en_US": "Select the faces to classify"
+ },
+ "Selecione as peças a classificar": {
+  "pt_BR": "Selecione as peças a classificar",
+  "en_US": "Select the parts to classify"
+ },
  "Selecione dois ou mais objetos para agrupar.": {
   "pt_BR": "Selecione dois ou mais objetos para agrupar.",
   "en_US": "Select two or more objects to group."
@@ -434,6 +674,10 @@
  "Selecione um armário autoral ou uma peça dele.": {
   "pt_BR": "Selecione um armário autoral ou uma peça dele.",
   "en_US": "Select an authored cabinet or one of its parts."
+ },
+ "Selecione um móvel, uma peça ou um objeto": {
+  "pt_BR": "Selecione um móvel, uma peça ou um objeto",
+  "en_US": "Select a piece of furniture, a part or an object"
  },
  "Selecione um objeto na viewport.": {
   "pt_BR": "Selecione um objeto na viewport.",
@@ -443,21 +687,69 @@
   "pt_BR": "Selecione um revestimento.",
   "en_US": "Select a cladding."
  },
+ "Seleção grande demais: {} objetos (o limite é {})": {
+  "pt_BR": "Seleção grande demais: {} objetos (o limite é {})",
+  "en_US": "Selection too large: {} objects (the limit is {})"
+ },
  "Seleção múltipla": {
   "pt_BR": "Seleção múltipla",
   "en_US": "Multiple selection"
+ },
+ "Sem papel: o assistente de classificação marca": {
+  "pt_BR": "Sem papel: o assistente de classificação marca",
+  "en_US": "No role: the classification assistant sets it"
+ },
+ "Sem papéis de acabamento: classifique as peças (Object Mode) ou as faces (Edit Mode).": {
+  "pt_BR": "Sem papéis de acabamento: classifique as peças (Object Mode) ou as faces (Edit Mode).",
+  "en_US": "No finish roles: classify the parts (Object Mode) or the faces (Edit Mode)."
+ },
+ "Só a peça em que a textura caiu": {
+  "pt_BR": "Só a peça em que a textura caiu",
+  "en_US": "Only the part the texture was dropped on"
+ },
+ "Só a peça selecionada": {
+  "pt_BR": "Só a peça selecionada",
+  "en_US": "Only the selected part"
+ },
+ "Só as frentes, com o veio próprio delas": {
+  "pt_BR": "Só as frentes, com o veio próprio delas",
+  "en_US": "Only the fronts, with their own grain"
  },
  "Só o que mais se usa": {
   "pt_BR": "Só o que mais se usa",
   "en_US": "Only what is used most"
  },
+ "Tamanho físico da imagem; 0 = o do catálogo": {
+  "pt_BR": "Tamanho físico da imagem; 0 = o do catálogo",
+  "en_US": "Physical size of the image; 0 = the catalog size"
+ },
+ "Textura da biblioteca": {
+  "pt_BR": "Textura da biblioteca",
+  "en_US": "Library texture"
+ },
+ "Textura {} aplicada": {
+  "pt_BR": "Textura {} aplicada",
+  "en_US": "Texture {} applied"
+ },
  "Tipo sem painel próprio: {}. Só a posição pode ser editada aqui.": {
   "pt_BR": "Tipo sem painel próprio: {}. Só a posição pode ser editada aqui.",
   "en_US": "Type without its own panel: {}. Only the position can be edited here."
  },
+ "Tira o papel": {
+  "pt_BR": "Tira o papel",
+  "en_US": "Clears the role"
+ },
+ "Todas as peças do móvel nos domínios escolhidos": {
+  "pt_BR": "Todas as peças do móvel nos domínios escolhidos",
+  "en_US": "All parts of the furniture in the chosen domains"
+ },
  "Todos os campos e ações do selecionado": {
   "pt_BR": "Todos os campos e ações do selecionado",
   "en_US": "Every field and action of the selection"
+ },
+ "Um vazio novo vira pai de tudo, sem cadastro de membros": {
+  "pt_BR": "Um vazio novo vira pai de tudo, sem cadastro de membros",
+  "en_US": "A new empty becomes the parent of everything, without registering members"
  },
  "Vale para abertura da camada nova.": {
   "pt_BR": "Vale para abertura da camada nova.",
@@ -494,6 +786,14 @@
  "Veio": {
   "pt_BR": "Veio",
   "en_US": "Grain"
+ },
+ "Veio das frentes": {
+  "pt_BR": "Veio das frentes",
+  "en_US": "Front grain"
+ },
+ "Veio dos grupos de material de uma versão anterior": {
+  "pt_BR": "Veio dos grupos de material de uma versão anterior",
+  "en_US": "Came from the material groups of an earlier version"
  },
  "Veio guardado na peça e enviado ao corte; o visual é aplicado na onda 3.": {
   "pt_BR": "Veio guardado na peça e enviado ao corte; o visual é aplicado na onda 3.",
@@ -547,9 +847,21 @@
   "pt_BR": "sem avisos",
   "en_US": "no warnings"
  },
+ "sem material": {
+  "pt_BR": "sem material",
+  "en_US": "no material"
+ },
+ "vazio novo": {
+  "pt_BR": "vazio novo",
+  "en_US": "new empty"
+ },
  "{} definição(ões) exportada(s): {}": {
   "pt_BR": "{} definição(ões) exportada(s): {}",
   "en_US": "{} definition(s) exported: {}"
+ },
+ "{} item(ns) classificado(s)": {
+  "pt_BR": "{} item(ns) classificado(s)",
+  "en_US": "{} item(s) classified"
  },
  "{} objetos": {
   "pt_BR": "{} objetos",
@@ -558,5 +870,33 @@
  "{} · {} · em {}": {
   "pt_BR": "{} · {} · em {}",
   "en_US": "{} · {} · in {}"
+ },
+ "{}: já pertence a um módulo": {
+  "pt_BR": "{}: já pertence a um módulo",
+  "en_US": "{}: already belongs to a module"
+ },
+ "{}: já é membro de {}": {
+  "pt_BR": "{}: já é membro de {}",
+  "en_US": "{}: is already a member of {}"
+ },
+ "{}: o modificador {} usa {}, fora da seleção": {
+  "pt_BR": "{}: o modificador {} usa {}, fora da seleção",
+  "en_US": "{}: modifier {} uses {}, outside the selection"
+ },
+ "{}: tem animação ou driver": {
+  "pt_BR": "{}: tem animação ou driver",
+  "en_US": "{}: has animation or a driver"
+ },
+ "{}: tem constraint": {
+  "pt_BR": "{}: tem constraint",
+  "en_US": "{}: has a constraint"
+ },
+ "{}: tem pai fora da seleção ({})": {
+  "pt_BR": "{}: tem pai fora da seleção ({})",
+  "en_US": "{}: has a parent outside the selection ({})"
+ },
+ "{}: vem de outro arquivo (linked)": {
+  "pt_BR": "{}: vem de outro arquivo (linked)",
+  "en_US": "{}: comes from another file (linked)"
  }
 }

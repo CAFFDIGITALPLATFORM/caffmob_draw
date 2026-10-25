@@ -6,6 +6,10 @@ Onda 1:
 - recarregar o addon 3× não duplica handler, timer nem atalho;
 - salvar e reabrir conserva o uid da peça e o veio;
 - arquivo antigo com driver ou animação nos campos virtuais (nomes antigos e novos) abre sem eles e sem perder objeto.
+
+Onda 2:
+- salvar e reabrir conserva `btm_finish`, `btm_part.finish_role` e o atributo `btm_face_role`;
+- recarregar o addon 3× deixa um único atalho U.
 """
 
 import os
@@ -71,9 +75,45 @@ def wave_1(folder):
     check(len(bpy.data.objects) == count, "nenhum objeto se perde")
 
 
+def u_keymaps():
+    kc = bpy.context.window_manager.keyconfigs.addon
+    if kc is None:
+        return None
+    return sum(1 for km in kc.keymaps for i in km.keymap_items if i.idname == 'caffmob.component_from_selection')
+
+
+def wave_2(folder):
+    for _ in range(3):
+        addon.unregister()
+        addon.register()
+    count = u_keymaps()
+    check(count in (None, 1), "recarregar 3× deixa um único atalho U", str(count))
+
+    env.clean_scene()
+    from caffmob_draw.customize import finish, finish_core as fc
+    assert bpy.ops.caffmob.cabinet_builder(width=0.6) == {'FINISHED'}
+    module = bpy.context.object
+    env.settle()
+    oak = bpy.data.materials.new("Carvalho 067")
+    finish.apply(module, (fc.EXTERNAL,), oak)
+    bpy.ops.mesh.primitive_cube_add(size=0.3, location=(2, 0, 0))
+    cube = bpy.context.object
+    cube.btm_part.finish_role = 'INTERNAL'
+    names = (module.name, cube.name)
+    path = os.path.join(folder, "ciclo_onda2.blend")
+    bpy.ops.wm.save_as_mainfile(filepath=path, copy=True)
+    bpy.ops.wm.open_mainfile(filepath=path)
+    module, cube = (bpy.data.objects.get(n) for n in names)
+    entries = [(i.domain, i.material.name if i.material else '', i.source) for i in module.btm_finish] if module else []
+    check(entries == [(fc.EXTERNAL, "Carvalho 067", 'USER')], "salvar e reabrir conserva btm_finish", str(entries))
+    check(cube is not None and cube.btm_part.finish_role == 'INTERNAL', "salvar e reabrir conserva finish_role")
+    check(module is not None and finish.face_roles(module) is not None, "salvar e reabrir conserva btm_face_role")
+
+
 try:
     with fx.banco_temporario(), tempfile.TemporaryDirectory(prefix="caffmob_067_ciclo_") as folder:
         wave_1(folder)
+        wave_2(folder)
 except Exception:
     traceback.print_exc()
     FAILURES.append("exceção")

@@ -16,6 +16,7 @@ EXPECTED = {
     'authored_leaf': {'member'},
     'authored_leaves_open': {'authored', 'member'},
     'authored_update_links': {'authored', 'member'},
+    'component_u': set(),               # só a seleção múltipla de 2 ou mais chapas (onda 2, RF-045)
 }
 # Botões com `poll` próprio no operador: a tabela não os decide (RF-002 pelo próprio operador).
 DELEGATED = {'aggregate_convert', 'leaf_convert', 'window_assemble', 'group_create', 'group_dissolve'}
