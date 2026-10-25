@@ -167,3 +167,33 @@ T154 a T157, T166 e T173, na branch `feat/067-onda5-animados`.
 - **selection RN-03 (-v002):** frente = marca de `FRONT_TAGS` ou `hb_part_role` ∈ {`DOOR`, `DRAWER_FRONT`,
   `PULLOUT_FRONT`, `TILT_OUT`, `FRONT_PIVOT`, `CLOSET_DOOR_FRONT`, `CLOSET_DRAWER_FRONT`}. O nome não conta. As portas
   do módulo rápido ganham o papel e a dobradiça do construtor, e a M-08 grava os mesmos campos nos arquivos antigos.
+
+## Atualização 2026-10-25 (onda 6, addon 1.14.0)
+
+Onda 6 da 067 (rotação no Mover sobre em torno de um eixo, pivô e âncora, gesto de face): ações T033, T034, T080 a
+T086, T110 a T112, T137, T176 e T125, na branch `feat/067-onda6-mover-sobre`.
+
+| Artefato | Seção | Tipo de impacto | Delta |
+|----------|-------|-----------------|-------|
+| `_reversa_sdd/move_over/requirements.md` | RN-03 (rotação em Z pelo centro da base) | regra-alterada | A rotação é uma orientação em quaternion, em qualquer eixo das vistas, em torno do pivô escolhido (ver -v002) |
+| `_reversa_sdd/move_over/requirements.md` | RN-13 (posição salva `{delta, rotation, b_side}`) | regra-alterada | A posição salva leva também `orientation`, `pivot` e `anchor`; a M-07 completa as antigas (ver -v002) |
+| `_reversa_sdd/domain.md` | RN-MOVE_OVER-03 e RN-MOVE_OVER-12 | regra-alterada | Mesmas regras no resumo do domínio; leia pelas versões -v002 abaixo |
+| n/a | `move_over/rotation.py`, `move_over/dialog_rotate.py` | componente-novo | Núcleo puro da rotação (eixo-ângulo, giro em torno de ponto, ângulo assinado com unwrap, passo de 15°) e a camada do diálogo (alças, campos de ângulo, histórico local, pan e zoom por painel) |
+| n/a | `move_over/ops_drag.py` | regra-nova | Gesto de face: o clique fixa o pino na face sob o cursor; soltar faz da face o pai com a matriz mundial preservada; cancelar devolve o pai |
+| n/a | `Scene.btm_saved_positions[].orientation`, `.pivot`, `.anchor` | delta-de-dados | Campos novos da posição salva, preenchidos pela M-07 nos arquivos antigos (pivô e âncora `BASE_CENTER`) |
+
+### Versões novas das regras superadas na onda 6 (067 D-32, RF-143)
+
+- **move_over RN-03 (-v002):** ao abrir a janela, A continua assumindo a rotação de B (escala mantida, origem no mesmo
+  ponto do mundo). A rotação pedida pelo usuário é uma orientação de A no referencial de B, composta como
+  `M = T(P)·R(N,θ)·T(−P)·M0`: `N` é o eixo da vista em que se gira (planta = Z, frontal = Y, a profundidade de B),
+  `P` é o pivô escolhido entre o centro, o centro da base e os 8 cantos da caixa de A (padrão: centro da base) e
+  fica imóvel. Escolher o pivô (Ctrl+clique) ou a âncora (Alt+clique) não move nada. O campo Rotação lê e grava o
+  ângulo em torno de Z pelo centro da base, como antes; os campos de ângulo de cada vista aceitam digitação, o arraste
+  da alça anda de 15° em 15° (Shift: fino), R zera o giro e Esc restaura. Confirmar é um passo de Undo.
+- **move_over RN-13 (-v002):** posição salva = `{delta, rotation, b_side, orientation, pivot, anchor}`. `delta`,
+  `rotation` e `b_side` seguem a regra anterior; `orientation` é o quaternion de A no referencial de B. Aplicar:
+  com `orientation`, fixa pivô, âncora e orientação; sem ela (posição antiga), gira `rotation` em Z pelo centro da
+  base; depois desloca A para repetir o `delta`. A M-07, no carregamento, grava nas posições antigas a orientação
+  equivalente a `rotation` e pivô e âncora `BASE_CENTER`. Continuam em `Scene.btm_saved_positions`, com as 4 últimas
+  na janela.
