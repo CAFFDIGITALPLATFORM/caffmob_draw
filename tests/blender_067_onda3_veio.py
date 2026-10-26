@@ -112,11 +112,15 @@ def body(w):
     from caffmob_draw.cutting import csv_exporter, nesting, part_extractor
     part = part_extractor.record_to_part(records[0], part_extractor._active_values(bpy.context.scene))
     j.check("COMPRIMENTO" in csv_exporter.parts_csv_text([part]), "o CSV de corte mostra o veio no comprimento")
-    part.height, part.width = 1900.0, 500.0         # só cabe na chapa (2750 × 1830) deitada
+    part.height, part.width = 1900.0, 500.0         # o veio da chapa (2750 × 1830) corre nos 2750 (071, motor OpenMob)
+    deitada = nesting.optimize_nesting([part], respect_grain=True)
+    j.check(deitada['stats']['unplaced_count'] == 0 and deitada['sheets'][0]['shelves'][0]['parts'][0]['width'] == 1900,
+            "veio no comprimento: a peça de 1900 mm corre ao longo dos 2750 da chapa", f"{deitada['stats']}")
+    part.grain_direction = 'HORIZONTAL'             # veio na largura: a largura vai nos 2750, e 1900 não cabe nos 1810
     placed = nesting.optimize_nesting([part], respect_grain=True)
     loose = nesting.optimize_nesting([part], respect_grain=False)
     j.check(placed['stats']['unplaced_count'] == 1 and loose['stats']['unplaced_count'] == 0,
-            "respect_grain: a peça com veio no comprimento não gira; sem ele, gira",
+            "respect_grain: a peça com veio na largura não gira; sem ele, gira",
             f"{placed['stats']} {loose['stats']}")
     plate.btm_part.grain = 'H'
     records = [r for r in part_sources.geometry_records(bpy.context.scene) if r.name == plate.name]

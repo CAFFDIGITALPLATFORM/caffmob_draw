@@ -60,7 +60,7 @@ class GlobalJsonTest(unittest.TestCase):
     def test_payload_valido(self):
         payload = sample_payload()
         self.assertEqual(json_exporter.validate_global_json(payload), [])
-        self.assertEqual(payload["schema_version"], "2.4.0")      # 2.3: `structure_id` (015); 2.4: STAIRS e DRAWERS (071, 072)
+        self.assertEqual(payload["schema_version"], "2.5.0")      # 2.3: `structure_id` (015); 2.4: STAIRS e DRAWERS (071, 072); 2.5: PROMOB
         self.assertEqual(payload["unit"], "mm")
         part = payload["parts"][0]
         self.assertEqual(part["edges"][0], {"side": 1, "material_id": None, "thickness_mm": 0.4})
@@ -165,7 +165,7 @@ class GlobalJsonTest(unittest.TestCase):
 
     def test_plano_de_corte(self):
         plan = sample_payload()["cut_plan"]
-        self.assertEqual(plan["algorithm"], "guillotine-shelf-nfd")
+        self.assertEqual(plan["algorithm"], "guillotine-shelf-openmob")
         placed = {pl["part_uid"] for s in plan["sheets"] for pl in s["placements"]}
         self.assertEqual(placed, {"M1/LAT/0", "M1/POR/0"})
 

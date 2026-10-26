@@ -26,6 +26,9 @@ def _ambientes(caminho):
 def _relatorio(rel):
     linhas = [tr("{} paredes, {} aberturas, {} móveis em caixas, {} lajes, {} malhas").format(
         rel['paredes'], rel['aberturas'], rel['caixas'], rel['lajes'], rel['malhas'])]
+    if rel.get('chapas') or rel.get('moveis_que_abrem') or rel.get('cameras'):
+        linhas.append(tr("{} chapas no plano de corte, {} portas e gavetas que abrem, {} câmeras").format(
+            rel.get('chapas', 0), rel.get('moveis_que_abrem', 0), rel.get('cameras', 0)))
     caixas = [i for i in rel['ignorados'] if 'caixa' in i['motivo']]
     if caixas:
         linhas.append(tr("{} itens entraram como caixa: {}").format(len(caixas), caixas[0]['motivo']))

@@ -30,7 +30,7 @@ def _png():
 
 
 def _item(tipo, id_, base=(0, 0, 0), dim=(0, 0, 0), rot=None, nome=None, camada='Default', material=None,
-          filhos=(), extra='', visivel=True):
+          filhos=(), extra='', visivel=True, normal=None, limites=None):
     x, y, z = base
     w, h, d = dim
     rotacao = f'<ROTATION>{rot}</ROTATION>' if rot is not None else '<ROTATION />'
@@ -39,8 +39,13 @@ def _item(tipo, id_, base=(0, 0, 0), dim=(0, 0, 0), rot=None, nome=None, camada=
                   f'</COMPONENTDEFINITIONCOLLECTION>') if material else ''
     colecao = f'<INFORMACOESCOLECAO>{"".join(filhos)}</INFORMACOESCOLECAO>' if filhos else ''
     oculto = '' if visivel else ' VISIBLE="N"'
-    return (f'<INFORMACOES ID="{id_}" TYPE="{tipo}"{oculto}><POSICAOINSERCAO><PONTOBASE X="{x}" Y="{y}" Z="{z}" />'
-            f'{rotacao}</POSICAOINSERCAO><INSERTDIMENSION WIDTH="{w}" HEIGHT="{h}" DEPTH="{d}" />'
+    vetor = '<NORMAL {} />'.format(' '.join(f'{k}="{v}"' for k, v in zip('ABC', normal) if v)) if normal else ''
+    lim = ''
+    if limites:
+        (a, b, c), (e, f, g) = limites
+        lim = f'<LIMITS><MIN X="{a}" Y="{b}" Z="{c}" /><MAX X="{e}" Y="{f}" Z="{g}" /></LIMITS>'
+    return (f'<INFORMACOES ID="{id_}" TYPE="{tipo}"{oculto}><POSICAOINSERCAO>{vetor}<PONTOBASE X="{x}" Y="{y}" Z="{z}" />'
+            f'{rotacao}</POSICAOINSERCAO><INSERTDIMENSION WIDTH="{w}" HEIGHT="{h}" DEPTH="{d}" />{lim}'
             f'<LAYER DESCRIPTION="{camada}" /><ATTRIBUTES>{atributos}</ATTRIBUTES>{componente}{extra}{colecao}'
             f'</INFORMACOES>')
 

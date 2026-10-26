@@ -49,6 +49,13 @@ class Item:
     invertido_x: bool = False
     invertido_y: bool = False
     arquivo_3d: str = None        # FILE3D vinculado (LinkedFiles)
+    normal: tuple = None          # POSICAOINSERCAO/NORMAL (A, B, C): o eixo da altura do item; None = para cima
+    limites: tuple = None         # LIMITS MIN/MAX: a caixa no referencial do item, a partir do ponto base
+    componentes: list = field(default_factory=list)  # COMPONENTDEFINITION (ID, IDMATERIAL): o item tem corpo próprio
+    acabamentos: dict = field(default_factory=dict)  # MODELS: face → acabamento ('ext', 'int', 'fita', 'fita_fro')
+    abertura: dict = None         # OPENSERVICE (TYPE, MAX, X, Y, Z, INVERT, CURRENTVALUE): porta, gaveta, correr
+    invertido: bool = False       # INVERTED="true": a peça espelhada, que as fórmulas do OPENSERVICE leem como $I$
+    rotacao_propria: bool = True  # False: o ângulo veio do pai (a porta aberta guarda o giro só na posição)
     materiais_por_trecho: dict = field(default_factory=dict)
     filhos: list = field(default_factory=list)
 
@@ -61,6 +68,8 @@ class Material:
     textura: str = None          # entrada do ZIP, já normalizada
     textura_do_sistema: str = None   # %PastaTextures%: biblioteca instalada do Promob, que não vem no arquivo
     escala: tuple = None          # mm (largura, altura) de uma repetição da textura
+    transparencia: float = 0.0    # TRANSPARENCY, 0 a 1
+    acabamento: str = ''          # FINISHSCHEME (Mirror, ...)
 
 
 @dataclass
@@ -73,6 +82,20 @@ class Ambiente:
 
 
 @dataclass
+class Camera:
+    """Vista salva do Promob (`VIEWPOINT`): observador e alvo em mm de mundo, campo de visão em graus."""
+    nome: str
+    observador: tuple
+    alvo: tuple
+    fov: float = 50.0
+    corte_anterior: float = 1.0       # ZNEAR (mm)
+    corte_posterior: float = 50000.0  # ZFAR (mm)
+    perspectiva: bool = True
+    largura_ortogonal: float = 0.0    # ORTHOR − ORTHOL (mm)
+    atual: bool = False               # a vista dinâmica (a do momento em que o projeto foi salvo)
+
+
+@dataclass
 class Projeto:
     ambiente: Ambiente
     itens: list
@@ -81,6 +104,8 @@ class Projeto:
     pasta_do_documento: str
     avisos: list
     entradas: frozenset = frozenset()
+    cameras: list = field(default_factory=list)
+    camadas_ocultas: frozenset = frozenset()   # camadas desligadas no Promob (LAYERSTATUS `<camada>_Visual` ON="N")
 
 
 def _normalizar(nome):
@@ -195,10 +220,12 @@ class Pacote:
             raise PromobErro(f'O ambiente {indice + 1} não existe; o arquivo tem {len(ambientes)}.')
         ambiente = ambientes[indice]
         topo = ambiente.raiz.find('INFORMACOES')
-        itens = _filhos(topo, 0.0) if topo is not None else []
+        padrao = _acabamentos(ambiente.raiz.find('MODELMANAGER'), None, 'MODELS//MODEL')
+        itens = _filhos(topo, 0.0, padrao) if topo is not None else []
         return Projeto(ambiente=ambiente, itens=itens, materiais=self.materiais(), cliente=self.cliente(),
                        pasta_do_documento=posixpath.dirname(ambiente.entrada), avisos=list(self.avisos),
-                       entradas=frozenset(self._entradas))
+                       entradas=frozenset(self._entradas), cameras=_cameras(ambiente.raiz),
+                       camadas_ocultas=_camadas_ocultas(ambiente.raiz))
 
     def materiais(self):
         chave = self.procurar('.material')
@@ -226,7 +253,9 @@ class Pacote:
                     sistema = bruto
             ex, ey = _texto_numero(m.find('ESCALETEXTUREX')), _texto_numero(m.find('ESCALETEXTUREY'))
             escala = (ex or 1000.0, ey or ex or 1000.0) if (ex or ey) else None
-            out[mid] = Material(mid, m.get('NAME') or mid, cor, textura, sistema, escala)
+            transparencia = min(max(_texto_numero(m.find('TRANSPARENCY')) or 0.0, 0.0), 1.0)
+            out[mid] = Material(mid, m.get('NAME') or mid, cor, textura, sistema, escala, transparencia,
+                                (m.findtext('FINISHSCHEME') or '').strip())
         return out
 
     def cliente(self):
@@ -260,10 +289,64 @@ def _material_das_faces(info):
     return comum, por_trecho
 
 
-def _item(info, rotacao_do_pai):
+_FACE_DO_MODELO = re.compile(r'_ass_.*?_(ext|int|fita_fro|fita)$', re.IGNORECASE)
+
+
+def _acabamentos(info, do_pai, caminho='MODELS//MODEL'):
+    """Acabamento de cada face pelo modelo do item (`dor_ass_cores_ext` → `dor_branco`), herdando o do pai.
+
+    É o que o Promob põe no lugar do `cin_cor_000` ("cor do modelo") dos componentes. O `MODELMANAGER` do ambiente dá
+    o padrão de quem não traz modelo."""
+    out = dict(do_pai or {})
+    if info is None:
+        return out
+    for m in info.findall(caminho):
+        face = _FACE_DO_MODELO.search(m.get('IDMODEL') or '')
+        if face and m.get('IDMODELTYPE') and m.find('MODEL') is None:
+            out[face.group(1).lower()] = m.get('IDMODELTYPE')
+    return out
+
+
+def _ponto(e):
+    return (_numero(e, 'X'), _numero(e, 'Y'), _numero(e, 'Z'))
+
+
+def _camera(v, atual=False):
+    obs, alvo = v.find('PTOBSERVER'), v.find('PTTARGET')
+    if obs is None or alvo is None:
+        return None
+    return Camera(nome=(v.get('NAME') or v.get('ID') or 'Vista').strip()[:63], observador=_ponto(obs), alvo=_ponto(alvo),
+                  fov=_texto_numero(v.find('FOV')) or 50.0, corte_anterior=_numero(v, 'ZNEAR', 1.0) or 1.0,
+                  corte_posterior=_numero(v, 'ZFAR', 50000.0) or 50000.0, perspectiva=v.get('PERSPECTIVA') != 'N',
+                  largura_ortogonal=abs(_numero(v, 'ORTHOR') - _numero(v, 'ORTHOL')), atual=atual)
+
+
+def _camadas_ocultas(raiz):
+    """Camadas desligadas no momento em que o projeto foi salvo (o Promob guarda o estado da vista por camada)."""
+    out = set()
+    for s in raiz.findall('LAYERSTATUSMANAGER//LAYERSTATUS'):
+        nome = s.get('LAYER') or ''
+        if s.get('ON') == 'N' and nome.endswith('_Visual'):
+            out.add(nome[:-len('_Visual')])
+    return frozenset(out)
+
+
+def _cameras(raiz):
+    """As vistas salvas (`VIEWPOINTCOLLECTION`) e, por último, a vista dinâmica (`VIEWPOINT` do ambiente)."""
+    out = [c for c in (_camera(v) for v in raiz.findall('VIEWPOINTCOLLECTION/VIEWPOINT')) if c is not None]
+    atual = raiz.find('VIEWPOINT')
+    if atual is not None:
+        c = _camera(atual, atual=True)
+        if c is not None:
+            out.append(c)
+    return out
+
+
+def _item(info, rotacao_do_pai, acabamentos_do_pai=None):
     pos = info.find('POSICAOINSERCAO')
     base = pos.find('PONTOBASE') if pos is not None else None
     rotacao = _texto_numero(pos.find('ROTATION')) if pos is not None else None
+    propria = rotacao is not None
     rotacao = rotacao_do_pai if rotacao is None else rotacao
     dim = info.find('INSERTDIMENSION')
     componente = info.find('COMPONENTDEFINITIONCOLLECTION/COMPONENTDEFINITION')
@@ -278,6 +361,17 @@ def _item(info, rotacao_do_pai):
                 pontos.append((_numero(p, 'X'), _numero(p, 'Y'), extra))
     arquivo = info.find('FILE3D')
     camada = info.find('LAYER')
+    normal = pos.find('NORMAL') if pos is not None else None
+    vetor = (_numero(normal, 'A'), _numero(normal, 'B'), _numero(normal, 'C')) if normal is not None else None
+    if vetor is not None and (sum(v * v for v in vetor) < 1e-9 or vetor == (0.0, 0.0, 1.0)):
+        vetor = None
+    mn, mx = info.find('LIMITS/MIN'), info.find('LIMITS/MAX')
+    limites = None
+    if mn is not None and mx is not None:
+        lo = (_numero(mn, 'X'), _numero(mn, 'Y'), _numero(mn, 'Z'))
+        hi = (_numero(mx, 'X'), _numero(mx, 'Y'), _numero(mx, 'Z'))
+        if all(hi[k] - lo[k] > 1e-6 for k in range(3)):
+            limites = (lo, hi)
     comum, por_trecho = _material_das_faces(info)
     item = Item(
         tipo=info.get('TYPE') or '', id=info.get('ID') or '', nome=_descricao(info),
@@ -291,16 +385,21 @@ def _item(info, rotacao_do_pai):
         invertido_x=geometria is not None and geometria.get('INVERTEDX') == 'Y',
         invertido_y=geometria is not None and geometria.get('INVERTEDY') == 'Y',
         arquivo_3d=_normalizar(arquivo.get('NAME')) if arquivo is not None and arquivo.get('LINKEDFILE') == 'Y'
-        and arquivo.get('NAME') else None)
-    item.filhos = _filhos(info, rotacao)
+        and arquivo.get('NAME') else None, normal=vetor, limites=limites,
+        componentes=[(c.get('ID') or '', c.get('IDMATERIAL') or '')
+                     for c in info.findall('COMPONENTDEFINITIONCOLLECTION/COMPONENTDEFINITION')],
+        acabamentos=_acabamentos(info, acabamentos_do_pai),
+        abertura=dict(info.find('OPENSERVICE').attrib) if info.find('OPENSERVICE') is not None else None,
+        invertido=(info.get('INVERTED') or '').lower() == 'true', rotacao_propria=propria)
+    item.filhos = _filhos(info, rotacao, item.acabamentos)
     return item
 
 
-def _filhos(info, rotacao):
+def _filhos(info, rotacao, acabamentos=None):
     colecao = info.find('INFORMACOESCOLECAO')
     if colecao is None:
         return []
-    return [_item(c, rotacao) for c in colecao.findall('INFORMACOES')]
+    return [_item(c, rotacao, acabamentos) for c in colecao.findall('INFORMACOES')]
 
 
 def abrir(origem):
