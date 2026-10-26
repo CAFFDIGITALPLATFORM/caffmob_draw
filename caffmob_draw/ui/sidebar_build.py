@@ -137,6 +137,10 @@ def _draw_room(layout, context, walls):
     with group_scope(layout, context, 'obstacles', N_("Obstáculos"), 'ERROR') as body:
         if body is not None:
             sidebar_proxy.draw_panel(vs.HOME_BUILDER_PT_room_layout_obstacles, body, context)
+    with group_scope(layout, context, 'drawers', N_("Gavetas"), 'NLA_PUSHDOWN') as body:
+        if body is not None:
+            from ..drawers import construtor           # 072 onda B (D-21): construtor de gavetas e gaveteiro
+            construtor.draw(body, context)
     with group_scope(layout, context, 'stairs', N_("Escadas"), 'IPO_CONSTANT') as body:
         if body is not None:
             from ..stairs import ui as stairs_ui      # 071 (D-29): o editor novo no lugar da escada do Home Builder
