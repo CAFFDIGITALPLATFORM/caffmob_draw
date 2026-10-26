@@ -1,8 +1,8 @@
-"""065 T128 e T133 no Blender sem interface: painel desenhado como o Studio e seleção múltipla pelo modal real.
+"""065 T133 no Blender sem interface: seleção múltipla pelo modal real, no editor clássico sobre a cena v2.
 
-Os eventos passam por `BTM_OT_WallEditorModal._handle`, o mesmo caminho do modal (painel, diálogo, navegação e
-prancheta). Casos 1 a 11 de `feature/selecao-multipla.md`; o desenho troca só as primitivas GPU e mede o texto com a
-Sora real carregada pelo blf.
+Os eventos passam por `BTM_OT_WallEditorModal._handle`, o mesmo caminho do modal (perguntas, navegação e prancheta).
+Casos 1 a 11 de `feature/selecao-multipla.md`; o lote vai pelo painel nativo e a exclusão em lote pela pergunta do
+clássico; o desenho troca só as primitivas GPU.
 """
 import copy
 import importlib.util
@@ -28,6 +28,7 @@ props = import_module(PACKAGE + '.walls2d.props')
 editor = import_module(PACKAGE + '.walls2d.ops_editor')
 ui = import_module(PACKAGE + '.walls2d.studio_ui')
 sp = import_module(PACKAGE + '.walls2d.studio_painel')
+classico = import_module(PACKAGE + '.walls2d.classico_v2')
 interacao = import_module(PACKAGE + '.walls2d.studio_interacao')
 studio = import_module(PACKAGE + '.walls2d.studio')
 validar = import_module(PACKAGE + '.caffmob.v2.validacao').validar_documento
@@ -94,13 +95,12 @@ try:
     ids = [t['id'] for p in v.paredes() for t in p['segmentos']]
     acima = [t['id'] for p in v.documento['paredes'] if p['pavimento_id'] == cima['id'] for t in p['segmentos']]
 
-    # Vista e painel com a mesma conta do modal: o painel fica à direita, fora da prancheta.
+    # Vista com a mesma conta do modal: no clássico, os painéis são nativos e a prancheta ocupa a região toda.
     region = SimpleNamespace(width=1430, height=860)
     s.view = None
     view = editor.ensure_view(region)
-    area = s.studio_painel_area
-    conferir(area[2] == 330 and abs(area[0] - view.rect[2]) < 1e-6 and view.rect[2] == 1100,
-             'Painel de 330 px (token editor_paredes_painel) à direita da prancheta')
+    conferir(view.rect[2] == 1430 and not getattr(s, 'studio_painel_area', None),
+             'Prancheta com a largura toda da região, como no editor clássico')
     op = SimpleNamespace(dragging=None, panning=None, shift=False)
     modal = editor.BTM_OT_WallEditorModal._handle
 
@@ -179,30 +179,19 @@ try:
     conferir(tuple(view.center) != centro and v.selecionadas == [], 'Caso 7: Espaço + arrasto move a vista sem selecionar')
     view.fit(v.bounds(), margin=0.15)
 
-    # Painel desenhado: clique, digitação e Enter pelo modal.
+    # 8: espessura em lote pelo painel nativo.
     ev('A', px((2000, 1500)))
     p = sp.painel_de(v)
-
-    def no_painel(id, parte=None):
-        it = next(it for it in p.compor(v, area, ui.medir_texto, 1.0) if it['c']['id'] == id)
-        r = dict(it['partes']).get(parte, it['r']) if parte is not None else it['r']
-        return (r[0] + r[2] / 2, r[1] + r[3] / 2)
-
+    campos = context.window_manager.btm_wall_studio
     passos = v._indice
-    ev('LEFTMOUSE', no_painel('lote.espessura'))
-    ev('LEFTMOUSE', no_painel('lote.espessura'), 'RELEASE')
-    conferir(p.foco == 'lote.espessura', 'Painel desenhado: clique foca o campo "Espessura" do lote')
-    for letra in '200':
-        ev('NUMPAD_' + letra, no_painel('lote.espessura'), char=letra)
-    ev('RET', no_painel('lote.espessura'))
-    conferir(p.lote['espessura'] == '200' and v.selecionadas == ids, 'Painel desenhado: digitação vai ao campo, não à prancheta')
-    ev('LEFTMOUSE', no_painel('lote_aplicar'))
+    campos.lote_espessura = '200'
+    bpy.ops.caffmob.wall_studio_action(acao='lote_aplicar')
     conferir(all(t['espessura'] == 200 for q in v.paredes() for t in q['segmentos']), 'Caso 8: espessura em lote aplicada')
     conferir(v._indice == passos + 1, 'Caso 8: uma entrada só no histórico')
     conferir(s.undo() and all(t['espessura'] == 150 for q in v.paredes() for t in q['segmentos']), 'Caso 8: um Ctrl+Z desfaz todas juntas')
     conferir(s.redo() and s.undo(), 'Caso 8: refazer e desfazer de novo')
     v.selecionar_todas()
-    # 9: material da face externa em lote, pelo N-panel nativo e pelo desenhado.
+    # 9: material da face externa em lote, pelo N-panel nativo.
     mid = v.documento['materiais'][-1]['id']
     campos = context.window_manager.btm_wall_studio
     conferir(campos.lote_espessura == '150', 'N-panel lê o valor comum das selecionadas')
@@ -216,12 +205,10 @@ try:
     conferir(all(t.get('material_externo_id') == mid for q in v.paredes() for t in q['segmentos']), 'Caso 9: material da face externa em lote')
     conferir([t['espessura'] for q in v.paredes() for t in q['segmentos']][:2] == [180, 150], 'Caso 9: campo vazio não muda a espessura')
     registro = []
-    ui.painel(Layout(registro), context, s)
+    classico.painel_trecho(Layout(registro), context, s)
     textos = [r[1] for r in registro]
     conferir(tr('{} paredes selecionadas').format(4) in textos and ('prop', 'lote_espessura', tr('vários')) in registro,
-             'N-panel mostra "N paredes" e os mesmos campos do lote')
-    conferir(sum(1 for r in registro if r[0] == 'op' and r[1].startswith(tr('Parede {} · trecho {} · {} mm').split('{}')[0] + '1') and r[2]) == 4,
-             'Lista textual do pavimento marca as selecionadas')
+             'Painel do trecho mostra "N paredes" e os campos do lote')
     notas['placeholder_nativo'] = 'placeholder' in bpy.types.UILayout.bl_rna.functions['prop'].parameters.keys()
     # 10: excluir três com confirmação.
     ev('ESC', px((2000, 1500)))
@@ -231,18 +218,21 @@ try:
     ev('DEL', px((2000, 1500)))
     conferir(v.confirmacao and v.confirmacao['quantidade'] == 3 and len(v.paredes()[0]['segmentos']) == 4,
              'Caso 10: Delete pede confirmação dizendo quantas são')
-    dlg = sp.dialogo(view.rect, 1.0)
-    c = dlg['cancelar']
-    ev('LEFTMOUSE', (c[0] + 5, c[1] + 5))
-    conferir(v.confirmacao is None and len(v.paredes()[0]['segmentos']) == 4, 'Caso 10: Cancelar no diálogo não exclui')
+    _caixa, sim, nao = editor._prompt_rects(SimpleNamespace(width=view.rect[2], height=view.rect[3] + editor.toolbar_height()))
+    ev('LEFTMOUSE', (nao[0] + 5, nao[1] + 5))
+    conferir(v.confirmacao is None and len(v.paredes()[0]['segmentos']) == 4, 'Caso 10: "Não" na pergunta não exclui')
     ev('DEL', px((2000, 1500)))
-    c = dlg['confirmar_exclusao']
-    ev('LEFTMOUSE', (c[0] + 5, c[1] + 5))
-    conferir(sum(len(q['segmentos']) for q in v.paredes()) == 1 and not validar(v.documento), 'Caso 10: Excluir no diálogo apaga as três')
+    ev('LEFTMOUSE', (sim[0] + 5, sim[1] + 5))
+    conferir(sum(len(q['segmentos']) for q in v.paredes()) == 1 and not validar(v.documento), 'Caso 10: "Sim" na pergunta apaga as três')
     s.undo()
     conferir(sum(len(q['segmentos']) for q in v.paredes()) == 4, 'Caso 10: desfazer devolve as três')
-    # 11: arrastar o conjunto.
+    # Esc sem nada selecionado, com alterações: pergunta antes de descartar, como o clássico.
+    v.selecionar_ids([])
     ev('ESC', px((2000, 1500)))
+    conferir(s.prompt == 'discard' and s.request is None, 'Esc sem seleção pergunta antes de descartar as alterações')
+    ev('LEFTMOUSE', (nao[0] + 5, nao[1] + 5))
+    conferir(s.prompt is None and s.request is None, '"Não" mantém o editor aberto')
+    # 11: arrastar o conjunto.
     for t in ids[:2]:
         ev('LEFTMOUSE', px(meio(t)), shift=True)
         ev('LEFTMOUSE', px(meio(t)), 'RELEASE', shift=True)
@@ -258,7 +248,7 @@ try:
     conferir(v._indice == passos + 1 and not validar(v.documento), 'Caso 11: arrasto do conjunto é um passo e o contrato é válido')
 
     # Toque/caneta: segurar no corpo liga a seleção múltipla; o temporizador do modal dispara.
-    ev('ESC', px((2000, 1500)))
+    v.selecionar_ids([])
     ev('LEFTMOUSE', px(meio(ids[2])), toque=True)
     op.studio_espera['tempo'] -= 1
     conferir(interacao.segurar(op, v) and v.multipla_toque and v.selecionadas == [ids[2]], 'Toque: segurar no corpo liga a seleção múltipla')
@@ -266,39 +256,32 @@ try:
     ev('LEFTMOUSE', px(meio(ids[3])), toque=True)
     ev('LEFTMOUSE', px(meio(ids[3])), 'RELEASE', toque=True)
     conferir(v.selecionadas == [ids[2], ids[3]], 'Toque: com a seleção ligada, cada toque soma')
-    barra = dict(sp.barra_toque(v, view.rect, ui.medir_texto, 1.0))
-    r = barra['pronto']
-    ev('LEFTMOUSE', (r[0] + 3, r[1] + 3), toque=True)
-    conferir(not v.multipla_toque, 'Toque: "Pronto" da barra desliga a seleção múltipla')
+    bpy.ops.caffmob.wall_studio_action(acao='pronto')
+    conferir(not v.multipla_toque, 'Toque: "Pronto" desliga a seleção múltipla')
 
-    # Desenho: primitivas GPU trocadas, texto com a Sora real.
-    conferir(ui.fonte(400) > 0 and ui.fonte(600) > 0 and ui.fonte(400) != ui.fonte(600), 'Sora 400 e 600 carregadas pelo blf a partir do pacote')
-    conferir(ui.medir_texto('Espessura', 12.5) > 0, 'Medida do texto vem da fonte real')
+    # Desenho clássico: primitivas GPU trocadas.
     v.selecionar_todas()
     v.retangulo = dict(inicio=(0, 0), fim=(1000, 1000), pixel=(500, 500), fim_pixel=(400, 400), somar=False, base=[], moveu=True, toque=False)
-    escritos = []
-    with patch.object(ui, 'preencher'), patch.object(ui.draw, 'begin', return_value=None), patch.object(ui.draw, 'end'), \
-         patch.object(ui.draw, 'outline'), patch.object(ui.draw, 'lines') as linhas, patch.object(ui.draw, 'rect') as rets, \
-         patch.object(ui.draw, 'text') as textos_padrao, patch.object(ui.draw, 'text_width', return_value=50), \
-         patch.object(ui, 'escrever', side_effect=lambda x, y, t, tinta, *a, **k: escritos.append((t, tinta))):
-        ui.desenhar(SimpleNamespace(region=region), s, view)
-    textos = [t for t, _ in escritos]
-    conferir(tr('Editar paredes') in textos and tr('{} paredes selecionadas').format(4).upper() in textos, 'Painel desenhado: cabeçalho e seção "N paredes" no estilo do Studio')
-    conferir(tr('Aplicar às selecionadas') in textos and tr('Aplicar') in textos and tr('Cancelar') in textos, 'Painel desenhado: botões do lote e rodapé')
-    laranja = ui.cor('orange')
-    conferir(any(tuple(c.args[2]) == tuple(laranja[:3]) + (0.08,) for c in rets.call_args_list), 'Retângulo da seleção com fundo --orange a 8%')
-    conferir(any(c.args[2] == sp.DICA_SELECAO for c in textos_padrao.call_args_list), 'Dica "arraste no vazio para selecionar"')
-    conferir(linhas.call_count > 30, 'Paredes, seleção e controles desenhados')
+    tela = SimpleNamespace(region=region, window_manager=context.window_manager)
+
+    def desenhar():
+        with patch.object(classico, 'preencher'), patch.object(classico.draw, 'begin', return_value=None), \
+             patch.object(classico.draw, 'end'), patch.object(classico.draw, 'outline'), patch.object(classico.draw, 'button') as botoes, \
+             patch.object(classico.draw, 'lines') as linhas, patch.object(classico.draw, 'rect') as rets, \
+             patch.object(classico.draw, 'text') as textos_padrao, patch.object(classico.draw, 'text_width', return_value=50):
+            classico.desenhar(tela, s, view)
+        return linhas, rets, [c.args[2] for c in textos_padrao.call_args_list], [c.args[2] for c in botoes.call_args_list]
+
+    linhas, rets, escritos, botoes = desenhar()
+    conferir(rets.call_args_list[0].args[2] == editor.COLORS['background'], 'Fundo escuro do editor clássico')
+    conferir(classico.DICAS['SELECT'] in escritos, 'Dica da ferramenta Selecionar/Mover')
+    conferir(any(c.args[2] == editor.COLORS['selected'] for c in linhas.call_args_list), 'Selecionadas e retângulo na cor de seleção do clássico')
+    conferir(sum(len(c.args[1]) for c in linhas.call_args_list) > 60, 'Paredes, seleção e barra desenhadas')
     v.retangulo = None
     v.confirmacao = dict(ids=ids[:2], quantidade=2)
-    escritos.clear()
-    with patch.object(ui, 'preencher'), patch.object(ui.draw, 'begin', return_value=None), patch.object(ui.draw, 'end'), \
-         patch.object(ui.draw, 'outline'), patch.object(ui.draw, 'lines'), patch.object(ui.draw, 'rect'), \
-         patch.object(ui.draw, 'text'), patch.object(ui.draw, 'text_width', return_value=50), \
-         patch.object(ui, 'escrever', side_effect=lambda x, y, t, tinta, *a, **k: escritos.append((t, tinta))):
-        ui.desenhar(SimpleNamespace(region=region), s, view)
-    conferir(any(t and tr(sp.CONFIRMAR_LOTE).format(2).startswith(t) for t, _ in escritos) and (tr('Excluir'), ui.cor('on-orange')) in escritos,
-             'Diálogo de exclusão desenhado com a contagem')
+    linhas, rets, escritos, botoes = desenhar()
+    conferir(any(t and tr(sp.CONFIRMAR_LOTE).format(2).startswith(t) for t in escritos) and 'Sim' in botoes and 'Não' in botoes,
+             'Pergunta de exclusão em lote com a contagem, Sim e Não')
     v.confirmacao = None
 
     # Aplicar leva o resultado à cena.

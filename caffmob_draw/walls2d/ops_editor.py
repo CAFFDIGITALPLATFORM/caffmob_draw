@@ -92,11 +92,6 @@ def _region_rect(region, area=None):
 def ensure_view(region, area=None):
     s = props.session()
     rect = _region_rect(region, area)
-    if s.v2:                              # 065 T128: o painel da parede é desenhado à direita, fora da vista
-        from .studio_painel import largura_painel
-        largura = largura_painel(rect[2], _ui_scale())
-        s.studio_painel_area = (rect[2] - largura, 0.0, largura, float(region.height))
-        rect = (rect[0], rect[1], max(1.0, rect[2] - largura), rect[3])
     if s.view is None:
         s.view = View2D(rect)
         s.view.fit(s.v2.bounds() if s.v2 else s.plan.bounds(), margin=0.15)
@@ -113,9 +108,9 @@ def draw_plan(context):
     if s is None or region is None:
         return
     view = ensure_view(region, context.area)
-    if s.v2:
-        from . import studio_ui
-        studio_ui.desenhar(context, s, view)
+    if s.v2:                              # cena do CAFF MOBI: o mesmo editor, sobre o documento v2
+        from . import classico_v2
+        classico_v2.desenhar(context, s, view)
         return
     state = _state(context)
     sh = draw.begin()
@@ -690,8 +685,8 @@ class BTM_OT_WallEditorModal(bpy.types.Operator):
     def _handle(self, context, event, s, view, pixel):
         state = _state(context)
         if s.v2:
-            from . import studio_ui           # 065 T128/T133: painel desenhado, diálogo e barra antes da navegação
-            if studio_ui.capturar(self, context, event, s, view, pixel):
+            from . import classico_v2         # perguntas abertas (descartar, excluir em lote) antes da navegação
+            if classico_v2.capturar(self, context, event, s, view, pixel):
                 return True
         if handle_zoom_window(event, s, view, pixel):
             return True
@@ -717,8 +712,8 @@ class BTM_OT_WallEditorModal(bpy.types.Operator):
         if s.zoom_window is not None:
             return True                       # com a lupa ligada, só navegação e Ctrl+Z passam (D-10)
         if s.v2:
-            from . import studio_ui
-            return studio_ui.tratar(self, context, event, s, view, pixel)
+            from . import classico_v2
+            return classico_v2.tratar(self, context, event, s, view, pixel)
         if s.prompt in PROMPTS:
             return self._handle_prompt(context, event, s, pixel)
         if state.tool == 'DRAW':
