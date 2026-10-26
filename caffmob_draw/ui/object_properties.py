@@ -300,9 +300,10 @@ def _data(context, obj, key):
     wm = context.window_manager
     if key == 'selection':
         return context.scene.btm_selection
-    if key in ('move_over', 'target', 'cladding', 'finish_draft', 'mobi'):
+    if key in ('move_over', 'target', 'cladding', 'finish_draft', 'mobi', 'stair'):
         return getattr(wm, {'move_over': 'btm_move_over', 'target': 'btm_target', 'cladding': 'btm_cladding_draft',
-                            'finish_draft': 'btm_finish_draft', 'mobi': 'btm_mobi'}[key], None)
+                            'finish_draft': 'btm_finish_draft', 'mobi': 'btm_mobi', 'stair': 'btm_stair_sel'}[key],
+                       None)
     if obj is None:
         return None
     if key == 'object':
