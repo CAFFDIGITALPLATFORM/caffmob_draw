@@ -374,6 +374,32 @@ def geometry_records(scene):
     return records
 
 
+# ----------------------------------------------------------------------------------------------------------------
+# Adaptador STAIRS (escada de marcenaria, 071 D-26): chapas da escada, sem módulo do addon
+# ----------------------------------------------------------------------------------------------------------------
+
+def stair_records(scene):
+    """Peças das escadas visíveis: cada chapa (degrau, espelho, lateral, patamar) vira um `PartRecord`.
+
+    O uid da peça usa o uid da escada e o índice da peça; a linha fica vazia (matéria-prima digitada, sem fitas).
+    """
+    from ..stairs import core, scene as stairs_scene
+    records = []
+    for root in stairs_scene.roots(scene):
+        if not stairs_scene.visible(root):
+            continue
+        spec = stairs_scene.spec(root)
+        uid = stairs_scene.uid(root)
+        materials = {'frente': spec.material_frente, 'corpo': spec.material_corpo}
+        pieces, _ = core.pecas(spec)
+        for index, row in enumerate(core.registros(pieces)):
+            records.append(PartRecord(
+                uid=f"{uid}/{row['papel']}/{index}", module_uid=uid, module_name=root.name, line="",
+                name=row['nome'], component=row['papel'].upper(), length=row['comprimento'], width=row['largura'],
+                thickness=row['espessura'], source="STAIRS", material=materials.get(row['material']) or ""))
+    return records
+
+
 # (063 RN-08; D-09) O contrato do MOBI fornece as peças, sem recalcular pela 015.
 def caffmob_parts(module):
     from ..caffmob.chapas import pecas_do_modulo

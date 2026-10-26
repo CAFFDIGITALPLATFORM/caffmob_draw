@@ -76,6 +76,9 @@ def component_root(obj, modes=None):
     if root is not None:
         return root if (modes or {}).get(library, True) else obj
     for node in chain:
+        if node.get('btm_stair') is not None:     # 071 (D-28): o degrau clicado sobe até a escada
+            return node
+    for node in chain:
         if _is_item(node):
             return node
     group = classify.free_group(obj)

@@ -139,7 +139,8 @@ def _draw_room(layout, context, walls):
             sidebar_proxy.draw_panel(vs.HOME_BUILDER_PT_room_layout_obstacles, body, context)
     with group_scope(layout, context, 'stairs', N_("Escadas"), 'IPO_CONSTANT') as body:
         if body is not None:
-            sidebar_proxy.draw_panel(vs.HOME_BUILDER_PT_room_layout_stairs, body, context)
+            from ..stairs import ui as stairs_ui      # 071 (D-29): o editor novo no lugar da escada do Home Builder
+            stairs_ui.draw(body, context)
     with group_scope(layout, context, 'reference', N_("Imagem de referência"), 'IMAGE_REFERENCE') as body:
         if body is not None:
             sidebar_proxy.draw_panel(vs.HOME_BUILDER_PT_room_layout_reference_image, body, context)

@@ -148,6 +148,13 @@ def _single(obj, cladding_controller=None):
                       path=(_name(owner), _name(obj)), authored_owner=True, has_member=True, detail='AUTHORED',
                       **base)
 
+    # 071 (D-28): a escada de marcenaria e as chapas dela são uma escada só.
+    from ..stairs.scene import root_of as stair_root
+    stair = stair_root(obj)
+    if stair is not None:
+        return Target(kind=OTHER, scope=SCOPE_OBJECT, detail='STAIR',
+                      **{**base, 'uid': uid_of(stair), 'name': _name(stair), 'move_uid': uid_of(stair)})
+
     # Luz e câmera soltas; dentro de um módulo ou armário (membro, peça) valem como parte dele (RN-01, 066).
     obj_type = getattr(obj, 'type', '')
     if obj_type in ('LIGHT', 'CAMERA') and cls.module_root(obj)[0] is None:

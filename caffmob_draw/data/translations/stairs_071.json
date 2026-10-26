@@ -1,0 +1,154 @@
+{
+ "Corrimão da escada (m)": {
+  "pt_BR": "Corrimão da escada (m)",
+  "en_US": "Stair handrail (m)"
+ },
+ "Inserir escada no ambiente": {
+  "pt_BR": "Inserir escada no ambiente",
+  "en_US": "Insert stair in the room"
+ },
+ "Clique no piso para inserir a escada do editor; R gira 90°, perto de uma parede ela encosta na face": {
+  "pt_BR": "Clique no piso para inserir a escada do editor; R gira 90°, perto de uma parede ela encosta na face",
+  "en_US": "Click the floor to insert the editor stair; R turns 90°, near a wall it rests against the face"
+ },
+ "Use na vista 3D.": {
+  "pt_BR": "Use na vista 3D.",
+  "en_US": "Use it in the 3D view."
+ },
+ "Clique no piso para inserir | R gira 90° | Esc cancela": {
+  "pt_BR": "Clique no piso para inserir | R gira 90° | Esc cancela",
+  "en_US": "Click the floor to insert | R turns 90° | Esc cancels"
+ },
+ "Aplicar à escada": {
+  "pt_BR": "Aplicar à escada",
+  "en_US": "Apply to stair"
+ },
+ "Aplica as medidas do editor à escada em edição, regenerando as peças": {
+  "pt_BR": "Aplica as medidas do editor à escada em edição, regenerando as peças",
+  "en_US": "Applies the editor measurements to the stair being edited, regenerating the parts"
+ },
+ "Escada regenerada: {} peças": {
+  "pt_BR": "Escada regenerada: {} peças",
+  "en_US": "Stair regenerated: {} parts"
+ },
+ "Nova escada": {
+  "pt_BR": "Nova escada",
+  "en_US": "New stair"
+ },
+ "Começa uma escada nova no editor, com as medidas confortáveis": {
+  "pt_BR": "Começa uma escada nova no editor, com as medidas confortáveis",
+  "en_US": "Starts a new stair in the editor, with comfortable measurements"
+ },
+ "Abrir no editor de escadas": {
+  "pt_BR": "Abrir no editor de escadas",
+  "en_US": "Open in the stair editor"
+ },
+ "Abre a escada selecionada no editor de escadas": {
+  "pt_BR": "Abre a escada selecionada no editor de escadas",
+  "en_US": "Opens the selected stair in the stair editor"
+ },
+ "Medidas confortáveis para a altura": {
+  "pt_BR": "Medidas confortáveis para a altura",
+  "en_US": "Comfortable measurements for the height"
+ },
+ "Largura e comprimento pela regra de Blondel (2 espelhos + 1 piso ≈ 63 cm)": {
+  "pt_BR": "Largura e comprimento pela regra de Blondel (2 espelhos + 1 piso ≈ 63 cm)",
+  "en_US": "Width and length by Blondel's rule (2 risers + 1 tread ≈ 63 cm)"
+ },
+ "Editar escada": {
+  "pt_BR": "Editar escada",
+  "en_US": "Edit stair"
+ },
+ "Muda uma medida da escada selecionada e regenera as peças": {
+  "pt_BR": "Muda uma medida da escada selecionada e regenera as peças",
+  "en_US": "Changes a measurement of the selected stair and regenerates the parts"
+ },
+ "Planta": {
+  "pt_BR": "Planta",
+  "en_US": "Plan view"
+ },
+ "Corte lateral": {
+  "pt_BR": "Corte lateral",
+  "en_US": "Side section"
+ },
+ "Em L (patamar)": {
+  "pt_BR": "Em L (patamar)",
+  "en_US": "L-shaped (landing)"
+ },
+ "Em U (patamar)": {
+  "pt_BR": "Em U (patamar)",
+  "en_US": "U-shaped (landing)"
+ },
+ "Altura a vencer": {
+  "pt_BR": "Altura a vencer",
+  "en_US": "Height to climb"
+ },
+ "Largura do lance": {
+  "pt_BR": "Largura do lance",
+  "en_US": "Flight width"
+ },
+ "Largura total": {
+  "pt_BR": "Largura total",
+  "en_US": "Total width"
+ },
+ "Espessura do degrau": {
+  "pt_BR": "Espessura do degrau",
+  "en_US": "Tread thickness"
+ },
+ "Vão entre os lances": {
+  "pt_BR": "Vão entre os lances",
+  "en_US": "Gap between flights"
+ },
+ "Espelhos": {
+  "pt_BR": "Espelhos",
+  "en_US": "Risers"
+ },
+ "Laterais": {
+  "pt_BR": "Laterais",
+  "en_US": "Stringers"
+ },
+ "Corrimão": {
+  "pt_BR": "Corrimão",
+  "en_US": "Handrail"
+ },
+ "Degraus": {
+  "pt_BR": "Degraus",
+  "en_US": "Treads"
+ },
+ "Espelhos e laterais": {
+  "pt_BR": "Espelhos e laterais",
+  "en_US": "Risers and stringers"
+ },
+ "Escada em edição": {
+  "pt_BR": "Escada em edição",
+  "en_US": "Stair being edited"
+ },
+ "Prévia na vista 3D": {
+  "pt_BR": "Prévia na vista 3D",
+  "en_US": "Preview in the 3D view"
+ },
+ "Editando: {}": {
+  "pt_BR": "Editando: {}",
+  "en_US": "Editing: {}"
+ },
+ "(confortável)": {
+  "pt_BR": "(confortável)",
+  "en_US": "(comfortable)"
+ },
+ "(fora do conforto: 600–660 mm)": {
+  "pt_BR": "(fora do conforto: 600–660 mm)",
+  "en_US": "(outside comfort: 600–660 mm)"
+ },
+ "Inserir no ambiente": {
+  "pt_BR": "Inserir no ambiente",
+  "en_US": "Insert in the room"
+ },
+ "Degraus, espelhos e laterais entram no plano de corte; o corrimão, na lista de ferragens.": {
+  "pt_BR": "Degraus, espelhos e laterais entram no plano de corte; o corrimão, na lista de ferragens.",
+  "en_US": "Treads, risers and stringers go to the cut plan; the handrail, to the hardware list."
+ },
+ "Escada": {
+  "pt_BR": "Escada",
+  "en_US": "Stair"
+ }
+}

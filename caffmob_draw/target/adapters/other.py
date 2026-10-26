@@ -9,7 +9,23 @@ from . import cotas_section, finish_section, position_section, unavailable_cotas
 KINDS = (r.OTHER, r.ANNOTATION, r.MULTIPLE)
 
 
+def stair_sections(target):
+    """071 (D-28, RF-31): a escada de marcenaria, com as medidas principais e o editor completo."""
+    from ..view import Action
+    campos = Section('stair', N_("Escada"), (
+        Field('stair', 'tipo', N_("Tipo"), essential=True),
+        Field('stair', 'altura', N_("Altura a vencer"), essential=True),
+        Field('stair', 'largura', N_("Largura do lance"), essential=True),
+        Field('stair', 'comprimento', N_("Comprimento")),
+        Action('caffmob.escada_editar', N_("Abrir no editor de escadas"), essential=True),
+        Note(N_("Degraus, espelhos e laterais entram no plano de corte; o corrimão, na lista de ferragens."), 'INFO',
+             False)), True)
+    return [campos, position_section(target, rotation_index=2), cotas_section(target)]
+
+
 def sections(target):
+    if target.kind == r.OTHER and target.detail == 'STAIR':
+        return stair_sections(target)
     if target.kind == r.OTHER:
         if not target.move_uid:
             return [position_section(target, rotation_index=-1, scale=True),

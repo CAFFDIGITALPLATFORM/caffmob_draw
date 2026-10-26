@@ -24,7 +24,7 @@ GROUPS = (
     ('sel_sheet', True), ('sel_cotas', True), ('sel_module', False), ('sel_geometry', True), ('sel_material', True),
     ('sel_wall', True), ('sel_opening', True), ('sel_leaf', True), ('sel_member', True), ('sel_front', True),
     ('sel_cladding', True), ('sel_surface', True), ('sel_light', True), ('sel_camera', True), ('sel_multiple', True),
-    ('sel_limits', True), ('sel_fallback', True), ('sel_legacy_cotas', False),
+    ('sel_limits', True), ('sel_fallback', True), ('sel_legacy_cotas', False), ('sel_stair', True),
     # Verificar
     ('check_fronts', True), ('check_collisions', True),
     # Produção/Projeto

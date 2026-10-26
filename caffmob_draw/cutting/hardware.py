@@ -24,6 +24,8 @@ NAMES = {
     'PORTA_CINTOS': N_("Porta cintos/gravatas"),
     'PRATELEIRA_ARAMADA': N_("Prateleira aramada"),
     'CORREDICA_PRATELEIRA': N_("Corrediça de prateleira (par)"),
+    # Feature 071 (D-27): corrimão da escada, em metros do percurso
+    'CORRIMAO': N_("Corrimão da escada (m)"),
 }
 # Variante de divisão (feature 015) que leva ferragem: a aramada é só ferragem; a corrediça tem chapa e par de
 # corrediças. A divisão aramada fica oculta na cena, por isso conta pela divisão, e não pela visibilidade.
@@ -65,6 +67,19 @@ def _blum(obj, root):
     return False
 
 
+def handrail_rows(handrails):
+    """[(uid da escada, percurso em mm)] → linhas do corrimão, em metros (071 D-27; sem preço: o addon não orça)."""
+    rows = [{"code": 'CORRIMAO', "name": tr(NAMES['CORRIMAO']), "quantity": round(mm / 1000.0, 2), "module_uid": uid}
+            for uid, mm in handrails if mm > 0]
+    return sorted(rows, key=_order)
+
+
+def _stair_handrails(scene):
+    from ..stairs import scene as stairs_scene
+    return [(stairs_scene.uid(root), stairs_scene.handrail_mm(root)) for root in stairs_scene.roots(scene)
+            if stairs_scene.visible(root)]
+
+
 def collect(scene, ensure_uid=True):
     """Linhas de `hardware[]` de todos os módulos visíveis da cena (`ensure_uid=False` na interface)."""
     from .part_sources import _visible, iter_modules
@@ -81,4 +96,4 @@ def collect(scene, ensure_uid=True):
                 items.append((str(code), module.uid))
             elif _is_drawer_front(obj):
                 items += drawer_items(1, module.uid, _blum(obj, module.obj))
-    return summarize(items)
+    return summarize(items) + handrail_rows(_stair_handrails(scene))
