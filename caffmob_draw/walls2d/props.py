@@ -11,7 +11,7 @@ import bpy  # type: ignore
 
 from ..data import units
 from ..data.i18n import N_
-from . import history, model
+from . import history, model, selecao_classica
 
 
 class Session:
@@ -27,6 +27,8 @@ class Session:
         self.restore_area_type = None     # quando o editor ocupa uma área da janela atual
         self.selected = None              # (cadeia, trecho)
         self.selected_node = None         # (cadeia, nó) — digitação direta no vértice (D-27)
+        self.multi = []                   # 067 onda 8 (D-39): trechos selecionados juntos; `selected` é o último
+        self.selection_box = None         # retângulo de seleção em andamento, em pixels (início, fim)
         self.line = model.INNER
         self.drawing = None               # cadeia sendo desenhada a lápis
         self.cursor = None                # posição do cursor no mundo 2D
@@ -77,6 +79,11 @@ class Session:
             return None, None
         return self.plan.chains[ci], si
 
+    def lote(self):
+        """Trechos da edição em lote (D-40): os de `multi` que ainda existem, quando são mais de um."""
+        self.multi = selecao_classica.validos(self.plan, self.multi)
+        return self.multi if len(self.multi) > 1 else []
+
     def checkpoint(self):
         """Grava um passo de desfazer se o rascunho mudou."""
         return self.v2.checkpoint() if self.v2 else self.history.checkpoint(self.plan)
@@ -89,6 +96,7 @@ class Session:
         self.prompt, self.prompt_chain, self.pending_point = None, None, None
         self.reset_direction()
         self.segment()                    # descarta a seleção que não existe mais
+        self.multi = selecao_classica.validos(plan, self.multi)
         return True
 
     def undo(self):
@@ -135,12 +143,26 @@ def _guard(apply):
     s.redraw()
 
 
+def multiplos(s, field):
+    """Os trechos do lote têm valores diferentes em `field` (o painel mostra "Múltiplos")."""
+    lote = s.lote() if s else []
+    return bool(lote) and selecao_classica.valor_comum(s.plan, lote, field) is selecao_classica.MULTIPLOS
+
+
+def campo_de_um_trecho_editavel(s, field):
+    """Comprimento, ângulos, direção e trava valem um trecho por vez (D-40): cinza em seleção múltipla."""
+    return not (s and s.lote()) or field in selecao_classica.CAMPOS_DO_LOTE
+
+
 def _seg_get(field, default=0.0):
     def get(_self):
         s = session()
         chain, i = s.segment() if s else (None, None)
         if chain is None:
             return default
+        if field in selecao_classica.CAMPOS_DO_LOTE and s.lote():
+            valor = selecao_classica.valor_comum(s.plan, s.lote(), field)
+            return default if valor is selecao_classica.MULTIPLOS else valor
         if field == 'length':
             return chain.face_length(i, s.line)
         if field == 'angle_abs':
@@ -157,7 +179,9 @@ def _seg_set(field):
         chain, i = s.segment() if s else (None, None)
         if chain is None:
             return
-        if field == 'length':
+        if field in selecao_classica.CAMPOS_DO_LOTE and s.lote():
+            _guard(lambda: selecao_classica.aplicar(s.plan, s.lote(), field, value))     # um passo de desfazer
+        elif field == 'length':
             _guard(lambda: chain.set_length(i, value, s.line))
         elif field == 'angle_abs':
             _guard(lambda: chain.set_angle_abs(i, math.degrees(value) % 360.0))
@@ -171,13 +195,22 @@ def _seg_set(field):
 def _type_get(_self):
     s = session()
     chain, i = s.segment() if s else (None, None)
-    return model.WALL_TYPES.index(chain.segments[i].wall_type) if chain is not None else 0
+    if chain is None:
+        return 0
+    if s.lote():
+        valor = selecao_classica.valor_comum(s.plan, s.lote(), 'wall_type')
+        return 0 if valor is selecao_classica.MULTIPLOS else model.WALL_TYPES.index(valor)
+    return model.WALL_TYPES.index(chain.segments[i].wall_type)
 
 
 def _type_set(_self, value):
     s = session()
     chain, i = s.segment() if s else (None, None)
-    if chain is not None:
+    if chain is None:
+        return
+    if s.lote():
+        _guard(lambda: selecao_classica.aplicar(s.plan, s.lote(), 'wall_type', model.WALL_TYPES[value]))
+    else:
         _guard(lambda: chain.set_segment_value(i, 'wall_type', model.WALL_TYPES[value]))
 
 

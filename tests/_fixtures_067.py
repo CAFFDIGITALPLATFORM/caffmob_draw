@@ -108,3 +108,23 @@ def scene_15():
 
 def select(objects, active=None):
     authored_env.select(list(objects), active)
+
+
+def ambiente_mobi_sintetico(com_modulo=False):
+    """Onda 8 (T178; D-44): monta na cena o ambiente sintético do MOBI de `_mobi_sintetico` e devolve
+    `(documento, objetos)`, com `objetos` = {'parede', 'portao', 'janela', 'folha'} (a folha é uma peça do portão)."""
+    import _mobi_sintetico
+    from caffmob_draw.mobi.cena_v2 import construir_cena
+    documento = _mobi_sintetico.ambiente(com_modulo)
+    raiz = construir_cena(bpy.context, documento)
+    tudo = list(raiz.all_objects)
+    portao = _first(tudo, lambda o: o.get('caffmob_tipo') == 'abertura' and o.get('caffmob_id') == _mobi_sintetico.PORTAO)
+    objetos = dict(
+        parede=_first(tudo, lambda o: o.get('caffmob_tipo') == 'parede'),
+        portao=portao,
+        janela=_first(tudo, lambda o: o.get('caffmob_tipo') == 'abertura' and o.get('caffmob_id') == _mobi_sintetico.JANELA),
+        folha=_first(tudo, lambda o: o.get('caffmob_tipo') == 'abertura_peca' and o.parent is portao and o.type == 'MESH'),
+    )
+    missing = [k for k, v in objetos.items() if v is None]
+    assert not missing, f"ambiente do MOBI sem: {missing}"
+    return documento, objetos

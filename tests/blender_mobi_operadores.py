@@ -174,9 +174,10 @@ with tempfile.TemporaryDirectory() as directory, patch.object(downloads, 'reques
     # T040: editar segmento mantém aberturas, muda só pelo contrato.
     bpy.context.view_layer.objects.active = wall
     s = json.loads(wall['caffmob_parede'])['segmentos'][0]
-    result = bpy.ops.caffmob.mobi_editar_segmento(indice=0, comprimento=s['comprimento'], espessura=s['espessura']+1,
-        pe_direito_inicial=s['pe_direito_inicial'], pe_direito_final=s['pe_direito_final'],
-        afastamento=s['afastamento'], flecha=s['flecha'], sentido=s['sentido'], tipo=s['tipo'])
+    # 067 onda 8 (D-38): os campos são texto na unidade do projeto (mm por padrão).
+    result = bpy.ops.caffmob.mobi_editar_segmento(indice=0, comprimento=str(s['comprimento']), espessura=str(s['espessura']+1),
+        pe_direito_inicial=str(s['pe_direito_inicial']), pe_direito_final=str(s['pe_direito_final']),
+        afastamento=str(s['afastamento']), flecha=str(s['flecha']), sentido=s['sentido'], tipo=s['tipo'])
     assert result == {'FINISHED'}
     assert json.loads(wall['caffmob_parede'])['segmentos'][0]['espessura'] == s['espessura']+1
     # T041: biblioteca vazia, atual e versão escolhida; o modelo entra como cópia.

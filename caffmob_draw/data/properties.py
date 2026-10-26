@@ -101,14 +101,8 @@ def update_door_properties(self, context):
 
 
 def update_scene_unit(self, context):
-    unit_settings = context.scene.unit_settings
-    unit_settings.system = 'METRIC'
-    if self.btm_unit == 'METERS':
-        unit_settings.length_unit = 'METERS'
-    elif self.btm_unit == 'CENTIMETERS':
-        unit_settings.length_unit = 'CENTIMETERS'
-    elif self.btm_unit == 'MILLIMETERS':
-        unit_settings.length_unit = 'MILLIMETERS'
+    from . import units as btm_units
+    btm_units.alinhar_cena(context.scene)
     # Cotas legadas já criadas passam a mostrar a nova unidade.
     from .. import hb_types
     hb_types.refresh_dimension_units(context.scene)

@@ -8,14 +8,15 @@
 - `props`: `Object.btm_part` e `WindowManager.btm_target`
 - `snapshot`: o alvo resolvido fora do draw, por cena e view layer
 - `ops`: "Selecionar conjunto" e "Aplicar" do revestimento
+- `mobi_fields`: `WindowManager.btm_mobi`, as medidas da parede e da abertura do CAFF MOBI (onda 8)
 """
 
 _registered = False
 
 
 def _modules():
-    from . import ops, props, snapshot
-    return (props, snapshot, ops)
+    from . import mobi_fields, ops, props, snapshot
+    return (props, snapshot, ops, mobi_fields)
 
 
 def register():

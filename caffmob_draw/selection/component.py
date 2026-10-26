@@ -25,7 +25,9 @@ DeletePlan = namedtuple('DeletePlan', 'remove openings')
 
 
 def is_opening_root(node):
-    return bool(node.get('IS_ENTRY_DOOR_BP') or node.get('IS_WINDOW_BP')) or classify.btm_kind(node) == 'OPENING'
+    # 067 onda 8 (D-41): a raiz da abertura do CAFF MOBI também, para a peça clicada subir até ela.
+    return (bool(node.get('IS_ENTRY_DOOR_BP') or node.get('IS_WINDOW_BP')) or classify.btm_kind(node) == 'OPENING'
+            or node.get('caffmob_tipo') == 'abertura')
 
 
 def _is_stuck(node):

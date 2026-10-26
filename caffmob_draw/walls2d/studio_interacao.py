@@ -81,7 +81,11 @@ def tratar(op, event, s, view, pixel):
             s.request = 'cancel'
         return True
     if event.type == 'A' and event.value == 'PRESS' and not v.desenhando:
-        v.selecionar_todas()
+        # 067 onda 8 (D-39): as mesmas teclas do projeto do addon; Alt+A limpa.
+        if getattr(event, 'alt', False):
+            v.selecionar_ids([])
+        else:
+            v.selecionar_todas()
         return True
     if event.type in {'DEL', 'X', 'BACK_SPACE'} and event.value == 'PRESS' and v.selecao and not v.texto:
         v.pedir_exclusao()

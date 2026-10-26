@@ -53,7 +53,23 @@ def editable_dimensions(info):
     return ()
 
 
+def _mobi_dimension(info, field):
+    """Abertura do CAFF MOBI (067 onda 8, D-41): a raiz é um Empty, sem medida própria; vale o documento (mm). A
+    profundidade é a das peças, que a montagem fez com a espessura do trecho."""
+    import json
+    obj = info.obj
+    if field == 'depth':
+        return max((c.dimensions.y for c in obj.children), default=0.0)
+    try:
+        entidade = json.loads(obj.get('caffmob_abertura') or obj.get('caffmob_entidade_v2') or '{}')
+    except ValueError:
+        entidade = {}
+    return entidade.get({'width': 'largura', 'height': 'altura'}[field], 0) / 1000
+
+
 def get_dimension(info, field):
+    if info.library == 'MOBI' and info.kind in (classify.ROOM_DOOR, classify.WINDOW):
+        return _mobi_dimension(info, field)
     obj = info.root if info.kind in (classify.MODULE, classify.FRONT, classify.PART) else info.obj
     library = info.library
     if library == 'AUTHORED':

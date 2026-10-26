@@ -30,7 +30,7 @@ from ..canvas2d.view import View2D, distance_point_point, distance_point_segment
 from ..data import expr, units
 from ..data.i18n import N_, tr
 from . import direction as dr
-from . import inference, model, props, window
+from . import inference, model, props, selecao_classica, window
 
 NODE_HIT_PX = 9
 LINE_HIT_PX = 7
@@ -135,10 +135,12 @@ def draw_plan(context):
             inner = chain.inner_line(i)
             outer = chain.outer_line(i)
             is_selected = chain is selected_chain and i == selected_index
+            in_batch = (ci, i) in s.multi and len(s.multi) > 1          # 067 onda 8 (D-39)
             a0, a1 = view.to_screen(inner[0]), view.to_screen(inner[1])
             b0, b1 = view.to_screen(outer[0]), view.to_screen(outer[1])
             # Face interna tracejada (medida real), externa e pontas contínuas (D-28).
-            draw.lines(sh, draw.dashed(a0, a1) + [b0, b1, a0, b0, a1, b1], COLORS['wall'])
+            draw.lines(sh, draw.dashed(a0, a1) + [b0, b1, a0, b0, a1, b1],
+                       COLORS['selected'] if in_batch else COLORS['wall'])
             if is_selected:
                 line = chain.line(i, s.line)
                 a, b = view.to_screen(line[0]), view.to_screen(line[1])
@@ -243,6 +245,11 @@ def _draw_toolbar(sh, view, s):
     if hot or armed:                                   # dica ao passar o mouse e enquanto o modo está ligado
         draw.text(lupa[0] + lupa[2] + 10, bar[1] + (bar[3] - draw.FONT_SIZE) / 2.0 + 1, ZOOM_WINDOW_HINT,
                   draw.COLORS['text'] if armed else draw.COLORS['muted'])
+    box = getattr(s, 'selection_box', None)                    # 067 onda 8 (D-39): retângulo de seleção
+    if box is not None:
+        (x0, y0), (x1, y1) = box
+        corners = [(x0, y0), (x1, y0), (x1, y1), (x0, y1)]
+        draw.lines(sh, [p for k in range(4) for p in (corners[k], corners[(k + 1) % 4])], COLORS['selected'])
     if isinstance(s.zoom_window, tuple) and s.zoom_box_end is not None:     # retângulo elástico
         (x0, y0), (x1, y1) = s.zoom_window, s.zoom_box_end
         corners = [(x0, y0), (x1, y0), (x1, y1), (x0, y1)]
@@ -556,6 +563,7 @@ class BTM_OT_WallEditorModal(bpy.types.Operator):
             return {'CANCELLED'}
         self.dragging = None
         self.panning = None
+        self.box = None                   # 067 onda 8 (D-39): retângulo de seleção (início, somar, seleção de antes)
         self.tab_ready = False
         self._timer = context.window_manager.event_timer_add(TIMER_STEP, window=context.window)
         context.window_manager.modal_handler_add(self)
@@ -726,13 +734,25 @@ class BTM_OT_WallEditorModal(bpy.types.Operator):
             else:
                 s.request = 'cancel'
             return True
+        if state.tool == 'SELECT' and event.type == 'A' and event.value == 'PRESS' and not s.typed:
+            # 067 onda 8 (D-39, RF-162): A seleciona todos os trechos do plano; Alt+A limpa.
+            s.multi = [] if getattr(event, 'alt', False) else selecao_classica.todos(s.plan)
+            s.selected = s.multi[-1] if s.multi else None
+            s.selected_node = None
+            return True
         if state.tool == 'SELECT' and self._handle_typing(event, s):
             return True
         if event.type in {'DEL', 'X'} and event.value == 'PRESS' and s.selected is not None:
+            if s.lote():
+                s.error = N_("Apague um trecho por vez.")      # walls2d RN-16: Del apaga um trecho
+                return True
             remove_segment(s, *s.selected)
             return True
         if event.type == 'LEFTMOUSE':
             return self._handle_click(context, event, s, view, pixel, state.tool)
+        if event.type == 'MOUSEMOVE' and getattr(self, 'box', None) is not None:
+            s.selection_box = (self.box[0], pixel)
+            return True
         if event.type == 'MOUSEMOVE' and self.dragging is not None:
             ci, k = self.dragging
             chain = s.plan.chains[ci]
@@ -744,7 +764,21 @@ class BTM_OT_WallEditorModal(bpy.types.Operator):
             return True
         return False
 
+    def _finish_box(self, s, view, pixel):
+        """Solta o retângulo de seleção (D-39): soma com Shift; sem arrastar, um clique no vazio limpa."""
+        start, add, before = self.box
+        self.box, s.selection_box = None, None
+        if distance_point_point(start, pixel) < 4:
+            found = []
+        else:
+            found = selecao_classica.no_retangulo(s.plan, view.to_world(start), view.to_world(pixel))
+        s.multi = list(dict.fromkeys([*before, *found])) if add else found
+        s.selected = s.multi[-1] if s.multi else None
+
     def _handle_click(self, context, event, s, view, pixel, tool):
+        if event.value == 'RELEASE' and getattr(self, 'box', None) is not None:
+            self._finish_box(s, view, pixel)
+            return True
         if event.value == 'RELEASE':
             dragged, self.dragging = self.dragging, None
             if dragged is not None:
@@ -762,15 +796,23 @@ class BTM_OT_WallEditorModal(bpy.types.Operator):
             node = hit_node(s, pixel)
             if node is not None:
                 self.dragging = node
-                s.selected_node, s.selected = node, None
+                s.selected_node, s.selected, s.multi = node, None, []
                 return True
             s.selected_node = None
             line = hit_line(s, pixel)
             if line is not None:
                 ci, i, which = line
-                s.selected, s.line = (ci, i), which
+                if getattr(event, 'shift', False):                # 067 onda 8 (D-39): soma ou tira o trecho
+                    base = s.multi or ([s.selected] if s.selected is not None else [])
+                    s.multi = selecao_classica.alternar(base, (ci, i))
+                    s.selected = (ci, i) if (ci, i) in s.multi else (s.multi[-1] if s.multi else None)
+                else:
+                    s.multi = [(ci, i)]
+                    s.selected = (ci, i)
+                s.line = which
             else:
-                s.selected = None
+                self.box = (pixel, getattr(event, 'shift', False), list(s.multi))  # retângulo a partir do vazio (D-39)
+                s.selection_box = (pixel, pixel)
             return True
         if tool == 'REMOVE_NODE':
             node = hit_node(s, pixel)

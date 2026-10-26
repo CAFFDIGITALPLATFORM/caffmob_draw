@@ -27,7 +27,8 @@ KIND_LABELS = {
     CEILING: N_("Teto"), OTHER: N_("Objeto"),
 }
 LIBRARY_LABELS = {'FRAMELESS': N_("Frameless"), 'FACE_FRAME': N_("Face frame"), 'CLOSETS': N_("Closets"),
-                  'BTM': N_("Módulo rápido"), 'HB': N_("Ambiente"), 'AUTHORED': N_("Armário autoral")}
+                  'BTM': N_("Módulo rápido"), 'HB': N_("Ambiente"), 'AUTHORED': N_("Armário autoral"),
+                  'MOBI': N_("CAFF MOBI")}
 
 MODULE_TAGS = (
     ('IS_AUTHORED_CABINET', 'AUTHORED'),
@@ -91,6 +92,15 @@ def module_root(obj):
     return None, None
 
 
+def _mobi_door(node):
+    """A abertura do CAFF MOBI é porta pelo tipo da entidade do documento (`caffmob_entidade_v2`)."""
+    import json
+    try:
+        return json.loads(node.get('caffmob_entidade_v2') or '{}').get('tipo') == 'DOOR'
+    except (TypeError, ValueError):
+        return False
+
+
 def classify(obj):
     if obj is None:
         return None
@@ -110,6 +120,13 @@ def classify(obj):
         return Classified(PART, obj, root, library)
 
     for node in _ancestors(obj):
+        # 067 onda 8 (RN-17, D-41): parede e abertura vindas do documento do CAFF MOBI. A peça (`abertura_peca`)
+        # sobe até a raiz da abertura por este laço.
+        mobi = node.get('caffmob_tipo')
+        if mobi == 'abertura':
+            return Classified(ROOM_DOOR if _mobi_door(node) else WINDOW, node, node, 'MOBI')
+        if mobi == 'parede':
+            return Classified(WALL, node, node, 'MOBI')
         if node.get('IS_ENTRY_DOOR_BP'):
             return Classified(ROOM_DOOR, node, node, 'HB')
         if node.get('IS_WINDOW_BP'):

@@ -64,6 +64,8 @@ class Target:
     finish_roles: bool = False      # o dono tem papéis de acabamento; sem eles, o assistente (RF-042)
     finish_scope_part: bool = False     # o resumo é da peça selecionada (Peça), não do móvel inteiro
     edgeband_state: tuple = ()      # (CREATE | CHANGE | MIXED, bordas faltantes) da fita no escopo (onda 4, RF-080)
+    mobi_trechos: tuple = ()        # parede do CAFF MOBI: ((número, comprimento em mm), …) (onda 8, D-43)
+    mobi_aberturas: tuple = ()      # parede do CAFF MOBI: ((id, DOOR ou WINDOW, largura mm, altura mm), …)
 
     @property
     def adapter(self):
@@ -107,6 +109,12 @@ def _opening_type(obj, info):
         return 'DOOR'
     if info.kind == cls.WINDOW and info.library == 'HB':
         return 'WINDOW'
+    if info.library == 'MOBI':                          # 067 onda 8 (D-41): o tipo vem da entidade do documento
+        import json
+        try:
+            return 'DOOR' if json.loads(obj.get('caffmob_entidade_v2') or '{}').get('tipo') == 'DOOR' else 'WINDOW'
+        except ValueError:
+            return 'WINDOW'
     opening = getattr(obj, 'btm_opening', None)
     return getattr(opening, 'opening_type', 'WINDOW') if opening is not None else 'WINDOW'
 

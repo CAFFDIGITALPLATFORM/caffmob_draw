@@ -24,6 +24,9 @@ como "pendente". Os critérios por coluna:
 - UX-05 (onda 5): o movimento é editável no próprio alvo: a folha pelo mecanismo (campos da folha), a frente do
   módulo rápido pela abertura, o módulo e o armário autoral pelo editor animado do componente, a porta de ambiente
   pelos controles da porta; a janela, sem folha gerada, diz isso.
+
+Onda 8 (T187): as linhas `wall_mobi` e `opening_mobi` vêm do ambiente sintético do CAFF MOBI (`_mobi_sintetico`) e
+passam pelos mesmos critérios das colunas das ondas 1 a 6.
 """
 
 import json
@@ -164,10 +167,13 @@ CHECKS = {'UX-05': ux05, 'MAT-02': mat02, 'UX-01': ux01, 'UX-02': ux02, 'UX-04':
 def build_targets():
     s = fx.scene_15()
     bpy.context.scene.btm_component_select = False
+    _documento, mobi = fx.ambiente_mobi_sintetico()          # onda 8 (T187): parede e porta do MOBI
     out = {}
     for row in DATA['linha_de_base_1_8_0']:
         name = TYPE_OBJECTS.get(row, row)
-        if row == 'multiple':
+        if row in ('wall_mobi', 'opening_mobi'):
+            fx.select([mobi['parede' if row == 'wall_mobi' else 'portao']])
+        elif row == 'multiple':
             fx.select([s.part, s.member, s.geometry], s.part)
         else:
             fx.select([getattr(s, name)])

@@ -22,6 +22,13 @@ def _cls(name):
     return getattr(view3d_sidebar, name)
 
 
+def editar_segmento_visivel(context):
+    """067 onda 8 (D-38): "Editar segmento" grava só a parede pelo caminho v1. Com documento v2 na cena, quem edita é
+    o painel da parede (com "Abrir no editor de parede"), para o documento continuar sendo a única verdade."""
+    texto = context.scene.get('caffmob_ambiente') or ''
+    return '"caffmob.ambiente/v2"' not in texto
+
+
 def _hide_2d(context):
     addon = context.preferences.addons.get(__package__.rsplit('.', 1)[0])
     prefs = getattr(addon, 'preferences', None)
@@ -119,7 +126,8 @@ def draw_mobi(layout, context):
     if state.proximo_ambiente:
         content.operator('caffmob.mobi_listar_ambientes', text=tr("Carregar mais ambientes")).mais = True
     content.operator('caffmob.mobi_enviar_ambiente', text=tr("Enviar ambiente"), icon='EXPORT')
-    content.operator('caffmob.mobi_editar_segmento', text=tr("Editar segmento"), icon='EDITMODE_HLT')
+    if editar_segmento_visivel(context):
+        content.operator('caffmob.mobi_editar_segmento', text=tr("Editar segmento"), icon='EDITMODE_HLT')
     content.separator()
     content.label(text=tr("Biblioteca do MOBI"), icon='ASSET_MANAGER')
     content.prop(state, 'biblioteca', expand=True)

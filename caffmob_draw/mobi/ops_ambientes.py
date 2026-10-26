@@ -419,16 +419,32 @@ class MOBI_OT_EditarSegmento(bpy.types.Operator):
     bl_options = {'REGISTER', 'UNDO'}
 
     indice: bpy.props.IntProperty(name="Segmento", min=0)  # type: ignore
-    comprimento: bpy.props.FloatProperty(name="Comprimento (mm)", min=0.1)  # type: ignore
-    espessura: bpy.props.FloatProperty(name="Espessura (mm)", min=0.1)  # type: ignore
-    pe_direito_inicial: bpy.props.FloatProperty(name="Pé-direito inicial (mm)", min=0.1)  # type: ignore
-    pe_direito_final: bpy.props.FloatProperty(name="Pé-direito final (mm)", min=0.1)  # type: ignore
-    afastamento: bpy.props.FloatProperty(name="Afastamento (mm)", min=0.0)  # type: ignore
-    flecha: bpy.props.FloatProperty(name="Flecha (mm)")  # type: ignore
+    # 067 onda 8 (D-38, RF-160): texto na unidade do projeto, como os outros campos de medida (sem sufixo, vale a dela).
+    comprimento: bpy.props.StringProperty(name="Comprimento")  # type: ignore
+    espessura: bpy.props.StringProperty(name="Espessura")  # type: ignore
+    pe_direito_inicial: bpy.props.StringProperty(name="Pé-direito inicial")  # type: ignore
+    pe_direito_final: bpy.props.StringProperty(name="Pé-direito final")  # type: ignore
+    afastamento: bpy.props.StringProperty(name="Afastamento")  # type: ignore
+    flecha: bpy.props.StringProperty(name="Flecha")  # type: ignore
     sentido: bpy.props.EnumProperty(name="Espessura para", items=[('LEFT', "Esquerda", ""), ('RIGHT', "Direita", "")])  # type: ignore
     tipo: bpy.props.EnumProperty(name="Tipo", items=[('NORMAL', "Alvenaria", ""), ('DRYWALL', "Drywall", ""), ('GLASS', "Vidro", "")])  # type: ignore
 
     CAMPOS = ("espessura", "pe_direito_inicial", "pe_direito_final", "afastamento", "flecha", "sentido", "tipo")
+    MEDIDAS = {"comprimento": dict(), "espessura": dict(), "pe_direito_inicial": dict(), "pe_direito_final": dict(),
+               "afastamento": dict(allow_zero=True), "flecha": dict(allow_zero=True, allow_negative=True)}
+
+    @staticmethod
+    def _unidade(context):
+        from ..data import units
+        return units.get_scene_length_unit(context.scene)
+
+    def _texto(self, context, mm):
+        from ..data import units
+        return units.format_length(mm / 1000, unit=self._unidade(context))
+
+    def _mm(self, context, campo):
+        from ..data import units
+        return units.parse_length(getattr(self, campo), self._unidade(context), **self.MEDIDAS[campo]) * 1000
 
     @classmethod
     def poll(cls, context):
@@ -437,9 +453,9 @@ class MOBI_OT_EditarSegmento(bpy.types.Operator):
     def invoke(self, context, event):
         segmentos = ler_documento(context.object["caffmob_parede"])["segmentos"]
         segmento = segmentos[min(self.indice, len(segmentos) - 1)]
-        self.comprimento = segmento["comprimento"]
+        self.comprimento = self._texto(context, segmento["comprimento"])
         for campo in self.CAMPOS:
-            setattr(self, campo, segmento[campo])
+            setattr(self, campo, self._texto(context, segmento[campo]) if campo in self.MEDIDAS else segmento[campo])
         return context.window_manager.invoke_props_dialog(self)
 
     def execute(self, context):
@@ -448,11 +464,15 @@ class MOBI_OT_EditarSegmento(bpy.types.Operator):
         if not 0 <= self.indice < len(parede["segmentos"]):
             self.report({'ERROR'}, "Segmento inexistente.")
             return {'CANCELLED'}
-        nova = mudar_comprimento(parede, self.indice, arredondar_medida(self.comprimento))
+        try:
+            medidas = {campo: self._mm(context, campo) for campo in self.MEDIDAS}
+        except ValueError as exc:
+            self.report({'ERROR'}, str(exc))
+            return {'CANCELLED'}
+        nova = mudar_comprimento(parede, self.indice, arredondar_medida(medidas["comprimento"]))
         segmento = nova["segmentos"][self.indice]
         for campo in self.CAMPOS:
-            valor = getattr(self, campo)
-            segmento[campo] = valor if isinstance(valor, str) else arredondar_medida(valor)
+            segmento[campo] = arredondar_medida(medidas[campo]) if campo in medidas else getattr(self, campo)
         nova["segmentos"] = [{**s, "comprimento": arredondar_medida(s["comprimento"]), "angulo_absoluto": arredondar_angulo(s["angulo_absoluto"] % 360)} for s in nova["segmentos"]]
         documento = {"aberturas": json.loads(obj.get("caffmob_aberturas", "[]"))}
         ids = {s["id"] for s in nova["segmentos"]}
@@ -465,8 +485,73 @@ class MOBI_OT_EditarSegmento(bpy.types.Operator):
         return {'FINISHED'}
 
 
+class MOBI_OT_EditarEntidade(bpy.types.Operator):
+    """Grava uma medida da parede ou da abertura no documento do CAFF MOBI e remonta a cena"""
+    # 067 onda 8 (D-42): o campo do painel (`target/mobi_fields`) agenda este operador.
+    bl_idname = "caffmob.mobi_editar_entidade"
+    bl_label = "Editar medida do CAFF MOBI"
+    bl_options = {'REGISTER', 'UNDO', 'INTERNAL'}
+
+    tipo: bpy.props.EnumProperty(items=[('abertura', "Abertura", ""), ('parede', "Parede", "")])  # type: ignore
+    entidade_id: bpy.props.StringProperty()  # type: ignore
+    campo: bpy.props.StringProperty()  # type: ignore
+    valor_mm: bpy.props.IntProperty()  # type: ignore
+    original: bpy.props.StringProperty(options={'SKIP_SAVE'})  # type: ignore  documento lido pelo campo
+
+    def execute(self, context):
+        from . import editar_v2_core
+        texto = context.scene.get('caffmob_ambiente') or ''
+        if self.original and texto != self.original:
+            self.report({'ERROR'}, tr("O ambiente mudou na cena. Selecione de novo e digite a medida outra vez."))
+            return {'CANCELLED'}
+        try:
+            documento = json.loads(texto)
+        except ValueError:
+            self.report({'ERROR'}, tr("Esta cena não tem um ambiente do CAFF MOBI."))
+            return {'CANCELLED'}
+        resultado = editar_v2_core.editar(documento, self.tipo, self.entidade_id, self.campo, self.valor_mm)
+        if not resultado['ok']:
+            self.report({'ERROR'}, editar_v2_core.mensagem(resultado))
+            return {'CANCELLED'}
+        try:
+            raiz = cena_v2.construir_cena(context, resultado['valor'])
+        except ValueError as exc:
+            self.report({'ERROR'}, str(exc))
+            return {'CANCELLED'}
+        alvo = next((o for o in raiz.all_objects
+                     if o.get('caffmob_tipo') == self.tipo and o.get('caffmob_id') == self.entidade_id), None)
+        if alvo is not None:
+            for obj in context.selected_objects:
+                obj.select_set(False)
+            alvo.select_set(True)
+            context.view_layer.objects.active = alvo
+        return {'FINISHED'}
+
+
+class MOBI_OT_SelecionarAbertura(bpy.types.Operator):
+    """Seleciona a porta ou a janela da lista da parede"""
+    # 067 onda 8 (D-43): os botões da lista de aberturas no painel da parede do MOBI.
+    bl_idname = "caffmob.mobi_selecionar_abertura"
+    bl_label = "Selecionar abertura"
+    bl_options = {'REGISTER', 'UNDO', 'INTERNAL'}
+
+    abertura_id: bpy.props.StringProperty()  # type: ignore
+
+    def execute(self, context):
+        alvo = next((o for o in context.scene.objects
+                     if o.get('caffmob_tipo') == 'abertura' and o.get('caffmob_id') == self.abertura_id), None)
+        if alvo is None:
+            return {'CANCELLED'}
+        for obj in context.selected_objects:
+            obj.select_set(False)
+        alvo.select_set(True)
+        context.view_layer.objects.active = alvo
+        return {'FINISHED'}
+
+
 classes = (MOBI_OT_ListarAmbientes, MOBI_OT_BaixarAmbiente, MOBI_OT_EnviarAmbiente,
-           MOBI_OT_ResolverConflito, MOBI_OT_ResolverConflitoV2, MOBI_OT_EditarSegmento)
+           MOBI_OT_ResolverConflito, MOBI_OT_ResolverConflitoV2, MOBI_OT_EditarSegmento, MOBI_OT_EditarEntidade,
+           MOBI_OT_SelecionarAbertura)
 
 
 def register():

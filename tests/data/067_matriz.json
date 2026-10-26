@@ -31,7 +31,8 @@
   "5": [
    "UX-05"
   ],
-  "6": []
+  "6": [],
+  "8": []
  },
  "nota_ondas": "Mapa coluna -> onda tirado do roadmap da 067 (D-14 a D-24); a onda 6 (Mover Sobre) refina UX-04.",
  "linha_de_base_1_8_0": {
@@ -210,6 +211,29 @@
    "MAT-02": "FALTA",
    "MAT-03": "PARCIAL",
    "CMP-01": "PARCIAL"
+  },
+  "wall_mobi": {
+   "UX-01": "FALTA",
+   "UX-02": "FALTA",
+   "UX-03": "N/A",
+   "UX-04": "FALTA",
+   "UX-05": "N/A",
+   "MAT-01": "N/A",
+   "MAT-02": "N/A",
+   "MAT-03": "N/A",
+   "CMP-01": "N/A"
+  },
+  "opening_mobi": {
+   "UX-01": "FALTA",
+   "UX-02": "FALTA",
+   "UX-03": "N/A",
+   "UX-04": "FALTA",
+   "UX-05": "N/A",
+   "MAT-01": "N/A",
+   "MAT-02": "N/A",
+   "MAT-03": "N/A",
+   "CMP-01": "N/A"
   }
- }
+ },
+ "nota_onda_8": "Onda 8 (RF-142, T187): parede e porta do CAFF MOBI entram nos tipos Parede e Porta/janela; na 1.16.0 caíam em OTHER (sem painel próprio, com escala). UX-05 fica N/A para a porta do MOBI: o movimento da folha não é editável no Blender (o documento não guarda ângulo)."
 }

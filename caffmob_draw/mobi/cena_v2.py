@@ -346,8 +346,9 @@ class Montagem:
         from .enviar_v2 import registrar_estado
         for obj in preparo.all_objects:
             registrar_estado(obj)
-        context.scene.unit_settings.system = 'METRIC'
         context.scene.unit_settings.scale_length = 1
+        from ..data import units as btm_units
+        btm_units.alinhar_cena(context.scene)      # 067 onda 8 (D-37): a cena na unidade do projeto
         self.concluida = True
         return preparo
 
