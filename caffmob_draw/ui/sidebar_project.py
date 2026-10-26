@@ -158,6 +158,29 @@ def draw_mobi(layout, context):
         layout.operator('caffmob.mobi_cancelar', text=tr("Cancelar"), icon='CANCEL')
 
 
+def draw_promob(layout, context):
+    """071 (T041; D-16, RF-11, RF-12): importar o .promob, o relatório da última importação e os dados do cliente."""
+    from ..promob import complemento
+    box = layout.box()
+    box.label(text=tr("Projeto do Promob"), icon='FILE_3D')
+    box.operator('caffmob.promob_importar', text=tr("Importar projeto do Promob"), icon='IMPORT')
+    dados = complemento.lido(context)
+    if not dados:
+        return
+    rel = dados.get('relatorio') or {}
+    col = box.column(align=True)
+    col.label(text=dados.get('arquivo') or '')
+    col.label(text=tr("{} paredes, {} aberturas, {} móveis em caixas").format(
+        rel.get('paredes', 0), rel.get('aberturas', 0), rel.get('caixas', 0)))
+    em_caixa = [i for i in rel.get('ignorados', []) if 'caixa' in i.get('motivo', '')]
+    if em_caixa:
+        col.label(text=tr("{} itens entraram como caixa").format(len(em_caixa)), icon='INFO')
+    cliente = (dados.get('cliente') or {}).get('NOMECLIENTE')
+    if cliente:
+        col.label(text=tr("Cliente: {}").format(cliente), icon='USER')
+    box.operator('caffmob.promob_salvar_blend', text=tr("Salvar como .blend"), icon='FILE_BLEND')
+
+
 def draw(layout, context):
     from . import panels
     with group_scope(layout, context, 'mobi', N_("CAFF MOBI"), 'URL') as body:
@@ -170,6 +193,8 @@ def draw(layout, context):
     project_panel = view3d_sidebar.HOME_BUILDER_PT_project
     in_room = sidebar_proxy.visible(project_panel, context)     # fora de vistas de layout e de detalhe
     with group_scope(layout, context, 'rooms', N_("Ambientes"), 'HOME') as body:
+        if body is not None:
+            draw_promob(body, context)
         if body is not None and in_room:
             sidebar_proxy.draw_panel(view3d_sidebar.HOME_BUILDER_PT_project_rooms, body, context)
     with group_scope(layout, context, 'settings', N_("Configurações"), 'PREFERENCES') as body:
