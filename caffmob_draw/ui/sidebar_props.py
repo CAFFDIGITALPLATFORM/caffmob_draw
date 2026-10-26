@@ -11,7 +11,7 @@ import bpy  # type: ignore
 GROUPS = (
     # Construir
     ('walls', False), ('openings', False), ('floor', False), ('obstacles', False), ('lights', False),
-    ('stairs', False), ('reference', False), ('geometry', False),
+    ('drawers', False), ('stairs', False), ('reference', False), ('geometry', False),
     # Construir por finalidade (067 RF-013): os grupos acima ficam dentro destes, com os mesmos ids
     ('build_room', True), ('build_furniture', False), ('build_sheets', True), ('build_lighting', False),
     # Inserir

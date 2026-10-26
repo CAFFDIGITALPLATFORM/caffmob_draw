@@ -2,12 +2,14 @@
 
 
 def register():
-    from . import ops, props
+    from . import construtor, ops, props
     ops.register()
     props.register()
+    construtor.register()      # onda B: espaço livre, gaveteiro e modelos
 
 
 def unregister():
-    from . import ops, props
+    from . import construtor, ops, props
+    construtor.unregister()
     props.unregister()
     ops.unregister()
