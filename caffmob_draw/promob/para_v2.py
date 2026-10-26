@@ -5,12 +5,18 @@
 - Móveis, lajes livres e malhas vinculadas vão para o complemento, que só existe no `.blend` (D-30): o contrato
   do v2 aceita no máximo 300 entidades posicionáveis, e um ambiente do Promob passa disso.
 """
+import ast
+import dataclasses
+import json
 import math
+import os
+import re
 import uuid
 from datetime import datetime, timezone
 
 from ..caffmob.contrato import normalizar_relativo
 from ..caffmob.v2.validacao import validar_documento
+from . import texturas
 
 PERTO_DA_PAREDE = 60.0          # mm que a porta pode ficar fora da face (RN-04)
 SOBREPOSICAO_MINIMA = 50.0
@@ -18,6 +24,14 @@ PEITORIL_DE_PORTA = 100.0       # abaixo disso a abertura é porta (D-07)
 TRECHO_MINIMO = 50.0            # o contrato v2 recusa trecho menor
 IGNORADOS = {'Teto': 'forro', 'LuzSpot': 'luz', 'LuzAmbiente': 'luz'}
 PALAVRAS_DE_ABERTURA = ('abert', 'janel', 'portai')
+SOBRA_RELATIVA = 20.0           # mm que o ângulo relativo ao pai precisa poupar para valer
+AUXILIAR = 10.0                 # mm: folha sem componente até esse tamanho é marcador do Promob (furo, "Sem Puxador")
+MOLDURA = 60.0                  # mm: montante da porta com vidro, que o catálogo desenharia e não vem no arquivo
+VIDRO = 8.0                     # mm: espessura do vidro desenhado dentro da moldura
+VAO_DE_VIDRO = 0.4              # fração da face do pai que um vidro filho ocupa para o pai virar moldura
+FORMAS = ('torneira', 'cuba')   # louças e metais do catálogo desenhados com silhueta, não caixa
+_CORES_DA_CLASSE = {'vidro': (0xA9, 0xC7, 0xC4), 'espelho': (0xD8, 0xDE, 0xE2), 'metal': (0x9A, 0x9D, 0xA0),
+                    'cro': (0xD0, 0xD2, 0xD4), 'alu': (0xB8, 0xBB, 0xBE), 'ino': (0xA9, 0xAC, 0xAE)}
 
 
 def _id():
@@ -28,15 +42,333 @@ def _cor_hex(rgb):
     return '#%02x%02x%02x' % tuple(rgb)
 
 
-def _girar(x, y, graus):
-    r = math.radians(graus)
-    return x * math.cos(r) - y * math.sin(r), x * math.sin(r) + y * math.cos(r)
+# -- referencial do item (071, correção da importação de armários e peças em outras superfícies) ----------------------
+#
+# Conferido nos projetos do titular:
+# - `LIMITS` traz a caixa do item no referencial dele, a partir do ponto base. Nem sempre é x ∈ [0, W], y ∈ [−D, 0],
+#   z ∈ [0, H]: peças espelhadas têm x ∈ [−W, 0] e ferragens centradas têm z ∈ [−H/2, H/2];
+# - `NORMAL` (A, B, C) é o eixo da altura do item (z local). Com a normal horizontal, a largura parte de −Z e gira pelo
+#   ângulo do item em torno da normal; a profundidade é normal × largura. Com a normal para baixo, o item é o espelho
+#   do comum (largura e profundidade giradas, altura para baixo). Os OBJ vinculados vêm nesse mesmo referencial;
+# - quando a peça tem pai, vale, entre as orientações possíveis, a que a mantém dentro do pai.
+
+def _sub(a, b):
+    return tuple(a[k] - b[k] for k in range(3))
+
+
+def _cruz(a, b):
+    return (a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0])
+
+
+def _escala(a, s):
+    return tuple(v * s for v in a)
+
+
+def _soma(*vs):
+    return tuple(sum(v[k] for v in vs) for k in range(3))
+
+
+def _unit(a):
+    n = math.sqrt(sum(v * v for v in a)) or 1.0
+    return tuple(v / n for v in a)
+
+
+def _girar_em(eixo, v, graus):
+    """Rodrigues: `v` girado `graus` em torno de `eixo` (unitário)."""
+    t = math.radians(graus)
+    c, s = math.cos(t), math.sin(t)
+    d = sum(eixo[k] * v[k] for k in range(3))
+    x = _cruz(eixo, v)
+    return tuple(v[k] * c + x[k] * s + eixo[k] * d * (1 - c) for k in range(3))
+
+
+_EIXOS = ((1, 0, 0), (-1, 0, 0), (0, 1, 0), (0, -1, 0), (0, 0, 1), (0, 0, -1))
+
+
+def _candidatos(item):
+    """Referenciais possíveis (X, Y, Z) do item, o preferido primeiro."""
+    if item.normal is None:
+        x = (math.cos(math.radians(item.rotacao)), math.sin(math.radians(item.rotacao)), 0.0)
+        return [(x, _cruz((0, 0, 1), x), (0.0, 0.0, 1.0))]
+    n = _unit(item.normal)
+    saida = []
+    if abs(n[2]) < 0.9:
+        preferidos = [((0, 0, -1), 1, 1)]
+    else:
+        preferidos = [((1, 0, 0), 1 if n[2] > 0 else -1, 1)]
+    for x0, sentido, mao in preferidos + [(e, s, h) for e in _EIXOS for s in (1, -1) for h in (1, -1)]:
+        if abs(sum(x0[k] * n[k] for k in range(3))) > 0.5:
+            continue
+        x0 = _unit(_sub(x0, _escala(n, sum(x0[k] * n[k] for k in range(3)))))
+        x = _girar_em(n, x0, sentido * item.rotacao)
+        quadro = (x, _escala(_cruz(n, x), mao), n)
+        if quadro not in saida:
+            saida.append(quadro)
+    return saida
+
+
+def caixa_local(item):
+    if item.limites is not None:
+        return item.limites
+    return (0.0, -item.profundidade, 0.0), (item.largura, 0.0, item.altura)
+
+
+def cantos(item, quadro):
+    (lo, hi), (x, y, z) = caixa_local(item), quadro
+    return [_soma(item.base, _escala(x, a), _escala(y, b), _escala(z, c))
+            for a in (lo[0], hi[0]) for b in (lo[1], hi[1]) for c in (lo[2], hi[2])]
+
+
+def envoltoria(pontos):
+    return (tuple(min(p[k] for p in pontos) for k in range(3)), tuple(max(p[k] for p in pontos) for k in range(3)))
+
+
+def referencial(item, caixa_do_pai=None, rotacao_do_pai=None):
+    """(X, Y, Z) do item: o preferido, ou o que melhor o mantém dentro da caixa do pai (mm de mundo).
+
+    Algumas peças sem normal (o fundo da cuba esculpida no granito, frentes e trilhos) trazem o ângulo relativo ao
+    pai: essa leitura só vale quando reduz à metade, e em mais de 20 mm, o quanto a peça sai do pai.
+    """
+    opcoes = _candidatos(item)
+    if caixa_do_pai is None:
+        return opcoes[0]
+    plo, phi = caixa_do_pai
+
+    def excesso(q):
+        lo, hi = envoltoria(cantos(item, q))
+        return sum(max(0.0, plo[k] - lo[k]) + max(0.0, hi[k] - phi[k]) for k in range(3))
+    melhor = min(opcoes, key=lambda q: (round(excesso(q), 1), opcoes.index(q)))
+    if item.normal is None and rotacao_do_pai:
+        t = math.radians(item.rotacao + rotacao_do_pai)
+        x = (math.cos(t), math.sin(t), 0.0)
+        relativo = (x, _cruz((0, 0, 1), x), (0.0, 0.0, 1.0))
+        e0, e1 = excesso(melhor), excesso(relativo)
+        if e1 < e0 * 0.5 and e0 - e1 > SOBRA_RELATIVA:
+            return relativo
+    return melhor
+
+
+def colocacao(item, quadro):
+    """Origem (canto da caixa, mm de mundo), eixos (X, Y, Z destro) e medidas positivas da caixa do item."""
+    (lo, hi), (x, y, z) = caixa_local(item), quadro
+    origem = _soma(item.base, _escala(x, lo[0]), _escala(y, lo[1]), _escala(z, lo[2]))
+    medidas = tuple(hi[k] - lo[k] for k in range(3))
+    if sum(_cruz(x, y)[k] * z[k] for k in range(3)) < 0:        # espelhado: anda a origem e inverte X
+        origem, x = _soma(origem, _escala(x, medidas[0])), _escala(x, -1)
+    return origem, (x, y, z), medidas
+
+
+def _do_catalogo(item):
+    """Objeto cujo desenho só existe no catálogo instalado do Promob: a entidade Catalog3D sem arquivo e os objetos
+    das camadas de decoração (cadeira, computador, ar-condicionado)."""
+    camada = texturas.fold(item.camada)
+    if item.tipo == 'ENTIDADEEXTERNA' and not item.arquivo_3d:
+        return True
+    return camada.startswith('decor') and not camada.startswith('decore-abert') or camada == 'catalog3d items'
+
+
+def _girar_z(p, centro, graus):
+    t = math.radians(graus)
+    c, s = math.cos(t), math.sin(t)
+    x, y = p[0] - centro[0], p[1] - centro[1]
+    return (centro[0] + c * x - s * y, centro[1] + s * x + c * y, p[2])
+
+
+def _faixa_z(no):
+    zs = [p[2] for p in _cantos_do_no(no)]
+    return min(zs), max(zs)
+
+
+def _frentes_com_as_gavetas(nos):
+    """No Promob a frente da gaveta e a caixa dela são irmãs, cada uma com o seu OPENSERVICE: a frente passa a filha
+    da caixa da mesma altura, para as duas abrirem juntas."""
+    gavetas = [n for n in nos if (n.get('mecanismo') or {}).get('tipo') == 'DRAWER']
+    frentes = [n for n in gavetas if n.get('componente') in ('FRENTE_GAVETA', 'POR')]
+    caixas = [n for n in gavetas if n not in frentes]
+    if not frentes or not caixas:
+        return nos
+    soltas = []
+    for frente in frentes:
+        f0, f1 = _faixa_z(frente)
+        melhor = max(caixas, key=lambda c: min(f1, _faixa_z(c)[1]) - max(f0, _faixa_z(c)[0]))
+        c0, c1 = _faixa_z(melhor)
+        if min(f1, c1) - max(f0, c0) > 0:
+            frente.pop('mecanismo')
+            melhor['filhos'].append(frente)
+            soltas.append(frente)
+    return [n for n in nos if all(n is not f for f in soltas)]
+
+
+def _todos(nos):
+    for n in nos:
+        yield n
+        yield from _todos(n['filhos'])
+
+
+def _eixos_da_face(medidas):
+    """Os dois maiores eixos da caixa (a face); o terceiro é a espessura."""
+    fina = min(range(3), key=lambda k: medidas[k])
+    return tuple(k for k in range(3) if k != fina)
+
+
+def _cantos_do_no(no):
+    o, eixos, d = no['origem'], no['eixos'], no['dimensoes']
+    return [_soma(o, _escala(eixos[0], a), _escala(eixos[1], b), _escala(eixos[2], c))
+            for a in (0, d[0]) for b in (0, d[1]) for c in (0, d[2])]
+
+
+def _no_referencial(no, p):
+    r = _sub(p, no['origem'])
+    return tuple(sum(r[i] * e[i] for i in range(3)) for e in no['eixos'])
 
 
 def origem_da_caixa(item):
-    """Canto frontal-esquerdo-inferior em mm de mundo: base + R·(0, −D, 0) (RN-03)."""
-    dx, dy = _girar(0.0, -item.profundidade, item.rotacao)
-    return (item.base[0] + dx, item.base[1] + dy, item.base[2])
+    """Canto da caixa do item em mm de mundo (com `LIMITS` e `NORMAL`)."""
+    return colocacao(item, referencial(item))[0]
+
+
+def classe_do_material(mid, material=None):
+    """'vidro', 'espelho', 'metal' ou None. Os materiais do catálogo não vêm no arquivo: vale o padrão do nome
+    (`vid_verde`, `vidro_fume`, `espelho_01`, `dec_met_lis_cro`) e, quando o material vem, a transparência dele."""
+    base = re.sub(r'\(\d+\)$', '', (mid or '').lower())
+    partes = base.split('_')
+    if material is not None and material.transparencia > 0:
+        return 'vidro'
+    if 'espelho' in base or (material is not None and material.acabamento.lower() == 'mirror'):
+        return 'espelho'
+    if 'vid' in partes or any(p.startswith('vidro') for p in partes):
+        return 'vidro'
+    if base.startswith('dec_met') or 'met' in partes:
+        return 'metal'
+    return None
+
+
+# Peça de chapa pelo nome do Promob → componente do Padrão de Dimensões (`cutting/part_roles`) ou da gaveta (os
+# mesmos códigos do adaptador DRAWERS da 072). A ordem importa: as peças da gaveta vêm antes de "lateral" e "fundo".
+COMPONENTES_POR_NOME = (
+    ('frente de gaveta', 'FRENTE_GAVETA'), ('frente gaveta', 'FRENTE_GAVETA'), ('frente', 'POR'), ('porta', 'POR'),
+    ('lateral de gaveta', 'LATERAL_GAVETA'), ('fundo de gaveta', 'FUNDO_GAVETA'),
+    ('contra frente', 'CONTRA_FRENTE_GAVETA'), ('posterior de gaveta', 'TRASEIRA_GAVETA'),
+    ('traseira de gaveta', 'TRASEIRA_GAVETA'), ('lateral', 'LAT'), ('montante', 'DIV'), ('divis', 'DIV'), ('prateleira', 'PRAT'),
+    ('base', 'BAS'), ('tampo', 'TAMP'), ('fundo', 'FUN_INF'), ('rodape', 'ROD'), ('travessa', 'TRA'),
+    ('sarrafo', 'SAR'), ('tamponamento', 'TAMPON'), ('painel', 'TAMPON'), ('moldura', 'MOL'),
+)
+
+
+def componente_da_peca(nome):
+    """Código do componente pelo nome da peça ("Lateral 15mm" → 'LAT'), ou None."""
+    limpo = ' '.join(texturas._palavras(nome))
+    return next((c for prefixo, c in COMPONENTES_POR_NOME if limpo.startswith(prefixo)), None)
+
+
+def face_do_componente(componente):
+    """Face do modelo que dá o acabamento do componente: 'ext', 'int', 'fita' ou 'fita_fro'."""
+    c = componente.upper()
+    if c.startswith('FITA'):
+        return 'fita_fro' if c.endswith('_FRO') else 'fita'
+    return 'int' if 'INTERNO' in c else 'ext'
+
+
+_ORDEM_DA_FACE = {'ext': 0, 'int': 1, 'fita_fro': 2, 'fita': 3}
+
+# -- chapa para o plano de corte (regra do OpenMob, `openmob-formats/promob.rs` `classify_leaf`, corrigida) ----------
+#
+# O OpenMob manda ao corte a folha da árvore com espessura até 40 mm, largura a partir de 60 mm e material próprio.
+# Corrigido aqui, pelo conferido nos projetos: vale também o item com filhos que tem corpo próprio (a porta com as
+# dobradiças); vidro, espelho e metal não são chapa; peça de decoração não é chapa; o papel vem do nome da peça e não
+# de um trecho do ID ("gav" punha lateral e fundo de gaveta como frente); o veio do código do Promob segue a peça.
+ESPESSURA_MAXIMA_DA_CHAPA = 40.0
+LARGURA_MINIMA_DA_CHAPA = 60.0
+
+# -- abertura (OPENSERVICE) ------------------------------------------------------------------------------------------
+MECANISMOS = {'Door': 'HINGE', 'Dumping': 'TILT', 'Sliding': 'SLIDE', 'Drawer': 'DRAWER'}
+PADRAO_DO_MAXIMO = {'HINGE': 90.0, 'TILT': 90.0, 'SLIDE': 400.0, 'DRAWER': 400.0}
+_NOS_PERMITIDOS = (ast.Expression, ast.BinOp, ast.UnaryOp, ast.IfExp, ast.Compare, ast.Constant, ast.Add, ast.Sub,
+                   ast.Mult, ast.Div, ast.USub, ast.UAdd, ast.Eq, ast.NotEq, ast.Gt, ast.Lt, ast.GtE, ast.LtE)
+
+
+def avaliar(formula, item):
+    """Valor de uma fórmula do OPENSERVICE (`@($I$?-$WIDTH$:$WIDTH$)`, `$W$-50`, `-$DEPTH$`), ou None.
+
+    Só aritmética, comparação e o `?:` sobre as medidas do item e o `$I$` (espelhada). Macro do catálogo (`#…#`,
+    `%…%`) ou variável desconhecida devolve None, e vale o padrão."""
+    t = (formula or '').strip()
+    if t.startswith('@'):
+        t = t[1:].strip()
+    if not t or '#' in t or '%' in t:
+        return None
+    inv = '1' if item.invertido else '0'
+    for nome, valor in (('$INVERTED$', inv), ('$I$', inv), ('$WIDTH$', item.largura), ('$W$', item.largura),
+                        ('$HEIGHT$', item.altura), ('$H$', item.altura), ('$DEPTH$', item.profundidade),
+                        ('$D$', item.profundidade)):
+        t = t.replace(nome, f'{float(valor):g}').replace(nome.lower(), f'{float(valor):g}')
+    if '$' in t:
+        return None
+    t = _ternario(t)
+    try:
+        arvore = ast.parse(t, mode='eval')
+    except SyntaxError:
+        return None
+    if not all(isinstance(n, _NOS_PERMITIDOS) for n in ast.walk(arvore)):
+        return None
+    try:
+        return float(eval(compile(arvore, '<openservice>', 'eval'), {'__builtins__': {}}, {}))
+    except (ZeroDivisionError, TypeError, ValueError):
+        return None
+
+
+def _fecha(t, i):
+    """Índice do `)` que fecha o `(` em `i`, ou -1."""
+    nivel = 0
+    for j in range(i, len(t)):
+        nivel += {'(': 1, ')': -1}.get(t[j], 0)
+        if nivel == 0:
+            return j
+    return -1
+
+
+def _ternario(t):
+    """`a ? b : c` do Promob → `(b) if (a) else (c)` do Python, respeitando parênteses e `?:` aninhados."""
+    t = t.strip()
+    while t.startswith('(') and _fecha(t, 0) == len(t) - 1:
+        t = t[1:-1].strip()
+    nivel, pergunta = 0, None
+    for i, ch in enumerate(t):
+        nivel += {'(': 1, ')': -1}.get(ch, 0)
+        if ch == '?' and nivel == 0:
+            pergunta = i
+            break
+    if pergunta is None:
+        return t
+    nivel, aninhados = 0, 0
+    for j in range(pergunta + 1, len(t)):
+        ch = t[j]
+        nivel += {'(': 1, ')': -1}.get(ch, 0)
+        if nivel == 0 and ch == '?':
+            aninhados += 1
+        elif nivel == 0 and ch == ':':
+            if aninhados == 0:
+                return (f'(({_ternario(t[pergunta + 1:j])}) if ({_ternario(t[:pergunta])}) '
+                        f'else ({_ternario(t[j + 1:])}))')
+            aninhados -= 1
+    return t
+
+
+def _verdadeiro(formula, item):
+    t = (formula or '').strip()
+    if t.upper() in ('Y', 'S', 'TRUE'):
+        return True
+    valor = avaliar(t, item) if t else None
+    return bool(valor)
+
+
+def _catalogo_do_addon():
+    caminho = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'textures', 'catalog.json')
+    try:
+        with open(caminho, encoding='utf-8') as f:
+            return texturas.itens_do_catalogo(json.load(f))
+    except (OSError, ValueError):
+        return []
 
 
 def resolver_macros(nome, item):
@@ -54,6 +386,7 @@ def resolver_macros(nome, item):
             i = a + 1
             continue
         saida = saida[:a] + saida[b + 1:]
+    saida = re.sub(r'\$[A-Za-z_][^$\s]*\$', '', saida)       # $REFERENCE(...)$: vem do catálogo, que não está no arquivo
     return ' '.join(saida.split())
 
 
@@ -86,10 +419,13 @@ def contorno_com_arcos(pontos):
 
 
 class Conversao:
-    def __init__(self, projeto, novo_id=_id):
+    def __init__(self, projeto, novo_id=_id, catalogo=None):
         self.projeto, self.novo_id = projeto, novo_id
+        self.catalogo = _catalogo_do_addon() if catalogo is None else catalogo
+        self._movel = 0              # > 0 dentro de uma peça que abre: o que está dentro corre junto
+        self._camada_oculta = None   # camada desligada herdada do pai (vale para os agregados)
         self.relatorio = dict(contagem={}, paredes=0, aberturas=0, caixas=0, grupos=0, lajes=0, malhas=0,
-                              ignorados=[], avisos=list(projeto.avisos))
+                              auxiliares=0, chapas=0, moveis_que_abrem=0, do_catalogo=0, ignorados=[], avisos=list(projeto.avisos))
         self.materiais_do_documento = {}
         self.materiais_do_complemento = {}
         self.trechos = []            # (parede_dict, segmento_dict, p0, u, sentido, espessura, altura)
@@ -114,12 +450,31 @@ class Conversao:
         if not mid:
             return None
         m = self.projeto.materiais.get(mid)
+        classe = classe_do_material(mid, m)
+        if classe is None:
+            entrada, veio = texturas.resolver(mid, self.catalogo, m.textura_do_sistema if m is not None else None)
+            if entrada is not None and not (m is not None and m.textura):
+                marca = entrada['id'].split('/', 1)[0]
+                return dict(id=mid, nome=f"{entrada['name']} ({marca.capitalize()})"[:80],
+                            cor=_cor_hex(m.cor if m is not None else (0xC8, 0xB8, 0xA0)), textura=None,
+                            escala=None, classe=None, transparencia=0.0, textura_catalogo=entrada['id'],
+                            tamanho=tuple(entrada.get('size-mm') or (600.0, 600.0)), veio=veio)
+            cor = texturas.cor_por_nome(mid) if m is None else None
+            if cor is not None:
+                return dict(id=mid, nome=mid[:80], cor=_cor_hex(cor), textura=None, escala=None, classe=None,
+                            transparencia=0.0)
         if mid.lower().startswith('cin_cor_'):
             return dict(id=mid, nome='Acabamento do modelo (não resolvido)', cor=_cor_hex((0xE6, 0xE4, 0xDF)),
-                        textura=None, escala=None)
+                        textura=None, escala=None, classe=None, transparencia=0.0)
         if m is None:
-            return dict(id=mid, nome=mid[:80], cor=_cor_hex((0xBD, 0xB7, 0xAE)), textura=None, escala=None)
-        return dict(id=mid, nome=m.nome, cor=_cor_hex(m.cor), textura=m.textura, escala=m.escala)
+            partes = re.sub(r'\(\d+\)$', '', mid.lower()).split('_')
+            tom = next((p for p in partes if p in ('cro', 'alu', 'ino')), None) if classe == 'metal' else None
+            cor = _CORES_DA_CLASSE.get(tom or classe, (0xBD, 0xB7, 0xAE))
+            return dict(id=mid, nome=mid[:80], cor=_cor_hex(cor), textura=None, escala=None, classe=classe,
+                        transparencia=0.6 if classe == 'vidro' else 0.0)
+        return dict(id=mid, nome=m.nome, cor=_cor_hex(m.cor), textura=m.textura, escala=m.escala, classe=classe,
+                    transparencia=m.transparencia if classe == 'vidro' and m.transparencia > 0 else
+                    (0.6 if classe == 'vidro' else 0.0))
 
     def _material_do_documento(self, mid):
         dado = self._material(mid)
@@ -187,25 +542,24 @@ class Conversao:
         return any(p in camada for p in PALAVRAS_DE_ABERTURA)
 
     def _abertura(self, item):
-        ox, oy, oz = origem_da_caixa(item)
-        cantos = []
-        for x in (0.0, item.largura):
-            for y in (0.0, item.profundidade):
-                dx, dy = _girar(x, y, item.rotacao)
-                cantos.append((ox + dx, oy + dy))
-        direcao = _girar(1.0, 0.0, item.rotacao)
+        quadro = referencial(item)
+        pontos = cantos(item, quadro)
+        oz = min(p[2] for p in pontos)
+        topo = max(p[2] for p in pontos)
+        cantos_xy = [(p[0], p[1]) for p in pontos]
+        direcao = quadro[0][:2]
         melhor = None
         for parede, segmento, p0, u, sentido, espessura, altura in self.trechos:
             if abs(direcao[0] * u[0] + direcao[1] * u[1]) < 0.9:
                 continue
             esquerda = (-u[1], u[0])
             lado = 1 if sentido == 'LEFT' else -1
-            s = [(cx - p0[0]) * u[0] + (cy - p0[1]) * u[1] for cx, cy in cantos]
-            n = [((cx - p0[0]) * esquerda[0] + (cy - p0[1]) * esquerda[1]) * lado for cx, cy in cantos]
+            s = [(cx - p0[0]) * u[0] + (cy - p0[1]) * u[1] for cx, cy in cantos_xy]
+            n = [((cx - p0[0]) * esquerda[0] + (cy - p0[1]) * esquerda[1]) * lado for cx, cy in cantos_xy]
             if not (min(n) < espessura + PERTO_DA_PAREDE and max(n) > -PERTO_DA_PAREDE):
                 continue
             x0, x1 = max(min(s), 0.0), min(max(s), segmento['comprimento'])
-            z0, z1 = max(oz, 0.0), min(oz + item.altura, altura)
+            z0, z1 = max(oz, 0.0), min(topo, altura)
             if x1 - x0 > SOBREPOSICAO_MINIMA and z1 - z0 > SOBREPOSICAO_MINIMA and (melhor is None or x1 - x0 > melhor[0]):
                 melhor = (x1 - x0, segmento, x0, x1, z0, z1)
         if melhor is None:
@@ -223,18 +577,40 @@ class Conversao:
         return True
 
     # -- móveis, lajes e malhas (complemento, D-11 e D-30) --------------------------------------------------------
-    def _no(self, item, visivel_do_pai, cadeia):
+    def _base(self, item, visivel, caixa_do_pai=None, rotacao_do_pai=None):
+        nome = resolver_macros(item.nome, item)[:160] or item.tipo
+        quadro = referencial(item, caixa_do_pai, rotacao_do_pai)
+        origem, eixos, medidas = colocacao(item, quadro)
+        base = dict(nome=nome, promob_id=item.id, tipo_promob=item.tipo, camada=item.camada, visivel=visivel,
+                    origem=origem, eixos=eixos, rotacao=item.rotacao, dimensoes=medidas)
+        return base, quadro, envoltoria(cantos(item, quadro))
+
+    def _no(self, item, visivel_do_pai, cadeia, caixa_do_pai=None, rotacao_do_pai=None):
         self._contar(item)
-        visivel = visivel_do_pai and item.visivel
+        # A dobradiça fica dentro do móvel com a porta fechada, e o copo dela não cabe no pai de 2 mm: entra oculta.
+        visivel = visivel_do_pai and item.visivel and 'dob' not in item.id.lower().split('_')
         if item.tipo in IGNORADOS:
             self._ignorar(item, IGNORADOS[item.tipo])
             return None
         if item.tipo == 'WALL':
             return None             # tratado antes (paredes e hospedados)
-        nome = resolver_macros(item.nome, item)[:160] or item.tipo
-        base = dict(nome=nome, promob_id=item.id, tipo_promob=item.tipo, camada=item.camada, visivel=visivel,
-                    origem=origem_da_caixa(item), rotacao=item.rotacao,
-                    dimensoes=(item.largura, item.profundidade, item.altura))
+        item, fechamento = self._pose_aberta(item, caixa_do_pai)
+        base, quadro, caixa_mundo = self._base(item, visivel, caixa_do_pai, rotacao_do_pai)
+        # Camada desligada no Promob vale para o item e os agregados dele (APLICATIONTYPE "AplicarNaEntidadeEAgregados"):
+        # a subárvore entra na camada desligada, e o olho dela liga tudo junto.
+        if self._camada_oculta:
+            base['camada'] = self._camada_oculta
+        oculta_aqui = not self._camada_oculta and item.camada in self.projeto.camadas_ocultas
+        if oculta_aqui:
+            self._camada_oculta = item.camada
+        try:
+            return self._no_com_base(item, visivel, cadeia, quadro, base, caixa_mundo, fechamento)
+        finally:
+            if oculta_aqui:
+                self._camada_oculta = None
+
+    def _no_com_base(self, item, visivel, cadeia, quadro, base, caixa_mundo, fechamento):
+        nome = base['nome']
         if item.tipo == 'GEOMETRY' and len(item.pontos) >= 3:
             contorno = contorno_com_arcos(item.pontos)
             if item.invertido_x:
@@ -242,10 +618,10 @@ class Conversao:
             if item.invertido_y:
                 contorno = [(x, -y) for x, y in contorno]
             if item.altura > 0 and len(contorno) >= 3:
-                laje = dict(base, tipo='laje', origem=item.base, contorno=contorno, altura=item.altura,
+                laje = dict(base, tipo='laje', origem=item.base, eixos=quadro, contorno=contorno, altura=item.altura,
                             material=self._material_do_complemento(item.material or item.material_das_faces),
                             filhos=[])
-                laje['filhos'] = self._nos(item.filhos, visivel, cadeia + [nome])
+                laje['filhos'] = self._nos(item.filhos, visivel, cadeia + [nome], caixa_mundo, item.rotacao)
                 self.relatorio['lajes'] += 1
                 return laje
         if item.tipo == 'ENTIDADEEXTERNA' and item.arquivo_3d and min(base['dimensoes']) > 0:
@@ -256,18 +632,229 @@ class Conversao:
                 return dict(base, tipo='malha', entrada=entrada,
                             material=self._material_do_complemento(item.material), filhos=[])
             self._ignorar(item, 'malha vinculada ausente; entrou como caixa')
-        filhos = self._nos(item.filhos, visivel, cadeia + [nome])
-        if item.filhos:
-            self.relatorio['grupos'] += 1
-            return dict(base, tipo='grupo', filhos=filhos)
-        if min(base['dimensoes']) <= 0:
+        mecanismo = self._mecanismo(item, quadro, visivel) if self._movel == 0 else None
+        self._movel += 1 if mecanismo else 0
+        try:
+            filhos = self._nos(item.filhos, visivel, cadeia + [nome], caixa_mundo, item.rotacao)
+        finally:
+            self._movel -= 1 if mecanismo else 0
+        no = self._no_do_corpo(item, base, filhos, cadeia)
+        # Abre a folha de verdade: a chapa (porta, frente), o grupo (gaveta, porta de alumínio) ou o vidro. A ferragem
+        # com OPENSERVICE (braços do basculante, copo da dobradiça) fica fixa.
+        if no is not None and mecanismo and (no['tipo'] == 'grupo' or no.get('chapa')
+                                              or self._classe(no.get('material')) in ('vidro', 'espelho')):
+            no['mecanismo'] = dict(mecanismo, fechar=fechamento) if fechamento else mecanismo
+        return no
+
+    def _no_do_corpo(self, item, base, filhos, cadeia):
+        # Item com componente tem corpo próprio (a porta, a torneira, a dobradiça), mesmo com filhos; sem componente,
+        # é montagem (o balcão, a caixa) e o corpo são os filhos.
+        if (item.filhos and not item.componentes) or min(base['dimensoes']) <= 0:
+            if item.filhos:
+                self.relatorio['grupos'] += 1
+                return dict(base, tipo='grupo', filhos=filhos)
             self._ignorar(item, 'sem dimensões')
             return None
-        self.relatorio['caixas'] += 1
-        return dict(base, tipo='caixa', material=self._material_do_complemento(item.material), filhos=[])
+        if not item.filhos and not item.componentes and max(base['dimensoes']) <= AUXILIAR:
+            self.relatorio['auxiliares'] += 1
+            return None
+        return self._corpo(item, base, filhos, cadeia)
 
-    def _nos(self, itens, visivel, cadeia):
-        return [n for n in (self._no(i, visivel, cadeia) for i in itens) if n is not None]
+    def _classe(self, mid):
+        return classe_do_material(mid, self.projeto.materiais.get(mid)) if mid else None
+
+    def _acabamento(self, item, componente, mid):
+        """O material do componente; o `cin_cor_000` ("cor do modelo") vira o acabamento da face no modelo."""
+        if re.sub(r'\(\d+\)$', '', (mid or '').lower()) != 'cin_cor_000' or not item.acabamentos:
+            return mid
+        face = face_do_componente(componente)
+        reserva = {'ext': 'int', 'int': 'ext', 'fita_fro': 'fita', 'fita': 'int'}[face]
+        return item.acabamentos.get(face) or item.acabamentos.get(reserva) or mid
+
+    def _materiais_dos_componentes(self, item):
+        """[(componente, material resolvido)], da face externa para a fita."""
+        pares = [(c, self._acabamento(item, c, m)) for c, m in item.componentes if m]
+        return sorted(pares, key=lambda p: _ORDEM_DA_FACE[face_do_componente(p[0])])
+
+    def _pose_aberta(self, item, caixa_do_pai):
+        """O Promob grava a peça na posição em que está (CURRENTVALUE): a gaveta deslocada, a porta girada. Devolve
+        o item com o ângulo da pose aberta e como fechá-lo (mm e graus de mundo), ou (item, None).
+
+        A porta aberta sem ROTATION própria herda o ângulo do pai, mas o ponto base já é o da porta girada: o ângulo
+        real é o herdado ± a abertura, e vale o sinal que, fechando, encosta a porta no móvel."""
+        dado = item.abertura or {}
+        tipo = MECANISMOS.get(dado.get('TYPE'))
+        atual = (avaliar(dado.get('CURRENTVALUE'), item) or 0.0) if tipo else 0.0
+        if not tipo or atual <= 0 or caixa_do_pai is None:
+            return item, None
+        if tipo in ('DRAWER', 'SLIDE'):
+            q = referencial(item, caixa_do_pai)
+            eixo = q[1] if tipo == 'DRAWER' else q[0]
+            sinal = 1.0 if tipo == 'DRAWER' else (1.0 if _verdadeiro(dado.get('INVERT'), item) else -1.0)
+            return item, dict(translacao=_escala(eixo, sinal * atual))   # volta para dentro (+Y) ou para o lado
+        if tipo != 'HINGE':
+            return item, None
+        plo, phi = (tuple(v - 40 for v in caixa_do_pai[0]), tuple(v + 40 for v in caixa_do_pai[1]))
+        melhor = None
+        aberturas = (-1.0, 1.0) if not item.rotacao_propria else (0.0,)
+        for s1 in aberturas:
+            candidato = dataclasses.replace(item, rotacao=item.rotacao + s1 * atual) if s1 else item
+            q = referencial(candidato, caixa_do_pai)
+            px, py = (avaliar(dado.get(k), candidato) or 0.0 for k in ('X', 'Y'))
+            centro = _soma(candidato.base, _escala(q[0], px), _escala(q[1], py))
+            for s2 in ((-s1,) if s1 else (-1.0, 1.0)):
+                angulo = s2 * atual
+                fechados = [_girar_z(p, centro, angulo) for p in cantos(candidato, q)]
+                lo, hi = envoltoria(fechados)
+                fora = sum(max(0.0, plo[k] - lo[k]) + max(0.0, hi[k] - phi[k]) for k in range(3))
+                if melhor is None or fora < melhor[0]:
+                    melhor = (fora, candidato, dict(centro=centro, angulo=angulo))
+        return melhor[1], melhor[2]
+
+    def _mecanismo(self, item, quadro, visivel):
+        """Porta, basculante, correr ou gaveta pelo OPENSERVICE: o eixo (mm de mundo), o curso e o estado salvo."""
+        dado = item.abertura or {}
+        tipo = MECANISMOS.get(dado.get('TYPE'))
+        if tipo is None or not visivel:
+            return None
+        maximo = avaliar(dado.get('MAX'), item) or PADRAO_DO_MAXIMO[tipo]
+        if maximo <= 0:
+            return None
+        atual = avaliar(dado.get('CURRENTVALUE'), item) or 0.0
+        out = dict(tipo=tipo, maximo=round(maximo, 3), abertura=round(max(0.0, min(1.0, atual / maximo)), 4))
+        x, y, z = quadro
+        if tipo in ('HINGE', 'TILT'):
+            px, py, pz = (avaliar(dado.get(k), item) for k in ('X', 'Y', 'Z'))
+            if px is None and py is None and pz is None:
+                return None
+            out['eixo'] = _soma(item.base, _escala(x, px or 0.0), _escala(y, py or 0.0), _escala(z, pz or 0.0))
+        elif tipo == 'SLIDE':
+            out['sentido'] = _escala(x, -1.0 if _verdadeiro(dado.get('INVERT'), item) else 1.0)
+        else:
+            out['sentido'] = _escala(y, -1.0)                 # a gaveta sai pela frente (−Y do item)
+        return out
+
+    def _chapa(self, item, base, material, cadeia):
+        """A peça para o plano de corte (regra do OpenMob corrigida), ou None."""
+        med = base['dimensoes']
+        ordem = sorted(range(3), key=lambda k: med[k])
+        fina, meio, longo = ordem
+        if not material or med[fina] > ESPESSURA_MAXIMA_DA_CHAPA or med[meio] < LARGURA_MINIMA_DA_CHAPA:
+            return None
+        if item.camada.lower().startswith('decore') or self._classe(material):
+            return None
+        dado = self._material(material) or {}
+        veio = 'NONE'
+        if dado.get('veio'):
+            eixos = base['eixos']
+            if dado['veio'] == 'V':     # o veio "vertical" do Promob: o eixo da face mais em pé (ou a profundidade)
+                eixo = max((meio, longo), key=lambda k: (round(abs(eixos[k][2]), 3), k == 1))
+            else:                       # "horizontal": o eixo da face mais deitado (a largura, se empatar)
+                eixo = min((meio, longo), key=lambda k: (round(abs(eixos[k][2]), 3), k != 0))
+            veio = 'VERTICAL' if eixo == longo else 'HORIZONTAL'
+        return dict(nome=base['nome'], modulo=(cadeia[0] if cadeia else base['nome'])[:160],
+                    componente=base.get('componente') or 'UNCLASSIFIED', comprimento=round(med[longo], 1),
+                    largura=round(med[meio], 1), espessura=round(med[fina], 1),
+                    material=(dado.get('nome') or material)[:80], veio=veio)
+
+    def _corpo(self, item, base, filhos, cadeia=()):
+        pares = self._materiais_dos_componentes(item)
+        vidros = [m for _, m in pares if self._classe(m) in ('vidro', 'espelho')]
+        outros = [m for _, m in pares if m not in vidros]
+        material = outros[0] if outros else item.material
+        base = dict(base, componentes=[[c, m] for c, m in pares])
+        componente = componente_da_peca(base['nome'])
+        if componente and outros:
+            base['componente'] = componente
+        vao = self._vao_de_vidro(base, filhos)
+        if vao is not None:
+            # Porta de alumínio com painel de vidro filho: o corpo é a moldura em volta do painel.
+            self.relatorio['grupos'] += 1
+            return dict(base, tipo='grupo', filhos=self._moldura(base, vao, material) + filhos)
+        if vidros and outros:
+            # Porta com vidro no mesmo item (madeira e vidro): moldura do material da porta e o vidro dentro.
+            a, b = _eixos_da_face(base['dimensoes'])
+            m = min(MOLDURA, base['dimensoes'][a] / 4, base['dimensoes'][b] / 4)
+            vao = (m, base['dimensoes'][a] - m, m, base['dimensoes'][b] - m)
+            self.relatorio['grupos'] += 1
+            return dict(base, tipo='grupo', filhos=self._moldura(base, vao, material) +
+                        [self._vidro(base, vao, vidros[0])] + filhos)
+        self.relatorio['caixas'] += 1
+        no = dict(base, tipo='caixa', material=self._material_do_complemento(vidros[0] if vidros and not outros
+                                                                             else material), filhos=filhos)
+        forma = next((f for f in FORMAS if f in base['nome'].lower()), None)
+        if forma:
+            no['forma'] = forma
+        chapa = self._chapa(item, base, material, cadeia) if not forma else None
+        if chapa is not None:
+            no['chapa'] = chapa
+            self.relatorio['chapas'] += 1
+        elif not forma and _do_catalogo(item):
+            no['catalogo'] = True           # o modelo 3D fica no catálogo do Promob: marcador em arame, não caixa
+            self.relatorio['do_catalogo'] += 1
+        return no
+
+    def _vao_de_vidro(self, base, filhos):
+        """Retângulo (a0, a1, b0, b1) da face do item que um vidro filho ocupa, ou None."""
+        a, b = _eixos_da_face(base['dimensoes'])
+        med = base['dimensoes']
+        for f in filhos:
+            if f['tipo'] != 'caixa' or self._classe(f.get('material')) not in ('vidro', 'espelho'):
+                continue
+            locais = [_no_referencial(base, p) for p in _cantos_do_no(f)]
+            a0, a1 = max(min(p[a] for p in locais), 0.0), min(max(p[a] for p in locais), med[a])
+            b0, b1 = max(min(p[b] for p in locais), 0.0), min(max(p[b] for p in locais), med[b])
+            if a1 > a0 and b1 > b0 and (a1 - a0) * (b1 - b0) >= VAO_DE_VIDRO * med[a] * med[b]:
+                return a0, a1, b0, b1
+        return None
+
+    def _sub_caixa(self, base, nome, desloc, dims, material):
+        origem = _soma(base['origem'], *(_escala(base['eixos'][k], desloc[k]) for k in range(3)))
+        return dict(base, nome=nome, tipo='caixa', origem=origem, dimensoes=tuple(dims),
+                    material=self._material_do_complemento(material), filhos=[])
+
+    def _moldura(self, base, vao, material):
+        """Quatro réguas em volta do vão, com toda a espessura do item."""
+        a, b = _eixos_da_face(base['dimensoes'])
+        med = base['dimensoes']
+        a0, a1, b0, b1 = vao
+        out = []
+        for x0, x1, y0, y1 in ((0, med[a], 0, b0), (0, med[a], b1, med[b]), (0, a0, b0, b1), (a1, med[a], b0, b1)):
+            if x1 - x0 > 0.5 and y1 - y0 > 0.5:
+                desloc, dims = [0.0, 0.0, 0.0], list(med)
+                desloc[a], desloc[b], dims[a], dims[b] = x0, y0, x1 - x0, y1 - y0
+                out.append(self._sub_caixa(base, base['nome'] + ' · moldura', desloc, dims, material))
+        self.relatorio['caixas'] += len(out)
+        return out
+
+    def _vidro(self, base, vao, material):
+        a, b = _eixos_da_face(base['dimensoes'])
+        fina = 3 - a - b
+        med = base['dimensoes']
+        espessura = min(VIDRO, med[fina])
+        desloc, dims = [0.0, 0.0, 0.0], list(med)
+        desloc[a], desloc[b], desloc[fina] = vao[0], vao[2], (med[fina] - espessura) / 2
+        dims[a], dims[b], dims[fina] = vao[1] - vao[0], vao[3] - vao[2], espessura
+        self.relatorio['caixas'] += 1
+        return self._sub_caixa(base, base['nome'] + ' · vidro', desloc, dims, material)
+
+    def _folhas_da_abertura(self, item, abertura_id):
+        """Porta ou janela de vidro que virou vão do v2: as folhas, o marco e a maçaneta vão ao complemento, e a
+        folha genérica do editor de paredes sai. Sem vidro, fica a folha do MOBI, que desenha melhor a porta de
+        madeira do que a caixa cinza de um modelo que o catálogo não manda."""
+        base, _quadro, caixa_mundo = self._base(item, item.visivel)
+        contagem = dict(self.relatorio)
+        filhos = self._nos(item.filhos, item.visivel, [base['nome']], caixa_mundo, item.rotacao)
+        if not any(self._classe(n.get('material')) in ('vidro', 'espelho') for n in _todos(filhos)):
+            for chave in ('caixas', 'grupos', 'auxiliares'):
+                self.relatorio[chave] = contagem[chave]
+            return None
+        self.relatorio['grupos'] += 1
+        return dict(base, tipo='grupo', filhos=filhos, abertura=abertura_id)
+
+    def _nos(self, itens, visivel, cadeia, caixa_do_pai=None, rotacao_do_pai=None):
+        nos = [n for n in (self._no(i, visivel, cadeia, caixa_do_pai, rotacao_do_pai) for i in itens) if n is not None]
+        return _frentes_com_as_gavetas(nos)
 
     # -- tudo -----------------------------------------------------------------------------------------------------
     def _paredes_do(self, itens, pavimento_id, hospedeiros):
@@ -281,13 +868,15 @@ class Conversao:
         pavimento_id = self.novo_id()
         hospedeiros = []
         self._paredes_do(self.projeto.itens, pavimento_id, hospedeiros)
-        ja_aberturas = set()
+        ja_aberturas, com_folhas = set(), []
         for parede in hospedeiros:
             for h in parede.filhos:
                 if h.tipo != 'WALL' and self._e_abertura(h):
                     if self._abertura(h):
                         ja_aberturas.add(id(h))
                         self._contar(h)
+                        if h.filhos:
+                            com_folhas.append((h, self.aberturas[-1]['id']))
 
         def soltos(itens):
             for item in itens:
@@ -297,6 +886,9 @@ class Conversao:
                 else:
                     yield item
         self.moveis = self._nos(list(soltos(self.projeto.itens)), True, [])
+        self.moveis += [n for n in (self._folhas_da_abertura(h, aid) for h, aid in com_folhas) if n is not None]
+        self.relatorio['moveis_que_abrem'] = sum(1 for n in _todos(self.moveis) if n.get('mecanismo'))
+        self.relatorio['cameras'] = len(self.projeto.cameras)
         altura = max([s['pe_direito_inicial'] for p in self.paredes for s in p['segmentos']] or [2700])
         agora = datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%S.') + '000Z'
         documento = dict(
@@ -327,10 +919,14 @@ class Conversao:
                 erros = validar_documento(documento)
         return dict(documento=documento, erros=erros, relatorio=self.relatorio,
                     complemento=dict(ambiente=self.projeto.ambiente.nome, moveis=self.moveis,
+                                     cameras=[dict(vars(c)) for c in self.projeto.cameras],
+                                     camadas_ocultas=sorted(self.projeto.camadas_ocultas),
                                      materiais=self.materiais_do_complemento),
                     cliente=dict(self.projeto.cliente))
 
 
-def converter(projeto, novo_id=_id):
-    """Documento v2 válido, complemento, cliente e relatório. `erros` só vem preenchido se nem as paredes passam."""
-    return Conversao(projeto, novo_id).converter()
+def converter(projeto, novo_id=_id, catalogo=None):
+    """Documento v2 válido, complemento, cliente e relatório. `erros` só vem preenchido se nem as paredes passam.
+
+    `catalogo`: entradas do catálogo de texturas (padrão: o do pacote do addon)."""
+    return Conversao(projeto, novo_id, catalogo).converter()

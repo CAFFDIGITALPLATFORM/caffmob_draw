@@ -2,10 +2,12 @@
 
 
 def register():
-    from . import ops
+    from . import cameras, ops
     ops.register()
+    cameras.register()
 
 
 def unregister():
-    from . import ops
+    from . import cameras, ops
+    cameras.unregister()
     ops.unregister()

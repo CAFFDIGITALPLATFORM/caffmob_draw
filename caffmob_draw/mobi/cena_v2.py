@@ -349,6 +349,7 @@ class Montagem:
         context.scene.unit_settings.scale_length = 1
         from ..data import units as btm_units
         btm_units.alinhar_cena(context.scene)      # 067 onda 8 (D-37): a cena na unidade do projeto
+        esconder_folhas_substituidas(context.scene)
         self.concluida = True
         return preparo
 
@@ -358,6 +359,17 @@ class Montagem:
         except Exception:
             for material in self.materiais['cache'].values():
                 material['caffmob_baixando'] = False
+
+
+def esconder_folhas_substituidas(scene):
+    """Vão cujas folhas vieram de fora (o projeto do Promob, 071): a folha genérica da abertura não aparece."""
+    ids = {o.get('btm_promob_abertura') for o in scene.objects if o.get('btm_promob_abertura')}
+    if not ids:
+        return
+    for obj in scene.objects:
+        if obj.get('caffmob_tipo') == 'abertura' and obj.get('caffmob_id') in ids:
+            for peca in obj.children:
+                peca.hide_viewport = peca.hide_render = True
 
 
 def construir_cena(context, documento):

@@ -109,6 +109,7 @@ def extract_production_parts(context, scene=None):
     parts.extend(record_to_part(r, values) for r in part_sources.geometry_records(scene))
     parts.extend(record_to_part(r, values) for r in part_sources.stair_records(scene))
     parts.extend(record_to_part(r, values) for r in part_sources.drawer_records(scene))
+    parts.extend(record_to_part(r, values) for r in part_sources.promob_records(scene))
     parts.sort(key=lambda p: (p.module_uid or "", p.uid))
     incompatible = [p for p in parts if p.limit_status != "OK"]
     return parts, incompatible

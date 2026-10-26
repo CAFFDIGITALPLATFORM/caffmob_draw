@@ -74,5 +74,97 @@
  "Cliente: {}": {
   "pt_BR": "Cliente: {}",
   "en_US": "Customer: {}"
+ },
+ "Vista dinâmica": {
+  "pt_BR": "Vista dinâmica",
+  "en_US": "Dynamic view"
+ },
+ "Corte anterior": {
+  "pt_BR": "Corte anterior",
+  "en_US": "Near clip"
+ },
+ "Corte posterior": {
+  "pt_BR": "Corte posterior",
+  "en_US": "Far clip"
+ },
+ "Altura do alvo": {
+  "pt_BR": "Altura do alvo",
+  "en_US": "Target height"
+ },
+ "Altura do observador": {
+  "pt_BR": "Altura do observador",
+  "en_US": "Observer height"
+ },
+ "Campo de visão": {
+  "pt_BR": "Campo de visão",
+  "en_US": "Field of view"
+ },
+ "Quadros entre duas vistas no percurso": {
+  "pt_BR": "Quadros entre duas vistas no percurso",
+  "en_US": "Frames between two views in the walkthrough"
+ },
+ "FPS": {
+  "pt_BR": "FPS",
+  "en_US": "FPS"
+ },
+ "Olha pela câmera escolhida na lista": {
+  "pt_BR": "Olha pela câmera escolhida na lista",
+  "en_US": "Look through the camera chosen in the list"
+ },
+ "Ver pela câmera": {
+  "pt_BR": "Ver pela câmera",
+  "en_US": "Look through camera"
+ },
+ "Nenhuma câmera na cena.": {
+  "pt_BR": "Nenhuma câmera na cena.",
+  "en_US": "No camera in the scene."
+ },
+ "Cria uma câmera na vista atual, com o alvo no centro da vista": {
+  "pt_BR": "Cria uma câmera na vista atual, com o alvo no centro da vista",
+  "en_US": "Create a camera from the current view, aiming at the view center"
+ },
+ "Nova câmera da vista": {
+  "pt_BR": "Nova câmera da vista",
+  "en_US": "New camera from view"
+ },
+ "Regrava a câmera escolhida com a vista atual (observador e alvo)": {
+  "pt_BR": "Regrava a câmera escolhida com a vista atual (observador e alvo)",
+  "en_US": "Overwrite the chosen camera with the current view (observer and target)"
+ },
+ "Atualizar pela vista": {
+  "pt_BR": "Atualizar pela vista",
+  "en_US": "Update from view"
+ },
+ "Saia da vista da câmera e enquadre antes de atualizar.": {
+  "pt_BR": "Saia da vista da câmera e enquadre antes de atualizar.",
+  "en_US": "Leave the camera view and frame the shot before updating."
+ },
+ "Remove a câmera escolhida e o alvo dela": {
+  "pt_BR": "Remove a câmera escolhida e o alvo dela",
+  "en_US": "Remove the chosen camera and its target"
+ },
+ "Remover câmera": {
+  "pt_BR": "Remover câmera",
+  "en_US": "Remove camera"
+ },
+ "Anima uma câmera de percurso passando por todas as vistas, na ordem da lista, e toca": {
+  "pt_BR": "Anima uma câmera de percurso passando por todas as vistas, na ordem da lista, e toca",
+  "en_US": "Animate a walkthrough camera through every view, in list order, and play it"
+ },
+ "Percorrer as vistas": {
+  "pt_BR": "Percorrer as vistas",
+  "en_US": "Walk through the views"
+ },
+ "O percurso precisa de duas câmeras ou mais.": {
+  "pt_BR": "O percurso precisa de duas câmeras ou mais.",
+  "en_US": "The walkthrough needs two or more cameras."
+ },
+ "Gerenciar câmeras": {
+  "pt_BR": "Gerenciar câmeras",
+  "en_US": "Manage cameras"
+ },
+ "{} chapas no plano de corte, {} portas e gavetas que abrem, {} câmeras": {
+  "pt_BR": "{} chapas no plano de corte, {} portas e gavetas que abrem, {} câmeras",
+  "en_US": "{} sheets in the cut plan, {} doors and drawers that open, {} cameras"
  }
 }

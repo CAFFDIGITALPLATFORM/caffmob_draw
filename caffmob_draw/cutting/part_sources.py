@@ -444,6 +444,38 @@ def drawer_records(scene):
     return records
 
 
+# ----------------------------------------------------------------------------------------------------------------
+# Adaptador PROMOB (projeto importado do Promob, 071): as chapas do complemento, pela regra do OpenMob corrigida
+# ----------------------------------------------------------------------------------------------------------------
+
+PROMOB_PROP = 'btm_promob_chapa'
+
+
+def promob_records(scene):
+    """Chapas do projeto do Promob visíveis na cena: medidas, material, papel e veio que a importação gravou.
+
+    Sem módulo do addon (`module_uid` nulo, como a geometria livre); o nome do móvel do Promob vai em `module_name`.
+    A linha fica vazia: vale a matéria-prima do Promob, sem fitas e sem limite de chapa do padrão."""
+    import json
+    records = []
+    for obj in sorted(scene.objects, key=lambda o: o.name):
+        raw = obj.get(PROMOB_PROP)
+        if not raw or obj.type != 'MESH' or not _visible(obj) or getattr(obj, 'btm_cut_exclude', False):
+            continue
+        try:
+            chapa = json.loads(raw)
+            uid = str(obj.get('btm_uid') or obj.name)
+            records.append(PartRecord(
+                uid=f"{uid}/promob/0", module_uid=None, module_name=str(chapa.get('modulo') or obj.name), line="",
+                name=str(chapa['nome']), component=str(chapa.get('componente') or part_roles.UNCLASSIFIED),
+                length=float(chapa['comprimento']), width=float(chapa['largura']),
+                thickness=float(chapa['espessura']), source="PROMOB", material=str(chapa.get('material') or ""),
+                grain=str(chapa.get('veio') or 'NONE'), key=obj.name))
+        except (TypeError, ValueError, KeyError):
+            continue
+    return records
+
+
 # (063 RN-08; D-09) O contrato do MOBI fornece as peças, sem recalcular pela 015.
 def caffmob_parts(module):
     from ..caffmob.chapas import pecas_do_modulo
