@@ -51,6 +51,7 @@ class Item:
     arquivo_3d: str = None        # FILE3D vinculado (LinkedFiles)
     normal: tuple = None          # POSICAOINSERCAO/NORMAL (A, B, C): o eixo da altura do item; None = para cima
     limites: tuple = None         # LIMITS MIN/MAX: a caixa no referencial do item, a partir do ponto base
+    limites_base: tuple = None    # LIMITS MINBASE/MAXBASE: a caixa do molde do contorno (o "Painel" vem em 1000 × 1000)
     componentes: list = field(default_factory=list)  # COMPONENTDEFINITION (ID, IDMATERIAL): o item tem corpo próprio
     acabamentos: dict = field(default_factory=dict)  # MODELS: face → acabamento ('ext', 'int', 'fita', 'fita_fro')
     abertura: dict = None         # OPENSERVICE (TYPE, MAX, X, Y, Z, INVERT, CURRENTVALUE): porta, gaveta, correr
@@ -107,6 +108,7 @@ class Projeto:
     entradas: frozenset = frozenset()
     cameras: list = field(default_factory=list)
     camadas_ocultas: frozenset = frozenset()   # camadas desligadas no Promob (LAYERSTATUS `<camada>_Visual` ON="N")
+    material_do_piso: str = None   # REGIONS do PisoTeto: o material do piso do ambiente
 
 
 def _normalizar(nome):
@@ -226,7 +228,8 @@ class Pacote:
         return Projeto(ambiente=ambiente, itens=itens, materiais=self.materiais(), cliente=self.cliente(),
                        pasta_do_documento=posixpath.dirname(ambiente.entrada), avisos=list(self.avisos),
                        entradas=frozenset(self._entradas), cameras=_cameras(ambiente.raiz),
-                       camadas_ocultas=_camadas_ocultas(ambiente.raiz))
+                       camadas_ocultas=_camadas_ocultas(ambiente.raiz),
+                       material_do_piso=_material_das_faces(topo)[0] if topo is not None else None)
 
     def materiais(self):
         chave = self.procurar('.material')
@@ -382,6 +385,10 @@ def _item(info, rotacao_do_pai, acabamentos_do_pai=None):
         hi = (_numero(mx, 'X'), _numero(mx, 'Y'), _numero(mx, 'Z'))
         if all(hi[k] - lo[k] > 1e-6 for k in range(3)):
             limites = (lo, hi)
+    bmn, bmx = info.find('LIMITS/MINBASE'), info.find('LIMITS/MAXBASE')
+    limites_base = None
+    if bmn is not None and bmx is not None:
+        limites_base = ((_numero(bmn, 'X'), _numero(bmn, 'Y')), (_numero(bmx, 'X'), _numero(bmx, 'Y')))
     comum, por_trecho = _material_das_faces(info)
     item = Item(
         tipo=info.get('TYPE') or '', id=info.get('ID') or '', nome=_descricao(info),
@@ -400,7 +407,8 @@ def _item(info, rotacao_do_pai, acabamentos_do_pai=None):
                      for c in info.findall('COMPONENTDEFINITIONCOLLECTION/COMPONENTDEFINITION')],
         acabamentos=_acabamentos(info, acabamentos_do_pai),
         abertura=dict(info.find('OPENSERVICE').attrib) if info.find('OPENSERVICE') is not None else None,
-        invertido=(info.get('INVERTED') or '').lower() == 'true', rotacao_propria=propria, furo=_furo(info))
+        invertido=(info.get('INVERTED') or '').lower() == 'true', rotacao_propria=propria, furo=_furo(info),
+        limites_base=limites_base)
     item.filhos = _filhos(info, rotacao, item.acabamentos)
     return item
 
