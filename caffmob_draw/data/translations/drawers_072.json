@@ -1,0 +1,186 @@
+{
+ "Corrediça e caixa": {
+  "pt_BR": "Corrediça e caixa",
+  "en_US": "Slide and drawer box"
+ },
+ "Corrediça oculta com amortecedor": {
+  "pt_BR": "Corrediça oculta com amortecedor",
+  "en_US": "Concealed soft-close slide"
+ },
+ "Em canal": {
+  "pt_BR": "Em canal",
+  "en_US": "In groove"
+ },
+ "Fundo de 6 mm em canal de 4 mm a 8 mm da borda": {
+  "pt_BR": "Fundo de 6 mm em canal de 4 mm a 8 mm da borda",
+  "en_US": "6 mm bottom in a 4 mm groove 8 mm from the edge"
+ },
+ "Parafusado": {
+  "pt_BR": "Parafusado",
+  "en_US": "Screwed"
+ },
+ "Fundo de 15 mm parafusado nas laterais (gavetão)": {
+  "pt_BR": "Fundo de 15 mm parafusado nas laterais (gavetão)",
+  "en_US": "15 mm bottom screwed to the sides (deep drawer)"
+ },
+ "Puxador aplicado": {
+  "pt_BR": "Puxador aplicado",
+  "en_US": "Applied handle"
+ },
+ "Cava": {
+  "pt_BR": "Cava",
+  "en_US": "Finger pull"
+ },
+ "Usinado na frente (18 mm)": {
+  "pt_BR": "Usinado na frente (18 mm)",
+  "en_US": "Machined into the front (18 mm)"
+ },
+ "Abertura por toque": {
+  "pt_BR": "Abertura por toque",
+  "en_US": "Push to open"
+ },
+ "Automático": {
+  "pt_BR": "Automático",
+  "en_US": "Automatic"
+ },
+ "O maior que cabe na profundidade": {
+  "pt_BR": "O maior que cabe na profundidade",
+  "en_US": "The longest that fits the depth"
+ },
+ "Frente (mm)": {
+  "pt_BR": "Frente (mm)",
+  "en_US": "Front (mm)"
+ },
+ "Laterais (mm)": {
+  "pt_BR": "Laterais (mm)",
+  "en_US": "Sides (mm)"
+ },
+ "Fundo (mm)": {
+  "pt_BR": "Fundo (mm)",
+  "en_US": "Bottom (mm)"
+ },
+ "Tipo de puxador": {
+  "pt_BR": "Tipo de puxador",
+  "en_US": "Handle type"
+ },
+ "Corrediça desconhecida.": {
+  "pt_BR": "Corrediça desconhecida.",
+  "en_US": "Unknown slide."
+ },
+ "Trocar corrediça": {
+  "pt_BR": "Trocar corrediça",
+  "en_US": "Change slide"
+ },
+ "Troca a corrediça da gaveta: a caixa é recalculada e a frente fica onde está": {
+  "pt_BR": "Troca a corrediça da gaveta: a caixa é recalculada e a frente fica onde está",
+  "en_US": "Changes the drawer slide: the box is recalculated and the front stays where it is"
+ },
+ "Selecione a frente de uma gaveta.": {
+  "pt_BR": "Selecione a frente de uma gaveta.",
+  "en_US": "Select a drawer front."
+ },
+ "{} de {} mm": {
+  "pt_BR": "{} de {} mm",
+  "en_US": "{} of {} mm"
+ },
+ "Comprimento da corrediça": {
+  "pt_BR": "Comprimento da corrediça",
+  "en_US": "Slide length"
+ },
+ "O maior que cabe na profundidade do vão": {
+  "pt_BR": "O maior que cabe na profundidade do vão",
+  "en_US": "The longest that fits the opening depth"
+ },
+ "Gaveta anterior à 1.20.0: escolher a corrediça refaz a caixa pelo construtor.": {
+  "pt_BR": "Gaveta anterior à 1.20.0: escolher a corrediça refaz a caixa pelo construtor.",
+  "en_US": "Drawer from before 1.20.0: choosing the slide rebuilds the box with the drawer builder."
+ },
+ "Cria um gaveteiro novo com a montagem, o tipo e as gavetas do construtor": {
+  "pt_BR": "Cria um gaveteiro novo com a montagem, o tipo e as gavetas do construtor",
+  "en_US": "Creates a new drawer unit with the builder's assembly, type and drawers"
+ },
+ "Criar gaveteiro": {
+  "pt_BR": "Criar gaveteiro",
+  "en_US": "Create drawer unit"
+ },
+ "Escolha um espaço primeiro.": {
+  "pt_BR": "Escolha um espaço primeiro.",
+  "en_US": "Choose a space first."
+ },
+ "Escolher espaço na vista 3D": {
+  "pt_BR": "Escolher espaço na vista 3D",
+  "en_US": "Pick space in the 3D view"
+ },
+ "Frente de 15 mm": {
+  "pt_BR": "Frente de 15 mm",
+  "en_US": "15 mm front"
+ },
+ "Gaveteiro novo": {
+  "pt_BR": "Gaveteiro novo",
+  "en_US": "New drawer unit"
+ },
+ "Insere as gavetas do construtor no espaço escolhido": {
+  "pt_BR": "Insere as gavetas do construtor no espaço escolhido",
+  "en_US": "Inserts the builder's drawers into the chosen space"
+ },
+ "Inserir gavetas": {
+  "pt_BR": "Inserir gavetas",
+  "en_US": "Insert drawers"
+ },
+ "Modelo salvo: {}": {
+  "pt_BR": "Modelo salvo: {}",
+  "en_US": "Model saved: {}"
+ },
+ "Oculto": {
+  "pt_BR": "Oculto",
+  "en_US": "Concealed"
+ },
+ "Passe o mouse sobre um vão | clique insere | Esc cancela": {
+  "pt_BR": "Passe o mouse sobre um vão | clique insere | Esc cancela",
+  "en_US": "Hover an opening | click inserts | Esc cancels"
+ },
+ "Passe o mouse sobre um vão: o espaço livre fica destacado com as medidas; clique para inserir as gavetas": {
+  "pt_BR": "Passe o mouse sobre um vão: o espaço livre fica destacado com as medidas; clique para inserir as gavetas",
+  "en_US": "Hover an opening: the free space is highlighted with its measurements; click to insert the drawers"
+ },
+ "Rodízios e tampo de 25 mm": {
+  "pt_BR": "Rodízios e tampo de 25 mm",
+  "en_US": "Casters and 25 mm top"
+ },
+ "Salva a gaveta selecionada como modelo seu, para usar em outros projetos": {
+  "pt_BR": "Salva a gaveta selecionada como modelo seu, para usar em outros projetos",
+  "en_US": "Saves the selected drawer as your model, to use in other projects"
+ },
+ "Salvar como modelo": {
+  "pt_BR": "Salvar como modelo",
+  "en_US": "Save as model"
+ },
+ "Salvar modelo": {
+  "pt_BR": "Salvar modelo",
+  "en_US": "Save model"
+ },
+ "Sem modelo (corrediça abaixo)": {
+  "pt_BR": "Sem modelo (corrediça abaixo)",
+  "en_US": "No model (slide below)"
+ },
+ "Suspenso": {
+  "pt_BR": "Suspenso",
+  "en_US": "Wall-hung"
+ },
+ "Volante": {
+  "pt_BR": "Volante",
+  "en_US": "Mobile"
+ },
+ "Vão com frentes: inserir substitui": {
+  "pt_BR": "Vão com frentes: inserir substitui",
+  "en_US": "Opening with fronts: inserting replaces them"
+ },
+ "Vãos de {}": {
+  "pt_BR": "Vãos de {}",
+  "en_US": "Openings of {}"
+ },
+ "{} × {} × {} mm": {
+  "pt_BR": "{} × {} × {} mm",
+  "en_US": "{} × {} × {} mm"
+ }
+}

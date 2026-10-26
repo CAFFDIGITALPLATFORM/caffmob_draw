@@ -400,6 +400,50 @@ def stair_records(scene):
     return records
 
 
+# ----------------------------------------------------------------------------------------------------------------
+# Adaptador DRAWERS (gaveta do construtor, 072 D-07): frente e peças da caixa, com o furo da oculta
+# ----------------------------------------------------------------------------------------------------------------
+
+DRAWER_COMPONENTS = {'frente': 'FRENTE_GAVETA', 'lateral': 'LATERAL_GAVETA', 'contra_frente': 'CONTRA_FRENTE_GAVETA',
+                     'traseira': 'TRASEIRA_GAVETA', 'fundo': 'FUNDO_GAVETA'}
+
+
+def drawer_records(scene):
+    """Peças das gavetas do construtor: a frente e cada peça da caixa (o núcleo recalcula pelo spec gravado)."""
+    from ..drawers import core, scene as drawer_scene
+    from ..drawers.build import pasta_do_usuario
+    from ..selection import classify
+    pasta = pasta_do_usuario()
+    records = []
+    for front in drawer_scene.drawers(scene):
+        if not drawer_scene.visible(front):
+            continue
+        gaveta, corredica = drawer_scene.spec(front), drawer_scene.corredica(front, pasta)
+        if corredica is None:
+            continue
+        root, _library = classify.module_root(front)
+        module_uid = str(root.get('btm_uid', '')) if root is not None and root.get('btm_uid') else None
+        module_name = root.name if root is not None else front.name
+        uid = drawer_scene.uid(front)
+        dims = sorted(v * 1000.0 for v in front.dimensions)
+        records.append(PartRecord(uid=f"{uid}/frente/0", module_uid=module_uid, module_name=module_name, line="",
+                                  name=front.name, component=DRAWER_COMPONENTS['frente'], length=dims[2],
+                                  width=dims[1], thickness=dims[0], source="DRAWERS"))
+        try:
+            caixa = core.caixa(drawer_scene.espaco(front), gaveta, corredica, drawer_scene.altura(front))
+        except ValueError:
+            continue
+        for row in core.registros(caixa, uid):
+            drilling = [dict(kind='HOLE', source_name="Corrediça oculta", face='FRONT', x_mm=round(f['x'], 1),
+                             y_mm=round(f['z'], 1), diameter_mm=f['diametro'], depth_mm=row['espessura'])
+                        for f in row['furos']]
+            records.append(PartRecord(
+                uid=row['uid'], module_uid=module_uid, module_name=module_name, line="", name=row['nome'],
+                component=DRAWER_COMPONENTS[row['papel']], length=row['comprimento'], width=row['largura'],
+                thickness=row['espessura'], source="DRAWERS", drilling=drilling))
+    return records
+
+
 # (063 RN-08; D-09) O contrato do MOBI fornece as peças, sem recalcular pela 015.
 def caffmob_parts(module):
     from ..caffmob.chapas import pecas_do_modulo

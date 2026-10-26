@@ -25,7 +25,7 @@ NAMES = {
     'PRATELEIRA_ARAMADA': N_("Prateleira aramada"),
     'CORREDICA_PRATELEIRA': N_("Corrediça de prateleira (par)"),
     # Feature 071 (D-27): corrimão da escada, em metros do percurso
-    'CORRIMAO': N_("Corrimão da escada (m)"),
+    'CORRIMAO': N_("Corrimão da escada"),
 }
 # Variante de divisão (feature 015) que leva ferragem: a aramada é só ferragem; a corrediça tem chapa e par de
 # corrediças. A divisão aramada fica oculta na cena, por isso conta pela divisão, e não pela visibilidade.
@@ -53,6 +53,8 @@ def drawer_items(count, module_uid, blum=False):
 
 # Coletor da cena -------------------------------------------------------------------------------------------------
 def _is_drawer_front(obj):
+    if obj.get('btm_drawer') is not None:          # 072 (D-08): a gaveta do construtor conta pela corrediça dela
+        return False
     return bool(obj.get('IS_DRAWER_FRONT') or obj.get('IS_PULLOUT_FRONT')
                 or obj.get('hb_part_role') in ('DRAWER_FRONT', 'PULLOUT_FRONT'))
 
@@ -67,9 +69,41 @@ def _blum(obj, root):
     return False
 
 
+def slide_rows(items):
+    """[(corrediça, comprimento em mm, uid do módulo)] → uma linha por corrediça e comprimento, em pares (072 D-08)."""
+    counts, names = {}, {}
+    for corredica, mm, module_uid in items:
+        code = corredica.codigo_de_ferragem(mm)
+        counts[(code, module_uid)] = counts.get((code, module_uid), 0) + 1
+        names[code] = corredica.nome_de_ferragem(mm)
+    rows = [{"code": code, "name": names[code], "quantity": n, "module_uid": uid} for (code, uid), n in counts.items()]
+    return sorted(rows, key=_order)
+
+
+def _drawer_slides(scene):
+    from ..drawers import scene as drawer_scene
+    from ..drawers.build import pasta_do_usuario
+    from ..selection import classify
+    pasta = pasta_do_usuario()
+    items = []
+    for front in drawer_scene.drawers(scene):
+        corredica = drawer_scene.corredica(front, pasta)
+        if corredica is None or not drawer_scene.visible(front):
+            continue
+        root, _library = classify.module_root(front)
+        uid = str(root.get('btm_uid', '')) if root is not None and root.get('btm_uid') else None
+        items.append((corredica, drawer_scene.comprimento(front), uid))
+    return items
+
+
 def handrail_rows(handrails):
-    """[(uid da escada, percurso em mm)] → linhas do corrimão, em metros (071 D-27; sem preço: o addon não orça)."""
-    rows = [{"code": 'CORRIMAO', "name": tr(NAMES['CORRIMAO']), "quantity": round(mm / 1000.0, 2), "module_uid": uid}
+    """[(uid da escada, percurso em mm)] → uma linha por corrimão, com o comprimento no nome (071 D-27; sem preço).
+
+    O `hardware[]` do JSON exige quantidade inteira: o corrimão conta 1 e os metros vão no nome (072, correção da
+    1.19.0, que gravava a quantidade decimal e fazia a exportação recusar o arquivo).
+    """
+    rows = [{"code": 'CORRIMAO', "name": tr("{} de {:.2f} m").format(tr(NAMES['CORRIMAO']), mm / 1000.0),
+             "quantity": 1, "module_uid": uid, "length_m": round(mm / 1000.0, 2)}
             for uid, mm in handrails if mm > 0]
     return sorted(rows, key=_order)
 
@@ -96,4 +130,4 @@ def collect(scene, ensure_uid=True):
                 items.append((str(code), module.uid))
             elif _is_drawer_front(obj):
                 items += drawer_items(1, module.uid, _blum(obj, module.obj))
-    return summarize(items) + handrail_rows(_stair_handrails(scene))
+    return summarize(items) + slide_rows(_drawer_slides(scene)) + handrail_rows(_stair_handrails(scene))

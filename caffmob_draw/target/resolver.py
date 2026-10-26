@@ -76,6 +76,13 @@ class Target:
         return bool(self.owner_uid)
 
 
+def _drawer_detail(obj, library):
+    """072 (D-09): gaveta do construtor (DRAWER) e gaveta do módulo rápido de antes da 1.20.0 (DRAWER_OLD)."""
+    if obj.get('btm_drawer') is not None:
+        return 'DRAWER'
+    return 'DRAWER_OLD' if library == 'BTM' and obj.get('hb_part_role') == 'DRAWER_FRONT' else ''
+
+
 def uid_of(obj):
     return int(getattr(obj, 'session_uid', 0) or 0) if obj is not None else 0
 
@@ -166,12 +173,17 @@ def _single(obj, cladding_controller=None):
     root = info.root
     owned = dict(owner_uid=uid_of(root), owner_name=_name(root), path=(_name(root), _name(info.obj)))
     if _is_leaf(obj) and root is not obj and cls.module_root(obj)[0] is not None:
-        return Target(kind=LEAF, scope=SCOPE_LEAF, library=info.library, **owned, **base)
+        return Target(kind=LEAF, scope=SCOPE_LEAF, library=info.library, detail=_drawer_detail(obj, info.library),
+                      **owned, **base)
     if info.kind == cls.MODULE:
         return Target(kind=MODULE, scope=SCOPE_ASSEMBLY, library=info.library,
                       authored_owner=info.library == 'AUTHORED', **base)
     if info.kind == cls.FRONT:
-        return Target(kind=FRONT, scope=SCOPE_PART, library=info.library, role=str(info.obj.get('hb_part_role') or ''),
+        role = str(info.obj.get('hb_part_role') or '')
+        # 072 (D-09): gaveta do construtor (DRAWER) e gaveta do módulo rápido de antes da 1.20.0 (DRAWER_OLD)
+        detail = 'DRAWER' if info.obj.get('btm_drawer') is not None else \
+            'DRAWER_OLD' if info.library == 'BTM' and role == 'DRAWER_FRONT' else ''
+        return Target(kind=FRONT, scope=SCOPE_PART, library=info.library, role=role, detail=detail,
                       **owned, **{**base, 'uid': uid_of(info.obj), 'name': _name(info.obj)})
     if info.kind == cls.PART:
         authored = info.library == 'AUTHORED'

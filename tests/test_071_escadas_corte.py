@@ -36,8 +36,9 @@ class CorteTest(unittest.TestCase):
         _, percurso = core.pecas(self.e)
         linhas = hardware.handrail_rows([('esc-1', percurso), ('esc-2', 0.0)])
         self.assertEqual(len(linhas), 1)
-        self.assertEqual((linhas[0]['code'], linhas[0]['module_uid']), ('CORRIMAO', 'esc-1'))
-        self.assertAlmostEqual(linhas[0]['quantity'], round(percurso / 1000, 2))
+        self.assertEqual((linhas[0]['code'], linhas[0]['module_uid'], linhas[0]['quantity']), ('CORRIMAO', 'esc-1', 1))
+        self.assertAlmostEqual(linhas[0]['length_m'], round(percurso / 1000, 2))
+        self.assertIn(f"{percurso / 1000:.2f} m", linhas[0]['name'])
 
     def test_leitura_da_cena(self):
         raiz = Raiz('Escada', {scene.ROOT_PROP: json.dumps(self.e.para_dict()), scene.UID_PROP: 'esc-1',

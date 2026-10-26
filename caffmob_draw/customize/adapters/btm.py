@@ -74,8 +74,10 @@ def read(root):
     return result
 
 
-def set_front(context, root, opening, front, drawer_count=1):
-    """067 (D-23; RF-103, RF-104): gavetas reais no módulo inteiro e frentes por subvão (`subspace_fronts`)."""
+def set_front(context, root, opening, front, drawer_count=1, gaveta=None):
+    """067 (D-23; RF-103, RF-104): gavetas reais no módulo inteiro e frentes por subvão (`subspace_fronts`).
+
+    072 (D-05, M-04): `gaveta` é o spec do construtor de gavetas; vai gravado no pedido do vão."""
     from ...geometry import subspace_fronts
     if front not in subspace_fronts.SUPPORTED:
         return [tr("O módulo paramétrico não tem a frente '{}'").format(spec.FRONT_LABELS.get(front, front))]
@@ -84,14 +86,14 @@ def set_front(context, root, opening, front, drawer_count=1):
         box = space_boxes(context, root).get(path)
         if box is None:
             return [tr("O vão {} não existe mais").format(path)]
-        return subspace_fronts.build(root, path, box, front, drawer_count)
+        return subspace_fronts.build(root, path, box, front, drawer_count, gaveta)
     if front == 'DRAWERS':
         box = space_boxes(context, root).get("module")
         if box is None:
             return [tr("O módulo não tem vão interno para gavetas")]
         if root.btm_cabinet.door_swing != 'NONE':
             root.btm_cabinet.door_swing = 'NONE'              # as portas do construtor saem
-        return subspace_fronts.build(root, "module", box, 'DRAWERS', drawer_count)
+        return subspace_fronts.build(root, "module", box, 'DRAWERS', drawer_count, gaveta)
     if subspace_fronts.front_type(root, "module") is not None:
         subspace_fronts.build(root, "module", ((0, 0, 0), (0, 0, 0)), 'OPEN')
     if front not in FRONT_TO_SWING:

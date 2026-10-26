@@ -87,7 +87,8 @@ def plano_de_corte(raiz):
     check(len(da_escada) == len([c for c in raiz.children if c.type == 'MESH']),
           "cada chapa da escada entra no plano de corte", f"{len(da_escada)}")
     linhas = [l for l in hardware.collect(bpy.context.scene) if l['code'] == 'CORRIMAO']
-    check(len(linhas) == 1 and linhas[0]['quantity'] > 2.8, "o corrimão entra nas ferragens, em metros", str(linhas))
+    check(len(linhas) == 1 and linhas[0]['quantity'] == 1 and linhas[0]['length_m'] > 2.8,
+          "o corrimão entra nas ferragens, com os metros", str(linhas))
 
 
 def painel(raiz):

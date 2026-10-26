@@ -1,8 +1,4 @@
 {
- "Corrimão da escada (m)": {
-  "pt_BR": "Corrimão da escada (m)",
-  "en_US": "Stair handrail (m)"
- },
  "Inserir escada no ambiente": {
   "pt_BR": "Inserir escada no ambiente",
   "en_US": "Insert stair in the room"
@@ -150,5 +146,13 @@
  "Escada": {
   "pt_BR": "Escada",
   "en_US": "Stair"
+ },
+ "Corrimão da escada": {
+  "pt_BR": "Corrimão da escada",
+  "en_US": "Stair handrail"
+ },
+ "{} de {:.2f} m": {
+  "pt_BR": "{} de {:.2f} m",
+  "en_US": "{} of {:.2f} m"
  }
 }
