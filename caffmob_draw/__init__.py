@@ -50,6 +50,7 @@ from . import legacy
 from . import library_panel
 from . import texture_library
 from . import mobi
+from . import promob  # feature 071: projeto do Promob no Blender
 from . import compat_identity
 from . import ui
 from . import overlays
@@ -364,6 +365,7 @@ def register():
     library_panel.register()    # feature 012: painel BIBLIOTECA CAFFMOB
     texture_library.register()  # feature 014: texturas dos fabricantes, conta CAF Mob e download
     mobi.register()  # feature 063: operadores e estado único do aparelho
+    promob.register()  # feature 071: importar .promob
 
     # Register legacy UI
     view3d_sidebar.register()
@@ -412,6 +414,7 @@ def unregister():
     view3d_sidebar.unregister()
 
     # Unregister modern UI, operators & draw handlers
+    promob.unregister()
     mobi.unregister()
     texture_library.unregister()
     library_panel.unregister()

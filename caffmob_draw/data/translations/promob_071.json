@@ -1,0 +1,78 @@
+{
+ "{} paredes, {} aberturas, {} móveis em caixas, {} lajes, {} malhas": {
+  "pt_BR": "{} paredes, {} aberturas, {} móveis em caixas, {} lajes, {} malhas",
+  "en_US": "{} walls, {} openings, {} furniture boxes, {} slabs, {} meshes"
+ },
+ "{} itens entraram como caixa: {}": {
+  "pt_BR": "{} itens entraram como caixa: {}",
+  "en_US": "{} items came in as boxes: {}"
+ },
+ "{} itens ficaram fora (forro, luz ou sem medida)": {
+  "pt_BR": "{} itens ficaram fora (forro, luz ou sem medida)",
+  "en_US": "{} items were left out (ceiling, light or no size)"
+ },
+ "Importar projeto do Promob": {
+  "pt_BR": "Importar projeto do Promob",
+  "en_US": "Import Promob project"
+ },
+ "Projeto do Promob importado": {
+  "pt_BR": "Projeto do Promob importado",
+  "en_US": "Promob project imported"
+ },
+ "Falha ao montar o projeto do Promob": {
+  "pt_BR": "Falha ao montar o projeto do Promob",
+  "en_US": "Could not build the Promob project"
+ },
+ "As paredes não passaram nas regras do editor e ficaram fora": {
+  "pt_BR": "As paredes não passaram nas regras do editor e ficaram fora",
+  "en_US": "The walls did not pass the editor rules and were left out"
+ },
+ "Abre um projeto do Promob (.promob) num arquivo novo, com paredes, portas, janelas e móveis": {
+  "pt_BR": "Abre um projeto do Promob (.promob) num arquivo novo, com paredes, portas, janelas e móveis",
+  "en_US": "Opens a Promob project (.promob) in a new file, with walls, doors, windows and furniture"
+ },
+ "Escolhe o ambiente do projeto do Promob e confirma o fechamento do arquivo atual": {
+  "pt_BR": "Escolhe o ambiente do projeto do Promob e confirma o fechamento do arquivo atual",
+  "en_US": "Chooses the Promob project environment and confirms closing the current file"
+ },
+ "O arquivo atual tem alterações não salvas, que serão descartadas.": {
+  "pt_BR": "O arquivo atual tem alterações não salvas, que serão descartadas.",
+  "en_US": "The current file has unsaved changes, which will be discarded."
+ },
+ "O projeto abre num arquivo novo do Blender.": {
+  "pt_BR": "O projeto abre num arquivo novo do Blender.",
+  "en_US": "The project opens in a new Blender file."
+ },
+ "Salvar como .blend": {
+  "pt_BR": "Salvar como .blend",
+  "en_US": "Save as .blend"
+ },
+ "Salva o projeto importado do Promob como arquivo do Blender, com as texturas embutidas": {
+  "pt_BR": "Salva o projeto importado do Promob como arquivo do Blender, com as texturas embutidas",
+  "en_US": "Saves the imported Promob project as a Blender file, with the textures packed"
+ },
+ "Projeto salvo em {}": {
+  "pt_BR": "Projeto salvo em {}",
+  "en_US": "Project saved to {}"
+ },
+ "Projeto do Promob": {
+  "pt_BR": "Projeto do Promob",
+  "en_US": "Promob project"
+ },
+ "Projeto do Promob (.promob)": {
+  "pt_BR": "Projeto do Promob (.promob)",
+  "en_US": "Promob project (.promob)"
+ },
+ "{} paredes, {} aberturas, {} móveis em caixas": {
+  "pt_BR": "{} paredes, {} aberturas, {} móveis em caixas",
+  "en_US": "{} walls, {} openings, {} furniture boxes"
+ },
+ "{} itens entraram como caixa": {
+  "pt_BR": "{} itens entraram como caixa",
+  "en_US": "{} items came in as boxes"
+ },
+ "Cliente: {}": {
+  "pt_BR": "Cliente: {}",
+  "en_US": "Customer: {}"
+ }
+}
