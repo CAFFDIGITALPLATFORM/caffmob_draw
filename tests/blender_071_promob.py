@@ -311,6 +311,25 @@ def corte_aberturas_e_cameras():
     check(n == 3 and len(cameras.todas(bpy.context.scene)) == 2, "nova câmera da vista e remover")
 
 
+def furos():
+    from caffmob_draw.mobi.cena_v2 import construir_cena
+    marco = ps._item('MODULO', 'marco', base=(1000, 5150, 0), dim=(810, 2403, 150), rot=0,
+                     nome='Marco Interno s/ Porta', camada='Decore-Aberturas', material='cin_cor_000',
+                     extra='<HOLE PRICK="Y" DEPTH="150" />')
+    parede = ps._parede([(0, 5000, 150), (3000, 5000, 150)], 2700, [marco], id_='PAREDE3')
+    erro, _ = importar(ps.promob([parede]), 'passagem.promob')
+
+    def folhas():
+        doc = json.loads(bpy.context.scene['caffmob_ambiente'])
+        aid = next(a['id'] for a in doc['aberturas'] if a['largura'] == 810)
+        vao = next(o for o in bpy.context.scene.objects if o.get('caffmob_tipo') == 'abertura' and o.get('caffmob_id') == aid)
+        return vao.children
+    check(erro is None and folhas() and all(c.hide_viewport for c in folhas()),
+          "passagem: o vão abre sem a folha genérica (E005)")
+    construir_cena(bpy.context, json.loads(bpy.context.scene['caffmob_ambiente']))
+    check(folhas() and all(c.hide_viewport for c in folhas()), "e segue sem folha depois de remontar")
+
+
 try:
     entradas()
     ambiente()
@@ -322,6 +341,7 @@ try:
     corpos()
     texturas_de_marca()
     corte_aberturas_e_cameras()
+    furos()
 except Exception:
     traceback.print_exc()
     FAILURES.append("exceção")

@@ -3,6 +3,7 @@
 Parede do contrato é a fonte da verdade. Não cria parede do Home Builder nem
 estado walls2d. Montagem incremental da T118 mantém o preparo fora da cena.
 """
+import json
 import math
 from functools import partial
 import bmesh  # type: ignore
@@ -361,9 +362,16 @@ class Montagem:
                 material['caffmob_baixando'] = False
 
 
+SEM_FOLHA_PROP = 'btm_promob_aberturas_sem_folha'   # JSON: vãos sem folha (passagem, pedaço de vão; 071 E003, E005)
+
+
 def esconder_folhas_substituidas(scene):
-    """Vão cujas folhas vieram de fora (o projeto do Promob, 071): a folha genérica da abertura não aparece."""
+    """Vão cujas folhas vieram de fora (o projeto do Promob, 071), ou que é só passagem: a folha genérica não aparece."""
     ids = {o.get('btm_promob_abertura') for o in scene.objects if o.get('btm_promob_abertura')}
+    try:
+        ids |= set(json.loads(scene.get(SEM_FOLHA_PROP) or '[]'))
+    except (TypeError, ValueError):
+        pass
     if not ids:
         return
     for obj in scene.objects:

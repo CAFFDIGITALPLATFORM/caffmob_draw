@@ -167,6 +167,24 @@ def _do_catalogo(item):
     return camada.startswith('decor') and not camada.startswith('decore-abert') or camada == 'catalog3d items'
 
 
+MARCO = 50.0                    # mm: o batente do marco desenhado em volta do vão
+PASSAGENS = ('s/ porta', 'sem porta', 'abertura p/', 'passagem', 'vao livre')
+
+
+def _passagem(item):
+    """Passagem ou abertura sem esquadria (E005): o vão sem folha."""
+    nome = texturas.fold(item.nome)
+    return any(p in nome for p in PASSAGENS)
+
+
+def _vao_do_marco(base):
+    """O vão dentro do marco: batentes dos lados e em cima; embaixo, o piso."""
+    a, b = _eixos_da_face(base['dimensoes'])
+    med = base['dimensoes']
+    m = min(MARCO, med[a] / 4, med[b] / 4)
+    return (m, med[a] - m, 0.0, med[b] - m)
+
+
 def _girar_z(p, centro, graus):
     t = math.radians(graus)
     c, s = math.cos(t), math.sin(t)
@@ -423,6 +441,9 @@ class Conversao:
         self.projeto, self.novo_id = projeto, novo_id
         self.catalogo = _catalogo_do_addon() if catalogo is None else catalogo
         self._movel = 0              # > 0 dentro de uma peça que abre: o que está dentro corre junto
+        self.parede_do_wall = {}     # id(item WALL) → id da parede do v2 (o hospedeiro dos itens dele)
+        self.aberturas_sem_folha = []   # vãos sem a folha genérica do editor de paredes (E003, E005)
+        self._sem_furo = set()       # id(item) de abertura recusada: grupo com as peças, sem o furo (E002, E004)
         self._camada_oculta = None   # camada desligada herdada do pai (vale para os agregados)
         self.relatorio = dict(contagem={}, paredes=0, aberturas=0, caixas=0, grupos=0, lajes=0, malhas=0,
                               auxiliares=0, chapas=0, moveis_que_abrem=0, do_catalogo=0, ignorados=[], avisos=list(projeto.avisos))
@@ -533,23 +554,29 @@ class Conversao:
             self.trechos.append((parede, segmento, (x0, y0), u, sentido, espessura, altura))
             anterior = angulo
         self.paredes.append(parede)
+        self.parede_do_wall[id(item)] = parede['id']
         self.relatorio['paredes'] += 1
 
-    # -- aberturas (RN-04, D-07) ----------------------------------------------------------------------------------
+    # -- aberturas (RN-04, D-07; emendas E001 a E005) --------------------------------------------------------------
     @staticmethod
     def _e_abertura(item):
+        """Fura a parede o item que o Promob marca com `HOLE PRICK="Y"`, em qualquer camada (E001). Sem furo ativo, vale
+        o nome da camada, como antes (arquivos sem `HOLE`)."""
+        if item.furo and item.furo['ativo']:
+            return True
         camada = item.camada.lower()
         return any(p in camada for p in PALAVRAS_DE_ABERTURA)
 
-    def _abertura(self, item):
+    def _pedacos(self, item, trechos):
+        """Pedaços do vão nos trechos compatíveis: (parede, segmento, p0, u, x0, x1, z0, z1)."""
         quadro = referencial(item)
         pontos = cantos(item, quadro)
         oz = min(p[2] for p in pontos)
         topo = max(p[2] for p in pontos)
         cantos_xy = [(p[0], p[1]) for p in pontos]
         direcao = quadro[0][:2]
-        melhor = None
-        for parede, segmento, p0, u, sentido, espessura, altura in self.trechos:
+        out = []
+        for parede, segmento, p0, u, sentido, espessura, altura in trechos:
             if abs(direcao[0] * u[0] + direcao[1] * u[1]) < 0.9:
                 continue
             esquerda = (-u[1], u[0])
@@ -560,21 +587,39 @@ class Conversao:
                 continue
             x0, x1 = max(min(s), 0.0), min(max(s), segmento['comprimento'])
             z0, z1 = max(oz, 0.0), min(topo, altura)
-            if x1 - x0 > SOBREPOSICAO_MINIMA and z1 - z0 > SOBREPOSICAO_MINIMA and (melhor is None or x1 - x0 > melhor[0]):
-                melhor = (x1 - x0, segmento, x0, x1, z0, z1)
-        if melhor is None:
+            if x1 - x0 > 1.0 and z1 - z0 > SOBREPOSICAO_MINIMA:
+                out.append((parede, segmento, p0, u, x0, x1, z0, z1))
+        return out
+
+    def _abertura(self, item, hospedeiro=None):
+        """Vão(s) do v2 para o item: os ids; None sem trecho compatível; [] se sobrepuser outro vão (E004).
+
+        O trecho é procurado primeiro nas paredes do `WALL` que hospeda o item (E001). A abertura que passa da divisão
+        entre trechos colineares da mesma parede fura todos eles, um vão por trecho (E003)."""
+        da_parede = [t for t in self.trechos if t[0]['id'] == self.parede_do_wall.get(id(hospedeiro))]
+        pedacos = self._pedacos(item, da_parede) or self._pedacos(item, self.trechos)
+        principais = [p for p in pedacos if p[5] - p[4] > SOBREPOSICAO_MINIMA]
+        if not principais:
             self._ignorar(item, 'abertura sem trecho de parede compatível; entrou como caixa')
-            return False
-        _, segmento, x0, x1, z0, z1 = melhor
-        ocupadas = [a for a in self.aberturas if a['segmento_id'] == segmento['id']]
-        if any(x0 < a['posicao'] + a['largura'] and a['posicao'] < x1 for a in ocupadas):
-            self._ignorar(item, 'abertura sobreposta a outra no mesmo trecho; entrou como caixa')
-            return False
-        self.aberturas.append(dict(id=self.novo_id(), tipo='DOOR' if z0 < PEITORIL_DE_PORTA else 'WINDOW',
-                                   segmento_id=segmento['id'], posicao=round(x0, 3), largura=round(x1 - x0, 3),
-                                   altura=round(z1 - z0, 3), peitoril=round(z0, 3)))
+            return None
+        parede, segmento, p0, u, x0, x1, z0, z1 = max(principais, key=lambda p: p[5] - p[4])
+        juntos = [p for p in pedacos if p[0] is parede and abs(p[3][0] * u[0] + p[3][1] * u[1]) > 0.9999
+                  and abs((p[2][0] - p0[0]) * -u[1] + (p[2][1] - p0[1]) * u[0]) < 1.0]
+        for _p, seg, _p0, _u, a0, a1, _z0, _z1 in juntos:
+            if any(a0 < a['posicao'] + a['largura'] and a['posicao'] < a1
+                   for a in self.aberturas if a['segmento_id'] == seg['id']):
+                self._ignorar(item, 'abertura sobreposta a outra no mesmo trecho; entrou com as peças, sem o furo')
+                return []
+        porta = z0 < PEITORIL_DE_PORTA      # E002: a porta vai ao piso; o contrato pede peitoril 0 na porta
+        ids = []
+        for _p, seg, _p0, _u, a0, a1, _z0, _z1 in sorted(juntos, key=lambda p: -(p[5] - p[4])):
+            ids.append(self.novo_id())
+            self.aberturas.append(dict(id=ids[-1], tipo='DOOR' if porta else 'WINDOW', segmento_id=seg['id'],
+                                       posicao=round(a0, 3), largura=round(a1 - a0, 3),
+                                       altura=round(z1 if porta else z1 - z0, 3), peitoril=0 if porta else round(z0, 3)))
         self.relatorio['aberturas'] += 1
-        return True
+        self.aberturas_sem_folha.extend(ids[1:])      # o pedaço que passa para o trecho vizinho não ganha outra folha
+        return ids
 
     # -- móveis, lajes e malhas (complemento, D-11 e D-30) --------------------------------------------------------
     def _base(self, item, visivel, caixa_do_pai=None, rotacao_do_pai=None):
@@ -647,6 +692,8 @@ class Conversao:
         return no
 
     def _no_do_corpo(self, item, base, filhos, cadeia):
+        if id(item) in self._sem_furo:
+            return self._abertura_sem_furo(item, base, filhos)
         # Item com componente tem corpo próprio (a porta, a torneira, a dobradiça), mesmo com filhos; sem componente,
         # é montagem (o balcão, a caixa) e o corpo são os filhos.
         if (item.filhos and not item.componentes) or min(base['dimensoes']) <= 0:
@@ -852,6 +899,65 @@ class Conversao:
         self.relatorio['grupos'] += 1
         return dict(base, tipo='grupo', filhos=filhos, abertura=abertura_id)
 
+    def _documento(self, pavimento_id, aberturas):
+        return dict(
+            schema='caffmob.ambiente/v2', id='validacao', version=1, atualizado_em='2026-01-01T00:00:00.000Z',
+            origem='blender', nome='validacao', unidade='mm', eixos='Z_UP',
+            configuracao_geometrica=dict(perfil='studio/1', espessuras=dict(caixa=15, porta=18, fundo=6)),
+            pavimentos=[dict(id=pavimento_id, nome='Térreo', ordem=0, pe_direito=6000,
+                             laje=dict(id='laje', ativa=False, tipo='macica', espessura=120, contrapiso=30, beiral=0,
+                                       recortes=[]), forro=dict(tipo='nenhum', material='gesso', sanca=None))],
+            paredes=self.paredes, aberturas=aberturas, modulos=[], pecas_avulsas=[], primitivas=[], escadas=[],
+            itens_externos=[], materiais=list(self.materiais_do_documento.values()), camadas=[], vinculos=[])
+
+    def _podar_aberturas(self, convertidos, pavimento_id):
+        """Valida os vãos antes de montar os móveis (E002): o item cujo vão o editor de paredes recusa volta ao
+        complemento com as peças dela, em vez de sumir."""
+        while True:
+            erros = validar_documento(self._documento(pavimento_id, self.aberturas))
+            ruins = set()
+            for erro in erros:
+                caminho = erro.get('caminho', '')
+                if caminho.startswith('aberturas['):
+                    i = int(caminho[len('aberturas['):].split(']')[0])
+                    if i < len(self.aberturas):
+                        ruins.add(self.aberturas[i]['id'])
+            if not ruins:
+                return convertidos
+            fora = [(h, ids) for h, ids in convertidos if ruins & set(ids)]
+            for h, ids in fora:
+                self.aberturas = [a for a in self.aberturas if a['id'] not in ids]
+                self.relatorio['aberturas'] -= 1
+                self._sem_furo.add(id(h))
+                self._ignorar(h, 'abertura recusada pelas regras do editor de paredes; entrou com as peças, sem o furo')
+            self.relatorio['avisos'].append(f'{len(fora)} abertura(s) recusada(s) pelas regras do editor de paredes; '
+                                            'entraram com as peças, sem o furo')
+            convertidos = [(h, ids) for h, ids in convertidos if not ruins & set(ids)]
+            if not fora:
+                return convertidos
+
+    def _visual_da_abertura(self, item, ids):
+        """O que o Promob desenha no vão: a janela de malha OBJ (E001), as folhas de vidro (3ª auditoria) ou, numa
+        passagem, só o marco (E005). Nesses casos a folha genérica do editor de paredes sai."""
+        if item.tipo == 'ENTIDADEEXTERNA' and item.arquivo_3d:
+            no = self._no(item, item.visivel, [])
+            if no is not None:
+                return dict(no, abertura=ids[0])
+        if _passagem(item):
+            self.aberturas_sem_folha.extend(ids[:1])
+            base, _quadro, _caixa = self._base(item, item.visivel)
+            molduras = self._moldura(base, _vao_do_marco(base), item.material) if item.componentes else []
+            self.relatorio['grupos'] += 1
+            return dict(base, tipo='grupo', filhos=molduras, abertura=ids[0])
+        return self._folhas_da_abertura(item, ids[0])
+
+    def _abertura_sem_furo(self, item, base, filhos):
+        """Abertura que o editor de paredes não comporta (E002, E004): as peças dela e o marco em moldura, sem
+        tapar o lugar com uma caixa."""
+        molduras = self._moldura(base, _vao_do_marco(base), item.material) if item.componentes else []
+        self.relatorio['grupos'] += 1
+        return dict(base, tipo='grupo', filhos=molduras + filhos)
+
     def _nos(self, itens, visivel, cadeia, caixa_do_pai=None, rotacao_do_pai=None):
         nos = [n for n in (self._no(i, visivel, cadeia, caixa_do_pai, rotacao_do_pai) for i in itens) if n is not None]
         return _frentes_com_as_gavetas(nos)
@@ -868,15 +974,19 @@ class Conversao:
         pavimento_id = self.novo_id()
         hospedeiros = []
         self._paredes_do(self.projeto.itens, pavimento_id, hospedeiros)
-        ja_aberturas, com_folhas = set(), []
+        convertidos = []             # (item, ids dos vãos)
         for parede in hospedeiros:
             for h in parede.filhos:
                 if h.tipo != 'WALL' and self._e_abertura(h):
-                    if self._abertura(h):
-                        ja_aberturas.add(id(h))
-                        self._contar(h)
-                        if h.filhos:
-                            com_folhas.append((h, self.aberturas[-1]['id']))
+                    ids = self._abertura(h, parede)
+                    if ids:
+                        convertidos.append((h, ids))
+                    elif ids is not None:
+                        self._sem_furo.add(id(h))       # E004: entra com as peças, sem o furo
+        convertidos = self._podar_aberturas(convertidos, pavimento_id)
+        ja_aberturas = {id(h) for h, _ in convertidos}
+        for h, _ in convertidos:
+            self._contar(h)
 
         def soltos(itens):
             for item in itens:
@@ -886,7 +996,7 @@ class Conversao:
                 else:
                     yield item
         self.moveis = self._nos(list(soltos(self.projeto.itens)), True, [])
-        self.moveis += [n for n in (self._folhas_da_abertura(h, aid) for h, aid in com_folhas) if n is not None]
+        self.moveis += [n for n in (self._visual_da_abertura(h, ids) for h, ids in convertidos) if n is not None]
         self.relatorio['moveis_que_abrem'] = sum(1 for n in _todos(self.moveis) if n.get('mecanismo'))
         self.relatorio['cameras'] = len(self.projeto.cameras)
         altura = max([s['pe_direito_inicial'] for p in self.paredes for s in p['segmentos']] or [2700])
@@ -921,6 +1031,8 @@ class Conversao:
                     complemento=dict(ambiente=self.projeto.ambiente.nome, moveis=self.moveis,
                                      cameras=[dict(vars(c)) for c in self.projeto.cameras],
                                      camadas_ocultas=sorted(self.projeto.camadas_ocultas),
+                                     aberturas_sem_folha=[a for a in self.aberturas_sem_folha
+                                                          if any(b['id'] == a for b in documento['aberturas'])],
                                      materiais=self.materiais_do_complemento),
                     cliente=dict(self.projeto.cliente))
 

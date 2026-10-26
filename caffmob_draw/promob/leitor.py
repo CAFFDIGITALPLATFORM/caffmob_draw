@@ -56,6 +56,7 @@ class Item:
     abertura: dict = None         # OPENSERVICE (TYPE, MAX, X, Y, Z, INVERT, CURRENTVALUE): porta, gaveta, correr
     invertido: bool = False       # INVERTED="true": a peça espelhada, que as fórmulas do OPENSERVICE leem como $I$
     rotacao_propria: bool = True  # False: o ângulo veio do pai (a porta aberta guarda o giro só na posição)
+    furo: dict = None             # HOLE: {'ativo': PRICK="Y", 'profundidade': DEPTH em mm ou None}; None sem HOLE
     materiais_por_trecho: dict = field(default_factory=dict)
     filhos: list = field(default_factory=list)
 
@@ -307,6 +308,15 @@ def _acabamentos(info, do_pai, caminho='MODELS//MODEL'):
     return out
 
 
+def _furo(info):
+    """O furo que o item faz no hospedeiro (`HOLE`): ativo só com `PRICK="Y"` (o `DEPTH` sozinho não fura)."""
+    h = info.find('HOLE')
+    if h is None:
+        return None
+    profundidade = _numero(h, 'DEPTH', 0.0)
+    return dict(ativo=(h.get('PRICK') or '').upper() == 'Y', profundidade=profundidade if profundidade > 0 else None)
+
+
 def _ponto(e):
     return (_numero(e, 'X'), _numero(e, 'Y'), _numero(e, 'Z'))
 
@@ -390,7 +400,7 @@ def _item(info, rotacao_do_pai, acabamentos_do_pai=None):
                      for c in info.findall('COMPONENTDEFINITIONCOLLECTION/COMPONENTDEFINITION')],
         acabamentos=_acabamentos(info, acabamentos_do_pai),
         abertura=dict(info.find('OPENSERVICE').attrib) if info.find('OPENSERVICE') is not None else None,
-        invertido=(info.get('INVERTED') or '').lower() == 'true', rotacao_propria=propria)
+        invertido=(info.get('INVERTED') or '').lower() == 'true', rotacao_propria=propria, furo=_furo(info))
     item.filhos = _filhos(info, rotacao, item.acabamentos)
     return item
 
