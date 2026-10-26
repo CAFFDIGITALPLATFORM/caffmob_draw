@@ -316,6 +316,8 @@ class Montagem:
 
     def no(self, no, colecao, pai=None):
         obj = self._no(no, colecao, pai)
+        if obj is not None and no.get('abertura'):
+            obj['btm_promob_abertura'] = no['abertura']         # a folha genérica do vão some (cena_v2)
         if obj is not None and no.get('mecanismo'):
             self.que_abrem.append((obj, no['mecanismo']))
         return obj
@@ -325,8 +327,6 @@ class Montagem:
         if no['tipo'] == 'grupo':
             obj = self._objeto(no, None, colecao, pai, matriz)
             obj.empty_display_size = 0.05
-            if no.get('abertura'):
-                obj['btm_promob_abertura'] = no['abertura']     # a folha genérica do vão some (cena_v2)
         elif no['tipo'] == 'laje':
             obj = self._objeto(no, self._malha_da_laje(no['nome'], no['contorno'], no['altura'],
                                                        self.material(no.get('material'))), colecao, pai, matriz)
@@ -356,7 +356,8 @@ class Montagem:
         cena.collection.children.link(colecao)
         for no in self.c['moveis']:
             self.no(no, colecao)
-        from ..mobi.cena_v2 import esconder_folhas_substituidas
+        from ..mobi.cena_v2 import SEM_FOLHA_PROP, esconder_folhas_substituidas
+        cena[SEM_FOLHA_PROP] = json.dumps(self.c.get('aberturas_sem_folha') or [])   # vale em toda remontagem
         esconder_folhas_substituidas(cena)
         self._baixar_texturas()
         self.context.view_layer.update()
