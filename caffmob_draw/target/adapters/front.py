@@ -22,6 +22,20 @@ def _presets(essential):
                  for label, mode, scope in _PRESETS)
 
 
+def _drawer_section(target):
+    """072 (D-09, RF-06, RF-12): corrediça da gaveta, trocada com um botão; a gaveta antiga converte ao trocar."""
+    if target.detail not in ('DRAWER', 'DRAWER_OLD'):
+        return None
+    items = [Field('drawer', 'corredica', N_("Corrediça"), essential=True)]
+    if target.detail == 'DRAWER':
+        items.append(Field('drawer', 'comprimento', N_("Comprimento da corrediça"), True,
+                           N_("O maior que cabe na profundidade do vão")))
+    else:
+        items.append(Note(N_("Gaveta anterior à 1.20.0: escolher a corrediça refaz a caixa pelo construtor."), 'INFO',
+                          True))
+    return Section('drawer', N_("Gaveta"), tuple(items), True, N_("Gaveta"))
+
+
 def sections(target):
     reason = N_("Medida da frente gerada pelo módulo: {}").format(target.owner_name)
     sheet = sheet_section(target, reason)          # o veio é de cada frente (RF-041), editável aqui
@@ -32,11 +46,17 @@ def sections(target):
         else:
             editor = (Note(MOTION_NOTE, 'INFO', False),)
         motion = Section('front', N_("Frente"), editor + _presets(True), True, N_("Peça"))
+        drawer = _drawer_section(target)
+        if drawer is not None:
+            return [drawer, sheet, motion, finish_section(target), cotas_section(target),
+                    position_section(target, read_only_reason=reason, essential=False)]
         return [sheet, motion, finish_section(target), cotas_section(target),
                 position_section(target, read_only_reason=reason, essential=False)]
     leaf = Section('leaf', N_("Folha"), (
         Field('aggregate', 'motion', N_("Movimento"), essential=True), Field('aggregate', 'hinge', essential=True),
         Field('aggregate', 'swing_sign'), Field('aggregate', 'max_angle'),
         Field('aggregate', 'open_value', N_("Abertura"), essential=True)), True, N_("Folha"))
-    return [leaf, sheet, finish_section(target), cotas_section(target),
-            position_section(target, read_only_reason=reason, essential=False)]
+    drawer = _drawer_section(target)
+    return ([drawer] if drawer is not None else []) + [leaf, sheet, finish_section(target), cotas_section(target),
+                                                       position_section(target, read_only_reason=reason,
+                                                                        essential=False)]

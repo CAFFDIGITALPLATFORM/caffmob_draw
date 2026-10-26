@@ -6,6 +6,8 @@ inteiro. Além delas, cada vão pode ter frentes próprias, geradas aqui no ret�
 - portas (esquerda, direita, duas, basculante) e gavetas reais, como folhas agregadas do módulo (`aggregates/leaf`),
   com o mecanismo pelos dados (dobradiça, `DRAWER` para a gaveta), nunca pelo nome;
 - a gaveta é a frente e uma caixa de verdade (fundo, laterais e traseira), que corre em profundidade junto com ela.
+  Com o spec do construtor de gavetas (072, `gaveta` no pedido), a caixa sai do núcleo `drawers.core` com a corrediça
+  escolhida e as peças do plano de corte; pedido sem `gaveta` (arquivos anteriores) segue a caixa simples de antes.
 
 O pedido de cada vão fica gravado na raiz (`btm_space_fronts`, JSON `{caminho: {front, count}}`) e o vão do editor
 tem um vazio escondido (`btm_space_path`) que o adaptador usa como vão da biblioteca. Refazer um vão não mexe nas
@@ -138,13 +140,45 @@ def _leaf(obj, root, motion, hinge='LEFT', travel=0.4):
     leaf.make_leaf(obj, root, motion=motion, hinge=hinge, travel=travel)
 
 
-def build(root, path, box, front, count=1):
-    """Refaz as frentes do vão `path` no retângulo `box` (lo, hi no referencial da raiz); devolve mensagens."""
+def _especificacoes(gaveta, gavetas, n):
+    """Spec de cada gaveta do vão: a lista própria (troca de corrediça por gaveta) ou o spec do vão."""
+    from ..drawers import core
+    base = core.Gaveta.de_dict(gaveta) if gaveta else None
+    lista = list(gavetas or [])
+    return [core.Gaveta.de_dict(lista[i]) if i < len(lista) and lista[i] else base for i in range(n)]
+
+
+def _validar_gavetas(box, specs_, alturas):
+    from ..drawers import build as drawer_build, catalogo, core
+    lo, hi = box
+    espaco = core.Espaco((hi[0] - lo[0]) * 1000, (hi[2] - lo[2]) * 1000, (hi[1] - lo[1]) * 1000)
+    pasta = drawer_build.pasta_do_usuario()
+    for g, h in zip(specs_, alturas):
+        if g is None:
+            continue
+        motivos = core.motivos(espaco, g, catalogo.por_id(g.corredica, pasta), h * 1000)
+        if motivos:
+            return espaco, motivos
+    return espaco, []
+
+
+def build(root, path, box, front, count=1, gaveta=None, gavetas=None):
+    """Refaz as frentes do vão `path` no retângulo `box` (lo, hi no referencial da raiz); devolve mensagens.
+
+    `gaveta` é o spec do construtor (072) para todas as gavetas do vão; `gavetas`, a lista por gaveta (troca de
+    corrediça de uma só). Sem eles, a gaveta sai com a caixa simples de antes.
+    """
     from ..data.i18n import tr
     if front not in SUPPORTED:
         return [tr("O módulo paramétrico não tem a frente '{}'").format(front)]
     if front == 'DRAWERS' and not 1 <= int(count) <= MAX_DRAWERS:
         return [tr("Quantidade de gavetas fora de 1 a {}").format(MAX_DRAWERS)]
+    if front == 'DRAWERS' and (gaveta or gavetas):
+        n = int(count)
+        alturas = [((box[1][2] - box[0][2]) - 2 * MARGIN - MARGIN * (n - 1)) / n] * n
+        _espaco, motivos = _validar_gavetas(box, _especificacoes(gaveta, gavetas, n), alturas)
+        if motivos:
+            return motivos
     clear(root, path)
     data = specs(root)
     if front == 'OPEN':
@@ -163,11 +197,25 @@ def build(root, path, box, front, count=1):
         n = int(count)
         gap = MARGIN
         each = (height - gap * (n - 1)) / n
+        especs = _especificacoes(gaveta, gavetas, n)
         for i in range(n):
             z = z0 + i * (each + gap)
-            panel = _panel(root, f"{label} gaveta {i + 1}", width, each, t, (x0, front_y, z), path, 'DRAWER_FRONT')
-            _drawer_box(root, panel, width, each, depth, t, path)
-            _leaf(panel, root, 'DRAWER', travel=depth * 0.8)
+            g = especs[i]
+            if g is None:
+                panel = _panel(root, f"{label} gaveta {i + 1}", width, each, t, (x0, front_y, z), path, 'DRAWER_FRONT')
+                _drawer_box(root, panel, width, each, depth, t, path)
+                _leaf(panel, root, 'DRAWER', travel=depth * 0.8)
+                continue
+            tf = g.frente_espessura / 1000
+            panel = _panel(root, f"{label} gaveta {i + 1}", width, each, tf, (x0, -cab.depth - tf, z), path,
+                           'DRAWER_FRONT')
+            panel['btm_drawer_index'] = i
+            from ..drawers import build as drawer_build, core
+            caixa = drawer_build.aplicar(panel, core.Espaco((hi[0] - lo[0]) * 1000, each * 1000, (hi[1] - lo[1]) * 1000),
+                                         g, each * 1000, MARGIN * 1000, g.frente_espessura)
+            for filho in panel.children:
+                filho[PATH_PROP] = path
+            _leaf(panel, root, 'DRAWER', travel=caixa.comprimento / 1000)
     elif front == 'DOUBLE_DOORS':
         half = (width - MARGIN) / 2.0
         for side, x, hinge in (('L', x0, 'LEFT'), ('R', x0 + half + MARGIN, 'RIGHT')):
@@ -181,6 +229,10 @@ def build(root, path, box, front, count=1):
         panel = _panel(root, f"{label} porta", width, height, t, (x0, front_y, z0), path, 'DOOR', side)
         _leaf(panel, root, 'SWING', hinge)
     data[path] = {'front': front, 'count': int(count) if front == 'DRAWERS' else 1, 'box': _key(box)}
+    if front == 'DRAWERS' and gaveta:
+        data[path]['gaveta'] = gaveta
+    if front == 'DRAWERS' and gavetas:
+        data[path]['gavetas'] = list(gavetas)
     _save(root, data)
     return []
 
@@ -203,5 +255,6 @@ def rebuild_all(root, boxes):
         box = boxes.get(path)
         if box is None or item.get('box') == _key(box):
             continue                              # vão do mesmo tamanho: as frentes (e a abertura delas) ficam
-        messages += build(root, path, box, item.get('front', 'OPEN'), item.get('count', 1))
+        messages += build(root, path, box, item.get('front', 'OPEN'), item.get('count', 1), item.get('gaveta'),
+                          item.get('gavetas'))
     return messages

@@ -464,6 +464,17 @@ def _shelf_setback(s):
     return cabinet_defaults.structure_params(values, line)['shelf_setback']
 
 
+def _drawer_spec(ui):
+    """072 (D-06): spec do construtor de gavetas a partir da aba Gavetas (o módulo rápido usa; as bibliotecas herdadas
+    ignoram). A aba Blum escolhe a corrediça oculta (D-11)."""
+    from ..drawers import core
+    corredica = 'oculta_soft' if ui.drawer_tab == 'BLUM' else ui.drawer_slide
+    comprimento = 0.0 if ui.drawer_length == 'AUTO' else float(ui.drawer_length)
+    return core.Gaveta(corredica=corredica, comprimento=comprimento, frente_espessura=ui.drawer_front_thickness,
+                       puxador=ui.drawer_pull_kind, lateral=ui.drawer_side, contra_frente=ui.drawer_side,
+                       fundo=ui.drawer_bottom, fundo_tipo=ui.drawer_bottom_kind).para_dict()
+
+
 def insert_payload(context, tab):
     s = props.session()
     ui = context.window_manager.btm_cabinet_editor
@@ -471,7 +482,7 @@ def insert_payload(context, tab):
         return _division_payload(ui, s)
     if tab == 'DRAWERS':
         return 'INSERT_DRAWERS', {'space': s.space, 'count': ui.drawer_count, 'variant': ui.drawer_tab,
-                                  'style': ui.drawer_style, 'pull': ui.drawer_pull}
+                                  'style': ui.drawer_style, 'pull': ui.drawer_pull, 'gaveta': _drawer_spec(ui)}
     if tab == 'DOORS':
         scope = 'FLIP' if ui.door_region == 'FLIP' else ui.door_scope
         return 'INSERT_DOORS', {'space': s.space, 'scope': scope, 'region': ui.door_region, 'style': ui.door_style,

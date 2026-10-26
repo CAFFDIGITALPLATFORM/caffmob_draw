@@ -142,6 +142,29 @@ DIV_KIND_ITEMS = [('MOVABLE', "Divisórias Móveis", "Reguláveis, com furação
                   ('NONE', "Sem Divisória", "Remove a divisória do vão")]
 DRAWER_TAB_ITEMS = [('DRAWERS', "Gavetas", ""), ('TALL', "Gavetões", "Gavetas de frente alta"),
                     ('INTERNAL', "Internas", "Gaveta atrás da porta"), ('BLUM', "Blum", "Corrediça Blum")]
+DRAWER_BOTTOM_ITEMS = [('canal', "Em canal", "Fundo de 6 mm em canal de 4 mm a 8 mm da borda"),
+                       ('parafusado', "Parafusado", "Fundo de 15 mm parafusado nas laterais (gavetão)")]
+DRAWER_PULL_KIND_ITEMS = [('externo', "Externo", "Puxador aplicado"), ('cava', "Cava", "Usinado na frente (18 mm)"),
+                          ('sem', "Sem puxador", "Abertura por toque")]
+_DRAWER_SLIDE_CACHE = []
+
+
+def _drawer_slide_items(_self, _context):
+    from ..drawers import build as drawer_build, catalogo
+    _DRAWER_SLIDE_CACHE[:] = [(c.id, c.nome, c.carga) for c in catalogo.todas(drawer_build.pasta_do_usuario())]
+    return _DRAWER_SLIDE_CACHE
+
+
+_DRAWER_LENGTH_CACHE = []
+
+
+def _drawer_length_items(_self, _context):
+    from ..drawers import catalogo
+    _DRAWER_LENGTH_CACHE[:] = [('AUTO', "Automático", "O maior que cabe na profundidade")] + \
+        [(str(c), f"{c} mm", "") for c in catalogo.COMPRIMENTOS]
+    return _DRAWER_LENGTH_CACHE
+
+
 DOOR_REGION_ITEMS = [('LOWER', "Inferior", ""), ('UPPER', "Superior", ""), ('TALL', "Alta", ""),
                      ('FLIP', "Basculante", "")]
 DOOR_SCOPE_ITEMS = [('BOTH', "Ambas", "Duas portas"), ('WHOLE', "Inteira", "Uma porta no vão"),
@@ -418,6 +441,14 @@ class BTM_PG_CabinetEditorState(bpy.types.PropertyGroup):
     drawer_count: bpy.props.IntProperty(name="Número de gavetas", default=4, min=1, max=8)  # type: ignore
     drawer_style: bpy.props.EnumProperty(name="Frente", items=_dynamic('_style_items'))  # type: ignore
     drawer_pull: bpy.props.EnumProperty(name="Puxador", items=_dynamic('_pull_items'))  # type: ignore
+    # 072 (D-06): construtor de gavetas no módulo rápido
+    drawer_slide: bpy.props.EnumProperty(name="Corrediça", items=_drawer_slide_items)  # type: ignore
+    drawer_length: bpy.props.EnumProperty(name="Comprimento", items=_drawer_length_items)  # type: ignore
+    drawer_front_thickness: bpy.props.FloatProperty(name="Frente (mm)", default=18, min=12, max=30)  # type: ignore
+    drawer_side: bpy.props.FloatProperty(name="Laterais (mm)", default=15, min=9, max=25)  # type: ignore
+    drawer_bottom: bpy.props.FloatProperty(name="Fundo (mm)", default=6, min=3, max=25)  # type: ignore
+    drawer_bottom_kind: bpy.props.EnumProperty(name="Fundo", items=DRAWER_BOTTOM_ITEMS)  # type: ignore
+    drawer_pull_kind: bpy.props.EnumProperty(name="Tipo de puxador", items=DRAWER_PULL_KIND_ITEMS)  # type: ignore
     door_region: bpy.props.EnumProperty(name="Região", items=DOOR_REGION_ITEMS, default='LOWER')  # type: ignore
     door_scope: bpy.props.EnumProperty(name="Portas", items=DOOR_SCOPE_ITEMS, default='BOTH')  # type: ignore
     door_style: bpy.props.EnumProperty(name="Estilo", items=_dynamic('_style_items'))  # type: ignore

@@ -249,6 +249,9 @@ def edit(context, root, action, data):
     if action == 'FRONT':
         if opening is None:
             return []
+        if data.get('gaveta') and adapter.LIBRARY == 'BTM':       # 072 (D-06): construtor de gavetas
+            return adapter.set_front(context, root, opening, data['front'], data.get('drawer_count', 1),
+                                     data['gaveta']) + reapply.reapply(context, root)
         current = adapter.read(root).opening(data.get('path', ''))
         if current is not None and (current.front, current.drawer_count or 0) == (
                 data['front'], data.get('drawer_count', 1) if data['front'] == 'DRAWERS' else 0):
@@ -707,8 +710,8 @@ DOOR_FRONTS = {('BOTH', False): 'DOUBLE_DOORS', ('BOTH', True): 'DOUBLE_DOORS',
                ('RIGHT', False): 'DOOR_RIGHT', ('RIGHT', True): 'DOOR_LEFT'}
 
 
-def _front_steps(context, root, path, front, count, kind, style, pull):
-    messages = edit(context, root, 'FRONT', {'path': path, 'front': front, 'drawer_count': count})
+def _front_steps(context, root, path, front, count, kind, style, pull, gaveta=None):
+    messages = edit(context, root, 'FRONT', {'path': path, 'front': front, 'drawer_count': count, 'gaveta': gaveta})
     if style:
         messages += edit(context, root, 'STYLE', {'path': path, 'kind': kind, 'style': style})
     if pull:
@@ -746,7 +749,8 @@ def insert_drawers(context, root, data):
         return messages + reapply.reapply(context, root)
     if opening is not None:
         opening.btm_custom.slide_kind = 'BLUM' if variant == 'BLUM' else ""
-    return _front_steps(context, root, path, 'DRAWERS', count, 'DRAWER', data.get('style', ""), data.get('pull', ""))
+    return _front_steps(context, root, path, 'DRAWERS', count, 'DRAWER', data.get('style', ""), data.get('pull', ""),
+                        data.get('gaveta'))
 
 
 def insert_interior(context, root, data):

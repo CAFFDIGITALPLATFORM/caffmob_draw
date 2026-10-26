@@ -52,6 +52,7 @@ from . import texture_library
 from . import mobi
 from . import promob  # feature 071: projeto do Promob no Blender
 from . import stairs  # feature 071: editor de escadas
+from . import drawers  # feature 072: construtor de gavetas
 from . import compat_identity
 from . import ui
 from . import overlays
@@ -368,6 +369,7 @@ def register():
     mobi.register()  # feature 063: operadores e estado único do aparelho
     promob.register()  # feature 071: importar .promob
     stairs.register()  # feature 071: editor de escadas
+    drawers.register()  # feature 072: construtor de gavetas
 
     # Register legacy UI
     view3d_sidebar.register()
@@ -416,6 +418,7 @@ def unregister():
     view3d_sidebar.unregister()
 
     # Unregister modern UI, operators & draw handlers
+    drawers.unregister()
     stairs.unregister()
     promob.unregister()
     mobi.unregister()

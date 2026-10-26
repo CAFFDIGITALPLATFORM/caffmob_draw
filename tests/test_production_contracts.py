@@ -60,7 +60,7 @@ class GlobalJsonTest(unittest.TestCase):
     def test_payload_valido(self):
         payload = sample_payload()
         self.assertEqual(json_exporter.validate_global_json(payload), [])
-        self.assertEqual(payload["schema_version"], "2.3.0")      # 2.3: `structure_id` (feature 015)
+        self.assertEqual(payload["schema_version"], "2.4.0")      # 2.3: `structure_id` (015); 2.4: STAIRS e DRAWERS (071, 072)
         self.assertEqual(payload["unit"], "mm")
         part = payload["parts"][0]
         self.assertEqual(part["edges"][0], {"side": 1, "material_id": None, "thickness_mm": 0.4})

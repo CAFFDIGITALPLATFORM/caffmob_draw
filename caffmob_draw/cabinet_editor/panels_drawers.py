@@ -12,6 +12,23 @@ from .panels import catalog_grid, _TabPanel, insert_button, properties_box, targ
 from .panels_tabs_common import registrar
 
 
+def _corredica_e_caixa(layout, ui):
+    """072 (D-06): corrediça e caixa da gaveta do construtor (módulo rápido)."""
+    box = layout.box()
+    box.label(text=tr("Corrediça e caixa"), icon='NLA_PUSHDOWN')
+    if ui.drawer_tab == 'BLUM':
+        box.label(text=tr("Corrediça oculta com amortecedor"))
+    else:
+        box.prop(ui, "drawer_slide", text="")
+    box.prop(ui, "drawer_length")
+    col = box.column(align=True)
+    col.prop(ui, "drawer_front_thickness")
+    col.prop(ui, "drawer_side")
+    col.prop(ui, "drawer_bottom")
+    box.prop(ui, "drawer_bottom_kind", expand=True)
+    box.prop(ui, "drawer_pull_kind", expand=True)
+
+
 class BTM_PT_CabinetEditorDrawers(_TabPanel, bpy.types.Panel):
     bl_label = "Gavetas"
     bl_idname = "BTM_PT_cabinet_editor_drawers"
@@ -48,6 +65,8 @@ class BTM_PT_CabinetEditorDrawers(_TabPanel, bpy.types.Panel):
         sub = box.row()
         sub.active = False
         sub.label(text=tr(item.description))
+        if getattr(adapter, 'LIBRARY', '') == 'BTM' and ui.drawer_tab != 'INTERNAL':
+            _corredica_e_caixa(layout, ui)
         box = layout.box()
         box.label(text=tr("Opções de frentes"))
         box.prop(ui, "drawer_style", text="")
