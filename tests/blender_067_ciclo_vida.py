@@ -28,6 +28,11 @@ Onda 7:
 - recarregar o addon 3× não duplica o timer nem deixa a tarefa de sincronia presa;
 - `sujo`, `versao_remota` e os conflitos ficam no banco: fechar a conexão e abrir outro arquivo traz os conflitos de
   volta à lista (o banco fica fora do `.blend`; fechar o Blender equivale a fechar a conexão).
+
+Onda 8:
+- salvar com a cena em metros e o projeto em mm e reabrir: a cena volta alinhada ao projeto, com os vértices iguais;
+- a parede e a porta do CAFF MOBI continuam reconhecidas depois de salvar e reabrir;
+- recarregar o addon 3× deixa um operador `caffmob.mobi_editar_entidade` e um `WindowManager.btm_mobi`.
 """
 
 import os
@@ -284,6 +289,36 @@ def wave_7(folder):
           str(sync_cloud.conflicts()))
 
 
+def wave_8(folder):
+    from caffmob_draw.selection import classify
+    for _ in range(3):
+        addon.unregister()
+        addon.register()
+    check(hasattr(bpy.types.WindowManager, 'btm_mobi') and hasattr(bpy.ops.caffmob, 'mobi_editar_entidade'),
+          "recarregar 3× mantém o btm_mobi e o operador de edição do MOBI")
+    env.clean_scene()
+    fx.ambiente_mobi_sintetico()
+    cena = bpy.context.scene
+    cena.btm_settings.btm_unit = 'MILLIMETERS'
+    cena.unit_settings.length_unit = 'METERS'           # o estado da 1.16.0 depois de importar do MOBI
+    parede = next(o for o in cena.objects if o.get('caffmob_tipo') == 'parede')
+    vertices = [tuple(v.co) for v in parede.data.vertices]
+    path = os.path.join(folder, "ciclo_onda8.blend")
+    bpy.ops.wm.save_as_mainfile(filepath=path, copy=True)
+    bpy.ops.wm.open_mainfile(filepath=path)
+    cena = bpy.context.scene
+    check(cena.unit_settings.length_unit == 'MILLIMETERS', "reabrir alinha a cena à unidade do projeto",
+          cena.unit_settings.length_unit)
+    parede = next(o for o in cena.objects if o.get('caffmob_tipo') == 'parede')
+    check([tuple(v.co) for v in parede.data.vertices] == vertices, "alinhar a unidade não muda a geometria")
+    portao = next(o for o in cena.objects if o.get('caffmob_tipo') == 'abertura')
+    folha = next(o for o in portao.children if o.get('caffmob_tipo') == 'abertura_peca')
+    check((classify.classify(parede).kind, classify.classify(parede).library) == (classify.WALL, 'MOBI'),
+          "a parede do MOBI segue reconhecida depois de reabrir")
+    check(classify.classify(folha).root is portao and classify.classify(folha).library == 'MOBI',
+          "a peça da porta do MOBI segue subindo até a porta depois de reabrir")
+
+
 try:
     with fx.banco_temporario(), tempfile.TemporaryDirectory(prefix="caffmob_067_ciclo_") as folder:
         wave_1(folder)
@@ -293,6 +328,7 @@ try:
         wave_5(folder)
         wave_6(folder)
         wave_7(folder)
+        wave_8(folder)
 except Exception:
     traceback.print_exc()
     FAILURES.append("exceção")

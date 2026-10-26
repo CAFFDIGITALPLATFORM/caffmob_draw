@@ -85,6 +85,24 @@ def get_scene_length_unit(scene=None):
     return 'MM'
 
 
+# Unidade da cena do Blender para cada unidade do projeto (`btm_settings.btm_unit`).
+SCENE_LENGTH_UNIT = {'MILLIMETERS': 'MILLIMETERS', 'CENTIMETERS': 'CENTIMETERS', 'METERS': 'METERS'}
+
+
+def alinhar_cena(scene):
+    """A unidade da cena segue a do projeto (067 onda 8, RN-16, D-37): os campos de medida nativos do Blender
+    (subtipo DISTANCE) passam a mostrar a mesma unidade dos campos de texto. `scale_length` não muda, então a geometria
+    também não (RF-161). Sem a configuração do addon, a cena fica como está."""
+    unit = SCENE_LENGTH_UNIT.get(getattr(getattr(scene, 'btm_settings', None), 'btm_unit', None))
+    if unit is None:
+        return
+    settings = scene.unit_settings
+    if settings.system != 'METRIC':
+        settings.system = 'METRIC'
+    if settings.length_unit != unit:
+        settings.length_unit = unit
+
+
 def format_number(value):
     """Formata um número removendo zeros redundantes."""
     rounded = round(value, 3)

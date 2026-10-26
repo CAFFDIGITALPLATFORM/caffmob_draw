@@ -37,6 +37,7 @@ DATA_OWNERS = {
     'finish_draft': 'BTM_PG_FinishDraft',     # WindowManager.btm_finish_draft: rascunho dos acabamentos (RF-043)
     'edgeband': 'BTM_PG_EdgeBand',            # Object.btm_edgeband da fita visual (onda 4, RF-084)
     'front_cabinet': 'BTM_PG_CabinetProperties',  # btm_cabinet do módulo rápido dono da porta (onda 5, RF-100)
+    'mobi': 'BTM_PG_MobiFields',              # WindowManager.btm_mobi: medidas da parede e da abertura do MOBI (onda 8)
 }
 
 

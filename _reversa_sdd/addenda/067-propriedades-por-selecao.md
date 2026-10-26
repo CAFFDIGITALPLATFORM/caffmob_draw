@@ -217,3 +217,29 @@ primeira vez; só um lado mudou segue sozinho (baixar, ou enviar com `If-Match`)
 um apagou e o outro editou é conflito apagar × editar; apagado de um lado e intacto do outro propaga a exclusão. O
 disparo é no login, na abertura com conta ligada e 5 s depois da última gravação no banco, sempre num timer. Sem
 rede, sem conta ou sem a capacidade, as linhas continuam `sujo`.
+
+## Atualização 2026-10-26 (onda 8, addon 1.17.0)
+
+Onda 8 da 067 (unidade única, várias paredes no editor e parede e abertura do CAFF MOBI no painel): ações T177 a
+T213, na branch `feat/067-onda8-paredes-e-unidades`, a partir da 1.16.0 (`933c3c96`).
+
+| Artefato | Seção | Tipo de impacto | Delta |
+|----------|-------|-----------------|-------|
+| `_reversa_sdd/selection/requirements.md` | RN-01 (precedência do classificador) | regra-alterada | A parede e a abertura do CAFF MOBI são reconhecidas antes do `OTHER` (ver -v002) |
+| `_reversa_sdd/selection/requirements.md` | RN-07 (raiz do componente) | regra-alterada | A raiz da abertura do CAFF MOBI conta como vão: a peça clicada sobe até ela (ver -v002) |
+| `_reversa_sdd/hb_core/requirements.md` | RN-34 (unidade da cena = `btm_unit`) | regra-alterada (só o momento) | A regra continua; a unidade de cena do Blender passa a ser alinhada a ela ao abrir, no arquivo novo, na importação do MOBI e no menu de unidades (`units.alinhar_cena`) |
+| `_reversa_sdd/walls2d/requirements.md` | RF-03 (selecionar face) | regra-alterada | A, retângulo e Shift+clique selecionam vários trechos; espessura, pés-direitos e tipo em lote num passo de desfazer. RN-16 continua: Del apaga um trecho |
+| `_reversa_sdd/selection/` | `editing.get_dimension` | regra-alterada | A abertura do MOBI mede pelo documento (largura, altura) e pelas peças (profundidade), não pela caixa do Empty |
+| n/a | `walls2d/selecao_classica.py`, `mobi/editar_v2_core.py`, `target/mobi_fields.py` | componente-novo | Seleção de vários trechos; edição do documento do MOBI pelo painel; campos `WindowManager.btm_mobi` |
+| n/a | `caffmob.mobi_editar_entidade`, `caffmob.mobi_selecionar_abertura` | componente-novo | Grava a medida no documento e remonta a cena; seleciona a abertura da lista da parede |
+| n/a | "Editar segmento" (`caffmob.mobi_editar_segmento`) | regra-alterada | Some com documento v2; no v1, campos de texto na unidade do projeto |
+
+### Versões novas das regras superadas na onda 8 (067 D-32, RF-143)
+
+- **selection RN-01 (-v002):** sem módulo, o laço dos ancestrais (inclusive) testa por nó, primeiro,
+  `caffmob_tipo == 'abertura'` → `ROOM_DOOR` (entidade com `tipo` DOOR) ou `WINDOW`, biblioteca `MOBI`, com a raiz no
+  próprio nó; `caffmob_tipo == 'parede'` → `WALL`/`MOBI`. Depois segue a ordem de antes (`IS_ENTRY_DOOR_BP`,
+  `IS_WINDOW_BP`, `btm_kind`…). `LIBRARY_LABELS['MOBI']` = "CAFF MOBI". Consequência: parede e abertura do MOBI saem
+  do Mover Sobre (`movable_root` None, motivo de parede e abertura) e não ganham escala no painel.
+- **selection RN-07 (-v002):** regra (1) da raiz do componente: algum ancestral (inclusive) é vão, agora também a raiz
+  da abertura do MOBI (`caffmob_tipo == 'abertura'`); o resto não muda.

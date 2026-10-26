@@ -15,8 +15,11 @@ class HOME_BUILDER_OT_change_units(bpy.types.Operator):
     length_unit: bpy.props.StringProperty(name="Length Unit")
 
     def execute(self, context):
-        context.scene.unit_settings.system = self.unit_system
-        context.scene.unit_settings.length_unit = self.length_unit
+        # 067 onda 8 (D-37): o menu grava a unidade do projeto; o callback dela alinha a cena (`units.alinhar_cena`).
+        settings = getattr(context.scene, 'btm_settings', None)
+        if settings is None or self.length_unit not in ('METERS', 'CENTIMETERS', 'MILLIMETERS'):
+            return {'CANCELLED'}
+        settings.btm_unit = self.length_unit
         return {'FINISHED'}
 
 
@@ -191,12 +194,11 @@ class HOME_BUILDER_MT_change_units(bpy.types.Menu):
         layout = self.layout
         unit_settings = context.scene.unit_settings
 
+        # 067 onda 8 (D-37): só as unidades do projeto; pés e polegadas não existem no `btm_unit`.
         units = [
             ("METRIC", "METERS", "Meters"),
             ("METRIC", "CENTIMETERS", "Centimeters"),
             ("METRIC", "MILLIMETERS", "Millimeters"),
-            ("IMPERIAL", "FEET", "Feet"),
-            ("IMPERIAL", "INCHES", "Inches"),
         ]
 
         for system, length, label in units:

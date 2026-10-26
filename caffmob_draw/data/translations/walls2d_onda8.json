@@ -1,0 +1,58 @@
+{
+ "Editar medida do CAFF MOBI": {
+  "pt_BR": "Editar medida do CAFF MOBI",
+  "en_US": "Edit CAFF MOBI measurement"
+ },
+ "Grava uma medida da parede ou da abertura no documento do CAFF MOBI e remonta a cena": {
+  "pt_BR": "Grava uma medida da parede ou da abertura no documento do CAFF MOBI e remonta a cena",
+  "en_US": "Saves a wall or opening measurement in the CAFF MOBI document and rebuilds the scene"
+ },
+ "Seleciona a porta ou a janela da lista da parede": {
+  "pt_BR": "Seleciona a porta ou a janela da lista da parede",
+  "en_US": "Selects the door or window from the wall list"
+ },
+ "O ambiente mudou na cena. Selecione de novo e digite a medida outra vez.": {
+  "pt_BR": "O ambiente mudou na cena. Selecione de novo e digite a medida outra vez.",
+  "en_US": "The room changed in the scene. Select again and type the measurement once more."
+ },
+ "Esta cena não tem um ambiente do CAFF MOBI.": {
+  "pt_BR": "Esta cena não tem um ambiente do CAFF MOBI.",
+  "en_US": "This scene has no CAFF MOBI room."
+ },
+ "Trecho {}: {}": {
+  "pt_BR": "Trecho {}: {}",
+  "en_US": "Segment {}: {}"
+ },
+ "Campo vazio: os trechos têm valores diferentes (Múltiplos).": {
+  "pt_BR": "Campo vazio: os trechos têm valores diferentes (Múltiplos).",
+  "en_US": "Empty field: the segments have different values (Multiple)."
+ },
+ "Abrir no editor de parede": {
+  "pt_BR": "Abrir no editor de parede",
+  "en_US": "Open in the wall editor"
+ },
+ "Sem portas nem janelas.": {
+  "pt_BR": "Sem portas nem janelas.",
+  "en_US": "No doors or windows."
+ },
+ "As medidas gravam no ambiente do CAFF MOBI, pelas regras do editor de parede.": {
+  "pt_BR": "As medidas gravam no ambiente do CAFF MOBI, pelas regras do editor de parede.",
+  "en_US": "Measurements are saved in the CAFF MOBI room, following the wall editor rules."
+ },
+ "A medida não foi aplicada; veja o motivo na barra de status.": {
+  "pt_BR": "A medida não foi aplicada; veja o motivo na barra de status.",
+  "en_US": "The measurement was not applied; see the reason in the status bar."
+ },
+ "{} · trecho {}": {
+  "pt_BR": "{} · trecho {}",
+  "en_US": "{} · segment {}"
+ },
+ "Apague um trecho por vez.": {
+  "pt_BR": "Apague um trecho por vez.",
+  "en_US": "Delete one segment at a time."
+ },
+ "Um trecho por vez": {
+  "pt_BR": "Um trecho por vez",
+  "en_US": "One segment at a time"
+ }
+}

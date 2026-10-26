@@ -67,6 +67,9 @@ class BTM_PT_WallEditorSegment(_EditorPanel, bpy.types.Panel):
             return
         layout.use_property_split = True
         layout.use_property_decorate = False
+        if s.lote():
+            _painel_lote(layout, state, s)          # 067 onda 8 (D-40, RF-163)
+            return
         layout.prop(state, "line")
         layout.prop(state, "length_text")
         angles = layout.column()
@@ -82,6 +85,25 @@ class BTM_PT_WallEditorSegment(_EditorPanel, bpy.types.Panel):
         layout.prop(state, "end_height_text")
         layout.prop(state, "direction", expand=True)
         layout.prop(state, "wall_type")
+
+
+def _painel_lote(layout, state, s):
+    """Várias paredes (D-40): espessura, pés-direitos e tipo em lote, com "Múltiplos" quando diferem. Comprimento,
+    ângulos, direção e trava valem um trecho por vez. O material não entra: o trecho do projeto do addon não o guarda,
+    e ele continua aplicado depois, no 3D."""
+    from .studio_ui import campo_texto
+    layout.label(text=tr("{} paredes selecionadas").format(len(s.lote())), icon='STICKY_UVS_LOC')
+    for field, prop in (('thickness', 'thickness_text'), ('height', 'height_text'), ('end_height', 'end_height_text')):
+        campo_texto(layout, state, prop, tr("Múltiplos") if props.multiplos(s, field) else "")
+    row = layout.row()
+    row.prop(state, "wall_type")
+    if props.multiplos(s, 'wall_type'):
+        row.label(text=tr("Múltiplos"))
+    single = layout.column()
+    single.enabled = False
+    single.prop(state, "length_text")
+    single.prop(state, "angle_abs")
+    single.label(text=tr("Um trecho por vez"), icon='INFO')
 
 
 class BTM_PT_WallEditorOpenings(_EditorPanel, bpy.types.Panel):

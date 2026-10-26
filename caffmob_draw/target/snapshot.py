@@ -70,6 +70,10 @@ def refresh(context):
         target = _with_measures(context, target)
     elif target is not None and target.kind == resolver.MULTIPLE:
         target = _with_multi(context, target)
+    elif target is not None and target.kind == resolver.OPENING and target.library == 'MOBI':
+        target = _with_mobi_owner(context, target)
+    elif target is not None and target.kind == resolver.WALL and target.library == 'MOBI':
+        target = _with_mobi_wall(context, target)
     elif target is not None and target.kind == resolver.OPENING and target.detail == 'DOOR':
         import dataclasses
         from ..openings.ops import door_of
@@ -145,6 +149,44 @@ def pose_matches(context, target):
     if entry is None or entry.target is None or entry.target.uid != target.uid:
         return False
     return entry.pose == _pose(object_for(context, target.uid))
+
+
+def _with_mobi_owner(context, target):
+    """Abertura do CAFF MOBI (067 onda 8, D-45): dono "em <parede> · trecho N", achado no documento da cena pelo trecho
+    da abertura (ela não é filha da parede). Roda só quando o snapshot é refeito, nunca no desenho."""
+    import dataclasses
+    import json
+    from ..data.i18n import tr
+    from ..mobi.editar_v2_core import dono_da_abertura
+    obj = object_for(context, target.uid)
+    try:
+        documento = json.loads(context.scene.get('caffmob_ambiente') or '{}')
+    except ValueError:
+        documento = {}
+    dono = dono_da_abertura(documento, obj.get('caffmob_id')) if obj is not None and documento.get('aberturas') else None
+    if dono is None:
+        return dataclasses.replace(target, has_leaf=target.detail == 'DOOR')
+    parede, numero = dono
+    wall = next((o for o in context.scene.objects
+                 if o.get('caffmob_tipo') == 'parede' and o.get('caffmob_id') == parede['id']), None)
+    nome = tr("{} · trecho {}").format(wall.name if wall is not None else tr("Parede"), numero)
+    return dataclasses.replace(target, owner_uid=wall.session_uid if wall is not None else 0, owner_name=nome,
+                               path=(nome, target.name), has_leaf=target.detail == 'DOOR')
+
+
+def _with_mobi_wall(context, target):
+    """Parede do CAFF MOBI (067 onda 8, D-43): trechos e aberturas lidos do JSON que a montagem gravou no objeto."""
+    import dataclasses
+    import json
+    obj = object_for(context, target.uid)
+    try:
+        parede = json.loads(obj.get('caffmob_parede') or '{}') if obj is not None else {}
+        aberturas = json.loads(obj.get('caffmob_aberturas') or '[]') if obj is not None else []
+    except ValueError:
+        parede, aberturas = {}, []
+    trechos = tuple((k + 1, s['comprimento']) for k, s in enumerate(parede.get('segmentos', [])))
+    return dataclasses.replace(target, mobi_trechos=trechos, mobi_aberturas=tuple(
+        (a['id'], a['tipo'], a['largura'], a['altura']) for a in aberturas))
 
 
 def sheet_target(context, obj):

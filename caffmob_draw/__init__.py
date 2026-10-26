@@ -105,6 +105,11 @@ def load_file_post(scene):
     # Padrão de Dimensões: definições embutidas e migrações M-01/M-02 (uma vez por arquivo).
     standards.migration.run(main_scene)
 
+    # 067 onda 8 (D-37, M-10): a unidade da cena segue a do projeto, inclusive em arquivo novo.
+    from .data import units as btm_units
+    for each in bpy.data.scenes:
+        btm_units.alinhar_cena(each)
+
     # Módulos já postos na parede viram elementos filhos dela (feature 004, D-08); nada se move.
     stick.migrate.run(bpy.context.scene)
 

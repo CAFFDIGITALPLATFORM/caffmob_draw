@@ -300,9 +300,9 @@ def _data(context, obj, key):
     wm = context.window_manager
     if key == 'selection':
         return context.scene.btm_selection
-    if key in ('move_over', 'target', 'cladding', 'finish_draft'):
+    if key in ('move_over', 'target', 'cladding', 'finish_draft', 'mobi'):
         return getattr(wm, {'move_over': 'btm_move_over', 'target': 'btm_target', 'cladding': 'btm_cladding_draft',
-                            'finish_draft': 'btm_finish_draft'}[key], None)
+                            'finish_draft': 'btm_finish_draft', 'mobi': 'btm_mobi'}[key], None)
     if obj is None:
         return None
     if key == 'object':
@@ -344,6 +344,9 @@ def _note_args(context, target, obj, args):
             values.append(getattr(getattr(obj, 'btm_cladding', None), 'diagnostic', "") or tr("sem avisos"))
         elif arg.startswith('edgeband.'):
             values.append(_edgeband_arg(obj, arg))
+        elif arg.startswith('mobi.mm.'):            # medida do documento do MOBI na unidade do projeto (onda 8)
+            from ..data import units
+            values.append(units.format_length(float(arg[8:]) / 1000, unit=units.get_scene_length_unit(context.scene)))
         else:
             values.append(tr(arg))
     return values

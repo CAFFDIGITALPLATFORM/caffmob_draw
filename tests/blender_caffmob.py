@@ -116,9 +116,10 @@ wall = next(o for o in context.scene.objects if o.get('caffmob_parede'))
 context.view_layer.objects.active = wall
 before = trechos_da_parede(ler_documento(wall['caffmob_parede']))
 s = opened['paredes'][0]['segmentos'][1]
-assert bpy.ops.caffmob.mobi_editar_segmento(indice=1, comprimento=s['comprimento'] + 200, espessura=s['espessura'],
-    pe_direito_inicial=s['pe_direito_inicial'], pe_direito_final=s['pe_direito_final'], afastamento=0,
-    flecha=0, sentido=s['sentido'], tipo=s['tipo']) == {'FINISHED'}
+# 067 onda 8 (D-38): os campos são texto na unidade do projeto (mm por padrão).
+assert bpy.ops.caffmob.mobi_editar_segmento(indice=1, comprimento=str(s['comprimento'] + 200), espessura=str(s['espessura']),
+    pe_direito_inicial=str(s['pe_direito_inicial']), pe_direito_final=str(s['pe_direito_final']), afastamento='0',
+    flecha='0', sentido=s['sentido'], tipo=s['tipo']) == {'FINISHED'}
 after = trechos_da_parede(ler_documento(wall['caffmob_parede']))
 assert abs(after[2][1][1] - before[2][1][1] - 200) < 1e-6
 print('BLENDER_CAFFMOB_OK', flush=True)
