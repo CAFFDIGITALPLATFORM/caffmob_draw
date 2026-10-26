@@ -330,6 +330,7 @@ class Montagem:
         elif no['tipo'] == 'laje':
             obj = self._objeto(no, self._malha_da_laje(no['nome'], no['contorno'], no['altura'],
                                                        self.material(no.get('material'))), colecao, pai, matriz)
+            self._peca(obj, no)
         elif no['tipo'] == 'malha':
             obj = self._malha_vinculada(no, colecao, pai)
             if obj is None:

@@ -158,11 +158,38 @@ def colocacao(item, quadro):
     return origem, (x, y, z), medidas
 
 
+def _contorno_na_medida(item, contorno):
+    """O contorno que vem como molde (o "Painel" desenhado em 1000 × 1000, igual à caixa `MINBASE`/`MAXBASE`) é
+    esticado até a medida do item (`LIMITS`), como o Promob faz; o contorno já em milímetros fica como está."""
+    if not item.limites_base or not item.limites or len(contorno) < 3:
+        return contorno
+    (bx0, by0), (bx1, by1) = item.limites_base
+    (lx0, ly0, _), (lx1, ly1, _) = item.limites
+    xs, ys = [x for x, _ in contorno], [y for _, y in contorno]
+    if bx1 - bx0 < 2 or by1 - by0 < 2:
+        return contorno
+    if abs(min(xs) - bx0) > 1 or abs(max(xs) - bx1) > 1 or abs(min(ys) - by0) > 1 or abs(max(ys) - by1) > 1:
+        return contorno
+    if abs((lx1 - lx0) - (bx1 - bx0)) < 1 and abs((ly1 - ly0) - (by1 - by0)) < 1:
+        return contorno
+    sx, sy = (lx1 - lx0) / (bx1 - bx0), (ly1 - ly0) / (by1 - by0)
+    return [(lx0 + (x - bx0) * sx, ly0 + (y - by0) * sy) for x, y in contorno]
+
+
+PEDRAS = ('granito', 'marmore', 'quartz', 'pedra', 'silestone', 'dekton', 'porcelanato')
+
+
+def _pedra(material):
+    return any(p in texturas.fold(material or '') for p in PEDRAS)
+
+
 def _do_catalogo(item):
-    """Objeto cujo desenho só existe no catálogo instalado do Promob: a entidade Catalog3D sem arquivo e os objetos
-    das camadas de decoração (cadeira, computador, ar-condicionado)."""
+    """Objeto cujo desenho só existe no catálogo instalado do Promob: a entidade Catalog3D sem arquivo, os objetos
+    das camadas de decoração (cadeira, computador, ar-condicionado) e a persiana da janela."""
     camada = texturas.fold(item.camada)
     if item.tipo == 'ENTIDADEEXTERNA' and not item.arquivo_3d:
+        return True
+    if 'persiana' in texturas.fold(item.nome):
         return True
     return camada.startswith('decor') and not camada.startswith('decore-abert') or camada == 'catalog3d items'
 
@@ -484,7 +511,7 @@ class Conversao:
             if cor is not None:
                 return dict(id=mid, nome=mid[:80], cor=_cor_hex(cor), textura=None, escala=None, classe=None,
                             transparencia=0.0)
-        if mid.lower().startswith('cin_cor_'):
+        if mid.lower().startswith('cin_cor_') and m is None:
             return dict(id=mid, nome='Acabamento do modelo (não resolvido)', cor=_cor_hex((0xE6, 0xE4, 0xDF)),
                         textura=None, escala=None, classe=None, transparencia=0.0)
         if m is None:
@@ -515,16 +542,18 @@ class Conversao:
     # -- paredes (D-06) -------------------------------------------------------------------------------------------
     def _parede(self, item, pavimento_id):
         altura = item.altura
-        pontos = []
-        for x, y, e in item.pontos:
+        pontos, originais = [], []           # originais: índice no arquivo de cada ponto mantido (INDICEFORMA)
+        for i, (x, y, e) in enumerate(item.pontos):
             if pontos and math.hypot(x - pontos[-1][0], y - pontos[-1][1]) < TRECHO_MINIMO:
                 if math.hypot(x - pontos[-1][0], y - pontos[-1][1]) >= 1:
                     self.relatorio['avisos'].append(f'Trecho curto unido ({item.nome[:40]})')
                 continue
             pontos.append((x, y, e))
+            originais.append(i)
         fechada = len(pontos) > 2 and math.hypot(pontos[0][0] - pontos[-1][0], pontos[0][1] - pontos[-1][1]) < TRECHO_MINIMO
         if fechada:
             pontos.pop()
+            originais.pop()
         if len(pontos) < 2:
             self._ignorar(item, 'parede sem trecho')
             return
@@ -549,6 +578,13 @@ class Conversao:
                             angulo_relativo=0 if anterior is None else normalizar_relativo(angulo - anterior),
                             espessura=espessura, pe_direito_inicial=altura, pe_direito_final=altura, afastamento=0,
                             flecha=0, sentido=sentido, tipo='NORMAL', estado='ativo')
+            # Face de um trecho só (REGIONS PAREDE_FACE_PERFIL_..._INDICEFORMA_n): de 0 a n-1, a face do percurso, que
+            # no addon é a externa; de n+1 a 2n, a face do outro lado da espessura, em ordem inversa.
+            n, k = len(item.pontos) - 1, originais[len(parede['segmentos'])]
+            for chave, indice in (('material_externo_id', k), ('material_interno_id', 2 * n - k)):
+                proprio = item.materiais_por_trecho.get(indice)
+                if proprio and proprio != item.material_das_faces and (m := self._material_do_documento(proprio)):
+                    segmento[chave] = m
             parede['segmentos'].append(segmento)
             u = ((x1 - x0) / comprimento, (y1 - y0) / comprimento)
             self.trechos.append((parede, segmento, (x0, y0), u, sentido, espessura, altura))
@@ -657,15 +693,22 @@ class Conversao:
     def _no_com_base(self, item, visivel, cadeia, quadro, base, caixa_mundo, fechamento):
         nome = base['nome']
         if item.tipo == 'GEOMETRY' and len(item.pontos) >= 3:
-            contorno = contorno_com_arcos(item.pontos)
+            contorno = _contorno_na_medida(item, contorno_com_arcos(item.pontos))
             if item.invertido_x:
                 contorno = [(-x, y) for x, y in contorno]
             if item.invertido_y:
                 contorno = [(x, -y) for x, y in contorno]
             if item.altura > 0 and len(contorno) >= 3:
+                material = item.material or item.material_das_faces
                 laje = dict(base, tipo='laje', origem=item.base, eixos=quadro, contorno=contorno, altura=item.altura,
-                            material=self._material_do_complemento(item.material or item.material_das_faces),
-                            filhos=[])
+                            material=self._material_do_complemento(material), filhos=[])
+                componente = componente_da_peca(nome)
+                if componente:
+                    laje['componente'] = componente
+                chapa = self._chapa(item, laje, material, cadeia) if not _pedra(material) else None
+                if chapa is not None:
+                    laje['chapa'] = chapa           # o painel ripado e o tampo de MDF vão ao plano de corte
+                    self.relatorio['chapas'] += 1
                 laje['filhos'] = self._nos(item.filhos, visivel, cadeia + [nome], caixa_mundo, item.rotacao)
                 self.relatorio['lajes'] += 1
                 return laje
@@ -1006,6 +1049,8 @@ class Conversao:
             nome=(self.projeto.ambiente.nome or 'Projeto Promob')[:160], unidade='mm', eixos='Z_UP',
             configuracao_geometrica=dict(perfil='studio/1', espessuras=dict(caixa=15, porta=18, fundo=6)),
             pavimentos=[dict(id=pavimento_id, nome='Térreo', ordem=0, pe_direito=min(max(altura, 1000), 6000),
+                             **({'piso_material_id': piso} if (piso := self._material_do_documento(
+                                 self.projeto.material_do_piso)) else {}),
                              laje=dict(id=self.novo_id(), ativa=False, tipo='macica', espessura=120, contrapiso=30,
                                        beiral=0, recortes=[]),
                              forro=dict(tipo='nenhum', material='gesso', sanca=None))],
