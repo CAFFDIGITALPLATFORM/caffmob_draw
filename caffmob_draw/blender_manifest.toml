@@ -1,7 +1,7 @@
 schema_version = "1.0.0"
 
 id = "caffmob_draw"
-version = "1.22.2"
+version = "1.23.0"
 name = "CAFFMob Draw"
 tagline = "Parametric cabinetry and interior design CAD tools for Blender"
 maintainer = "TheLeoInfo"
@@ -11,6 +11,8 @@ blender_version_min = "5.2.0"
 
 license = [
     "SPDX:GPL-3.0-or-later",
+    # 073: as texturas de pbr/ são CC0 do ambientCG (pbr/manifest.json e LICENSES/CC0-1.0.txt)
+    "SPDX:CC0-1.0",
 ]
 # Metadata for online extensions directory, categorizing the add-on
 tags = ["3D View", "Add Mesh", "Modeling", "Scene"]

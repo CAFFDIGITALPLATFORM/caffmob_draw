@@ -64,6 +64,10 @@ class Montagem:
         if dado.get('textura_catalogo'):
             mat = self._material_do_catalogo(dado)
             if mat is not None:
+                if dado.get('pbr'):                # 073 (Q4): o nome original do Promob fica no material
+                    origens = [o for o in str(mat.get('btm_promob_origem', '')).split('; ') if o]
+                    if dado['nome'] not in origens:
+                        mat['btm_promob_origem'] = '; '.join(origens + [dado['nome']])
                 self.cache[mid] = (mat, None)
                 return self.cache[mid]
         m = bpy.data.materials.new('Promob · ' + dado['nome'][:50])

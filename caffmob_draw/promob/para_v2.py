@@ -16,6 +16,7 @@ from datetime import datetime, timezone
 
 from ..caffmob.contrato import normalizar_relativo
 from ..caffmob.v2.validacao import validar_documento
+from ..texture_library import pbr_core
 from . import texturas
 
 PERTO_DA_PAREDE = 60.0          # mm que a porta pode ficar fora da face (RN-04)
@@ -416,6 +417,11 @@ def _catalogo_do_addon():
         return []
 
 
+def _pbr_do_addon():
+    """Manifesto das texturas PBR do pacote (073), ou None."""
+    return pbr_core.carregar(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'pbr'))
+
+
 def resolver_macros(nome, item):
     medidas = {'W': item.largura, 'H': item.altura, 'D': item.profundidade}
     for letra, valor in medidas.items():
@@ -464,9 +470,11 @@ def contorno_com_arcos(pontos):
 
 
 class Conversao:
-    def __init__(self, projeto, novo_id=_id, catalogo=None):
+    def __init__(self, projeto, novo_id=_id, catalogo=None, pbr=None):
         self.projeto, self.novo_id = projeto, novo_id
         self.catalogo = _catalogo_do_addon() if catalogo is None else catalogo
+        self.pbr = (_pbr_do_addon() if catalogo is None else None) if pbr is None else pbr   # 073 (D-10)
+        self.texturas_pbr = dict(com_textura=0, aproximadas=[], em_cor=0, _vistos=set())
         self._movel = 0              # > 0 dentro de uma peça que abre: o que está dentro corre junto
         self.parede_do_wall = {}     # id(item WALL) → id da parede do v2 (o hospedeiro dos itens dele)
         self.aberturas_sem_folha = []   # vãos sem a folha genérica do editor de paredes (E003, E005)
@@ -507,6 +515,9 @@ class Conversao:
                             cor=_cor_hex(m.cor if m is not None else (0xC8, 0xB8, 0xA0)), textura=None,
                             escala=None, classe=None, transparencia=0.0, textura_catalogo=entrada['id'],
                             tamanho=tuple(entrada.get('size-mm') or (600.0, 600.0)), veio=veio)
+            pbr = self._pbr(mid, m)
+            if pbr is not None:
+                return pbr
             cor = texturas.cor_por_nome(mid) if m is None else None
             if cor is not None:
                 return dict(id=mid, nome=mid[:80], cor=_cor_hex(cor), textura=None, escala=None, classe=None,
@@ -514,6 +525,8 @@ class Conversao:
         if mid.lower().startswith('cin_cor_') and m is None:
             return dict(id=mid, nome='Acabamento do modelo (não resolvido)', cor=_cor_hex((0xE6, 0xE4, 0xDF)),
                         textura=None, escala=None, classe=None, transparencia=0.0)
+        if classe == 'metal' and (pbr := self._pbr(mid, m)) is not None:
+            return pbr
         if m is None:
             partes = re.sub(r'\(\d+\)$', '', mid.lower()).split('_')
             tom = next((p for p in partes if p in ('cro', 'alu', 'ino')), None) if classe == 'metal' else None
@@ -524,13 +537,46 @@ class Conversao:
                     transparencia=m.transparencia if classe == 'vidro' and m.transparencia > 0 else
                     (0.6 if classe == 'vidro' else 0.0))
 
+    def _relatorio_de_texturas(self):
+        """RF-10: acabamentos com textura (chapa do catálogo ou PBR do pacote), quantos aproximados e quantos em cor."""
+        mids = set(self.materiais_do_documento) | set(self.materiais_do_complemento)
+        dados = [self._material(mid) for mid in sorted(mids)]
+        com = sum(1 for d in dados if d and (d.get('textura_catalogo') or d.get('textura')))
+        aproximadas = list(self.texturas_pbr['aproximadas'])
+        self.relatorio['texturas'] = dict(com_textura=com, aproximadas=aproximadas, em_cor=len(mids) - com)
+        for a in aproximadas:
+            self.relatorio['avisos'].append(f"Textura aproximada: {a['material']} → {a['textura']}")
+
+    def _pbr(self, mid, m):
+        """Textura PBR do pacote pelo nome (RN-04, RN-05, Q4): só sem textura própria do projeto; guarda o nome
+        original do Promob e conta para o relatório (RF-10)."""
+        if not self.pbr or (m is not None and m.textura):
+            return None
+        t, aproximada = pbr_core.casar(mid, self.pbr)
+        if t is None:
+            return None
+        if aproximada and mid not in self.texturas_pbr['_vistos']:
+            self.texturas_pbr['aproximadas'].append(dict(material=mid[:80], textura=t['slug']))
+        self.texturas_pbr['_vistos'].add(mid)
+        cor = texturas.cor_por_nome(mid) or (0xC8, 0xB8, 0xA0)
+        tamanho = t['tamanho_mm']
+        return dict(id=mid, nome=mid[:80], cor=_cor_hex(m.cor if m is not None else cor), textura=None, escala=None,
+                    classe=None, transparencia=0.0, textura_catalogo=t['uuid'], pbr=True, aproximada=aproximada,
+                    tamanho=(float(tamanho['largura']), float(tamanho['altura'])))
+
     def _material_do_documento(self, mid):
         dado = self._material(mid)
         if dado is None:
             return None
         if mid not in self.materiais_do_documento:
-            self.materiais_do_documento[mid] = dict(id=self.novo_id(), nome=dado['nome'][:160] or 'Material',
-                                                   tipo='cor', cor=dado['cor'], classe_visual='gesso')
+            if dado.get('pbr'):                    # 073 (RN-06): textura do pacote, com o tamanho real do manifesto
+                largura, altura = dado['tamanho']
+                self.materiais_do_documento[mid] = dict(
+                    id=self.novo_id(), nome=dado['nome'][:160] or 'Material', tipo='textura',
+                    textura_id=dado['textura_catalogo'], escala_mm=dict(largura=int(largura), altura=int(altura)))
+            else:
+                self.materiais_do_documento[mid] = dict(id=self.novo_id(), nome=dado['nome'][:160] or 'Material',
+                                                       tipo='cor', cor=dado['cor'], classe_visual='gesso')
         return self.materiais_do_documento[mid]['id']
 
     def _material_do_complemento(self, mid):
@@ -1042,6 +1088,7 @@ class Conversao:
         self.moveis += [n for n in (self._visual_da_abertura(h, ids) for h, ids in convertidos) if n is not None]
         self.relatorio['moveis_que_abrem'] = sum(1 for n in _todos(self.moveis) if n.get('mecanismo'))
         self.relatorio['cameras'] = len(self.projeto.cameras)
+        self._relatorio_de_texturas()
         altura = max([s['pe_direito_inicial'] for p in self.paredes for s in p['segmentos']] or [2700])
         agora = datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%S.') + '000Z'
         documento = dict(
@@ -1082,8 +1129,9 @@ class Conversao:
                     cliente=dict(self.projeto.cliente))
 
 
-def converter(projeto, novo_id=_id, catalogo=None):
+def converter(projeto, novo_id=_id, catalogo=None, pbr=None):
     """Documento v2 válido, complemento, cliente e relatório. `erros` só vem preenchido se nem as paredes passam.
 
-    `catalogo`: entradas do catálogo de texturas (padrão: o do pacote do addon)."""
-    return Conversao(projeto, novo_id, catalogo).converter()
+    `catalogo`: entradas do catálogo de texturas (padrão: o do pacote do addon); `pbr`: manifesto das texturas PBR
+    (padrão: o do pacote, quando o catálogo também é o do pacote)."""
+    return Conversao(projeto, novo_id, catalogo, pbr).converter()

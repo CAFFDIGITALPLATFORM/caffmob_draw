@@ -190,8 +190,10 @@ def _catalog():
 def texture_tree():
     cat = _catalog()
     data, _warnings = cat.load()
-    return [(m["id"], m["name"], m.get("total", sum(len(c["items"]) for c in m["collections"])),
-             [(c["id"], c["name"], c.get("total", len(c["items"]))) for c in m["collections"]]) for m in data["manufacturers"]]
+    own = (lambda m, text: tr(text) if m["id"] == cat.PBR_MANUFACTURER else text)   # 073: nomes do addon traduzidos
+    return [(m["id"], own(m, m["name"]), m.get("total", sum(len(c["items"]) for c in m["collections"])),
+             [(c["id"], own(m, c["name"]), c.get("total", len(c["items"]))) for c in m["collections"]])
+            for m in data["manufacturers"]]
 
 
 def texture_items(state):
@@ -268,6 +270,8 @@ def sidebar_tree(state):
 
 def texture_state(item):
     """('DOWNLOADED' | 'NOT_DOWNLOADED' | 'DOWNLOADING' | 'ERROR', progresso 0–1), pela ponte de download (T021)."""
+    if item.get("pbr"):                       # 073 (RN-12): textura do pacote, sempre à mão, nada a baixar
+        return 'DOWNLOADED', 1.0
     try:
         from ..texture_library import downloads
         found = downloads.state(item["id"])

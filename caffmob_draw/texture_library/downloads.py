@@ -100,6 +100,9 @@ def cached(item_id, entry=None):
     entry = entry or catalog.item(item_id)
     if entry is None:
         return ""
+    if entry.get('local_path'):                       # 073: textura PBR do pacote, sem cache nem rede (RN-07)
+        path = entry['local_path'].get('cor', '')
+        return path if os.path.isfile(path) else ""
     path = cache_path(entry)
     return path if os.path.isfile(path) else ""
 
