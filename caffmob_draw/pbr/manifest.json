@@ -1,0 +1,1247 @@
+{
+ "schema-version": 1,
+ "namespace": "7c3e9a41-0d52-4f6b-8a1e-2b9f40c73073",
+ "licenca": "CC0-1.0",
+ "texturas": [
+  {
+   "slug": "tijolo-aparente-claro",
+   "uuid": "17763bf6-5e2c-5134-91dc-f6beede773e7",
+   "nome": "Tijolo aparente claro",
+   "categoria": "parede",
+   "palavras": [
+    "tijolo",
+    "tijolos",
+    "tijolinho"
+   ],
+   "tom": "claro",
+   "padrao": false,
+   "metal": false,
+   "origem": {
+    "fonte": "ambientCG",
+    "id": "Bricks060",
+    "url": "https://ambientcg.com/a/Bricks060",
+    "licenca": "CC0-1.0",
+    "copiado_em": "2026-10-26"
+   },
+   "tamanho_mm": {
+    "largura": 1200,
+    "altura": 1200
+   },
+   "mapas": {
+    "cor": {
+     "arquivo": "tijolo-aparente-claro/cor.jpg",
+     "sha256": "d56a6900be43dc9d37c0725257a04ee4e0d3840efd53ad9bab82cc6897de8435",
+     "px": [
+      1024,
+      1024
+     ]
+    },
+    "normal": {
+     "arquivo": "tijolo-aparente-claro/normal.jpg",
+     "sha256": "c4b8fffa7cb3d2e9462f93d6e65ffcd6e8edc2f202b782018ae6a508c23998cd"
+    },
+    "rugosidade": {
+     "arquivo": "tijolo-aparente-claro/rugosidade.jpg",
+     "sha256": "143f9c13813031150016ffdf6f771deb6f9c0852a4a28a143b8b8b575f00d22f"
+    },
+    "miniatura": {
+     "arquivo": "tijolo-aparente-claro/miniatura.jpg",
+     "sha256": "80ccbbd65808df2a8ff388e00af13eced58e08807a90159244aecde1a874a129"
+    }
+   }
+  },
+  {
+   "slug": "tijolo-aparente",
+   "uuid": "60744c13-2829-5105-8936-7417a8a586c3",
+   "nome": "Tijolo aparente",
+   "categoria": "parede",
+   "palavras": [
+    "tijolo",
+    "tijolos",
+    "tijolinho"
+   ],
+   "tom": "medio",
+   "padrao": true,
+   "metal": false,
+   "origem": {
+    "fonte": "ambientCG",
+    "id": "Bricks086",
+    "url": "https://ambientcg.com/a/Bricks086",
+    "licenca": "CC0-1.0",
+    "copiado_em": "2026-10-26"
+   },
+   "tamanho_mm": {
+    "largura": 1200,
+    "altura": 1200
+   },
+   "mapas": {
+    "cor": {
+     "arquivo": "tijolo-aparente/cor.jpg",
+     "sha256": "49fd67eb1aaee3ab524a11222a4f1ce3c99311363a27a8b2b9136bc8cc4df285",
+     "px": [
+      1024,
+      512
+     ]
+    },
+    "normal": {
+     "arquivo": "tijolo-aparente/normal.jpg",
+     "sha256": "aaa61bceee8b8414edd76b679ff6cf80ccfc8604339189aa93f71c2c11fc0a27"
+    },
+    "rugosidade": {
+     "arquivo": "tijolo-aparente/rugosidade.jpg",
+     "sha256": "80ab8dd0a7e42e18f17dd93a07ec16ef13f0a71eaa04706608d75e353c88fe9b"
+    },
+    "miniatura": {
+     "arquivo": "tijolo-aparente/miniatura.jpg",
+     "sha256": "e101380f4ded7b76cf3f6a502e245e0a091262cd6a2c70dbc2f7b2fca9a089ad"
+    }
+   }
+  },
+  {
+   "slug": "tijolo-aparente-escuro",
+   "uuid": "0a2f79bd-a7ad-591e-8580-4254bc65db2e",
+   "nome": "Tijolo aparente escuro",
+   "categoria": "parede",
+   "palavras": [
+    "tijolo",
+    "tijolos",
+    "tijolinho"
+   ],
+   "tom": "escuro",
+   "padrao": false,
+   "metal": false,
+   "origem": {
+    "fonte": "ambientCG",
+    "id": "Bricks082A",
+    "url": "https://ambientcg.com/a/Bricks082A",
+    "licenca": "CC0-1.0",
+    "copiado_em": "2026-10-26"
+   },
+   "tamanho_mm": {
+    "largura": 1200,
+    "altura": 1200
+   },
+   "mapas": {
+    "cor": {
+     "arquivo": "tijolo-aparente-escuro/cor.jpg",
+     "sha256": "a207cd5636638edd3ba75593cf5bad4c09aa5c7cd1db87c8771427eba305dc0d",
+     "px": [
+      1024,
+      1024
+     ]
+    },
+    "normal": {
+     "arquivo": "tijolo-aparente-escuro/normal.jpg",
+     "sha256": "84db049b2c7bef3b782022d1a12644c5ff31024dddf0d9b7228ac24d66783195"
+    },
+    "rugosidade": {
+     "arquivo": "tijolo-aparente-escuro/rugosidade.jpg",
+     "sha256": "4c554dc666e61d92a497691d330169217566c79c0e358fff48f1b96aa54e26f2"
+    },
+    "miniatura": {
+     "arquivo": "tijolo-aparente-escuro/miniatura.jpg",
+     "sha256": "dbdd0aa77514ca44b7ee2a57538f6080c0a8b84351158af4ccff1b37e2aa6c06"
+    }
+   }
+  },
+  {
+   "slug": "concreto-aparente",
+   "uuid": "fb9a2bb1-5a08-510f-9f36-dc0241df0997",
+   "nome": "Concreto aparente",
+   "categoria": "parede",
+   "palavras": [
+    "concreto"
+   ],
+   "tom": "medio",
+   "padrao": true,
+   "metal": false,
+   "origem": {
+    "fonte": "ambientCG",
+    "id": "Concrete028",
+    "url": "https://ambientcg.com/a/Concrete028",
+    "licenca": "CC0-1.0",
+    "copiado_em": "2026-10-26"
+   },
+   "tamanho_mm": {
+    "largura": 2000,
+    "altura": 2000
+   },
+   "mapas": {
+    "cor": {
+     "arquivo": "concreto-aparente/cor.jpg",
+     "sha256": "76a0ea88ae2914f177aa1ea087be66a982de11ed06c12872d4cbcd23dd8330e9",
+     "px": [
+      1024,
+      1024
+     ]
+    },
+    "normal": {
+     "arquivo": "concreto-aparente/normal.jpg",
+     "sha256": "ab6805984f93a97a1c1869f231a32dda823925c923073808d46657efb1b81e16"
+    },
+    "rugosidade": {
+     "arquivo": "concreto-aparente/rugosidade.jpg",
+     "sha256": "1174e60dd33bf69a610369cb85da99f4c4d02c486fb40a95dc59335eb072d5e0"
+    },
+    "miniatura": {
+     "arquivo": "concreto-aparente/miniatura.jpg",
+     "sha256": "3e97d03c99b733c40ab429c122a022432356cf19fce0f0837fba73021cdf7bf0"
+    }
+   }
+  },
+  {
+   "slug": "cimento-queimado",
+   "uuid": "41fd85fc-5123-524c-a058-8c05e34b04bd",
+   "nome": "Cimento queimado",
+   "categoria": "parede",
+   "palavras": [
+    "cimento",
+    "queimado"
+   ],
+   "tom": "medio",
+   "padrao": true,
+   "metal": false,
+   "origem": {
+    "fonte": "ambientCG",
+    "id": "Concrete030",
+    "url": "https://ambientcg.com/a/Concrete030",
+    "licenca": "CC0-1.0",
+    "copiado_em": "2026-10-26"
+   },
+   "tamanho_mm": {
+    "largura": 2000,
+    "altura": 2000
+   },
+   "mapas": {
+    "cor": {
+     "arquivo": "cimento-queimado/cor.jpg",
+     "sha256": "6bf11ddad96a2db2638f0fd2e4d129c266b3a3bfc1114e2fbae3e20c88f88f57",
+     "px": [
+      1024,
+      1024
+     ]
+    },
+    "normal": {
+     "arquivo": "cimento-queimado/normal.jpg",
+     "sha256": "2467fd294fe69c1dcb969d5c141eca13ac0acda9915f9b0842405f493b82cd4e"
+    },
+    "rugosidade": {
+     "arquivo": "cimento-queimado/rugosidade.jpg",
+     "sha256": "9963905b22554fd82f7fa98e3f2280a05390184eb9d1086033949478a5164329"
+    },
+    "miniatura": {
+     "arquivo": "cimento-queimado/miniatura.jpg",
+     "sha256": "ca96d0e74babe69bfd08913f597ee82a38d532c6e2c0476f125275381ec2b5a7"
+    }
+   }
+  },
+  {
+   "slug": "reboco-pintado",
+   "uuid": "2d0143ba-3081-5442-9dce-639dc98f5cc2",
+   "nome": "Reboco pintado",
+   "categoria": "parede",
+   "palavras": [
+    "reboco",
+    "massa",
+    "pintura",
+    "gesso"
+   ],
+   "tom": "claro",
+   "padrao": true,
+   "metal": false,
+   "origem": {
+    "fonte": "ambientCG",
+    "id": "PaintedPlaster017",
+    "url": "https://ambientcg.com/a/PaintedPlaster017",
+    "licenca": "CC0-1.0",
+    "copiado_em": "2026-10-26"
+   },
+   "tamanho_mm": {
+    "largura": 1500,
+    "altura": 1500
+   },
+   "mapas": {
+    "cor": {
+     "arquivo": "reboco-pintado/cor.jpg",
+     "sha256": "ed8a69a6437de9d41d2cf380f7e6a216232fc4754f256c3405985c857547ffef",
+     "px": [
+      1024,
+      512
+     ]
+    },
+    "normal": {
+     "arquivo": "reboco-pintado/normal.jpg",
+     "sha256": "1bef1887c10e1ce104be1a557e4dbd7634ef6d5ece6e3b4237dab2d0962f57fa"
+    },
+    "rugosidade": {
+     "arquivo": "reboco-pintado/rugosidade.jpg",
+     "sha256": "a83ecc2ba5b9d80bb9a27381f3389ccdb20c77ef6358b92f3d11455403d651d8"
+    },
+    "miniatura": {
+     "arquivo": "reboco-pintado/miniatura.jpg",
+     "sha256": "c81032847ac3cd5b56097cc1748db79a95b666ba016426fb4fa938f8d2961ece"
+    }
+   }
+  },
+  {
+   "slug": "pedra-natural",
+   "uuid": "9a6cb8d4-c829-5c13-927c-febb7e2b66a8",
+   "nome": "Pedra natural",
+   "categoria": "parede",
+   "palavras": [
+    "pedra",
+    "canjiquinha",
+    "filete"
+   ],
+   "tom": "medio",
+   "padrao": true,
+   "metal": false,
+   "origem": {
+    "fonte": "ambientCG",
+    "id": "Bricks100",
+    "url": "https://ambientcg.com/a/Bricks100",
+    "licenca": "CC0-1.0",
+    "copiado_em": "2026-10-26"
+   },
+   "tamanho_mm": {
+    "largura": 1500,
+    "altura": 1500
+   },
+   "mapas": {
+    "cor": {
+     "arquivo": "pedra-natural/cor.jpg",
+     "sha256": "e5596ce79d9a63d6b9a9e9ac15a0bb60d8a5c39b684999a872467641bc91d30d",
+     "px": [
+      1024,
+      512
+     ]
+    },
+    "normal": {
+     "arquivo": "pedra-natural/normal.jpg",
+     "sha256": "3fd468809d149512cbbb7a0ee298bdb1d7c2213da05e5453e6612b8006bd3708"
+    },
+    "rugosidade": {
+     "arquivo": "pedra-natural/rugosidade.jpg",
+     "sha256": "907a11988e16ff1ec831523b8fd31a61b3493a37b2253b04718b7f711356786f"
+    },
+    "miniatura": {
+     "arquivo": "pedra-natural/miniatura.jpg",
+     "sha256": "731775d65f086712cd1f52cbfe69a4bfe2bf6ad5cca5172dfc11fa1af282a400"
+    }
+   }
+  },
+  {
+   "slug": "laminado-claro",
+   "uuid": "3a905668-11d8-5718-983e-64843e5d48ad",
+   "nome": "Laminado claro",
+   "categoria": "piso",
+   "palavras": [
+    "laminado",
+    "madeira",
+    "assoalho",
+    "taco",
+    "vinilico"
+   ],
+   "tom": "claro",
+   "padrao": false,
+   "metal": false,
+   "origem": {
+    "fonte": "ambientCG",
+    "id": "WoodFloor051",
+    "url": "https://ambientcg.com/a/WoodFloor051",
+    "licenca": "CC0-1.0",
+    "copiado_em": "2026-10-26"
+   },
+   "tamanho_mm": {
+    "largura": 2000,
+    "altura": 2000
+   },
+   "mapas": {
+    "cor": {
+     "arquivo": "laminado-claro/cor.jpg",
+     "sha256": "ffbe4de8765619f278c5f819cd751e003808fa671eb99603abdf82b94ca85e9a",
+     "px": [
+      1024,
+      1024
+     ]
+    },
+    "normal": {
+     "arquivo": "laminado-claro/normal.jpg",
+     "sha256": "5b026049b8a2d84c5b135d0880563dcd555c5cdcac71d0101ee47cedc562022e"
+    },
+    "rugosidade": {
+     "arquivo": "laminado-claro/rugosidade.jpg",
+     "sha256": "967f0339ee6762fc0a40b222ed9801a37c626090f236f51b294878845ed38559"
+    },
+    "miniatura": {
+     "arquivo": "laminado-claro/miniatura.jpg",
+     "sha256": "c6fc41edece3a4da5cf78dd1dbfce0b616c589dc5aa365750b8d8afd8a075dcf"
+    }
+   }
+  },
+  {
+   "slug": "laminado-carvalho",
+   "uuid": "95f6d34e-7b33-5873-b0b7-65bea447e284",
+   "nome": "Laminado carvalho",
+   "categoria": "piso",
+   "palavras": [
+    "laminado",
+    "madeira",
+    "assoalho",
+    "taco",
+    "vinilico"
+   ],
+   "tom": "medio",
+   "padrao": true,
+   "metal": false,
+   "origem": {
+    "fonte": "ambientCG",
+    "id": "WoodFloor069",
+    "url": "https://ambientcg.com/a/WoodFloor069",
+    "licenca": "CC0-1.0",
+    "copiado_em": "2026-10-26"
+   },
+   "tamanho_mm": {
+    "largura": 2000,
+    "altura": 2000
+   },
+   "mapas": {
+    "cor": {
+     "arquivo": "laminado-carvalho/cor.jpg",
+     "sha256": "7d6e66416fb999d14acc56168b00ebba99f31c2e814d70005c3b2e2a34e89e12",
+     "px": [
+      1024,
+      1024
+     ]
+    },
+    "normal": {
+     "arquivo": "laminado-carvalho/normal.jpg",
+     "sha256": "8a7e14d54c7e334df92bdd215bde8937244905533e79c8faecce9223edd6bf33"
+    },
+    "rugosidade": {
+     "arquivo": "laminado-carvalho/rugosidade.jpg",
+     "sha256": "d1354977e400e0ca38b0377c58ff5d386a53ae265387287b68e7598ff0366c5c"
+    },
+    "miniatura": {
+     "arquivo": "laminado-carvalho/miniatura.jpg",
+     "sha256": "9b16a0235902206d93ab89ea6860e8e86285af0703b45b3f258c68b46770f0b5"
+    }
+   }
+  },
+  {
+   "slug": "laminado-nogueira",
+   "uuid": "e82939e7-f747-5790-beea-488cee6b556f",
+   "nome": "Laminado nogueira",
+   "categoria": "piso",
+   "palavras": [
+    "laminado",
+    "madeira",
+    "assoalho",
+    "taco",
+    "vinilico"
+   ],
+   "tom": "escuro",
+   "padrao": false,
+   "metal": false,
+   "origem": {
+    "fonte": "ambientCG",
+    "id": "WoodFloor064",
+    "url": "https://ambientcg.com/a/WoodFloor064",
+    "licenca": "CC0-1.0",
+    "copiado_em": "2026-10-26"
+   },
+   "tamanho_mm": {
+    "largura": 2000,
+    "altura": 2000
+   },
+   "mapas": {
+    "cor": {
+     "arquivo": "laminado-nogueira/cor.jpg",
+     "sha256": "9a1725a0477626d2616011f6d870231e031ee071ce5b774c01b51571fe0639ac",
+     "px": [
+      1024,
+      1024
+     ]
+    },
+    "normal": {
+     "arquivo": "laminado-nogueira/normal.jpg",
+     "sha256": "ad8dc6541ae102f3d136a29126053fd322213455ffdabf451baca39a41da56ea"
+    },
+    "rugosidade": {
+     "arquivo": "laminado-nogueira/rugosidade.jpg",
+     "sha256": "cfe1dc9b2a8f98edfe0d43a33c36bf03fe0d7d71dbcf3a2be8b0229dec3daa4e"
+    },
+    "miniatura": {
+     "arquivo": "laminado-nogueira/miniatura.jpg",
+     "sha256": "dd7ea328a5043b6c7d7ed59609e461a7cf924a96acc0e5e87c4c3a4bb0a9e935"
+    }
+   }
+  },
+  {
+   "slug": "laminado-cinza",
+   "uuid": "cacf7f85-8ac8-50d3-af71-5eba83938587",
+   "nome": "Laminado acinzentado",
+   "categoria": "piso",
+   "palavras": [
+    "laminado",
+    "madeira",
+    "assoalho",
+    "taco",
+    "vinilico"
+   ],
+   "tom": "cinza",
+   "padrao": false,
+   "metal": false,
+   "origem": {
+    "fonte": "ambientCG",
+    "id": "WoodFloor040",
+    "url": "https://ambientcg.com/a/WoodFloor040",
+    "licenca": "CC0-1.0",
+    "copiado_em": "2026-10-26"
+   },
+   "tamanho_mm": {
+    "largura": 2000,
+    "altura": 2000
+   },
+   "mapas": {
+    "cor": {
+     "arquivo": "laminado-cinza/cor.jpg",
+     "sha256": "2bf98c767ef184c0dbe0666f6a6bfdd22c637cc2816070dcb701d916cc9bcee9",
+     "px": [
+      1024,
+      1024
+     ]
+    },
+    "normal": {
+     "arquivo": "laminado-cinza/normal.jpg",
+     "sha256": "90d3b4ef0328f6cabf16b40eacc4fa7a03764f14a4b474da057d0ce23e6722c2"
+    },
+    "rugosidade": {
+     "arquivo": "laminado-cinza/rugosidade.jpg",
+     "sha256": "2a396afced041d372218eaa881ba3157b9105f035826b22cf63cf2b65d82c081"
+    },
+    "miniatura": {
+     "arquivo": "laminado-cinza/miniatura.jpg",
+     "sha256": "8b29bc12986229cf946fd4531c4b2603f1dfc06190f136d1fc859168081e045d"
+    }
+   }
+  },
+  {
+   "slug": "porcelanato-claro",
+   "uuid": "b2e2eb49-4657-5cc8-87d7-199da92e5a18",
+   "nome": "Porcelanato claro",
+   "categoria": "piso",
+   "palavras": [
+    "porcelanato"
+   ],
+   "tom": "claro",
+   "padrao": true,
+   "metal": false,
+   "origem": {
+    "fonte": "ambientCG",
+    "id": "Tiles107",
+    "url": "https://ambientcg.com/a/Tiles107",
+    "licenca": "CC0-1.0",
+    "copiado_em": "2026-10-26"
+   },
+   "tamanho_mm": {
+    "largura": 1200,
+    "altura": 1200
+   },
+   "mapas": {
+    "cor": {
+     "arquivo": "porcelanato-claro/cor.jpg",
+     "sha256": "09bc9cf6e08dc4a58df668df0f2cb30fea54eee48ece77263419222497a05d66",
+     "px": [
+      1024,
+      1024
+     ]
+    },
+    "normal": {
+     "arquivo": "porcelanato-claro/normal.jpg",
+     "sha256": "9056b78a5e9d6021d54783a4674caadc0647abf43d6ef056d61afea0c31a0915"
+    },
+    "rugosidade": {
+     "arquivo": "porcelanato-claro/rugosidade.jpg",
+     "sha256": "24b5813de52fc167c6dcefcaf45ee1097c3323f10c3196a547df0ac9cd6b7fbd"
+    },
+    "miniatura": {
+     "arquivo": "porcelanato-claro/miniatura.jpg",
+     "sha256": "3de1ab0a55d3bb6e7405211b8103832e59111506ab8c7b19b46475fa7fa7cf0d"
+    }
+   }
+  },
+  {
+   "slug": "porcelanato-cinza",
+   "uuid": "88a09ffd-9bdb-59d0-9662-40016ae6834a",
+   "nome": "Porcelanato cinza",
+   "categoria": "piso",
+   "palavras": [
+    "porcelanato"
+   ],
+   "tom": "cinza",
+   "padrao": false,
+   "metal": false,
+   "origem": {
+    "fonte": "ambientCG",
+    "id": "Tiles038",
+    "url": "https://ambientcg.com/a/Tiles038",
+    "licenca": "CC0-1.0",
+    "copiado_em": "2026-10-26"
+   },
+   "tamanho_mm": {
+    "largura": 1200,
+    "altura": 1200
+   },
+   "mapas": {
+    "cor": {
+     "arquivo": "porcelanato-cinza/cor.jpg",
+     "sha256": "46bf30a8aeaf0615e72cdf2ab9bc7a4390d4a015d1d9461b8c03a4bd0314e425",
+     "px": [
+      1024,
+      512
+     ]
+    },
+    "normal": {
+     "arquivo": "porcelanato-cinza/normal.jpg",
+     "sha256": "c598e6b7f709f844de932dcb5c23235b5cd066171cbf3eeaa4db1601b6323cec"
+    },
+    "rugosidade": {
+     "arquivo": "porcelanato-cinza/rugosidade.jpg",
+     "sha256": "7a9c45a388bbf5c407505708b89701e95f98296b7bbdccc8cedb155bf3182259"
+    },
+    "miniatura": {
+     "arquivo": "porcelanato-cinza/miniatura.jpg",
+     "sha256": "331ab8faa001e20b303f376ad864fbfc66a637a085aab0d79b4b456b9e4564b2"
+    }
+   }
+  },
+  {
+   "slug": "ceramica",
+   "uuid": "9bd5ae2f-9904-51df-a426-273324ad8a5b",
+   "nome": "Cerâmica",
+   "categoria": "piso",
+   "palavras": [
+    "ceramica",
+    "azulejo",
+    "revestimento"
+   ],
+   "tom": "medio",
+   "padrao": true,
+   "metal": false,
+   "origem": {
+    "fonte": "ambientCG",
+    "id": "Tiles139",
+    "url": "https://ambientcg.com/a/Tiles139",
+    "licenca": "CC0-1.0",
+    "copiado_em": "2026-10-26"
+   },
+   "tamanho_mm": {
+    "largura": 900,
+    "altura": 900
+   },
+   "mapas": {
+    "cor": {
+     "arquivo": "ceramica/cor.jpg",
+     "sha256": "0cf149289117110beea32b4e2e8d2b402d758edefbd1ca1987173fdaffca651b",
+     "px": [
+      1024,
+      1024
+     ]
+    },
+    "normal": {
+     "arquivo": "ceramica/normal.jpg",
+     "sha256": "0e569d9e44bd3eb7ca2b79ee343c37cdd1a2adead0f25a69dc6b2fce79dbe7c4"
+    },
+    "rugosidade": {
+     "arquivo": "ceramica/rugosidade.jpg",
+     "sha256": "2b1d09518bd6baf4f36a2109f5c811fe740e2dbc597f552861fae0a27fe361c1"
+    },
+    "miniatura": {
+     "arquivo": "ceramica/miniatura.jpg",
+     "sha256": "27653d18c873179a54cd5515384aaff634816ee3b5650fb44476f600297a716d"
+    }
+   }
+  },
+  {
+   "slug": "granito-preto",
+   "uuid": "721c9143-0bb0-54ed-9301-d758264dc3de",
+   "nome": "Granito preto",
+   "categoria": "piso",
+   "palavras": [
+    "granito"
+   ],
+   "tom": "escuro",
+   "padrao": false,
+   "metal": false,
+   "origem": {
+    "fonte": "ambientCG",
+    "id": "Granite005A",
+    "url": "https://ambientcg.com/a/Granite005A",
+    "licenca": "CC0-1.0",
+    "copiado_em": "2026-10-26"
+   },
+   "tamanho_mm": {
+    "largura": 1000,
+    "altura": 1000
+   },
+   "mapas": {
+    "cor": {
+     "arquivo": "granito-preto/cor.jpg",
+     "sha256": "06bfa9114da6cb61f1ea5cc03e8136ae2fc5b8a871663d61556b82f5a6e16487",
+     "px": [
+      1024,
+      1024
+     ]
+    },
+    "normal": {
+     "arquivo": "granito-preto/normal.jpg",
+     "sha256": "02c00cb68bc4f0169a88c638e1a7eb41aa1ae157589cc751dc756e9655869b02"
+    },
+    "rugosidade": {
+     "arquivo": "granito-preto/rugosidade.jpg",
+     "sha256": "ed2a44a691aa91db814215b72755804ab699c360c577c18b0c4030306c224f0a"
+    },
+    "miniatura": {
+     "arquivo": "granito-preto/miniatura.jpg",
+     "sha256": "cb01c1d01988066a10991e099d2c6213b9a7eadd98c05ea2537c133d27fbb7a7"
+    }
+   }
+  },
+  {
+   "slug": "granito-cinza",
+   "uuid": "1b5aecae-954e-53ca-8be6-a1a3ba75c2ba",
+   "nome": "Granito cinza",
+   "categoria": "piso",
+   "palavras": [
+    "granito"
+   ],
+   "tom": "cinza",
+   "padrao": true,
+   "metal": false,
+   "origem": {
+    "fonte": "ambientCG",
+    "id": "Granite002A",
+    "url": "https://ambientcg.com/a/Granite002A",
+    "licenca": "CC0-1.0",
+    "copiado_em": "2026-10-26"
+   },
+   "tamanho_mm": {
+    "largura": 1000,
+    "altura": 1000
+   },
+   "mapas": {
+    "cor": {
+     "arquivo": "granito-cinza/cor.jpg",
+     "sha256": "4fd1615d6122bc62e609dfacb59aa9ced01f104e10f5569a2224dad2c9ff13ae",
+     "px": [
+      1024,
+      1024
+     ]
+    },
+    "normal": {
+     "arquivo": "granito-cinza/normal.jpg",
+     "sha256": "d3c6e8e250198d326d9ba77a07031062b765a7e57e6266c43ed5fb4d60daecc8"
+    },
+    "rugosidade": {
+     "arquivo": "granito-cinza/rugosidade.jpg",
+     "sha256": "dee08d0cee2b9a4ce93dc4e67e95bc67054e2b42a693a6b2a3acecdf6f60d203"
+    },
+    "miniatura": {
+     "arquivo": "granito-cinza/miniatura.jpg",
+     "sha256": "f4f73f13be3f46be504246e8081efc5e41bca9be7676f716fc670e57cb089bfb"
+    }
+   }
+  },
+  {
+   "slug": "granito-bege",
+   "uuid": "1bd85ee9-b4a1-5b63-b657-00fa14ec70c9",
+   "nome": "Granito bege",
+   "categoria": "piso",
+   "palavras": [
+    "granito"
+   ],
+   "tom": "claro",
+   "padrao": false,
+   "metal": false,
+   "origem": {
+    "fonte": "ambientCG",
+    "id": "Granite004A",
+    "url": "https://ambientcg.com/a/Granite004A",
+    "licenca": "CC0-1.0",
+    "copiado_em": "2026-10-26"
+   },
+   "tamanho_mm": {
+    "largura": 1000,
+    "altura": 1000
+   },
+   "mapas": {
+    "cor": {
+     "arquivo": "granito-bege/cor.jpg",
+     "sha256": "da328e910f8d447a6a9a10543a01e383e0deb29e9812a77dd844189b28bc9c05",
+     "px": [
+      1024,
+      1024
+     ]
+    },
+    "normal": {
+     "arquivo": "granito-bege/normal.jpg",
+     "sha256": "035bf5ea8bd1ebe3e9331364567d587e7433d215d0949a13edb5d1b2fac1e02e"
+    },
+    "rugosidade": {
+     "arquivo": "granito-bege/rugosidade.jpg",
+     "sha256": "2b1bd70c1d7b1d7a6537f300eae7fdfef8104ee620625bc543141821ad16996e"
+    },
+    "miniatura": {
+     "arquivo": "granito-bege/miniatura.jpg",
+     "sha256": "99525f7fdc0ee216dee4e45358e4f4608854fafe9b70cc1c26f4877c37cb66d7"
+    }
+   }
+  },
+  {
+   "slug": "marmore-branco",
+   "uuid": "d351fe31-39e0-515d-9592-0c4be28e02b4",
+   "nome": "Mármore branco",
+   "categoria": "piso",
+   "palavras": [
+    "marmore",
+    "quartzo",
+    "silestone"
+   ],
+   "tom": "claro",
+   "padrao": true,
+   "metal": false,
+   "origem": {
+    "fonte": "ambientCG",
+    "id": "Marble001",
+    "url": "https://ambientcg.com/a/Marble001",
+    "licenca": "CC0-1.0",
+    "copiado_em": "2026-10-26"
+   },
+   "tamanho_mm": {
+    "largura": 1500,
+    "altura": 1500
+   },
+   "mapas": {
+    "cor": {
+     "arquivo": "marmore-branco/cor.jpg",
+     "sha256": "953f608af2db75ad55d041bca4626a5a8255eeeb2e7cd18fd2467921b011e90a",
+     "px": [
+      1024,
+      1024
+     ]
+    },
+    "normal": {
+     "arquivo": "marmore-branco/normal.jpg",
+     "sha256": "18e861a239f679af261c0a14cd0ed088d84595b45f2877b6476f0c0f1e3a4a9b"
+    },
+    "rugosidade": {
+     "arquivo": "marmore-branco/rugosidade.jpg",
+     "sha256": "2b83bb56f640a164676fbb5ade3324bf1270186556f3356aa07e1b070cc50af5"
+    },
+    "miniatura": {
+     "arquivo": "marmore-branco/miniatura.jpg",
+     "sha256": "2649facd11b0122ac66102abfb5a6488bba8dc20b90f9e49a533495b5b53c90f"
+    }
+   }
+  },
+  {
+   "slug": "travertino",
+   "uuid": "cb811893-d7f9-58f7-a02d-9eb232797896",
+   "nome": "Travertino",
+   "categoria": "piso",
+   "palavras": [
+    "travertino"
+   ],
+   "tom": "claro",
+   "padrao": true,
+   "metal": false,
+   "origem": {
+    "fonte": "ambientCG",
+    "id": "Travertine009",
+    "url": "https://ambientcg.com/a/Travertine009",
+    "licenca": "CC0-1.0",
+    "copiado_em": "2026-10-26"
+   },
+   "tamanho_mm": {
+    "largura": 1200,
+    "altura": 1200
+   },
+   "mapas": {
+    "cor": {
+     "arquivo": "travertino/cor.jpg",
+     "sha256": "6561c87d92aef321aef4095fbcc5518cec4d711e642be6beaa90d13829e6cd2b",
+     "px": [
+      1024,
+      1024
+     ]
+    },
+    "normal": {
+     "arquivo": "travertino/normal.jpg",
+     "sha256": "635256a78537253a2d2bc5fef5fcda6e4e03349b960c57f15cf721b7cf5ba098"
+    },
+    "rugosidade": {
+     "arquivo": "travertino/rugosidade.jpg",
+     "sha256": "f4094c2149e257f4b6e17e5c5da70101fcbffaf0ce4016ab5d6aac7e45112e37"
+    },
+    "miniatura": {
+     "arquivo": "travertino/miniatura.jpg",
+     "sha256": "beca2ca35699bd7352dc8b98f418940d2b196c60a397f9009ea7b09adf027fcd"
+    }
+   }
+  },
+  {
+   "slug": "inox-escovado",
+   "uuid": "286961f3-eab1-557e-9a90-a5669ca4af6d",
+   "nome": "Inox escovado",
+   "categoria": "metal",
+   "palavras": [
+    "inox",
+    "aco",
+    "ino",
+    "cromado",
+    "cro"
+   ],
+   "tom": "claro",
+   "padrao": true,
+   "metal": true,
+   "origem": {
+    "fonte": "ambientCG",
+    "id": "Metal009",
+    "url": "https://ambientcg.com/a/Metal009",
+    "licenca": "CC0-1.0",
+    "copiado_em": "2026-10-26"
+   },
+   "tamanho_mm": {
+    "largura": 500,
+    "altura": 500
+   },
+   "mapas": {
+    "cor": {
+     "arquivo": "inox-escovado/cor.jpg",
+     "sha256": "e066e240ad0eaab6a73fb0f40fa7caa94365160770331babc91de2e8ce6a986f",
+     "px": [
+      1024,
+      1024
+     ]
+    },
+    "normal": {
+     "arquivo": "inox-escovado/normal.jpg",
+     "sha256": "45c7c88685e6b44da7e8d25e2cf6d8645d42209793ccc4354e68c16cdae15d62"
+    },
+    "rugosidade": {
+     "arquivo": "inox-escovado/rugosidade.jpg",
+     "sha256": "6d06dfe8c240d3b6f33030740110284245bd8aefb2e10e8eb0c563444d9c0c5b"
+    },
+    "metalico": {
+     "arquivo": "inox-escovado/metalico.jpg",
+     "sha256": "843102638fa0a5bf897888868877efab8ccdc4cb84a48e57bdb52bfb30f5e714"
+    },
+    "miniatura": {
+     "arquivo": "inox-escovado/miniatura.jpg",
+     "sha256": "7e4f305c9406296d2f7a07611060d0458062dfca0e2da3117ef13e842d59edbb"
+    }
+   }
+  },
+  {
+   "slug": "aco-pintado-preto",
+   "uuid": "08245104-8bdb-5d4d-ad5f-209a732147e4",
+   "nome": "Aço pintado preto",
+   "categoria": "metal",
+   "palavras": [
+    "pintado",
+    "epoxi"
+   ],
+   "tom": "escuro",
+   "padrao": false,
+   "metal": true,
+   "origem": {
+    "fonte": "ambientCG",
+    "id": "Metal029",
+    "url": "https://ambientcg.com/a/Metal029",
+    "licenca": "CC0-1.0",
+    "copiado_em": "2026-10-26"
+   },
+   "tamanho_mm": {
+    "largura": 500,
+    "altura": 500
+   },
+   "mapas": {
+    "cor": {
+     "arquivo": "aco-pintado-preto/cor.jpg",
+     "sha256": "fef79ad9040e98e76aef9d51f87dac807da74c2945a19b73f3cacc85db454701",
+     "px": [
+      1024,
+      1024
+     ]
+    },
+    "normal": {
+     "arquivo": "aco-pintado-preto/normal.jpg",
+     "sha256": "dc06ef43c3f0b02744bfd1042f7c706b810d9ce647f4081dc6bead6f85c903dd"
+    },
+    "rugosidade": {
+     "arquivo": "aco-pintado-preto/rugosidade.jpg",
+     "sha256": "9d021c0dd05b37be4e18a0655cb43fc5d607bed9abf01cf2b5d573a1f8220df8"
+    },
+    "metalico": {
+     "arquivo": "aco-pintado-preto/metalico.jpg",
+     "sha256": "843102638fa0a5bf897888868877efab8ccdc4cb84a48e57bdb52bfb30f5e714"
+    },
+    "miniatura": {
+     "arquivo": "aco-pintado-preto/miniatura.jpg",
+     "sha256": "8996cf6b4351f90d22dc7ebeff9ed53dfb9aecf139b825568cf1a8566eee675d"
+    }
+   }
+  },
+  {
+   "slug": "aluminio-escovado",
+   "uuid": "3b176019-e844-521b-bcd4-9d37ab3470ea",
+   "nome": "Alumínio escovado",
+   "categoria": "metal",
+   "palavras": [
+    "aluminio",
+    "alu"
+   ],
+   "tom": "claro",
+   "padrao": true,
+   "metal": true,
+   "origem": {
+    "fonte": "ambientCG",
+    "id": "Metal049A",
+    "url": "https://ambientcg.com/a/Metal049A",
+    "licenca": "CC0-1.0",
+    "copiado_em": "2026-10-26"
+   },
+   "tamanho_mm": {
+    "largura": 500,
+    "altura": 500
+   },
+   "mapas": {
+    "cor": {
+     "arquivo": "aluminio-escovado/cor.jpg",
+     "sha256": "cd7c77ceb830ebd343e0932a79eac6ce53bbea20bda4acbf90fc972e063c822a",
+     "px": [
+      1024,
+      1024
+     ]
+    },
+    "normal": {
+     "arquivo": "aluminio-escovado/normal.jpg",
+     "sha256": "ba911be8181c6df93dd19830f49dcaa09e73f09a3465125f081625ef9db45510"
+    },
+    "rugosidade": {
+     "arquivo": "aluminio-escovado/rugosidade.jpg",
+     "sha256": "2a515232677e0bb8ba1f5b376d9c7650af04210cdf16a314adbec5c47cf101d2"
+    },
+    "metalico": {
+     "arquivo": "aluminio-escovado/metalico.jpg",
+     "sha256": "955c204d8ad19266d274d104fcf4389fd0eb5beb13f255f9655ae9b462bafa82"
+    },
+    "miniatura": {
+     "arquivo": "aluminio-escovado/miniatura.jpg",
+     "sha256": "fe1b4403d7b5e6d56931c60e45342011f42f0197abe7effbdc9ee90d7f37ab54"
+    }
+   }
+  },
+  {
+   "slug": "aluminio-anodizado",
+   "uuid": "26bc17cb-9880-5240-bf58-6d3845aa408a",
+   "nome": "Alumínio anodizado",
+   "categoria": "metal",
+   "palavras": [
+    "anodizado"
+   ],
+   "tom": "escuro",
+   "padrao": false,
+   "metal": true,
+   "origem": {
+    "fonte": "ambientCG",
+    "id": "Metal046A",
+    "url": "https://ambientcg.com/a/Metal046A",
+    "licenca": "CC0-1.0",
+    "copiado_em": "2026-10-26"
+   },
+   "tamanho_mm": {
+    "largura": 500,
+    "altura": 500
+   },
+   "mapas": {
+    "cor": {
+     "arquivo": "aluminio-anodizado/cor.jpg",
+     "sha256": "e7846a637fc634e53d174ae8fbfbdffa1de98771530a8a1fb26b711d3b4094e0",
+     "px": [
+      1024,
+      1024
+     ]
+    },
+    "normal": {
+     "arquivo": "aluminio-anodizado/normal.jpg",
+     "sha256": "8a87d33e7b67e6aa3a19ed904013669321b0592187995b06022f1ab1dbdbfb44"
+    },
+    "rugosidade": {
+     "arquivo": "aluminio-anodizado/rugosidade.jpg",
+     "sha256": "76dfe4518f375eb1f7bc10cab5b26121f1a46e9b82682e1e1e6143a80ae3c07f"
+    },
+    "metalico": {
+     "arquivo": "aluminio-anodizado/metalico.jpg",
+     "sha256": "fc784b7d7b880296ad50c3b83cef1a16c47a0810538559af4bc0522836f0a729"
+    },
+    "miniatura": {
+     "arquivo": "aluminio-anodizado/miniatura.jpg",
+     "sha256": "58cb7706dc4e9846621e4fa1348de115061c4c9c07970fdb99b2bb06f25cd61b"
+    }
+   }
+  },
+  {
+   "slug": "cobre",
+   "uuid": "8ae675f5-3584-5776-b36d-ca6b097f2549",
+   "nome": "Cobre",
+   "categoria": "metal",
+   "palavras": [
+    "cobre"
+   ],
+   "tom": "medio",
+   "padrao": true,
+   "metal": true,
+   "origem": {
+    "fonte": "ambientCG",
+    "id": "Metal047A",
+    "url": "https://ambientcg.com/a/Metal047A",
+    "licenca": "CC0-1.0",
+    "copiado_em": "2026-10-26"
+   },
+   "tamanho_mm": {
+    "largura": 500,
+    "altura": 500
+   },
+   "mapas": {
+    "cor": {
+     "arquivo": "cobre/cor.jpg",
+     "sha256": "7735f77702b84cbefd30e682e8c545c619546ebd88befd5e13b7b35acb2e2aa1",
+     "px": [
+      1024,
+      1024
+     ]
+    },
+    "normal": {
+     "arquivo": "cobre/normal.jpg",
+     "sha256": "149a15889b971bd6846993a7d01d158e57c8f2f89b2d3ce371aeefacec418688"
+    },
+    "rugosidade": {
+     "arquivo": "cobre/rugosidade.jpg",
+     "sha256": "79faeb5455d7f63954c7ade26a383ca0d38c3716fcc35ae38af5171b1122f325"
+    },
+    "metalico": {
+     "arquivo": "cobre/metalico.jpg",
+     "sha256": "70e18bfa1c234af32e3df95a4c854e822cdd1555d8d745db74ddd5a188fe7895"
+    },
+    "miniatura": {
+     "arquivo": "cobre/miniatura.jpg",
+     "sha256": "97b296be9feffb0fc0d56911d81bb19a1e48f0efee85391b14f7e7c330b5409c"
+    }
+   }
+  },
+  {
+   "slug": "cobre-oxidado",
+   "uuid": "509f4eb8-8305-5bf5-9176-2f39ce135685",
+   "nome": "Cobre oxidado",
+   "categoria": "metal",
+   "palavras": [
+    "oxidado",
+    "patina",
+    "corten"
+   ],
+   "tom": "escuro",
+   "padrao": false,
+   "metal": true,
+   "origem": {
+    "fonte": "ambientCG",
+    "id": "Metal047B",
+    "url": "https://ambientcg.com/a/Metal047B",
+    "licenca": "CC0-1.0",
+    "copiado_em": "2026-10-26"
+   },
+   "tamanho_mm": {
+    "largura": 500,
+    "altura": 500
+   },
+   "mapas": {
+    "cor": {
+     "arquivo": "cobre-oxidado/cor.jpg",
+     "sha256": "6408582aa4035e794021f370d0d286eea54eeda6286178aae32bd3f1cc272b7c",
+     "px": [
+      1024,
+      1024
+     ]
+    },
+    "normal": {
+     "arquivo": "cobre-oxidado/normal.jpg",
+     "sha256": "c75304c800d8a31a746224009d0158dd5849bbc2b5d9bacdd202f56324474158"
+    },
+    "rugosidade": {
+     "arquivo": "cobre-oxidado/rugosidade.jpg",
+     "sha256": "1ab704cf6a02341113aa958c0c706426e64a8b5aa7ca5c31edec5167cd8bd5b8"
+    },
+    "metalico": {
+     "arquivo": "cobre-oxidado/metalico.jpg",
+     "sha256": "b85f4141dd5cd4ce1dc7058f46f27f4f98eafed1c12563a073b45474668ad3af"
+    },
+    "miniatura": {
+     "arquivo": "cobre-oxidado/miniatura.jpg",
+     "sha256": "2ab14f156458f7d05f04a976eb13afbc41d6982cb78708e07a9c5fb9f63be833"
+    }
+   }
+  },
+  {
+   "slug": "latao",
+   "uuid": "ccf57c38-0d85-5c84-acf1-3c166982f0c1",
+   "nome": "Latão",
+   "categoria": "metal",
+   "palavras": [
+    "latao",
+    "dourado",
+    "bronze"
+   ],
+   "tom": "medio",
+   "padrao": true,
+   "metal": true,
+   "origem": {
+    "fonte": "ambientCG",
+    "id": "Metal034",
+    "url": "https://ambientcg.com/a/Metal034",
+    "licenca": "CC0-1.0",
+    "copiado_em": "2026-10-26"
+   },
+   "tamanho_mm": {
+    "largura": 500,
+    "altura": 500
+   },
+   "mapas": {
+    "cor": {
+     "arquivo": "latao/cor.jpg",
+     "sha256": "9b247fca3fbffca8b9fec40b392ac246cbeb133728d41fbd5add167ec63297bd",
+     "px": [
+      1024,
+      1024
+     ]
+    },
+    "normal": {
+     "arquivo": "latao/normal.jpg",
+     "sha256": "09cae9df5198f1ba01003f6df52a4515b513bfdb9bd972d5ee559e68072c739d"
+    },
+    "rugosidade": {
+     "arquivo": "latao/rugosidade.jpg",
+     "sha256": "d5e44d1ba081d9dd381ab6e67631725081607bb371f5cdfe8023529d799c1026"
+    },
+    "metalico": {
+     "arquivo": "latao/metalico.jpg",
+     "sha256": "843102638fa0a5bf897888868877efab8ccdc4cb84a48e57bdb52bfb30f5e714"
+    },
+    "miniatura": {
+     "arquivo": "latao/miniatura.jpg",
+     "sha256": "a2a07bbcb4316a2369e150dd429c4475cad5dafeac3467e54aef7e3ba8b8ddd5"
+    }
+   }
+  }
+ ]
+}

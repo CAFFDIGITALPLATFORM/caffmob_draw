@@ -90,6 +90,37 @@ def texture_problems(source_dir):
     return problems
 
 
+def pbr_problems(source_dir):
+    """Feature 073 (RN-03, D-06): as texturas PBR do pacote são CC0 e cada arquivo de `pbr/` está no manifesto, com
+    o sha256 que o manifesto diz; a regra da 014 para imagem de fabricante (`texture_problems`) não muda."""
+    import hashlib
+    import importlib.util
+    folder = os.path.join(source_dir, "pbr")
+    if not os.path.isdir(folder):
+        return []
+    spec = importlib.util.spec_from_file_location(
+        "pbr_core", os.path.join(source_dir, "texture_library", "pbr_core.py"))
+    core = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(core)
+    data = core.carregar(folder)
+    if data is None:
+        return ["falta pbr/manifest.json válido (rode tools/baixar_pbr.py baixar)"]
+    if not os.path.isfile(os.path.join(source_dir, "LICENSES", "CC0-1.0.txt")):
+        return ["falta LICENSES/CC0-1.0.txt (licença das texturas PBR)"]
+
+    def sha256(path):
+        with open(path, "rb") as handle:
+            return hashlib.sha256(handle.read()).hexdigest()
+    problems = [f"pbr/manifest.json: {p}" for p in core.validar_manifesto(data, folder, sha256)]
+    listed = {os.path.normpath(p) for p in core.arquivos(data)}
+    for root, _dirs, files in os.walk(folder):
+        for file in files:
+            rel = os.path.normpath(os.path.relpath(os.path.join(root, file), folder))
+            if rel != core.MANIFESTO and rel not in listed:
+                problems.append(f"pbr/{rel}: arquivo fora do manifesto (só textura CC0 registrada vai no pacote)")
+    return problems
+
+
 def build_zip():
     zip_filename = "caffmob_draw.zip"
     source_dir = "caffmob_draw"
@@ -107,7 +138,7 @@ def build_zip():
         print("Atualize o repositório (git pull) ou copie os arquivos antes de empacotar.")
         sys.exit(1)
 
-    problems = package_problems(source_dir) + texture_problems(source_dir)
+    problems = package_problems(source_dir) + texture_problems(source_dir) + pbr_problems(source_dir)
     if problems:
         print("Error: o pacote não está pronto:")
         for problem in problems:

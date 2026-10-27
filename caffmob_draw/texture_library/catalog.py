@@ -14,6 +14,9 @@ _cache = {'catalog': catalog_core.empty_catalog(), 'warnings': [], 'by_id': {}, 
           'manufacturer_ticket': None, 'available': None}
 
 LOCAL_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'textures')
+PBR_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'pbr')     # 073: texturas CC0 do pacote
+PBR_MANUFACTURER = 'caffmob-pbr'
+PBR_COLLECTIONS = (('parede', N_('Parede')), ('piso', N_('Piso')), ('metal', N_('Metal')))
 NAMESPACE = uuid.UUID('5b0c7d6e-2f41-4c8a-9e3d-0a62e7f1c062')
 LOAD_FAILED = N_('Não foi possível carregar o catálogo do MOBI. Tentaremos novamente.')
 _local = {}
@@ -43,8 +46,45 @@ def embedded():
         for entry in catalog_core.iter_items(data):
             entry['mobi_id'] = str(uuid.uuid5(NAMESPACE, unicodedata.normalize('NFC', entry['file'])))
             entries[entry['id']] = entry
-        _local.update(catalog=data, by_id=entries, warnings=warnings)
+        pbr = _pbr_entries()
+        if pbr:
+            data['manufacturers'] = [_pbr_manufacturer(pbr)] + list(data.get('manufacturers', []))
+        _local.update(catalog=data, by_id=entries, pbr=pbr, warnings=warnings)
     return _local
+
+
+def _pbr_entries():
+    """073 (D-08, D-13): as texturas PBR do pacote como itens do catálogo, pelo UUID do manifesto, com os mapas no
+    disco (`local_path`): nada é baixado nem resolvido no MOBI."""
+    from . import pbr_core
+    data = pbr_core.carregar(PBR_DIR)
+    if data is None:
+        return {}
+    entries = {}
+    for t in data.get('texturas', []):
+        maps = {m: os.path.join(PBR_DIR, *v['arquivo'].split('/')) for m, v in t['mapas'].items()}
+        size = t['tamanho_mm']
+        entries[t['uuid']] = dict(id=t['uuid'], name=t['nome'], slug=t['slug'], categoria=t['categoria'], pbr=True,
+                                  metal=bool(t.get('metal')), ext='jpg', sha256=t['mapas']['cor'].get('sha256'),
+                                  bytes=0, px=t['mapas']['cor'].get('px', [1024, 1024]),
+                                  **{'size-mm': [float(size['largura']), float(size['altura'])]},
+                                  thumb_file=maps.pop('miniatura', ''), local_path=maps)
+    return entries
+
+
+def _pbr_manufacturer(entries):
+    collections = []
+    for col_id, col_name in PBR_COLLECTIONS:
+        items = sorted((e for e in entries.values() if e['categoria'] == col_id),
+                       key=lambda e: catalog_core.fold(e['name']))
+        if items:
+            collections.append({'id': col_id, 'name': col_name, 'items': items})
+    return {'id': PBR_MANUFACTURER, 'name': N_('Revestimentos e metais'), 'collections': collections}
+
+
+def pbr_item(item_id):
+    """Entrada PBR do pacote pelo UUID, ou None."""
+    return embedded().get('pbr', {}).get(item_id)
 
 
 def from_mobi(item):
@@ -105,7 +145,8 @@ def collections(manufacturer_id):
 
 
 def item(item_id):
-    return _cache['by_id'].get(item_id) or embedded()['by_id'].get(item_id)
+    # 073: a textura do pacote vence a mesma textura listada pelo MOBI (mesmo UUID), para nunca ser baixada
+    return pbr_item(item_id) or _cache['by_id'].get(item_id) or embedded()['by_id'].get(item_id)
 
 
 def remember(raw):
@@ -124,6 +165,8 @@ def thumb_entry(entry):
 
 
 def thumb_path(entry):
+    if entry.get('pbr'):
+        return entry['thumb_file'] if os.path.isfile(entry.get('thumb_file', '')) else ''
     if entry.get('file'):
         path = os.path.join(LOCAL_DIR, entry['thumb'])
         return path if os.path.isfile(path) else ''

@@ -78,6 +78,8 @@ def _aplicar_imagem(m, dado, path):
         tree.links.new(a.outputs[output], b.inputs[input_])
     m['caffmob_escala_mm'] = [escala['largura'], escala['altura']]
     m['caffmob_textura_pendente'] = ''
+    from ..texture_library import pbr
+    pbr.attach(m, catalog.pbr_item(dado.get('textura_id', '')), center.outputs['Vector'])   # 073 (T019)
 
 
 def baixar_pendentes(colecao):

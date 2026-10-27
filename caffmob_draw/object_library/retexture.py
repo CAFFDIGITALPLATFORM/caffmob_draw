@@ -109,6 +109,7 @@ def image_material(path, size_mm, height_mm=None, rotated=False, texture_id=""):
                 if abs(w - width) < 1e-6 and abs(h - height) < 1e-6:
                     if not wanted:
                         grain.ensure_graph(mat)
+                    _attach_pbr(mat, texture_id)
                     return mat
     rotated = False
     image = bpy.data.images.load(path, check_existing=True)
@@ -138,7 +139,19 @@ def image_material(path, size_mm, height_mm=None, rotated=False, texture_id=""):
     # Calibração inicial pela proporção da imagem (RF-061; editável no painel da peça).
     mat[grain.CALIBRATION] = grain_core.calibration_from_size(*image.size)
     grain.ensure_graph(mat)
+    _attach_pbr(mat, texture_id)
     return mat
+
+
+def _attach_pbr(mat, texture_id):
+    """073 (T018): normal, rugosidade e metálico da textura do pacote, no mesmo mapeamento da cor."""
+    if not texture_id:
+        return
+    from ..texture_library import catalog, pbr
+    entry = catalog.pbr_item(texture_id)
+    if entry and pbr.attach(mat, entry):
+        from ..texture_library import grain
+        grain.ensure_graph(mat)
 
 
 def apply_image(objs, path, size_mm):
