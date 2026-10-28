@@ -128,7 +128,7 @@ class BTM_OT_LibraryDrag(bpy.types.Operator):
         if event.type in ('MOUSEMOVE', 'INBETWEEN_MOUSEMOVE'):
             self.pos = (event.mouse_region_x, event.mouse_region_y)
             context.area.tag_redraw()
-            if self.block and self.entry.get("kind") != 'MODEL' and not _inside(self.panel, *self.pos):
+            if self.block and self.entry.get("kind") == 'MODULE' and not _inside(self.panel, *self.pos):
                 return self._hand_off(context)
             return {'RUNNING_MODAL'}
         if event.type == 'LEFTMOUSE' and event.value == 'RELEASE':
@@ -163,7 +163,7 @@ class BTM_OT_LibraryDrag(bpy.types.Operator):
         return {'CANCELLED'}                              # o passo de Undo é o da aplicação
 
     def _drop_model(self, context, point):
-        if self.entry.get("kind") != 'MODEL' or point is None:
+        if self.entry.get("kind") not in ('MODEL', 'PRESET', 'DOOR', 'WINDOW') or point is None:
             self.report({'WARNING'}, tr(EMPTY_DROP))
             return {'CANCELLED'}
         cursor = context.scene.cursor

@@ -9,7 +9,28 @@ import bpy  # type: ignore
 
 KIND_ITEMS = [('NONE', "Nenhum", "Caixa antiga, sem a porta real"), ('DOOR', "Porta", ""),
               ('DOUBLE_DOOR', "Porta dupla", ""), ('OPEN_DOOR', "Vão aberto", ""), ('WINDOW', "Janela", "")]
-MODEL_VERSION = 1
+MATERIAL_ITEMS = [
+    ('madeira', "Madeira", "Acabamento em madeira"),
+    ('aluminio', "Alumínio", "Acabamento em alumínio"),
+    ('blindex', "Blindex", "Vidro temperado com ferragens aparentes"),
+]
+MODEL_VERSION = 2
+
+
+def _opening_style_changed(self, context):
+    from . import sync
+    cage = self.id_data
+    if cage is None:
+        return
+    if cage.get('caffmob_tipo') == 'abertura':
+        from ..mobi import cena_v2
+        cena_v2.reconstruir_abertura_v2(
+            context, cage,
+            modelo=self.opening_model or None,
+            material=self.opening_material or None,
+        )
+    elif sync.is_opening(cage):
+        sync.sync(context, cage, force=True)
 
 
 def _limit_changed(self, context):
@@ -45,6 +66,10 @@ class BTM_PG_Opening(bpy.types.PropertyGroup):
     corner_world: bpy.props.FloatVectorProperty(size=3, subtype='XYZ')  # type: ignore
     link_missing: bpy.props.BoolProperty(default=False)  # type: ignore
     kind: bpy.props.EnumProperty(items=KIND_ITEMS, default='NONE')  # type: ignore
+    opening_model: bpy.props.StringProperty(name="Modelo da abertura", default="",
+                                            update=_opening_style_changed)  # type: ignore
+    opening_material: bpy.props.EnumProperty(name="Material da abertura", items=MATERIAL_ITEMS,
+                                             default='madeira', update=_opening_style_changed)  # type: ignore
     signature: bpy.props.StringProperty()  # type: ignore
     model_version: bpy.props.IntProperty(default=0)  # type: ignore
     assembly: bpy.props.PointerProperty(type=bpy.types.Object)  # type: ignore

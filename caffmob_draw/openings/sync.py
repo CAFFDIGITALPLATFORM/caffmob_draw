@@ -67,19 +67,27 @@ def signature(cage):
     kind = kind_of(cage)
     dims = _dims(cage)
     _swing_obj, left, inside, _double = _swing(cage)
-    return "{}|{:.5f}|{:.5f}|{:.5f}|{}|{}|v{}".format(kind, *dims, left, inside, props.MODEL_VERSION)
+    data = cage.btm_opening_real
+    model = data.opening_model or ""
+    mat = data.opening_material if data.opening_model or data.is_property_set('opening_material') else ""
+    return "{}|{:.5f}|{:.5f}|{:.5f}|{}|{}|{}|{}|v{}".format(
+        kind, *dims, left, inside, model, mat, props.MODEL_VERSION
+    )
 
 
 def _parts(cage, kind):
     width, wall, height = _dims(cage)
+    data = cage.btm_opening_real
+    model = data.opening_model or None
+    material = data.opening_material if data.opening_model or data.is_property_set('opening_material') else None
     if kind == 'WINDOW':
-        return window_core.window_parts(width, height, wall)
+        return window_core.window_parts(width, height, wall, model=model, material=material)
     _swing_obj, left, inside, _double = _swing(cage)
-    double = kind == 'DOUBLE_DOOR'
-    leaf_w, leaf_h = door_core.leaf_size(width, height, double=double)
+    double = kind == 'DOUBLE_DOOR' or door_core.is_double_leaf(model)
+    leaf_w, leaf_h = door_core.leaf_size(width, height, double=double, model=model)
     return door_core.door_parts(leaf_w, leaf_h, wall, hinge='RIGHT' if left else 'LEFT',
                                 side='NEG_Y' if inside or inside is None else 'POS_Y', double=double,
-                                open_door=kind == 'OPEN_DOOR')
+                                open_door=kind == 'OPEN_DOOR', model=model, material=material)
 
 
 def _remember(assembly):
@@ -185,7 +193,7 @@ def sync(context, cage, force=False):
         obj['btm_opening_role'] = role
         obj['btm_opening_index'] = index if index is not None else -1
         saved = finishes.get((role, index if index is not None else -1))
-        if saved:
+        if saved and not force:
             obj.data.materials.clear()
             for material in saved:
                 obj.data.materials.append(material)
@@ -212,15 +220,26 @@ def sync(context, cage, force=False):
         _parent_keep(sash, frame)
         sashes.append((index, sash))
     context.view_layer.update()
+    model = data.opening_model or None
     for index, sash in sashes:
         if kind == 'WINDOW':
-            travel = window_core.travel(_dims(cage)[0])     # até o batente do marco (o marco não é obstáculo)
-            leaf.make_leaf(sash, frame, 'SLIDE', slide_dir='POS_X' if index == 0 else 'NEG_X', travel=travel)
-            apply._write(sash, 'travel', travel)
+            if window_core.is_sliding_window(model):
+                travel = window_core.travel(_dims(cage)[0], model=model)     # até o batente do marco (o marco não é obstáculo)
+                leaf.make_leaf(sash, frame, 'SLIDE', slide_dir='POS_X' if index % 2 == 0 else 'NEG_X', travel=travel)
+                apply._write(sash, 'travel', travel)
+            else:
+                hinge = 'LEFT' if index % 2 == 0 else 'RIGHT'
+                leaf.make_leaf(sash, frame, 'SWING', hinge=hinge, swing_sign='OUT', max_angle=data.swing_limit)
         else:
-            hinge = ('RIGHT' if left else 'LEFT') if kind == 'DOOR' else ('LEFT' if index == 0 else 'RIGHT')
-            sign = 'OUT' if inside or inside is None else 'IN'
-            leaf.make_leaf(sash, frame, 'SWING', hinge=hinge, swing_sign=sign, max_angle=data.swing_limit)
+            if door_core.is_sliding(model):
+                travel = door_core.door_travel(_dims(cage)[0], model=model)
+                leaf.make_leaf(sash, frame, 'SLIDE', slide_dir='POS_X' if index % 2 == 0 else 'NEG_X', travel=travel)
+                apply._write(sash, 'travel', travel)
+            else:
+                is_double = kind == 'DOUBLE_DOOR' or door_core.is_double_leaf(model)
+                hinge = ('RIGHT' if left else 'LEFT') if not is_double else ('LEFT' if index == 0 else 'RIGHT')
+                sign = 'OUT' if inside or inside is None else 'IN'
+                leaf.make_leaf(sash, frame, 'SWING', hinge=hinge, swing_sign=sign, max_angle=data.swing_limit)
         sash.btm_aggregate.leaf_index = index
         base = sash.name.split(".")[0]
         if index in opens and opens[index] > 0.0:

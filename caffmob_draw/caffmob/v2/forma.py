@@ -2,6 +2,12 @@
 import math
 import re
 from datetime import datetime
+from .contrato import (
+    MATERIAIS_DE_ABERTURA,
+    MODELOS_DE_ABERTURA,
+    MODELOS_DE_JANELA,
+    MODELOS_DE_PORTA,
+)
 
 
 def numero(minimo=-math.inf, maximo=math.inf, inteiro=False, positivo=False):
@@ -214,6 +220,8 @@ DOCUMENTO = dict(
                       largura=P,
                       altura=P,
                       peitoril=NN,
+                      modelo=opcional(enum(*MODELOS_DE_ABERTURA)),
+                      material=opcional(enum(*MATERIAIS_DE_ABERTURA)),
                   ),
               ),
     modulos=lista({**COMUM, 'perfil_construcao': enum('caffmob.modulo/v1'), 'parametros': PARAMETROS}),
@@ -404,4 +412,10 @@ def erros_da_forma(valor, forma=DOCUMENTO, caminho=''):
         elif not f(v):
             erro(p)
     conferir(valor, forma, caminho)
+    if forma is DOCUMENTO and isinstance(valor, dict) and isinstance(valor.get('aberturas'), list):
+        for i, a in enumerate(valor['aberturas']):
+            if isinstance(a, dict) and 'modelo' in a and a.get('tipo') in ('DOOR', 'WINDOW') and a['modelo'] in MODELOS_DE_ABERTURA:
+                permitidos = MODELOS_DE_PORTA if a['tipo'] == 'DOOR' else MODELOS_DE_JANELA
+                if a['modelo'] not in permitidos:
+                    erro(f'aberturas[{i}].modelo')
     return erros

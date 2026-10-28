@@ -469,6 +469,124 @@ def contorno_com_arcos(pontos):
     return out
 
 
+def _coletar_itens_arvore(item):
+    yield item
+    for f in getattr(item, 'filhos', ()) or ():
+        yield from _coletar_itens_arvore(f)
+
+
+def casar_abertura_promob(item, porta):
+    """(modelo, material) do contrato v2 inferidos do item de abertura do `.promob` (feature 078, RN-06, RF-06)."""
+    nos = list(_coletar_itens_arvore(item))
+    texto = ' '.join(
+        texturas.fold( f'{getattr(n, "nome", "")} {getattr(n, "id", "")}' )
+        for n in nos
+    )
+    mecanismos = {
+        (getattr(n, 'abertura', None) or {}).get('TYPE')
+        for n in nos
+        if getattr(n, 'abertura', None)
+    }
+    mids = []
+    for n in nos:
+        if getattr(n, 'material', None):
+            mids.append(str(n.material))
+        for _c, m in getattr(n, 'componentes', ()) or ():
+            if m:
+                mids.append(str(m))
+        for m in (getattr(n, 'acabamentos', None) or {}).values():
+            if m:
+                mids.append(str(m))
+    mat_texto = texturas.fold(' '.join(mids))
+    tudo = f'{texto} {mat_texto}'
+
+    # Material ('madeira' | 'aluminio' | 'blindex')
+    if any(k in tudo for k in ('blindex', 'temperad', ' incolor temperad')):
+        material = 'blindex'
+    elif any(k in tudo for k in ('madeir', 'mad_', 'mogno', 'freijo', 'imbuia', 'carvalho', 'tauari', 'curupixa', 'cedro', 'angelim')):
+        material = 'madeira'
+    elif any(k in tudo for k in ('alumin', 'alu_', 'dec_met', 'metal', 'inox')):
+        material = 'aluminio'
+    elif any(k in mat_texto for k in ('vidro', 'vid_')) and not any(k in tudo for k in ('madeir', 'alumin')):
+        material = 'blindex'
+    else:
+        material = 'madeira' if porta else 'aluminio'
+
+    # Modelo (10 de porta | 20 de janela)
+    if porta:
+        is_slide = 'Sliding' in mecanismos or any(k in texto for k in ('correr', 'trilho', 'embutid'))
+        if any(k in texto for k in ('camarao', 'articulad', 'mao amiga', 'mao-amiga')):
+            modelo = 'porta_correr_camarao'
+        elif is_slide:
+            if any(k in texto for k in ('4 folh', '4f', 'quatro folh')):
+                modelo = 'porta_correr_4f'
+            elif any(k in texto for k in ('2 folh', '2f', 'duas folh', 'dupla')):
+                modelo = 'porta_correr_2f'
+            elif 'embutid' in texto:
+                modelo = 'porta_correr_embutida'
+            else:
+                modelo = 'porta_correr_aparente'
+        else:
+            folhas_giro = sum(1 for n in nos[1:] if 'folha' in texturas.fold(getattr(n, 'nome', '')) or (getattr(n, 'abertura', None) or {}).get('TYPE') == 'Door')
+            if any(k in texto for k in ('dupla', '2 folh', '2f', 'duas folh')) or folhas_giro >= 2:
+                modelo = 'porta_giro_dupla'
+            elif 'visor' in texto:
+                modelo = 'porta_giro_visor'
+            elif 'frisad' in texto:
+                modelo = 'porta_giro_frisada'
+            elif 'lisa' in texto:
+                modelo = 'porta_giro_lisa'
+            else:
+                modelo = 'porta_giro_almofadada'
+    else:
+        if 'Dumping' in mecanismos or any(k in texto for k in ('maximar', 'maxim-ar', 'maxim ar', 'bascul', 'pivot')):
+            if 'pivot' in texto:
+                modelo = 'janela_pivotante'
+            elif 'bascul' in texto:
+                modelo = 'janela_basculante'
+            elif 'fixo' in texto:
+                modelo = 'janela_maximar_fixo'
+            elif any(k in texto for k in ('2m', '2 mod', '2 folh', '2f', 'dupla', 'duplo')):
+                modelo = 'janela_maximar_2m'
+            else:
+                modelo = 'janela_maximar_1m'
+        elif any(k in texto for k in ('quadro fixo', 'janela fixa', 'panoram', 'bay', 'vitro', 'veneziana fixa')):
+            if 'veneziana' in texto:
+                modelo = 'janela_veneziana_fixa'
+            elif 'panoram' in texto:
+                modelo = 'janela_panoramica'
+            elif 'bay' in texto:
+                modelo = 'janela_bay'
+            elif any(k in texto for k in ('vitro', 'quadricul')):
+                modelo = 'janela_vitro'
+            else:
+                modelo = 'janela_fixa'
+        elif any(k in texto for k in ('abrir', 'giro', 'camarao', 'articulad')) and 'correr' not in texto:
+            if any(k in texto for k in ('camarao', 'articulad')):
+                modelo = 'janela_abrir_camarao'
+            elif 'veneziana' in texto:
+                modelo = 'janela_abrir_veneziana'
+            elif 'bandeira' in texto:
+                modelo = 'janela_abrir_bandeira'
+            elif any(k in texto for k in ('1 folh', '1f', 'uma folh')):
+                modelo = 'janela_abrir_1f'
+            else:
+                modelo = 'janela_abrir_2f'
+        else:
+            if 'veneziana' in texto:
+                modelo = 'janela_correr_veneziana'
+            elif 'bandeira' in texto:
+                modelo = 'janela_correr_bandeira'
+            elif any(k in texto for k in ('4 folh', '4f', 'quatro folh')):
+                modelo = 'janela_correr_4f'
+            elif any(k in texto for k in ('3 folh', '3f', 'tres folh')):
+                modelo = 'janela_correr_3f'
+            else:
+                modelo = 'janela_correr_2f'
+
+    return modelo, material
+
+
 class Conversao:
     def __init__(self, projeto, novo_id=_id, catalogo=None, pbr=None):
         self.projeto, self.novo_id = projeto, novo_id
@@ -693,12 +811,14 @@ class Conversao:
                 self._ignorar(item, 'abertura sobreposta a outra no mesmo trecho; entrou com as peças, sem o furo')
                 return []
         porta = z0 < PEITORIL_DE_PORTA      # E002: a porta vai ao piso; o contrato pede peitoril 0 na porta
+        modelo, material = casar_abertura_promob(item, porta)
         ids = []
         for _p, seg, _p0, _u, a0, a1, _z0, _z1 in sorted(juntos, key=lambda p: -(p[5] - p[4])):
             ids.append(self.novo_id())
             self.aberturas.append(dict(id=ids[-1], tipo='DOOR' if porta else 'WINDOW', segmento_id=seg['id'],
                                        posicao=round(a0, 3), largura=round(a1 - a0, 3),
-                                       altura=round(z1 if porta else z1 - z0, 3), peitoril=0 if porta else round(z0, 3)))
+                                       altura=round(z1 if porta else z1 - z0, 3), peitoril=0 if porta else round(z0, 3),
+                                       modelo=modelo, material=material))
         self.relatorio['aberturas'] += 1
         self.aberturas_sem_folha.extend(ids[1:])      # o pedaço que passa para o trecho vizinho não ganha outra folha
         return ids

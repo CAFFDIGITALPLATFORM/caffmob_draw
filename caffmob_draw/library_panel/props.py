@@ -14,6 +14,11 @@ import bpy  # type: ignore
 MODES = [('MIN', "Minimizado", "Só o rótulo BIBLIOTECA CAFFMOB"),
          ('OPEN', "Aberto", "Coluna de categorias"),
          ('MAX', "Maximizado", "Retângulo com a grade")]
+OPENING_MATERIALS = [
+    ('madeira', "Madeira", "Esquadria em madeira"),
+    ('aluminio', "Alumínio", "Esquadria em alumínio"),
+    ('blindex', "Blindex", "Esquadria em vidro temperado"),
+]
 
 
 def _get_open(self):
@@ -36,6 +41,8 @@ class BTM_PG_LibraryState(bpy.types.PropertyGroup):
     search: bpy.props.StringProperty()  # type: ignore
     category: bpy.props.StringProperty()  # type: ignore
     line: bpy.props.StringProperty(default='COZ')  # type: ignore
+    opening_material: bpy.props.EnumProperty(name="Material da esquadria", items=OPENING_MATERIALS,
+                                             default='madeira')  # type: ignore
 
 
 classes = (BTM_PG_LibraryState,)

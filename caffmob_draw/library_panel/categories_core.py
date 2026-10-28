@@ -22,6 +22,10 @@ FIXED = (
     Category("Sala", 'SAL', True),
     Category("Home office", 'ESC', True),
 )
+OPENING_CATEGORIES = (
+    Category("Portas", 'COZ', True),
+    Category("Janelas", 'COZ', True),
+)
 DEFAULT_LINE = 'COZ'
 SCHEMA_VERSION = 1
 
@@ -34,6 +38,11 @@ INVALID_FILE = N_("Arquivo de categorias inválido; as categorias do usuário fo
 def all_categories(user):
     """Fixas e depois as do usuário, na ordem em que foram criadas."""
     return list(FIXED) + list(user)
+
+
+def sidebar_categories(user):
+    """Categorias da coluna lateral da Biblioteca (ambientes fixos, Portas, Janelas e categorias do usuário)."""
+    return list(FIXED) + list(OPENING_CATEGORIES) + list(user)
 
 
 def _key(name):

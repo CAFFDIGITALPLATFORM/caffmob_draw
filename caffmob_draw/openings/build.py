@@ -25,7 +25,7 @@ _AXIS = {'CYL_X': Matrix.Rotation(math.pi / 2, 4, 'Y'), 'CYL_Y': Matrix.Rotation
 def group_key(part):
     if part.role in (dc.FRAME, dc.FRAME_HW):
         return part.role, None
-    return (dc.LEAF if part.role == dc.LEAF or part.material in ('ALU', 'GLASS') else dc.LEAF_HW), part.leaf
+    return (dc.LEAF if part.role == dc.LEAF or part.material in ('ALU', 'GLASS') else dc.LEAF_HW), (part.leaf or 0)
 
 
 def group_name(key):

@@ -68,17 +68,54 @@ class BTM_OT_LibraryInsertModel(bpy.types.Operator):
     line: bpy.props.StringProperty(default='COZ')  # type: ignore
 
     def execute(self, context):
-        models, _warnings = models_core.load_default()
-        model = models_core.find(models, self.model_id)
+        model = models_core.find_any(self.model_id)
         if model is None:
             self.report({'ERROR'}, tr("Modelo não encontrado: {}").format(self.model_id))
             return {'CANCELLED'}
+        if model.kind in ('DOOR', 'WINDOW'):
+            from ..openings import build, door_core, window_core
+            state = getattr(context.window_manager, 'btm_library', None) if context.window_manager else None
+            mat = (getattr(state, 'opening_material', "") if state is not None else "") or model.default_material
+            w, h, wall = model.width_mm / 1000.0, model.height_mm / 1000.0, 0.15
+            if model.kind == 'WINDOW':
+                parts = window_core.window_parts(w, h, wall, model=model.opening_model, material=mat)
+            else:
+                lw, lh = door_core.leaf_size(w, h, model=model.opening_model)
+                parts = door_core.door_parts(lw, lh, wall, model=model.opening_model, material=mat)
+            col = context.collection or context.scene.collection
+            root = bpy.data.objects.new(model.label, None)
+            col.objects.link(root)
+            root.location = context.scene.cursor.location.copy()
+            if model.kind == 'WINDOW' and abs(root.location.z) < 1e-9:
+                root.location.z = model.sill_mm / 1000.0
+            root.btm_plane.object_kind = 'OPENING'
+            root.btm_opening_real['opening_model'] = model.opening_model
+            if mat in ('madeira', 'aluminio', 'blindex'):
+                root.btm_opening_real['opening_material'] = ('madeira', 'aluminio', 'blindex').index(mat)
+            for key, child in build.build(parts, col, window=model.kind == 'WINDOW').items():
+                child.parent = root
+                child['caffmob_papel'] = str(key)
+            for other in list(context.selected_objects):
+                other.select_set(False)
+            root.select_set(True)
+            context.view_layer.objects.active = root
+            return {'FINISHED'}
+
         kwargs = dict(cabinet_type=model.cabinet_type, line=self.line if self.line in categories_core.LINES else 'COZ',
                       door_swing=model.door_swing, shelves=model.shelves)
         if model.width_mm:
             kwargs['width'] = model.width_mm / 1000.0
         kwargs['structure_id'] = models_core.model_structure(model, kwargs['line'])     # feature 015 (RN-13)
-        return bpy.ops.caffmob.cabinet_builder(**kwargs)
+        res = bpy.ops.caffmob.cabinet_builder(**kwargs)
+        if 'FINISHED' in res and context.active_object is not None:
+            obj = context.active_object
+            obj['btm_model_id'] = model.id
+            obj['btm_drawers'] = int(model.drawers)
+            obj['btm_corner_kind'] = model.corner_kind
+            obj['btm_right_width_mm'] = float(model.right_width_mm)
+            from . import ops_replace
+            ops_replace.sync_preset_extras(obj)
+        return res
 
 
 classes = (BTM_OT_LibraryInsertModel,)

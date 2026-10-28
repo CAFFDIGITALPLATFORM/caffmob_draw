@@ -4,7 +4,11 @@ set -u
 set -o pipefail
 root=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)
 entrega=$(dirname -- "$root")
-blender=${BLENDER_BIN:-/tmp/claude-0/-home-dev-workspace-caff-systems/8948a4a0-7836-421c-97ad-7fab9159df01/scratchpad/blender/blender-5.2.2-linux-x64/blender}
+default_blender=/tmp/claude-0/-home-dev-workspace-caff-systems/8948a4a0-7836-421c-97ad-7fab9159df01/scratchpad/blender/blender-5.2.2-linux-x64/blender
+if [[ ! -x "$default_blender" ]] && command -v blender >/dev/null 2>&1; then
+    default_blender=$(command -v blender)
+fi
+blender=${BLENDER_BIN:-$default_blender}
 export BLENDER_USER_RESOURCES=${BLENDER_USER_RESOURCES:-$entrega/blender-usuario}
 # Nenhum teste deste portão pode usar um MOBI externo.
 unset CAFFMOB_ENSAIO_URL
@@ -29,7 +33,7 @@ run_gate() {
         code=$?; echo "$module: saída $code"; (( code == 0 )) || failed=1
     done
     cd "$root" || return 1
-    for script in ${BLENDER_SCRIPTS:-tests/blender_mobi_operadores.py tests/blender_smoke.py}; do
+    for script in ${BLENDER_SCRIPTS:-tests/blender_mobi_operadores.py tests/blender_smoke.py tests/blender_078_openings_and_replace.py}; do
         "$blender" --background --factory-startup --python-exit-code 1 --python "$script"
         code=$?; echo "$script: saída $code"; (( code == 0 )) || failed=1
     done
