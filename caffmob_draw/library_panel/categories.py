@@ -102,5 +102,10 @@ def all_categories():
     return cc.all_categories(user)
 
 
+def sidebar_categories():
+    user, _warnings = load()
+    return cc.sidebar_categories(user)
+
+
 def find(name):
-    return next((c for c in all_categories() if c.name == name), None)
+    return next((c for c in sidebar_categories() if c.name == name), None)

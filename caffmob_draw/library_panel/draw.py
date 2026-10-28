@@ -46,7 +46,20 @@ NO_RESULTS_HINT = N_("Confira a escrita ou busque em todos os fabricantes.")
 BLOCKS_PICK = N_("Escolha uma categoria")
 BLOCKS_PICK_HINT = N_("Os modelos prontos e os seus módulos salvos aparecem aqui.")
 CATEGORIES = N_("Categorias")
-BLOCK_STATUS = {'MODEL': N_("Modelo pronto"), 'MODULE': N_("Meu módulo"), 'HOVER': N_("Arraste para a cena")}
+BLOCK_STATUS = {
+    'MODEL': N_("Modelo pronto"),
+    'PRESET': N_("Modelo pronto"),
+    'DOOR': N_("Porta paramétrica"),
+    'WINDOW': N_("Janela paramétrica"),
+    'MODULE': N_("Meu módulo"),
+    'HOVER': N_("Arraste para a cena"),
+}
+REPLACE_LABEL = N_("Substituir pelo selecionado")
+MATERIAL_LABELS = {
+    'madeira': N_("Madeira"),
+    'aluminio': N_("Alumínio"),
+    'blindex': N_("Blindex"),
+}
 BLOCKS_TTL = 2.0                          # segundos de cache da lista de módulos salvos (lida do disco)
 DOWNLOAD_FOOTER = N_("Baixando {} de {} · {} de {} MB")
 CANCEL = N_("Cancelar")
@@ -234,20 +247,48 @@ def _model_size(line, cabinet_type):
 
 
 def block_entries(state):
-    """Blocos da categoria aberta (T040): modelos prontos na linha da categoria e os módulos salvos nela."""
+    """Blocos da categoria aberta (T040 + feature 078): modelos prontos, presets, aberturas e módulos salvos."""
     name = state.category
     if not name:
         return []
-    found = categories.find(name)
-    line = found.line if found is not None else categories_core.DEFAULT_LINE
-    models, _warnings = models_core.load_default()
     entries = []
-    for m in models:
-        width, height, z = _model_size(line, m.cabinet_type)
-        entries.append({"id": "BLK:MODEL:" + m.id, "name": tr(m.label), "kind": 'MODEL', "model": m.id, "line": line,
-                        "thumb_file": "", "cabinet_type": m.cabinet_type, "door_swing": m.door_swing,
-                        "shelves": m.shelves, "size_mm": (m.width_mm or width, height, z)})
-    entries += _module_entries(name)
+    if name in ("Portas", "portas_giro", "portas_correr"):
+        cat = name if name != "Portas" else None
+        openings, _w = models_core.load_openings(kind='DOOR', category=cat)
+        for m in openings:
+            entries.append({
+                "id": "BLK:OPENING:" + m.id, "name": tr(m.label), "kind": 'DOOR', "model": m.id,
+                "opening_model": m.opening_model, "default_material": m.default_material,
+                "line": 'COZ', "thumb_file": "", "cabinet_type": 'BASE', "door_swing": 'NONE',
+                "shelves": 0, "size_mm": (m.width_mm, m.height_mm, m.sill_mm),
+            })
+    elif name in ("Janelas", "janelas_correr", "janelas_abrir", "janelas_basculantes", "janelas_fixas"):
+        cat = name if name != "Janelas" else None
+        openings, _w = models_core.load_openings(kind='WINDOW', category=cat)
+        for m in openings:
+            entries.append({
+                "id": "BLK:OPENING:" + m.id, "name": tr(m.label), "kind": 'WINDOW', "model": m.id,
+                "opening_model": m.opening_model, "default_material": m.default_material,
+                "line": 'COZ', "thumb_file": "", "cabinet_type": 'BASE', "door_swing": 'NONE',
+                "shelves": 0, "size_mm": (m.width_mm, m.height_mm, m.sill_mm),
+            })
+    else:
+        found = categories.find(name)
+        line = found.line if found is not None else categories_core.DEFAULT_LINE
+        models, _warnings = models_core.load_default()
+        for m in models:
+            width, height, z = _model_size(line, m.cabinet_type)
+            entries.append({"id": "BLK:MODEL:" + m.id, "name": tr(m.label), "kind": 'MODEL', "model": m.id, "line": line,
+                            "thumb_file": "", "cabinet_type": m.cabinet_type, "door_swing": m.door_swing,
+                            "shelves": m.shelves, "size_mm": (m.width_mm or width, height, z)})
+        presets, _pw = models_core.load_presets()
+        for m in presets:
+            width, height, z = _model_size(line, m.cabinet_type)
+            entries.append({"id": "BLK:PRESET:" + m.id, "name": tr(m.label), "kind": 'PRESET', "model": m.id,
+                            "line": line, "thumb_file": "", "cabinet_type": m.cabinet_type, "door_swing": m.door_swing,
+                            "shelves": m.shelves, "drawers": m.drawers, "corner_kind": m.corner_kind,
+                            "right_width_mm": m.right_width_mm, "size_mm": (m.width_mm or width, height, z)})
+        entries += _module_entries(name)
     text = state.search.strip().casefold()
     return [e for e in entries if text in e["name"].casefold()] if text else entries
 
@@ -265,7 +306,7 @@ def sidebar_tree(state):
     """Árvore da coluna de filtros: fabricantes e coleções (Texturas) ou categorias (Blocos, chave 'MAN:<nome>')."""
     if state.tab == 'TEXTURES':
         return texture_tree()
-    return [(c.name, c.name, 0, []) for c in categories.all_categories()]
+    return [(c.name, tr(c.name) if c.fixed else c.name, 0, []) for c in categories.sidebar_categories()]
 
 
 def texture_state(item):
@@ -424,6 +465,35 @@ def _draw_sidebar(lay, state, mouse, viewport, s):
         number = str(count)
         kit.text_centered_y(number, rect, rx + rw - style.SPACE_MD * s - kit.width_of(number, style.FONT_SMALL * s),
                             style.FONT_SMALL * s, style.TEXT_SUBTLE)
+    if blocks:
+        _draw_blocks_controls(lay.sidebar, state, mouse, viewport, s)
+
+
+def _draw_blocks_controls(sidebar, state, mouse, viewport, s):
+    """Seletor rápido Madeira | Alumínio | Blindex e botão 'Substituir pelo selecionado' na aba Blocos."""
+    replace_rect, mats = layout_core.blocks_controls(sidebar, s)
+    hovered_ctrl = layout_core.hit_blocks_controls(sidebar, *mouse, s)
+    active_mat = getattr(state, 'opening_material', 'madeira') or 'madeira'
+    for key, rect in mats:
+        mat_id = key[4:]
+        mx, my, mw, mh = rect
+        is_active = mat_id == active_mat
+        bg = style.ACCENT_TINT if is_active else (style.SURFACE_HOVER if hovered_ctrl == key else style.SURFACE_SUNKEN)
+        kit.rect(mx, my, mw, mh, bg, style.RADIUS_CONTROL * s)
+        kit.outline(mx, my, mw, mh, style.ACCENT if is_active else style.BORDER, viewport, style.RADIUS_CONTROL * s)
+        label = tr(MATERIAL_LABELS.get(mat_id, mat_id))
+        lw = kit.width_of(label, style.FONT_SMALL * s)
+        kit.text_centered_y(label, rect, mx + max(2.0 * s, (mw - lw) / 2.0), style.FONT_SMALL * s,
+                            style.TEXT if is_active else style.TEXT_MUTED, max_w=mw - 4.0 * s)
+
+    rx, ry, rw, rh = replace_rect
+    is_hover = hovered_ctrl == layout_core.REPLACE_SELECTED
+    kit.rect(rx, ry, rw, rh, style.ACCENT if is_hover else style.ACCENT_TINT, style.RADIUS_CONTROL * s)
+    kit.outline(rx, ry, rw, rh, style.ACCENT, viewport, style.RADIUS_CONTROL * s)
+    btn_label = tr(REPLACE_LABEL)
+    bw = kit.width_of(btn_label, style.FONT_SMALL * s)
+    kit.text_centered_y(btn_label, replace_rect, rx + max(4.0 * s, (rw - bw) / 2.0), style.FONT_SMALL * s,
+                        style.TEXT, max_w=rw - 8.0 * s)
 
 
 def _clip(region, rect):
@@ -486,8 +556,17 @@ def _draw_cell(item, rect, state_kind, progress, hovered, viewport, s):
 def _draw_model_front(entry, box, viewport, s):
     """Frente do modelo pronto no traço da marca: piso, rodapé, caixa, portas, puxadores e prateleiras."""
     width, height, z = entry["size_mm"]
+    extra = {}
+    if entry.get("drawers"):
+        extra["drawers"] = entry["drawers"]
+    if entry.get("corner_kind") and entry["corner_kind"] != 'NONE':
+        extra["corner_kind"] = entry["corner_kind"]
+        extra["right_width_mm"] = entry.get("right_width_mm", 0)
+    if entry["kind"] in ('DOOR', 'WINDOW'):
+        extra["kind"] = entry["kind"]
+        extra["opening_model"] = entry.get("opening_model", "")
     shapes = models_core.thumb_shapes(entry["cabinet_type"], width, height, z, entry["door_swing"], entry["shelves"],
-                                      box)
+                                      box, **extra)
     x0, fy, x1 = shapes["floor"]
     kit.polyline([(x0, fy), (x1, fy)], style.TEXT_SUBTLE, 1.0, viewport)
     cx, cy, cw, ch = shapes["carcass"]
@@ -516,7 +595,7 @@ def _draw_block_cell(entry, rect, hovered, viewport, s):
     tex = thumbs_gpu.texture(entry["id"], entry["thumb_file"]) if entry["thumb_file"] else None
     if tex is not None:
         kit.image(tex, x, ty, side, side)
-    elif entry["kind"] == 'MODEL':                     # modelo pronto: a frente dele em escala (BUG-20261014-RWU2)
+    elif entry["kind"] in ('MODEL', 'PRESET', 'DOOR', 'WINDOW'):    # modelo pronto/abertura em escala (BUG-20261014-RWU2)
         _draw_model_front(entry, (x, ty, side, side), viewport, s)
     else:                                               # sem miniatura: o desenho de um módulo em traço
         m = side / 140.0

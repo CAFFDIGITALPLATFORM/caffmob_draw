@@ -13,6 +13,19 @@ import bpy  # type: ignore
 TAG = 'btm_opening_material'
 ASSETS = os.path.join(os.path.dirname(__file__), "assets")
 
+FINISH_KEYS = {
+    'madeira': 'WOOD',
+    'aluminio': 'ALU',
+    'blindex': 'GLASS',
+}
+
+
+def resolve_finish_key(finish):
+    """Mapeia acabamento do contrato v2 ('madeira'|'aluminio'|'blindex') para chave de SPECS."""
+    if finish in SPECS:
+        return finish
+    return FINISH_KEYS.get(finish or 'madeira', 'WOOD')
+
 # chave: (nome, cor, metálico, rugosidade, extras)
 SPECS = {
     'WOOD': ("Nogueira verniz acetinado", (0.32, 0.18, 0.075), 0.0, 0.35, {'Coat Weight': 0.18, 'Coat Roughness': 0.3}),

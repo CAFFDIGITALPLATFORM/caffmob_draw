@@ -1,0 +1,332 @@
+{
+ "Porta paramétrica": {
+  "pt_BR": "Porta paramétrica",
+  "en_US": "Parametric door",
+  "es_ES": "Puerta paramétrica"
+ },
+ "Janela paramétrica": {
+  "pt_BR": "Janela paramétrica",
+  "en_US": "Parametric window",
+  "es_ES": "Ventana paramétrica"
+ },
+ "Substituir pelo selecionado": {
+  "pt_BR": "Substituir pelo selecionado",
+  "en_US": "Replace with selected",
+  "es_ES": "Reemplazar por el seleccionado"
+ },
+ "Blindex": {
+  "pt_BR": "Blindex",
+  "en_US": "Tempered glass (Blindex)",
+  "es_ES": "Vidrio templado (Blindex)"
+ },
+ "Modelo {}: canto desconhecido": {
+  "pt_BR": "Modelo {}: canto desconhecido",
+  "en_US": "Model {}: unknown corner type",
+  "es_ES": "Modelo {}: esquina desconocida"
+ },
+ "Modelo {}: modelo de abertura desconhecido": {
+  "pt_BR": "Modelo {}: modelo de abertura desconhecido",
+  "en_US": "Model {}: unknown opening model",
+  "es_ES": "Modelo {}: modelo de abertura desconocido"
+ },
+ "Modelo {}: material desconhecido": {
+  "pt_BR": "Modelo {}: material desconhecido",
+  "en_US": "Model {}: unknown material",
+  "es_ES": "Modelo {}: material desconocido"
+ },
+ "Substitui a abertura ou o móvel selecionado na cena pelo modelo escolhido na Biblioteca CAFFMob": {
+  "pt_BR": "Substitui a abertura ou o móvel selecionado na cena pelo modelo escolhido na Biblioteca CAFFMob",
+  "en_US": "Replaces the selected opening or cabinet in the scene with the model chosen in the CAFFMob Library",
+  "es_ES": "Reemplaza la abertura o el mueble seleccionado en la escena por el modelo elegido en la Biblioteca CAFFMob"
+ },
+ "Item substituído por {}": {
+  "pt_BR": "Item substituído por {}",
+  "en_US": "Item replaced with {}",
+  "es_ES": "Elemento reemplazado por {}"
+ },
+ "Esquadria em madeira": {
+  "pt_BR": "Esquadria em madeira",
+  "en_US": "Wooden frame",
+  "es_ES": "Carpintería de madera"
+ },
+ "Esquadria em alumínio": {
+  "pt_BR": "Esquadria em alumínio",
+  "en_US": "Aluminum frame",
+  "es_ES": "Carpintería de aluminio"
+ },
+ "Esquadria em vidro temperado": {
+  "pt_BR": "Esquadria em vidro temperado",
+  "en_US": "Tempered glass frame",
+  "es_ES": "Carpintería de vidrio templado"
+ },
+ "Material da esquadria": {
+  "pt_BR": "Material da esquadria",
+  "en_US": "Frame material",
+  "es_ES": "Material de la carpintería"
+ },
+ "Selecione uma porta, janela ou móvel na cena para substituir": {
+  "pt_BR": "Selecione uma porta, janela ou móvel na cena para substituir",
+  "en_US": "Select a door, window, or cabinet in the scene to replace",
+  "es_ES": "Seleccione una puerta, ventana o mueble en la escena para reemplazar"
+ },
+ "Selecione apenas um item na cena para substituir": {
+  "pt_BR": "Selecione apenas um item na cena para substituir",
+  "en_US": "Select only one item in the scene to replace",
+  "es_ES": "Seleccione solo un elemento en la escena para reemplazar"
+ },
+ "O objeto selecionado não é uma porta, janela ou móvel substituível": {
+  "pt_BR": "O objeto selecionado não é uma porta, janela ou móvel substituível",
+  "en_US": "The selected object is not a replaceable door, window, or cabinet",
+  "es_ES": "El objeto seleccionado no es una puerta, ventana o mueble reemplazable"
+ },
+ "Escolha um modelo na biblioteca para substituir": {
+  "pt_BR": "Escolha um modelo na biblioteca para substituir",
+  "en_US": "Choose a model in the library to replace with",
+  "es_ES": "Elija un modelo en la biblioteca para reemplazar"
+ },
+ "Incompatível: uma porta só pode ser substituída por outra porta": {
+  "pt_BR": "Incompatível: uma porta só pode ser substituída por outra porta",
+  "en_US": "Incompatible: a door can only be replaced by another door",
+  "es_ES": "Incompatible: una puerta solo puede ser reemplazada por otra puerta"
+ },
+ "Incompatível: uma janela só pode ser substituída por outra janela": {
+  "pt_BR": "Incompatível: uma janela só pode ser substituída por outra janela",
+  "en_US": "Incompatible: a window can only be replaced by another window",
+  "es_ES": "Incompatible: una ventana solo puede ser reemplazada por otra ventana"
+ },
+ "Incompatível: um móvel só pode ser substituído por outro móvel": {
+  "pt_BR": "Incompatível: um móvel só pode ser substituído por outro móvel",
+  "en_US": "Incompatible: a cabinet can only be replaced by another cabinet",
+  "es_ES": "Incompatible: un mueble solo puede ser reemplazado por otro mueble"
+ },
+ "As dimensões do item selecionado estão fora dos limites permitidos para este modelo": {
+  "pt_BR": "As dimensões do item selecionado estão fora dos limites permitidos para este modelo",
+  "en_US": "The dimensions of the selected item are outside the allowed limits for this model",
+  "es_ES": "Las dimensiones del elemento seleccionado están fuera de los límites permitidos para este modelo"
+ },
+ "Acabamento em madeira": {
+  "pt_BR": "Acabamento em madeira",
+  "en_US": "Wood finish",
+  "es_ES": "Acabado en madera"
+ },
+ "Acabamento em alumínio": {
+  "pt_BR": "Acabamento em alumínio",
+  "en_US": "Aluminum finish",
+  "es_ES": "Acabado en aluminio"
+ },
+ "Vidro temperado com ferragens aparentes": {
+  "pt_BR": "Vidro temperado com ferragens aparentes",
+  "en_US": "Tempered glass with exposed hardware",
+  "es_ES": "Vidrio templado con herrajes a la vista"
+ },
+ "Modelo da abertura": {
+  "pt_BR": "Modelo da abertura",
+  "en_US": "Opening model",
+  "es_ES": "Modelo de la abertura"
+ },
+ "Material da abertura": {
+  "pt_BR": "Material da abertura",
+  "en_US": "Opening material",
+  "es_ES": "Material de la abertura"
+ },
+ "Porta de giro lisa": {
+  "pt_BR": "Porta de giro lisa",
+  "en_US": "Flush swing door",
+  "es_ES": "Puerta batiente lisa"
+ },
+ "Porta de giro almofadada": {
+  "pt_BR": "Porta de giro almofadada",
+  "en_US": "Paneled swing door",
+  "es_ES": "Puerta batiente moldurada"
+ },
+ "Porta de giro frisada": {
+  "pt_BR": "Porta de giro frisada",
+  "en_US": "Grooved swing door",
+  "es_ES": "Puerta batiente frisada"
+ },
+ "Porta de giro com visor": {
+  "pt_BR": "Porta de giro com visor",
+  "en_US": "Swing door with vision panel",
+  "es_ES": "Puerta batiente con visor"
+ },
+ "Porta de giro dupla": {
+  "pt_BR": "Porta de giro dupla",
+  "en_US": "Double swing door",
+  "es_ES": "Puerta batiente doble"
+ },
+ "Porta de correr trilho aparente": {
+  "pt_BR": "Porta de correr trilho aparente",
+  "en_US": "Exposed-track sliding door",
+  "es_ES": "Puerta corrediza con riel visto"
+ },
+ "Porta de correr embutida": {
+  "pt_BR": "Porta de correr embutida",
+  "en_US": "Pocket sliding door",
+  "es_ES": "Puerta corrediza embutida"
+ },
+ "Porta de correr 2 folhas": {
+  "pt_BR": "Porta de correr 2 folhas",
+  "en_US": "2-leaf sliding door",
+  "es_ES": "Puerta corrediza de 2 hojas"
+ },
+ "Porta de correr 4 folhas": {
+  "pt_BR": "Porta de correr 4 folhas",
+  "en_US": "4-leaf sliding door",
+  "es_ES": "Puerta corrediza de 4 hojas"
+ },
+ "Porta articulada camarão": {
+  "pt_BR": "Porta articulada camarão",
+  "en_US": "Bi-fold door",
+  "es_ES": "Puerta plegable"
+ },
+ "Janela de correr 2 folhas": {
+  "pt_BR": "Janela de correr 2 folhas",
+  "en_US": "2-sash sliding window",
+  "es_ES": "Ventana corrediza de 2 hojas"
+ },
+ "Janela de correr 3 folhas": {
+  "pt_BR": "Janela de correr 3 folhas",
+  "en_US": "3-sash sliding window",
+  "es_ES": "Ventana corrediza de 3 hojas"
+ },
+ "Janela de correr 4 folhas": {
+  "pt_BR": "Janela de correr 4 folhas",
+  "en_US": "4-sash sliding window",
+  "es_ES": "Ventana corrediza de 4 hojas"
+ },
+ "Janela de correr com veneziana": {
+  "pt_BR": "Janela de correr com veneziana",
+  "en_US": "Sliding window with shutters",
+  "es_ES": "Ventana corrediza con celosía"
+ },
+ "Janela de correr com bandeira": {
+  "pt_BR": "Janela de correr com bandeira",
+  "en_US": "Sliding window with transom",
+  "es_ES": "Ventana corrediza con banderola"
+ },
+ "Janela de abrir 1 folha": {
+  "pt_BR": "Janela de abrir 1 folha",
+  "en_US": "Single-sash casement window",
+  "es_ES": "Ventana batiente de 1 hoja"
+ },
+ "Janela de abrir 2 folhas": {
+  "pt_BR": "Janela de abrir 2 folhas",
+  "en_US": "Double-sash casement window",
+  "es_ES": "Ventana batiente de 2 hojas"
+ },
+ "Janela de abrir com bandeira": {
+  "pt_BR": "Janela de abrir com bandeira",
+  "en_US": "Casement window with transom",
+  "es_ES": "Ventana batiente con banderola"
+ },
+ "Janela de abrir com veneziana": {
+  "pt_BR": "Janela de abrir com veneziana",
+  "en_US": "Casement window with shutters",
+  "es_ES": "Ventana batiente con celosía"
+ },
+ "Janela dobrável camarão": {
+  "pt_BR": "Janela dobrável camarão",
+  "en_US": "Bi-fold window",
+  "es_ES": "Ventana plegable"
+ },
+ "Janela maxim-ar 1 módulo": {
+  "pt_BR": "Janela maxim-ar 1 módulo",
+  "en_US": "1-module awning window",
+  "es_ES": "Ventana proyectante de 1 módulo"
+ },
+ "Janela maxim-ar 2 módulos": {
+  "pt_BR": "Janela maxim-ar 2 módulos",
+  "en_US": "2-module awning window",
+  "es_ES": "Ventana proyectante de 2 módulos"
+ },
+ "Janela maxim-ar com fixo inferior": {
+  "pt_BR": "Janela maxim-ar com fixo inferior",
+  "en_US": "Awning window with lower fixed pane",
+  "es_ES": "Ventana proyectante con paño fijo inferior"
+ },
+ "Janela basculante vertical": {
+  "pt_BR": "Janela basculante vertical",
+  "en_US": "Hopper / jalousie window",
+  "es_ES": "Ventana basculante vertical"
+ },
+ "Janela pivotante": {
+  "pt_BR": "Janela pivotante",
+  "en_US": "Pivot window",
+  "es_ES": "Ventana pivotante"
+ },
+ "Janela quadro fixo": {
+  "pt_BR": "Janela quadro fixo",
+  "en_US": "Fixed picture window",
+  "es_ES": "Ventana de paño fijo"
+ },
+ "Janela panorâmica bipartida": {
+  "pt_BR": "Janela panorâmica bipartida",
+  "en_US": "Split panoramic window",
+  "es_ES": "Ventana panorámica bipartida"
+ },
+ "Janela bay-window / canto": {
+  "pt_BR": "Janela bay-window / canto",
+  "en_US": "Bay / corner window",
+  "es_ES": "Ventana bay-window / esquina"
+ },
+ "Janela veneziana fixa": {
+  "pt_BR": "Janela veneziana fixa",
+  "en_US": "Fixed louver window",
+  "es_ES": "Ventana de celosía fija"
+ },
+ "Janela vitrô quadriculado": {
+  "pt_BR": "Janela vitrô quadriculado",
+  "en_US": "Mullioned grid window",
+  "es_ES": "Ventana vitral cuadriculada"
+ },
+ "Balcão 3 portas": {
+  "pt_BR": "Balcão 3 portas",
+  "en_US": "3-door base cabinet",
+  "es_ES": "Bajo mesada de 3 puertas"
+ },
+ "Balcão de pia 2 portas": {
+  "pt_BR": "Balcão de pia 2 portas",
+  "en_US": "2-door sink base cabinet",
+  "es_ES": "Bajo mesada de fregadero de 2 puertas"
+ },
+ "Gaveteiro 3 gavetas": {
+  "pt_BR": "Gaveteiro 3 gavetas",
+  "en_US": "3-drawer base cabinet",
+  "es_ES": "Cajonera de 3 cajones"
+ },
+ "Gaveteiro 4 gavetas": {
+  "pt_BR": "Gaveteiro 4 gavetas",
+  "en_US": "4-drawer base cabinet",
+  "es_ES": "Cajonera de 4 cajones"
+ },
+ "Gaveteiro 2 gavetões + 1 gaveta": {
+  "pt_BR": "Gaveteiro 2 gavetões + 1 gaveta",
+  "en_US": "2 deep drawers + 1 top drawer cabinet",
+  "es_ES": "Cajonera de 2 gavetones + 1 cajón"
+ },
+ "Balcão de canto em L": {
+  "pt_BR": "Balcão de canto em L",
+  "en_US": "L-shaped corner base cabinet",
+  "es_ES": "Bajo mesada esquinero en L"
+ },
+ "Balcão de canto oblíquo": {
+  "pt_BR": "Balcão de canto oblíquo",
+  "en_US": "Diagonal corner base cabinet",
+  "es_ES": "Bajo mesada esquinero oblicuo"
+ },
+ "Aéreo de canto em L": {
+  "pt_BR": "Aéreo de canto em L",
+  "en_US": "L-shaped corner wall cabinet",
+  "es_ES": "Alacena esquinera en L"
+ },
+ "Aéreo basculante": {
+  "pt_BR": "Aéreo basculante",
+  "en_US": "Flip-up wall cabinet",
+  "es_ES": "Alacena basculante"
+ },
+ "Torre quente (forno e micro)": {
+  "pt_BR": "Torre quente (forno e micro)",
+  "en_US": "Appliance tower (oven and microwave)",
+  "es_ES": "Torre para hornos"
+ }
+}

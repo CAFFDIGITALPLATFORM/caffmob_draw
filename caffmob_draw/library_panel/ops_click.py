@@ -133,6 +133,14 @@ def max_click(context, part, lay, mx, my):
             draw._catalog().cancel()
     elif part == 'SIDEBAR':
         blocks = state.tab != 'TEXTURES'
+        if blocks:
+            ctrl = layout_core.hit_blocks_controls(lay.sidebar, mx, my, s)
+            if ctrl == layout_core.REPLACE_SELECTED:
+                _run("caffmob.library_replace_selected")
+                return ""
+            if ctrl and ctrl.startswith('MAT:'):
+                state.opening_material = ctrl[4:]
+                return ""
         rows = layout_core.sidebar_rows(lay.sidebar, draw.sidebar_tree(state), "" if blocks else state.manufacturer,
                                         s)
         key = layout_core.hit_rows(rows, mx, my)

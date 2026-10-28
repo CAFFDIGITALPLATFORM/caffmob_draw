@@ -65,6 +65,24 @@ def _visibilidade(obj, documento, entidade, categoria):
     obj.hide_viewport = obj.hide_render = not obra.visivel(documento, entidade, categoria)
 
 
+def _montar_pecas_abertura(root, abertura, espessura_mm, colecao, documento=None, visivel=None):
+    width, height, wall = abertura['largura'] / 1000, abertura['altura'] / 1000, espessura_mm / 1000
+    modelo = abertura.get('modelo')
+    material = abertura.get('material')
+    if abertura['tipo'] == 'WINDOW':
+        parts = window_core.window_parts(width, height, wall, model=modelo, material=material)
+    else:
+        w, h = door_core.leaf_size(width, height, model=modelo)
+        parts = door_core.door_parts(w, h, wall, model=modelo, material=material)
+    pav_id = root.get('caffmob_pavimento_id') or (visivel.get('pavimento_id') if visivel else '')
+    for key, child in build.build(parts, colecao, window=abertura['tipo'] == 'WINDOW').items():
+        child.parent = root
+        _dados(child, abertura, 'abertura_peca', pav_id)
+        child['caffmob_papel'] = str(key)
+        if documento is not None and visivel is not None:
+            _visibilidade(child, documento, visivel, 'paredes')
+
+
 def _aberturas(documento, parede, colecao, z):
     for s, g in zip(parede['segmentos'], geometria_da_parede(parede)):
         for abertura in (a for a in documento['aberturas'] if a['segmento_id'] == s['id']):
@@ -74,23 +92,116 @@ def _aberturas(documento, parede, colecao, z):
             _dados(root, abertura, 'abertura', parede['pavimento_id'])
             root['caffmob_abertura'] = serializar(abertura)
             root['caffmob_segmento_id'] = s['id']
+            root['caffmob_espessura_mm'] = float(s['espessura'])
+            if hasattr(root, 'btm_opening_real'):
+                if abertura.get('modelo'):
+                    root.btm_opening_real['opening_model'] = abertura['modelo']
+                mat = abertura.get('material')
+                if mat in ('madeira', 'aluminio', 'blindex'):
+                    idx = ('madeira', 'aluminio', 'blindex').index(mat)
+                    root.btm_opening_real['opening_material'] = idx
             root.location = (*[v / 1000 for v in vao['inicio']], (z + s['afastamento'] + abertura['peitoril']) / 1000)
             root.rotation_euler.z = math.atan2(vao['fim'][1] - vao['inicio'][1], vao['fim'][0] - vao['inicio'][0])
             if s['sentido'] == 'RIGHT':
                 root.scale.y = -1
             visivel = dict(parede, visivel=parede['visivel'] and s['estado'] != 'oculto')
             _visibilidade(root, documento, visivel, 'paredes')
-            width, height, wall = abertura['largura'] / 1000, abertura['altura'] / 1000, s['espessura'] / 1000
-            if abertura['tipo'] == 'WINDOW':
-                parts = window_core.window_parts(width, height, wall)
-            else:
-                w, h = door_core.leaf_size(width, height)
-                parts = door_core.door_parts(w, h, wall)
-            for key, child in build.build(parts, colecao, window=abertura['tipo'] == 'WINDOW').items():
-                child.parent = root
-                _dados(child, abertura, 'abertura_peca', parede['pavimento_id'])
-                child['caffmob_papel'] = str(key)
-                _visibilidade(child, documento, visivel, 'paredes')
+            _montar_pecas_abertura(root, abertura, s['espessura'], colecao, documento, visivel)
+
+
+def limpar_grupo_promob_da_abertura(scene, abertura_id):
+    """Remove os objetos do complemento Promob (`btm_promob_abertura == abertura_id`) e tira o ID de `SEM_FOLHA_PROP`."""
+    if not abertura_id or scene is None:
+        return 0
+    alvos = [o for o in list(scene.objects) if o.get('btm_promob_abertura') == abertura_id]
+    para_remover = []
+    vistos = set()
+    for raiz in alvos:
+        for obj in [raiz] + list(raiz.children_recursive):
+            if obj.as_pointer() not in vistos:
+                vistos.add(obj.as_pointer())
+                para_remover.append(obj)
+    for obj in reversed(para_remover):
+        if obj.name in bpy.data.objects:
+            mesh = obj.data if obj.type == 'MESH' else None
+            bpy.data.objects.remove(obj, do_unlink=True)
+            if mesh is not None and mesh.users == 0:
+                bpy.data.meshes.remove(mesh)
+    if scene.get(SEM_FOLHA_PROP):
+        try:
+            sem_folha = [x for x in json.loads(scene[SEM_FOLHA_PROP]) if x != abertura_id]
+            scene[SEM_FOLHA_PROP] = json.dumps(sem_folha)
+        except (TypeError, ValueError):
+            pass
+    return len(para_remover)
+
+
+def reconstruir_abertura_v2(context, root, modelo=None, material=None):
+    """Atualiza `modelo` e `material` numa abertura v2 (`caffmob_tipo == 'abertura'`), limpa eventual folha Promob
+    e reconstrói as peças paramétricas filhas de `root`."""
+    if root is None or root.get('caffmob_tipo') != 'abertura':
+        return False
+    raw = root.get('caffmob_abertura') or root.get('caffmob_entidade_v2')
+    if not raw:
+        return False
+    abertura = json.loads(raw)
+    if modelo is not None:
+        if modelo:
+            abertura['modelo'] = modelo
+        else:
+            abertura.pop('modelo', None)
+    if material is not None:
+        if material:
+            abertura['material'] = material
+        else:
+            abertura.pop('material', None)
+    abertura_json = serializar(abertura)
+    root['caffmob_abertura'] = abertura_json
+    root['caffmob_entidade_v2'] = abertura_json
+    if hasattr(root, 'btm_opening_real'):
+        root.btm_opening_real['opening_model'] = abertura.get('modelo') or ''
+        mat = abertura.get('material')
+        if mat in ('madeira', 'aluminio', 'blindex'):
+            root.btm_opening_real['opening_material'] = ('madeira', 'aluminio', 'blindex').index(mat)
+
+    scene = context.scene if context is not None else bpy.context.scene
+    limpar_grupo_promob_da_abertura(scene, abertura.get('id'))
+
+    # Atualiza também o JSON da parede e o documento em `scene['caffmob_ambiente']` se existir
+    for obj in scene.objects:
+        if obj.get('caffmob_tipo') == 'parede' and obj.get('caffmob_aberturas'):
+            try:
+                lista = json.loads(obj['caffmob_aberturas'])
+                mudou = False
+                for idx, item in enumerate(lista):
+                    if item.get('id') == abertura['id']:
+                        lista[idx] = abertura
+                        mudou = True
+                if mudou:
+                    obj['caffmob_aberturas'] = serializar(lista)
+            except (TypeError, ValueError):
+                pass
+    if scene.get('caffmob_ambiente'):
+        try:
+            doc = json.loads(scene['caffmob_ambiente'])
+            for idx, item in enumerate(doc.get('aberturas', [])):
+                if item.get('id') == abertura['id']:
+                    doc['aberturas'][idx] = abertura
+            scene['caffmob_ambiente'] = serializar(doc)
+        except (TypeError, ValueError):
+            pass
+
+    # Remove peças antigas da abertura e reconstrói
+    espessura_mm = float(root.get('caffmob_espessura_mm') or 150.0)
+    colecao = root.users_collection[0] if root.users_collection else scene.collection
+    for child in list(root.children):
+        if child.get('caffmob_tipo') == 'abertura_peca':
+            mesh = child.data if child.type == 'MESH' else None
+            bpy.data.objects.remove(child, do_unlink=True)
+            if mesh is not None and mesh.users == 0:
+                bpy.data.meshes.remove(mesh)
+    _montar_pecas_abertura(root, abertura, espessura_mm, colecao)
+    return True
 
 
 def _modulo(context, documento, modulo, colecao, z, materiais):

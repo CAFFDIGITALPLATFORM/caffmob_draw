@@ -205,3 +205,37 @@ def hit_rows(rows, px, py):
         if _inside(px, py, rect):
             return key
     return None
+
+
+# Controles de Aberturas e "Substituir pelo selecionado" na coluna lateral (feature 078, T027) ------------------------
+REPLACE_SELECTED = 'REPLACE_SELECTED'
+MATERIAL_KEYS = ('madeira', 'aluminio', 'blindex')
+
+
+def blocks_controls(sidebar, scale):
+    """Retângulos `(replace_rect, [(chave_mat, rect), ...])` na base da coluna lateral da aba Blocos."""
+    s = float(scale)
+    x, y, w, _h = sidebar
+    pad = style.SPACE_SM * s
+    btn_h = 26.0 * s
+    replace_rect = (x + pad, y + 16.0 * s, max(20.0, w - 2 * pad), btn_h)
+    mat_y = replace_rect[1] + btn_h + 6.0 * s
+    mat_h = 22.0 * s
+    gap = 4.0 * s
+    pill_w = max(10.0, (w - 2 * pad - 2 * gap) / 3.0)
+    mats = []
+    for i, key in enumerate(MATERIAL_KEYS):
+        mx = x + pad + i * (pill_w + gap)
+        mats.append(('MAT:' + key, (mx, mat_y, pill_w, mat_h)))
+    return replace_rect, mats
+
+
+def hit_blocks_controls(sidebar, px, py, scale):
+    """'REPLACE_SELECTED', 'MAT:<material>' ou None."""
+    replace_rect, mats = blocks_controls(sidebar, scale)
+    if _inside(px, py, replace_rect):
+        return REPLACE_SELECTED
+    for key, rect in mats:
+        if _inside(px, py, rect):
+            return key
+    return None
