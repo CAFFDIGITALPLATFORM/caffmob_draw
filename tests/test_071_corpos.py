@@ -55,6 +55,10 @@ class CorposTest(unittest.TestCase):
         self.assertEqual((t['forma'], c['forma']), ('torneira', 'cuba'))
         self.assertEqual((mats['dec_met_lis_cro']['classe'], mats['dec_met_lis_cro']['cor']), ('metal', '#d0d2d4'))
         self.assertEqual(mats['dec_met_lis_ino']['cor'], '#a9acae')
+        for mid in ('dec_met_lis_cro', 'dec_met_lis_ino'):
+            self.assertEqual(mats[mid]['classe'], 'metal')
+            self.assertIs(mats[mid]['pbr'], True)
+            self.assertEqual(mats[mid]['textura_catalogo'], '286961f3-eab1-557e-9a90-a5669ca4af6d')
 
     def test_porta_de_madeira_e_vidro_vira_moldura_e_vidro(self):
         porta = ps._item('MODULO', 'porta_110', base=(0, 0, 0), dim=(879, 2025, 76), rot=0, nome='Porta em vidro',
@@ -77,7 +81,20 @@ class CorposTest(unittest.TestCase):
         molduras = [f for f in no['filhos'] if f['nome'].endswith('moldura')]
         self.assertEqual((no['tipo'], len(molduras)), ('grupo', 4))
         self.assertTrue(all(r['complemento']['materiais'][m['material']]['classe'] == 'metal' for m in molduras))
+        material = r['complemento']['materiais']['dec_met_lis_alu']
+        self.assertEqual((material['cor'], material['textura_catalogo'], material['pbr']),
+                         ('#b8bbbe', '3b176019-e844-521b-bcd4-9d37ab3470ea', True))
         self.assertEqual(por_nome(no['filhos'], 'Painel Vidro')['tipo'], 'caixa')
+
+    def test_metal_pbr_preserva_cor_declarada_no_promob(self):
+        mid = 'dec_met_lis_cro'
+        item = ps._item('MODULO', 'Torneira_20', dim=(32, 100, 90), material=mid)
+        projeto = leitor.abrir(ps.promob(extras=[item])).projeto()
+        projeto.materiais[mid] = leitor.Material(mid, 'Cromado do projeto', (12, 34, 56))
+        r = para_v2.converter(projeto)
+        material = r['complemento']['materiais'][mid]
+        self.assertEqual((material['classe'], material['cor'], material['textura_catalogo']),
+                         ('metal', '#0c2238', '286961f3-eab1-557e-9a90-a5669ca4af6d'))
 
     def test_porta_de_vidro_de_parede_traz_as_folhas(self):
         folha = ps._item('MODULO', 'OCL_PORT_01', base=(1002, -2, 1), dim=(1046, 1998, 15), rot=0, nome='Folha',

@@ -81,9 +81,19 @@ class DocumentoTest(unittest.TestCase):
         self.assertNotIn('Folha', nomes)
         self.assertIn('Revestimento', nomes)          # hospedado que não é abertura fica como móvel
 
-    def test_materiais_de_cor(self):
+    def test_material_de_reboco_vira_textura_pbr(self):
         parede, = self.d['paredes']
         material, = self.d['materiais']
+        self.assertEqual(parede['material_id'], material['id'])
+        # 073, RN-06 e D-11: UUID estável, escala real e nome original do Promob.
+        self.assertEqual((material['tipo'], material['textura_id'], material['escala_mm'], material['nome']),
+                         ('textura', '2d0143ba-3081-5442-9dce-639dc98f5cc2',
+                          dict(largura=1500, altura=1500), 'reboco'))
+
+    def test_materiais_de_cor_sem_pbr(self):
+        r = para_v2.converter(leitor.abrir(ps.promob()).projeto(), pbr={})
+        parede, = r['documento']['paredes']
+        material, = r['documento']['materiais']
         self.assertEqual(parede['material_id'], material['id'])
         self.assertEqual((material['tipo'], material['cor'], material['nome']), ('cor', '#e8e2d6', 'Reboco'))
 
