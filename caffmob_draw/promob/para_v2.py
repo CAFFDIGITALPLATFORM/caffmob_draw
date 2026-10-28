@@ -289,6 +289,13 @@ def classe_do_material(mid, material=None):
     return None
 
 
+def _cor_da_classe(mid, classe):
+    """Cor de reserva da 071, também preservada quando o material recebe PBR."""
+    partes = re.sub(r'\(\d+\)$', '', mid.lower()).split('_')
+    tom = next((p for p in partes if p in ('cro', 'alu', 'ino')), None) if classe == 'metal' else None
+    return _CORES_DA_CLASSE.get(tom or classe, (0xBD, 0xB7, 0xAE))
+
+
 # Peça de chapa pelo nome do Promob → componente do Padrão de Dimensões (`cutting/part_roles`) ou da gaveta (os
 # mesmos códigos do adaptador DRAWERS da 072). A ordem importa: as peças da gaveta vêm antes de "lateral" e "fundo".
 COMPONENTES_POR_NOME = (
@@ -646,9 +653,7 @@ class Conversao:
         if classe == 'metal' and (pbr := self._pbr(mid, m)) is not None:
             return pbr
         if m is None:
-            partes = re.sub(r'\(\d+\)$', '', mid.lower()).split('_')
-            tom = next((p for p in partes if p in ('cro', 'alu', 'ino')), None) if classe == 'metal' else None
-            cor = _CORES_DA_CLASSE.get(tom or classe, (0xBD, 0xB7, 0xAE))
+            cor = _cor_da_classe(mid, classe)
             return dict(id=mid, nome=mid[:80], cor=_cor_hex(cor), textura=None, escala=None, classe=classe,
                         transparencia=0.6 if classe == 'vidro' else 0.0)
         return dict(id=mid, nome=m.nome, cor=_cor_hex(m.cor), textura=m.textura, escala=m.escala, classe=classe,
@@ -676,10 +681,11 @@ class Conversao:
         if aproximada and mid not in self.texturas_pbr['_vistos']:
             self.texturas_pbr['aproximadas'].append(dict(material=mid[:80], textura=t['slug']))
         self.texturas_pbr['_vistos'].add(mid)
-        cor = texturas.cor_por_nome(mid) or (0xC8, 0xB8, 0xA0)
+        classe = classe_do_material(mid, m)
+        cor = _cor_da_classe(mid, classe) if classe else texturas.cor_por_nome(mid) or (0xC8, 0xB8, 0xA0)
         tamanho = t['tamanho_mm']
         return dict(id=mid, nome=mid[:80], cor=_cor_hex(m.cor if m is not None else cor), textura=None, escala=None,
-                    classe=None, transparencia=0.0, textura_catalogo=t['uuid'], pbr=True, aproximada=aproximada,
+                    classe=classe, transparencia=0.0, textura_catalogo=t['uuid'], pbr=True, aproximada=aproximada,
                     tamanho=(float(tamanho['largura']), float(tamanho['altura'])))
 
     def _material_do_documento(self, mid):
