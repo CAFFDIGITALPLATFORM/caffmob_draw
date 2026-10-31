@@ -67,9 +67,20 @@ def _mobi_dimension(info, field):
     return entidade.get({'width': 'largura', 'height': 'altura'}[field], 0) / 1000
 
 
+def _module_family(info):
+    """Módulo das 5 famílias (080 D-01): a medida é física, pelo `module_geometry`; frente e chapa mostram a do
+    módulo dono, como antes."""
+    from . import module_resize
+    return (info.kind in (classify.MODULE, classify.FRONT, classify.PART) and info.root is not None
+            and info.library in module_resize.FAMILIES)
+
+
 def get_dimension(info, field):
     if info.library == 'MOBI' and info.kind in (classify.ROOM_DOOR, classify.WINDOW):
         return _mobi_dimension(info, field)
+    if _module_family(info):
+        from . import module_resize
+        return module_resize.physical_of(info, field)
     obj = info.root if info.kind in (classify.MODULE, classify.FRONT, classify.PART) else info.obj
     library = info.library
     if library == 'AUTHORED':
@@ -93,6 +104,9 @@ def get_dimension(info, field):
 
 
 def set_dimension(context, info, field, value):
+    from . import module_resize
+    if module_resize.handles(info):
+        return set_dimensions(context, info, {field: value})
     if info.library == 'AUTHORED':
         _check(field, value, DIM_LABELS[field])
         from ..aggregates import stretch
@@ -117,6 +131,24 @@ def set_dimension(context, info, field, value):
             obj['btm_overrides'] = overrides
 
     return guard.reconfigure(obj, lambda: _set_dimension(context, info, field, value), restore)
+
+
+def set_dimensions(context, info, edits):
+    """080 D-04: as medidas físicas do módulo numa transação só (painel, editor, Redimensionar, substituição).
+    A recusa diz alvo, campo, valor e faixa física, e nada muda."""
+    from . import module_resize
+    from ..target import module_geometry as mg
+    try:
+        return module_resize.apply_physical(context, info, dict(edits), LIMITS)
+    except mg.ModuleGeometryError as exc:
+        field = getattr(exc, 'field', None) or next(iter(edits))
+        raise ValueError(module_resize.describe_refusal(info, field, exc)) from None
+
+
+def physical_limits(info):
+    """Faixa física de cada eixo do módulo (limites gerais × faixa do gerador convertida)."""
+    from . import module_resize
+    return module_resize.physical_ranges(info, LIMITS)
 
 
 def _set_dimension(context, info, field, value):

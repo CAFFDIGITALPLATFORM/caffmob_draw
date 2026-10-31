@@ -41,10 +41,13 @@ def sheet_section(target, read_only_reason='', essential=True, grain=True):
 
 def sections(target):
     if target.kind == r.MODULE:
+        # 080 RN-03: transformação que não se mede mostra o motivo, e os campos ficam só leitura (sem zero fictício).
+        locked = target.measure_error
         dims = Section('dimensions', N_("Dimensões"), (
-            Field('selection', 'width', N_("Largura"), essential=True),
-            Field('selection', 'height', N_("Altura"), essential=True),
-            Field('selection', 'depth', N_("Profundidade"), essential=True)), True)
+            (Note(locked, 'ERROR'),) if locked else ()) + (
+            Field('selection', 'width', N_("Largura"), bool(locked), locked, True),
+            Field('selection', 'height', N_("Altura"), bool(locked), locked, True),
+            Field('selection', 'depth', N_("Profundidade"), bool(locked), locked, True)), True)
         # Cotas antigas (afastamento da parede e Mover na Parede) como ação na Completa (RF-030, T094).
         legacy = Section('legacy_cotas', N_("Cotas antigas"), (
             Field('target', 'legacy_cotas'), Field('selection', 'afastamento'), Field('selection', 'anterior'),

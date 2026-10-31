@@ -140,14 +140,15 @@ def _resolve_root_and_target(scene, obj):
         # 4. Módulo de armário CAFFMob
         if getattr(curr, 'btm_plane', None) is not None and curr.btm_plane.object_kind == 'MODULE':
             cab = curr.btm_cabinet
+            width, height, depth = _physical_dims(curr)
             return (
                 f"mod:{curr.as_pointer()}",
                 curr,
                 replace_core.SelectionTarget(
                     family='MODULE',
-                    width_mm=round(float(cab.width) * 1000.0, 3),
-                    height_mm=round(float(cab.height) * 1000.0, 3),
-                    depth_mm=round(float(cab.depth) * 1000.0, 3),
+                    width_mm=round(width * 1000.0, 3),
+                    height_mm=round(height * 1000.0, 3),
+                    depth_mm=round(depth * 1000.0, 3),
                     sill_mm=0.0,
                     wall_thickness_mm=0.0,
                     right_width_mm=float(curr.get('btm_right_width_mm') or 0.0),
@@ -201,6 +202,49 @@ def active_library_candidate(context, model_id=""):
     return None
 
 
+def _physical_dims(root):
+    """080 D-11: a origem vale pela medida física (escala própria e dos ancestrais), não pelo parâmetro cru."""
+    from ..selection import module_resize
+    cab = root.btm_cabinet
+    try:
+        _params, _own, _world, phys = module_resize.measure(root, 'BTM')
+    except ValueError:
+        return float(cab.width), float(cab.height), float(cab.depth)
+    width, depth, height = phys
+    return width, height, depth
+
+
+_REPLACE_PROPS = ('cabinet_type', 'line', 'door_swing', 'shelves', 'structure_id') + tuple(
+    'has_' + role for role in ('top', 'bottom', 'back', 'left', 'right'))
+_REPLACE_KEYS = ('btm_model_id', 'btm_drawers', 'btm_corner_kind', 'btm_right_width_mm')
+
+
+def _replacement_state(root):
+    cab = root.btm_cabinet
+    return ({name: getattr(cab, name) for name in _REPLACE_PROPS},
+            {key: root[key] for key in _REPLACE_KEYS if key in root})
+
+
+def _restore_replacement(context, root, saved):
+    """Rollback do `execute` (080 D-11): volta o tipo e as marcas; as medidas e a escala já voltaram na transação."""
+    from ..data.properties import back_setback_of, structure_of, suspended_geometry
+    props, keys = saved
+    cab = root.btm_cabinet
+    with suspended_geometry():
+        for name, value in props.items():
+            setattr(cab, name, value)
+    for key in _REPLACE_KEYS:
+        if key in keys:
+            root[key] = keys[key]
+        elif key in root:
+            del root[key]
+    generate_cabinet_mesh(root, cab.width, cab.height, cab.depth, float(cab.thickness), cab.shelves,
+                          structure=structure_of(cab), back_setback=back_setback_of(root), assembly=cab.assembly)
+    door_controller.update_door_geometry_and_controller(root)
+    sync_preset_extras(root)
+    context.view_layer.update()
+
+
 def _apply_module_replacement(context, root, plan):
     from ..data.properties import back_setback_of, structure_of, suspended_geometry
     from ..operators.cabinet_builder import _ROLE_PROPS, standard_defaults
@@ -214,8 +258,12 @@ def _apply_module_replacement(context, root, plan):
     carcass = float(cab.thickness or found.carcass)
     recipe = structures_core.get(plan.structure_id) if plan.structure_id else None
 
+    from ..selection import classify, editing, module_resize
+    info = classify.classify(root)
+    transactional = module_resize.handles(info) and info.root == root
     with suspended_geometry():
-        cab.width, cab.height, cab.depth = w, h, d
+        if not transactional:
+            cab.width, cab.height, cab.depth = w, h, d
         cab.cabinet_type = plan.cabinet_type
         cab.line = plan.line
         cab.door_swing = plan.door_swing
@@ -230,6 +278,11 @@ def _apply_module_replacement(context, root, plan):
     root['btm_corner_kind'] = plan.corner_kind
     root['btm_right_width_mm'] = float(plan.right_width_mm)
 
+    if transactional:
+        # 080 D-11: as medidas físicas do destino entram pela transação, que assa a escala (destino com ±1) e
+        # recusa fora da faixa sem cortar; o parâmetro passa a ser a medida física ÷ escala dos ancestrais.
+        editing.set_dimensions(context, info, {'width': w, 'height': h, 'depth': d})
+        w, h, d = float(cab.width), float(cab.height), float(cab.depth)
     generate_cabinet_mesh(
         root, w, h, d, carcass, plan.shelves,
         structure=structure_of(cab), back_setback=back_setback_of(root), assembly=cab.assembly
@@ -304,7 +357,13 @@ class BTM_OT_LibraryReplaceSelected(bpy.types.Operator):
                             pass
                 openings_sync.sync(context, root, force=True)
         else:
-            _apply_module_replacement(context, root, plan)
+            saved = _replacement_state(root)
+            try:
+                _apply_module_replacement(context, root, plan)
+            except Exception as exc:
+                _restore_replacement(context, root, saved)
+                self.report({'WARNING'}, str(exc))
+                return {'CANCELLED'}
 
         for other in list(context.selected_objects):
             other.select_set(False)

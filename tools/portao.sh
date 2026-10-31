@@ -33,7 +33,7 @@ run_gate() {
         code=$?; echo "$module: saída $code"; (( code == 0 )) || failed=1
     done
     cd "$root" || return 1
-    for script in ${BLENDER_SCRIPTS:-tests/blender_mobi_operadores.py tests/blender_smoke.py tests/blender_078_openings_and_replace.py}; do
+    for script in ${BLENDER_SCRIPTS:-tests/blender_mobi_operadores.py tests/blender_smoke.py tests/blender_078_openings_and_replace.py tests/blender_080_medidas_reais.py}; do
         "$blender" --background --factory-startup --python-exit-code 1 --python "$script"
         code=$?; echo "$script: saída $code"; (( code == 0 )) || failed=1
     done

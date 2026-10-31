@@ -1,0 +1,67 @@
+{
+ "Este módulo vem de outro arquivo (vinculado): edite no arquivo original.": {
+  "pt_BR": "Este módulo vem de outro arquivo (vinculado): edite no arquivo original.",
+  "en_US": "This module comes from another file (linked): edit it in the original file.",
+  "es_ES": "Este módulo viene de otro archivo (vinculado): edítelo en el archivo original."
+ },
+ "Este módulo é um override de biblioteca: torne-o local antes de editar.": {
+  "pt_BR": "Este módulo é um override de biblioteca: torne-o local antes de editar.",
+  "en_US": "This module is a library override: make it local before editing.",
+  "es_ES": "Este módulo es un override de biblioteca: hágalo local antes de editar."
+ },
+ "A malha deste módulo é compartilhada com outro objeto: torne-a única antes de editar.": {
+  "pt_BR": "A malha deste módulo é compartilhada com outro objeto: torne-a única antes de editar.",
+  "en_US": "This module's mesh is shared with another object: make it single-user before editing.",
+  "es_ES": "La malla de este módulo está compartida con otro objeto: hágala única antes de editar."
+ },
+ "Família de módulo sem edição de medidas.": {
+  "pt_BR": "Família de módulo sem edição de medidas.",
+  "en_US": "This module family has no dimension editing.",
+  "es_ES": "Esta familia de módulos no permite editar medidas."
+ },
+ "O gerador não produziu a medida pedida; nada foi alterado.": {
+  "pt_BR": "O gerador não produziu a medida pedida; nada foi alterado.",
+  "en_US": "The generator did not produce the requested size; nothing was changed.",
+  "es_ES": "El generador no produjo la medida pedida; no se cambió nada."
+ },
+ "A escala do módulo não foi assada; nada foi alterado.": {
+  "pt_BR": "A escala do módulo não foi assada; nada foi alterado.",
+  "en_US": "The module scale was not baked; nothing was changed.",
+  "es_ES": "La escala del módulo no se aplicó; no se cambió nada."
+ },
+ "Valor Inválido: {} de {} deve estar entre {} e {} (recebido: {}).": {
+  "pt_BR": "Valor Inválido: {} de {} deve estar entre {} e {} (recebido: {}).",
+  "en_US": "Invalid value: {} of {} must be between {} and {} (got: {}).",
+  "es_ES": "Valor no válido: {} de {} debe estar entre {} y {} (recibido: {})."
+ },
+ "Valor Inválido: {} de {}: {}": {
+  "pt_BR": "Valor Inválido: {} de {}: {}",
+  "en_US": "Invalid value: {} of {}: {}",
+  "es_ES": "Valor no válido: {} de {}: {}"
+ },
+ "A transformação do módulo tem valor não finito.": {
+  "pt_BR": "A transformação do módulo tem valor não finito.",
+  "en_US": "The module transform has a non-finite value.",
+  "es_ES": "La transformación del módulo tiene un valor no finito."
+ },
+ "O módulo tem escala zero num eixo: aplique a escala antes de editar.": {
+  "pt_BR": "O módulo tem escala zero num eixo: aplique a escala antes de editar.",
+  "en_US": "The module has zero scale on an axis: apply the scale before editing.",
+  "es_ES": "El módulo tiene escala cero en un eje: aplique la escala antes de editar."
+ },
+ "O módulo está distorcido (shear): aplique a transformação antes de editar.": {
+  "pt_BR": "O módulo está distorcido (shear): aplique a transformação antes de editar.",
+  "en_US": "The module is sheared: apply the transform before editing.",
+  "es_ES": "El módulo está distorsionado (shear): aplique la transformación antes de editar."
+ },
+ "Valor fora da faixa física válida.": {
+  "pt_BR": "Valor fora da faixa física válida.",
+  "en_US": "Value outside the valid physical range.",
+  "es_ES": "Valor fuera del rango físico válido."
+ },
+ "Campo de medida desconhecido.": {
+  "pt_BR": "Campo de medida desconhecido.",
+  "en_US": "Unknown dimension field.",
+  "es_ES": "Campo de medida desconocido."
+ }
+}
