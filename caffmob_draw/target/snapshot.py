@@ -68,6 +68,8 @@ def refresh(context):
     _cache[key] = _Entry(sig, target, objects)
     if target is not None and target.kind in resolver.SHEET_KINDS:
         target = _with_measures(context, target)
+    elif target is not None and target.kind == resolver.MODULE:
+        target = _with_module_measure(context, target)
     elif target is not None and target.kind == resolver.MULTIPLE:
         target = _with_multi(context, target)
     elif target is not None and target.kind == resolver.OPENING and target.library == 'MOBI':
@@ -222,6 +224,21 @@ def _with_measures(context, target):
     except part_geometry.PartGeometryError as exc:
         return dataclasses.replace(target, measure_error=str(exc))
     return dataclasses.replace(target, measures=measures)
+
+
+def _with_module_measure(context, target):
+    """Medida física do módulo (080, RN-03): transformação que não se mede vira motivo, nunca zero."""
+    import dataclasses
+    from ..selection import classify, module_resize
+    obj = object_for(context, target.uid)
+    info = classify.classify(obj) if obj is not None else None
+    if not module_resize.handles(info):
+        return target
+    try:
+        module_resize.measure(info.root, info.library)
+    except ValueError as exc:
+        return dataclasses.replace(target, measure_error=str(exc))
+    return target
 
 
 def current(context):

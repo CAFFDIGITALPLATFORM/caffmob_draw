@@ -111,6 +111,14 @@ def migrate_structure(context, root):
 
 
 def library_limits(root, library):
+    from ..selection import module_resize
+    info = info_of(root)
+    if module_resize.handles(info):
+        # 080 D-08: a faixa que o editor mostra e confere é a física (gerador convertido pela escala dos ancestrais).
+        try:
+            return editing.physical_limits(info)
+        except ValueError:
+            return {}
     holder = getattr(root, _LIBRARY_HOLDER.get(library, ''), None)
     out = {}
     if holder is None:
@@ -136,9 +144,15 @@ def apply_state(context, root, target):
     adapter = adapter_of(root)
     messages = []
     current = read_state(root)
-    for index, field in enumerate(('width', 'height', 'depth')):
-        if abs(current.dimensions[index] - target.dimensions[index]) > 1e-7:
-            set_dimension(context, root, field, target.dimensions[index])
+    edits = {field: target.dimensions[index] for index, field in enumerate(('width', 'height', 'depth'))
+             if abs(current.dimensions[index] - target.dimensions[index]) > 1e-7}
+    from ..selection import module_resize
+    info = info_of(root)
+    if edits and module_resize.handles(info):
+        editing.set_dimensions(context, info, edits)          # 080 D-04: as 3 medidas numa transação por Aplicar
+    else:
+        for field, value in edits.items():
+            set_dimension(context, root, field, value)
     if target.assembly and target.assembly != current.assembly:
         messages += set_assembly(context, root, {'assembly': target.assembly})
     if is_caffmob_module(root) and (target.structure_id, target.present) != (current.structure_id, current.present):
