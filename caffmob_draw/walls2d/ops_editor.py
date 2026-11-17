@@ -30,7 +30,7 @@ from ..canvas2d.view import View2D, distance_point_point, distance_point_segment
 from ..data import expr, units
 from ..data.i18n import N_, tr
 from . import direction as dr
-from . import inference, model, props, selecao_classica, window
+from . import cores, inference, medir, menu_contexto as mc, model, props, selecao_classica, window
 
 NODE_HIT_PX = 9
 LINE_HIT_PX = 7
@@ -47,13 +47,14 @@ COLORS = {
     'background': (0.12, 0.12, 0.13, 1.0),
     'grid': (1.0, 1.0, 1.0, 0.06),
     'grid_axis': (1.0, 1.0, 1.0, 0.14),
-    'wall': (0.85, 0.85, 0.88, 1.0),
+    'wall': cores.CINZA,
     'wall_fill': (0.55, 0.55, 0.6, 0.18),
     'selected': (1.0, 0.62, 0.15, 1.0),
     'node': (0.25, 0.6, 1.0, 1.0),
     'preview': (0.35, 1.0, 0.45, 1.0),
     'preview_locked': (0.8, 0.8, 0.8, 1.0),
     'reference': (0.7, 0.7, 0.75, 0.55),
+    'measure': (0.30, 0.85, 1.0, 1.0),          # medição entre dois pontos (BUG-20261117-V4I3)
 }
 
 
@@ -139,8 +140,9 @@ def draw_plan(context):
             a0, a1 = view.to_screen(inner[0]), view.to_screen(inner[1])
             b0, b1 = view.to_screen(outer[0]), view.to_screen(outer[1])
             # Face interna tracejada (medida real), externa e pontas contínuas (D-28).
+            cor = cores.cor(chain.segments[i].wall_type)          # cor por tipo (BUG-20261117-AKYJ)
             draw.lines(sh, draw.dashed(a0, a1) + [b0, b1, a0, b0, a1, b1],
-                       COLORS['selected'] if in_batch else COLORS['wall'])
+                       COLORS['selected'] if in_batch else cor)
             if is_selected:
                 line = chain.line(i, s.line)
                 a, b = view.to_screen(line[0]), view.to_screen(line[1])
@@ -155,6 +157,22 @@ def draw_plan(context):
             q = view.to_screen(node)
             color = COLORS['selected'] if s.selected_node == (ci, k) else COLORS['node']
             draw.rect(sh, (q[0] - 4, q[1] - 4, 8, 8), color)
+
+    # Planta baixa com objetos (BUG-20261117-JXDJ) -------------------------------
+    if state.plant_low:
+        from . import scene_io
+        objs = scene_io.plant_objects(context.scene, state.cut_height)
+        for o in objs:
+            if not o['points']:
+                continue
+            pts = [view.to_screen(p) for p in o['points']]
+            if len(pts) < 2:
+                continue
+            color = o['color'] if state.material_color_mode == 'SOLID' else COLORS['wall']
+            # Fecha o polígono se não estiver fechado
+            if pts[0] != pts[-1]:
+                pts = pts + [pts[0]]
+            draw.polygon(sh, pts, color)
 
     if s.drawing is None and s.typed and s.cursor is not None:      # digitação direta (D-27)
         q = view.to_screen(s.cursor)
@@ -189,27 +207,88 @@ def draw_plan(context):
                          "arraste os vértices. Delete remove o trecho."),
             'DRAW': N_("Clique o ponto inicial, digite o comprimento e Enter. Clique no início para fechar. Esc termina."),
             'INVERT': N_("Clique numa parede para inverter o sentido."),
+            'MOVE': N_("Selecione as paredes e arraste para mover; setas trocam a direção, digite a medida e Enter. "
+                       "Esc cancela."),
+            'MEASURE': N_("Clique o primeiro ponto e o segundo para medir a distância; Esc limpa a medição."),
             'ADD_NODE': N_("Clique num trecho para dividi-lo."),
             'REMOVE_NODE': N_("Clique num vértice para unir os trechos.")}[state.tool]
+    if s.move_start is not None and s.cursor is not None:          # leitura do movimento (BUG-20261117-EELF)
+        dx, dy = s.move_delta
+        q = view.to_screen(s.cursor)
+        medida = f"{s.typed}▏" if s.typed else draw.length_label(math.hypot(dx, dy))
+        angulo = math.degrees(math.atan2(dy, dx)) % 360.0
+        draw.text(q[0] + 14, q[1] + 14, tr("Mover: {}  {:.0f}°  (Esc cancela)").format(medida, angulo),
+                  COLORS['preview'])
     draw.text(12, 12, hint, draw.COLORS['muted'])
     if s.error:
         draw.text(12, 32, s.error, draw.COLORS['warning'])
+    if s.medir is not None:
+        _draw_measure(sh, view, s.medir, s.cursor)      # ferramenta Medir (BUG-20261117-V4I3)
     _draw_toolbar(sh, view, s)
     if s.prompt in PROMPTS:
         _draw_prompt(sh, region, PROMPTS[s.prompt])
+    if s.menu is not None:
+        _draw_menu(sh, s.menu)                  # caixa de contexto por cima de tudo (BUG-20261117-AKYJ)
     draw.end()
+
+
+def _draw_measure(sh, view, medicao, cursor=None):
+    """Medição entre dois pontos: linha com pontas, medida no meio e a prévia até o cursor (BUG-20261117-V4I3).
+
+    A medida sai com `draw.length_label`, a mesma formatação da planta, na unidade do projeto.
+    """
+    inicio = medicao['inicio']
+    if inicio is None:
+        return
+    fim = medicao['fim'] or cursor
+    if fim is None:
+        return
+    a, b = view.to_screen(inicio), view.to_screen(fim)
+    cor = COLORS['measure']
+    pronta = medicao['fim'] is not None
+    draw.lines(sh, [a, b] if pronta else draw.dashed(a, b), cor)
+    if pronta:                                          # pontas perpendiculares, como uma cota
+        dx, dy = b[0] - a[0], b[1] - a[1]
+        n = math.hypot(dx, dy) or 1.0
+        px, py = -dy / n * 6.0, dx / n * 6.0
+        draw.lines(sh, [(a[0] - px, a[1] - py), (a[0] + px, a[1] + py),
+                        (b[0] - px, b[1] - py), (b[0] + px, b[1] + py)], cor)
+    draw.rect(sh, (a[0] - 3, a[1] - 3, 6, 6), cor)
+    metros = math.hypot(fim[0] - inicio[0], fim[1] - inicio[1])
+    texto = draw.length_label(metros)
+    draw.text((a[0] + b[0]) / 2 - draw.text_width(texto, 11) / 2, (a[1] + b[1]) / 2 + 10, texto, cor, size=11)
+
+
+def _draw_menu(sh, caixa):
+    """Caixa de contexto: fundo, borda e uma linha por controle, com marca do tipo atual (BUG-20261117-AKYJ)."""
+    box = (caixa['x'], caixa['y'], caixa['largura'], caixa['altura'])
+    draw.rect(sh, box, draw.COLORS['panel'])
+    draw.outline(sh, box, draw.COLORS['border'])
+    for (chave, r), item in zip(caixa['itens'], caixa.get('linhas', [])):
+        tinta = draw.COLORS['text'] if item.get('marcado') or not item.get('cor') else draw.COLORS['muted']
+        if item.get('cor'):
+            draw.rect(sh, (r[0] + 6, r[1] + 7, 11, 11), item['cor'])
+            if item.get('marcado'):
+                draw.outline(sh, (r[0] + 4, r[1] + 5, 15, 15), draw.COLORS['text'])
+        draw.text(r[0] + (22 if item.get('cor') else 8), r[1] + 6, item['rotulo'], tinta, size=11)
+        if item.get('valor'):
+            draw.text(r[0] + r[2] - draw.text_width(item['valor'], 11) - 8, r[1] + 6, item['valor'],
+                      COLORS['selected'], size=11)
 
 
 # Barra superior (013, RN-07, D-07) ----------------------------------------------------------------------------
 
 ZOOM_WINDOW_HINT = N_("Zoom janela: marque um retângulo para enquadrar")
+MOVE_LABEL = N_("Mover")          # botão da barra superior (BUG-20261117-EELF)
 
 
 def _toolbar_rects(view):
-    """(faixa da barra, botão da lupa) em pixels da região; a barra fica logo acima do retângulo da vista."""
+    """(faixa da barra, botão da lupa, botão Mover) em pixels da região; a barra fica logo acima da vista."""
     top, width, h = view.rect[3], view.rect[2], toolbar_height()
     side = h - 8
-    return (0.0, top, width, h), (8.0, top + 4, side, side)
+    lupa = (8.0, top + 4, side, side)
+    mover = (lupa[0] + side + 6, top + 4, 74.0 * _ui_scale(), side)      # BUG-20261117-EELF
+    return (0.0, top, width, h), lupa, mover
 
 
 def _mouse_pixel(view, s):
@@ -232,18 +311,25 @@ def _draw_magnifier(sh, r, color):
 
 def _draw_toolbar(sh, view, s):
     from ..hb_gpu_draw import point_in_rect
-    bar, lupa = _toolbar_rects(view)
+    bar, lupa, mover = _toolbar_rects(view)
     mouse = _mouse_pixel(view, s)
     hot = mouse is not None and point_in_rect(mouse[0], mouse[1], lupa)
+    mover_hot = mouse is not None and point_in_rect(mouse[0], mouse[1], mover)
     armed = s.zoom_window is not None
+    movendo = _state(bpy.context).tool == 'MOVE'        # BUG-20261117-EELF: o botão acende com a ferramenta ativa
     draw.rect(sh, bar, draw.COLORS['panel'])
     draw.lines(sh, [(bar[0], bar[1]), (bar[0] + bar[2], bar[1])], draw.COLORS['border'])
     draw.rect(sh, lupa, draw.COLORS['button_primary'] if armed else (draw.COLORS['button_hot'] if hot
                                                                      else draw.COLORS['button']))
     draw.outline(sh, lupa, draw.COLORS['border'])
     _draw_magnifier(sh, lupa, draw.COLORS['text'])
+    draw.rect(sh, mover, draw.COLORS['button_primary'] if movendo else (draw.COLORS['button_hot'] if mover_hot
+                                                                       else draw.COLORS['button']))
+    draw.outline(sh, mover, draw.COLORS['border'])
+    draw.text(mover[0] + 10, mover[1] + (mover[3] - draw.FONT_SIZE) / 2.0 + 1, MOVE_LABEL,
+              draw.COLORS['text'] if movendo else draw.COLORS['muted'])
     if hot or armed:                                   # dica ao passar o mouse e enquanto o modo está ligado
-        draw.text(lupa[0] + lupa[2] + 10, bar[1] + (bar[3] - draw.FONT_SIZE) / 2.0 + 1, ZOOM_WINDOW_HINT,
+        draw.text(mover[0] + mover[2] + 10, bar[1] + (bar[3] - draw.FONT_SIZE) / 2.0 + 1, ZOOM_WINDOW_HINT,
                   draw.COLORS['text'] if armed else draw.COLORS['muted'])
     box = getattr(s, 'selection_box', None)                    # 067 onda 8 (D-39): retângulo de seleção
     if box is not None:
@@ -264,8 +350,12 @@ def handle_zoom_window(event, s, view, pixel):
 
     Função de módulo, não método: as fumaças ligam ao modal falso só a lista de métodos que conhecem."""
     from ..hb_gpu_draw import point_in_rect
-    bar, lupa = _toolbar_rects(view)
+    bar, lupa, mover = _toolbar_rects(view)
     press = event.value == 'PRESS'
+    if event.type == 'LEFTMOUSE' and press and point_in_rect(pixel[0], pixel[1], mover):
+        state = _state(bpy.context)
+        state.tool = 'SELECT' if state.tool == 'MOVE' else 'MOVE'   # botão Mover (BUG-20261117-EELF)
+        return True
     if event.type == 'LEFTMOUSE' and press and point_in_rect(pixel[0], pixel[1], lupa):
         s.zoom_window = None if s.zoom_window is not None else 'ARMED'      # liga; segundo clique cancela
         s.zoom_box_end = None
@@ -648,10 +738,72 @@ class BTM_OT_WallEditorModal(bpy.types.Operator):
         if not self._is_navigation(event):
             self._update_snap(context, s, view)   # navegar não refaz o encaixe: o touchpad manda dezenas de eventos
         handled = self._handle(context, event, s, view, pixel)
-        if handled and self.dragging is None:
-            s.checkpoint()                    # um passo por ação concluída; o arraste grava ao soltar
+        if handled and self.dragging is None and s.move_start is None:
+            s.checkpoint()                    # um passo por ação concluída; o arraste e o movimento gravam ao soltar
         s.redraw()
         return {'RUNNING_MODAL'} if handled else {'PASS_THROUGH'}
+
+    # Caixa de contexto da parede (BUG-20261117-AKYJ) --------------------------------------------------------
+    def _handle_menu(self, state, event, s, view, pixel):
+        """Caixa aberta: clique executa, Esc e um segundo botão direito fecham; fechada, o botão direito abre."""
+        if s.menu is None:
+            if not mc.abre_menu(state.tool, event.type, event.value):
+                return False
+            return self._open_menu(s, view, pixel)
+        if event.value == 'PRESS' and event.type in {'ESC', 'RIGHTMOUSE'}:
+            s.menu = None
+            return True
+        if event.type == 'LEFTMOUSE' and event.value == 'PRESS':
+            chave = mc.alvo(s.menu, pixel)
+            s.error = ""
+            if chave is None:
+                s.menu = None                     # clique fora fecha sem alterar nada
+            else:
+                self._menu_action(s, chave)
+            return True
+        return True                    # com a caixa aberta nada mais passa: nem navegação, nem lápis
+
+    def _open_menu(self, s, view, pixel):
+        """Abre a caixa no clique sobre a parede; no vazio o botão direito não abre (e segue sem efeito)."""
+        if s.v2:
+            from . import classico_v2
+            return classico_v2.abrir_menu(s, view, pixel)
+        line = hit_line(s, pixel)
+        if line is None:
+            return False
+        ci, i, which = line
+        if (ci, i) not in (s.multi or []):
+            s.multi, s.selected = [(ci, i)], (ci, i)      # o clique na parede também a ativa
+        else:
+            s.selected = (ci, i)
+        s.line = which
+        s.menu = dict(pixel=pixel, regiao=tuple(view.rect))
+        self._refresh_menu(s)
+        return True
+
+    def _refresh_menu(self, s):
+        """Refaz as linhas da caixa com os valores de agora, no mesmo ponto do clique."""
+        if s.menu is None:
+            return
+        caixa = mc.layout(s.menu['pixel'], mc.itens(s.line, *props.estado_da_caixa(s)), s.menu['regiao'])
+        caixa['pixel'], caixa['regiao'] = s.menu['pixel'], s.menu['regiao']
+        s.menu = caixa
+
+    def _menu_action(self, s, chave):
+        if s.v2:
+            from . import classico_v2
+            classico_v2.menu_acao(s, chave)
+        elif chave == mc.LINHA:
+            s.line = model.INNER if s.line == model.OUTER else model.OUTER
+        elif chave == mc.DIRECAO:
+            props.aplicar_direcao(s, 'LEFT' if props.estado_da_caixa(s)[0] == 'RIGHT' else 'RIGHT')
+        elif chave == mc.INVERTER:
+            props.inverter_ativas(s)
+        else:
+            tipo = mc.tipo_da_chave(chave)
+            if tipo:
+                props.aplicar_tipo(s, tipo)
+        self._refresh_menu(s)
 
     def _is_navigation(self, event):
         """Evento que só move a vista (013, D-06): pinça, arraste com dois dedos, roda, botão do meio e o arraste dele."""
@@ -696,6 +848,8 @@ class BTM_OT_WallEditorModal(bpy.types.Operator):
             from . import classico_v2         # perguntas abertas (descartar, excluir em lote) antes da navegação
             if classico_v2.capturar(self, context, event, s, view, pixel):
                 return True
+        if self._handle_menu(state, event, s, view, pixel):
+            return True
         if handle_zoom_window(event, s, view, pixel):
             return True
         if event.type == 'MIDDLEMOUSE':
@@ -726,6 +880,10 @@ class BTM_OT_WallEditorModal(bpy.types.Operator):
             return self._handle_prompt(context, event, s, pixel)
         if state.tool == 'DRAW':
             return self._handle_draw(context, event, s, view, pixel)
+        if state.tool == 'MOVE':
+            return self._handle_move(context, event, s, view, pixel)      # BUG-20261117-EELF
+        if state.tool == 'MEASURE':
+            return self._handle_measure(context, event, s, view, pixel)   # BUG-20261117-V4I3
         if event.type == 'ESC' and event.value == 'PRESS':
             if s.typed:
                 s.typed = ""                      # Esc primeiro limpa a digitação
@@ -763,6 +921,120 @@ class BTM_OT_WallEditorModal(bpy.types.Operator):
             chain.move_node(k, point)
             return True
         return False
+
+    # Ferramenta Mover (BUG-20261117-EELF) -------------------------------------------------------------------
+    def _begin_move(self, s, pixel):
+        """Cópia dos nós das paredes ativas (regra de 2026-11-17: a vizinha estica). Deslocar a partir da cópia evita
+        acumular erro e permite devolver tudo com Esc."""
+        selecao, nos = [], {}
+        candidatos = list(s.multi) if len(s.multi) > 1 else ([s.selected] if s.selected is not None else [])
+        for ci, si in candidatos:
+            if not 0 <= ci < len(s.plan.chains):
+                continue
+            chain = s.plan.chains[ci]
+            if not 0 <= si < chain.segment_count():
+                continue
+            selecao.append((ci, si))
+            for k in (si, (si + 1) % len(chain.nodes)):
+                nos[(ci, k)] = chain.nodes[k]
+        if not nos:
+            return False
+        s.move_origin, s.move_start, s.move_selection, s.move_delta = pixel, nos, selecao, (0.0, 0.0)
+        return True
+
+    def _apply_move(self, s, dx, dy):
+        """Repõe a cópia e desloca: o desenho acompanha o ponteiro sem o erro de somar deltas sucessivos."""
+        for (ci, k), (x, y) in s.move_start.items():
+            s.plan.chains[ci].nodes[k] = (x, y)
+        s.plan.move_segments(s.move_selection, dx, dy)
+        s.move_delta = (dx, dy)
+
+    def _restore_move(self, s):
+        for (ci, k), (x, y) in s.move_start.items():
+            s.plan.chains[ci].nodes[k] = (x, y)
+
+    def _end_move(self, s):
+        s.move_origin, s.move_start, s.move_selection, s.move_delta = None, None, [], (0.0, 0.0)
+
+    def _handle_move(self, context, event, s, view, pixel):
+        """Mover as paredes ativas: arraste, setas de 90° e medida digitada. Esc devolve o rascunho de onde estava."""
+        if event.type == 'ESC' and event.value == 'PRESS':
+            if s.move_start is None:
+                return False                      # sem movimento: o Esc segue o caminho normal
+            self._restore_move(s)
+            self._end_move(s)
+            s.typed, s.typed_preview, s.error = "", "", ""
+            return True
+        if event.type == 'LEFTMOUSE' and event.value == 'PRESS':
+            if s.move_start is not None:
+                return True
+            if not self._begin_move(s, pixel):
+                s.error = N_("Selecione uma ou mais paredes para mover.")
+                return True
+            s.error = ""
+            return True
+        if event.type == 'LEFTMOUSE' and event.value == 'RELEASE':
+            if s.move_start is None:
+                return True
+            self._end_move(s)                     # já aplicado; o modal grava um passo de desfazer
+            s.typed, s.typed_preview = "", ""
+            return True
+        if event.type == 'MOUSEMOVE' and s.move_start is not None:
+            atual, origem = view.to_world(pixel), view.to_world(s.move_origin)
+            dx, dy = atual[0] - origem[0], atual[1] - origem[1]
+            if getattr(event, 'shift', False):                # Shift trava no eixo dominante
+                if abs(dx) >= abs(dy):
+                    dy = 0.0
+                else:
+                    dx = 0.0
+            self._apply_move(s, dx, dy)
+            return True
+        angulo = dr.arrow_direction(event.type)
+        if angulo is not None and event.value == 'PRESS' and s.move_start is not None:
+            distancia = math.hypot(*s.move_delta)
+            self._apply_move(s, math.cos(angulo) * distancia, math.sin(angulo) * distancia)
+            return True
+        if accept_typing(s, event.unicode):
+            return True
+        if event.type == 'BACK_SPACE' and s.typed:
+            s.typed = s.typed[:-1]
+            s.typed_preview = expr.preview(s.typed, units.get_scene_length_unit())
+            return True
+        if event.type in {'RET', 'NUMPAD_ENTER'} and s.typed:
+            try:
+                valor = units.parse_length(s.typed, units.get_scene_length_unit(), allow_zero=False)
+            except ValueError as exc:
+                s.error, s.typed, s.typed_preview = str(exc), "", ""
+                return True
+            if s.move_start is None and not self._begin_move(s, pixel):
+                s.error = N_("Selecione uma ou mais paredes para mover.")
+                s.typed = ""
+                return True
+            dx, dy = s.move_delta
+            direcao = math.atan2(dy, dx) if (dx or dy) else 0.0     # sem arraste, a medida anda para a direita
+            self._apply_move(s, math.cos(direcao) * valor, math.sin(direcao) * valor)
+            s.typed, s.typed_preview = "", ""
+            self._end_move(s)                    # medida digitada conclui o movimento
+            return True
+        return False
+
+    # Ferramenta Medir (BUG-20261117-V4I3) -------------------------------------------------------------------
+    def _handle_measure(self, context, event, s, view, pixel):
+        """Dois cliques medem a distância entre eles; o ímã é o dos vértices. Esc (ou o botão direito) limpa.
+
+        Só leitura: o rascunho e o desfazer ficam como estavam.
+        """
+        if event.type in {'ESC', 'RIGHTMOUSE'} and event.value == 'PRESS':
+            if s.medir is None:
+                return False
+            s.medir, s.error = medir.limpar(s.medir), ""
+            return True
+        if event.type != 'LEFTMOUSE' or event.value != 'PRESS':
+            return event.type in {'MOUSEMOVE', 'INBETWEEN_MOUSEMOVE'}
+        candidatos = [node for chain in s.plan.chains for node in chain.nodes]
+        ponto, _tipo = medir.snap(view.to_world(pixel), candidatos, view.to_screen)
+        s.medir = medir.clicar(s.medir, ponto)
+        return True
 
     def _finish_box(self, s, view, pixel):
         """Solta o retângulo de seleção (D-39): soma com Shift; sem arrastar, um clique no vazio limpa."""

@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Plano de correção · #145 BUG-20261117-AKYJ</title>
+<style>
+  :root{--bg:#14161a;--panel:#1c1f26;--panel2:#22262f;--line:#2e3440;--txt:#e6e9ef;--muted:#9aa4b2;
+        --accent:#f5a04b;--ok:#4bd08a;--warn:#e5c07b;--bad:#e06c75;--link:#6cb6ff}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--txt);font:15px/1.55 "Segoe UI",system-ui,sans-serif}
+  header{padding:28px 32px;border-bottom:1px solid var(--line);background:linear-gradient(180deg,#1b1f27,#14161a)}
+  h1{margin:0 0 6px;font-size:23px;font-weight:650}
+  h2{margin:34px 0 12px;font-size:17px;font-weight:650;color:var(--accent)}
+  h2 .n{color:var(--muted);font-weight:500;margin-right:8px}
+  main{max-width:1060px;margin:0 auto;padding:8px 32px 64px}
+  .meta{color:var(--muted);font-size:13.5px}
+  .chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+  .chip{border:1px solid var(--line);background:var(--panel);border-radius:999px;padding:4px 12px;font-size:12.5px}
+  .chip.hi{border-color:#5a3b46;color:#f0b3b8;background:#2a1d22}
+  .chip.mid{border-color:#5a4d2e;color:var(--warn);background:#26221a}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px 20px;margin:14px 0}
+  .card h3{margin:0 0 8px;font-size:15px}
+  table{width:100%;border-collapse:collapse;font-size:14px}
+  th,td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{color:var(--muted);font-weight:600;font-size:12.5px;text-transform:uppercase;letter-spacing:.04em}
+  tr:last-child td{border-bottom:none}
+  code{font-family:"Cascadia Code",Consolas,monospace;font-size:13px;background:#0f1115;border:1px solid var(--line);
+       border-radius:5px;padding:1px 5px}
+  a{color:var(--link);text-decoration:none}
+  a:hover{text-decoration:underline}
+  .state{font-size:12px;padding:2px 8px;border-radius:999px;border:1px solid var(--line);color:var(--muted)}
+  .state.supported{color:var(--warn);border-color:#5a4d2e}
+  .state.proposed{color:var(--muted)}
+  ul{margin:8px 0 0 18px;padding:0}
+  li{margin:4px 0}
+  .graph{display:flex;align-items:center;justify-content:center;gap:0;flex-wrap:wrap;padding:12px 0}
+  .node{border:1px solid var(--line);background:var(--panel2);border-radius:12px;padding:12px 16px;min-width:200px;
+        text-align:center}
+  .node .id{font-size:12px;color:var(--muted)}
+  .node .t{font-size:14px;font-weight:600;margin-top:4px}
+  .node.center{border-color:var(--accent);box-shadow:0 0 0 1px #3a2c1c inset;background:#241d15}
+  .edge{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 14px;color:var(--muted);
+        font-size:11.5px;min-width:120px}
+  .edge .bar{width:100%;height:1px;background:var(--line);margin:5px 0}
+  .col2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media(max-width:760px){.col2{grid-template-columns:1fr}}
+  .out{color:var(--muted)}
+  .done{color:var(--ok)}
+</style>
+</head>
+<body>
+<header>
+  <h1>Plano de correção · #145 · BUG-20261117-AKYJ</h1>
+  <div class="meta">Contexto: editor-de-paredes · módulo walls2d · plano gerado em 2026-11-17, antes de qualquer
+    alteração no addon</div>
+  <div class="chips">
+    <span class="chip">severidade média</span>
+    <span class="chip">prioridade P2</span>
+    <span class="chip mid">risco da mudança: média</span>
+    <span class="chip">labels: spec-gap, interface, ergonomia, toque, cores-por-tipo</span>
+    <span class="chip">status: active / diagnosing</span>
+  </div>
+</header>
+<main>
+
+<h2><span class="n">1</span>O que será mostrado</h2>
+<p><a href="../bug.md">Abrir o registro canônico do bug</a> · <a href="../evidence/reproduction.md">cápsula de
+reprodução</a> · <a href="../../../generated/graph.html">grafo do contexto</a></p>
+<p>O titular pediu três controles no mesmo lugar: <strong>Linha/Direção</strong> (externo e interno), <strong>inverter o
+sentido de todas as paredes ativas</strong> e <strong>tipo de parede com cor na tela</strong>. Hoje o botão direito não
+faz nada no modo Selecionar, a Direção só é escrita no trecho selecionado e todo trecho é pintado com a mesma cor.</p>
+
+<h2><span class="n">2</span>Defeito e causa raiz</h2>
+<div class="card">
+  <h3>Causa: capacidade nunca existiu, em três pontos distintos <span class="state supported">supported</span></h3>
+  <ul>
+    <li>O modal não tem estrutura de menu: nenhuma classe de menu no pacote e nenhum ramo de <code>RIGHTMOUSE</code> no
+      caminho do modo Selecionar (<code>_handle</code> devolve <code>False</code> e o evento passa adiante).</li>
+    <li>O desenho usa uma cor única: <code>draw_plan</code> pinta todo trecho com <code>COLORS['wall']</code> e não lê
+      <code>seg.wall_type</code>.</li>
+    <li>A Direção (lado da espessura) só tem escrita no trecho selecionado (<code>_side_set</code>), sem versão em lote,
+      diferente do tipo de parede que já usa <code>selecao_classica.aplicar</code>.</li>
+  </ul>
+  <p class="meta">Evidência: <a href="../evidence/reproduction.md">evidence/reproduction.md</a>. Correção do relato: no modo
+    Selecionar o botão direito não cancela nada, apenas não tem efeito; no modo Desenhar ele encerra o lápis, e isso
+    continua igual.</p>
+</div>
+
+<h2><span class="n">3</span>Estratégia escolhida</h2>
+<div class="card">
+  <p><strong>Correção direta</strong> (escolhida nesta sessão). A causa é ausência de capacidade, não divergência de
+    diagnóstico, e o projeto já tem o padrão de menu desenhado no canvas em <code>studio_painel.py</code>
+    (<code>menu_rects</code>, <code>alvo</code>, <code>clicar</code>).</p>
+  <p><strong>Decisões do titular nesta sessão:</strong> caixa desenhada no editor, no canvas, e não menu nativo; cores
+    por tipo com <strong>NORMAL no cinza de hoje, DIVISORIA em azul, MURETA em amarelo</strong> (subconjunto do manual
+    CTB; a pergunta ficou sem resposta e a recomendação foi assumida).</p>
+</div>
+
+<h2><span class="n">4</span>Correction Change Set proposto</h2>
+<table>
+  <thead><tr><th>CHG</th><th>tipo</th><th>artefato</th><th>propósito</th></tr></thead>
+  <tbody>
+    <tr><td><code>CHG-001</code></td><td>code</td><td><code>caffmob_draw/walls2d/menu_contexto.py</code> (novo)</td>
+      <td>Módulo puro, sem Blender: monta as linhas da caixa a partir do estado (linha, direção comum, tipos comuns,
+      quantas ativas), devolve os retângulos, resolve o alvo sob o pixel, corrige a caixa nas bordas da região e nomeia
+      cada ação.</td></tr>
+    <tr><td><code>CHG-002</code></td><td>code</td><td><code>caffmob_draw/walls2d/cores.py</code> (novo)</td>
+      <td>Mapa de cor por tipo de parede, com o cinza atual para NORMAL; uma função de consulta para o desenho e para os
+      testes puros.</td></tr>
+    <tr><td><code>CHG-003</code></td><td>code</td><td><code>caffmob_draw/walls2d/props.py</code></td>
+      <td>Estado da caixa na sessão (pixel e retângulos), abertura e fechamento, <code>_side_set</code> com caminho de
+      lote ao lado do de um trecho, e <code>inverter_ativas()</code> aplicando <code>Chain.invert()</code> em cada cadeia
+      ativa uma única vez, tudo num passo de desfazer.</td></tr>
+    <tr><td><code>CHG-004</code></td><td>code</td><td><code>caffmob_draw/walls2d/ops_editor.py</code></td>
+      <td><code>RIGHTMOUSE</code> no modo Selecionar abre a caixa no ponto do clique sobre a parede (e seleciona o trecho
+      se ele não estava ativo); clique numa linha executa a ação; clique fora, Esc ou segundo botão direito fecham sem
+      alterar nada; desenho da caixa e dos itens; cor por tipo no <code>draw_plan</code>.</td></tr>
+    <tr><td><code>CHG-005</code></td><td>code</td><td><code>caffmob_draw/walls2d/classico_v2.py</code></td>
+      <td>Mesma caixa na tela v2, aberta sobre parede; no vazio, o botão direito continua iniciando o arraste de
+      navegação. Linha que o documento v2 não souber aplicar aparece desabilitada com o motivo.</td></tr>
+    <tr><td><code>CHG-006</code></td><td>configuration</td><td><code>caffmob_draw/data/translations/walls2d*.json</code></td>
+      <td>pt_BR e en_US dos rótulos novos, exigidos pela cobertura de i18n.</td></tr>
+  </tbody>
+</table>
+
+<h2><span class="n">5</span>Testes planejados</h2>
+<table>
+  <thead><tr><th>teste</th><th>intenção</th><th>o que prova</th></tr></thead>
+  <tbody>
+    <tr><td><code>tests/test_walls2d_menu_contexto.py</code></td><td>reprodução</td>
+      <td>O módulo puro de layout e alvo não existe hoje (AttributeError). Depois: quatro linhas na ordem pedida, alvo
+      correto por linha, clique fora devolve nada, caixa corrigida nas bordas, ação escolhida com seleção de dois trechos
+      atinge os dois.</td></tr>
+    <tr><td><code>tests/test_walls2d_cores.py</code></td><td>reprodução</td>
+      <td>NORMAL mantém o cinza atual, DIVISORIA e MURETA têm cores distintas entre si e do NORMAL, e toda cor é uma
+      tupla RGBA válida.</td></tr>
+    <tr><td><code>tests/blender_bug_AKYJ_menu.py</code></td><td>reprodução e regressão</td>
+      <td>Reprodução: <code>inverter_ativas</code> inverte todas as cadeias ativas e um único desfazer devolve; Direção em
+      lote alcança os trechos ativos. Regressão: <code>RIGHTMOUSE</code> no modo Desenhar continua encerrando o lápis,
+      Esc continua cancelando, e a ferramenta Inverter Sentido por clique segue funcionando.</td></tr>
+    <tr><td><code>tests/test_walls2d_model.py</code>, <code>test_walls2d_selecao.py</code>,
+      <code>test_walls2d_move.py</code>, <code>test_walls2d_history.py</code></td><td>regressão</td>
+      <td>O núcleo de paredes, a seleção em lote, o Mover recém-entregue e o histórico continuam passando.</td></tr>
+  </tbody>
+</table>
+
+<h2><span class="n">6</span>Riscos e limites</h2>
+<div class="col2">
+  <div class="card">
+    <h3>Risco: média</h3>
+    <ul>
+      <li>O botão direito muda de significado no modo Selecionar: é contrato de interação e precisa de teste de
+        regressão do modo Desenhar.</li>
+      <li>Duas telas para manter: clássico e v2, com o v2 tendo navegação presa ao botão direito no vazio.</li>
+      <li>Cor por tipo é decisão visual: se você não gostar do azul ou do amarelo, é um ajuste de uma linha no
+        <code>cores.py</code>.</li>
+      <li>Sem dados persistidos: o rascunho vive em memória e o Ctrl+Z cobre cada ação da caixa.</li>
+    </ul>
+  </div>
+  <div class="card">
+    <h3>Fora do escopo desta correção (Agent Notes)</h3>
+    <ul>
+      <li>Pressão longa no toque: o editor não tem evento de toque parado no caminho clássico; entra numa rodada própria,
+        reaproveitando <code>ESPERA_DA_ARESTA</code> do Studio.</li>
+      <li>Escolher a linha por trecho (hoje a linha de medição é global): decisão separada.</li>
+      <li>Refatorar o menu do <code>studio_painel</code> para compartilhar código com esta caixa.</li>
+    </ul>
+  </div>
+</div>
+
+<h2><span class="n">7</span>Mini-grafo do bug</h2>
+<div class="graph">
+  <a class="node center" href="../bug.md">
+    <div class="id">#145 · BUG-20261117-AKYJ</div>
+    <div class="t">Menu de contexto na parede<br>com Linha, sentido e tipo</div>
+    <div class="state supported" style="margin-top:8px;display:inline-block">causa supported</div>
+  </a>
+  <div class="edge"><span>related-to</span><div class="bar"></div><span>proposed</span></div>
+  <a class="node" href="../../BUG-20261117-EELF-ferramenta-mover-inline/bug.md">
+    <div class="id">#146 · BUG-20261117-EELF</div>
+    <div class="t">Ferramenta Mover inline<br><span class="done">resolvida nesta sessão</span></div>
+  </a>
+</div>
+
+<h2><span class="n">8</span>Matriz de relações</h2>
+<table>
+  <thead><tr><th>origem</th><th>tipo</th><th>destino</th><th>estado</th></tr></thead>
+  <tbody>
+    <tr><td><a href="../bug.md">#145 BUG-20261117-AKYJ</a></td><td>related-to</td>
+      <td><a href="../../BUG-20261117-EELF-ferramenta-mover-inline/bug.md">#146 BUG-20261117-EELF</a></td>
+      <td><span class="state proposed">proposed</span></td></tr>
+    <tr><td><a href="../../BUG-20261117-EELF-ferramenta-mover-inline/bug.md">#146 BUG-20261117-EELF</a></td>
+      <td>related-to</td><td><a href="../bug.md">#145 BUG-20261117-AKYJ</a></td>
+      <td><span class="state proposed">proposed</span></td></tr>
+  </tbody>
+</table>
+<p class="meta">A aresta continua <code>proposed</code>: as duas correções tocam o mesmo modal e o mesmo estado de sessão,
+o que sustenta a relação, mas ela só vira <code>supported</code> se aparecer evidência de acoplamento causal durante a
+correção.</p>
+
+<h2><span class="n">9</span>Ordem sugerida na cadeia</h2>
+<div class="card">
+  <p><strong>1.</strong> Este bug (#145), agora: menor escopo, mesma região de código que acabou de ser mexida e já tem a
+    sua decisão registrada.</p>
+  <p><strong>2.</strong> #148 (planta baixa com corte e cores), depois: é o maior elo do grafo e destrava o #149 (imprimir
+    planta). A cor por tipo criada aqui será reaproveitada lá.</p>
+  <p><strong>3.</strong> #150 (medir dois pontos) e #147, #151 depois disso.</p>
+</div>
+
+</main>
+</body>
+</html>

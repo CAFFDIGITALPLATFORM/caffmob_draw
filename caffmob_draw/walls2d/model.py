@@ -332,6 +332,37 @@ class WallPlan:
             if seg.source:
                 self.removed_sources.append(seg.source)
 
+    def move_segments(self, selection, dx, dy):
+        """Desloca as paredes ativas em (dx, dy) (BUG-20261117-EELF): os dois nós de cada trecho andam juntos e cada
+        nó anda uma vez só, sem mudar comprimento, espessura, altura nem tipo.
+
+        O nó compartilhado com uma parede não ativa anda junto: a vizinha estica e muda de ângulo, mantendo o
+        encadeamento (regra aprovada em 2026-11-17). Movimento nulo não muda a assinatura do rascunho, então não vira
+        passo de desfazer. Devolve os nós movidos, para quem desenhar a prévia.
+        """
+        alvos = []
+        for ci, si in selection:
+            if not 0 <= ci < len(self.chains):
+                raise ValueError(tr("Valor Inválido: cadeia {}. Só existem {} no rascunho.").format(
+                    ci, len(self.chains)))
+            total = self.chains[ci].segment_count()
+            if not 0 <= si < total:
+                raise ValueError(tr("Valor Inválido: trecho {}. Esta parede tem {} trechos.").format(si, total))
+            alvos.append((ci, si))
+        if not alvos or (not dx and not dy):
+            return []
+        vistos, movidos = set(), []
+        for ci, si in alvos:
+            chain = self.chains[ci]
+            for k in (si, (si + 1) % len(chain.nodes)):
+                if (ci, k) in vistos:
+                    continue
+                vistos.add((ci, k))
+                x, y = chain.nodes[k]
+                chain.nodes[k] = (x + dx, y + dy)
+                movidos.append((ci, k))
+        return movidos
+
 
 def plan_signature(plan):
     """Assinatura do rascunho (para saber se houve alteração desde a abertura, D-30)."""

@@ -30,3 +30,11 @@
 - #11 BUG-20261007-FLZO (fixed) · travado: Interface metade em português e metade em inglês
 - #139 BUG-20261012-RCOU (fixed) · travado: test_identity falha: btm.door_invert_hand e btm.resize_width fogem do prefixo caffmob
 - #142 BUG-20261012-WBKI (fixed) · travado: get_user_preferences quebra sem o add-on habilitado e a fumaça de inspeção imprime 17 tracebacks
+
+## Inconsistências
+
+Invariantes do registro violadas no front matter. O gerador não conserta: a decisão é humana.
+
+- BUG-20261006-NO4Q: fixed sem teste de regressão
+- BUG-20261006-QAVK: fixed sem teste de regressão
+- BUG-20261006-SCVF: fixed sem teste de regressão

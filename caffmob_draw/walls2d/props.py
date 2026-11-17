@@ -29,6 +29,8 @@ class Session:
         self.selected_node = None         # (cadeia, nó) — digitação direta no vértice (D-27)
         self.multi = []                   # 067 onda 8 (D-39): trechos selecionados juntos; `selected` é o último
         self.selection_box = None         # retângulo de seleção em andamento, em pixels (início, fim)
+        self.menu = None                  # caixa de contexto aberta (BUG-20261117-AKYJ)
+        self.medir = None                 # medição entre dois pontos em andamento ou pronta (BUG-20261117-V4I3)
         self.line = model.INNER
         self.drawing = None               # cadeia sendo desenhada a lápis
         self.cursor = None                # posição do cursor no mundo 2D
@@ -61,6 +63,11 @@ class Session:
         # (`history._sign` assina só o rascunho) e sem mexer na ferramenta do painel.
         self.zoom_window = None           # None = desligado; 'ARMED' = lupa apertada; (x, y) px = início do retângulo
         self.zoom_box_end = None          # canto atual do retângulo elástico, em pixels
+        # Ferramenta Mover (BUG-20261117-EELF): origem do arraste, cópia dos nós e a prévia do deslocamento.
+        self.move_origin = None           # pixel onde o arraste começou
+        self.move_start = None            # {(cadeia, nó): (x, y)} na hora em que o movimento começou
+        self.move_selection = []          # [(cadeia, trecho)] movidos: os índices não mudam durante o movimento
+        self.move_delta = (0.0, 0.0)      # deslocamento em metros, para o desenho e para a digitação
 
     def reset_direction(self):
         self.direction, self.direction_locked = None, False
@@ -192,6 +199,64 @@ def _seg_set(field):
     return set_
 
 
+# Caixa de contexto da parede (BUG-20261117-AKYJ) ------------------------------------------------------------
+
+def ativas(s):
+    """Trechos que a caixa de contexto atinge: o lote quando há mais de um, senão o trecho selecionado."""
+    return s.lote() or ([s.selected] if s.selected is not None else [])
+
+
+def _cadeias(s):
+    return list(dict.fromkeys(ci for ci, _si in ativas(s)))
+
+
+def estado_da_caixa(s):
+    """(direção, tipo) comuns às paredes ativas; None quando elas divergem."""
+    lados = {s.plan.chains[ci].side for ci, _si in ativas(s)}
+    tipos = {s.plan.chains[ci].segments[si].wall_type for ci, si in ativas(s)}
+    return (next(iter(lados)) if len(lados) == 1 else None,
+            next(iter(tipos)) if len(tipos) == 1 else None)
+
+
+def inverter_ativas(s):
+    """Inverte o sentido de todas as paredes ativas, num passo de desfazer."""
+    cadeias = _cadeias(s)
+    if not cadeias:
+        return False
+    for ci in cadeias:
+        s.plan.chains[ci].invert()
+    s.checkpoint()
+    s.redraw()
+    return True
+
+
+def aplicar_direcao(s, lado):
+    """Grava o lado da espessura (LEFT/RIGHT) em todas as paredes ativas, num passo de desfazer."""
+    cadeias = _cadeias(s)
+    if not cadeias or lado not in model.SIDES:
+        return False
+    for ci in cadeias:
+        s.plan.chains[ci].side = lado
+    s.checkpoint()
+    s.redraw()
+    return True
+
+
+def aplicar_tipo(s, tipo):
+    """Grava o tipo de parede em todos os trechos ativos, num passo de desfazer."""
+    trechos = ativas(s)
+    if not trechos or tipo not in model.WALL_TYPES:
+        return False
+    try:
+        selecao_classica.aplicar(s.plan, trechos, 'wall_type', tipo)
+    except ValueError as exc:
+        s.error = str(exc)
+        return False
+    s.checkpoint()
+    s.redraw()
+    return True
+
+
 def _type_get(_self):
     s = session()
     chain, i = s.segment() if s else (None, None)
@@ -316,6 +381,8 @@ SIDE_ITEMS = [('LEFT', "Esquerda", "A parede cresce para a esquerda da linha des
               ('RIGHT', "Direita", "A parede cresce para a direita da linha desenhada (face interna)")]
 TYPE_ITEMS = [('NORMAL', "Normal", ""), ('DIVISORIA', "Divisória", "Padrão de espessura 100 mm"),
               ('MURETA', "Mureta", "Padrão de altura 1.100 mm")]
+MATERIAL_COLOR_MODE_ITEMS = [('SOLID', "Sólida", "Preenchimento por cor sólida do material"),
+                             ('REAL', "Textura Real", "Preenchimento com textura real do material")]
 
 
 class BTM_PG_WallEditorState(bpy.types.PropertyGroup):
@@ -324,8 +391,10 @@ class BTM_PG_WallEditorState(bpy.types.PropertyGroup):
         items=[('SELECT', "Selecionar/Mover", "Selecionar trechos e arrastar vértices", 'RESTRICT_SELECT_OFF', 0),
                ('DRAW', "Construir Parede", "Desenhar paredes a lápis", 'GREASEPENCIL', 1),
                ('INVERT', "Inverter Sentido", "Inverter o sentido da parede clicada", 'ARROW_LEFTRIGHT', 2),
-               ('ADD_NODE', "Adicionar Vértice", "Dividir o trecho no ponto clicado", 'ADD', 3),
-               ('REMOVE_NODE', "Remover Vértice", "Unir os trechos do vértice clicado", 'REMOVE', 4)],
+               ('MOVE', "Mover", "Deslocar as paredes ativas em qualquer direção (BUG-20261117-EELF)", 'VIEW_PAN', 3),
+               ('MEASURE', "Medir", "Clique dois pontos para ver a distância entre eles", 'DRIVER_DISTANCE', 4),
+               ('ADD_NODE', "Adicionar Vértice", "Dividir o trecho no ponto clicado", 'ADD', 5),
+               ('REMOVE_NODE', "Remover Vértice", "Unir os trechos do vértice clicado", 'REMOVE', 6)],
         default='SELECT')  # type: ignore
     grid_size: bpy.props.FloatProperty(name="Tamanho", subtype='DISTANCE', unit='LENGTH', default=1.0, min=0.01,
                                        max=5.0, update=lambda s, c: session() and session().redraw())  # type: ignore
@@ -368,6 +437,18 @@ class BTM_PG_WallEditorState(bpy.types.PropertyGroup):
         name="Remover os módulos junto?",
         description="Os módulos dos trechos apagados saem com a parede; desmarcado, ficam soltos no lugar",
         get=_remove_modules_get, set=_remove_modules_set)  # type: ignore
+    plant_low: bpy.props.BoolProperty(
+        name="Planta Baixa com Objetos",
+        default=False,
+        description="Mostra objetos da cena na vista de topo, com corte superior e cores por material")  # type: ignore
+    cut_height: bpy.props.FloatProperty(
+        name="Corte Superior",
+        subtype='DISTANCE', unit='LENGTH', default=3.0, min=0.5, max=50.0,
+        description="Altura do corte superior: objetos ou partes acima desta altura não aparecem na planta")  # type: ignore
+    material_color_mode: bpy.props.EnumProperty(
+        name="Cor do Material",
+        items=MATERIAL_COLOR_MODE_ITEMS, default='SOLID',
+        description="Preenchimento 2D dos objetos: cor sólida ou textura real")  # type: ignore
 
 
 classes = (BTM_PG_WallEditorState,)

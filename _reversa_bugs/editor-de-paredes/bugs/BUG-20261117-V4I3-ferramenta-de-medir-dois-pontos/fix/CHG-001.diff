@@ -1,0 +1,80 @@
+# CHG-001 · reprodução e regressão em Python puro (ferramenta Medir) (arquivo novo)
+diff --git a/tests/test_walls2d_medir.py b/tests/test_walls2d_medir.py
+new file mode 100644
+--- /dev/null
++++ b/tests/test_walls2d_medir.py
+@@ -0,0 +1,74 @@
++"""Reprodução e regressão do BUG-20261117-V4I3: ferramenta de medir entre dois pontos.
++
++Run: py -3 tests/test_walls2d_medir.py
++
++Pedido do titular em 2026-11-17: tocar num ponto, tocar noutro e ver a distância entre eles dentro do editor de
++paredes. O estado da medição e o ímã dos vértices são Python puro: são provados aqui, fora do Blender.
++"""
++
++import unittest
++
++import _bootstrap  # noqa: F401
++from caffmob_draw.walls2d import medir
++
++
++class EstadoTest(unittest.TestCase):
++    def test_medicao_nasce_vazia(self):
++        estado = medir.novo()
++        self.assertFalse(medir.ativa(estado))
++        self.assertFalse(medir.fechada(estado))
++        self.assertIsNone(medir.distancia(estado))
++
++    def test_primeiro_clique_so_guarda_o_inicio(self):
++        estado = medir.clicar(medir.novo(), (1.0, 2.0))
++        self.assertTrue(medir.ativa(estado))
++        self.assertFalse(medir.fechada(estado))
++        self.assertEqual(estado['inicio'], (1.0, 2.0))
++        self.assertIsNone(medir.distancia(estado))
++
++    def test_segundo_clique_mostra_a_distancia(self):
++        estado = medir.clicar(medir.clicar(medir.novo(), (0.0, 0.0)), (3.0, 4.0))
++        self.assertTrue(medir.fechada(estado))
++        self.assertAlmostEqual(medir.distancia(estado), 5.0, places=9)
++
++    def test_terceiro_clique_comeca_outra_medicao(self):
++        estado = medir.clicar(medir.clicar(medir.novo(), (0.0, 0.0)), (1.0, 0.0))
++        estado = medir.clicar(estado, (5.0, 5.0))
++        self.assertTrue(medir.ativa(estado))
++        self.assertFalse(medir.fechada(estado))
++        self.assertEqual(estado['inicio'], (5.0, 5.0))
++        self.assertIsNone(estado['fim'])
++
++    def test_limpar_devolve_nada(self):
++        estado = medir.clicar(medir.clicar(medir.novo(), (0.0, 0.0)), (1.0, 0.0))
++        self.assertIsNone(medir.limpar(estado))
++
++
++class SnapTest(unittest.TestCase):
++    @staticmethod
++    def para_pixel(ponto):
++        return (ponto[0] * 100.0, ponto[1] * 100.0)
++
++    def test_apoia_no_vertice_quando_o_cursor_chega_perto(self):
++        ponto, tipo = medir.snap((3.05, 0.02), [(0.0, 0.0), (3.0, 0.0)], self.para_pixel)
++        self.assertEqual(tipo, 'node')
++        self.assertEqual(ponto, (3.0, 0.0))
++
++    def test_longe_dos_vertices_fica_livre(self):
++        ponto, tipo = medir.snap((1.5, 1.5), [(0.0, 0.0), (3.0, 0.0)], self.para_pixel)
++        self.assertEqual(tipo, 'free')
++        self.assertEqual(ponto, (1.5, 1.5))
++
++    def test_escolhe_o_vertice_mais_proximo(self):
++        ponto, tipo = medir.snap((2.94, 0.0), [(0.0, 0.0), (3.0, 0.0)], self.para_pixel)
++        self.assertEqual(tipo, 'node')
++        self.assertEqual(ponto, (3.0, 0.0))
++
++    def test_sem_candidatos_devolve_o_cursor(self):
++        ponto, tipo = medir.snap((2.0, 2.0), [], self.para_pixel)
++        self.assertEqual(tipo, 'free')
++        self.assertEqual(ponto, (2.0, 2.0))
++
++
++if __name__ == '__main__':
++    unittest.main(verbosity=2)

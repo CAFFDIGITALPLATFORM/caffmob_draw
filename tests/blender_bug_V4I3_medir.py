@@ -1,0 +1,90 @@
+"""Reprodução e regressão do BUG-20261117-V4I3: ferramenta de medir entre dois pontos no editor.
+
+Run: blender --background --factory-startup --python-exit-code 1 --python tests/blender_bug_V4I3_medir.py
+
+1. Reprodução: a ferramenta Medir existe na lista de ferramentas e tem dica nos dois caminhos de desenho;
+2. Reprodução: dois cliques mostram a distância entre eles;
+3. Reprodução: o ponto se apoia no vértice quando o cursor chega perto (mesmo ímã das outras ferramentas);
+4. Reprodução: Esc limpa a medição;
+5. Regressão: medir não altera as paredes nem entra no desfazer do rascunho.
+"""
+
+import inspect
+import sys
+from pathlib import Path
+from types import SimpleNamespace
+
+import bpy
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import _blender_env as env  # noqa: E402,F401
+from caffmob_draw.walls2d import classico_v2, medir, model, ops_editor, props  # noqa: E402
+
+ctx = bpy.context
+
+
+class ViewFalsa:
+    """Vista linear: 1 m = 100 px, então o pixel é o mundo vezes 100."""
+    scale = 100.0
+
+    def to_world(self, pixel):
+        return (pixel[0] / 100.0, pixel[1] / 100.0)
+
+    def to_screen(self, ponto):
+        return (ponto[0] * 100.0, ponto[1] * 100.0)
+
+
+def evento(tipo, valor='PRESS'):
+    return SimpleNamespace(type=tipo, value=valor, shift=False)
+
+
+def clique(op, s, view, pixel, tipo='LEFTMOUSE', valor='PRESS'):
+    return _handle_measure(op, ctx, evento(tipo, valor), s, view, pixel)
+
+
+plan = model.WallPlan([model.Chain([(0.0, 0.0), (3.0, 0.0)], [model.Segment()])])
+s = props.start(plan, ctx.scene.name)
+view = ViewFalsa()
+class OpFalsa:
+    """O método não usa o operador: basta o alvo da chamada não ligada."""
+
+
+op = OpFalsa()
+_handle_measure = ops_editor.BTM_OT_WallEditorModal._handle_measure
+
+# 1. Reprodução: a ferramenta existe e tem dica nos dois caminhos de desenho.
+ferramentas = list(ctx.window_manager.btm_wall_editor.bl_rna.properties['tool'].enum_items.keys())
+assert 'MEASURE' in ferramentas, ferramentas
+assert 'MEASURE' in classico_v2.DICAS, list(classico_v2.DICAS)
+assert 'MEASURE' in inspect.getsource(ops_editor.draw_plan), "o desenho do rascunho não tem dica de Medir"
+assert hasattr(medir, 'snap') and hasattr(medir, 'distancia')
+
+# 2. Reprodução: dois cliques mostram a distância entre eles.
+assert clique(op, s, view, (40, 0)) is True
+assert not medir.fechada(s.medir), s.medir
+assert clique(op, s, view, (340, 0)) is True
+assert medir.fechada(s.medir), s.medir
+assert abs(medir.distancia(s.medir) - 3.0) < 1e-9, medir.distancia(s.medir)
+
+# 3. Reprodução: o ponto se apoia no vértice quando o cursor chega perto (ímã dos vértices).
+s.medir = medir.novo()
+assert clique(op, s, view, (5, 3)) is True
+assert s.medir['inicio'] == (0.0, 0.0), s.medir
+
+# 4. Reprodução: Esc limpa a medição.
+assert clique(op, s, view, (0, 0), 'ESC') is True
+assert s.medir is None
+assert clique(op, s, view, (0, 0), 'ESC') is False       # sem medição, o Esc segue o caminho normal
+
+# 5. Regressão: medir não altera as paredes nem entra no desfazer do rascunho.
+nos_antes = [list(chain.nodes) for chain in s.plan.chains]
+assinatura = model.plan_signature(s.plan)
+clique(op, s, view, (10, 10))
+clique(op, s, view, (200, 120))
+assert [list(chain.nodes) for chain in s.plan.chains] == nos_antes
+assert model.plan_signature(s.plan) == assinatura
+assert s.dirty() is False
+assert s.undo() is False, "a medição não pode virar passo de desfazer"
+
+props.end()
+print("blender_bug_V4I3_medir: OK")

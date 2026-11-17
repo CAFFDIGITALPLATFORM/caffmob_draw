@@ -1,0 +1,23 @@
+# CHG-007 · textos de Medir no catálogo (a segunda entrada é o bloco da planta baixa, CHG-008)
+diff --git a/caffmob_draw/data/translations/walls2d.json b/caffmob_draw/data/translations/walls2d.json
+--- a/caffmob_draw/data/translations/walls2d.json
++++ b/caffmob_draw/data/translations/walls2d.json
+@@ -266,6 +266,18 @@
+  "Inverter sentido": {
+   "pt_BR": "Inverter sentido",
+   "en_US": "Reverse direction"
++ },
++ "Medir": {
++  "pt_BR": "Medir",
++  "en_US": "Measure"
++ },
++ "Clique dois pontos para ver a distância entre eles": {
++  "pt_BR": "Clique dois pontos para ver a distância entre eles",
++  "en_US": "Click two points to see the distance between them"
++ },
++ "Clique o primeiro ponto e o segundo para medir a distância; Esc limpa a medição.": {
++  "pt_BR": "Clique o primeiro ponto e o segundo para medir a distância; Esc limpa a medição.",
++  "en_US": "Click the first point and then the second to measure the distance; Esc clears the measurement."
+  },
+  "Sólida": {
+   "pt_BR": "Sólida",

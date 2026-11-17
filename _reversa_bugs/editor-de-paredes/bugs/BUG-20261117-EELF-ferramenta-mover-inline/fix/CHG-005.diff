@@ -1,0 +1,26 @@
+diff --git a/caffmob_draw/walls2d/classico_v2.py b/caffmob_draw/walls2d/classico_v2.py
+index 757e8920..cb42d234 100644
+--- a/caffmob_draw/walls2d/classico_v2.py
++++ b/caffmob_draw/walls2d/classico_v2.py
+@@ -34,6 +34,7 @@ DICAS = {
+     'DRAW': N_("Clique o ponto inicial, digite o comprimento e Enter (setas mudam a direção). Clique no início para "
+                "fechar. Esc termina."),
+     'INVERT': N_("Clique numa parede para inverter o lado da espessura."),
++    'MOVE': N_("Mover parede ainda não está disponível nesta cena; use Selecionar/Mover e arraste os vértices."),
+     'ADD_NODE': N_("Clique num trecho para dividi-lo no ponto clicado."),
+     'REMOVE_NODE': N_("Clique num vértice para unir os trechos."),
+ }
+@@ -326,6 +327,13 @@ def tratar(op, context, event, s, view, pixel):
+             return True
+         v.texto = repr(round(medida, 6))          # o despacho do Studio lê mm
+     espaco = getattr(op, 'studio_espaco', False)
++    if state.tool == 'MOVE':
++        # Ferramenta Mover (BUG-20261117-EELF): a cena v2 tem o próprio documento, então a translação entra numa
++        # rodada própria. Aqui a ferramenta recusa com mensagem, em vez de ignorar o clique em silêncio.
++        if press:
++            s.error = N_("Mover parede ainda não está disponível nesta cena; use Selecionar/Mover e arraste os "
++                         "vértices.")
++        return True
+     if event.type == 'LEFTMOUSE' and press and not v.desenhando and not espaco:
+         escala = view.scale / 1000
+         if state.tool == 'DRAW' or (state.tool == 'SELECT' and not v.paredes()):

@@ -137,3 +137,47 @@ def convert_into(plan, objects, scene):
 def _vec(point):
     from mathutils import Vector  # type: ignore
     return Vector((float(point[0]), float(point[1]), 0.0))
+
+
+def plant_objects(scene, cut_height):
+    """Objetos da cena para a vista de planta baixa, abaixo da altura de corte.
+
+    Devolve lista de dicts com: nome, tipo, pontos 2D (contorno no piso), cor do material
+    (RGBA ou None), e se está acima do corte. Exclui paredes IS_WALL_BP, luzes e câmeras.
+    """
+    from ..data import units
+    objects = []
+    for obj in scene.objects:
+        if obj.type not in ('MESH', 'CURVE', 'FONT'):
+            continue
+        if obj.get('IS_WALL_BP'):
+            continue
+        # Objeto acima do corte: a base fica acima da altura de corte
+        base_z = min((obj.matrix_world @ v.co).z for v in obj.data.vertices) if obj.data.vertices else 0.0
+        if base_z >= cut_height:
+            continue
+        # Contorno 2D no piso (arestas na cota mais baixa)
+        floor = min((obj.matrix_world @ v.co).z for v in obj.data.vertices)
+        pts = []
+        for edge in obj.data.edges:
+            a, b = (obj.matrix_world @ v.co for v in (obj.data.vertices[edge.vertices[0]],
+                                                      obj.data.vertices[edge.vertices[1]]))
+            if abs(a.z - floor) < 1e-4 and abs(b.z - floor) < 1e-4:
+                pts.append((a.x, a.y))
+                pts.append((b.x, b.y))
+        # Cor do material
+        color = None
+        mat = obj.active_material
+        if mat is not None and mat.node_tree:
+            # Tenta encontrar o nó Principled BSDF e a cor base
+            for node in mat.node_tree.nodes:
+                if node.type == 'BSDF_PRINCIPLED':
+                    base_color = node.inputs.get('Base Color')
+                    if base_color is not None:
+                        color = tuple(base_color.default_value)
+                    break
+        if color is None:
+            color = (0.7, 0.7, 0.75, 1.0)  # cinza padrão
+        objects.append({'name': obj.name, 'type': obj.type, 'points': pts,
+                        'color': color, 'floor_z': floor})
+    return objects

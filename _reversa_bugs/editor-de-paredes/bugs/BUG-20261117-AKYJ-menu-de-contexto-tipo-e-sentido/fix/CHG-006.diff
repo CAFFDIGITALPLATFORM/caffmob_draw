@@ -1,0 +1,43 @@
+# CHG-006 · catalogo de traducao pt_BR + en_US
+diff --git a/caffmob_draw/data/translations/walls2d.json b/caffmob_draw/data/translations/walls2d.json
+index 5183f6a7..ef254e91 100644
+--- a/caffmob_draw/data/translations/walls2d.json
++++ b/caffmob_draw/data/translations/walls2d.json
+@@ -234,5 +234,37 @@
+  "Zoom janela: marque um retângulo para enquadrar": {
+   "pt_BR": "Zoom janela: marque um retângulo para enquadrar",
+   "en_US": "Zoom window: drag a rectangle to frame it"
++ },
++ "Valor Inválido: cadeia {}. Só existem {} no rascunho.": {
++  "pt_BR": "Valor Inválido: cadeia {}. Só existem {} no rascunho.",
++  "en_US": "Invalid value: chain {}. There are only {} in the draft."
++ },
++ "Valor Inválido: trecho {}. Esta parede tem {} trechos.": {
++  "pt_BR": "Valor Inválido: trecho {}. Esta parede tem {} trechos.",
++  "en_US": "Invalid value: segment {}. This wall has {} segments."
++ },
++ "Selecione as paredes e arraste para mover; setas trocam a direção, digite a medida e Enter. Esc cancela.": {
++  "pt_BR": "Selecione as paredes e arraste para mover; setas trocam a direção, digite a medida e Enter. Esc cancela.",
++  "en_US": "Select the walls and drag to move; arrows change the direction, type the distance and Enter. Esc cancels."
++ },
++ "Mover: {}  {:.0f}°  (Esc cancela)": {
++  "pt_BR": "Mover: {}  {:.0f}°  (Esc cancela)",
++  "en_US": "Move: {}  {:.0f}°  (Esc cancels)"
++ },
++ "Selecione uma ou mais paredes para mover.": {
++  "pt_BR": "Selecione uma ou mais paredes para mover.",
++  "en_US": "Select one or more walls to move."
++ },
++ "Deslocar as paredes ativas em qualquer direção (BUG-20261117-EELF)": {
++  "pt_BR": "Deslocar as paredes ativas em qualquer direção (BUG-20261117-EELF)",
++  "en_US": "Shift the active walls in any direction (BUG-20261117-EELF)"
++ },
++ "Múltiplas": {
++  "pt_BR": "Múltiplas",
++  "en_US": "Multiple"
++ },
++ "Inverter sentido": {
++  "pt_BR": "Inverter sentido",
++  "en_US": "Reverse direction"
+  }
+ }

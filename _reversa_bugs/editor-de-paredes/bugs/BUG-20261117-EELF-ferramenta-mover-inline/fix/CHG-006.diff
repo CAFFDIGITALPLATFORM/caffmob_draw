@@ -1,0 +1,50 @@
+diff --git a/caffmob_draw/data/translations/walls2d.json b/caffmob_draw/data/translations/walls2d.json
+index 5183f6a7..70643607 100644
+--- a/caffmob_draw/data/translations/walls2d.json
++++ b/caffmob_draw/data/translations/walls2d.json
+@@ -234,5 +234,29 @@
+  "Zoom janela: marque um retângulo para enquadrar": {
+   "pt_BR": "Zoom janela: marque um retângulo para enquadrar",
+   "en_US": "Zoom window: drag a rectangle to frame it"
++ },
++ "Valor Inválido: cadeia {}. Só existem {} no rascunho.": {
++  "pt_BR": "Valor Inválido: cadeia {}. Só existem {} no rascunho.",
++  "en_US": "Invalid value: chain {}. There are only {} in the draft."
++ },
++ "Valor Inválido: trecho {}. Esta parede tem {} trechos.": {
++  "pt_BR": "Valor Inválido: trecho {}. Esta parede tem {} trechos.",
++  "en_US": "Invalid value: segment {}. This wall has {} segments."
++ },
++ "Selecione as paredes e arraste para mover; setas trocam a direção, digite a medida e Enter. Esc cancela.": {
++  "pt_BR": "Selecione as paredes e arraste para mover; setas trocam a direção, digite a medida e Enter. Esc cancela.",
++  "en_US": "Select the walls and drag to move; arrows change the direction, type the distance and Enter. Esc cancels."
++ },
++ "Mover: {}  {:.0f}°  (Esc cancela)": {
++  "pt_BR": "Mover: {}  {:.0f}°  (Esc cancela)",
++  "en_US": "Move: {}  {:.0f}°  (Esc cancels)"
++ },
++ "Selecione uma ou mais paredes para mover.": {
++  "pt_BR": "Selecione uma ou mais paredes para mover.",
++  "en_US": "Select one or more walls to move."
++ },
++ "Deslocar as paredes ativas em qualquer direção (BUG-20261117-EELF)": {
++  "pt_BR": "Deslocar as paredes ativas em qualquer direção (BUG-20261117-EELF)",
++  "en_US": "Shift the active walls in any direction (BUG-20261117-EELF)"
+  }
+ }
+diff --git a/caffmob_draw/data/translations/walls2d_classico_v2.json b/caffmob_draw/data/translations/walls2d_classico_v2.json
+index 7bef2efc..ff77d564 100644
+--- a/caffmob_draw/data/translations/walls2d_classico_v2.json
++++ b/caffmob_draw/data/translations/walls2d_classico_v2.json
+@@ -102,5 +102,9 @@
+  "Portas e Janelas": {
+   "pt_BR": "Portas e Janelas",
+   "en_US": "Doors and Windows"
++ },
++ "Mover parede ainda não está disponível nesta cena; use Selecionar/Mover e arraste os vértices.": {
++  "pt_BR": "Mover parede ainda não está disponível nesta cena; use Selecionar/Mover e arraste os vértices.",
++  "en_US": "Moving walls is not available in this scene yet; use Select/Move and drag the vertices."
+  }
+-}
+\ No newline at end of file
++}

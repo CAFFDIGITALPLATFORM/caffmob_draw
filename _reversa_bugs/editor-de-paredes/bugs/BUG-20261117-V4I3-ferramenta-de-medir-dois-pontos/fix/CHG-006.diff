@@ -1,0 +1,59 @@
+# CHG-006 · ferramenta Medir na cena v2 (captura, desenho e dica)
+diff --git a/caffmob_draw/walls2d/classico_v2.py b/caffmob_draw/walls2d/classico_v2.py
+--- a/caffmob_draw/walls2d/classico_v2.py
++++ b/caffmob_draw/walls2d/classico_v2.py
+@@ -35,6 +35,7 @@
+                "fechar. Esc termina."),
+     'INVERT': N_("Clique numa parede para inverter o lado da espessura."),
+     'MOVE': N_("Mover parede ainda não está disponível nesta cena; use Selecionar/Mover e arraste os vértices."),
++    'MEASURE': N_("Clique o primeiro ponto e o segundo para medir a distância; Esc limpa a medição."),
+     'ADD_NODE': N_("Clique num trecho para dividi-lo no ponto clicado."),
+     'REMOVE_NODE': N_("Clique num vértice para unir os trechos."),
+ }
+@@ -235,6 +236,8 @@
+     draw.text(12, 12, DICAS[state.tool], draw.COLORS['muted'])
+     if s.error:
+         draw.text(12, 32, s.error, draw.COLORS['warning'])
++    if s.medir is not None:
++        ed._draw_measure(sh, view, s.medir, s.cursor)      # ferramenta Medir (BUG-20261117-V4I3)
+     ed._draw_toolbar(sh, view, s)
+     if s.prompt in ed.PROMPTS:
+         ed._draw_prompt(sh, region, ed.PROMPTS[s.prompt])
+@@ -312,28 +315,6 @@
+     elif tool == 'REMOVE_NODE' and hit['tipo'] == 'ponto':
+         v.selecionar(hit)
+         v.excluir()
+-
+-
+-def _medir(op, context, event, s, view, pixel):
+-    """Ferramenta Medir na cena v2 (BUG-20261117-V4I3): dois cliques, ímã dos vértices e Esc limpa.
+-
+-    O documento não é tocado: medir é leitura, então nada entra no desfazer da prancheta.
+-    """
+-    ed = _ed()
+-    v = s.v2
+-    press = event.value == 'PRESS'
+-    if event.type in {'ESC', 'RIGHTMOUSE'} and press:
+-        if s.medir is None:
+-            return False
+-        s.medir, s.error = ed.medir.limpar(s.medir), ''
+-        return True
+-    if event.type == 'LEFTMOUSE' and press and s.cursor is not None:
+-        alvo = tuple(c * 1000 for c in s.cursor)                      # o documento v2 usa milímetros
+-        candidatos = [q for p in v.paredes() for q in pontos(p)]
+-        ponto, _tipo = ed.medir.snap(alvo, candidatos, lambda q: tela(view, q))
+-        s.medir = ed.medir.clicar(s.medir, (ponto[0] / 1000, ponto[1] / 1000))
+-        return True
+-    return event.type in {'MOUSEMOVE', 'INBETWEEN_MOUSEMOVE'}
+ 
+ 
+ def _medir(op, context, event, s, view, pixel):
+@@ -473,6 +454,8 @@
+             s.error = N_("Mover parede ainda não está disponível nesta cena; use Selecionar/Mover e arraste os "
+                          "vértices.")
+         return True
++    if state.tool == 'MEASURE':
++        return _medir(op, context, event, s, view, pixel)      # BUG-20261117-V4I3
+     if event.type == 'LEFTMOUSE' and press and not v.desenhando and not espaco:
+         escala = view.scale / 1000
+         if state.tool == 'DRAW' or (state.tool == 'SELECT' and not v.paredes()):

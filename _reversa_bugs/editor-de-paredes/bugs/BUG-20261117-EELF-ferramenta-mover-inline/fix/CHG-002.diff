@@ -1,0 +1,41 @@
+diff --git a/caffmob_draw/walls2d/panels.py b/caffmob_draw/walls2d/panels.py
+index 91bffde8..0986b9f3 100644
+--- a/caffmob_draw/walls2d/panels.py
++++ b/caffmob_draw/walls2d/panels.py
+@@ -1,7 +1,7 @@
+ """Painéis da região lateral do Editor de Paredes (T030; RF-05, RF-08 a RF-10, D-07).
+ 
+ Só aparecem na área do Image Editor marcada como editor (`window.is_editor_area`):
+-- Ferramentas: Selecionar/Mover, Construir Parede, Inverter Sentido, Adicionar/Remover Vértice, Enquadrar;
++- Ferramentas: Selecionar/Mover, Construir Parede, Inverter Sentido, Mover, Adicionar/Remover Vértice, Enquadrar;
+ - Painel: campos do trecho selecionado (comprimento na linha escolhida, ângulos, espessura, pés-direitos, orientação,
+   tipo); ângulo do arco desabilitado, porque as paredes do Home Builder 5 são retas;
+ - Grid: tamanho e linhas magnéticas; padrões do lápis;
+diff --git a/caffmob_draw/walls2d/props.py b/caffmob_draw/walls2d/props.py
+index edf5c960..aa84c0c1 100644
+--- a/caffmob_draw/walls2d/props.py
++++ b/caffmob_draw/walls2d/props.py
+@@ -61,6 +61,11 @@ class Session:
+         # (`history._sign` assina só o rascunho) e sem mexer na ferramenta do painel.
+         self.zoom_window = None           # None = desligado; 'ARMED' = lupa apertada; (x, y) px = início do retângulo
+         self.zoom_box_end = None          # canto atual do retângulo elástico, em pixels
++        # Ferramenta Mover (BUG-20261117-EELF): origem do arraste, cópia dos nós e a prévia do deslocamento.
++        self.move_origin = None           # pixel onde o arraste começou
++        self.move_start = None            # {(cadeia, nó): (x, y)} na hora em que o movimento começou
++        self.move_selection = []          # [(cadeia, trecho)] movidos: os índices não mudam durante o movimento
++        self.move_delta = (0.0, 0.0)      # deslocamento em metros, para o desenho e para a digitação
+ 
+     def reset_direction(self):
+         self.direction, self.direction_locked = None, False
+@@ -324,8 +329,9 @@ class BTM_PG_WallEditorState(bpy.types.PropertyGroup):
+         items=[('SELECT', "Selecionar/Mover", "Selecionar trechos e arrastar vértices", 'RESTRICT_SELECT_OFF', 0),
+                ('DRAW', "Construir Parede", "Desenhar paredes a lápis", 'GREASEPENCIL', 1),
+                ('INVERT', "Inverter Sentido", "Inverter o sentido da parede clicada", 'ARROW_LEFTRIGHT', 2),
+-               ('ADD_NODE', "Adicionar Vértice", "Dividir o trecho no ponto clicado", 'ADD', 3),
+-               ('REMOVE_NODE', "Remover Vértice", "Unir os trechos do vértice clicado", 'REMOVE', 4)],
++               ('MOVE', "Mover", "Deslocar as paredes ativas em qualquer direção (BUG-20261117-EELF)", 'VIEW_PAN', 3),
++               ('ADD_NODE', "Adicionar Vértice", "Dividir o trecho no ponto clicado", 'ADD', 4),
++               ('REMOVE_NODE', "Remover Vértice", "Unir os trechos do vértice clicado", 'REMOVE', 5)],
+         default='SELECT')  # type: ignore
+     grid_size: bpy.props.FloatProperty(name="Tamanho", subtype='DISTANCE', unit='LENGTH', default=1.0, min=0.01,
+                                        max=5.0, update=lambda s, c: session() and session().redraw())  # type: ignore

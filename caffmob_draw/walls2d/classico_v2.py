@@ -23,7 +23,7 @@ from ..canvas2d import draw
 from ..canvas2d.view import snap_to_grid
 from ..data import units
 from ..data.i18n import N_, tr
-from . import props
+from . import cores, props
 from . import studio_painel as sp
 from .studio import arredondar, cota, pontos
 from .studio_aberturas import simbolo
@@ -34,6 +34,8 @@ DICAS = {
     'DRAW': N_("Clique o ponto inicial, digite o comprimento e Enter (setas mudam a direção). Clique no início para "
                "fechar. Esc termina."),
     'INVERT': N_("Clique numa parede para inverter o lado da espessura."),
+    'MOVE': N_("Mover parede ainda não está disponível nesta cena; use Selecionar/Mover e arraste os vértices."),
+    'MEASURE': N_("Clique o primeiro ponto e o segundo para medir a distância; Esc limpa a medição."),
     'ADD_NODE': N_("Clique num trecho para dividi-lo no ponto clicado."),
     'REMOVE_NODE': N_("Clique num vértice para unir os trechos."),
 }
@@ -150,7 +152,7 @@ def desenhar(context, s, view):
             t = p['segmentos'][i]
             oculto = t['estado'] == 'oculto'
             marcada = t['id'] in selecionadas
-            tinta = C['selected'] if marcada else (C['reference'] if oculto else C['wall'])
+            tinta = C['selected'] if marcada else (C['reference'] if oculto else cores.cor(t['tipo']))
             # A linha desenhada é a face interna, tracejada (medida real); a espessura cresce para fora, com a face
             # externa e as pontas contínuas, como no clássico. Trecho oculto: tudo tracejado.
             pares = _polilinha(view, g['linha'], True) + _polilinha(view, g['face'], oculto)
@@ -177,6 +179,21 @@ def desenhar(context, s, view):
         for k, q in enumerate(pontos(p)):
             x, y = tela(view, q)
             draw.rect(sh, (x - 4, y - 4, 8, 8), C['selected'] if v.ponto == (p['id'], k) else C['node'])
+
+    # Planta baixa com objetos (BUG-20261117-JXDJ) -------------------------------
+    if state.plant_low:
+        from . import scene_io
+        objs = scene_io.plant_objects(context.scene, state.cut_height)
+        for o in objs:
+            if not o['points']:
+                continue
+            pts = [view.to_screen(p) for p in o['points']]
+            if len(pts) < 2:
+                continue
+            color = o['color'] if state.material_color_mode == 'SOLID' else C['wall']
+            if pts[0] != pts[-1]:
+                pts = pts + [pts[0]]
+            draw.polygon(sh, pts, color)
 
     r = v.retangulo
     if r and r['moveu'] and not r['toque']:
@@ -219,11 +236,15 @@ def desenhar(context, s, view):
     draw.text(12, 12, DICAS[state.tool], draw.COLORS['muted'])
     if s.error:
         draw.text(12, 32, s.error, draw.COLORS['warning'])
+    if s.medir is not None:
+        ed._draw_measure(sh, view, s.medir, s.cursor)      # ferramenta Medir (BUG-20261117-V4I3)
     ed._draw_toolbar(sh, view, s)
     if s.prompt in ed.PROMPTS:
         ed._draw_prompt(sh, region, ed.PROMPTS[s.prompt])
     elif v.confirmacao:
         _pergunta(sh, region, _texto_da_pergunta(v))
+    if s.menu is not None:
+        ed._draw_menu(sh, s.menu)              # caixa de contexto por cima de tudo (BUG-20261117-AKYJ)
     draw.end()
 
 
@@ -296,6 +317,106 @@ def _ferramenta(v, tool, hit):
         v.excluir()
 
 
+def _medir(op, context, event, s, view, pixel):
+    """Ferramenta Medir na cena v2 (BUG-20261117-V4I3): dois cliques, ímã dos vértices e Esc limpa.
+
+    O documento não é tocado: medir é leitura, então nada entra no desfazer da prancheta.
+    """
+    ed = _ed()
+    v = s.v2
+    press = event.value == 'PRESS'
+    if event.type in {'ESC', 'RIGHTMOUSE'} and press:
+        if s.medir is None:
+            return False
+        s.medir, s.error = ed.medir.limpar(s.medir), ''
+        return True
+    if event.type == 'LEFTMOUSE' and press and s.cursor is not None:
+        alvo = tuple(c * 1000 for c in s.cursor)                      # o documento v2 usa milímetros
+        candidatos = [q for p in v.paredes() for q in pontos(p)]
+        ponto, _tipo = ed.medir.snap(alvo, candidatos, lambda q: tela(view, q))
+        s.medir = ed.medir.clicar(s.medir, (ponto[0] / 1000, ponto[1] / 1000))
+        return True
+    return event.type in {'MOUSEMOVE', 'INBETWEEN_MOUSEMOVE'}
+
+
+def _trechos_ativos(v):
+    ids = set(v.selecionadas)
+    return [t for p in v.paredes() for t in p['segmentos'] if t['id'] in ids]
+
+
+def _comum(valores):
+    valores = set(valores)
+    return next(iter(valores)) if len(valores) == 1 else None
+
+
+def abrir_menu(s, view, pixel):
+    """Caixa de contexto na cena v2: abre sobre a parede; no vazio, o botão direito segue para a navegação."""
+    v = s.v2
+    alvo = tuple(c * 1000 for c in (s.cursor or (0.0, 0.0)))
+    hit = v.hit(alvo, view.scale / 1000)
+    if not hit or hit['tipo'] not in {'trecho', 'cota', 'ponto', 'abertura'}:
+        return False
+    if hit['tipo'] in {'trecho', 'cota'}:
+        v.selecionar_ids([hit.get('segmento', hit.get('id'))])
+    elif hit['tipo'] == 'ponto':
+        parede = next(p for p in v.paredes() if p['id'] == hit['parede'])
+        v.selecionar_ids([parede['segmentos'][0]['id']])
+    s.menu = dict(pixel=pixel, regiao=tuple(view.rect))
+    _menu_refresh(s)
+    return True
+
+
+def _menu_refresh(s):
+    from . import menu_contexto as mc
+    v = s.v2
+    if s.menu is None or v is None:
+        return
+    ativos = _trechos_ativos(v)
+    caixa = mc.layout(s.menu['pixel'],
+                      mc.itens('OUTER' if v.lado == 'externa' else 'INNER',
+                               _comum(t['sentido'] for t in ativos), _comum(t['tipo'] for t in ativos)),
+                      s.menu['regiao'])
+    caixa['pixel'], caixa['regiao'] = s.menu['pixel'], s.menu['regiao']
+    s.menu = caixa
+
+
+def menu_acao(s, chave):
+    """Ação da caixa no documento v2, num passo de desfazer: Linha, Direção, inverter o sentido e tipo."""
+    from . import menu_contexto as mc
+    v = s.v2
+    ativos = _trechos_ativos(v)
+    if not ativos:
+        return False
+    if chave == mc.LINHA:
+        v.lado = 'interna' if v.lado == 'externa' else 'externa'
+        _menu_refresh(s)
+        return True
+    if chave == mc.INVERTER:
+        campos = {t['id']: dict(sentido='RIGHT' if t['sentido'] == 'LEFT' else 'LEFT') for t in ativos}
+    elif chave == mc.DIRECAO:
+        lado = 'LEFT' if _comum(t['sentido'] for t in ativos) == 'RIGHT' else 'RIGHT'
+        campos = {t['id']: dict(sentido=lado) for t in ativos}
+    else:
+        tipo = mc.tipo_da_chave(chave)
+        if not tipo:
+            return False
+        campos = {t['id']: dict(tipo=tipo) for t in ativos}
+    documento = v.documento
+    for id, edicao in campos.items():
+        r = pe.editar_trecho(documento, id, dict(ancora=v.ancora, lado_medida=v.lado, **edicao))
+        if not r['ok']:
+            v.tentar(r)
+            erro(s)
+            return False
+        documento = r['valor']
+    v.tentar(dict(ok=True, valor=documento))
+    v.checkpoint()
+    erro(s)
+    _menu_refresh(s)
+    s.redraw()
+    return True
+
+
 def tratar(op, context, event, s, view, pixel):
     """Ferramentas do clássico antes do despacho do Studio (seleção, arraste, lápis em andamento e digitação)."""
     from . import studio_ui
@@ -326,6 +447,15 @@ def tratar(op, context, event, s, view, pixel):
             return True
         v.texto = repr(round(medida, 6))          # o despacho do Studio lê mm
     espaco = getattr(op, 'studio_espaco', False)
+    if state.tool == 'MOVE':
+        # Ferramenta Mover (BUG-20261117-EELF): a cena v2 tem o próprio documento, então a translação entra numa
+        # rodada própria. Aqui a ferramenta recusa com mensagem, em vez de ignorar o clique em silêncio.
+        if press:
+            s.error = N_("Mover parede ainda não está disponível nesta cena; use Selecionar/Mover e arraste os "
+                         "vértices.")
+        return True
+    if state.tool == 'MEASURE':
+        return _medir(op, context, event, s, view, pixel)      # BUG-20261117-V4I3
     if event.type == 'LEFTMOUSE' and press and not v.desenhando and not espaco:
         escala = view.scale / 1000
         if state.tool == 'DRAW' or (state.tool == 'SELECT' and not v.paredes()):

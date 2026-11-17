@@ -1,7 +1,7 @@
 """Painéis da região lateral do Editor de Paredes (T030; RF-05, RF-08 a RF-10, D-07).
 
 Só aparecem na área do Image Editor marcada como editor (`window.is_editor_area`):
-- Ferramentas: Selecionar/Mover, Construir Parede, Inverter Sentido, Adicionar/Remover Vértice, Enquadrar;
+- Ferramentas: Selecionar/Mover, Construir Parede, Inverter Sentido, Mover, Adicionar/Remover Vértice, Enquadrar;
 - Painel: campos do trecho selecionado (comprimento na linha escolhida, ângulos, espessura, pés-direitos, orientação,
   tipo); ângulo do arco desabilitado, porque as paredes do Home Builder 5 são retas;
 - Grid: tamanho e linhas magnéticas; padrões do lápis;

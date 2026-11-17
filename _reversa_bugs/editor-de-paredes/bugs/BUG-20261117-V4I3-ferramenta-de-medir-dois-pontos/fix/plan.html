@@ -1,0 +1,79 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Plano de correção · #150 V4I3</title><style>
+body{background:#0d1117;color:#e6edf3;font:14px system-ui,sans-serif;margin:0;padding:24px;line-height:1.5}
+h1{font-size:22px;margin:0 0 4px}h2{font-size:16px;margin:26px 0 8px;color:#58a6ff}
+.meta{color:#8b949e;font-size:12px;margin:0 0 18px}
+.card{background:#161b22;border:1px solid #30363d;border-radius:10px;padding:14px 16px;margin:10px 0}
+table{border-collapse:collapse;width:100%;margin:8px 0}td,th{border-bottom:1px solid #30363d;padding:7px;text-align:left;font-size:13px}
+th{color:#8b949e;font-weight:600}a{color:#58a6ff}code{background:#1f242c;padding:1px 5px;border-radius:4px}
+.tag{display:inline-block;border:1px solid #30363d;border-radius:999px;padding:2px 9px;font-size:12px;color:#c9d1d9}
+svg{max-width:100%;height:auto}
+</style></head><body>
+<h1>Plano de correção · #150 BUG-20261117-V4I3</h1>
+<p class="meta">Contexto editor-de-paredes · 2026-11-17 · severidade medium · prioridade P2 · estratégia: correção direta (risco baixo)</p>
+
+<h2>Defeito e causa raiz</h2>
+<div class="card">
+<p><b>Defeito:</b> dentro do Editor de Paredes não existe como medir a distância entre dois pontos quaisquer. A planta mostra
+só o comprimento do trecho selecionado e as cotas de módulo da vista 3D; nenhuma das duas serve para conferir uma
+distância livre na planta.</p>
+<p><b>Causa raiz</b> (estado <code>confirmed</code>): a lista de ferramentas (<code>props.BTM_PG_WallEditorState.tool</code>) não tem
+Medir, e nem o modal do rascunho (<code>ops_editor.BTM_OT_WallEditorModal</code>) nem o caminho da cena v2
+(<code>classico_v2.tratar</code>) tratam um clique de medição: não havia onde guardar o primeiro ponto nem desenho da medida.</p>
+</div>
+
+<h2>Estratégia escolhida</h2>
+<div class="card"><span class="tag">correção direta</span>
+<p>Três peças: um módulo puro (<code>walls2d/medir.py</code>) com o estado e o ímã; a ferramenta no enum e na sessão; a captura e o
+desenho nos dois caminhos de tela (rascunho clássico e cena v2). A medida não toca no documento, então não entra no
+desfazer.</p></div>
+
+<h2>Correction Change Set</h2>
+<table><tr><th>CHG</th><th>tipo</th><th>artefato</th><th>propósito</th></tr>
+<tr><td>CHG-001</td><td>test</td><td><code>tests/test_walls2d_medir.py</code></td><td>estado e ímã da medição, em Python puro</td></tr>
+<tr><td>CHG-002</td><td>test</td><td><code>tests/blender_bug_V4I3_medir.py</code></td><td>modal real: ferramenta, dois cliques, ímã, Esc e regressão</td></tr>
+<tr><td>CHG-003</td><td>code</td><td><code>caffmob_draw/walls2d/medir.py</code></td><td>estado, distância e ímã dos vértices (novo)</td></tr>
+<tr><td>CHG-004</td><td>code</td><td><code>caffmob_draw/walls2d/props.py</code></td><td>tool <code>MEASURE</code> e <code>Session.medir</code></td></tr>
+<tr><td>CHG-005</td><td>code</td><td><code>caffmob_draw/walls2d/ops_editor.py</code></td><td>captura, desenho da medida e dica no rascunho clássico</td></tr>
+<tr><td>CHG-006</td><td>code</td><td><code>caffmob_draw/walls2d/classico_v2.py</code></td><td>captura, desenho e dica na cena v2</td></tr>
+<tr><td>CHG-007</td><td>configuration</td><td><code>caffmob_draw/data/translations/walls2d.json</code></td><td>textos de Medir em pt_BR e en_US</td></tr>
+<tr><td>CHG-008</td><td>configuration</td><td><code>caffmob_draw/data/translations/walls2d.json</code></td><td>rótulos da planta baixa (#148) que faltavam no catálogo</td></tr>
+<tr><td>CHG-009</td><td>specification</td><td><code>_reversa_sdd/addenda/bug-BUG-20261117-V4I3-v001.md</code></td><td>adendo aditivo (<code>spec-gap</code>)</td></tr></table>
+
+<h2>Testes planejados</h2>
+<div class="card">
+<p><b>Reprodução:</b> o módulo não existia (ImportError nos dois testes) e a ferramenta não existia no enum. Depois da correção,
+dois cliques mostram a medida, o ponto apoia no vértice a até 9 px e Esc limpa.</p>
+<p><b>Regressão:</b> medir não altera nós, assinatura do plano nem cria passo de desfazer; as demais ferramentas do editor
+continuam passando (<code>test_walls2d_*</code>, <code>blender_002_ui_events</code>, <code>blender_bug_AKYJ_menu</code>).</p>
+</div>
+
+<h2>Riscos</h2>
+<div class="card"><p><b>change_risk: baixa.</b> Só acrescenta uma ferramenta e um desenho; não muda contrato, dados nem geometria. O
+documento v2 e o rascunho ficam intocados por leitura. Fora do escopo: pressão longa no toque, medida com ângulo e
+exportar a medida para o painel.</p></div>
+
+<h2>Mini-grafo do bug</h2>
+<div class="card"><svg viewBox="0 0 640 200" width="640" height="200" role="img" aria-label="Relações do bug 150">
+<defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#8aa"/></marker></defs>
+<line x1="320" y1="100" x2="520" y2="100" stroke="#8aa" marker-end="url(#a)" opacity=".8"/>
+<text x="420" y="92" fill="#9bb" font-size="11" text-anchor="middle">related-to</text>
+<a href="../bugs/BUG-20261117-V4I3-ferramenta-de-medir-dois-pontos/bug.md"><rect x="90" y="50" width="230" height="100" rx="10" fill="#1c2128" stroke="#f5d90a" stroke-width="2"/>
+<text x="104" y="76" fill="#e6edf3" font-size="13" font-weight="600">#150 V4I3 · P2</text>
+<text x="104" y="98" fill="#c9d1d9" font-size="12">Ferramenta de medir dois pontos</text>
+<text x="104" y="118" fill="#8b949e" font-size="11">medium · paredes</text>
+<text x="104" y="136" fill="#e5484d" font-size="11">open · triaging</text></a>
+<a href="../bugs/BUG-20261117-EELF-ferramenta-mover-inline/bug.md"><rect x="520" y="50" width="110" height="100" rx="10" fill="#1c2128" stroke="#e5484d" stroke-width="2"/>
+<text x="532" y="76" fill="#e6edf3" font-size="13" font-weight="600">#146 EELF</text>
+<text x="532" y="98" fill="#c9d1d9" font-size="11">Ferramenta Mover</text>
+<text x="532" y="118" fill="#8b949e" font-size="11">high · paredes</text>
+<text x="532" y="136" fill="#30a46c" font-size="11">resolved</text></a>
+</svg>
+<p class="meta">#146 compartilha o mesmo despacho de ferramentas em <code>classico_v2.tratar</code>; por isso entra como regressão.</p></div>
+
+<h2>Matriz de relações</h2>
+<table><tr><th>origem</th><th>tipo</th><th>destino</th><th>estado</th></tr>
+<tr><td><a href="../bugs/BUG-20261117-V4I3-ferramenta-de-medir-dois-pontos/bug.md">#150 V4I3</a></td><td>related-to</td>
+<td><a href="../bugs/BUG-20261117-EELF-ferramenta-mover-inline/bug.md">#146 EELF</a></td><td>proposed</td></tr></table>
+</body></html>

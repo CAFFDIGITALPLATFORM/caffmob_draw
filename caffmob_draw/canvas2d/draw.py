@@ -64,6 +64,21 @@ def lines(sh, points, color):
         hb_gpu_draw.draw_lines(sh, points, color)
 
 
+def polygon(sh, pts, color):
+    """Polígono preenchido em pixels de tela, usando triangulação (mesmo padrão de classico_v2.py)."""
+    from mathutils import Vector
+    from mathutils.geometry import tessellate_polygon
+    from gpu_extras.batch import batch_for_shader
+    if len(pts) < 3:
+        return
+    tri = tessellate_polygon([[Vector((p[0], p[1], 0)) for p in pts]])
+    if not tri:
+        return
+    sh.bind()
+    sh.uniform_float('color', color)
+    batch_for_shader(sh, 'TRIS', {'pos': [tuple(pts[i][:2]) for t in tri for i in t]}).draw(sh)
+
+
 def dashed(p0, p1, dash=6.0, gap=4.0):
     """Pontos (pares) de uma linha tracejada entre p0 e p1, em pixels."""
     length = math.hypot(p1[0] - p0[0], p1[1] - p0[1])

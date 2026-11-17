@@ -1,0 +1,50 @@
+# CHG-008 · catálogo dos rótulos da planta baixa (#148), pendentes no working tree
+diff --git a/caffmob_draw/data/translations/walls2d.json b/caffmob_draw/data/translations/walls2d.json
+--- a/caffmob_draw/data/translations/walls2d.json
++++ b/caffmob_draw/data/translations/walls2d.json
+@@ -278,4 +278,45 @@
+  "Clique o primeiro ponto e o segundo para medir a distância; Esc limpa a medição.": {
+   "pt_BR": "Clique o primeiro ponto e o segundo para medir a distância; Esc limpa a medição.",
+   "en_US": "Click the first point and then the second to measure the distance; Esc clears the measurement."
++ },
++ "Sólida": {
++  "pt_BR": "Sólida",
++  "en_US": "Solid"
++ },
++ "Preenchimento por cor sólida do material": {
++  "pt_BR": "Preenchimento por cor sólida do material",
++  "en_US": "Fill with the material's solid color"
++ },
++ "Textura Real": {
++  "pt_BR": "Textura Real",
++  "en_US": "Real Texture"
++ },
++ "Preenchimento com textura real do material": {
++  "pt_BR": "Preenchimento com textura real do material",
++  "en_US": "Fill with the material's real texture"
++ },
++ "Planta Baixa com Objetos": {
++  "pt_BR": "Planta Baixa com Objetos",
++  "en_US": "Floor Plan with Objects"
++ },
++ "Mostra objetos da cena na vista de topo, com corte superior e cores por material": {
++  "pt_BR": "Mostra objetos da cena na vista de topo, com corte superior e cores por material",
++  "en_US": "Shows the scene objects in the top view, with a top cut and material colors"
++ },
++ "Corte Superior": {
++  "pt_BR": "Corte Superior",
++  "en_US": "Top Cut"
++ },
++ "Altura do corte superior: objetos ou partes acima desta altura não aparecem na planta": {
++  "pt_BR": "Altura do corte superior: objetos ou partes acima desta altura não aparecem na planta",
++  "en_US": "Top cut height: objects or parts above this height do not appear in the plan"
++ },
++ "Cor do Material": {
++  "pt_BR": "Cor do Material",
++  "en_US": "Material Color"
++ },
++ "Preenchimento 2D dos objetos: cor sólida ou textura real": {
++  "pt_BR": "Preenchimento 2D dos objetos: cor sólida ou textura real",
++  "en_US": "2D fill of the objects: solid color or real texture"
+  }
++}

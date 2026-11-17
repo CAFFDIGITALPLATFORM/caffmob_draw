@@ -1,0 +1,102 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Plano de correção · BUG-20261117-EELF</title><style>
+body{background:#0d1117;color:#e6edf3;font:14px/1.55 system-ui,sans-serif;margin:0;padding:24px;max-width:1080px}
+h1{font-size:22px;margin:0 0 4px}h2{font-size:16px;margin:28px 0 8px;border-bottom:1px solid #30363d;padding-bottom:6px}
+.meta{color:#8b949e;font-size:12px;margin-bottom:20px}
+table{border-collapse:collapse;width:100%;margin:8px 0}td,th{border:1px solid #30363d;padding:6px 8px;text-align:left;font-size:13px;vertical-align:top}
+th{background:#161b22}a{color:#58a6ff}code{background:#161b22;padding:1px 5px;border-radius:4px;font-size:12px}
+.box{background:#161b22;border:1px solid #30363d;border-radius:10px;padding:14px 16px;margin:10px 0}
+.warn{border-color:#f5d90a}.ok{border-color:#30a46c}.bad{border-color:#e5484d}
+ul{margin:6px 0 6px 18px;padding:0}li{margin:3px 0}.tag{font-size:11px;border:1px solid #30363d;border-radius:99px;padding:1px 8px;color:#8b949e}
+</style></head><body>
+<h1>Plano de correção · #146 BUG-20261117-EELF</h1>
+<p class="meta">Contexto <b>editor-de-paredes</b> · 2026-11-17 · severidade <b>high</b> · prioridade <b>P1</b> · status <b>active / planning</b> · commit base <code>88c63c7e</code></p>
+
+<h2>1. O defeito</h2>
+<div class="box">
+Não existe como mover parede no editor: só arrastar vértice. Para deslocar uma parede, o usuário muda comprimento de
+trechos vizinhos um a um, ou redesenha. O pedido é uma ferramenta <b>Mover</b> no topo do editor que desloque as
+paredes ativas em qualquer direção, com mouse ou setas mais medida digitada, mostrando a direção na tela.
+</div>
+
+<h2>2. Causa raiz <span class="tag">estado: supported</span></h2>
+<table><tr><th>elo do caminho causal</th><th>evidência</th></tr>
+<tr><td><code>props.py</code> registra 5 ferramentas: SELECT, DRAW, INVERT, ADD_NODE, REMOVE_NODE</td><td>enum do addon 5.2 instalado, lido por MCP</td></tr>
+<tr><td><code>ops_editor.py:_handle_click</code>, modo SELECT: só inicia <code>self.dragging = node</code> e preenche <code>s.multi</code></td><td>leitura do código</td></tr>
+<tr><td><code>ops_editor.py:_handle</code>, MOUSEMOVE com arraste: chama <code>chain.move_node(k, point)</code></td><td>leitura do código</td></tr>
+<tr><td><code>model.py</code>: <code>move_node</code> move um nó; não há translação de trecho nem de conjunto</td><td>leitura do código</td></tr>
+<tr><td>a seleção em lote (<code>s.multi</code>) existe e é desenhada, mas só serve para apagar e colorir</td><td><code>_handle</code>, DEL; <code>draw_plan</code></td></tr></table>
+<p class="meta">A capacidade nunca existiu, então não há regressão a bissectar. Evidência completa em <code>evidence/reproduction.md</code>.</p>
+
+<h2>3. Estratégia</h2>
+<div class="box ok"><b>Correção direta</b>, em camadas: modelo puro primeiro, depois o modal, depois as duas telas. Uma
+ferramenta nova é mais segura assim, porque cada camada passa a ter teste próprio e a geometria fica provada fora do
+Blender.</div>
+
+<h2>4. Correction Change Set proposto</h2>
+<table><tr><th>CHG</th><th>tipo</th><th>artefato</th><th>propósito</th></tr>
+<tr><td>CHG-001</td><td>code</td><td><code>caffmob_draw/walls2d/model.py</code></td><td><code>Chain.translate_segments(indices, delta)</code> puro, e <code>WallPlan.move_segments(sel, dx, dy)</code>: move os nós das paredes ativas, incluindo o nó compartilhado com parede não ativa (a vizinha estica)</td></tr>
+<tr><td>CHG-002</td><td>code</td><td><code>caffmob_draw/walls2d/props.py</code></td><td>ferramenta <code>MOVE</code> no enum e no painel; estado do movimento na sessão (origem, delta acumulado, eixo, cópia dos nós para cancelar)</td></tr>
+<tr><td>CHG-003</td><td>code</td><td><code>caffmob_draw/walls2d/ops_editor.py</code></td><td>modal: press inicia, MOUSEMOVE aplica delta com a mira, setas escolhem direção, digitação aplica distância e Enter confirma, Esc restaura; um passo de desfazer por movimento; dica nova no dicionário do <code>draw_plan</code> (sem ela o desenho quebra com KeyError)</td></tr>
+<tr><td>CHG-004</td><td>code</td><td><code>caffmob_draw/walls2d/panels.py</code></td><td>botão <b>Mover</b> inline na barra do topo e indicação da direção e da medida antes de aplicar</td></tr>
+<tr><td>CHG-005</td><td>code</td><td><code>caffmob_draw/walls2d/classico_v2.py</code></td><td>mesmo comportamento no modelo v2, ou recusa explícita com mensagem se o v2 não suportar translação nesta rodada</td></tr></table>
+
+<h2>5. Testes planejados</h2>
+<table><tr><th>arquivo</th><th>tipo</th><th>o que prova</th></tr>
+<tr><td><code>tests/test_walls2d_move.py</code></td><td>reprodução (puro)</td><td>falha hoje porque <code>move_segments</code> não existe; depois prova translação de um trecho, de dois selecionados, do nó compartilhado com parede não ativa e do encadeamento preservado</td></tr>
+<tr><td><code>tests/blender_bug_EELF_move.py</code></td><td>reprodução (Blender)</td><td>com o addon carregado: ferramenta MOVE existe no enum, arraste desloca a parede na direção do mouse, <code>500</code> + Enter desloca 500 mm, Esc devolve tudo e Ctrl+Z desfaz um movimento</td></tr>
+<tr><td><code>tests/test_walls2d_move.py</code></td><td>regressão</td><td>arrastar vértice continua mudando só o vértice (o caminho de hoje não pode mudar), e mover não altera espessura, altura nem tipo</td></tr>
+<tr><td><code>tests/blender_002_ui_events.py</code></td><td>regressão</td><td>a suíte do editor segue verde: seleção, digitação, OK/Cancelar</td></tr></table>
+
+<h2>6. Riscos <span class="tag">change_risk: média</span></h2>
+<div class="box warn">
+<b>Decisão de domínio que precisa do seu aval:</b> quando uma parede ativa compartilha vértice com uma parede não ativa,
+mover a ativa arrasta o vértice compartilhado e a vizinha <i>estica</i> (muda de comprimento e de ângulo). É o
+comportamento de arrastar parede no Promob, mas quebra a ideia de "cadeia rígida". A alternativa é mover a cadeia
+inteira quando qualquer trecho dela estiver selecionado.
+</div>
+<ul>
+<li>Blast radius: modal, modelo e desenho, o núcleo do editor. Duas telas (clássico e v2) para manter em sincronia.</li>
+<li>Sem migração de dados: o rascunho vive em memória até o OK, e o Ctrl+Z cobre um movimento por passo.</li>
+<li>Risco de geometria inválida no OK se a translação deixar trecho de comprimento zero: validação em <code>model</code>, com mensagem no painel.</li>
+<li>Fora desta correção: menu de contexto (#145), ferramenta de medir (#150), planta baixa (#148), tema (#147), coleções (#151).</li>
+</ul>
+
+<h2>7. Mini-grafo do bug</h2>
+<div class="box" style="padding:8px">
+<svg viewBox="0 0 1000 300" width="100%" role="img" aria-label="Relações do bug">
+<defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#8aa"/></marker></defs>
+<line x1="210" y1="150" x2="500" y2="146" stroke="#8aa" stroke-dasharray="6 4" marker-end="url(#a)" opacity=".8"/>
+<text x="355" y="138" fill="#9bb" font-size="11" text-anchor="middle">related-to (proposed)</text>
+<line x1="790" y1="150" x2="500" y2="146" stroke="#8aa" stroke-dasharray="6 4" marker-end="url(#a)" opacity=".8"/>
+<text x="645" y="138" fill="#9bb" font-size="11" text-anchor="middle">related-to (proposed)</text>
+<a href="../bug.md"><rect x="350" y="30" width="300" height="110" rx="10" fill="#1c2128" stroke="#e5484d" stroke-width="2"/>
+<text x="366" y="56" fill="#e6edf3" font-size="13" font-weight="600">#146 EELF · P1</text>
+<text x="366" y="78" fill="#c9d1d9" font-size="12">Sem ferramenta Mover inline…</text>
+<text x="366" y="98" fill="#8b949e" font-size="11">high · paredes/walls2d</text>
+<text x="366" y="118" fill="#e5484d" font-size="11">active · planning (este ciclo)</text></a>
+<a href="../../BUG-20261117-AKYJ-menu-de-contexto-tipo-e-sentido/bug.md"><rect x="60" y="150" width="300" height="100" rx="10" fill="#1c2128" stroke="#f5d90a" stroke-width="2"/>
+<text x="76" y="176" fill="#e6edf3" font-size="13" font-weight="600">#145 AKYJ · P2</text>
+<text x="76" y="198" fill="#c9d1d9" font-size="12">Menu com 3 toggles</text>
+<text x="76" y="218" fill="#8b949e" font-size="11">medium · open · triaging</text></a>
+<a href="../../BUG-20261117-V4I3-ferramenta-de-medir-dois-pontos/bug.md"><rect x="640" y="150" width="300" height="100" rx="10" fill="#1c2128" stroke="#f5d90a" stroke-width="2"/>
+<text x="656" y="176" fill="#e6edf3" font-size="13" font-weight="600">#150 V4I3 · P2</text>
+<text x="656" y="198" fill="#c9d1d9" font-size="12">Ferramenta de medir dois pontos</text>
+<text x="656" y="218" fill="#8b949e" font-size="11">medium · open · triaging</text></a>
+</svg></div>
+
+<h2>8. Matriz de relações</h2>
+<table><tr><th>origem</th><th>tipo</th><th>destino</th><th>estado</th></tr>
+<tr><td><a href="../bug.md">#146 BUG-20261117-EELF</a></td><td>related-to</td><td><a href="../../BUG-20261117-AKYJ-menu-de-contexto-tipo-e-sentido/bug.md">#145 BUG-20261117-AKYJ</a></td><td>proposed</td></tr>
+<tr><td><a href="../../BUG-20261117-AKYJ-menu-de-contexto-tipo-e-sentido/bug.md">#145 BUG-20261117-AKYJ</a></td><td>related-to</td><td><a href="../bug.md">#146 BUG-20261117-EELF</a></td><td>proposed</td></tr>
+<tr><td><a href="../../BUG-20261117-V4I3-ferramenta-de-medir-dois-pontos/bug.md">#150 BUG-20261117-V4I3</a></td><td>related-to</td><td><a href="../bug.md">#146 BUG-20261117-EELF</a></td><td>proposed</td></tr></table>
+
+<h2>9. Ordem sugerida (só este ciclo)</h2>
+<div class="box">Um bug, sem cadeia. Ainda assim, #145 e #150 mexem no mesmo modal e na mesma barra: se entrarem depois,
+o trabalho de extrair a barra de ferramentas (CHG-004) feito aqui barateia os dois.</div>
+
+<h2>Bloqueio antes dos gates</h2>
+<div class="box bad"><b>Nada disso pode ser aplicado ainda.</b> <code>.reversa/reversa-config.json</code> está com
+<code>allowLegacyEdits: false</code> e <code>allowedPaths: []</code>, o que me proíbe de escrever em
+<code>caffmob_draw/</code> e <code>tests/</code>. Os diffs ficariam parados em <code>fix/</code>.</div>
+</body></html>

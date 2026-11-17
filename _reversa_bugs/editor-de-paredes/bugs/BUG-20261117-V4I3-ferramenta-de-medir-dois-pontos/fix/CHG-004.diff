@@ -1,0 +1,24 @@
+# CHG-004 · ferramenta Medir na lista e o estado da medição na sessão
+diff --git a/caffmob_draw/walls2d/props.py b/caffmob_draw/walls2d/props.py
+--- a/caffmob_draw/walls2d/props.py
++++ b/caffmob_draw/walls2d/props.py
+@@ -30,6 +30,7 @@
+         self.multi = []                   # 067 onda 8 (D-39): trechos selecionados juntos; `selected` é o último
+         self.selection_box = None         # retângulo de seleção em andamento, em pixels (início, fim)
+         self.menu = None                  # caixa de contexto aberta (BUG-20261117-AKYJ)
++        self.medir = None                 # medição entre dois pontos em andamento ou pronta (BUG-20261117-V4I3)
+         self.line = model.INNER
+         self.drawing = None               # cadeia sendo desenhada a lápis
+         self.cursor = None                # posição do cursor no mundo 2D
+@@ -391,8 +392,9 @@
+                ('DRAW', "Construir Parede", "Desenhar paredes a lápis", 'GREASEPENCIL', 1),
+                ('INVERT', "Inverter Sentido", "Inverter o sentido da parede clicada", 'ARROW_LEFTRIGHT', 2),
+                ('MOVE', "Mover", "Deslocar as paredes ativas em qualquer direção (BUG-20261117-EELF)", 'VIEW_PAN', 3),
+-               ('ADD_NODE', "Adicionar Vértice", "Dividir o trecho no ponto clicado", 'ADD', 4),
+-               ('REMOVE_NODE', "Remover Vértice", "Unir os trechos do vértice clicado", 'REMOVE', 5)],
++               ('MEASURE', "Medir", "Clique dois pontos para ver a distância entre eles", 'DRIVER_DISTANCE', 4),
++               ('ADD_NODE', "Adicionar Vértice", "Dividir o trecho no ponto clicado", 'ADD', 5),
++               ('REMOVE_NODE', "Remover Vértice", "Unir os trechos do vértice clicado", 'REMOVE', 6)],
+         default='SELECT')  # type: ignore
+     grid_size: bpy.props.FloatProperty(name="Tamanho", subtype='DISTANCE', unit='LENGTH', default=1.0, min=0.01,
+                                        max=5.0, update=lambda s, c: session() and session().redraw())  # type: ignore

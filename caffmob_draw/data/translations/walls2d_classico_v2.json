@@ -102,5 +102,9 @@
  "Portas e Janelas": {
   "pt_BR": "Portas e Janelas",
   "en_US": "Doors and Windows"
+ },
+ "Mover parede ainda não está disponível nesta cena; use Selecionar/Mover e arraste os vértices.": {
+  "pt_BR": "Mover parede ainda não está disponível nesta cena; use Selecionar/Mover e arraste os vértices.",
+  "en_US": "Moving walls is not available in this scene yet; use Select/Move and drag the vertices."
  }
 }
