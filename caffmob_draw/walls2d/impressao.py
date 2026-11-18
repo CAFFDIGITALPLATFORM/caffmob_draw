@@ -294,15 +294,14 @@ def _documento(conteudo, pagina):
     return bytes(saida)
 
 
-def pagina_pdf(tracos, caixa, titulo="Planta baixa", unidade="MM", denominador=None,
-               pagina=PAGINA_A4, margem=MARGEM_MM):
+def pagina_pdf(tracos, caixa, titulo="Planta baixa", unidade="MM", pagina=PAGINA_A4, margem=MARGEM_MM):
     """PDF A4 de uma página com os traços enquadrados em `caixa`. Devolve (bytes, denominador usado).
 
-    `caixa` são os limites do que imprimir (normalmente o enquadramento atual da vista). Sem denominador, a escala
-    padrão que cabe é escolhida; 0 no retorno significa folha ajustada. Sem geometria, levanta `ValueError`.
+    `caixa` são os limites do que imprimir (normalmente o enquadramento atual da vista). A escala é a maior padrão que
+    cabe; 0 no retorno significa folha ajustada. Sem geometria, levanta `ValueError`.
     """
     if caixa is None:
         raise ValueError("Nada para imprimir: a vista não tem planta.")
-    escolhida = denominador if denominador is not None else escala(caixa, pagina, margem)
+    escolhida = escala(caixa, pagina, margem)
     fluxo = _conteudo(tracos, caixa, escolhida, titulo, unidade, pagina, margem)
     return _documento(fluxo.encode('cp1252', 'replace'), pagina), escolhida

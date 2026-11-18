@@ -62,30 +62,6 @@ class _PaletaViva:
     def __getitem__(self, chave):
         return _cores()[chave]
 
-    def get(self, chave, padrao=None):
-        return _cores().get(chave, padrao)
-
-    def __contains__(self, chave):
-        return chave in _cores()
-
-    def keys(self):
-        return _cores().keys()
-
-    def items(self):
-        return _cores().items()
-
-    def values(self):
-        return _cores().values()
-
-    def __iter__(self):
-        return iter(_cores())
-
-    def __len__(self):
-        return len(_cores())
-
-    def __repr__(self):
-        return repr(_cores())
-
 
 COLORS = _PaletaViva()      # medição entre dois pontos também usa esta paleta (BUG-20261117-V4I3)
 
