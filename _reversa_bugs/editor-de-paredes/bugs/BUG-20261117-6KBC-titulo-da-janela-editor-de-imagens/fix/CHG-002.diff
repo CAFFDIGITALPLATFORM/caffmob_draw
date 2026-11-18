@@ -1,0 +1,23 @@
+diff --git a/caffmob_draw/walls2d/ops_editor.py b/caffmob_draw/walls2d/ops_editor.py
+index a4a8d459..0d9de12f 100644
+--- a/caffmob_draw/walls2d/ops_editor.py
++++ b/caffmob_draw/walls2d/ops_editor.py
+@@ -280,6 +280,8 @@ def _draw_menu(sh, caixa):
+ 
+ ZOOM_WINDOW_HINT = N_("Zoom janela: marque um retângulo para enquadrar")
+ MOVE_LABEL = N_("Mover")          # botão da barra superior (BUG-20261117-EELF)
++# Nome do editor na barra superior (BUG-20261117-6KBC): a barra do Windows é do Blender e usa o nome do tipo de área.
++TITULO = N_("Editor de Paredes CAFF MOB DRAW")
+ 
+ 
+ def _toolbar_rects(view):
+@@ -328,6 +330,9 @@ def _draw_toolbar(sh, view, s):
+     draw.outline(sh, mover, draw.COLORS['border'])
+     draw.text(mover[0] + 10, mover[1] + (mover[3] - draw.FONT_SIZE) / 2.0 + 1, MOVE_LABEL,
+               draw.COLORS['text'] if movendo else draw.COLORS['muted'])
++    titulo = tr(TITULO)                       # o nome do editor, à direita da barra (BUG-20261117-6KBC)
++    draw.text(bar[0] + bar[2] - draw.text_width(titulo) - 12,
++              bar[1] + (bar[3] - draw.FONT_SIZE) / 2.0 + 1, titulo, draw.COLORS['muted'])
+     if hot or armed:                                   # dica ao passar o mouse e enquanto o modo está ligado
+         draw.text(mover[0] + mover[2] + 10, bar[1] + (bar[3] - draw.FONT_SIZE) / 2.0 + 1, ZOOM_WINDOW_HINT,
+                   draw.COLORS['text'] if armed else draw.COLORS['muted'])

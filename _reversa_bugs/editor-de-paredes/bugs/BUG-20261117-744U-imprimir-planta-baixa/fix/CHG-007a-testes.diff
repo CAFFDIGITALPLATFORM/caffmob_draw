@@ -1,0 +1,150 @@
+diff --git a/tests/test_impressao.py b/tests/test_impressao.py
+new file mode 100644
+index 00000000..b70b5470
+--- /dev/null
++++ b/tests/test_impressao.py
+@@ -0,0 +1,144 @@
++"""Teste de reprodução e regressão — BUG-20261117-744U (imprimir a planta baixa).
++
++Python puro, sem Blender (o operador em si é provado em `tests/blender_bug_744U_imprimir.py`):
++    py -3 -m unittest discover -s tests -p "test_impressao.py"
++
++Cobre:
++  - Reprodução: o editor não tem geração de PDF da planta (módulo `impressao` ausente antes do fix).
++  - Regressão: a planta vira PDF A4 válido, com as penas do padrão CTB, a face interna tracejada, as medidas, a
++    escala padrão que cabe na folha e os objetos da planta baixa.
++"""
++
++import math
++import unittest
++
++import _bootstrap  # noqa: F401
++from caffmob_draw.walls2d import model
++
++
++class ReproducaoTest(unittest.TestCase):
++    """O defeito relatado: não há como imprimir a planta do editor."""
++
++    def test_modulo_de_impressao_existe(self):
++        try:
++            from caffmob_draw.walls2d import impressao
++        except ImportError:
++            self.fail("BUG-20261117-744U: o editor não gera PDF da planta baixa")
++        self.assertTrue(hasattr(impressao, 'pagina_pdf'), "impressao sem pagina_pdf")
++
++    def test_operador_de_impressao_existe(self):
++        caminho = _bootstrap.PACKAGE / 'walls2d' / 'ops_editor.py'
++        fonte = caminho.read_text(encoding='utf-8')
++        self.assertIn('caffmob.wall_editor_print', fonte,
++                      "BUG-20261117-744U: nenhum operador imprime a planta do editor")
++
++
++class RegressaoTest(unittest.TestCase):
++    plano = None
++
++    def setUp(self):
++        from caffmob_draw.walls2d import impressao
++        self.impressao = impressao
++        self.plano = model.WallPlan([model.rectangle(3.6, 2.4)])
++        self.tracos = impressao.coletar_plano(self.plano, 'MM')
++        self.limites = impressao.limites(self.tracos)
++
++    def test_pdf_valido_com_uma_pagina(self):
++        dados, denominador = self.impressao.pagina_pdf(self.tracos, self.limites, 'Planta baixa', 'MM')
++        self.assertTrue(dados.startswith(b'%PDF-1.4'))
++        self.assertTrue(dados.rstrip().endswith(b'%%EOF'))
++        self.assertIn(b'/Type /Page ', dados)
++        self.assertEqual(dados.count(b'/Type /Page '), 1)
++        self.assertIn(b'/MediaBox [0 0 595.276 841.89]', dados)           # A4 retrato em pontos
++        self.assertEqual(denominador, 25)                                # maior escala padrão que cabe (com a espessura)
++
++    def test_penas_e_tracos_do_padrao_ctb(self):
++        penas = {round(t['pena'], 2) for t in self.tracos if t['tipo'] == 'linha'}
++        self.assertEqual(penas, {0.35})                                  # alvenaria comum no padrão CTB
++        tracejadas = [t for t in self.tracos if t['tipo'] == 'linha' and t['tracejada']]
++        continuas = [t for t in self.tracos if t['tipo'] == 'linha' and not t['tracejada']]
++        self.assertEqual(len(tracejadas), 4, "a face interna de cada parede é tracejada (medida real)")
++        self.assertEqual(len(continuas), 12, "face externa e as duas pontas de cada parede são contínuas")
++
++    def test_tipo_de_parede_muda_pena_e_tinta(self):
++        self.plano.chains[0].segments[0].wall_type = 'MURETA'
++        self.plano.chains[0].segments[1].wall_type = 'DIVISORIA'
++        tracos = self.impressao.coletar_plano(self.plano, 'MM')
++        penas = {t['pena'] for t in tracos if t['tipo'] == 'linha'}
++        self.assertTrue({0.15, 0.60}.issubset(penas), penas)
++        tintas = {t['tinta'] for t in tracos if t['tipo'] == 'linha'}
++        self.assertIn((0.55, 0.38, 0.0), tintas)                           # mureta: pena fina
++        self.assertIn((0.05, 0.22, 0.66), tintas)                          # estrutura: pena grossa
++
++    def test_medida_usa_a_unidade_do_projeto(self):
++        textos = [t['valor'] for t in self.tracos if t['tipo'] == 'texto']
++        self.assertTrue(any(v.endswith(' mm') for v in textos), textos)   # 3600 mm / 2400 mm no rascunho
++        self.assertEqual(len(textos), 4, textos)
++
++    def test_escala_maior_para_planta_menor(self):
++        pequeno = model.WallPlan([model.rectangle(0.8, 0.6)])
++        tracos = self.impressao.coletar_plano(pequeno, 'MM')
++        self.assertEqual(self.impressao.escala(self.impressao.limites(tracos)), 10)
++        grande = model.WallPlan([model.rectangle(30.0, 20.0)])
++        tracos = self.impressao.coletar_plano(grande, 'MM')
++        self.assertEqual(self.impressao.escala(self.impressao.limites(tracos)), 200)
++
++    def test_enquadramento_da_vista_entra_no_papel(self):
++        """Os limites da vista mandam no enquadramento: recortar a vista não muda a escala, muda o que aparece."""
++        vista = ((0.0, 0.0), (1.8, 1.2))
++        dados, denominador = self.impressao.pagina_pdf(self.tracos, vista, 'Planta baixa', 'MM')
++        self.assertEqual(denominador, 10)
++        self.assertGreater(len(dados), 800)
++
++    def test_objetos_da_planta_entram_com_cor_e_contorno(self):
++        objetos = [{'name': 'Caixa', 'points': [(0.0, 0.0), (1.0, 0.0), (1.0, 1.0), (0.0, 1.0)],
++                    'color': (0.85, 0.2, 0.2, 1.0)}]
++        com_cor = self.impressao.tracos_da_planta(objetos, True)
++        self.assertEqual(com_cor[0]['tipo'], 'poligono')
++        self.assertEqual(com_cor[0]['tinta'], (0.85, 0.2, 0.2))
++        hachura = self.impressao.tracos_da_planta(objetos, False)
++        self.assertEqual(hachura[0]['tinta'], self.impressao.HACHURA)
++        self.assertTrue(any(t['tipo'] == 'caminho' and t['pena'] == self.impressao.PENA_OBJETO for t in hachura))
++
++    def test_poligono_dos_objetos_entra_na_pagina(self):
++        objetos = [{'name': 'Mesa', 'points': [(0.5, 0.5), (1.5, 0.5), (1.5, 1.5), (0.5, 1.5)], 'color': None}]
++        tracos = self.tracos + self.impressao.tracos_da_planta(objetos)
++        dados, _ = self.impressao.pagina_pdf(tracos, self.impressao.limites(tracos), 'Planta baixa', 'MM')
++        self.assertIn(b' h f', dados)                                     # polígono preenchido no fluxo do PDF
++
++    def test_sem_geometria_nao_gera_pagina(self):
++        with self.assertRaises(ValueError):
++            self.impressao.pagina_pdf([], None, 'Planta baixa', 'MM')
++
++    def test_pdf_escreve_acento_em_winansi(self):
++        tracos = [self.impressao.texto((0.0, 0.0), 'Área do ambiente')]
++        dados, _ = self.impressao.pagina_pdf(tracos, ((-1.0, -1.0), (1.0, 1.0)), 'Planta', 'MM')
++        self.assertIn(b'\xc1rea do ambiente', dados)
++        self.assertFalse(math.isclose(len(dados), 0))
++
++
++class V2Test(unittest.TestCase):
++    """A cena do CAFF MOBI desenha pela prancheta v2; a impressão sai da mesma geometria."""
++
++    def setUp(self):
++        from caffmob_draw.walls2d import impressao
++        from caffmob_draw.walls2d.studio import Prancheta
++        from test_walls2d_studio import documento
++        self.impressao = impressao
++        self.v = Prancheta(documento())
++        self.v.modelo('retangulo')
++
++    def test_planta_v2_gera_pdf_com_medidas(self):
++        tracos = self.impressao.coletar_v2(self.v, 'M')
++        self.assertTrue(tracos, "a prancheta v2 não produziu traços")
++        self.assertTrue(any(t['tracejada'] for t in tracos if t['tipo'] == 'linha'), "face interna tracejada")
++        self.assertTrue(any(t['tipo'] == 'texto' for t in tracos))
++        caixa = self.impressao.limites(tracos)
++        self.assertLess(caixa[1][0], 20.0, "a prancheta v2 vem em mm e precisa virar metros (4,15 m aqui)")
++        dados, denominador = self.impressao.pagina_pdf(tracos, caixa, 'Planta baixa', 'M')
++        self.assertTrue(dados.startswith(b'%PDF-1.4'))
++        self.assertIn(denominador, self.impressao.ESCALAS)
++
++
++if __name__ == '__main__':
++    unittest.main()

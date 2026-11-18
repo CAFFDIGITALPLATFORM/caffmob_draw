@@ -1,0 +1,87 @@
+"""Temas do Editor de Paredes (BUG-20261117-6OXN).
+
+Duas paletas completas: `ESCURO`, a de sempre, e `CLARO`, com fundo branco. O desenho das duas telas pergunta a paleta
+pelo tema do estado do editor, então a cor se escolhe num lugar só. A preferência do usuário mora num JSON no diretório
+do add-on (`bpy.utils.extension_path_user`, com queda para o diretório de configuração quando o código roda do
+fontes), nunca na cena nem no `.blend`. Python puro, fora `arquivo()`.
+"""
+
+import json
+import os
+
+from . import cores
+
+ESCURO = {
+    'background': (0.12, 0.12, 0.13, 1.0),
+    'grid': (1.0, 1.0, 1.0, 0.06),
+    'grid_axis': (1.0, 1.0, 1.0, 0.14),
+    'wall': cores.CINZA,
+    'wall_fill': (0.55, 0.55, 0.6, 0.18),
+    'selected': (1.0, 0.62, 0.15, 1.0),
+    'node': (0.25, 0.6, 1.0, 1.0),
+    'preview': (0.35, 1.0, 0.45, 1.0),
+    'preview_locked': (0.8, 0.8, 0.8, 1.0),
+    'reference': (0.7, 0.7, 0.75, 0.55),
+    'measure': (0.30, 0.85, 1.0, 1.0),
+    'text': (0.92, 0.92, 0.92, 1.0),
+    'muted': (0.65, 0.65, 0.68, 1.0),
+    'warning': (1.0, 0.35, 0.3, 1.0),
+}
+
+CLARO = {
+    'background': (0.99, 0.99, 1.0, 1.0),
+    'grid': (0.0, 0.0, 0.0, 0.10),
+    'grid_axis': (0.0, 0.0, 0.0, 0.20),
+    'wall': cores.cor('NORMAL', claro=True),
+    'wall_fill': (0.2, 0.2, 0.25, 0.10),
+    'selected': (0.85, 0.42, 0.0, 1.0),
+    'node': (0.05, 0.35, 0.8, 1.0),
+    'preview': (0.0, 0.5, 0.15, 1.0),
+    'preview_locked': (0.35, 0.35, 0.38, 1.0),
+    'reference': (0.35, 0.35, 0.4, 0.7),
+    'measure': (0.55, 0.1, 0.65, 1.0),
+    'text': (0.10, 0.10, 0.12, 1.0),
+    'muted': (0.32, 0.33, 0.38, 1.0),
+    'warning': (0.65, 0.05, 0.05, 1.0),
+}
+
+PALETAS = {'ESCURO': ESCURO, 'CLARO': CLARO}
+PADRAO = 'ESCURO'
+ARQUIVO = 'tema.json'
+
+
+def paleta(nome):
+    """Paleta do tema; um nome desconhecido, ou nenhum, cai no escuro."""
+    return PALETAS.get(nome, ESCURO)
+
+
+def arquivo():
+    """Caminho do arquivo da preferência: o do add-on, ou o de configuração quando não é extensão."""
+    import bpy  # type: ignore
+
+    try:
+        pasta = bpy.utils.extension_path_user(__package__.rsplit('.', 1)[0], path='walls2d', create=True)
+    except (ValueError, RuntimeError):
+        pasta = bpy.utils.user_resource('CONFIG', path='caffmob_draw', create=True)
+    return os.path.join(pasta, ARQUIVO)
+
+
+def ler():
+    """Tema salvo pelo usuário; arquivo ausente, ilegível ou inválido devolve o padrão."""
+    try:
+        with open(arquivo(), encoding='utf-8') as f:
+            dados = json.load(f)
+        return dados['tema'] if dados.get('tema') in PALETAS else PADRAO
+    except (OSError, ValueError, AttributeError, KeyError, TypeError):
+        return PADRAO
+
+
+def salvar(nome):
+    """Grava o tema escolhido, normalizado; devolve o que ficou valendo."""
+    nome = nome if nome in PALETAS else PADRAO
+    try:
+        with open(arquivo(), 'w', encoding='utf-8', newline='\n') as f:
+            json.dump({'tema': nome}, f)
+    except OSError:
+        pass
+    return nome

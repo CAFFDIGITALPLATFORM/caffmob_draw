@@ -1,0 +1,88 @@
+--- a/caffmob_draw/walls2d/ops_editor.py
++++ b/caffmob_draw/walls2d/ops_editor.py
+@@ -135,6 +135,15 @@
+ 
+ # Desenho --------------------------------------------------------------------------------------------------
+ 
++def vista_em_metros(s):
++    """RetÃ¢ngulo da vista no mundo 2D, para a impressÃ£o sair com o enquadramento atual (BUG-20261117-744U)."""
++    view = s.view
++    if view is None:                              # sem janela (ensaios): tudo o que o rascunho tem
++        return s.v2.bounds() if s.v2 else s.plan.bounds()
++    x, y, w, h = view.rect
++    return (view.to_world((x, y)), view.to_world((x + w, y + h)))
++
++
+ def draw_plan(context):
+     s = props.session()
+     region = context.region
+@@ -1377,8 +1386,68 @@
+         return {'FINISHED'}
+ 
+ 
++class BTM_OT_WallEditorPrint(bpy.types.Operator):
++    """Imprime a planta baixa do editor"""
++    bl_idname = "caffmob.wall_editor_print"
++    bl_label = "Imprimir Planta Baixa"
++    bl_description = "Salva a planta baixa da vista num PDF A4 pronto para impressÃ£o"
++    bl_options = {'REGISTER'}
++
++    filepath: bpy.props.StringProperty(
++        name="Arquivo",
++        description="Caminho do PDF da planta baixa",
++        subtype='FILE_PATH',
++        default="//planta-baixa.pdf"
++    )  # type: ignore
++
++    filter_glob: bpy.props.StringProperty(
++        default="*.pdf",
++        options={'HIDDEN'}
++    )  # type: ignore
++
++    def invoke(self, context, event):
++        if props.session() is None:
++            self.report({'WARNING'}, tr("Abra o editor de paredes para imprimir a planta."))
++            return {'CANCELLED'}
++        base = bpy.path.basename(bpy.data.filepath).rsplit('.', 1)[0] if bpy.data.filepath else "projeto"
++        self.filepath = f"//{base}_planta-baixa.pdf"
++        context.window_manager.fileselect_add(self)
++        return {'RUNNING_MODAL'}
++
++    def execute(self, context):
++        s = props.session()
++        if s is None:
++            self.report({'WARNING'}, tr("Abra o editor de paredes para imprimir a planta."))
++            return {'CANCELLED'}
++        from . import impressao
++        state = _state(context)
++        unidade = units.get_scene_length_unit(context.scene)
++        tracos = impressao.coletar_v2(s.v2, unidade) if s.v2 else impressao.coletar_plano(s.plan, unidade)
++        if state.plant_low:                      # os objetos da planta baixa entram como hachura (BUG-20261117-JXDJ)
++            from . import scene_io
++            objetos = scene_io.plant_objects(context.scene, state.cut_height)
++            tracos += impressao.tracos_da_planta(objetos, state.material_color_mode == 'SOLID')
++        caixa = vista_em_metros(s)
++        if not tracos or impressao.limites(tracos) is None:
++            self.report({'WARNING'}, tr("NÃ£o hÃ¡ planta para imprimir."))
++            return {'CANCELLED'}
++        dados, denominador = impressao.pagina_pdf(tracos, caixa, tr("Planta baixa"), unidade)
++        caminho = bpy.path.abspath(self.filepath)
++        if not caminho.lower().endswith('.pdf'):
++            caminho += '.pdf'
++        try:
++            with open(caminho, 'wb') as arquivo:
++                arquivo.write(dados)
++        except OSError as exc:
++            self.report({'ERROR'}, tr("NÃ£o foi possÃ­vel salvar o PDF: {}").format(exc))
++            return {'CANCELLED'}
++        escala = tr("1:{}").format(denominador) if denominador else tr("ajustada Ã  folha")
++        self.report({'INFO'}, tr("Planta baixa salva em {} ({})").format(caminho, escala))
++        return {'FINISHED'}
++
++
+ classes = (BTM_OT_WallEditor, BTM_OT_WallEditorModal, BTM_OT_WallEditorOk, BTM_OT_WallEditorCancel,
+-           BTM_OT_WallEditorTool, BTM_OT_WallEditorFit)
++           BTM_OT_WallEditorTool, BTM_OT_WallEditorFit, BTM_OT_WallEditorPrint)
+ 
+ 
+ def register():

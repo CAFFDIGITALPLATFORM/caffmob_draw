@@ -11,7 +11,7 @@ import bpy  # type: ignore
 
 from ..data import units
 from ..data.i18n import N_
-from . import history, model, selecao_classica
+from . import history, model, selecao_classica, tema
 
 
 class Session:
@@ -128,11 +128,35 @@ def session():
 
 def start(plan, scene_name):
     _session[0] = Session(plan, scene_name)
+    aplicar_preferencia()
     return _session[0]
 
 
 def end():
     _session[0] = None
+
+
+def aplicar_preferencia():
+    """Aplica ao estado o tema salvo do usuário (BUG-20261117-6OXN); sem estado, não faz nada."""
+    try:
+        estado = bpy.context.window_manager.btm_wall_editor
+    except AttributeError:
+        return
+    salvo = tema.ler()
+    if estado.tema != salvo:
+        estado.tema = salvo
+
+
+TEMA_ITEMS = [('ESCURO', "Escuro", "Fundo escuro, o visual de sempre"),
+              ('CLARO', "Claro", "Fundo branco, para luz do dia")]
+
+
+def _tema_update(self, context):
+    """Grava a escolha do usuário e redesenha; a preferência não vai para a cena nem para o `.blend`."""
+    tema.salvar(self.tema)
+    s = session()
+    if s is not None:
+        s.redraw()
 
 
 # Campos virtuais do trecho -----------------------------------------------------------------------------------
@@ -396,6 +420,9 @@ class BTM_PG_WallEditorState(bpy.types.PropertyGroup):
                ('ADD_NODE', "Adicionar Vértice", "Dividir o trecho no ponto clicado", 'ADD', 5),
                ('REMOVE_NODE', "Remover Vértice", "Unir os trechos do vértice clicado", 'REMOVE', 6)],
         default='SELECT')  # type: ignore
+    tema: bpy.props.EnumProperty(
+        name="Tema", items=TEMA_ITEMS, default='ESCURO', update=_tema_update,
+        description="Cor do fundo da planta, guardada como preferência do usuário")  # type: ignore
     grid_size: bpy.props.FloatProperty(name="Tamanho", subtype='DISTANCE', unit='LENGTH', default=1.0, min=0.01,
                                        max=5.0, update=lambda s, c: session() and session().redraw())  # type: ignore
     magnetic: bpy.props.BoolProperty(name="Linhas Magnéticas", default=False,

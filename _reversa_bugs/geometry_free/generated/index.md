@@ -1,4 +1,4 @@
-<!-- GENERATED, DO NOT EDIT: regenerado por /reversa-debugger-graph em 2026-10-14T03:52:14+00:00 a partir de 7 bugs -->
+<!-- GENERATED, DO NOT EDIT: regenerado por /reversa-debugger-graph em 2026-11-18T15:34:10+00:00 a partir de 7 bugs -->
 
 # Bugs · geometry_free
 
@@ -23,10 +23,10 @@
 |---|---|
 | fixed | 7 |
 
-- #117 BUG-20261011-DLHX (fixed) · travado: Rótulos e nomes de chapas da geometria livre sem tradução
 - #111 BUG-20261011-ELOZ (fixed) · travado: Duplicar ou espelhar geometria com pai dá posição errada
 - #112 BUG-20261011-GUHQ (fixed) · travado: Excluir geometria faz os filhos saltarem para a origem do mundo
-- #116 BUG-20261011-L6YN (fixed) · travado: Placa exportada com espessura errada
-- #115 BUG-20261011-NOAU (fixed) · travado: Medida digitada com arraste negativo desloca a origem
 - #113 BUG-20261011-SKDL (fixed) · travado: Shift+D nativo copia btm_uid
 - #114 BUG-20261011-TLCT (fixed) · travado: Interromper o modal de criar geometria deixa resíduos
+- #115 BUG-20261011-NOAU (fixed) · travado: Medida digitada com arraste negativo desloca a origem
+- #116 BUG-20261011-L6YN (fixed) · travado: Placa exportada com espessura errada
+- #117 BUG-20261011-DLHX (fixed) · travado: Rótulos e nomes de chapas da geometria livre sem tradução

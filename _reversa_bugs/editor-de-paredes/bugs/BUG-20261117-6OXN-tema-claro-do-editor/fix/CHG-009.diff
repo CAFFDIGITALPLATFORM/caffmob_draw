@@ -1,0 +1,335 @@
+diff --git a/caffmob_draw/data/translations/walls2d.json b/caffmob_draw/data/translations/walls2d.json
+index 72dc5bd3..8576c99d 100644
+--- a/caffmob_draw/data/translations/walls2d.json
++++ b/caffmob_draw/data/translations/walls2d.json
+@@ -15,10 +15,18 @@
+   "pt_BR": "Abre o Editor de Paredes: planta 2D para desenhar e editar as paredes do ambiente",
+   "en_US": "Opens the Wall Editor: a 2D plan to draw and edit the room walls"
+  },
++ "Altura do corte superior: objetos ou partes acima desta altura não aparecem na planta": {
++  "pt_BR": "Altura do corte superior: objetos ou partes acima desta altura não aparecem na planta",
++  "en_US": "Top cut height: objects or parts above this height do not appear in the plan"
++ },
+  "Aparecem tracejadas na planta, sem edição": {
+   "pt_BR": "Aparecem tracejadas na planta, sem edição",
+   "en_US": "Shown dashed on the plan, not editable"
+  },
++ "Aparência": {
++  "pt_BR": "Aparência",
++  "en_US": "Appearance"
++ },
+  "Aplica as paredes desenhadas ao ambiente": {
+   "pt_BR": "Aplica as paredes desenhadas ao ambiente",
+   "en_US": "Applies the drawn walls to the room"
+@@ -27,6 +35,14 @@
+   "pt_BR": "As paredes listadas passam ao pé-direito das Configurações (Mureta, meia-parede e parede falsa ficam como estão)",
+   "en_US": "The listed walls take the ceiling height from Settings (low walls, half walls and fake walls stay as they are)"
+  },
++ "Claro": {
++  "pt_BR": "Claro",
++  "en_US": "Light"
++ },
++ "Clique dois pontos para ver a distância entre eles": {
++  "pt_BR": "Clique dois pontos para ver a distância entre eles",
++  "en_US": "Click two points to see the distance between them"
++ },
+  "Clique num trecho para dividi-lo.": {
+   "pt_BR": "Clique num trecho para dividi-lo.",
+   "en_US": "Click a segment to split it."
+@@ -47,6 +63,10 @@
+   "pt_BR": "Clique o ponto inicial, digite o comprimento e Enter. Clique no início para fechar. Esc termina.",
+   "en_US": "Click the start point, type the length and press Enter. Click the start to close. Esc finishes."
+  },
++ "Clique o primeiro ponto e o segundo para medir a distância; Esc limpa a medição.": {
++  "pt_BR": "Clique o primeiro ponto e o segundo para medir a distância; Esc limpa a medição.",
++  "en_US": "Click the first point and then the second to measure the distance; Esc clears the measurement."
++ },
+  "Comprimento na linha selecionada (interna ou externa)": {
+   "pt_BR": "Comprimento na linha selecionada (interna ou externa)",
+   "en_US": "Length on the selected line (inner or outer)"
+@@ -63,6 +83,18 @@
+   "pt_BR": "Confira os avisos no painel e clique OK de novo para aplicar.",
+   "en_US": "Check the warnings in the panel and click OK again to apply."
+  },
++ "Cor do Material": {
++  "pt_BR": "Cor do Material",
++  "en_US": "Material Color"
++ },
++ "Cor do fundo da planta, guardada como preferência do usuário": {
++  "pt_BR": "Cor do fundo da planta, guardada como preferência do usuário",
++  "en_US": "Plan background color, saved as a user preference"
++ },
++ "Corte Superior": {
++  "pt_BR": "Corte Superior",
++  "en_US": "Top Cut"
++ },
+  "Deseja fechar a parede e finalizar a sua construção?": {
+   "pt_BR": "Deseja fechar a parede e finalizar a sua construção?",
+   "en_US": "Close the wall and finish building it?"
+@@ -71,6 +103,10 @@
+   "pt_BR": "Desenhar paredes a lápis",
+   "en_US": "Draw walls with the pencil"
+  },
++ "Deslocar as paredes ativas em qualquer direção (BUG-20261117-EELF)": {
++  "pt_BR": "Deslocar as paredes ativas em qualquer direção (BUG-20261117-EELF)",
++  "en_US": "Shift the active walls in any direction (BUG-20261117-EELF)"
++ },
+  "Direção trocada em paredes existentes: no OK elas mudam de sentido; portas e janelas acompanham e os módulos ficam onde estão.": {
+   "pt_BR": "Direção trocada em paredes existentes: no OK elas mudam de sentido; portas e janelas acompanham e os módulos ficam onde estão.",
+   "en_US": "Direction changed on existing walls: on OK they reverse; doors and windows follow and modules stay where they are."
+@@ -79,10 +115,18 @@
+   "pt_BR": "Dividir o trecho no ponto clicado",
+   "en_US": "Split the segment at the clicked point"
+  },
++ "Editor de Paredes CAFF MOB DRAW": {
++  "pt_BR": "Editor de Paredes CAFF MOB DRAW",
++  "en_US": "CAFF MOB DRAW Wall Editor"
++ },
+  "Enquadra todas as paredes na planta": {
+   "pt_BR": "Enquadra todas as paredes na planta",
+   "en_US": "Frames all walls on the plan"
+  },
++ "Escuro": {
++  "pt_BR": "Escuro",
++  "en_US": "Dark"
++ },
+  "Fecha o editor sem alterar as paredes": {
+   "pt_BR": "Fecha o editor sem alterar as paredes",
+   "en_US": "Closes the editor without changing the walls"
+@@ -91,6 +135,14 @@
+   "pt_BR": "Ferramenta",
+   "en_US": "Tool"
+  },
++ "Fundo branco, para luz do dia": {
++  "pt_BR": "Fundo branco, para luz do dia",
++  "en_US": "White background, readable in daylight"
++ },
++ "Fundo escuro, o visual de sempre": {
++  "pt_BR": "Fundo escuro, o visual de sempre",
++  "en_US": "Dark background, the usual look"
++ },
+  "Interação da planta do Editor de Paredes": {
+   "pt_BR": "Interação da planta do Editor de Paredes",
+   "en_US": "Wall Editor plan interaction"
+@@ -99,6 +151,10 @@
+   "pt_BR": "Inverter o sentido da parede clicada",
+   "en_US": "Reverse the direction of the clicked wall"
+  },
++ "Inverter sentido": {
++  "pt_BR": "Inverter sentido",
++  "en_US": "Reverse direction"
++ },
+  "Lado da espessura nas paredes novas; ao fechar uma sala, a espessura vai para fora": {
+   "pt_BR": "Lado da espessura nas paredes novas; ao fechar uma sala, a espessura vai para fora",
+   "en_US": "Thickness side for new walls; when a room is closed, the thickness goes outside"
+@@ -111,10 +167,26 @@
+   "pt_BR": "Medida: {}▏ {} (Enter aplica, Esc limpa)",
+   "en_US": "Measurement: {}▏ {} (Enter applies, Esc clears)"
+  },
++ "Medir": {
++  "pt_BR": "Medir",
++  "en_US": "Measure"
++ },
++ "Mostra objetos da cena na vista de topo, com corte superior e cores por material": {
++  "pt_BR": "Mostra objetos da cena na vista de topo, com corte superior e cores por material",
++  "en_US": "Shows the scene objects in the top view, with a top cut and material colors"
++ },
+  "Mova o mouse na direção da parede ou use as setas do teclado": {
+   "pt_BR": "Mova o mouse na direção da parede ou use as setas do teclado",
+   "en_US": "Move the mouse toward the wall or use the arrow keys"
+  },
++ "Mover: {}  {:.0f}°  (Esc cancela)": {
++  "pt_BR": "Mover: {}  {:.0f}°  (Esc cancela)",
++  "en_US": "Move: {}  {:.0f}°  (Esc cancels)"
++ },
++ "Múltiplas": {
++  "pt_BR": "Múltiplas",
++  "en_US": "Multiple"
++ },
+  "Nada para desfazer.": {
+   "pt_BR": "Nada para desfazer.",
+   "en_US": "Nothing to undo."
+@@ -151,6 +223,22 @@
+   "pt_BR": "Paredes aplicadas: {} nova(s), {} atualizada(s), {} removida(s){}.",
+   "en_US": "Walls applied: {} new, {} updated, {} removed{}."
+  },
++ "Planta Baixa com Objetos": {
++  "pt_BR": "Planta Baixa com Objetos",
++  "en_US": "Floor Plan with Objects"
++ },
++ "Preenchimento 2D dos objetos: cor sólida ou textura real": {
++  "pt_BR": "Preenchimento 2D dos objetos: cor sólida ou textura real",
++  "en_US": "2D fill of the objects: solid color or real texture"
++ },
++ "Preenchimento com textura real do material": {
++  "pt_BR": "Preenchimento com textura real do material",
++  "en_US": "Fill with the material's real texture"
++ },
++ "Preenchimento por cor sólida do material": {
++  "pt_BR": "Preenchimento por cor sólida do material",
++  "en_US": "Fill with the material's solid color"
++ },
+  "Pé-direito do projeto: {}": {
+   "pt_BR": "Pé-direito do projeto: {}",
+   "en_US": "Project ceiling height: {}"
+@@ -167,6 +255,14 @@
+   "pt_BR": "Selecionar trechos e arrastar vértices",
+   "en_US": "Select segments and drag vertices"
+  },
++ "Selecione as paredes e arraste para mover; setas trocam a direção, digite a medida e Enter. Esc cancela.": {
++  "pt_BR": "Selecione as paredes e arraste para mover; setas trocam a direção, digite a medida e Enter. Esc cancela.",
++  "en_US": "Select the walls and drag to move; arrows change the direction, type the distance and Enter. Esc cancels."
++ },
++ "Selecione uma ou mais paredes para mover.": {
++  "pt_BR": "Selecione uma ou mais paredes para mover.",
++  "en_US": "Select one or more walls to move."
++ },
+  "Sem dados de trechos, ficam como referência: {}": {
+   "pt_BR": "Sem dados de trechos, ficam como referência: {}",
+   "en_US": "No segment data, kept as reference: {}"
+@@ -175,6 +271,18 @@
+   "pt_BR": "Sim",
+   "en_US": "Yes"
+  },
++ "Sólida": {
++  "pt_BR": "Sólida",
++  "en_US": "Solid"
++ },
++ "Tema": {
++  "pt_BR": "Tema",
++  "en_US": "Theme"
++ },
++ "Textura Real": {
++  "pt_BR": "Textura Real",
++  "en_US": "Real Texture"
++ },
+  "Uma cadeia precisa de pelo menos um trecho.": {
+   "pt_BR": "Uma cadeia precisa de pelo menos um trecho.",
+   "en_US": "A chain needs at least one segment."
+@@ -183,6 +291,10 @@
+   "pt_BR": "Unir os trechos do vértice clicado",
+   "en_US": "Join the segments of the clicked vertex"
+  },
++ "Valor Inválido: cadeia {}. Só existem {} no rascunho.": {
++  "pt_BR": "Valor Inválido: cadeia {}. Só existem {} no rascunho.",
++  "en_US": "Invalid value: chain {}. There are only {} in the draft."
++ },
+  "Valor Inválido: o primeiro vértice de uma parede aberta não tem trecho chegando nele.": {
+   "pt_BR": "Valor Inválido: o primeiro vértice de uma parede aberta não tem trecho chegando nele.",
+   "en_US": "Invalid Value: the first vertex of an open wall has no segment arriving at it."
+@@ -191,6 +303,10 @@
+   "pt_BR": "Valor Inválido: tipo de parede {}.",
+   "en_US": "Invalid Value: wall type {}."
+  },
++ "Valor Inválido: trecho {}. Esta parede tem {} trechos.": {
++  "pt_BR": "Valor Inválido: trecho {}. Esta parede tem {} trechos.",
++  "en_US": "Invalid value: segment {}. This wall has {} segments."
++ },
+  "Valor Inválido: {} deve estar entre {} e {} (recebido: {}).": {
+   "pt_BR": "Valor Inválido: {} deve estar entre {} e {} (recebido: {}).",
+   "en_US": "Invalid Value: {} must be between {} and {} (got: {})."
+@@ -203,6 +319,10 @@
+   "pt_BR": "Vértices encaixam nos cruzamentos da grade",
+   "en_US": "Vertices snap to the grid crossings"
+  },
++ "Zoom janela: marque um retângulo para enquadrar": {
++  "pt_BR": "Zoom janela: marque um retângulo para enquadrar",
++  "en_US": "Zoom window: drag a rectangle to frame it"
++ },
+  "nova {}": {
+   "pt_BR": "nova {}",
+   "en_US": "new {}"
+@@ -230,93 +350,5 @@
+  "… e mais {}": {
+   "pt_BR": "… e mais {}",
+   "en_US": "… and {} more"
+- },
+- "Zoom janela: marque um retângulo para enquadrar": {
+-  "pt_BR": "Zoom janela: marque um retângulo para enquadrar",
+-  "en_US": "Zoom window: drag a rectangle to frame it"
+- },
+- "Valor Inválido: cadeia {}. Só existem {} no rascunho.": {
+-  "pt_BR": "Valor Inválido: cadeia {}. Só existem {} no rascunho.",
+-  "en_US": "Invalid value: chain {}. There are only {} in the draft."
+- },
+- "Valor Inválido: trecho {}. Esta parede tem {} trechos.": {
+-  "pt_BR": "Valor Inválido: trecho {}. Esta parede tem {} trechos.",
+-  "en_US": "Invalid value: segment {}. This wall has {} segments."
+- },
+- "Selecione as paredes e arraste para mover; setas trocam a direção, digite a medida e Enter. Esc cancela.": {
+-  "pt_BR": "Selecione as paredes e arraste para mover; setas trocam a direção, digite a medida e Enter. Esc cancela.",
+-  "en_US": "Select the walls and drag to move; arrows change the direction, type the distance and Enter. Esc cancels."
+- },
+- "Mover: {}  {:.0f}°  (Esc cancela)": {
+-  "pt_BR": "Mover: {}  {:.0f}°  (Esc cancela)",
+-  "en_US": "Move: {}  {:.0f}°  (Esc cancels)"
+- },
+- "Selecione uma ou mais paredes para mover.": {
+-  "pt_BR": "Selecione uma ou mais paredes para mover.",
+-  "en_US": "Select one or more walls to move."
+- },
+- "Deslocar as paredes ativas em qualquer direção (BUG-20261117-EELF)": {
+-  "pt_BR": "Deslocar as paredes ativas em qualquer direção (BUG-20261117-EELF)",
+-  "en_US": "Shift the active walls in any direction (BUG-20261117-EELF)"
+- },
+- "Múltiplas": {
+-  "pt_BR": "Múltiplas",
+-  "en_US": "Multiple"
+- },
+- "Inverter sentido": {
+-  "pt_BR": "Inverter sentido",
+-  "en_US": "Reverse direction"
+- },
+- "Medir": {
+-  "pt_BR": "Medir",
+-  "en_US": "Measure"
+- },
+- "Clique dois pontos para ver a distância entre eles": {
+-  "pt_BR": "Clique dois pontos para ver a distância entre eles",
+-  "en_US": "Click two points to see the distance between them"
+- },
+- "Clique o primeiro ponto e o segundo para medir a distância; Esc limpa a medição.": {
+-  "pt_BR": "Clique o primeiro ponto e o segundo para medir a distância; Esc limpa a medição.",
+-  "en_US": "Click the first point and then the second to measure the distance; Esc clears the measurement."
+- },
+- "Sólida": {
+-  "pt_BR": "Sólida",
+-  "en_US": "Solid"
+- },
+- "Preenchimento por cor sólida do material": {
+-  "pt_BR": "Preenchimento por cor sólida do material",
+-  "en_US": "Fill with the material's solid color"
+- },
+- "Textura Real": {
+-  "pt_BR": "Textura Real",
+-  "en_US": "Real Texture"
+- },
+- "Preenchimento com textura real do material": {
+-  "pt_BR": "Preenchimento com textura real do material",
+-  "en_US": "Fill with the material's real texture"
+- },
+- "Planta Baixa com Objetos": {
+-  "pt_BR": "Planta Baixa com Objetos",
+-  "en_US": "Floor Plan with Objects"
+- },
+- "Mostra objetos da cena na vista de topo, com corte superior e cores por material": {
+-  "pt_BR": "Mostra objetos da cena na vista de topo, com corte superior e cores por material",
+-  "en_US": "Shows the scene objects in the top view, with a top cut and material colors"
+- },
+- "Corte Superior": {
+-  "pt_BR": "Corte Superior",
+-  "en_US": "Top Cut"
+- },
+- "Altura do corte superior: objetos ou partes acima desta altura não aparecem na planta": {
+-  "pt_BR": "Altura do corte superior: objetos ou partes acima desta altura não aparecem na planta",
+-  "en_US": "Top cut height: objects or parts above this height do not appear in the plan"
+- },
+- "Cor do Material": {
+-  "pt_BR": "Cor do Material",
+-  "en_US": "Material Color"
+- },
+- "Preenchimento 2D dos objetos: cor sólida ou textura real": {
+-  "pt_BR": "Preenchimento 2D dos objetos: cor sólida ou textura real",
+-  "en_US": "2D fill of the objects: solid color or real texture"
+  }
+ }

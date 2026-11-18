@@ -1,4 +1,4 @@
-<!-- GENERATED, DO NOT EDIT: regenerado por /reversa-debugger-graph em 2026-10-14T03:52:14+00:00 a partir de 5 bugs -->
+<!-- GENERATED, DO NOT EDIT: regenerado por /reversa-debugger-graph em 2026-11-18T15:34:10+00:00 a partir de 5 bugs -->
 
 # Bugs · legacy
 
@@ -24,7 +24,7 @@
 | fixed | 5 |
 
 - #80 BUG-20261011-5NLX (fixed) · travado: Falha no meio do lote de conversão deixa lixo na cena
-- #82 BUG-20261011-HUWF (fixed) · travado: Relatório diz 'sem perdas' quando as frentes não foram lidas
 - #81 BUG-20261011-NTM3 (fixed) · travado: Dupla contagem de frentes no face frame
+- #82 BUG-20261011-HUWF (fixed) · travado: Relatório diz 'sem perdas' quando as frentes não foram lidas
 - #83 BUG-20261011-ORRG (fixed) · travado: Grupo homônimo em outra pasta descartado sem aviso
 - #84 BUG-20261011-SWAD (fixed) · travado: write_marker deixa .tmp para trás quando a escrita falha

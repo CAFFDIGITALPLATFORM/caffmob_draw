@@ -1,4 +1,4 @@
-<!-- GENERATED, DO NOT EDIT: regenerado por /reversa-debugger-graph em 2026-11-17T19:42:35+00:00 a partir de 15 bugs -->
+<!-- GENERATED, DO NOT EDIT: regenerado por /reversa-debugger-graph em 2026-11-18T15:34:10+00:00 a partir de 16 bugs -->
 
 # Grafo · editor-de-paredes
 
@@ -19,40 +19,39 @@ graph LR
   BUG_20261117_V4I3["#150 Sem ferramenta de medir entre dois ponto…"]
   BUG_20261117_4MF7["#151 Sem coleção Arquitetura com subcoleção P…"]
   BUG_20261117_RP9Q["#152 Menu lateral de paredes com estilo antig…"]
+  BUG_20261118_PLNT["#153 Planta baixa derruba o desenho do editor…"]
   BUG_20261006_KFAR -->|caused-by| BUG_20261006_SCVF
   BUG_20261007_A2G7 -.->|related-to| BUG_20261007_YIMY
   BUG_20261007_ZZUK -.->|related-to| BUG_20261007_VQ72
   BUG_20261007_TBY3 -->|related-to| BUG_20261007_A2G7
   BUG_20261117_AKYJ -.->|related-to| BUG_20261117_EELF
   BUG_20261117_6OXN -.->|related-to| BUG_20261117_JXDJ
-  BUG_20261117_744U -.->|blocked-by| BUG_20261117_JXDJ
+  BUG_20261117_744U -->|blocked-by| BUG_20261117_JXDJ
   BUG_20261117_V4I3 -->|related-to| BUG_20261117_EELF
   BUG_20261117_4MF7 -.->|related-to| BUG_20261117_JXDJ
+  BUG_20261118_PLNT -->|regression-of| BUG_20261117_JXDJ
 ```
 
 ## Clusters
 
-- `caffmob_draw/walls2d/ops_editor.py`: 9 bugs (BUG-20261007-ZZUK, BUG-20261007-VQ72, BUG-20261117-AKYJ, BUG-20261117-EELF, BUG-20261117-6OXN, BUG-20261117-JXDJ, BUG-20261117-744U, BUG-20261117-V4I3, BUG-20261117-4MF7)
-- `caffmob_draw/walls2d/classico_v2.py`: 6 bugs (BUG-20261117-AKYJ, BUG-20261117-EELF, BUG-20261117-6OXN, BUG-20261117-JXDJ, BUG-20261117-V4I3, BUG-20261117-RP9Q)
+- `caffmob_draw/walls2d/ops_editor.py`: 11 bugs (BUG-20261007-ZZUK, BUG-20261007-VQ72, BUG-20261117-6KBC, BUG-20261117-AKYJ, BUG-20261117-EELF, BUG-20261117-6OXN, BUG-20261117-JXDJ, BUG-20261117-744U, BUG-20261117-V4I3, BUG-20261117-4MF7, BUG-20261118-PLNT)
+- `caffmob_draw/walls2d/classico_v2.py`: 8 bugs (BUG-20261117-AKYJ, BUG-20261117-EELF, BUG-20261117-6OXN, BUG-20261117-JXDJ, BUG-20261117-744U, BUG-20261117-V4I3, BUG-20261117-RP9Q, BUG-20261118-PLNT)
+- `caffmob_draw/walls2d/panels.py`: 6 bugs (BUG-20261007-VQ72, BUG-20261117-AKYJ, BUG-20261117-EELF, BUG-20261117-744U, BUG-20261117-V4I3, BUG-20261117-RP9Q)
 - `caffmob_draw/walls2d/props.py`: 6 bugs (BUG-20261007-ZZUK, BUG-20261007-VQ72, BUG-20261117-AKYJ, BUG-20261117-EELF, BUG-20261117-6OXN, BUG-20261117-V4I3)
-- `caffmob_draw/walls2d/panels.py`: 5 bugs (BUG-20261007-VQ72, BUG-20261117-AKYJ, BUG-20261117-EELF, BUG-20261117-V4I3, BUG-20261117-RP9Q)
 - `caffmob_draw/walls2d/apply.py`: 3 bugs (BUG-20261007-A2G7, BUG-20261007-YIMY, BUG-20261117-4MF7)
 - `caffmob_draw/walls2d/model.py`: 3 bugs (BUG-20261007-YIMY, BUG-20261007-ZZUK, BUG-20261117-EELF)
+- `caffmob_draw/walls2d/scene_io.py`: 3 bugs (BUG-20261007-TBY3, BUG-20261117-JXDJ, BUG-20261118-PLNT)
 - `caffmob_draw/data/properties.py`: 2 bugs (BUG-20261007-A2G7, BUG-20261007-TBY3)
-- `caffmob_draw/operators/layouts.py`: 2 bugs (BUG-20261117-JXDJ, BUG-20261117-744U)
-- `caffmob_draw/ui/view3d_sidebar.py`: 2 bugs (BUG-20261117-JXDJ, BUG-20261117-744U)
-- `caffmob_draw/walls2d/scene_io.py`: 2 bugs (BUG-20261007-TBY3, BUG-20261117-JXDJ)
 - `caffmob_draw/walls2d/window.py`: 2 bugs (BUG-20261007-VQ72, BUG-20261117-6KBC)
 
-Leitura: 9 bugs convergem em `caffmob_draw/walls2d/ops_editor.py`, o maior ponto de convergência do contexto. Dos 5 abertos, 3 apontam para esse arquivo.
+Leitura: 11 bugs convergem em `caffmob_draw/walls2d/ops_editor.py`, o maior ponto de convergência do contexto. Nenhum bug aberto neste contexto: o cluster mostra onde as correções se acumularam.
 
 ## Impact score
 
-Heurística de triagem (não substitui priority/severity): só arestas supported/confirmed contam.
+Heurística de triagem (não substitui priority/severity): causados ×3, bloqueados ×2, regressões ×4, relacionados ×1 (no máximo 3 no total), só arestas supported/confirmed.
 
 | # | ID | score |
 |---|---|---|
+| 148 | BUG-20261117-JXDJ | 6 |
 | 6 | BUG-20261007-A2G7 | 1 |
-| 10 | BUG-20261007-TBY3 | 1 |
 | 146 | BUG-20261117-EELF | 1 |
-| 150 | BUG-20261117-V4I3 | 1 |

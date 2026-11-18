@@ -30,7 +30,7 @@ from ..canvas2d.view import View2D, distance_point_point, distance_point_segment
 from ..data import expr, units
 from ..data.i18n import N_, tr
 from . import direction as dr
-from . import cores, inference, medir, menu_contexto as mc, model, props, selecao_classica, window
+from . import cores, inference, medir, menu_contexto as mc, model, props, selecao_classica, tema, window
 
 NODE_HIT_PX = 9
 LINE_HIT_PX = 7
@@ -43,19 +43,51 @@ TIMER_STEP = 0.1
 TOOLBAR_HEIGHT = 32         # barra superior da planta, em pixels a 100% (013, D-07); escala com `ui_scale`
 NAVIGATION_EVENTS = {'TRACKPADZOOM', 'TRACKPADPAN', 'WHEELUPMOUSE', 'WHEELDOWNMOUSE', 'MIDDLEMOUSE'}   # 013, D-06
 
-COLORS = {
-    'background': (0.12, 0.12, 0.13, 1.0),
-    'grid': (1.0, 1.0, 1.0, 0.06),
-    'grid_axis': (1.0, 1.0, 1.0, 0.14),
-    'wall': cores.CINZA,
-    'wall_fill': (0.55, 0.55, 0.6, 0.18),
-    'selected': (1.0, 0.62, 0.15, 1.0),
-    'node': (0.25, 0.6, 1.0, 1.0),
-    'preview': (0.35, 1.0, 0.45, 1.0),
-    'preview_locked': (0.8, 0.8, 0.8, 1.0),
-    'reference': (0.7, 0.7, 0.75, 0.55),
-    'measure': (0.30, 0.85, 1.0, 1.0),          # medição entre dois pontos (BUG-20261117-V4I3)
-}
+def _cores():
+    """Paleta do tema escolhido no estado do editor (BUG-20261117-6OXN); fora do editor, a escura."""
+    try:
+        return tema.paleta(_state(bpy.context).tema)
+    except AttributeError:
+        return tema.ESCURO
+
+
+def _tema_claro():
+    """Se o editor está no tema claro, para as cores por tipo de parede."""
+    return _cores() is tema.CLARO
+
+
+class _PaletaViva:
+    """Leitura de cor que segue o tema atual: `COLORS[...]` é o ponto único da paleta no desenho."""
+
+    def __getitem__(self, chave):
+        return _cores()[chave]
+
+    def get(self, chave, padrao=None):
+        return _cores().get(chave, padrao)
+
+    def __contains__(self, chave):
+        return chave in _cores()
+
+    def keys(self):
+        return _cores().keys()
+
+    def items(self):
+        return _cores().items()
+
+    def values(self):
+        return _cores().values()
+
+    def __iter__(self):
+        return iter(_cores())
+
+    def __len__(self):
+        return len(_cores())
+
+    def __repr__(self):
+        return repr(_cores())
+
+
+COLORS = _PaletaViva()      # medição entre dois pontos também usa esta paleta (BUG-20261117-V4I3)
 
 
 def _state(context):
@@ -103,6 +135,15 @@ def ensure_view(region, area=None):
 
 # Desenho --------------------------------------------------------------------------------------------------
 
+def vista_em_metros(s):
+    """Retângulo da vista no mundo 2D, para a impressão sair com o enquadramento atual (BUG-20261117-744U)."""
+    view = s.view
+    if view is None:                              # sem janela (ensaios): tudo o que o rascunho tem
+        return s.v2.bounds() if s.v2 else s.plan.bounds()
+    x, y, w, h = view.rect
+    return (view.to_world((x, y)), view.to_world((x + w, y + h)))
+
+
 def draw_plan(context):
     s = props.session()
     region = context.region
@@ -140,7 +181,7 @@ def draw_plan(context):
             a0, a1 = view.to_screen(inner[0]), view.to_screen(inner[1])
             b0, b1 = view.to_screen(outer[0]), view.to_screen(outer[1])
             # Face interna tracejada (medida real), externa e pontas contínuas (D-28).
-            cor = cores.cor(chain.segments[i].wall_type)          # cor por tipo (BUG-20261117-AKYJ)
+            cor = cores.cor(chain.segments[i].wall_type, claro=_tema_claro())   # cor por tipo (BUG-20261117-AKYJ)
             draw.lines(sh, draw.dashed(a0, a1) + [b0, b1, a0, b0, a1, b1],
                        COLORS['selected'] if in_batch else cor)
             if is_selected:
@@ -151,7 +192,7 @@ def draw_plan(context):
             mid = ((inner[0][0] + inner[1][0]) / 2, (inner[0][1] + inner[1][1]) / 2)
             p = view.to_screen(mid)
             label = draw.length_label(chain.face_length(i, s.line if is_selected else model.INNER))
-            draw.text(p[0] + 4, p[1] + 4, label, COLORS['selected'] if is_selected else draw.COLORS['muted'],
+            draw.text(p[0] + 4, p[1] + 4, label, COLORS['selected'] if is_selected else COLORS['muted'],
                       size=11)
         for k, node in enumerate(chain.nodes):
             q = view.to_screen(node)
@@ -219,9 +260,9 @@ def draw_plan(context):
         angulo = math.degrees(math.atan2(dy, dx)) % 360.0
         draw.text(q[0] + 14, q[1] + 14, tr("Mover: {}  {:.0f}°  (Esc cancela)").format(medida, angulo),
                   COLORS['preview'])
-    draw.text(12, 12, hint, draw.COLORS['muted'])
+    draw.text(12, 12, hint, COLORS['muted'])
     if s.error:
-        draw.text(12, 32, s.error, draw.COLORS['warning'])
+        draw.text(12, 32, s.error, COLORS['warning'])
     if s.medir is not None:
         _draw_measure(sh, view, s.medir, s.cursor)      # ferramenta Medir (BUG-20261117-V4I3)
     _draw_toolbar(sh, view, s)
@@ -280,6 +321,8 @@ def _draw_menu(sh, caixa):
 
 ZOOM_WINDOW_HINT = N_("Zoom janela: marque um retângulo para enquadrar")
 MOVE_LABEL = N_("Mover")          # botão da barra superior (BUG-20261117-EELF)
+# Nome do editor na barra superior (BUG-20261117-6KBC): a barra do Windows é do Blender e usa o nome do tipo de área.
+TITULO = N_("Editor de Paredes CAFF MOB DRAW")
 
 
 def _toolbar_rects(view):
@@ -328,6 +371,9 @@ def _draw_toolbar(sh, view, s):
     draw.outline(sh, mover, draw.COLORS['border'])
     draw.text(mover[0] + 10, mover[1] + (mover[3] - draw.FONT_SIZE) / 2.0 + 1, MOVE_LABEL,
               draw.COLORS['text'] if movendo else draw.COLORS['muted'])
+    titulo = tr(TITULO)                       # o nome do editor, à direita da barra (BUG-20261117-6KBC)
+    draw.text(bar[0] + bar[2] - draw.text_width(titulo) - 12,
+              bar[1] + (bar[3] - draw.FONT_SIZE) / 2.0 + 1, titulo, draw.COLORS['muted'])
     if hot or armed:                                   # dica ao passar o mouse e enquanto o modo está ligado
         draw.text(mover[0] + mover[2] + 10, bar[1] + (bar[3] - draw.FONT_SIZE) / 2.0 + 1, ZOOM_WINDOW_HINT,
                   draw.COLORS['text'] if armed else draw.COLORS['muted'])
@@ -1303,6 +1349,29 @@ class BTM_OT_WallEditorCancel(bpy.types.Operator):
         return {'FINISHED'}
 
 
+class BTM_OT_WallEditorTool(bpy.types.Operator):
+    bl_idname = "caffmob.wall_editor_tool"
+    bl_label = "Ferramenta"
+    bl_options = {'REGISTER', 'INTERNAL'}
+
+    tool: bpy.props.EnumProperty(
+        name="Ferramenta",
+        items=[('SELECT', "Selecionar/Mover", "Selecionar trechos e arrastar vértices"),
+               ('DRAW', "Construir Parede", "Desenhar paredes a lápis"),
+               ('INVERT', "Inverter Sentido", "Inverter o sentido da parede clicada"),
+               ('MOVE', "Mover", "Deslocar as paredes ativas em qualquer direção (BUG-20261117-EELF)"),
+               ('MEASURE', "Medir", "Clique dois pontos para ver a distância entre eles"),
+               ('ADD_NODE', "Adicionar Vértice", "Dividir o trecho no ponto clicado"),
+               ('REMOVE_NODE', "Remover Vértice", "Unir os trechos do vértice clicado")])  # type: ignore
+
+    def execute(self, context):
+        _state(context).tool = self.tool
+        s = props.session()
+        if s is not None:
+            s.redraw()
+        return {'FINISHED'}
+
+
 class BTM_OT_WallEditorFit(bpy.types.Operator):
     """Enquadra todas as paredes na planta"""
     bl_idname = "caffmob.wall_editor_fit"
@@ -1317,8 +1386,68 @@ class BTM_OT_WallEditorFit(bpy.types.Operator):
         return {'FINISHED'}
 
 
+class BTM_OT_WallEditorPrint(bpy.types.Operator):
+    """Imprime a planta baixa do editor"""
+    bl_idname = "caffmob.wall_editor_print"
+    bl_label = "Imprimir Planta Baixa"
+    bl_description = "Salva a planta baixa da vista num PDF A4 pronto para impressão"
+    bl_options = {'REGISTER'}
+
+    filepath: bpy.props.StringProperty(
+        name="Arquivo",
+        description="Caminho do PDF da planta baixa",
+        subtype='FILE_PATH',
+        default="//planta-baixa.pdf"
+    )  # type: ignore
+
+    filter_glob: bpy.props.StringProperty(
+        default="*.pdf",
+        options={'HIDDEN'}
+    )  # type: ignore
+
+    def invoke(self, context, event):
+        if props.session() is None:
+            self.report({'WARNING'}, tr("Abra o editor de paredes para imprimir a planta."))
+            return {'CANCELLED'}
+        base = bpy.path.basename(bpy.data.filepath).rsplit('.', 1)[0] if bpy.data.filepath else "projeto"
+        self.filepath = f"//{base}_planta-baixa.pdf"
+        context.window_manager.fileselect_add(self)
+        return {'RUNNING_MODAL'}
+
+    def execute(self, context):
+        s = props.session()
+        if s is None:
+            self.report({'WARNING'}, tr("Abra o editor de paredes para imprimir a planta."))
+            return {'CANCELLED'}
+        from . import impressao
+        state = _state(context)
+        unidade = units.get_scene_length_unit(context.scene)
+        tracos = impressao.coletar_v2(s.v2, unidade) if s.v2 else impressao.coletar_plano(s.plan, unidade)
+        if state.plant_low:                      # os objetos da planta baixa entram como hachura (BUG-20261117-JXDJ)
+            from . import scene_io
+            objetos = scene_io.plant_objects(context.scene, state.cut_height)
+            tracos += impressao.tracos_da_planta(objetos, state.material_color_mode == 'SOLID')
+        caixa = vista_em_metros(s)
+        if not tracos or impressao.limites(tracos) is None:
+            self.report({'WARNING'}, tr("Não há planta para imprimir."))
+            return {'CANCELLED'}
+        dados, denominador = impressao.pagina_pdf(tracos, caixa, tr("Planta baixa"), unidade)
+        caminho = bpy.path.abspath(self.filepath)
+        if not caminho.lower().endswith('.pdf'):
+            caminho += '.pdf'
+        try:
+            with open(caminho, 'wb') as arquivo:
+                arquivo.write(dados)
+        except OSError as exc:
+            self.report({'ERROR'}, tr("Não foi possível salvar o PDF: {}").format(exc))
+            return {'CANCELLED'}
+        escala = tr("1:{}").format(denominador) if denominador else tr("ajustada à folha")
+        self.report({'INFO'}, tr("Planta baixa salva em {} ({})").format(caminho, escala))
+        return {'FINISHED'}
+
+
 classes = (BTM_OT_WallEditor, BTM_OT_WallEditorModal, BTM_OT_WallEditorOk, BTM_OT_WallEditorCancel,
-           BTM_OT_WallEditorFit)
+           BTM_OT_WallEditorTool, BTM_OT_WallEditorFit, BTM_OT_WallEditorPrint)
 
 
 def register():

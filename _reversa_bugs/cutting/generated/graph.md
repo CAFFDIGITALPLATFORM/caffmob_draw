@@ -1,19 +1,21 @@
-<!-- GENERATED, DO NOT EDIT: regenerado por /reversa-debugger-graph em 2026-10-14T03:52:14+00:00 a partir de 1 bugs -->
+<!-- GENERATED, DO NOT EDIT: regenerado por /reversa-debugger-graph em 2026-11-18T15:34:10+00:00 a partir de 1 bugs -->
 
 # Grafo · cutting
 
 ```mermaid
 graph LR
-  BUG_20261012_YUDY["#138 Shift+D num módulo repete o btm_uid e a…"]
+  BUG_20261012_YUDY["#138 Shift+D num módulo repete o btm_uid e as…"]
   BUG_20261012_YUDY -.->|related-to| BUG_20261011_SKDL
 ```
 
 ## Clusters
 
-Nenhum arquivo concentra dois ou mais bugs.
+
+Leitura: 1 bugs convergem em `caffmob_draw/cutting/part_sources.py`, o maior ponto de convergência do contexto. Nenhum bug aberto neste contexto: o cluster mostra onde as correções se acumularam.
 
 ## Impact score
 
-Heurística de triagem (não substitui priority/severity): só arestas supported/confirmed contam.
+Heurística de triagem (não substitui priority/severity): causados ×3, bloqueados ×2, regressões ×4, relacionados ×1 (no máximo 3 no total), só arestas supported/confirmed.
 
-Todas as relações abertas estão como `proposed`: score 0 para todos.
+| # | ID | score |
+|---|---|---|

@@ -1,4 +1,4 @@
-<!-- GENERATED, DO NOT EDIT: regenerado por /reversa-debugger-graph em 2026-11-17T19:42:35+00:00 a partir de 15 bugs -->
+<!-- GENERATED, DO NOT EDIT: regenerado por /reversa-debugger-graph em 2026-11-18T15:34:10+00:00 a partir de 16 bugs -->
 
 # Bugs × specs · editor-de-paredes
 
@@ -14,7 +14,10 @@
 | `_reversa_sdd/addenda/bug-BUG-20261007-VQ72-v001.md` | nenhum | nenhum | BUG-20261007-VQ72 |
 | `_reversa_sdd/addenda/bug-BUG-20261007-YIMY-v001.md` | nenhum | nenhum | BUG-20261007-YIMY |
 | `_reversa_sdd/addenda/bug-BUG-20261007-ZZUK-v001.md` | nenhum | nenhum | BUG-20261007-ZZUK |
+| `_reversa_sdd/addenda/bug-BUG-20261117-6KBC-v001.md` | nenhum | nenhum | BUG-20261117-6KBC |
+| `_reversa_sdd/addenda/bug-BUG-20261117-744U-v001.md` | nenhum | nenhum | BUG-20261117-744U |
 | `_reversa_sdd/addenda/bug-BUG-20261117-V4I3-v001.md` | nenhum | nenhum | BUG-20261117-V4I3 |
+| `_reversa_sdd/addenda/bug-BUG-20261118-PLNT-v001.md` | nenhum | nenhum | BUG-20261118-PLNT |
 | `_reversa_sdd/data/requirements.md` | nenhum | nenhum | BUG-20261007-TBY3 |
 | `_reversa_sdd/domain.md#2.1 Regras de Paredes e Piso` | nenhum | nenhum | BUG-20261007-A2G7 |
 | `_reversa_sdd/domain.md#2.2 Regras de Snapping e Movimentação de Aberturas` | nenhum | nenhum | BUG-20261007-YIMY |
@@ -23,16 +26,16 @@
 | `_reversa_sdd/measure/requirements.md` | nenhum | nenhum | BUG-20261117-V4I3 |
 | `_reversa_sdd/operators/edge-cases.md#1.2` | nenhum | nenhum | BUG-20261007-A2G7 |
 | `_reversa_sdd/wall_editor/requirements.md` | nenhum | nenhum | BUG-20261006-KFAR, BUG-20261007-VQ72, BUG-20261007-YIMY, BUG-20261007-ZZUK |
-| `_reversa_sdd/walls2d/design.md#Interface` | BUG-20261117-6KBC, BUG-20261117-RP9Q | nenhum | BUG-20261117-EELF |
-| `_reversa_sdd/walls2d/design.md#Ponte com a cena` | BUG-20261117-4MF7 | nenhum | nenhum |
-| `_reversa_sdd/walls2d/requirements.md#RF-02` | BUG-20261117-6KBC | nenhum | nenhum |
+| `_reversa_sdd/walls2d/design.md#Interface` | nenhum | nenhum | BUG-20261117-6KBC, BUG-20261117-EELF, BUG-20261117-RP9Q |
+| `_reversa_sdd/walls2d/design.md#Ponte com a cena` | nenhum | nenhum | BUG-20261117-4MF7 |
+| `_reversa_sdd/walls2d/requirements.md#RF-02` | nenhum | nenhum | BUG-20261117-6KBC |
 | `_reversa_sdd/walls2d/requirements.md#RF-03` | nenhum | nenhum | BUG-20261117-EELF |
 | `_reversa_sdd/walls2d/requirements.md#RF-05` | nenhum | nenhum | BUG-20261117-AKYJ |
-| `_reversa_sdd/walls2d/requirements.md#RF-08` | BUG-20261117-4MF7 | nenhum | nenhum |
-| `_reversa_sdd/walls2d/requirements.md#RF-13` | BUG-20261117-6OXN, BUG-20261117-744U, BUG-20261117-RP9Q | nenhum | BUG-20261117-AKYJ, BUG-20261117-JXDJ, BUG-20261117-V4I3 |
+| `_reversa_sdd/walls2d/requirements.md#RF-08` | nenhum | nenhum | BUG-20261117-4MF7 |
+| `_reversa_sdd/walls2d/requirements.md#RF-13` | nenhum | nenhum | BUG-20261117-6OXN, BUG-20261117-744U, BUG-20261117-AKYJ, BUG-20261117-JXDJ, BUG-20261117-RP9Q, BUG-20261117-V4I3, BUG-20261118-PLNT |
 | `_reversa_sdd/walls2d/requirements.md#RN-25` | nenhum | nenhum | BUG-20261117-EELF |
 | `docs/usuario/editor-paredes-e-mover-sobre.md#1. Editor de Paredes (planta 2D)` | nenhum | nenhum | BUG-20261117-JXDJ |
-| **spec-gap** | BUG-20261117-4MF7, BUG-20261117-6KBC, BUG-20261117-6OXN, BUG-20261117-744U | nenhum | BUG-20261006-KFAR, BUG-20261007-VQ72, BUG-20261007-ZZUK, BUG-20261117-AKYJ, BUG-20261117-EELF, BUG-20261117-JXDJ, BUG-20261117-V4I3 |
+| **spec-gap** | nenhum | nenhum | BUG-20261006-KFAR, BUG-20261007-VQ72, BUG-20261007-ZZUK, BUG-20261117-4MF7, BUG-20261117-6KBC, BUG-20261117-6OXN, BUG-20261117-744U, BUG-20261117-AKYJ, BUG-20261117-EELF, BUG-20261117-JXDJ, BUG-20261117-RP9Q, BUG-20261117-V4I3 |
 
 ## Adendos de bug vigentes
 
@@ -73,7 +76,13 @@
 - `_reversa_sdd/addenda/bug-BUG-20261023-TAMR-v001.md`
 - `_reversa_sdd/addenda/bug-BUG-20261023-TU4V-v001.md`
 - `_reversa_sdd/addenda/bug-BUG-20261023-WWZT-v001.md`
+- `_reversa_sdd/addenda/bug-BUG-20261117-4MF7-v001.md`
+- `_reversa_sdd/addenda/bug-BUG-20261117-6KBC-v001.md`
+- `_reversa_sdd/addenda/bug-BUG-20261117-6OXN-v001.md`
+- `_reversa_sdd/addenda/bug-BUG-20261117-744U-v001.md`
 - `_reversa_sdd/addenda/bug-BUG-20261117-AKYJ-v001.md`
 - `_reversa_sdd/addenda/bug-BUG-20261117-EELF-v001.md`
 - `_reversa_sdd/addenda/bug-BUG-20261117-JXDJ-v001.md`
+- `_reversa_sdd/addenda/bug-BUG-20261117-RP9Q-v001.md`
 - `_reversa_sdd/addenda/bug-BUG-20261117-V4I3-v001.md`
+- `_reversa_sdd/addenda/bug-BUG-20261118-PLNT-v001.md`

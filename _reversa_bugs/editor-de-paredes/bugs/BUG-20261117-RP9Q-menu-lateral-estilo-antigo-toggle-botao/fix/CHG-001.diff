@@ -1,0 +1,136 @@
+diff --git a/tests/blender_bug_RP9Q_paineis.py b/tests/blender_bug_RP9Q_paineis.py
+new file mode 100644
+index 00000000..9462e706
+--- /dev/null
++++ b/tests/blender_bug_RP9Q_paineis.py
+@@ -0,0 +1,130 @@
++"""BUG-20261117-RP9Q (#152): ferramentas do menu lateral em botões de toggle.
++
++Run: blender --background --factory-startup --python-exit-code 1 --python tests/blender_bug_RP9Q_paineis.py
++
++Reprodução: desenhar o painel Ferramentas e conferir que cada ferramenta do enum `tool` vira um botão do operador
++`caffmob.wall_editor_tool`, com o ícone do próprio enum e o ativo pressionado; e que "Linhas Magnéticas" sai como
++toggle. Antes da correção o painel desenha o enum expandido direto (nenhum botão desses) e o booleano como caixa de
++marcar. Regressões: o operador grava a ferramenta e recusa valor inválido, as duas telas desenham a mesma grade e os
++painéis Confirmar, Painel e Grid continuam desenhando o que existia.
++"""
++
++import sys
++import types
++from pathlib import Path
++
++import bpy
++
++ROOT = Path(__file__).resolve().parents[1]
++sys.path.insert(0, str(ROOT))
++import caffmob_draw as addon  # noqa: E402
++
++addon.register()
++addon.load_file_post(None)
++
++from caffmob_draw.walls2d import classico_v2, model, panels, props  # noqa: E402
++
++ctx = bpy.context
++scene = ctx.scene
++for obj in list(scene.objects):
++    bpy.data.objects.remove(obj, do_unlink=True)
++
++FERRAMENTAS = ['SELECT', 'DRAW', 'INVERT', 'MOVE', 'MEASURE', 'ADD_NODE', 'REMOVE_NODE']
++ROTULOS = ['Selecionar', 'Construir', 'Inverter', 'Mover', 'Medir', 'Adicionar', 'Remover']
++
++
++class Layout:
++    """UILayout de mentira: grava rótulos, propriedades e botões do N-panel."""
++
++    def __init__(self, registro):
++        self.r = registro
++        self.enabled = True
++        self.alert = True
++        self.scale_y = 1
++        self.use_property_split = False
++        self.use_property_decorate = True
++
++    def label(self, text='', icon='NONE'):
++        self.r.append(('label', text, icon))
++
++    def prop(self, dono, nome, **kw):
++        self.r.append(('prop', nome, kw))
++
++    def operator(self, idname, text='', **kw):
++        self.r.append(('op', idname, text, kw))
++        return types.SimpleNamespace()
++
++    def row(self, **kw):
++        return Layout(self.r)
++
++    box = column = row
++
++    def separator(self):
++        pass
++
++
++def desenhar(painel, registro):
++    painel.draw(types.SimpleNamespace(layout=Layout(registro)), ctx)
++    return registro
++
++
++def botoes(registro):
++    return [rec for rec in registro if rec[0] == 'op' and rec[1] == 'caffmob.wall_editor_tool']
++
++
++def estado():
++    return ctx.window_manager.btm_wall_editor
++
++
++# 1. REPRODUÇÃO: cada ferramenta do enum vira um botão com ícone, e o ativo fica pressionado.
++estado().tool = 'SELECT'
++r = desenhar(panels.BTM_PT_WallEditorTools, [])
++assert len(botoes(r)) == len(FERRAMENTAS), \
++    f"REPRODUÇÃO (#152): painel sem botões de ferramenta ({len(botoes(r))})"
++assert [rec[2] for rec in botoes(r)] == ROTULOS, [rec[2] for rec in botoes(r)]
++itens = list(estado().bl_rna.properties['tool'].enum_items)
++assert [rec[3].get('icon') for rec in botoes(r)] == [i.icon for i in itens], [rec[3].get('icon') for rec in botoes(r)]
++assert [rec[3].get('depress') for rec in botoes(r)] == [True] + [False] * 6, [rec[3].get('depress') for rec in botoes(r)]
++
++# 2. REPRODUÇÃO: "Linhas Magnéticas" é um toggle, não uma caixa de marcar.
++r = desenhar(panels.BTM_PT_WallEditorGrid, [])
++magnetico = [rec for rec in r if rec[0] == 'prop' and rec[1] == 'magnetic']
++assert magnetico and magnetico[0][2].get('toggle') is True, "REPRODUÇÃO (#152): Linhas Magnéticas sem toggle"
++assert magnetico[0][2].get('icon'), "o toggle precisa de ícone"
++
++# 3. O operador grava a ferramenta; valor inválido não muda o estado.
++estado().tool = 'SELECT'
++assert bpy.ops.caffmob.wall_editor_tool(tool='DRAW') == {'FINISHED'}
++assert estado().tool == 'DRAW', estado().tool
++try:
++    bpy.ops.caffmob.wall_editor_tool(tool='NAO_EXISTE')
++    raise AssertionError("ferramenta inválida devia ser recusada pelo enum")
++except TypeError:
++    pass
++assert estado().tool == 'DRAW', estado().tool
++
++# 4. As duas telas desenham a mesma grade (rascunho clássico e cena v2).
++s = props.start(model.WallPlan([model.rectangle(3.0, 2.0)]), scene.name)
++s.v2 = types.SimpleNamespace(desenhando=False, paredes=lambda: [], ortogonal=False)
++r = []
++classico_v2.painel_ferramentas(Layout(r), ctx, s)
++assert len(botoes(r)) == len(FERRAMENTAS), f"cena v2 com {len(botoes(r))} botões"
++assert any(rec[0] == 'op' and rec[1] == 'caffmob.wall_editor_fit' for rec in r), "Enquadrar continua no painel"
++r = []
++classico_v2.painel_grade(Layout(r), ctx, s)
++assert any(rec[0] == 'prop' and rec[1] == 'magnetic' and rec[2].get('toggle') for rec in r), "grade v2 sem toggle"
++
++# 5. Regressões: painéis Confirmar, Painel e Grid continuam desenhando o que existia.
++s.v2 = None                                  # volta ao rascunho clássico, sem a prancheta v2
++s.selected = (0, 0)
++r = desenhar(panels.BTM_PT_WallEditorSegment, [])
++assert any(rec[0] == 'prop' and rec[1] == 'length_text' for rec in r), "o painel do trecho perdeu os campos"
++r = desenhar(panels.BTM_PT_WallEditorConfirm, [])
++ids = [rec[1] for rec in r if rec[0] == 'op']
++assert 'caffmob.wall_editor_ok' in ids and 'caffmob.wall_editor_cancel' in ids, ids
++r = desenhar(panels.BTM_PT_WallEditorGrid, [])
++campos = [rec[1] for rec in r if rec[0] == 'prop']
++assert {'grid_size', 'magnetic', 'new_direction', 'new_thickness', 'new_height'} <= set(campos), campos
++props.end()
++
++print("blender_bug_RP9Q_paineis: OK")

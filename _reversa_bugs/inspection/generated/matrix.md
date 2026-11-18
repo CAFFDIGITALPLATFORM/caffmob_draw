@@ -1,8 +1,8 @@
-<!-- GENERATED, DO NOT EDIT: regenerado por /reversa-debugger-graph em 2026-10-14T03:52:14+00:00 a partir de 9 bugs -->
+<!-- GENERATED, DO NOT EDIT: regenerado por /reversa-debugger-graph em 2026-11-18T15:34:10+00:00 a partir de 9 bugs -->
 
 # Relações · inspection
 
 | origem | tipo | destino | state | evidência? |
 |---|---|---|---|---|
-| BUG-20261011-FVQI | related-to | BUG-20261011-TIPN (collision) | supported | sim |
-| BUG-20261011-PGMI | related-to | BUG-20261011-B5JP | proposed | não |
+| BUG-20261011-PGMI | related-to | BUG-20261011-B5JP (inspection) | proposed | não |
+| BUG-20261011-FVQI | related-to | BUG-20261011-TIPN (collision/collision) | supported | sim |

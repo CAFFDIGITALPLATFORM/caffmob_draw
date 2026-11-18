@@ -1,4 +1,4 @@
-<!-- GENERATED, DO NOT EDIT: regenerado por /reversa-debugger-graph em 2026-10-14T03:52:14+00:00 a partir de 11 bugs -->
+<!-- GENERATED, DO NOT EDIT: regenerado por /reversa-debugger-graph em 2026-11-18T15:34:10+00:00 a partir de 11 bugs -->
 
 # Bugs · aggregates
 
@@ -23,14 +23,14 @@
 |---|---|
 | fixed | 11 |
 
-- #33 BUG-20261011-3VD7 (fixed) · travado: Geometria livre convertida em agregado sai duplicada na produção com o mesmo uid
-- #39 BUG-20261011-4OV4 (fixed) · travado: install.install levanta TypeError numa esquadria sem membros
-- #41 BUG-20261011-5DDZ (fixed) · travado: Mensagem 'Converta a parede pelo editor de paredes' nunca aparece
 - #14 BUG-20261011-DXOV (fixed) · travado: Apagar parede com 'Apagar também os agregados' ligado não apaga os agregados dos módulos
-- #37 BUG-20261011-I7QE (fixed) · travado: Folha aberta fica fora do lugar depois de mudar parâmetros
-- #40 BUG-20261011-MQPR (fixed) · travado: Ícone do pivô não atualiza quando o movimento muda
-- #35 BUG-20261011-NQ2L (fixed) · travado: Desconverter depois de mover o pai deixa o objeto na posição errada
-- #38 BUG-20261011-PON4 (fixed) · travado: Caixa local errada quando o pai é Empty ou grupo
-- #36 BUG-20261011-VPY5 (fixed) · travado: Exclusão de colisão larga demais em folha sem módulo
-- #34 BUG-20261011-WOPM (fixed) · travado: Renomear agregado com furo real deixa furo fantasma na usinagem
 - #32 BUG-20261011-ZKQ7 (fixed) · travado: Checagem de descendência invertida em can_convert permite ciclo de parentesco
+- #33 BUG-20261011-3VD7 (fixed) · travado: Geometria livre convertida em agregado sai duplicada na produção com o mesmo uid
+- #34 BUG-20261011-WOPM (fixed) · travado: Renomear agregado com furo real deixa furo fantasma na usinagem
+- #35 BUG-20261011-NQ2L (fixed) · travado: Desconverter depois de mover o pai deixa o objeto na posição errada
+- #36 BUG-20261011-VPY5 (fixed) · travado: Exclusão de colisão larga demais em folha sem módulo
+- #37 BUG-20261011-I7QE (fixed) · travado: Folha aberta fica fora do lugar depois de mudar parâmetros
+- #38 BUG-20261011-PON4 (fixed) · travado: Caixa local errada quando o pai é Empty ou grupo
+- #39 BUG-20261011-4OV4 (fixed) · travado: install.install levanta TypeError numa esquadria sem membros
+- #40 BUG-20261011-MQPR (fixed) · travado: Ícone do pivô não atualiza quando o movimento muda
+- #41 BUG-20261011-5DDZ (fixed) · travado: Mensagem 'Converta a parede pelo editor de paredes' nunca aparece

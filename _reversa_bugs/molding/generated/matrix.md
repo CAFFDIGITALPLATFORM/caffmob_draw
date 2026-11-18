@@ -1,7 +1,7 @@
-<!-- GENERATED, DO NOT EDIT: regenerado por /reversa-debugger-graph em 2026-10-14T03:52:14+00:00 a partir de 5 bugs -->
+<!-- GENERATED, DO NOT EDIT: regenerado por /reversa-debugger-graph em 2026-11-18T15:34:10+00:00 a partir de 5 bugs -->
 
 # Relações · molding
 
 | origem | tipo | destino | state | evidência? |
 |---|---|---|---|---|
-| BUG-20261011-QT2G | related-to | BUG-20261011-VHMP | supported | sim |
+| BUG-20261011-QT2G | related-to | BUG-20261011-VHMP (molding) | supported | sim |

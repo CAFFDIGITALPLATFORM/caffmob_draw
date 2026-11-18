@@ -1,0 +1,10 @@
+--- a/caffmob_draw/walls2d/classico_v2.py
++++ b/caffmob_draw/walls2d/classico_v2.py
+@@ -833,6 +833,7 @@
+             _acao(layout, N_('Confirmar exclusÃ£o e dependentes'), 'confirmar_excluir', icon='TRASH')
+     total = sum(t['comprimento'] for p in v.paredes() for t in p['segmentos']) / 1000
+     layout.label(text=tr("{} parede(s) Â· {} de parede").format(len(v.paredes()), draw.length_label(total)))
++    layout.operator("caffmob.wall_editor_print", text="Imprimir", icon='FILE')   # BUG-20261117-744U
+     row = layout.row(align=True)
+     row.scale_y = 1.4
+     row.operator("caffmob.wall_editor_ok", text="OK", icon='CHECKMARK')

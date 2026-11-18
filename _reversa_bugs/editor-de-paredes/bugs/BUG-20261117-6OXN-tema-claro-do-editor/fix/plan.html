@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Plano de correção · BUG-20261117-6OXN · tema claro do editor</title>
+<style>
+  :root {
+    --bg: #0f1115; --panel: #171a21; --panel2: #1e222b; --border: #2c323d;
+    --text: #e7eaf0; --muted: #9aa3b2; --accent: #ff9e2c; --ok: #4ecb71; --warn: #e5c07b;
+    --link: #6cb6ff;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text);
+         font: 15px/1.55 "Segoe UI", system-ui, -apple-system, sans-serif; }
+  main { max-width: 1040px; margin: 0 auto; padding: 32px 20px 64px; }
+  h1 { font-size: 1.55rem; margin: 0 0 6px; }
+  h2 { font-size: 1.05rem; margin: 34px 0 12px; color: var(--accent); text-transform: uppercase; letter-spacing: .06em; }
+  h3 { font-size: .98rem; margin: 20px 0 8px; }
+  .sub { color: var(--muted); margin: 0; }
+  .meta { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0 0; }
+  .tag { background: var(--panel2); border: 1px solid var(--border); border-radius: 999px;
+         padding: 3px 11px; font-size: .82rem; color: var(--muted); }
+  .tag b { color: var(--text); font-weight: 600; }
+  .card { background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 18px 20px; margin: 14px 0; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  @media (max-width: 760px) { .grid2 { grid-template-columns: 1fr; } }
+  table { width: 100%; border-collapse: collapse; margin: 8px 0 0; font-size: .92rem; }
+  th, td { text-align: left; padding: 9px 10px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  th { color: var(--muted); font-weight: 600; font-size: .82rem; text-transform: uppercase; letter-spacing: .04em; }
+  tr:last-child td { border-bottom: 0; }
+  code, .mono { font-family: "Cascadia Code", Consolas, monospace; font-size: .86em; }
+  code { background: #12151b; border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px; }
+  a { color: var(--link); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  .state { display: inline-block; border-radius: 6px; padding: 1px 8px; font-size: .78rem;
+           border: 1px solid currentColor; }
+  .confirmed { color: var(--ok); }
+  .proposed { color: var(--warn); }
+  ul { margin: 6px 0 0 0; padding-left: 20px; }
+  li { margin: 4px 0; }
+  .callout { border-left: 3px solid var(--accent); background: #1b1a16; padding: 12px 16px; border-radius: 0 8px 8px 0; }
+  .swatches { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 8px; }
+  .sw { width: 92px; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; font-size: .7rem; }
+  .sw .chip { height: 34px; }
+  .sw .cap { padding: 4px 6px; color: var(--muted); }
+  .mock { background: #fff; border: 1px solid var(--border); border-radius: 10px; height: 190px; position: relative;
+          overflow: hidden; }
+  .mock .bar { position: absolute; inset: 0 0 auto 0; height: 26px; background: #1b1f27; border-bottom: 1px solid #000; }
+  .mock .lupa { position: absolute; left: 7px; top: 5px; width: 16px; height: 16px; border: 2px solid #8a93a3;
+                border-radius: 50%; }
+  .mock svg { position: absolute; inset: 26px 0 0 0; width: 100%; height: 164px; }
+  .graph { display: flex; flex-direction: column; gap: 10px; align-items: center; margin: 18px 0 4px; }
+  .node { display: block; width: min(560px, 100%); background: var(--panel2); border: 1px solid var(--border);
+          border-radius: 10px; padding: 10px 14px; color: var(--text); }
+  .node:hover { border-color: var(--accent); text-decoration: none; }
+  .node .n { color: var(--muted); font-size: .78rem; text-transform: uppercase; letter-spacing: .05em; }
+  .node.center { border-color: var(--accent); box-shadow: 0 0 0 1px #ff9e2c33 inset; }
+  .edge { color: var(--muted); font-size: .8rem; }
+  footer { color: var(--muted); font-size: .82rem; margin-top: 44px; border-top: 1px solid var(--border); padding-top: 14px; }
+</style>
+</head>
+<body>
+<main>
+
+<h1>Tema claro no Editor de Paredes</h1>
+<p class="sub">Relatório do plano de correção, gerado antes da mudança de código (gate 4.1 do /reversa-debugger-fix).</p>
+<div class="meta">
+  <span class="tag">Bug <b>#147</b></span>
+  <span class="tag"><b>BUG-20261117-6OXN</b></span>
+  <span class="tag">contexto <b>editor-de-paredes</b></span>
+  <span class="tag">plano de <b>2026-11-18</b></span>
+  <span class="tag">severidade <b>low</b></span>
+  <span class="tag">prioridade <b>P3</b></span>
+  <span class="tag">risco da mudança <b>média</b></span>
+</div>
+
+<h2>1. O pedido e a causa</h2>
+<div class="card">
+  <p><b>Pedido do titular.</b> Poder escolher a cor do editor, que hoje é sempre escuro, incluindo branco, e a escolha
+  deve sobreviver a fechar e reabrir o editor, sem gravar dados da cena.</p>
+  <p><b>Causa</b> <span class="state confirmed">confirmed</span>. A paleta é uma constante de módulo e o fundo é um
+  valor fixo dela; não existe preferência, toggle nem leitura de configuração.</p>
+  <ul>
+    <li><code>ops_editor.py:46-58</code>: <code>COLORS</code> com <code>background (0.12, 0.12, 0.13, 1)</code>, grade,
+      parede, seleção, nó, prévia, referência e medida. O enum de tipo de parede ainda usa
+      <code>cores.POR_TIPO</code>, com o cinza claro <code>(0.85, 0.85, 0.88)</code>.</li>
+    <li><code>ops_editor.draw_plan</code> pinta a região inteira com <code>COLORS['background']</code> e usa
+      <code>draw.COLORS['muted'|'warning']</code> nos textos da planta.</li>
+    <li><code>classico_v2.desenhar:127</code> faz <code>C = ed.COLORS</code>, então a cena v2 herda a mesma paleta fixa,
+      inclusive para preencher o recorte das aberturas.</li>
+    <li><code>props.py</code> não tem nenhuma propriedade de tema, cor ou fundo, e a sessão não guarda isso.</li>
+    <li>O add-on já tem caminho de arquivo do usuário (<code>bpy.utils.extension_path_user</code>, usado por
+      <code>standards/</code>, <code>object_library/</code> e <code>customize/</code>).</li>
+  </ul>
+</div>
+
+<h2>2. Desenho proposto</h2>
+<div class="grid2">
+  <div class="card">
+    <h3>Duas paletas, um ponto de escolha</h3>
+    <p>Um módulo puro novo, <code>walls2d/tema.py</code>, define <code>ESCURO</code> (a paleta atual, sem mudar nenhum
+    valor) e <code>CLARO</code>, com o mesmo conjunto de chaves. O desenho das duas telas pega a paleta pelo estado do
+    editor, então não existe um segundo lugar decidindo cor.</p>
+    <p>As cores por tipo de parede ganham variantes escuras em <code>cores.py</code>, usadas só no tema claro; no escuro
+    nada muda.</p>
+  </div>
+  <div class="card">
+    <h3>Prévia do tema claro</h3>
+    <div class="mock">
+      <div class="bar"><div class="lupa"></div></div>
+      <svg viewBox="0 0 300 164" preserveAspectRatio="none">
+        <g stroke="#00000014" stroke-width="1">
+          <path d="M0 40 H300 M0 80 H300 M0 120 H300 M50 0 V164 M100 0 V164 M150 0 V164 M200 0 V164 M250 0 V164"/>
+        </g>
+        <g stroke="#2e2e33" stroke-width="2" fill="none">
+          <path d="M60 40 H240 V130 H60 Z"/>
+        </g>
+        <g stroke="#d96b00" stroke-width="2" fill="none">
+          <path d="M60 40 H150"/>
+        </g>
+        <text x="95" y="34" font-size="9" fill="#2e2e33">4,00 m</text>
+        <rect x="56" y="36" width="8" height="8" fill="#0d59cc"/>
+        <rect x="146" y="36" width="8" height="8" fill="#0d59cc"/>
+        <text x="10" y="152" font-size="9" fill="#52545f">Selecionar/Mover · clique numa parede</text>
+      </svg>
+    </div>
+  </div>
+</div>
+<div class="card">
+  <h3>Paleta clara proposta (RGBA)</h3>
+  <div class="swatches">
+    <div class="sw"><div class="chip" style="background:#fcfcfd"></div><div class="cap">fundo 0,99</div></div>
+    <div class="sw"><div class="chip" style="background:#2e2e33"></div><div class="cap">parede</div></div>
+    <div class="sw"><div class="chip" style="background:#d96b00"></div><div class="cap">seleção</div></div>
+    <div class="sw"><div class="chip" style="background:#0d59cc"></div><div class="cap">vértice</div></div>
+    <div class="sw"><div class="chip" style="background:#00801f"></div><div class="cap">prévia</div></div>
+    <div class="sw"><div class="chip" style="background:#565860"></div><div class="cap">referência</div></div>
+    <div class="sw"><div class="chip" style="background:#8c1a9e"></div><div class="cap">medida</div></div>
+    <div class="sw"><div class="chip" style="background:#52545f"></div><div class="cap">texto secundário</div></div>
+  </div>
+  <p class="sub">A paleta escura continua exatamente a de hoje. A clara troca as linhas claras por equivalentes escuros,
+  para o contraste sobre branco.</p>
+</div>
+<div class="card">
+  <p><b>Onde se escolhe.</b> Uma caixa "Aparência" no painel Grid, com duas opções (Escuro / Claro). O estado do editor
+  já é compartilhado pelas duas telas, então o toggle vale para o rascunho e para a cena v2.</p>
+  <p><b>Persistência.</b> A escolha vai para <code>extension_path_user(&lt;pacote&gt;, path="walls2d")/tema.json</code>,
+  lida na abertura do editor. Nada é gravado em propriedade da cena nem no <code>.blend</code>. Sem extensão instalada
+  (teste ou execução do código-fonte), o caminho cai para <code>bpy.utils.user_resource('CONFIG', ...)</code>, porque
+  <code>extension_path_user</code> levanta <code>ValueError</code> fora de uma extensão.</p>
+  <p><b>Barra superior.</b> A correção recomendada mantém a barra (lupa e botões) e os painéis nativos como estão: são
+  cromo do Blender e seguem o tema do Blender. O tema claro muda a planta, que é o pedido literal do titular.</p>
+</div>
+
+<h2>3. Correction Change Set proposto</h2>
+<table>
+  <thead><tr><th>CHG</th><th>Tipo</th><th>Artefato</th><th>Propósito</th></tr></thead>
+  <tbody>
+    <tr><td class="mono">CHG-001</td><td>test</td>
+      <td class="mono">tests/test_walls2d_tema.py</td>
+      <td>Paletas completas, normalização da preferência, contraste mínimo (3:1 para linhas, 4,5:1 para texto) nos dois
+          temas, variantes de cor por tipo e ida e volta do arquivo num diretório temporário.</td></tr>
+    <tr><td class="mono">CHG-002</td><td>test</td>
+      <td class="mono">tests/blender_bug_6OXN_tema.py</td>
+      <td>Reprodução (sem propriedade de tema) e regressões: preferência lida na abertura, toggle no painel Grid
+          desenha as duas opções, escolha grava o arquivo e o desenho usa a paleta escolhida.</td></tr>
+    <tr><td class="mono">CHG-003</td><td>code</td>
+      <td class="mono">caffmob_draw/walls2d/tema.py (novo)</td>
+      <td><code>ESCURO</code>, <code>CLARO</code>, <code>paleta(nome)</code>, <code>ler()</code>, <code>salvar()</code>
+          e o caminho do arquivo (com o fallback fora de extensão). Python puro, menos o caminho.</td></tr>
+    <tr><td class="mono">CHG-004</td><td>code</td>
+      <td class="mono">caffmob_draw/walls2d/cores.py</td>
+      <td><code>cor(wall_type, claro=False)</code> com as variantes escuras para o fundo branco.</td></tr>
+    <tr><td class="mono">CHG-005</td><td>code</td>
+      <td class="mono">caffmob_draw/walls2d/props.py</td>
+      <td>Enum <code>tema</code> no estado do editor, com <code>update</code> que grava a preferência e redesenha;
+          <code>start()</code> aplica a preferência salva.</td></tr>
+    <tr><td class="mono">CHG-006</td><td>code</td>
+      <td class="mono">caffmob_draw/walls2d/ops_editor.py</td>
+      <td><code>draw_plan</code> usa <code>tema.paleta(state.tema)</code> em vez de <code>COLORS</code>, inclusive nos
+          textos da planta; <code>COLORS</code> continua sendo a paleta escura (compatibilidade dos testes).</td></tr>
+    <tr><td class="mono">CHG-007</td><td>code</td>
+      <td class="mono">caffmob_draw/walls2d/classico_v2.py</td>
+      <td><code>desenhar</code> usa a paleta do tema e a cor de tipo com a variante certa.</td></tr>
+    <tr><td class="mono">CHG-008</td><td>code</td>
+      <td class="mono">caffmob_draw/walls2d/panels.py</td>
+      <td>Caixa "Aparência" no painel Grid, com o toggle de tema (as duas telas usam o mesmo painel).</td></tr>
+    <tr><td class="mono">CHG-009</td><td>configuration</td>
+      <td class="mono">caffmob_draw/data/translations/walls2d.json</td>
+      <td>"Aparência", "Escuro" e "Claro" em pt_BR e en_US.</td></tr>
+    <tr><td class="mono">CHG-010</td><td>specification</td>
+      <td class="mono">_reversa_sdd/addenda/bug-BUG-20261117-6OXN-v001.md</td>
+      <td>Adendo aditivo (<code>spec-gap</code>) do tema, da persistência e do escopo do cromo.</td></tr>
+  </tbody>
+</table>
+
+<h2>4. Testes planejados</h2>
+<div class="grid2">
+  <div class="card">
+    <h3>Reprodução (prova o pedido)</h3>
+    <ul>
+      <li>O estado do editor não tem propriedade de tema e o painel Grid não desenha nenhuma opção de cor. Hoje falha
+          na primeira asserção.</li>
+      <li>Depois: o toggle existe, com Escuro e Claro, e a paleta usada no desenho é a do tema escolhido.</li>
+    </ul>
+  </div>
+  <div class="card">
+    <h3>Regressão (protege o que existe)</h3>
+    <ul>
+      <li>Paleta escura idêntica à atual, chave por chave (nenhuma cor muda no tema de hoje).</li>
+      <li>Contraste mínimo nos dois temas para parede, seleção, vértice, prévia, referência, medida, texto e erro.</li>
+      <li>Preferência: gravar, reabrir e ler de volta; arquivo ausente ou JSON inválido cai no escuro, sem erro.</li>
+      <li>O editor abre normal com a preferência salva, e os painéis Ferramentas/Confirmar não mudam.</li>
+      <li><code>blender_002_smoke</code>, <code>blender_065_walls2d_v2</code> e <code>test_i18n_coverage</code> verdes.</li>
+    </ul>
+  </div>
+</div>
+
+<h2>5. Riscos e limites</h2>
+<div class="card">
+  <p><b>Risco da mudança: média.</b></p>
+  <ul>
+    <li>Toca o desenho das duas telas e mexe em preferência do usuário (arquivo no diretório de configuração).</li>
+    <li>Não altera dados da cena nem o <code>.blend</code>; a paleta escura fica idêntica e o toggle é reversível.</li>
+    <li>Contraste é verificado por conta de luminância relativa (WCAG): o teste protege os dois temas de nascerem
+        ilegíveis.</li>
+    <li>O teste não desenha com GPU em <code>--background</code>: ele prova a paleta escolhida e as chamadas de painel,
+        não os pixels. A conferência visual fica com o titular.</li>
+  </ul>
+  <h3>Fica fora da correção (Agent Notes)</h3>
+  <ul>
+    <li>Rever toda a UI do add-on: o tema vale para a planta do editor de paredes.</li>
+    <li>Tema automático pelo tema do Blender.</li>
+    <li>Cores por tipo de parede no tema escuro: continuam como estão.</li>
+    <li>Impressão e planta baixa com cores de CTB (#149 e #148): usam outra paleta, de papel.</li>
+  </ul>
+</div>
+
+<h2>6. Mini-grafo do bug</h2>
+<div class="graph">
+  <a class="node center" href="../bug.md">
+    <span class="n">BUG-20261117-6OXN · #147 · low/P3</span><br>
+    Editor de parede só no tema escuro, sem opção de fundo branco
+  </a>
+  <span class="edge">relacionado a (proposed)</span>
+  <a class="node" href="../../BUG-20261117-JXDJ-planta-baixa-com-corte-e-cores/bug.md">
+    <span class="n">BUG-20261117-JXDJ · #148 · resolved</span><br>
+    Planta baixa com corte e cores (mesma tela, outra paleta)
+  </a>
+</div>
+
+<h2>7. Matriz de relações</h2>
+<table>
+  <thead><tr><th>Origem</th><th>Tipo</th><th>Destino</th><th>Estado</th></tr></thead>
+  <tbody>
+    <tr>
+      <td><a href="../bug.md">#147 6OXN</a></td><td>related-to</td>
+      <td><a href="../../BUG-20261117-JXDJ-planta-baixa-com-corte-e-cores/bug.md">#148 JXDJ</a></td>
+      <td><span class="state proposed">proposed</span></td>
+    </tr>
+    <tr>
+      <td><a href="../bug.md">#147 6OXN</a></td><td>spec</td>
+      <td><code>_reversa_sdd/walls2d/requirements.md#RF-13</code></td>
+      <td><span class="state proposed">spec-gap</span></td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>8. Ordem sugerida</h2>
+<div class="card">
+  <p>Um bug nesta sessão. Se o #149 (impressão) vier depois, ele usa a paleta de papel do CTB e não a do tema; nada a
+  encadear agora.</p>
+</div>
+
+<footer>Gerado por /reversa-debugger-fix em 2026-11-18 · closure policy <code>local-software</code> · control mode
+<code>gated</code> · este arquivo é a proposta, o change set só entra depois da aprovação do titular.</footer>
+
+</main>
+</body>
+</html>

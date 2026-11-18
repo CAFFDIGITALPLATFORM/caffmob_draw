@@ -1,0 +1,39 @@
+diff --git a/caffmob_draw/walls2d/scene_io.py b/caffmob_draw/walls2d/scene_io.py
+index 0ca5594a..c45a03d2 100644
+--- a/caffmob_draw/walls2d/scene_io.py
++++ b/caffmob_draw/walls2d/scene_io.py
+@@ -144,24 +144,26 @@ def plant_objects(scene, cut_height):
+ 
+     Devolve lista de dicts com: nome, tipo, pontos 2D (contorno no piso), cor do material
+     (RGBA ou None), e se está acima do corte. Exclui paredes IS_WALL_BP, luzes e câmeras.
++
++    Só malhas entram: curvas, texto e vazios não têm malha para o contorno e o preenchimento e derrubavam o
++    desenho da planta (BUG-20261118, achado no Blender com objeto do tipo curva na cena).
+     """
+-    from ..data import units
+     objects = []
+     for obj in scene.objects:
+-        if obj.type not in ('MESH', 'CURVE', 'FONT'):
++        if obj.type != 'MESH' or obj.get('IS_WALL_BP'):
+             continue
+-        if obj.get('IS_WALL_BP'):
++        vertices = obj.data.vertices
++        if not vertices:                      # malha vazia não tem contorno
+             continue
++        world = obj.matrix_world
++        floor = min((world @ v.co).z for v in vertices)
+         # Objeto acima do corte: a base fica acima da altura de corte
+-        base_z = min((obj.matrix_world @ v.co).z for v in obj.data.vertices) if obj.data.vertices else 0.0
+-        if base_z >= cut_height:
++        if floor >= cut_height:
+             continue
+         # Contorno 2D no piso (arestas na cota mais baixa)
+-        floor = min((obj.matrix_world @ v.co).z for v in obj.data.vertices)
+         pts = []
+         for edge in obj.data.edges:
+-            a, b = (obj.matrix_world @ v.co for v in (obj.data.vertices[edge.vertices[0]],
+-                                                      obj.data.vertices[edge.vertices[1]]))
++            a, b = (world @ vertices[i].co for i in edge.vertices)
+             if abs(a.z - floor) < 1e-4 and abs(b.z - floor) < 1e-4:
+                 pts.append((a.x, a.y))
+                 pts.append((b.x, b.y))

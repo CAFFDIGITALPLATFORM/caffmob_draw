@@ -1,0 +1,91 @@
+--- a/005.diff
++++ b/005.diff
+@@ -11,6 +11,10 @@
+   "pt_BR": "A parede cresce para a esquerda da linha desenhada (face interna)",
+   "en_US": "The wall grows to the left of the drawn line (inner face)"
+  },
++ "Abra o editor de paredes para imprimir a planta.": {
++  "pt_BR": "Abra o editor de paredes para imprimir a planta.",
++  "en_US": "Open the wall editor to print the floor plan."
++ },
+  "Abre o Editor de Paredes: planta 2D para desenhar e editar as paredes do ambiente": {
+   "pt_BR": "Abre o Editor de Paredes: planta 2D para desenhar e editar as paredes do ambiente",
+   "en_US": "Opens the Wall Editor: a 2D plan to draw and edit the room walls"
+@@ -35,6 +39,10 @@
+   "pt_BR": "As paredes listadas passam ao pÃ©-direito das ConfiguraÃ§Ãµes (Mureta, meia-parede e parede falsa ficam como estÃ£o)",
+   "en_US": "The listed walls take the ceiling height from Settings (low walls, half walls and fake walls stay as they are)"
+  },
++ "Caminho do PDF da planta baixa": {
++  "pt_BR": "Caminho do PDF da planta baixa",
++  "en_US": "Path of the floor plan PDF"
++ },
+  "Claro": {
+   "pt_BR": "Claro",
+   "en_US": "Light"
+@@ -143,6 +151,14 @@
+   "pt_BR": "Fundo escuro, o visual de sempre",
+   "en_US": "Dark background, the usual look"
+  },
++ "Imprimir": {
++  "pt_BR": "Imprimir",
++  "en_US": "Print"
++ },
++ "Imprimir Planta Baixa": {
++  "pt_BR": "Imprimir Planta Baixa",
++  "en_US": "Print Floor Plan"
++ },
+  "InteraÃ§Ã£o da planta do Editor de Paredes": {
+   "pt_BR": "InteraÃ§Ã£o da planta do Editor de Paredes",
+   "en_US": "Wall Editor plan interaction"
+@@ -199,6 +215,14 @@
+   "pt_BR": "NÃ£o",
+   "en_US": "No"
+  },
++ "NÃ£o foi possÃ­vel salvar o PDF: {}": {
++  "pt_BR": "NÃ£o foi possÃ­vel salvar o PDF: {}",
++  "en_US": "Could not save the PDF: {}"
++ },
++ "NÃ£o hÃ¡ planta para imprimir.": {
++  "pt_BR": "NÃ£o hÃ¡ planta para imprimir.",
++  "en_US": "There is no floor plan to print."
++ },
+  "O Editor de Paredes precisa de uma janela do Blender aberta.": {
+   "pt_BR": "O Editor de Paredes precisa de uma janela do Blender aberta.",
+   "en_US": "The Wall Editor needs an open Blender window."
+@@ -227,6 +251,14 @@
+   "pt_BR": "Planta Baixa com Objetos",
+   "en_US": "Floor Plan with Objects"
+  },
++ "Planta baixa": {
++  "pt_BR": "Planta baixa",
++  "en_US": "Floor plan"
++ },
++ "Planta baixa salva em {} ({})": {
++  "pt_BR": "Planta baixa salva em {} ({})",
++  "en_US": "Floor plan saved to {} ({})"
++ },
+  "Preenchimento 2D dos objetos: cor sÃ³lida ou textura real": {
+   "pt_BR": "Preenchimento 2D dos objetos: cor sÃ³lida ou textura real",
+   "en_US": "2D fill of the objects: solid color or real texture"
+@@ -251,6 +283,10 @@
+   "pt_BR": "PÃ©-direito inicial",
+   "en_US": "Start ceiling height"
+  },
++ "Salva a planta baixa da vista num PDF A4 pronto para impressÃ£o": {
++  "pt_BR": "Salva a planta baixa da vista num PDF A4 pronto para impressÃ£o",
++  "en_US": "Saves the floor plan as shown in the view to a printable A4 PDF"
++ },
+  "Selecionar trechos e arrastar vÃ©rtices": {
+   "pt_BR": "Selecionar trechos e arrastar vÃ©rtices",
+   "en_US": "Select segments and drag vertices"
+@@ -323,6 +359,10 @@
+   "pt_BR": "Zoom janela: marque um retÃ¢ngulo para enquadrar",
+   "en_US": "Zoom window: drag a rectangle to frame it"
+  },
++ "ajustada Ã  folha": {
++  "pt_BR": "ajustada Ã  folha",
++  "en_US": "fitted to the sheet"
++ },
+  "nova {}": {
+   "pt_BR": "nova {}",
+   "en_US": "new {}"

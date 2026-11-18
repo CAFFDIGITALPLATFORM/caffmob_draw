@@ -1,0 +1,106 @@
+diff --git a/tests/blender_bug_744U_imprimir.py b/tests/blender_bug_744U_imprimir.py
+new file mode 100644
+index 00000000..1c2d1059
+--- /dev/null
++++ b/tests/blender_bug_744U_imprimir.py
+@@ -0,0 +1,100 @@
++"""Teste de reprodução e regressão — BUG-20261117-744U (imprimir a planta baixa).
++
++Executa em Blender (background), com o operador de verdade:
++    blender --background --factory-startup --python-exit-code 1 --python tests/blender_bug_744U_imprimir.py
++
++O gerador de PDF em si é provado sem Blender em `tests/test_impressao.py`. Aqui se prova o operador:
++  - Reprodução: sem planta aberta não há arquivo e o operador recusa (antes do fix o operador não existia).
++  - Regressão: com rascunho, grava o PDF A4 com as paredes e as medidas; os objetos da planta baixa entram como
++    hachura; imprimir não altera o rascunho nem pede OK/Cancelar.
++"""
++
++import sys
++import tempfile
++from pathlib import Path
++
++import bpy  # type: ignore
++
++ROOT = Path(__file__).resolve().parents[1]
++sys.path.insert(0, str(ROOT))
++import caffmob_draw as addon  # noqa: E402
++
++addon.register()
++
++from caffmob_draw.walls2d import model, props  # noqa: E402
++
++FAILURES = []
++
++
++def check(nome, ok, detalhe=""):
++    print(("OK   " if ok else "FALHA ") + nome, detalhe, flush=True)
++    if not ok:
++        FAILURES.append(nome)
++
++
++def destino(nome):
++    caminho = Path(tempfile.gettempdir()) / nome
++    if caminho.exists():
++        caminho.unlink()
++    return caminho
++
++
++scene = bpy.context.scene
++for obj in list(scene.objects):
++    bpy.data.objects.remove(obj, do_unlink=True)
++
++plano = model.WallPlan([model.rectangle(3.6, 2.4)])
++
++# ---------------------------------------------------------------------------
++# Reprodução: sem planta aberta, nada é impresso
++# ---------------------------------------------------------------------------
++props.end()
++vazio = destino("caffmob_744U_sem_planta.pdf")
++resultado = bpy.ops.caffmob.wall_editor_print(filepath=str(vazio))
++check("REPRODUÇÃO: sem planta o operador recusa e não escreve arquivo",
++      resultado == {'CANCELLED'} and not vazio.exists(), f"{resultado} arquivo={vazio.exists()}")
++
++# ---------------------------------------------------------------------------
++# Regressão: o rascunho vira um PDF A4 de uma página
++# ---------------------------------------------------------------------------
++s = props.start(plano, scene.name)
++state = bpy.context.window_manager.btm_wall_editor
++assinatura = model.plan_signature(s.plan)
++alterado_antes = s.dirty()
++
++arquivo = destino("caffmob_744U_planta.pdf")
++resultado = bpy.ops.caffmob.wall_editor_print(filepath=str(arquivo))
++dados = arquivo.read_bytes() if arquivo.exists() else b""
++
++check("REGRESSÃO: o operador grava o PDF da planta", resultado == {'FINISHED'} and dados.startswith(b"%PDF-1.4"),
++      f"{resultado} bytes={len(dados)}")
++check("REGRESSÃO: PDF de uma página A4 com a escala no rodapé",
++      dados.count(b"/Type /Page ") == 1 and b"/MediaBox [0 0 595.276 841.89]" in dados and b"Escala 1:" in dados)
++check("REGRESSÃO: as quatro paredes e as quatro medidas entraram",
++      dados.count(b" mm) Tj ET") == 4, f"medidas={dados.count(b' mm) Tj ET')}")
++check("REGRESSÃO: imprimir não altera o rascunho",
++      model.plan_signature(s.plan) == assinatura and s.dirty() == alterado_antes and s.request is None,
++      f"dirty={s.dirty()} request={s.request}")
++
++# ---------------------------------------------------------------------------
++# Regressão: com a planta baixa ligada, os objetos entram como hachura
++# ---------------------------------------------------------------------------
++bpy.ops.mesh.primitive_cube_add(size=1.0, location=(0.0, 0.0, 0.5))
++state.plant_low = True
++state.cut_height = 3.0
++state.material_color_mode = 'REAL'
++com_objetos = destino("caffmob_744U_planta_objetos.pdf")
++resultado = bpy.ops.caffmob.wall_editor_print(filepath=str(com_objetos))
++dados_objetos = com_objetos.read_bytes() if com_objetos.exists() else b""
++check("REGRESSÃO: objeto abaixo do corte entra como hachura clara",
++      resultado == {'FINISHED'} and b"0.86 0.86 0.86 rg" in dados_objetos and b" h f" in dados_objetos,
++      f"{resultado}")
++check("REGRESSÃO: os objetos acrescentam geometria ao PDF",
++      len(dados_objetos) > len(dados), f"com={len(dados_objetos)} sem={len(dados)}")
++
++state.plant_low = False
++props.end()
++addon.unregister()
++
++print(f"blender_bug_744U_imprimir: {'OK' if not FAILURES else 'FALHAS: ' + ', '.join(FAILURES)}", flush=True)
++sys.exit(1 if FAILURES else 0)

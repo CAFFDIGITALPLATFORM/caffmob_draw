@@ -1,0 +1,14 @@
+diff --git a/caffmob_draw/data/translations/walls2d.json b/caffmob_draw/data/translations/walls2d.json
+index 72dc5bd3..112ecff9 100644
+--- a/caffmob_draw/data/translations/walls2d.json
++++ b/caffmob_draw/data/translations/walls2d.json
+@@ -318,5 +318,9 @@
+  "Preenchimento 2D dos objetos: cor sólida ou textura real": {
+   "pt_BR": "Preenchimento 2D dos objetos: cor sólida ou textura real",
+   "en_US": "2D fill of the objects: solid color or real texture"
++ },
++ "Editor de Paredes CAFF MOB DRAW": {
++  "pt_BR": "Editor de Paredes CAFF MOB DRAW",
++  "en_US": "CAFF MOB DRAW Wall Editor"
+  }
+ }

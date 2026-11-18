@@ -1,13 +1,13 @@
-<!-- GENERATED, DO NOT EDIT: regenerado por /reversa-debugger-graph em 2026-10-14T03:52:14+00:00 a partir de 4 bugs -->
+<!-- GENERATED, DO NOT EDIT: regenerado por /reversa-debugger-graph em 2026-11-18T15:34:10+00:00 a partir de 4 bugs -->
 
 # Grafo · measure
 
 ```mermaid
 graph LR
-  BUG_20261011_3W52["#131 apply das cotas não valida o vizinho op…"]
-  BUG_20261011_NBKB["#132 Vizinho sem Geometry Nodes vira obstácu…"]
-  BUG_20261011_4ZPJ["#133 O getter das cotas no painel quebra o d…"]
-  BUG_20261011_WJHO["#136 Campo desconhecido com valor negativo l…"]
+  BUG_20261011_3W52["#131 apply das cotas não valida o vizinho opo…"]
+  BUG_20261011_NBKB["#132 Vizinho sem Geometry Nodes vira obstácul…"]
+  BUG_20261011_4ZPJ["#133 O getter das cotas no painel quebra o de…"]
+  BUG_20261011_WJHO["#136 Campo desconhecido com valor negativo le…"]
   BUG_20261011_WJHO -->|related-to| BUG_20261011_3W52
 ```
 
@@ -15,10 +15,12 @@ graph LR
 
 - `caffmob_draw/measure/scene_cotas.py`: 2 bugs (BUG-20261011-3W52, BUG-20261011-NBKB)
 
-Leitura: 2 bugs convergem em `caffmob_draw/measure/scene_cotas.py`, o maior ponto de convergência do contexto; vale corrigi-los numa mesma passada.
+Leitura: 2 bugs convergem em `caffmob_draw/measure/scene_cotas.py`, o maior ponto de convergência do contexto. Nenhum bug aberto neste contexto: o cluster mostra onde as correções se acumularam.
 
 ## Impact score
 
-Heurística de triagem (não substitui priority/severity): só arestas supported/confirmed contam.
+Heurística de triagem (não substitui priority/severity): causados ×3, bloqueados ×2, regressões ×4, relacionados ×1 (no máximo 3 no total), só arestas supported/confirmed.
 
-Todas as relações abertas estão como `proposed`: score 0 para todos.
+| # | ID | score |
+|---|---|---|
+| 131 | BUG-20261011-3W52 | 1 |

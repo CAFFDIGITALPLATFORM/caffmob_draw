@@ -1,4 +1,4 @@
-<!-- GENERATED, DO NOT EDIT: regenerado por /reversa-debugger-graph em 2026-10-14T03:52:14+00:00 a partir de 5 bugs -->
+<!-- GENERATED, DO NOT EDIT: regenerado por /reversa-debugger-graph em 2026-11-18T15:34:10+00:00 a partir de 5 bugs -->
 
 # Bugs · molding
 
@@ -23,8 +23,8 @@
 |---|---|
 | fixed | 5 |
 
-- #110 BUG-20261011-ARCH (fixed) · travado: Perfil oculto acumula quando o sweep é apagado à mão
-- #109 BUG-20261011-MWN5 (fixed) · travado: _spawn_sweep deixa dados de curva órfãos
-- #108 BUG-20261011-QT2G (fixed) · travado: Falha no meio de apply_scene_packages deixa a cena parcial
 - #106 BUG-20261011-VHMP (fixed) · travado: Remover dado que não é Curve aborta a reconstrução das molduras
 - #107 BUG-20261011-XP5E (fixed) · travado: Apagar o 1º armário da corrida faz o sweep pular
+- #108 BUG-20261011-QT2G (fixed) · travado: Falha no meio de apply_scene_packages deixa a cena parcial
+- #109 BUG-20261011-MWN5 (fixed) · travado: _spawn_sweep deixa dados de curva órfãos
+- #110 BUG-20261011-ARCH (fixed) · travado: Perfil oculto acumula quando o sweep é apagado à mão

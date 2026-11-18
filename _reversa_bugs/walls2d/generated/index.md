@@ -1,4 +1,4 @@
-<!-- GENERATED, DO NOT EDIT: regenerado por /reversa-debugger-graph em 2026-10-14T03:52:14+00:00 a partir de 8 bugs -->
+<!-- GENERATED, DO NOT EDIT: regenerado por /reversa-debugger-graph em 2026-11-18T15:34:10+00:00 a partir de 8 bugs -->
 
 # Bugs · walls2d
 
@@ -23,11 +23,11 @@
 |---|---|
 | fixed | 8 |
 
-- #19 BUG-20261011-624G (fixed) · travado: Soltar o mouse na barra da lupa trava o arraste
-- #16 BUG-20261011-GKUE (fixed) · travado: Delete numa cadeia fechada não limpa a seleção do editor
-- #18 BUG-20261011-LT3C (fixed) · travado: O 'Não' da pergunta de fechar a sala não impede o fechamento
-- #21 BUG-20261011-PJJU (fixed) · travado: Ângulo editável com a trava de ângulo ligada
 - #15 BUG-20261011-TLPN (fixed) · travado: Remover Vértice deixa a parede antiga órfã na cena
-- #20 BUG-20261011-XMZM (fixed) · travado: O segundo OK aplica sem rever os avisos depois de mudar o rascunho
+- #16 BUG-20261011-GKUE (fixed) · travado: Delete numa cadeia fechada não limpa a seleção do editor
 - #17 BUG-20261011-YAVM (fixed) · travado: Troca de Direção pelo painel se perde num Ctrl+Z imediato
+- #18 BUG-20261011-LT3C (fixed) · travado: O 'Não' da pergunta de fechar a sala não impede o fechamento
+- #19 BUG-20261011-624G (fixed) · travado: Soltar o mouse na barra da lupa trava o arraste
+- #20 BUG-20261011-XMZM (fixed) · travado: O segundo OK aplica sem rever os avisos depois de mudar o rascunho
+- #21 BUG-20261011-PJJU (fixed) · travado: Ângulo editável com a trava de ângulo ligada
 - #22 BUG-20261011-Z2BL (fixed) · travado: Pé-direito gravado nas paredes sem validação

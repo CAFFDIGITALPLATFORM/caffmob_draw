@@ -1,0 +1,49 @@
+diff --git a/caffmob_draw/walls2d/classico_v2.py b/caffmob_draw/walls2d/classico_v2.py
+index 3257b005..b51ee393 100644
+--- a/caffmob_draw/walls2d/classico_v2.py
++++ b/caffmob_draw/walls2d/classico_v2.py
+@@ -23,7 +23,7 @@ from ..canvas2d import draw
+ from ..canvas2d.view import snap_to_grid
+ from ..data import units
+ from ..data.i18n import N_, tr
+-from . import cores, props
++from . import cores, painel_ui, props
+ from . import studio_painel as sp
+ from .studio import arredondar, cota, pontos
+ from .studio_aberturas import simbolo
+@@ -719,8 +719,7 @@ def _com_split(layout):
+ def painel_ferramentas(layout, context, s):
+     v = s.v2
+     state = context.window_manager.btm_wall_editor
+-    col = layout.column(align=True)
+-    col.prop(state, "tool", expand=True)
++    painel_ui.ferramentas(layout, state)
+     row = layout.row(align=True)
+     _acao(row, N_('Ortogonal'), 'ortogonal', icon='SNAP_PERPENDICULAR', depress=v.ortogonal)
+     row = row.row(align=True)
+@@ -809,15 +808,16 @@ def painel_grade(layout, context, s):
+     state = context.window_manager.btm_wall_editor
+     c = context.window_manager.btm_wall_classic
+     _com_split(layout)
+-    layout.prop(state, "grid_size")
+-    layout.prop(state, "magnetic")
+-    layout.separator()
+-    layout.label(text="Novas paredes")
+-    layout.prop(c, "nova_espessura")
+-    layout.separator()
+-    layout.label(text="Modelos")
+-    layout.prop(c, "modelo_largura")
+-    layout.prop(c, "modelo_profundidade")
++    grade = layout.box()
++    grade.prop(state, "grid_size")
++    grade.prop(state, "magnetic", toggle=True, icon='SNAP_ON')
++    novas = layout.box()
++    novas.label(text="Novas paredes", icon='ADD')
++    novas.prop(c, "nova_espessura")
++    modelos = layout.box()
++    modelos.label(text="Modelos", icon='MESH_DATA')
++    modelos.prop(c, "modelo_largura")
++    modelos.prop(c, "modelo_profundidade")
+     row = layout.row(align=True)
+     for acao, texto in (('retangulo', N_('Retângulo')), ('L', N_('Canto em L')), ('U', N_('Em U'))):
+         _acao(row, texto, acao)

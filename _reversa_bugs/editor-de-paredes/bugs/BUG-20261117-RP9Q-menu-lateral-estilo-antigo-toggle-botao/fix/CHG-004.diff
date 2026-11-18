@@ -1,0 +1,72 @@
+diff --git a/caffmob_draw/walls2d/panels.py b/caffmob_draw/walls2d/panels.py
+index 0986b9f3..aaffd280 100644
+--- a/caffmob_draw/walls2d/panels.py
++++ b/caffmob_draw/walls2d/panels.py
+@@ -13,7 +13,7 @@ Na cena do CAFF MOBI os mesmos painéis (mais "Portas e Janelas") são desenhado
+ import bpy  # type: ignore
+ 
+ from ..data.i18n import tr
+-from . import props, window
++from . import painel_ui, props, window
+ 
+ 
+ class _EditorPanel:
+@@ -45,8 +45,7 @@ class BTM_PT_WallEditorTools(_EditorPanel, bpy.types.Panel):
+         if _v2(context, self.layout, 'ferramentas'):
+             return
+         state = context.window_manager.btm_wall_editor
+-        col = self.layout.column(align=True)
+-        col.prop(state, "tool", expand=True)
++        painel_ui.ferramentas(self.layout, state)
+         self.layout.operator("caffmob.wall_editor_fit", icon='ZOOM_ALL')
+ 
+ 
+@@ -79,7 +78,7 @@ class BTM_PT_WallEditorSegment(_EditorPanel, bpy.types.Panel):
+         row = layout.row()
+         row.enabled = False
+         row.label(text="Ângulo do Arco: paredes curvas não são suportadas")
+-        layout.prop(state, "lock_angle")
++        layout.prop(state, "lock_angle", toggle=True, icon='LOCKED')
+         layout.prop(state, "thickness_text")
+         layout.prop(state, "height_text")
+         layout.prop(state, "end_height_text")
+@@ -132,13 +131,14 @@ class BTM_PT_WallEditorGrid(_EditorPanel, bpy.types.Panel):
+         state = context.window_manager.btm_wall_editor
+         layout.use_property_split = True
+         layout.use_property_decorate = False
+-        layout.prop(state, "grid_size")
+-        layout.prop(state, "magnetic")
+-        layout.separator()
+-        layout.label(text="Novas paredes")
+-        layout.prop(state, "new_direction")
+-        layout.prop(state, "new_thickness")
+-        layout.prop(state, "new_height")
++        grade = layout.box()
++        grade.prop(state, "grid_size")
++        grade.prop(state, "magnetic", toggle=True, icon='SNAP_ON')
++        novas = layout.box()
++        novas.label(text="Novas paredes", icon='ADD')
++        novas.prop(state, "new_direction")
++        novas.prop(state, "new_thickness")
++        novas.prop(state, "new_height")
+ 
+ 
+ class BTM_PT_WallEditorConfirm(_EditorPanel, bpy.types.Panel):
+@@ -167,7 +167,7 @@ class BTM_PT_WallEditorConfirm(_EditorPanel, bpy.types.Panel):
+                 box.label(text=text)
+             if len(s.removed_modules) > 8:
+                 box.label(text=tr("… e mais {}").format(len(s.removed_modules) - 8))
+-            box.prop(context.window_manager.btm_wall_editor, "remove_modules")
++            box.prop(context.window_manager.btm_wall_editor, "remove_modules", toggle=True, icon='TRASH')
+             box.label(text="Desmarcado, os módulos ficam soltos no lugar.")
+         if s is not None and s.height_mismatches:
+             box = layout.box()
+@@ -178,7 +178,7 @@ class BTM_PT_WallEditorConfirm(_EditorPanel, bpy.types.Panel):
+                 box.label(text=text)
+             if len(s.height_mismatches) > 8:
+                 box.label(text=tr("… e mais {}").format(len(s.height_mismatches) - 8))
+-            box.prop(context.window_manager.btm_wall_editor, "equalize_height")
++            box.prop(context.window_manager.btm_wall_editor, "equalize_height", toggle=True, icon='ARROW_LEFTRIGHT')
+         row = layout.row(align=True)
+         row.scale_y = 1.4
+         row.operator("caffmob.wall_editor_ok", text="OK", icon='CHECKMARK')

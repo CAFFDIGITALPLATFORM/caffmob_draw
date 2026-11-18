@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Plano de correção · BUG-20261117-4MF7 · Arquitetura &gt; Parede</title>
+<style>
+  :root {
+    --bg: #0f1115; --panel: #171a21; --panel2: #1e222b; --border: #2c323d;
+    --text: #e7eaf0; --muted: #9aa3b2; --accent: #ff9e2c; --ok: #4ecb71; --warn: #e5c07b; --bad: #e06c75;
+    --link: #6cb6ff;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text);
+         font: 15px/1.55 "Segoe UI", system-ui, -apple-system, sans-serif; }
+  main { max-width: 1040px; margin: 0 auto; padding: 32px 20px 64px; }
+  h1 { font-size: 1.55rem; margin: 0 0 6px; }
+  h2 { font-size: 1.05rem; margin: 34px 0 12px; color: var(--accent); text-transform: uppercase; letter-spacing: .06em; }
+  h3 { font-size: .98rem; margin: 20px 0 8px; }
+  p, li { color: var(--text); }
+  .sub { color: var(--muted); margin: 0; }
+  .meta { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0 0; }
+  .tag { background: var(--panel2); border: 1px solid var(--border); border-radius: 999px;
+         padding: 3px 11px; font-size: .82rem; color: var(--muted); }
+  .tag b { color: var(--text); font-weight: 600; }
+  .card { background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 18px 20px; margin: 14px 0; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  @media (max-width: 760px) { .grid2 { grid-template-columns: 1fr; } }
+  table { width: 100%; border-collapse: collapse; margin: 8px 0 0; font-size: .92rem; }
+  th, td { text-align: left; padding: 9px 10px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  th { color: var(--muted); font-weight: 600; font-size: .82rem; text-transform: uppercase; letter-spacing: .04em; }
+  tr:last-child td { border-bottom: 0; }
+  code, .mono { font-family: "Cascadia Code", Consolas, monospace; font-size: .86em; }
+  code { background: #12151b; border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px; }
+  a { color: var(--link); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  .state { display: inline-block; border-radius: 6px; padding: 1px 8px; font-size: .78rem;
+           border: 1px solid currentColor; }
+  .confirmed { color: var(--ok); }
+  .proposed { color: var(--warn); }
+  .rejected { color: var(--bad); }
+  ul { margin: 6px 0 0 0; padding-left: 20px; }
+  li { margin: 4px 0; }
+  .callout { border-left: 3px solid var(--accent); background: #1b1a16; padding: 12px 16px; border-radius: 0 8px 8px 0; }
+  .graph { display: flex; flex-direction: column; gap: 10px; align-items: center; margin: 18px 0 4px; }
+  .node { display: block; width: min(560px, 100%); background: var(--panel2); border: 1px solid var(--border);
+          border-radius: 10px; padding: 10px 14px; color: var(--text); }
+  .node:hover { border-color: var(--accent); text-decoration: none; }
+  .node .n { color: var(--muted); font-size: .78rem; text-transform: uppercase; letter-spacing: .05em; }
+  .node.center { border-color: var(--accent); box-shadow: 0 0 0 1px #ff9e2c33 inset; }
+  .edge { color: var(--muted); font-size: .8rem; }
+  footer { color: var(--muted); font-size: .82rem; margin-top: 44px; border-top: 1px solid var(--border); padding-top: 14px; }
+</style>
+</head>
+<body>
+<main>
+
+<h1>Editor de Paredes: coleção Arquitetura com subcoleção Parede</h1>
+<p class="sub">Relatório do plano de correção, gerado antes da mudança de código (gate 4.1 do /reversa-debugger-fix).</p>
+<div class="meta">
+  <span class="tag">Bug <b>#151</b></span>
+  <span class="tag"><b>BUG-20261117-4MF7</b></span>
+  <span class="tag">contexto <b>editor-de-paredes</b></span>
+  <span class="tag">plano de <b>2026-11-18</b></span>
+  <span class="tag">severidade <b>medium</b></span>
+  <span class="tag">prioridade <b>P2</b></span>
+  <span class="tag">risco da mudança <b>baixa</b></span>
+</div>
+
+<h2>1. O defeito e a causa</h2>
+<div class="card">
+  <p><b>Pedido do titular.</b> Ao aplicar o rascunho no OK, as paredes devem nascer (ou ser levadas) para a coleção
+  <code>Arquitetura</code> com a subcoleção <code>Parede</code> dentro dela. Hoje nenhuma coleção é criada nem procurada
+  pelo editor e as paredes ficam soltas na raiz da cena.</p>
+  <p><b>Causa raiz</b> <span class="state confirmed">confirmed</span>. O objeto de parede é criado por
+  <code>hb_types.GeoNodeWall.create</code>, que delega a <code>GeoNodeObject.create</code>. Essa função linka o objeto
+  diretamente em <code>bpy.context.scene.collection.objects</code> (<code>caffmob_draw/hb_types.py:73</code>), a coleção
+  mestre da cena. O pacote <code>caffmob_draw/walls2d/</code> não contém nenhuma chamada de coleção
+  (<code>new_collection</code>, <code>children.link</code>, <code>users_collection</code>): a ponte
+  <code>apply.py</code> grava transformação, comprimento, espessura e tipo, e nunca decide onde o objeto mora.</p>
+  <p><b>Onde aparece</b> (<code>affected_code</code>): <code>walls2d/apply.py</code> (criação e atualização das
+  paredes), <code>walls2d/scene_v2.py</code> (caminho da cena v2) e <code>walls2d/ops_editor.py</code> (OK). A causa não
+  nasceu em <code>walls2d</code>: nasceu no construtor compartilhado do Home Builder, que sempre linka na raiz. Como o
+  construtor é usado por paredes, pisos e aberturas, a correção fica do lado do editor e não altera o construtor.</p>
+  <p><b>Evidências.</b></p>
+  <ul>
+    <li><code>hb_types.py:64-73</code>: <code>bpy.data.objects.new</code> seguido de
+      <code>bpy.context.scene.collection.objects.link(self.obj)</code> em todo objeto de geometria.</li>
+    <li><code>walls2d/apply.py</code>: <code>apply_plan</code> cria com <code>GeoNodeWall().create("Wall")</code> e
+      atualiza por <code>source</code>, sem tocar em <code>users_collection</code>.</li>
+    <li><code>grep -rn "Arquitetura" caffmob_draw tests</code>: nenhum resultado no pacote.</li>
+    <li><code>grep -rn "collection" walls2d/</code>: nenhuma ocorrência ligada a criação ou vínculo de coleção.</li>
+    <li>Padrão existente no add-on para coleções próprias: <code>mobi/cena.py:21-26</code>
+      (<code>CAFF MOB</code>, reaproveita por nome antes de criar) e <code>mobi/cena_v2.py:361</code> (uma coleção por
+      pavimento).</li>
+  </ul>
+</div>
+
+<h2>2. Estratégia escolhida</h2>
+<div class="card">
+  <p><b>Correção direta.</b> Uma única hipótese de causa, sustentada pela leitura do construtor compartilhado. A
+  mudança é pequena e reversível: um módulo de coleções do editor, chamado no ponto único em que
+  <code>apply_plan</code> cria ou atualiza uma parede, seguindo o padrão de reaproveitamento por nome que
+  <code>mobi/cena.py</code> já usa. Sem refatorar o construtor do Home Builder e sem tocar na cena v2.</p>
+  <div class="callout">
+    <b>Decisões do titular nesta rodada:</b> a hierarquia vale <b>só para as paredes</b>. Piso, teto, aberturas e móveis
+    não são movidos. Estratégia: correção direta, sem debate multiagente.
+  </div>
+</div>
+
+<h2>3. Correction Change Set proposto</h2>
+<table>
+  <thead><tr><th>CHG</th><th>Tipo</th><th>Artefato</th><th>Propósito</th></tr></thead>
+  <tbody>
+    <tr>
+      <td class="mono">CHG-001</td><td>test</td>
+      <td class="mono">tests/blender_bug_4MF7_colecoes.py</td>
+      <td>Reprodução (hoje vermelha) e regressões: coleção criada, reaproveitada, paredes migradas e demais objetos
+          intactos.</td>
+    </tr>
+    <tr>
+      <td class="mono">CHG-002</td><td>code</td>
+      <td class="mono">caffmob_draw/walls2d/layers.py (novo)</td>
+      <td>Constantes <code>ARQUITETURA</code>/<code>PAREDE</code>, <code>ensure(scene)</code> (cria o que faltar,
+          reaproveita por nome) e <code>place(obj, collection)</code> (tira a parede das outras coleções da cena e
+          linka em <code>Parede</code>).</td>
+    </tr>
+    <tr>
+      <td class="mono">CHG-003</td><td>code</td>
+      <td class="mono">caffmob_draw/walls2d/apply.py</td>
+      <td>No <code>apply_plan</code>, garante a coleção uma única vez e chama <code>place</code> em cada parede criada
+          ou atualizada. Coleção só nasce quando há parede para colocar.</td>
+    </tr>
+    <tr>
+      <td class="mono">CHG-004</td><td>specification</td>
+      <td class="mono">_reversa_sdd/addenda/bug-BUG-20261117-4MF7-v001.md</td>
+      <td>Adendo aditivo (<code>spec-gap</code>) especificando a organização em coleções, com o limite da cena v2.</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>4. Testes planejados</h2>
+<div class="grid2">
+  <div class="card">
+    <h3>Reprodução (prova o defeito)</h3>
+    <ul>
+      <li>Aplicar <code>rectangle(4, 3)</code> e conferir que <code>Arquitetura</code> existe como filha da coleção da
+          cena e <code>Parede</code> como filha dela. Hoje falha: não existe coleção alguma.</li>
+      <li>Conferir que toda parede está em <code>Arquitetura &gt; Parede</code> e não na raiz.</li>
+    </ul>
+  </div>
+  <div class="card">
+    <h3>Regressão (protege o que não pode voltar a quebrar)</h3>
+    <ul>
+      <li>Reaproveitamento: coleção <code>Arquitetura &gt; Parede</code> já existente é usada, sem <code>.001</code> e
+          sem perder propriedade personalizada.</li>
+      <li>Migração: parede existente fora da hierarquia passa para <code>Parede</code> no OK seguinte.</li>
+      <li>Isolamento: piso, móvel e <code>obj_x</code> não são movidos.</li>
+      <li><code>read_plan</code> continua lendo as mesmas paredes depois da mudança.</li>
+      <li>Plano vazio não cria coleção vazia (sem órfã quando não há parede para aplicar).</li>
+    </ul>
+  </div>
+</div>
+<p class="sub">A prova continua em duas pernas: o teste fica vermelho antes do CHG-002/003 e verde depois. Os testes
+existentes <code>blender_002_smoke</code>, <code>blender_002_ui_events</code> e <code>blender_065_walls2d_v2</code>
+rodam como regressão de fumaça.</p>
+
+<h2>5. Riscos e limites</h2>
+<div class="card">
+  <p><b>Risco da mudança: baixa.</b></p>
+  <ul>
+    <li>Não muda modelo de dados, propriedades salvas nem contrato externo: só o vínculo de coleção na cena.</li>
+    <li>O ponto de mudança é único (<code>apply_plan</code>), então nenhuma outra função escolhe coleção por conta
+        própria.</li>
+    <li>Reversível: a criação da coleção e os vínculos acontecem dentro do passo de desfazer do modal
+        (<code>bl_options = {'UNDO'}</code>).</li>
+    <li>Paredes de biblioteca linkada (<code>obj.library</code> não nulo) não são relinkadas: o Blender não permite e a
+        função sai sem mexer.</li>
+  </ul>
+  <h3>Fica fora da correção (Agent Notes)</h3>
+  <ul>
+    <li>Cena v2 (<code>scene_v2.aplicar</code>): a montagem já organiza tudo por coleção de pavimento com
+        <code>caffmob_id</code>/<code>caffmob_pavimento</code>; sobrepor <code>Arquitetura &gt; Parede</code> ali
+        quebraria esse contrato. O adendo registra o limite.</li>
+    <li>Piso, teto, aberturas e móveis continuam na coleção de origem.</li>
+    <li>O empty <code>obj_x</code> (auxiliar de restrição) permanece na raiz, como o construtor o cria.</li>
+    <li>Não renomeia nem apaga coleção do usuário; se já existir <code>Arquitetura</code> e <code>Parede</code> aninhada,
+        ela é reaproveitada.</li>
+    <li>Desfazer após o OK fica para conferência manual no Blender com interface, porque
+        <code>--background</code> não pilha passos de desfazer de operador.</li>
+  </ul>
+</div>
+
+<h2>6. Mini-grafo do bug</h2>
+<div class="graph">
+  <a class="node center" href="../bug.md">
+    <span class="n">BUG-20261117-4MF7 · #151 · medium/P2</span><br>
+    Sem coleção Arquitetura com subcoleção Parede
+  </a>
+  <span class="edge">relacionado a (proposed)</span>
+  <a class="node" href="../../BUG-20261117-JXDJ-planta-baixa-com-corte-e-cores/bug.md">
+    <span class="n">BUG-20261117-JXDJ · #148 · resolved</span><br>
+    Planta baixa da cena com corte e cores (origem do pedido de camadas)
+  </a>
+  <span class="edge">bloqueado por (aresta registrada no bug vizinho)</span>
+  <a class="node" href="../../BUG-20261117-744U-imprimir-planta-baixa/bug.md">
+    <span class="n">BUG-20261117-744U · #149 · open</span><br>
+    Sem botão de imprimir a planta baixa (herda a coleção ao imprimir a cena)
+  </a>
+</div>
+
+<h2>7. Matriz de relações</h2>
+<table>
+  <thead><tr><th>Origem</th><th>Tipo</th><th>Destino</th><th>Estado</th></tr></thead>
+  <tbody>
+    <tr>
+      <td><a href="../bug.md">#151 4MF7</a></td><td>related-to</td>
+      <td><a href="../../BUG-20261117-JXDJ-planta-baixa-com-corte-e-cores/bug.md">#148 JXDJ</a></td>
+      <td><span class="state proposed">proposed</span></td>
+    </tr>
+    <tr>
+      <td><a href="../../BUG-20261117-744U-imprimir-planta-baixa/bug.md">#149 744U</a></td><td>blocked-by</td>
+      <td><a href="../../BUG-20261117-JXDJ-planta-baixa-com-corte-e-cores/bug.md">#148 JXDJ</a></td>
+      <td><span class="state proposed">proposed</span> (bloqueio já vencido, #148 resolvido)</td>
+    </tr>
+    <tr>
+      <td><a href="../bug.md">#151 4MF7</a></td><td>spec</td>
+      <td><code>_reversa_sdd/walls2d/requirements.md#RF-08</code></td>
+      <td><span class="state proposed">spec-gap</span></td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>8. Ordem sugerida</h2>
+<div class="card">
+  <p>Um único bug nesta sessão. Se o #149 (imprimir) entrar depois, ele herda esta organização: a impressão deve
+  respeitar a coleção <code>Arquitetura &gt; Parede</code> em vez de varrer a cena inteira. Nada a encadear agora.</p>
+</div>
+
+<footer>Gerado por /reversa-debugger-fix em 2026-11-18 · closure policy <code>local-software</code> · control mode
+<code>gated</code> · este arquivo é a proposta, o change set só entra depois da aprovação do titular.</footer>
+
+</main>
+</body>
+</html>

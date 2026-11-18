@@ -1,0 +1,148 @@
+diff --git a/tests/test_walls2d_tema.py b/tests/test_walls2d_tema.py
+new file mode 100644
+index 00000000..246b3f9f
+--- /dev/null
++++ b/tests/test_walls2d_tema.py
+@@ -0,0 +1,142 @@
++"""Tema claro do editor de paredes: paletas, contraste e preferência (BUG-20261117-6OXN).
++
++Run: py -3 tests/test_walls2d_tema.py
++
++O desenho exige GPU; aqui ficam as garantias que não precisam dela: as duas paletas têm o mesmo conjunto de chaves, o
++tema escuro é exatamente o de antes, as cores do tema claro têm contraste mínimo sobre o fundo branco pela luminância
++relativa (WCAG: 3:1 para linhas, 4,5:1 para texto) e a preferência vai e volta do arquivo do usuário sem tocar na cena.
++"""
++
++import json
++import tempfile
++import unittest
++from pathlib import Path
++
++import _bootstrap  # noqa: F401
++from caffmob_draw.walls2d import cores, model, tema
++
++LINHAS = ('wall', 'grid_axis', 'selected', 'node', 'preview', 'preview_locked', 'reference', 'measure')
++TEXTOS = ('text', 'muted', 'warning')
++ESCURO_ATUAL = {
++    'background': (0.12, 0.12, 0.13, 1.0),
++    'grid': (1.0, 1.0, 1.0, 0.06),
++    'grid_axis': (1.0, 1.0, 1.0, 0.14),
++    'wall_fill': (0.55, 0.55, 0.6, 0.18),
++    'selected': (1.0, 0.62, 0.15, 1.0),
++    'node': (0.25, 0.6, 1.0, 1.0),
++    'preview': (0.35, 1.0, 0.45, 1.0),
++    'preview_locked': (0.8, 0.8, 0.8, 1.0),
++    'reference': (0.7, 0.7, 0.75, 0.55),
++    'measure': (0.30, 0.85, 1.0, 1.0),
++}
++
++
++def _canal(valor):
++    return valor / 12.92 if valor <= 0.04045 else ((valor + 0.055) / 1.055) ** 2.4
++
++
++def luminancia(cor):
++    r, g, b = cor[:3]
++    return 0.2126 * _canal(r) + 0.7152 * _canal(g) + 0.0722 * _canal(b)
++
++
++def contraste(uma, outra):
++    """Razão de contraste WCAG entre duas cores RGBA (o alfa não entra na conta)."""
++    alta, baixa = sorted((luminancia(uma), luminancia(outra)), reverse=True)
++    return (alta + 0.05) / (baixa + 0.05)
++
++
++class PaletasTest(unittest.TestCase):
++    def test_as_duas_paletas_tem_as_mesmas_chaves(self):
++        self.assertEqual(set(tema.ESCURO), set(tema.CLARO))
++        for chave in LINHAS + TEXTOS + ('background', 'grid', 'wall', 'wall_fill'):
++            self.assertIn(chave, tema.ESCURO, chave)
++
++    def test_tema_escuro_e_o_de_antes(self):
++        for chave, valor in ESCURO_ATUAL.items():
++            self.assertEqual(tema.ESCURO[chave], valor, chave)
++        self.assertEqual(tema.ESCURO['wall'], cores.CINZA)
++        self.assertEqual(tema.ESCURO['text'], (0.92, 0.92, 0.92, 1.0))
++        self.assertEqual(tema.ESCURO['muted'], (0.65, 0.65, 0.68, 1.0))
++        self.assertEqual(tema.ESCURO['warning'], (1.0, 0.35, 0.3, 1.0))
++
++    def test_tema_claro_tem_fundo_branco(self):
++        fundo = tema.CLARO['background']
++        self.assertGreater(min(fundo[:3]), 0.9, fundo)
++        self.assertEqual(fundo[3], 1.0)
++        for chave in LINHAS + TEXTOS:
++            self.assertNotEqual(tema.CLARO[chave], tema.ESCURO[chave], chave)
++
++    def test_linhas_legiveis_nos_dois_temas(self):
++        for nome, paleta in (('ESCURO', tema.ESCURO), ('CLARO', tema.CLARO)):
++            for chave in LINHAS:
++                razao = contraste(paleta[chave], paleta['background'])
++                self.assertGreaterEqual(razao, 3.0, f'{nome}/{chave}: {razao:.2f}')
++
++    def test_textos_legiveis_nos_dois_temas(self):
++        for nome, paleta in (('ESCURO', tema.ESCURO), ('CLARO', tema.CLARO)):
++            for chave in TEXTOS:
++                razao = contraste(paleta[chave], paleta['background'])
++                self.assertGreaterEqual(razao, 4.5, f'{nome}/{chave}: {razao:.2f}')
++
++    def test_paleta_desconhecida_cai_no_escuro(self):
++        self.assertIs(tema.paleta('CLARO'), tema.CLARO)
++        self.assertIs(tema.paleta('ESCURO'), tema.ESCURO)
++        self.assertIs(tema.paleta('ROSA'), tema.ESCURO)
++        self.assertIs(tema.paleta(None), tema.ESCURO)
++
++
++class CoresPorTipoTest(unittest.TestCase):
++    def test_tema_claro_escurece_os_tipos(self):
++        for tipo in model.WALL_TYPES:
++            escura = cores.cor(tipo)
++            clara = cores.cor(tipo, claro=True)
++            self.assertEqual(escura, cores.cor(tipo, False))
++            self.assertNotEqual(clara, escura, tipo)
++            razao = contraste(clara, tema.CLARO['background'])
++            self.assertGreaterEqual(razao, 3.0, f'{tipo}: {razao:.2f}')
++
++    def test_tipo_desconhecido_cai_no_normal(self):
++        self.assertEqual(cores.cor('XPTO', claro=True), cores.cor('NORMAL', claro=True))
++
++
++class PreferenciaTest(unittest.TestCase):
++    def setUp(self):
++        self.pasta = tempfile.TemporaryDirectory()
++        self.arquivo = Path(self.pasta.name) / 'tema.json'
++        self.original = tema.arquivo
++        tema.arquivo = lambda: str(self.arquivo)
++
++    def tearDown(self):
++        tema.arquivo = self.original
++        self.pasta.cleanup()
++
++    def test_grava_e_le_de_volta(self):
++        self.assertEqual(tema.salvar('CLARO'), 'CLARO')
++        self.assertEqual(json.loads(self.arquivo.read_text(encoding='utf-8')), {'tema': 'CLARO'})
++        self.assertEqual(tema.ler(), 'CLARO')
++        tema.salvar('ESCURO')
++        self.assertEqual(tema.ler(), 'ESCURO')
++
++    def test_arquivo_ausente_cai_no_escuro(self):
++        self.assertFalse(self.arquivo.exists())
++        self.assertEqual(tema.ler(), tema.PADRAO)
++
++    def test_arquivo_corrompido_cai_no_escuro(self):
++        self.arquivo.write_text('{"tema": ', encoding='utf-8')
++        self.assertEqual(tema.ler(), tema.PADRAO)
++        self.arquivo.write_text('[]', encoding='utf-8')
++        self.assertEqual(tema.ler(), tema.PADRAO)
++
++    def test_nome_invalido_grava_o_padrao(self):
++        self.assertEqual(tema.salvar('ROSA'), tema.PADRAO)
++        self.assertEqual(tema.ler(), tema.PADRAO)
++
++    def test_varios_abrir_e_fechar_mantem_a_escolha(self):
++        for nome in ('CLARO', 'ESCURO', 'CLARO'):
++            tema.salvar(nome)
++            self.assertEqual(tema.ler(), nome)
++
++
++if __name__ == '__main__':
++    unittest.main()

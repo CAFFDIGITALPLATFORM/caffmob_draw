@@ -1,0 +1,134 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Plano de correção · #149 744U · imprimir planta baixa</title><style>
+body{background:#0d1117;color:#e6edf3;font:14px system-ui,sans-serif;margin:0;padding:16px}
+h1{font-size:20px;margin:0}h2{font-size:15px;margin:24px 0 8px;color:#c9d1d9}
+.meta{color:#8b949e;font-size:12px}
+.cards{display:flex;gap:12px;flex-wrap:wrap;margin:16px 0}
+.card{background:#161b22;border:1px solid #30363d;border-radius:10px;padding:12px 16px;min-width:110px}
+.card b{font-size:18px;display:block}
+table{border-collapse:collapse;width:100%;margin-top:8px}
+td,th{border-bottom:1px solid #30363d;padding:6px;text-align:left;font-size:13px;vertical-align:top}
+a{color:#58a6ff}code{background:#161b22;border:1px solid #30363d;border-radius:4px;padding:1px 4px;font-size:12px}
+.wrap{overflow-x:auto}svg{max-width:100%;height:auto;background:#0d1117}
+ul{margin:6px 0 0;padding-left:20px}li{margin:3px 0}
+</style></head><body>
+<h1>Plano de correção · #149 · BUG-20261117-744U</h1>
+<p class="meta">Contexto: <b>editor-de-paredes</b> · módulo <code>walls2d</code> · gerado em 2026-11-18 pelo
+/reversa-debugger-fix · severidade low · prioridade P3 · bloqueio <code>blocked-by</code> BUG-20261117-JXDJ já entregue</p>
+<div class="cards">
+<div class="card"><b>open · triaging</b>status de entrada</div>
+<div class="card"><b>spec-gap</b>veredito provável</div>
+<div class="card"><b>média</b>risco da mudança</div>
+<div class="card"><b>local-software</b>closure policy</div>
+</div>
+
+<h2>1. Defeito</h2>
+<p>O titular pede um botão para imprimir a planta baixa a partir do Editor de Paredes. O painel Confirmar só tem
+<b>OK</b> e <b>Cancelar</b>: não há botão, operador nem atalho de impressão da vista. O que existe fora do editor é
+<code>caffmob_layouts.export_all_to_pdf</code>, que renderiza câmeras de <i>layout views</i> para PDF e não conhece a
+planta desenhada no Image Editor.</p>
+
+<h2>2. Causa raiz</h2>
+<p>Funcionalidade inexistente: nenhum caminho de saída leva a geometria da planta (paredes, aberturas, objetos da
+planta baixa) para um arquivo de impressão. Estado epistemológico: <b>confirmed</b> — a ausência é comprovada por
+leitura do código (<code>ops_editor.py</code>, <code>panels.py</code>, <code>classico_v2.py</code>,
+<code>operators/layouts.py:804</code>) e pela sondagem MCP
+(<code>../../intake/sondagem-mcp-20261117.md</code>): nenhum operador <code>caffmob.*</code> imprime a planta do editor.</p>
+<p><code>RF-13</code> descreve o desenho da planta e os painéis laterais e não menciona impressão nem exportação: é
+lacuna de spec, não divergência.</p>
+
+<h2>3. Estratégia escolhida</h2>
+<p><b>Correção direta</b> com gerador de PDF vetorial próprio, sem dependência nova. A planta já é geometria 2D em
+metros; o PDF é escrito em Python puro reaproveitando a <i>mesma</i> fonte de geometria do desenho
+(<code>geometria_da_parede</code> no v2, <code>WallPlan</code> no clássico e <code>plant_objects</code> para os
+objetos), com as penas e cores do padrão CTB que o titular anexou. Reaproveitar <code>export_all_to_pdf</code> não
+serve: ele depende de câmera, cena de layout, compositor e Pillow.</p>
+<p>Por que não capturar a tela: o desenho é GPU imediata em <code>POST_PIXEL</code>; raster de tela não tem resolução
+de impressão, depende da janela aberta e não respeita as penas do CTB.</p>
+
+<h2>4. Correction Change Set proposto</h2>
+<div class="wrap"><table>
+<tr><th>CHG</th><th>tipo</th><th>artefato</th><th>propósito</th></tr>
+<tr><td>CHG-001</td><td>code</td><td><code>caffmob_draw/walls2d/impressao.py</code> (novo)</td>
+<td>Coleta os traços da planta (paredes, aberturas, medidas, objetos) e escreve o PDF A4 vetorial com penas CTB e escala padrão que cabe na folha</td></tr>
+<tr><td>CHG-002</td><td>code</td><td><code>caffmob_draw/walls2d/ops_editor.py</code></td>
+<td>Operador <code>caffmob.wall_editor_print</code> com seletor de arquivo, enquadramento atual da vista e nenhuma escrita no rascunho</td></tr>
+<tr><td>CHG-003</td><td>code</td><td><code>caffmob_draw/walls2d/panels.py</code></td>
+<td>Botão Imprimir no painel Confirmar do editor clássico</td></tr>
+<tr><td>CHG-004</td><td>code</td><td><code>caffmob_draw/walls2d/classico_v2.py</code></td>
+<td>O mesmo botão no painel Confirmar da cena v2</td></tr>
+<tr><td>CHG-005</td><td>code</td><td><code>caffmob_draw/data/translations/walls2d.json</code></td>
+<td>Traduções dos textos novos de interface</td></tr>
+<tr><td>CHG-006</td><td>specification</td><td><code>_reversa_sdd/addenda/bug-BUG-20261117-744U-v001.md</code></td>
+<td>Adendo aditivo (<code>spec-gap</code>): especifica pela primeira vez a impressão da planta baixa</td></tr>
+<tr><td>CHG-007</td><td>code</td><td><code>tests/test_impressao.py</code> (novo)</td>
+<td>Teste de reprodução e de regressão do gerador e do operador (gate 1)</td></tr>
+</table></div>
+
+<h2>5. Testes planejados</h2>
+<ul>
+<li><b>Reprodução</b> (<code>tests/test_impressao.py#ReproducaoTest</code>): antes do change set, não existe módulo
+<code>impressao</code> nem operador <code>caffmob.wall_editor_print</code>. Prova o defeito relatado.</li>
+<li><b>Regressão do PDF</b>: um ambiente 3,6 × 2,4 m gera PDF válido (<code>%PDF-</code>, um objeto de página,
+stream fechado), com as quatro paredes, as duas faces, as pontas, as medidas e a escala padrão que cabe (1:20 em A4).</li>
+<li><b>Regressão da vista</b>: os limites da vista definem o enquadramento; um retângulo menor na folha usa escala
+maior (1:50) e o conteúdo continua centralizado.</li>
+<li><b>Regressão do operador</b>: chamado sem rascunho ou sem parede, devolve <code>CANCELLED</code> e não escreve
+arquivo; com rascunho, grava o PDF e a assinatura do plano e o estado de alterações continuam iguais (cancelar ou
+imprimir não mexe no rascunho).</li>
+<li><b>Penalidades CTB</b>: NORMAL 0,35 mm contínua, DIVISORIA 0,60 mm, MURETA 0,15 mm, face interna tracejada.</li>
+</ul>
+
+<h2>6. Riscos</h2>
+<p><b>Risco médio</b>: arquivo novo e operador novo, sem migração, sem contrato externo e sem escrita em dados do
+usuário. Motivos: (a) é preciso manter duas fontes de geometria em sincronia com o desenho — mitigado por reusar as
+mesmas funções, não recalculando polígonos; (b) o PDF é gerado por código próprio, então o formato tem de ser
+validado (teste abre o arquivo e confere estrutura); (c) a escala é padrão e pode não ser a que o titular quer por
+prancha.</p>
+<p><b>Fora da correção</b> (Agent Notes): não imprime a barra superior, os painéis, o menu de contexto nem a mira; não
+tem carimbo, hachura por material além da cor do objeto, prancha múltipla nem folha escolhida pelo usuário; não abre
+o diálogo do sistema — gera o PDF pronto para impressão.</p>
+
+<h2>7. Mini-grafo do bug</h2>
+<div class="wrap"><svg viewBox="0 0 760 300" width="760" height="300" role="img" aria-label="Relações do bug 149">
+<defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+<path d="M0 0L10 5L0 10z" fill="#8aa"/></marker></defs>
+<line x1="255" y1="150" x2="375" y2="150" stroke="#8aa" stroke-dasharray="6 4" marker-end="url(#a)" opacity=".8"/>
+<text x="315" y="143" fill="#9bb" font-size="11" text-anchor="middle">blocked-by</text>
+<line x1="635" y1="230" x2="635" y2="150" stroke="#8aa" marker-end="url(#a)" opacity=".8"/>
+<text x="643" y="195" fill="#9bb" font-size="11">regression-of</text>
+<a href="../../BUG-20261117-744U-imprimir-planta-baixa/bug.md">
+<rect x="20" y="100" width="235" height="100" rx="10" fill="#1c2128" stroke="#f5d90a" stroke-width="2"/>
+<text x="32" y="124" fill="#e6edf3" font-size="13" font-weight="600">#149 744U · P3</text>
+<text x="32" y="146" fill="#c9d1d9" font-size="12">Sem botão de imprimir a planta</text>
+<text x="32" y="166" fill="#8b949e" font-size="11">low · paredes/walls2d</text>
+<text x="32" y="186" fill="#e5484d" font-size="11">open · triaging</text></a>
+<a href="../../BUG-20261117-JXDJ-planta-baixa-com-corte-e-cores/bug.md">
+<rect x="375" y="100" width="235" height="100" rx="10" fill="#1c2128" stroke="#30a46c" stroke-width="2"/>
+<text x="387" y="124" fill="#e6edf3" font-size="13" font-weight="600">#148 JXDJ · P2</text>
+<text x="387" y="146" fill="#c9d1d9" font-size="12">Planta baixa com corte e cores</text>
+<text x="387" y="166" fill="#8b949e" font-size="11">medium · paredes/walls2d</text>
+<text x="387" y="186" fill="#30a46c" font-size="11">resolved · delivered</text></a>
+<a href="../../BUG-20261118-PLNT-planta-baixa-quebra-com-curva-na-cena/bug.md">
+<rect x="520" y="230" width="235" height="100" rx="10" fill="#1c2128" stroke="#30a46c" stroke-width="2"/>
+<text x="532" y="254" fill="#e6edf3" font-size="13" font-weight="600">#153 PLNT · P1</text>
+<text x="532" y="276" fill="#c9d1d9" font-size="12">Planta quebra com curva</text>
+<text x="532" y="296" fill="#8b949e" font-size="11">high · paredes/walls2d</text>
+</a>
+</svg></div>
+
+<h2>8. Matriz de relações</h2>
+<table>
+<tr><th>origem</th><th>tipo</th><th>destino</th><th>estado</th></tr>
+<tr><td><a href="../../BUG-20261117-744U-imprimir-planta-baixa/bug.md">#149 744U</a></td><td>blocked-by</td>
+<td><a href="../../BUG-20261117-JXDJ-planta-baixa-com-corte-e-cores/bug.md">#148 JXDJ</a></td>
+<td>proposed → o bloqueio cai nesta correção: o JXDJ entregou a planta com corte e cor que a impressão usa</td></tr>
+<tr><td><a href="../../BUG-20261118-PLNT-planta-baixa-quebra-com-curva-na-cena/bug.md">#153 PLNT</a></td>
+<td>regression-of</td><td><a href="../../BUG-20261117-JXDJ-planta-baixa-com-corte-e-cores/bug.md">#148 JXDJ</a></td>
+<td>confirmed · a impressão chama <code>plant_objects</code> já corrigido</td></tr>
+</table>
+
+<h2>9. Ordem sugerida</h2>
+<p>Um bug só. Ordem interna: CHG-001 (gerador) → CHG-007 (teste vermelho antes, verde depois) → CHG-002 (operador) →
+CHG-003/004 (botões) → CHG-005 (traduções) → CHG-006 (adendo após o veredito de spec).</p>
+</body></html>

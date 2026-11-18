@@ -3,12 +3,12 @@ schema_version: 1
 id: BUG-20261117-4MF7
 display_number: 151
 title: Sem coleção Arquitetura com subcoleção Parede na organização da cena
-status: open
-phase: triaging
+status: resolved
+phase: delivering
 severity: medium
 priority: P2
 created: 2026-11-17
-updated: 2026-11-17
+updated: 2026-11-18
 
 origin:
   type: manual-report
@@ -24,7 +24,7 @@ security_suspected: false
 
 reproduction:
   classification: deterministic
-  rate: "1/1 (leitura do código: nenhuma ocorrência de 'Arquitetura' e nenhuma coleção criada por walls2d)"
+  rate: "1/1 (leitura do código: nenhuma ocorrência de 'Arquitetura' e nenhuma coleção criada por walls2d; plano fix/plan.html aguardando aprovação)"
   suspected_triggers: []
 
 blocking: []
@@ -38,18 +38,60 @@ relationships:
 traceability:
   specs: ["_reversa_sdd/walls2d/requirements.md#RF-08", "_reversa_sdd/walls2d/design.md#Ponte com a cena"]
   affected_code: ["caffmob_draw/walls2d/apply.py", "caffmob_draw/walls2d/scene_v2.py", "caffmob_draw/walls2d/ops_editor.py"]
-  root_cause: null
-  reproduction_tests: []
-  regression_tests: []
+  root_cause:
+    state: confirmed
+    hypothesis: "O objeto de parede nasce sempre na raiz da cena: `hb_types.GeoNodeWall.create` delega a `GeoNodeObject.create`, que linka em `bpy.context.scene.collection.objects` (hb_types.py:73). O pacote `walls2d/` não tem nenhuma chamada de coleção, então `apply.py` grava geometria e propriedades mas nunca escolhe onde o objeto mora."
+    causal_path:
+      - "apply.py apply_plan: parede nova por GeoNodeWall().create('Wall') ou existente por source"
+      - "hb_types.GeoNodeWall.create -> GeoNodeObject.create: bpy.data.objects.new + scene.collection.objects.link"
+      - "walls2d/ sem new_collection, children.link ou users_collection: nenhuma coleção é criada, procurada ou usada"
+      - "resultado: paredes na raiz da cena, fora de qualquer hierarquia de camadas"
+    evidence:
+      - ref: "fix/plan.html"
+        observation: "plano com as cinco evidências de código, change set e riscos"
+      - ref: "caffmob_draw/hb_types.py:64-73"
+        observation: "GeoNodeObject.create linka todo objeto de geometria em scene.collection"
+      - ref: "caffmob_draw/walls2d/apply.py"
+        observation: "apply_plan cria e atualiza paredes sem tocar em users_collection"
+      - ref: "caffmob_draw/mobi/cena.py:21-26"
+        observation: "padrão de coleção própria do addon: reaproveita por nome antes de criar"
+    code_refs:
+      - file: "caffmob_draw/walls2d/apply.py"
+        symbol: "apply_plan"
+        commit: "8caf911e"
+      - file: "caffmob_draw/hb_types.py"
+        symbol: "GeoNodeObject.create"
+        commit: "8caf911e"
+  reproduction_tests: ["tests/blender_bug_4MF7_colecoes.py#REPRODUÇÃO: coleção Arquitetura e subcoleção Parede"]
+  regression_tests: ["tests/blender_bug_4MF7_colecoes.py", "tests/blender_002_smoke.py", "tests/blender_065_walls2d_v2.py"]
 
-spec_verdict: null
+spec_verdict: spec-gap
 
-change_set: []
+change_set:
+  - id: CHG-001
+    kind: test
+    artifact: "tests/blender_bug_4MF7_colecoes.py"
+    purpose: "reprodução (hierarquia inexistente) e regressões de reaproveitamento, migração, isolamento e OK vazio"
+    diff: "fix/CHG-001.diff"
+  - id: CHG-002
+    kind: code
+    artifact: "caffmob_draw/walls2d/layers.py"
+    purpose: "arquivo novo: ensure (Arquitetura > Parede por caminho) e place (vínculo só nesta cena)"
+    diff: "fix/CHG-002.diff"
+  - id: CHG-003
+    kind: code
+    artifact: "caffmob_draw/walls2d/apply.py"
+    purpose: "apply_plan garante a coleção uma vez e coloca cada parede criada ou atualizada"
+    diff: "fix/CHG-003.diff"
+  - id: CHG-004
+    kind: specification
+    artifact: "_reversa_sdd/addenda/bug-BUG-20261117-4MF7-v001.md"
+    purpose: "adendo aditivo (spec-gap) da hierarquia de coleções e dos limites"
 
 closure:
   policy: local-software
-  satisfied: false
-resolution_kind: null
+  satisfied: true
+resolution_kind: fixed
 ---
 # Sem coleção Arquitetura com subcoleção Parede na organização da cena
 
@@ -116,7 +158,44 @@ onde linkar objeto novo precisa de um ponto único, senão cada chamada escolhe 
 
 ## Resolution
 
-A preencher pelo `/reversa-debugger-fix`.
+**Causa raiz (final):** `confirmed`. `hb_types.GeoNodeWall.create` delega a `GeoNodeObject.create`, que linka todo
+objeto de geometria em `bpy.context.scene.collection.objects` (`hb_types.py:73`). `caffmob_draw/walls2d/` não tinha
+nenhuma chamada de coleção, então o OK gravava geometria e propriedades mas nunca escolhia onde a parede morava.
+
+**Estratégia:** correção direta, escopo restrito às paredes (decisão do titular em 2026-11-18). Plano aprovado em
+`fix/plan.html`.
+
+**Veredito de spec:** `spec-gap` (RF-08 e a seção "Ponte com a cena" não tratavam de coleções). Adendo aditivo
+aprovado: `_reversa_sdd/addenda/bug-BUG-20261117-4MF7-v001.md`.
+
+**resolution_kind:** `fixed`.
+
+### Change set
+
+| CHG | Tipo | Artefato | Propósito | Diff |
+|---|---|---|---|---|
+| CHG-001 | test | `tests/blender_bug_4MF7_colecoes.py` | reprodução e regressões | `fix/CHG-001.diff` |
+| CHG-002 | code | `caffmob_draw/walls2d/layers.py` (novo) | `ensure` e `place`: hierarquia e vínculo só nesta cena | `fix/CHG-002.diff` |
+| CHG-003 | code | `caffmob_draw/walls2d/apply.py` | gancho único em `apply_plan`, coleção criada sob demanda | `fix/CHG-003.diff` |
+| CHG-004 | specification | `_reversa_sdd/addenda/bug-BUG-20261117-4MF7-v001.md` | adendo aditivo (`spec-gap`) |  |
+
+### Prova vermelho → verde
+
+- Vermelho (antes do CHG-002/003), exit 1:
+  `AssertionError: REPRODUÇÃO (#151): o OK não criou a coleção Arquitetura` (`evidence/gate1-red.md`).
+- Verde (depois), exit 0: `blender_bug_4MF7_colecoes: OK` (`evidence/gate2-green.md`).
+- Regressões: `blender_002_smoke` (exit 0, `OK`) e `blender_065_walls2d_v2` (exit 0, linha `OK Parede nova pertence ao
+  pavimento ativo`). `blender_002_ui_events` sai com 0 mas não serve como prova: o roteiro roda num
+  `bpy.app.timers` e o Blender em `--background` encerra antes do timer.
+- `py -3 docs/rag/tools/check_api.py`: 577 arquivos, nenhuma referência desconhecida na API 5.2.
+
+### Riscos e limites
+
+- Risco da mudança: baixa (sem dado salvo, sem contrato externo, um ponto de mudança, reversível pelo desfazer do
+  modal).
+- Desfazer depois do OK não foi exercitado em `--background`; fica para conferência manual com interface.
+- Fora de escopo: cena v2 (mantém as coleções por pavimento), piso/teto/aberturas/móveis e o empty `obj_x`, que
+  continuam na coleção de origem.
 
 ## Agent Notes
 

@@ -85,7 +85,7 @@ s.view.fit(((-1, -1), (5, 4)), margin=0.1)
 window.editor_area = lambda c: (None, None, types.SimpleNamespace(width=1000, height=800, x=0, y=0))
 op = types.SimpleNamespace(dragging=None, panning=None)
 for name in ('_handle', '_handle_click', '_handle_draw', '_append', '_finish_drawing', '_handle_prompt',
-             '_handle_typing', '_answer_no'):
+             '_handle_typing', '_handle_menu', '_answer_no'):
     setattr(op, name, getattr(ops_editor.BTM_OT_WallEditorModal, name).__get__(op))
 
 

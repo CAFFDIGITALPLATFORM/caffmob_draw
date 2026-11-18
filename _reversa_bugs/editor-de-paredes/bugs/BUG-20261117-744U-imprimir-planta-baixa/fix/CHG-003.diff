@@ -1,0 +1,10 @@
+--- a/caffmob_draw/walls2d/panels.py
++++ b/caffmob_draw/walls2d/panels.py
+@@ -180,6 +180,7 @@
+             if len(s.height_mismatches) > 8:
+                 box.label(text=tr("â€¦ e mais {}").format(len(s.height_mismatches) - 8))
+             box.prop(context.window_manager.btm_wall_editor, "equalize_height", toggle=True, icon='ARROW_LEFTRIGHT')
++        layout.operator("caffmob.wall_editor_print", text="Imprimir", icon='FILE')   # BUG-20261117-744U
+         row = layout.row(align=True)
+         row.scale_y = 1.4
+         row.operator("caffmob.wall_editor_ok", text="OK", icon='CHECKMARK')

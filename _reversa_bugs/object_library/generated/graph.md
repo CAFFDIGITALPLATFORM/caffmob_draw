@@ -1,19 +1,19 @@
-<!-- GENERATED, DO NOT EDIT: regenerado por /reversa-debugger-graph em 2026-10-14T03:52:14+00:00 a partir de 8 bugs -->
+<!-- GENERATED, DO NOT EDIT: regenerado por /reversa-debugger-graph em 2026-11-18T15:34:10+00:00 a partir de 8 bugs -->
 
 # Grafo · object_library
 
 ```mermaid
 graph LR
-  BUG_20261011_W2DP["#89 Objeto inserido pela barra lateral não …"]
+  BUG_20261011_W2DP["#89 Objeto inserido pela barra lateral não s…"]
   BUG_20261011_KKHH["#90 Manifesto com tipo inesperado derruba a…"]
-  BUG_20261011_QZSO["#91 O pai da raiz é salvo junto no .blend d…"]
-  BUG_20261011_JKZJ["#92 Texturas próprias não são empacotadas a…"]
-  BUG_20261011_QP4R["#93 Malhas e materiais inseridos somem ao r…"]
-  BUG_20261011_JDYP["#94 cancel() da inserção não remove os obje…"]
-  BUG_20261011_5JLF["#95 item_io.save deixa .json temporário qua…"]
-  BUG_20261011_EVT6["#96 item_id com quebra de linha final é ace…"]
-  BUG_20261011_5JLF -->|related-to| BUG_20261011_SWAD
+  BUG_20261011_QZSO["#91 O pai da raiz é salvo junto no .blend do…"]
+  BUG_20261011_JKZJ["#92 Texturas próprias não são empacotadas ao…"]
+  BUG_20261011_QP4R["#93 Malhas e materiais inseridos somem ao re…"]
+  BUG_20261011_JDYP["#94 cancel() da inserção não remove os objet…"]
+  BUG_20261011_5JLF["#95 item_io.save deixa .json temporário quan…"]
+  BUG_20261011_EVT6["#96 item_id com quebra de linha final é acei…"]
   BUG_20261011_JDYP -->|related-to| BUG_20261011_TLCT
+  BUG_20261011_5JLF -->|related-to| BUG_20261011_SWAD
 ```
 
 ## Clusters
@@ -21,10 +21,11 @@ graph LR
 - `caffmob_draw/object_library/item_io.py`: 4 bugs (BUG-20261011-QZSO, BUG-20261011-JKZJ, BUG-20261011-QP4R, BUG-20261011-5JLF)
 - `caffmob_draw/object_library/ops.py`: 3 bugs (BUG-20261011-W2DP, BUG-20261011-QP4R, BUG-20261011-JDYP)
 
-Leitura: 4 bugs convergem em `caffmob_draw/object_library/item_io.py`, o maior ponto de convergência do contexto; vale corrigi-los numa mesma passada.
+Leitura: 4 bugs convergem em `caffmob_draw/object_library/item_io.py`, o maior ponto de convergência do contexto. Nenhum bug aberto neste contexto: o cluster mostra onde as correções se acumularam.
 
 ## Impact score
 
-Heurística de triagem (não substitui priority/severity): só arestas supported/confirmed contam.
+Heurística de triagem (não substitui priority/severity): causados ×3, bloqueados ×2, regressões ×4, relacionados ×1 (no máximo 3 no total), só arestas supported/confirmed.
 
-Todas as relações abertas estão como `proposed`: score 0 para todos.
+| # | ID | score |
+|---|---|---|

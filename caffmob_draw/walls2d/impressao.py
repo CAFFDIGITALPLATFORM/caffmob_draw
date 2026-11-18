@@ -1,0 +1,308 @@
+"""Impressão da planta baixa do Editor de Paredes em PDF vetorial (BUG-20261117-744U).
+
+O editor desenha a planta na tela pela GPU; para imprimir, a geometria que o desenho já usa vira um PDF A4 vetorial:
+paredes (face interna tracejada, face externa e pontas contínuas), aberturas, medidas e os objetos da planta baixa.
+As penas e tintas seguem o padrão CTB anexado pelo titular em 2026-11-17 (`intake/relato-20261117-1520.md`).
+
+Python puro, sem `bpy`, para ser provado fora do Blender (`tests/test_impressao.py`):
+
+- `coletar_plano` lê o rascunho clássico (`model.WallPlan`);
+- `coletar_v2` lê a prancheta v2 (`studio.Prancheta`), pela mesma geometria que `classico_v2` desenha;
+- `tracos_da_planta` acrescenta os objetos de `scene_io.plant_objects`;
+- `pagina_pdf` enquadra tudo na folha, escolhe a escala padrão que cabe e escreve o arquivo.
+"""
+
+import math
+
+from ..data import units
+from . import model
+
+PAGINA_A4 = (210.0, 297.0)                     # mm, retrato
+MARGEM_MM = 12.0
+ESCALAS = (10, 20, 25, 50, 75, 100, 200)       # denominadores padrão, do maior desenho para o menor
+
+# Padrão CTB: alvenaria comum 0,35 a 0,50 mm; estrutura 0,60 a 0,70 mm; mureta 0,15 a 0,20 mm.
+PENA_MM = {'NORMAL': 0.35, 'DIVISORIA': 0.60, 'MURETA': 0.15}
+PENA_ABERTURA = 0.15
+PENA_OBJETO = 0.10
+TINTA_POR_TIPO = {'NORMAL': (0.0, 0.0, 0.0), 'DIVISORIA': (0.05, 0.22, 0.66), 'MURETA': (0.55, 0.38, 0.0)}
+TINTA_ABERTURA = (0.45, 0.45, 0.45)
+TINTA_OBJETO = (0.30, 0.30, 0.30)
+TINTA_TEXTO = (0.0, 0.0, 0.0)
+HACHURA = (0.86, 0.86, 0.86)                   # cinza claro da hachura interna na prancha
+PAPEL = (1.0, 1.0, 1.0)
+
+PONTO_MM = 72.0 / 25.4                         # 1 mm em pontos do PDF
+TRACO_MM, ESPACO_MM = 3.0, 1.5                 # tracejado da face interna, no papel
+ALTURA_TEXTO_MM = 2.8
+DESVIO_MEDIDA_M = 0.12                         # a medida fica ao lado da parede, em metros de projeto
+
+
+# Traços -----------------------------------------------------------------------------------------------------------
+
+def linha(p0, p1, pena=PENA_MM['NORMAL'], tinta=TINTA_POR_TIPO['NORMAL'], tracejada=False):
+    return {'tipo': 'linha', 'p0': tuple(p0[:2]), 'p1': tuple(p1[:2]), 'pena': float(pena), 'tinta': tuple(tinta),
+            'tracejada': bool(tracejada)}
+
+
+def poligono(pontos, tinta):
+    return {'tipo': 'poligono', 'pontos': [tuple(p[:2]) for p in pontos], 'tinta': tuple(tinta)}
+
+
+def caminho(pontos, pena=PENA_OBJETO, tinta=TINTA_OBJETO):
+    """Contorno em polilinha: um único traço no PDF, mesmo com centenas de pontos (objetos da planta baixa)."""
+    return {'tipo': 'caminho', 'pontos': [tuple(p[:2]) for p in pontos], 'pena': float(pena), 'tinta': tuple(tinta)}
+
+
+def texto(p, valor, altura=ALTURA_TEXTO_MM, tinta=TINTA_TEXTO):
+    return {'tipo': 'texto', 'p': tuple(p[:2]), 'valor': valor, 'altura': float(altura), 'tinta': tuple(tinta)}
+
+
+def _intervalo(tracos, pontos, pena, tinta, tracejada=False):
+    """Uma linha por par consecutivo de `pontos` (polilinha da face, do arco ou do contorno)."""
+    for a, b in zip(pontos, pontos[1:]):
+        tracos.append(linha(a, b, pena, tinta, tracejada))
+
+
+def _normal(a, b):
+    dx, dy = b[0] - a[0], b[1] - a[1]
+    comprimento = math.hypot(dx, dy)
+    if comprimento < 1e-9:
+        return (0.0, 1.0)
+    return (-dy / comprimento, dx / comprimento)
+
+
+def _medida(tracos, pontos, valor):
+    """Medida do trecho ao lado da parede, como na tela, deslocada pela normal do primeiro par."""
+    a, b = pontos[0], pontos[-1]
+    nx, ny = _normal(a, b)
+    meio = ((a[0] + b[0]) / 2.0, (a[1] + b[1]) / 2.0)
+    tracos.append(texto((meio[0] + nx * DESVIO_MEDIDA_M, meio[1] + ny * DESVIO_MEDIDA_M), valor))
+
+
+def _rotulo(metros, unidade):
+    return units.format_length(metros, unidade)
+
+
+# Coleta da geometria -----------------------------------------------------------------------------------------------
+
+def coletar_plano(plan, unidade='MM'):
+    """Traços da planta do rascunho clássico (`model.WallPlan`), na unidade do projeto."""
+    tracos = []
+    for chain in plan.chains:
+        for i in range(chain.segment_count()):
+            tipo = chain.segments[i].wall_type
+            pena = PENA_MM.get(tipo, PENA_MM['NORMAL'])
+            tinta = TINTA_POR_TIPO.get(tipo, TINTA_POR_TIPO['NORMAL'])
+            interna = chain.inner_line(i)
+            externa = chain.outer_line(i)
+            _intervalo(tracos, interna, pena, tinta, tracejada=True)      # face interna: medida real
+            _intervalo(tracos, externa, pena, tinta)
+            tracos.append(linha(interna[0], externa[0], pena, tinta))     # pontas
+            tracos.append(linha(interna[-1], externa[-1], pena, tinta))
+            _medida(tracos, interna, _rotulo(chain.face_length(i, model.INNER), unidade))
+    return tracos
+
+
+def _em_metros(pontos):
+    """A prancheta v2 guarda o documento em mm; o PDF trabalha em metros de projeto."""
+    return [(p[0] / 1000.0, p[1] / 1000.0) for p in pontos]
+
+
+def coletar_v2(v, unidade='MM'):
+    """Traços da planta da prancheta v2, pela mesma geometria que `classico_v2` desenha."""
+    from ..caffmob.geometria import geometria_da_parede, vao_da_abertura
+    from .studio_aberturas import simbolo
+
+    tracos = []
+    aberturas = v.documento.get('aberturas', [])
+    for parede in v.paredes():
+        for i, g in enumerate(geometria_da_parede(parede)):
+            segmento = parede['segmentos'][i]
+            tipo = segmento.get('tipo', 'NORMAL')
+            oculto = segmento.get('estado') == 'oculto'
+            pena = PENA_MM.get(tipo, PENA_MM['NORMAL'])
+            tinta = TINTA_POR_TIPO.get(tipo, TINTA_POR_TIPO['NORMAL'])
+            interna = _em_metros(g['linha'])
+            externa = _em_metros(g['face'])
+            _intervalo(tracos, interna, pena, tinta, tracejada=True)
+            _intervalo(tracos, externa, pena, tinta, tracejada=oculto)
+            tracos.append(linha(interna[0], externa[0], pena, tinta))
+            tracos.append(linha(interna[-1], externa[-1], pena, tinta))
+            for abertura in aberturas:
+                if abertura['segmento_id'] != segmento['id'] or oculto:
+                    continue
+                vao = vao_da_abertura(abertura, segmento, g)
+                if vao is None:
+                    continue
+                simbolo_ = simbolo(abertura, vao, segmento['espessura'], segmento['sentido'])
+                tracos.append(poligono(_em_metros(simbolo_['recorte']), PAPEL))   # apaga a parede no vão
+                for a, b in simbolo_['linhas']:
+                    tracos.append(linha(*_em_metros([a, b]), PENA_ABERTURA, TINTA_ABERTURA))
+                _intervalo(tracos, _em_metros(simbolo_['arco']), PENA_ABERTURA, TINTA_ABERTURA)
+            _medida(tracos, interna, _rotulo(segmento['comprimento'] / 1000.0, unidade))
+    return tracos
+
+
+def tracos_da_planta(objetos, cor_por_material=False):
+    """Objetos da planta baixa: hachura clara (padrão CTB) ou a cor do material, com contorno fino."""
+    tracos = []
+    for objeto in objetos:
+        pontos = list(objeto.get('points') or [])
+        if len(pontos) < 3:
+            continue
+        if pontos[0] != pontos[-1]:
+            pontos.append(pontos[0])
+        cor = objeto.get('color')
+        tinta = tuple(cor[:3]) if cor_por_material and cor else HACHURA
+        tracos.append(poligono(pontos, tinta))
+        tracos.append(caminho(pontos))
+    return tracos
+
+
+# Folha ------------------------------------------------------------------------------------------------------------
+
+def limites(tracos):
+    """Caixa ((xmin, ymin), (xmax, ymax)) dos traços, em metros; None quando não há geometria."""
+    pontos = []
+    for t in tracos:
+        if t['tipo'] == 'linha':
+            pontos += [t['p0'], t['p1']]
+        elif t['tipo'] in ('poligono', 'caminho'):
+            pontos += t['pontos']
+        else:
+            pontos.append(t['p'])
+    if not pontos:
+        return None
+    xs = [p[0] for p in pontos]
+    ys = [p[1] for p in pontos]
+    return ((min(xs), min(ys)), (max(xs), max(ys)))
+
+
+def escala(caixa, pagina=PAGINA_A4, margem=MARGEM_MM):
+    """Maior escala padrão em que a caixa cabe inteira na área útil (de 1:10 a 1:200).
+
+    Devolve o denominador; 0 quando nem 1:200 cabe, e a folha passa a ser ajustada (`_mm_por_metro`).
+    """
+    largura_util = pagina[0] - 2 * margem
+    altura_util = pagina[1] - 2 * margem
+    largura = max(caixa[1][0] - caixa[0][0], 1e-3)
+    altura = max(caixa[1][1] - caixa[0][1], 1e-3)
+    for denominador in ESCALAS:
+        mm = 1000.0 / denominador
+        if largura * mm <= largura_util and altura * mm <= altura_util:
+            return denominador
+    return 0
+
+
+def _mm_por_metro(caixa, denominador, pagina, margem):
+    if denominador:
+        return 1000.0 / denominador
+    largura_util = pagina[0] - 2 * margem
+    altura_util = pagina[1] - 2 * margem
+    largura = max(caixa[1][0] - caixa[0][0], 1e-3)
+    altura = max(caixa[1][1] - caixa[0][1], 1e-3)
+    return min(largura_util / largura, altura_util / altura)
+
+
+# PDF --------------------------------------------------------------------------------------------------------------
+
+def _n(valor):
+    texto = f"{valor:.3f}"
+    return texto.rstrip('0').rstrip('.') if '.' in texto else texto
+
+
+def _cor(tinta, operador):
+    return " ".join(_n(v) for v in tinta) + " " + operador
+
+
+def _escapar(valor):
+    return valor.replace('\\', r'\\').replace('(', r'\(').replace(')', r'\)')
+
+
+def _comando_texto(p, valor, altura, tinta):
+    x, y = p[0] * PONTO_MM, p[1] * PONTO_MM
+    return (f"BT {_cor(tinta, 'rg')} /F1 {_n(altura * PONTO_MM)} Tf "
+            f"1 0 0 1 {_n(x)} {_n(y)} Tm ({_escapar(valor)}) Tj ET")
+
+
+def _comando_linha(t, papel):
+    a, b = papel(t['p0']), papel(t['p1'])
+    traco = f"[{_n(TRACO_MM * PONTO_MM)} {_n(ESPACO_MM * PONTO_MM)}] 0 d" if t['tracejada'] else "[] 0 d"
+    return (f"{traco} {_cor(t['tinta'], 'RG')} {_n(t['pena'] * PONTO_MM)} w "
+            f"{_n(a[0])} {_n(a[1])} m {_n(b[0])} {_n(b[1])} l S")
+
+
+def _comando_caminho(t, papel):
+    convertidos = [papel(p) for p in t['pontos']]
+    pontos = " ".join(f"{_n(p[0])} {_n(p[1])} {'m' if i == 0 else 'l'}" for i, p in enumerate(convertidos))
+    return f"{_cor(t['tinta'], 'RG')} {_n(t['pena'] * PONTO_MM)} w {pontos} S"
+
+
+def _comando_poligono(t, papel):
+    convertidos = [papel(p) for p in t['pontos']]
+    pontos = " ".join(f"{_n(p[0])} {_n(p[1])} {'m' if i == 0 else 'l'}" for i, p in enumerate(convertidos))
+    return f"{_cor(t['tinta'], 'rg')} {pontos} h f"
+
+
+def _conteudo(tracos, caixa, denominador, titulo, unidade, pagina, margem):
+    largura, altura = pagina
+    mm_por_metro = _mm_por_metro(caixa, denominador, pagina, margem)
+    centro = ((caixa[0][0] + caixa[1][0]) / 2.0, (caixa[0][1] + caixa[1][1]) / 2.0)
+
+    def papel(p):
+        return (largura / 2.0 + (p[0] - centro[0]) * mm_por_metro,
+                altura / 2.0 + (p[1] - centro[1]) * mm_por_metro)
+
+    comandos = ["1 J 1 j", _comando_texto((margem, altura - margem * 0.62), titulo, 3.4, TINTA_TEXTO)]
+    nota = f"Escala 1:{denominador} · medidas em {unidade}" if denominador \
+        else f"Sem escala (ajustada à folha) · medidas em {unidade}"
+    comandos.append(_comando_texto((margem, margem * 0.45), nota, 2.6, TINTA_TEXTO))
+    for t in tracos:
+        if t['tipo'] == 'linha':
+            comandos.append(_comando_linha(t, papel))
+        elif t['tipo'] == 'poligono':
+            comandos.append(_comando_poligono(t, papel))
+        elif t['tipo'] == 'caminho':
+            comandos.append(_comando_caminho(t, papel))
+        else:
+            comandos.append(_comando_texto(papel(t['p']), str(t['valor']), t['altura'], t['tinta']))
+    return "\n".join(comandos)
+
+
+def _documento(conteudo, pagina):
+    """Empacota o fluxo de conteúdo num PDF de uma página, com a tabela xref correta."""
+    largura, altura = pagina[0] * PONTO_MM, pagina[1] * PONTO_MM
+    objetos = [
+        b"<< /Type /Catalog /Pages 2 0 R >>",
+        b"<< /Type /Pages /Kids [3 0 R] /Count 1 >>",
+        f"<< /Type /Page /Parent 2 0 R /MediaBox [0 0 {_n(largura)} {_n(altura)}] "
+        f"/Resources << /Font << /F1 5 0 R >> >> /Contents 4 0 R >>".encode('ascii'),
+        b"<< /Length " + str(len(conteudo)).encode('ascii') + b" >>\nstream\n" + conteudo + b"\nendstream",
+        b"<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>",
+    ]
+    saida = bytearray(b"%PDF-1.4\n%\xe2\xe3\xcf\xd3\n")
+    posicoes = []
+    for numero, corpo in enumerate(objetos, start=1):
+        posicoes.append(len(saida))
+        saida += f"{numero} 0 obj\n".encode('ascii') + corpo + b"\nendobj\n"
+    inicio = len(saida)
+    saida += f"xref\n0 {len(objetos) + 1}\n".encode('ascii') + b"0000000000 65535 f \n"
+    for posicao in posicoes:
+        saida += f"{posicao:010d} 00000 n \n".encode('ascii')
+    saida += (f"trailer\n<< /Size {len(objetos) + 1} /Root 1 0 R >>\nstartxref\n{inicio}\n%%EOF\n").encode('ascii')
+    return bytes(saida)
+
+
+def pagina_pdf(tracos, caixa, titulo="Planta baixa", unidade="MM", denominador=None,
+               pagina=PAGINA_A4, margem=MARGEM_MM):
+    """PDF A4 de uma página com os traços enquadrados em `caixa`. Devolve (bytes, denominador usado).
+
+    `caixa` são os limites do que imprimir (normalmente o enquadramento atual da vista). Sem denominador, a escala
+    padrão que cabe é escolhida; 0 no retorno significa folha ajustada. Sem geometria, levanta `ValueError`.
+    """
+    if caixa is None:
+        raise ValueError("Nada para imprimir: a vista não tem planta.")
+    escolhida = denominador if denominador is not None else escala(caixa, pagina, margem)
+    fluxo = _conteudo(tracos, caixa, escolhida, titulo, unidade, pagina, margem)
+    return _documento(fluxo.encode('cp1252', 'replace'), pagina), escolhida

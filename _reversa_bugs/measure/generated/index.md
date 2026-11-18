@@ -1,4 +1,4 @@
-<!-- GENERATED, DO NOT EDIT: regenerado por /reversa-debugger-graph em 2026-10-14T03:52:14+00:00 a partir de 4 bugs -->
+<!-- GENERATED, DO NOT EDIT: regenerado por /reversa-debugger-graph em 2026-11-18T15:34:10+00:00 a partir de 4 bugs -->
 
 # Bugs · measure
 
@@ -24,6 +24,6 @@
 | fixed | 4 |
 
 - #131 BUG-20261011-3W52 (fixed) · travado: apply das cotas não valida o vizinho oposto nem o teto
-- #133 BUG-20261011-4ZPJ (fixed) · travado: O getter das cotas no painel quebra o desenho
 - #132 BUG-20261011-NBKB (fixed) · travado: Vizinho sem Geometry Nodes vira obstáculo de largura zero
+- #133 BUG-20261011-4ZPJ (fixed) · travado: O getter das cotas no painel quebra o desenho
 - #136 BUG-20261011-WJHO (fixed) · travado: Campo desconhecido com valor negativo levanta KeyError

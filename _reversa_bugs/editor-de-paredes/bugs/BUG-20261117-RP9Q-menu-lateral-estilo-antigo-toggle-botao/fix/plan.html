@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Plano de correção · BUG-20261117-RP9Q · menu lateral do editor</title>
+<style>
+  :root {
+    --bg: #0f1115; --panel: #171a21; --panel2: #1e222b; --border: #2c323d;
+    --text: #e7eaf0; --muted: #9aa3b2; --accent: #ff9e2c; --ok: #4ecb71; --warn: #e5c07b;
+    --link: #6cb6ff;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text);
+         font: 15px/1.55 "Segoe UI", system-ui, -apple-system, sans-serif; }
+  main { max-width: 1040px; margin: 0 auto; padding: 32px 20px 64px; }
+  h1 { font-size: 1.55rem; margin: 0 0 6px; }
+  h2 { font-size: 1.05rem; margin: 34px 0 12px; color: var(--accent); text-transform: uppercase; letter-spacing: .06em; }
+  h3 { font-size: .98rem; margin: 20px 0 8px; }
+  .sub { color: var(--muted); margin: 0; }
+  .meta { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0 0; }
+  .tag { background: var(--panel2); border: 1px solid var(--border); border-radius: 999px;
+         padding: 3px 11px; font-size: .82rem; color: var(--muted); }
+  .tag b { color: var(--text); font-weight: 600; }
+  .card { background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 18px 20px; margin: 14px 0; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  @media (max-width: 760px) { .grid2 { grid-template-columns: 1fr; } }
+  table { width: 100%; border-collapse: collapse; margin: 8px 0 0; font-size: .92rem; }
+  th, td { text-align: left; padding: 9px 10px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  th { color: var(--muted); font-weight: 600; font-size: .82rem; text-transform: uppercase; letter-spacing: .04em; }
+  tr:last-child td { border-bottom: 0; }
+  code, .mono { font-family: "Cascadia Code", Consolas, monospace; font-size: .86em; }
+  code { background: #12151b; border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px; }
+  a { color: var(--link); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  .state { display: inline-block; border-radius: 6px; padding: 1px 8px; font-size: .78rem;
+           border: 1px solid currentColor; }
+  .confirmed { color: var(--ok); }
+  .proposed { color: var(--warn); }
+  ul { margin: 6px 0 0 0; padding-left: 20px; }
+  li { margin: 4px 0; }
+  .callout { border-left: 3px solid var(--accent); background: #1b1a16; padding: 12px 16px; border-radius: 0 8px 8px 0; }
+  .mock { background: #101318; border: 1px solid var(--border); border-radius: 10px; padding: 14px; width: 300px; }
+  .mock .row { display: flex; gap: 6px; margin-bottom: 6px; }
+  .mock .btn { flex: 1; text-align: center; border: 1px solid var(--border); border-radius: 5px;
+               padding: 5px 4px; font-size: .78rem; color: var(--muted); background: #1b1f27; }
+  .mock .btn.on { border-color: var(--accent); color: #101318; background: var(--accent); font-weight: 600; }
+  .mock .cap { color: var(--muted); font-size: .74rem; margin: 8px 0 4px; text-transform: uppercase; letter-spacing: .05em; }
+  .mock .chk { color: var(--muted); font-size: .8rem; margin: 3px 0; }
+  .mock .chk b { color: var(--text); }
+  .graph { display: flex; flex-direction: column; gap: 10px; align-items: center; margin: 18px 0 4px; }
+  .node { display: block; width: min(560px, 100%); background: var(--panel2); border: 1px solid var(--border);
+          border-radius: 10px; padding: 10px 14px; color: var(--text); }
+  .node:hover { border-color: var(--accent); text-decoration: none; }
+  .node .n { color: var(--muted); font-size: .78rem; text-transform: uppercase; letter-spacing: .05em; }
+  .node.center { border-color: var(--accent); box-shadow: 0 0 0 1px #ff9e2c33 inset; }
+  .edge { color: var(--muted); font-size: .8rem; }
+  footer { color: var(--muted); font-size: .82rem; margin-top: 44px; border-top: 1px solid var(--border); padding-top: 14px; }
+</style>
+</head>
+<body>
+<main>
+
+<h1>Menu lateral do Editor de Paredes: ferramentas em botões de toggle</h1>
+<p class="sub">Relatório do plano de correção, gerado antes da mudança de código (gate 4.1 do /reversa-debugger-fix).</p>
+<div class="meta">
+  <span class="tag">Bug <b>#152</b></span>
+  <span class="tag"><b>BUG-20261117-RP9Q</b></span>
+  <span class="tag">contexto <b>editor-de-paredes</b></span>
+  <span class="tag">plano de <b>2026-11-18</b></span>
+  <span class="tag">severidade <b>medium</b></span>
+  <span class="tag">prioridade <b>P2</b></span>
+  <span class="tag">risco da mudança <b>baixa</b></span>
+</div>
+
+<h2>1. O pedido e o que existe hoje</h2>
+<div class="card">
+  <p><b>Pedido do titular.</b> O menu lateral do editor tem "estilo antigo". Quer botões de toggle de verdade, com
+  feedback de ativo/inativo, ícones claros e layout organizado, no lugar dos controles padrão de `layout.prop`.</p>
+  <p><b>Causa</b> <span class="state confirmed">confirmed</span>. Não é defeito de runtime: os dois painéis ligam a
+  propriedade do enum direto na UI, sem nenhuma camada de apresentação.</p>
+  <ul>
+    <li><code>walls2d/panels.py:48-49</code>: <code>col = layout.column(align=True)</code> seguido de
+      <code>col.prop(state, "tool", expand=True)</code>. O Blender desenha os 7 itens como 7 linhas de largura total,
+      sem grade e sem agrupamento.</li>
+    <li><code>walls2d/classico_v2.py:722-723</code>: o mesmo desenho, duplicado para a cena v2.</li>
+    <li>Booleanos como <code>magnetic</code>, <code>lock_angle</code>, <code>equalize_height</code> e
+      <code>remove_modules</code> saem como caixa de marcar padrão, sem estado visual de botão.</li>
+    <li>O enum <code>tool</code> (<code>props.py:389</code>) já tem ícone por ferramenta, mas a UI não usa os ícones
+      como botões: só o enum expandido.</li>
+  </ul>
+  <p><b>Evidência de padrão no add-on.</b> Já existem botões com estado no projeto: <code>depress=</code> em
+  <code>cabinet_editor/panels.py:113</code>, <code>cabinet_editor/panels_structure.py:46</code>,
+  <code>ui/panels.py:125</code>, <code>ui/view3d_sidebar.py:321</code> e <code>walls2d/classico_v2.py:708</code>
+  (<code>_acao</code>). A correção segue essa convenção, não inventa uma nova.</p>
+</div>
+
+<h2>2. Desenho proposto</h2>
+<div class="grid2">
+  <div class="card">
+    <h3>Ferramentas em grade, com o ativo aceso</h3>
+    <p>Os 7 itens do enum viram uma grade de 2 colunas de botões com ícone e rótulo curto. O botão da ferramenta ativa
+    fica pressionado (<code>depress=True</code>), o que dá o feedback de ativo/inativo pedido. Os rótulos curtos saem
+    do próprio nome do enum (primeira palavra, antes de <code>/</code>), então não há segunda lista para manter nem
+    texto novo para traduzir.</p>
+    <p>O clique chama um operador novo, <code>caffmob.wall_editor_tool</code>, que grava
+    <code>state.tool</code> e redesenha. Hoje não existe operador: o painel muda a propriedade direto.</p>
+  </div>
+  <div class="card">
+    <h3>Prévia do painel</h3>
+    <div class="mock">
+      <div class="cap">Ferramentas</div>
+      <div class="row"><div class="btn on">Selecionar</div><div class="btn">Construir</div></div>
+      <div class="row"><div class="btn">Inverter</div><div class="btn">Mover</div></div>
+      <div class="row"><div class="btn">Medir</div><div class="btn">Adicionar</div></div>
+      <div class="row"><div class="btn">Remover</div><div class="btn">Enquadrar</div></div>
+      <div class="cap">Grade</div>
+      <div class="chk"><b>Tamanho</b> 1,00 m</div>
+      <div class="chk">▣ Linhas Magnéticas</div>
+      <div class="cap">Novas paredes</div>
+      <div class="chk"><b>Espessura</b> 150 mm · <b>Altura</b> 2,60 m</div>
+    </div>
+  </div>
+</div>
+<div class="card">
+  <p><b>Um desenho, duas telas.</b> A grade sai de um módulo novo, <code>walls2d/painel_ui.py</code>, chamado pelos
+  dois painéis (<code>panels.py</code> no rascunho clássico e <code>classico_v2.painel_ferramentas</code> na cena v2).
+  Hoje o código está duplicado nos dois arquivos; a correção mantém um ponto só, o que já é a convenção do editor.</p>
+  <p><b>Booleanos como toggle.</b> <code>magnetic</code>, <code>lock_angle</code>, <code>equalize_height</code> e
+  <code>remove_modules</code> passam a ser desenhados com <code>toggle=True</code> e ícone, mantendo o texto e o
+  comportamento atuais. <b>Organização.</b> O painel Grid ganha caixas para "Grade" e "Novas paredes", agrupando o
+  que hoje é uma lista solta com um separador.</p>
+</div>
+
+<h2>3. Correction Change Set proposto</h2>
+<table>
+  <thead><tr><th>CHG</th><th>Tipo</th><th>Artefato</th><th>Propósito</th></tr></thead>
+  <tbody>
+    <tr><td class="mono">CHG-001</td><td>test</td>
+      <td class="mono">tests/blender_bug_RP9Q_paineis.py</td>
+      <td>Reprodução: os painéis não oferecem botão de ferramenta com estado. Regressões: operador grava a ferramenta,
+          as duas telas desenham a mesma grade, OK/Cancelar e campos continuam.</td></tr>
+    <tr><td class="mono">CHG-002</td><td>code</td>
+      <td class="mono">caffmob_draw/walls2d/painel_ui.py (novo)</td>
+      <td><code>ferramentas(layout, state)</code>: lê o enum do próprio <code>state</code> e desenha a grade com ícone,
+          rótulo curto e <code>depress</code> no ativo.</td></tr>
+    <tr><td class="mono">CHG-003</td><td>code</td>
+      <td class="mono">caffmob_draw/walls2d/ops_editor.py</td>
+      <td>Operador <code>caffmob.wall_editor_tool</code>, que grava <code>state.tool</code> e redesenha.</td></tr>
+    <tr><td class="mono">CHG-004</td><td>code</td>
+      <td class="mono">caffmob_draw/walls2d/panels.py</td>
+      <td>Painel Ferramentas usa a grade; booleanos com <code>toggle=True</code>; painel Grid em caixas.</td></tr>
+    <tr><td class="mono">CHG-005</td><td>code</td>
+      <td class="mono">caffmob_draw/walls2d/classico_v2.py</td>
+      <td><code>painel_ferramentas</code> e <code>painel_grade</code> usam os mesmos helpers (fim da duplicação).</td></tr>
+    <tr><td class="mono">CHG-006</td><td>specification</td>
+      <td class="mono">_reversa_sdd/addenda/bug-BUG-20261117-RP9Q-v001.md</td>
+      <td>Adendo aditivo (<code>spec-gap</code>) do padrão visual dos painéis e do operador de ferramenta.</td></tr>
+  </tbody>
+</table>
+
+<h2>4. Testes planejados</h2>
+<div class="grid2">
+  <div class="card">
+    <h3>Reprodução (prova o pedido)</h3>
+    <ul>
+      <li>Desenhar o painel Ferramentas com um layout de mentira (mesmo padrão de
+          <code>tests/blender_065_walls2d_selecao.py</code>) e conferir que existe um botão
+          <code>caffmob.wall_editor_tool</code> para cada um dos 7 itens do enum, com o ícone do item e
+          <code>depress</code> só no ativo. Hoje falha: nenhum botão desse operador é desenhado.</li>
+      <li>Conferir que <code>magnetic</code> é desenhado com <code>toggle=True</code>. Hoje sai como caixa de marcar.</li>
+    </ul>
+  </div>
+  <div class="card">
+    <h3>Regressão (protege o que existe)</h3>
+    <ul>
+      <li>O operador grava <code>state.tool</code> e devolve <code>FINISHED</code>; ferramenta inválida não muda o
+          estado.</li>
+      <li>O painel da cena v2 desenha a mesma grade (paridade entre as duas telas).</li>
+      <li>OK/Cancelar continuam no painel Confirmar; o painel Painel continua desenhando os campos do trecho; o painel
+          Grid continua com tamanho, magnético e os padrões de nova parede.</li>
+      <li><code>blender_002_smoke</code> e <code>blender_065_walls2d_v2</code> seguem verdes.</li>
+    </ul>
+  </div>
+</div>
+
+<h2>5. Riscos e limites</h2>
+<div class="card">
+  <p><b>Risco da mudança: baixa.</b></p>
+  <ul>
+    <li>Só apresentação: o enum <code>tool</code>, as propriedades e o modal não mudam.</li>
+    <li>Nenhum dado salvo, nenhum contrato externo, nenhum texto novo para traduzir (os rótulos saem do enum).</li>
+    <li>Reversível: reverter os dois painéis volta ao desenho atual; o operador novo é aditivo.</li>
+    <li>O visual exato de um botão é do Blender: dá para garantir ícone, rótulo e estado pressionado, não sombra ou
+          cantos arredondados. O tema do Blender manda.</li>
+  </ul>
+  <h3>Fica fora da correção (Agent Notes)</h3>
+  <ul>
+    <li>Redesenhar os campos de medida do painel Painel e as listas de Portas e Janelas: o pedido é o menu lateral de
+        ferramentas e o agrupamento.</li>
+    <li>O erro de <code>move_segments</code> citado no registro já foi corrigido no #148.</li>
+    <li>Ícones novos: a correção usa os ícones que o enum já declara.</li>
+    <li>Conferência visual no Blender com interface (o teste valida as chamadas de layout, não o desenho na tela).</li>
+  </ul>
+</div>
+
+<h2>6. Mini-grafo do bug</h2>
+<div class="graph">
+  <a class="node center" href="../bug.md">
+    <span class="n">BUG-20261117-RP9Q · #152 · medium/P2</span><br>
+    Menu lateral com estilo antigo; quer botão de toggle moderno
+  </a>
+  <span class="edge">este bug não tem arestas de bug no registro (nem relacionado, nem causado, nem bloqueado)</span>
+  <a class="node" href="../../../../_reversa_bugs/editor-de-paredes/generated/graph.html">
+    <span class="n">view do contexto</span><br>
+    Grafo completo de editor-de-paredes (15 bugs)
+  </a>
+</div>
+
+<h2>7. Matriz de relações</h2>
+<table>
+  <thead><tr><th>Origem</th><th>Tipo</th><th>Destino</th><th>Estado</th></tr></thead>
+  <tbody>
+    <tr><td><a href="../bug.md">#152 RP9Q</a></td><td>related-to</td><td>nenhum</td>
+      <td><span class="state proposed">vazio</span></td></tr>
+    <tr><td><a href="../bug.md">#152 RP9Q</a></td><td>spec</td>
+      <td><code>_reversa_sdd/walls2d/requirements.md#RF-13</code></td>
+      <td><span class="state proposed">spec-gap</span></td></tr>
+    <tr><td><a href="../bug.md">#152 RP9Q</a></td><td>spec</td>
+      <td><code>_reversa_sdd/walls2d/design.md#Interface</code></td>
+      <td><span class="state proposed">spec-gap</span></td></tr>
+  </tbody>
+</table>
+
+<h2>8. Ordem sugerida</h2>
+<div class="card">
+  <p>Um bug nesta sessão. O #147 (tema claro) e o #149 (impressão) usam os mesmos painéis e o mesmo desenho de
+  ferramentas; se entrarem depois, herdam a grade e as caixas sem retrabalho. Nada a encadear agora.</p>
+</div>
+
+<footer>Gerado por /reversa-debugger-fix em 2026-11-18 · closure policy <code>local-software</code> · control mode
+<code>gated</code> · este arquivo é a proposta, o change set só entra depois da aprovação do titular.</footer>
+
+</main>
+</body>
+</html>

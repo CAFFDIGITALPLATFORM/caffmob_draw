@@ -1,4 +1,4 @@
-<!-- GENERATED, DO NOT EDIT: regenerado por /reversa-debugger-graph em 2026-10-14T03:52:14+00:00 a partir de 10 bugs -->
+<!-- GENERATED, DO NOT EDIT: regenerado por /reversa-debugger-graph em 2026-11-18T15:34:10+00:00 a partir de 10 bugs -->
 
 # Bugs · collision
 
@@ -23,13 +23,13 @@
 |---|---|
 | fixed | 10 |
 
-- #48 BUG-20261011-53DV (fixed) · travado: Colisão falsa entre folha e caixa da porta/janela ou parede (a confirmar)
-- #47 BUG-20261011-7GRY (fixed) · travado: check_moved deixa a lista desordenada e o erro antigo
-- #49 BUG-20261011-EWKD (fixed) · travado: Contenção total em objeto fino pode passar sem detecção (a confirmar)
-- #46 BUG-20261011-JUJZ (fixed) · travado: Override de colisão no painel de agregado edita a raiz do módulo
-- #43 BUG-20261011-KX3O (fixed) · travado: Afastar move o item errado e aceita resultado desatualizado
-- #45 BUG-20261011-L5ML (fixed) · travado: Grupos soltos (SketchUp, biblioteca de objetos) ficam fora da colisão
 - #42 BUG-20261011-SRPV (fixed) · travado: Tolerância de 1,0 mm instável por arredondamento de float
+- #43 BUG-20261011-KX3O (fixed) · travado: Afastar move o item errado e aceita resultado desatualizado
 - #44 BUG-20261011-TIPN (fixed) · travado: Resultado da colisão não fica desatualizado com objeto novo, apagado ou renomeado
+- #45 BUG-20261011-L5ML (fixed) · travado: Grupos soltos (SketchUp, biblioteca de objetos) ficam fora da colisão
+- #46 BUG-20261011-JUJZ (fixed) · travado: Override de colisão no painel de agregado edita a raiz do módulo
+- #47 BUG-20261011-7GRY (fixed) · travado: check_moved deixa a lista desordenada e o erro antigo
+- #48 BUG-20261011-53DV (fixed) · travado: Colisão falsa entre folha e caixa da porta/janela ou parede (a confirmar)
+- #49 BUG-20261011-EWKD (fixed) · travado: Contenção total em objeto fino pode passar sem detecção (a confirmar)
 - #50 BUG-20261011-ZEN6 (fixed) · travado: Só o cabeçalho fica vermelho no painel de colisão
 - #140 BUG-20261012-PFY2 (fixed) · travado: Malhas sobrepostas com faces coplanares não são confirmadas pela BVH da colisão

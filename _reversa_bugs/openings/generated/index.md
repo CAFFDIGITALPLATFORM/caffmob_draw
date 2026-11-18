@@ -1,4 +1,4 @@
-<!-- GENERATED, DO NOT EDIT: regenerado por /reversa-debugger-graph em 2026-10-14T03:52:14+00:00 a partir de 7 bugs -->
+<!-- GENERATED, DO NOT EDIT: regenerado por /reversa-debugger-graph em 2026-11-18T15:34:10+00:00 a partir de 7 bugs -->
 
 # Bugs · openings
 
@@ -23,10 +23,10 @@
 |---|---|
 | fixed | 7 |
 
-- #123 BUG-20261011-7SNG (fixed) · travado: Porta inserida em região do lado de trás abre invertida
 - #118 BUG-20261011-A2Z4 (fixed) · travado: Uma exceção em sync para o lote de aberturas
-- #124 BUG-20261011-D3GC (fixed) · travado: draw_regions escreve dados durante o desenho
-- #120 BUG-20261011-IDPP (fixed) · travado: Porta real não acompanha largura e altura editadas pelo painel
 - #119 BUG-20261011-MMVI (fixed) · travado: Reconstruir a porta apaga objetos do usuário parentados nela
-- #122 BUG-20261011-SX4T (fixed) · travado: _swing pega o filho errado como símbolo de abertura
+- #120 BUG-20261011-IDPP (fixed) · travado: Porta real não acompanha largura e altura editadas pelo painel
 - #121 BUG-20261011-UV6S (fixed) · travado: Trocar porta simples para dupla não refaz a porta real
+- #122 BUG-20261011-SX4T (fixed) · travado: _swing pega o filho errado como símbolo de abertura
+- #123 BUG-20261011-7SNG (fixed) · travado: Porta inserida em região do lado de trás abre invertida
+- #124 BUG-20261011-D3GC (fixed) · travado: draw_regions escreve dados durante o desenho

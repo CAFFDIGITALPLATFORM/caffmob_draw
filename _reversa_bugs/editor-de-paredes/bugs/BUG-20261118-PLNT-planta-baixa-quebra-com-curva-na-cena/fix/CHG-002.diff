@@ -1,0 +1,41 @@
+--- a/tests/blender_bug_JXDJ_plant_baixa.py
++++ b/tests/blender_bug_JXDJ_plant_baixa.py
+@@ -95,6 +95,38 @@
+           f"plant_low={getattr(s, 'plant_low', 'N/A')} cut_height={getattr(s, 'cut_height', 'N/A')}")
+ 
+ # ---------------------------------------------------------------------------
++# Regressão: ler a cena não pode quebrar com curva, vazio, malha vazia ou objeto acima do corte
++# ---------------------------------------------------------------------------
++from caffmob_draw.walls2d import scene_io  # noqa: E402
++
++bpy.ops.mesh.primitive_cube_add(size=1.0, location=(0.0, 0.0, 0.5))
++caixa = bpy.context.active_object
++caixa.name = "Caixa"
++bpy.ops.object.empty_add(location=(1.0, 1.0, 0.0))
++bpy.context.active_object.name = "Vazio"
++curva_dados = bpy.data.curves.new("Curva", type='CURVE')
++curva = bpy.data.objects.new("Curva", curva_dados)
++scene.collection.objects.link(curva)
++bpy.ops.mesh.primitive_cube_add(size=1.0, location=(3.0, 0.0, 4.0))
++bpy.context.active_object.name = "Alto"
++
++caixa.data.materials.append(bpy.data.materials.new("Cinza"))
++
++objetos, erro = [], ""
++try:
++    objetos = scene_io.plant_objects(scene, 3.0)
++except Exception as exc:                       # noqa: BLE001
++    erro = f"{type(exc).__name__}: {exc}"
++nomes = [o['name'] for o in objetos]
++
++check("REGRESSÃO: planta lê a cena com curva, vazio e objeto acima do corte", not erro, erro)
++check("REGRESSÃO: malha abaixo do corte entra na planta", "Caixa" in nomes, f"nomes={nomes}")
++check("REGRESSÃO: objeto acima do corte fica fora da planta", "Alto" not in nomes, f"nomes={nomes}")
++check("REGRESSÃO: malha da planta tem contorno e cor",
++      bool(objetos) and bool(objetos[0]['points']) and bool(objetos[0]['color']),
++      f"pontos={len(objetos[0]['points']) if objetos else 0}")
++
++# ---------------------------------------------------------------------------
+ # Encerramento
+ # ---------------------------------------------------------------------------
+ props.end()
