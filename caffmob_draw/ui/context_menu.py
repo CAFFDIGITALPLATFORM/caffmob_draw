@@ -7,6 +7,7 @@ e do HUD (`sidebar_vocab`). Parede, piso, teto e aberturas ficam só com o subme
 
 import bpy  # type: ignore
 
+from ..data.i18n import tr
 from ..selection import classify
 from .sidebar_vocab import draw_action
 
@@ -77,6 +78,9 @@ def draw_context_menu(self, context):
     plane = getattr(context.window_manager, 'btm_insertion_plane', None)
     if plane is not None and plane.active:
         draw_action(layout, 'CLEAR_INSERTION_PLANE')
+    # Feature 016 (RF-14): o seletor abre no ponto do cursor da viewport, como no atalho.
+    layout.operator_context = 'INVOKE_DEFAULT'
+    layout.operator("caffmob.overlap_select", text=tr("Selecionar entre sobrepostos"), icon='SORT_ASC')
     layout.separator()
 
 

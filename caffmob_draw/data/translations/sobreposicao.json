@@ -1,0 +1,42 @@
+{
+ "Objetos sobrepostos": {
+  "pt_BR": "Objetos sobrepostos",
+  "en_US": "Overlapping Objects"
+ },
+ "{} no ponto": {
+  "pt_BR": "{} no ponto",
+  "en_US": "{} at the point"
+ },
+ "Isolamento: ligado": {
+  "pt_BR": "Isolamento: ligado",
+  "en_US": "Isolation: on"
+ },
+ "Isolamento: desligado": {
+  "pt_BR": "Isolamento: desligado",
+  "en_US": "Isolation: off"
+ },
+ "Nenhum objeto elegível sob o cursor": {
+  "pt_BR": "Nenhum objeto elegível sob o cursor",
+  "en_US": "No selectable object under the cursor"
+ },
+ "Enter aplica  ·  Esc restaura  ·  I isola": {
+  "pt_BR": "Enter aplica  ·  Esc restaura  ·  I isola",
+  "en_US": "Enter applies  ·  Esc restores  ·  I isolates"
+ },
+ "Ctrl+A marca tudo  ·  Ctrl+/ inverte  ·  roda rola a lista": {
+  "pt_BR": "Ctrl+A marca tudo  ·  Ctrl+/ inverte  ·  roda rola a lista",
+  "en_US": "Ctrl+A marks all  ·  Ctrl+/ inverts  ·  wheel scrolls the list"
+ },
+ "Ctrl + Alt + clique abre o seletor": {
+  "pt_BR": "Ctrl + Alt + clique abre o seletor",
+  "en_US": "Ctrl + Alt + click opens the selector"
+ },
+ "Selecionar entre sobrepostos": {
+  "pt_BR": "Selecionar entre sobrepostos",
+  "en_US": "Select Among Overlapping"
+ },
+ "Escolhe entre os objetos sobrepostos sob o cursor, com lista, isolamento e confirmação": {
+  "pt_BR": "Escolhe entre os objetos sobrepostos sob o cursor, com lista, isolamento e confirmação",
+  "en_US": "Chooses among the overlapping objects under the cursor, with a list, isolation and confirmation"
+ }
+}

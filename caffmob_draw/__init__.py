@@ -15,7 +15,8 @@ _submodule_names = [
     "walls", "doors_windows", "layouts", "rooms", "details",
     "ops_obstacles", "export", "ops_stairs", "scene_navigator",
     "viewport_hud", "ops_general", "closets", "face_frame",
-    "frameless", "wood_hoods", "molding", "hb_layouts", "hb_assets"
+    "frameless", "wood_hoods", "molding", "hb_layouts", "hb_assets",
+    "selection.overlap_core", "selection.overlap_select"
 ]
 for _mod_name in _submodule_names:
     _full_name = f"{__name__}.{_mod_name}"
@@ -42,7 +43,7 @@ from . import object_library
 from . import openings
 from . import cladding
 from . import edgeband  # feature 067 onda 4: fita de borda visual
-from .selection import component_props, component_select, component_pick
+from .selection import component_props, component_select, component_pick, overlap_select
 from . import target  # feature 067: alvo da seleção, depois de selection e antes de ui
 from . import mechanisms  # feature 067 onda 5: mecanismos e editor animado
 from .selection import migration_front_roles  # feature 067 onda 5: M-08
@@ -359,6 +360,8 @@ def register():
     # Seleção por componente (feature 011)
     for _module in (component_props, component_select, component_pick):
         _module.register()
+    # Seletor de sobreposição (feature 016, D-09): depois da seleção por componente, que continua com Alt.
+    overlap_select.register()
     # Feature 067 (D-02): depois da seleção por componente, para o snapshot ver a seleção já promovida ao dono.
     target.register()
     migration_front_roles.register()
@@ -428,6 +431,7 @@ def unregister():
     mechanisms.unregister()
     migration_front_roles.unregister()
     target.unregister()
+    overlap_select.unregister()
     for _module in (component_pick, component_select, component_props):
         _module.unregister()
     edgeband.unregister()
