@@ -1,0 +1,2939 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Construtor de Armários — CAFF MOB (Blender 5.2.0 Mockup)</title>
+<style>
+:root {
+  --bg: #eceef2;
+  --surface: #ffffff;
+  --surface2: #f5f6f8;
+  --border: #c9cfd8;
+  --border-dark: #aeb6c2;
+  --text: #1f2630;
+  --muted: #5f6b7a;
+  --accent: #2563eb;
+  --accent-soft: #dbeafe;
+  --accent-hover: #1d4ed8;
+  --warn: #d97706;
+  --warn-bg: #fef3c7;
+  --danger: #dc2626;
+  --danger-bg: #fee2e2;
+  --ok: #15803d;
+  --ok-bg: #dcfce7;
+  --canvas-bg: #ffffff;
+  --grid-line: #eef1f5;
+  --wood-fill: #d8b892;
+  --wood-stroke: #8a6642;
+  --wood-dark: #b89166;
+  --front-fill: #e7cfa9;
+  --back-fill: #e4d5c3;
+  --rail-fill: #94a3b8;
+  --glass-fill: rgba(147, 197, 253, 0.38);
+  --alu-fill: #cbd5e1;
+  --shadow: 0 2px 8px rgba(15, 23, 42, 0.08);
+}
+body.dark {
+  --bg: #14181f;
+  --surface: #1d232c;
+  --surface2: #252d39;
+  --border: #333e4f;
+  --border-dark: #475569;
+  --text: #e8edf4;
+  --muted: #94a3b8;
+  --accent: #3b82f6;
+  --accent-soft: #1e3a5f;
+  --accent-hover: #60a5fa;
+  --warn: #f59e0b;
+  --warn-bg: #451a03;
+  --danger: #ef4444;
+  --danger-bg: #450a0a;
+  --ok: #22c55e;
+  --ok-bg: #052e16;
+  --canvas-bg: #161c24;
+  --grid-line: #202935;
+  --wood-fill: #b98d5c;
+  --wood-stroke: #6f4e2d;
+  --wood-dark: #946c43;
+  --front-fill: #caa06f;
+  --back-fill: #4c3b2c;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Segoe UI', Inter, system-ui, -apple-system, sans-serif;
+  font-size: 12px;
+  color: var(--text);
+  background: var(--bg);
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  user-select: none;
+}
+
+/* Top Window Chrome + Toolbar (matching reference Promob-style editor) */
+.titlebar {
+  height: 32px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+  gap: 10px;
+  flex-shrink: 0;
+}
+.titlebar .app-title {
+  font-weight: 700;
+  font-size: 12.5px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.badge {
+  font-size: 10.5px;
+  padding: 2px 7px;
+  border-radius: 99px;
+  font-weight: 600;
+  border: 1px solid transparent;
+}
+.badge-blue { background: var(--accent-soft); color: var(--accent); border-color: rgba(37,99,235,0.25); }
+.badge-ok { background: var(--ok-bg); color: var(--ok); }
+.badge-danger { background: var(--danger-bg); color: var(--danger); }
+.badge-warn { background: var(--warn-bg); color: var(--warn); }
+.titlebar-right { margin-left: auto; display: flex; align-items: center; gap: 6px; }
+
+.toolbar {
+  height: 36px;
+  background: var(--surface2);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  padding: 0 10px;
+  gap: 4px;
+  flex-shrink: 0;
+  overflow-x: auto;
+}
+.tb-sep { width: 1px; height: 20px; background: var(--border); margin: 0 4px; flex-shrink: 0; }
+.tb-btn {
+  height: 26px;
+  padding: 0 8px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--text);
+  border-radius: 4px;
+  font-size: 11.5px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  white-space: nowrap;
+}
+.tb-btn:hover { background: var(--surface); border-color: var(--border); }
+.tb-btn.active { background: var(--accent-soft); color: var(--accent); border-color: var(--accent); font-weight: 600; }
+
+/* Main Split Workspace — ALWAYS side-by-side so preview NEVER scrolls out of sight */
+.workspace {
+  flex: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) clamp(275px, 34vw, 375px);
+  min-height: 0;
+  overflow: hidden;
+  position: relative;
+}
+.workspace.panel-collapsed {
+  grid-template-columns: minmax(0, 1fr) 0px;
+}
+.workspace.panel-collapsed .right-panel {
+  display: none;
+}
+
+/* Inline Floating HUD inside Preview (Zero scroll-down-scroll-up!) */
+.inline-hud {
+  position: absolute;
+  top: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 12;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 6px;
+  background: var(--surface);
+  border: 1px solid var(--border-dark);
+  border-radius: 999px;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.14);
+  max-width: calc(100% - 16px);
+  overflow-x: auto;
+}
+.hud-chip {
+  height: 24px;
+  padding: 0 8px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--surface2);
+  color: var(--text);
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  transition: all .12s;
+}
+.hud-chip:hover { border-color: var(--accent); color: var(--accent); }
+.hud-chip.on { background: var(--accent); color: #fff; border-color: var(--accent); }
+.hud-sep { width: 1px; height: 16px; background: var(--border); flex-shrink: 0; }
+
+/* Contextual Floating Inline Inspector at bottom of Preview */
+.inline-inspector {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 12;
+  display: none;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  background: var(--surface);
+  border: 1.5px solid var(--accent);
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.2);
+  max-width: calc(100% - 20px);
+  flex-wrap: wrap;
+}
+.inline-inspector.show { display: flex; }
+.inline-inspector .ins-title {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--accent);
+  white-space: nowrap;
+}
+.inline-inspector select, .inline-inspector input[type="number"] {
+  width: auto;
+  padding: 2px 5px;
+  font-size: 11px;
+  height: 24px;
+}
+
+/* Left Viewport */
+.viewport-wrap {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  background: var(--bg);
+  padding: 8px;
+  gap: 6px;
+}
+.viewport-frame {
+  flex: 1;
+  background: var(--canvas-bg);
+  border: 1px solid var(--border-dark);
+  border-radius: 4px;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+.viewport-views {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1fr;
+  min-height: 0;
+  position: relative;
+}
+.viewport-views.split {
+  grid-template-columns: 1.45fr 1fr;
+}
+.view-pane {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.view-pane + .view-pane {
+  border-left: 1px dashed var(--border-dark);
+}
+.view-label {
+  position: absolute;
+  top: 8px;
+  left: 10px;
+  font-size: 10.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 2px 7px;
+  border-radius: 3px;
+  z-index: 5;
+  pointer-events: none;
+}
+svg#frontSvg, svg#sideSvg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  touch-action: none;
+}
+
+/* Empty State Overlay */
+.empty-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  z-index: 4;
+}
+.empty-card {
+  pointer-events: auto;
+  background: var(--surface);
+  border: 1px dashed var(--accent);
+  border-radius: 8px;
+  padding: 16px 20px;
+  text-align: center;
+  max-width: 340px;
+  box-shadow: var(--shadow);
+}
+.empty-card h3 { font-size: 13.5px; margin-bottom: 6px; color: var(--text); }
+.empty-card p { font-size: 11.5px; color: var(--muted); line-height: 1.45; margin-bottom: 12px; }
+.empty-actions { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+
+/* Statusbar under Viewport */
+.statusbar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 11px;
+  color: var(--muted);
+  padding: 4px 8px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  flex-wrap: wrap;
+}
+.statusbar strong { color: var(--text); }
+.status-right { margin-left: auto; display: flex; align-items: center; gap: 8px; }
+
+/* Right Panel (matching reference tabs + content + Movimentação + OK/Cancelar/Aplicar) */
+.right-panel {
+  background: var(--surface);
+  border-left: 1px solid var(--border-dark);
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.main-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  background: var(--surface2);
+  border-bottom: 1px solid var(--border);
+  padding: 4px 4px 0;
+  gap: 2px;
+  flex-shrink: 0;
+}
+.main-tab {
+  padding: 6px 7px;
+  font-size: 11px;
+  background: transparent;
+  border: 1px solid transparent;
+  border-bottom: none;
+  border-radius: 4px 4px 0 0;
+  color: var(--muted);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-weight: 500;
+}
+.main-tab:hover { color: var(--text); background: rgba(128,128,128,0.08); }
+.main-tab.active {
+  background: var(--surface);
+  color: var(--accent);
+  border-color: var(--border);
+  font-weight: 700;
+  position: relative;
+  top: 1px;
+}
+
+.panel-subhead {
+  padding: 6px 10px;
+  background: var(--surface2);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 11px;
+  color: var(--muted);
+  flex-shrink: 0;
+}
+
+.panel-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.group-box {
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--surface);
+}
+.group-title {
+  padding: 5px 9px;
+  background: var(--surface2);
+  border-bottom: 1px solid var(--border);
+  font-weight: 700;
+  font-size: 11px;
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.group-content {
+  padding: 8px 9px;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px 10px;
+}
+.form-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+}
+.form-row label { font-size: 11.5px; color: var(--text); }
+.field-stack { display: flex; flex-direction: column; gap: 3px; }
+.field-stack label { font-size: 11px; color: var(--muted); font-weight: 600; }
+
+input[type="number"], input[type="text"], select {
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--border-dark);
+  border-radius: 3px;
+  padding: 4px 6px;
+  font-size: 11.5px;
+  font-family: inherit;
+  outline: none;
+  width: 100%;
+}
+input[type="number"]:focus, input[type="text"]:focus, select:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px var(--accent-soft);
+}
+.num-sm { width: 76px !important; text-align: right; }
+
+.comp-row {
+  display: grid;
+  grid-template-columns: 1fr 70px;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 0;
+}
+.check-lbl {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  font-size: 11.5px;
+}
+.check-lbl input[type="checkbox"], .check-lbl input[type="radio"] {
+  accent-color: var(--accent);
+  width: 14px;
+  height: 14px;
+  cursor: pointer;
+}
+
+/* Subtabs inside Divisões / Gavetas */
+.sub-tabs {
+  display: flex;
+  border-bottom: 1px solid var(--border);
+  gap: 2px;
+  margin-bottom: 6px;
+}
+.sub-tab {
+  padding: 5px 8px;
+  font-size: 11px;
+  border: 1px solid transparent;
+  border-bottom: none;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  border-radius: 3px 3px 0 0;
+}
+.sub-tab.active {
+  background: var(--surface2);
+  border-color: var(--border);
+  color: var(--accent);
+  font-weight: 700;
+}
+
+/* Visual Option Cards (like Promob thumbnails) */
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 6px;
+}
+.opt-card {
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 7px;
+  text-align: center;
+  cursor: pointer;
+  background: var(--surface);
+  transition: border-color .15s, background .15s;
+}
+.opt-card:hover { border-color: var(--accent); }
+.opt-card.selected {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+  box-shadow: inset 0 0 0 1px var(--accent);
+}
+.opt-card .ico { font-size: 18px; margin-bottom: 3px; }
+.opt-card .lbl { font-size: 10.5px; font-weight: 600; line-height: 1.25; }
+
+/* 5x5 Matrix Selector (screenshot [4]) */
+.matrix-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 6px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+}
+.matrix-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 28px);
+  grid-template-rows: repeat(5, 22px);
+  gap: 3px;
+}
+.matrix-cell {
+  border: 1px solid var(--border-dark);
+  background: var(--surface);
+  border-radius: 2px;
+  cursor: pointer;
+}
+.matrix-cell.hl {
+  background: var(--accent);
+  border-color: var(--accent-hover);
+}
+
+/* Buttons */
+.btn {
+  padding: 5px 11px;
+  border: 1px solid var(--border-dark);
+  background: var(--surface2);
+  color: var(--text);
+  border-radius: 4px;
+  font-size: 11.5px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+}
+.btn:hover { border-color: var(--accent); color: var(--accent); }
+.btn-primary {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+}
+.btn-primary:hover { background: var(--accent-hover); color: #fff; }
+.btn-danger {
+  background: var(--danger-bg);
+  color: var(--danger);
+  border-color: rgba(220,38,38,0.35);
+}
+.btn-sm { padding: 3px 8px; font-size: 11px; }
+
+/* Movimentação + Footer */
+.mov-bar {
+  border-top: 1px solid var(--border-dark);
+  background: var(--surface2);
+  padding: 6px 10px;
+  flex-shrink: 0;
+}
+.mov-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-weight: 700;
+  font-size: 11px;
+  color: var(--accent);
+  margin-bottom: 5px;
+}
+.panel-footer {
+  border-top: 1px solid var(--border);
+  background: var(--surface);
+  padding: 7px 10px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+/* Context Menu */
+.ctx-menu {
+  position: fixed;
+  z-index: 999;
+  min-width: 195px;
+  background: var(--surface);
+  border: 1px solid var(--border-dark);
+  border-radius: 6px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.22);
+  padding: 4px;
+  display: none;
+}
+.ctx-title {
+  padding: 4px 8px;
+  font-size: 10.5px;
+  font-weight: 700;
+  color: var(--muted);
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 3px;
+}
+.ctx-item {
+  width: 100%;
+  text-align: left;
+  background: transparent;
+  border: none;
+  color: var(--text);
+  padding: 6px 9px;
+  border-radius: 4px;
+  font-size: 11.5px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.ctx-item:hover { background: var(--accent-soft); color: var(--accent); }
+.ctx-item.danger:hover { background: var(--danger-bg); color: var(--danger); }
+.ctx-item:disabled { opacity: 0.45; cursor: not-allowed; }
+
+/* Inline Dimension Editor Popover */
+.dim-popover {
+  position: fixed;
+  z-index: 998;
+  background: var(--surface);
+  border: 2px solid var(--accent);
+  border-radius: 6px;
+  padding: 8px 10px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.22);
+  display: none;
+  gap: 6px;
+  align-items: center;
+}
+.dim-popover input { width: 82px; text-align: right; font-weight: 700; }
+
+/* Modal */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(15,23,42,0.52);
+  z-index: 1000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+.modal-backdrop.open { display: flex; }
+.modal {
+  background: var(--surface);
+  border: 1px solid var(--border-dark);
+  border-radius: 8px;
+  width: min(640px, 100%);
+  max-height: 88vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+}
+.modal-head {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-weight: 700;
+  font-size: 13px;
+}
+.modal-body {
+  padding: 14px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.modal-foot {
+  padding: 10px 14px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+/* Toast */
+.toast {
+  position: fixed;
+  bottom: 18px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #111827;
+  color: #f8fafc;
+  padding: 8px 14px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+  z-index: 1100;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .2s;
+}
+.toast.show { opacity: 1; }
+
+.alert-box {
+  padding: 7px 9px;
+  border-radius: 4px;
+  font-size: 11px;
+  line-height: 1.4;
+  border: 1px solid;
+}
+.alert-danger { background: var(--danger-bg); color: var(--danger); border-color: rgba(220,38,38,0.35); }
+.alert-ok { background: var(--ok-bg); color: var(--ok); border-color: rgba(21,128,61,0.35); }
+.alert-warn { background: var(--warn-bg); color: var(--warn); border-color: rgba(217,119,6,0.35); }
+
+.drawer-item-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  padding: 4px 6px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+}
+
+.cutlist-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 11px;
+}
+.cutlist-table th, .cutlist-table td {
+  border: 1px solid var(--border);
+  padding: 4px 6px;
+  text-align: left;
+}
+.cutlist-table th { background: var(--surface2); font-weight: 700; }
+.cutlist-table td.num { text-align: right; font-variant-numeric: tabular-nums; }
+
+@media (max-width: 640px) {
+  .workspace { grid-template-columns: minmax(0, 1fr); }
+  .right-panel {
+    position: absolute;
+    top: 0; right: 0; bottom: 0;
+    width: min(330px, 88vw);
+    z-index: 30;
+    box-shadow: -8px 0 28px rgba(0,0,0,0.28);
+  }
+  .workspace.panel-collapsed .right-panel { display: none; }
+}
+</style>
+</head>
+<body>
+
+<header class="titlebar">
+  <div class="app-title">
+    <span>▣ Construtor de Armários</span>
+    <span class="badge badge-blue">CAFF MOB · Blender 5.2.0</span>
+  </div>
+  <span id="sheetStatusBadge" class="badge badge-ok" title="Validação em tempo real contra chapa máxima fornecida pelo addon host">✓ Chapa OK (2750×1830)</span>
+  <div class="titlebar-right">
+    <button class="btn btn-sm" id="btnHostConfig">⚙ Contrato Addon / Chapas</button>
+    <button class="btn btn-sm" id="btnCutlist">▤ Plano de Corte</button>
+    <button class="btn btn-sm" id="btnTheme">◐ Tema</button>
+  </div>
+</header>
+
+<div class="toolbar">
+  <button class="tb-btn" id="btnQuickBox" title="Ativar laterais, base inferior, base superior e fundo">▣ Montar Caixa</button>
+  <button class="tb-btn" id="btnResetEmpty" title="Limpar armário e voltar para janela vazia">✕ Limpar (Vazio)</button>
+  <div class="tb-sep"></div>
+  <button class="tb-btn active" id="btnViewFront">◫ Frontal</button>
+  <button class="tb-btn active" id="btnViewSplit">◫ Corte Lateral</button>
+  <button class="tb-btn active" id="btnToggleCotas">↔ Cotas</button>
+  <button class="tb-btn active" id="btnToggleFronts">▤ Mostrar Portas</button>
+  <div class="tb-sep"></div>
+  <button class="tb-btn" id="btnToggleOpenAll" title="Simular animação de abertura (portas e gavetas com corrediça ST48-0200)">⇄ Abrir / Fechar Tudo</button>
+  <div class="tb-sep"></div>
+  <button class="tb-btn" id="btnExportJson" title="Exportar JSON compatível com o addon Python do Blender 5.2.0">{ } Exportar p/ Blender</button>
+  <div class="tb-sep"></div>
+  <button class="tb-btn active" id="btnTogglePanel" title="Mostrar ou recolher painel lateral para ampliar o preview">◧ Painel Lateral</button>
+</div>
+
+<main class="workspace">
+  <section class="viewport-wrap">
+    <div class="viewport-frame">
+      <div class="viewport-views split" id="viewportViews">
+        <div class="view-pane" id="frontPane">
+          <div class="inline-hud" id="inlineHud"></div>
+          <svg id="frontSvg" viewBox="0 0 700 620"></svg>
+          <div class="inline-inspector" id="inlineInspector"></div>
+          <div class="empty-overlay" id="emptyOverlay">
+            <div class="empty-card">
+              <h3>Janela de Armário Vazia</h3>
+              <p>O construtor inicia vazio conforme especificado. Ative as <strong>Laterais</strong>, <strong>Base Inferior</strong> e <strong>Base Superior</strong> na aba <strong>Estrutura</strong> à direita ou use a montagem rápida abaixo.</p>
+              <div class="empty-actions">
+                <button class="btn btn-primary" id="btnEmptyQuickBuild">▣ Adicionar Caixa Padrão</button>
+                <button class="btn" id="btnEmptyAddSides">┃ Apenas Laterais</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="view-pane" id="sidePane">
+          <div class="view-label" id="sideViewLabel">Corte Lateral · Recuo Deslizante &amp; Corrediça ST48-0200</div>
+          <svg id="sideSvg" viewBox="0 0 420 620"></svg>
+        </div>
+      </div>
+    </div>
+
+    <div class="statusbar">
+      <span>Armário: <strong id="sbDims">1000 × 2400 × 510 mm</strong></span>
+      <span>Montagem: <strong id="sbMount">Lateral Passante</strong></span>
+      <span>Seleção: <strong id="sbSel">Nenhuma (clique em um vão ou peça)</strong></span>
+      <div class="status-right">
+        <span id="sbHint">Dica: Del exclui · Clique direito ou toque longo abre menu</span>
+      </div>
+    </div>
+  </section>
+
+  <aside class="right-panel">
+    <nav class="main-tabs" id="mainTabs">
+      <button class="main-tab active" data-tab="estrutura">▣ Estrutura</button>
+      <button class="main-tab" data-tab="divisoes">⊞ Divisões</button>
+      <button class="main-tab" data-tab="gavetas">▤ Gavetas</button>
+      <button class="main-tab" data-tab="internos">◫ Internos</button>
+      <button class="main-tab" data-tab="portas">▯ Portas</button>
+      <button class="main-tab" data-tab="deslizantes">⇆ Deslizantes</button>
+      <button class="main-tab" data-tab="fundos">▧ Fundos</button>
+    </nav>
+
+    <div class="panel-subhead">
+      <span>Tipo: <strong>Armário Paramétrico</strong></span>
+      <span id="activeBayBadge" class="badge badge-blue">Vão ativo: Vão 1</span>
+    </div>
+
+    <div class="panel-body" id="panelBody"></div>
+
+    <div class="mov-bar">
+      <div class="mov-header">
+        <span>Movimentação &amp; Precisão</span>
+        <span style="font-weight:400;color:var(--muted)">Unidade: mm</span>
+      </div>
+      <div class="form-grid">
+        <div class="form-row">
+          <label for="inpPassoIni">Passo inicial</label>
+          <input type="number" id="inpPassoIni" class="num-sm" value="0" min="0" max="500">
+        </div>
+        <div class="form-row">
+          <label for="inpPasso">Passo (snap)</label>
+          <input type="number" id="inpPasso" class="num-sm" value="10" min="1" max="100">
+        </div>
+      </div>
+    </div>
+
+    <div class="panel-footer">
+      <button class="btn" id="btnCancel">Cancelar</button>
+      <button class="btn" id="btnApply">Aplicar</button>
+      <button class="btn btn-primary" id="btnOk">OK (Gerar Blender)</button>
+    </div>
+  </aside>
+</main>
+
+<!-- Context Menu (Right-click or Touch Long-Press) -->
+<div class="ctx-menu" id="ctxMenu">
+  <div class="ctx-title" id="ctxTitle">Peça</div>
+  <button class="ctx-item" id="ctxToggleOpen" style="display:none"></button>
+  <button class="ctx-item" id="ctxDuplicate"><span>⧉ Duplicar (respeitar vão livre)</span></button>
+  <button class="ctx-item danger" id="ctxDelete"><span>✕ Excluir peça</span><span style="opacity:.6">Del</span></button>
+</div>
+
+<!-- Inline Dimension Editor Popover -->
+<div class="dim-popover" id="dimPopover">
+  <span id="dimPopLabel" style="font-size:11px;font-weight:700">Nova medida (mm):</span>
+  <input type="number" id="dimPopInput" min="10" max="6000" step="1">
+  <button class="btn btn-primary btn-sm" id="dimPopOk">OK</button>
+  <button class="btn btn-sm" id="dimPopCancel">✕</button>
+</div>
+
+<!-- Host Addon Contract / Sheet Config Modal -->
+<div class="modal-backdrop" id="hostModal">
+  <div class="modal">
+    <div class="modal-head">
+      <span>⚙ Contrato do Addon Host — Chapas, Limites e Montagem</span>
+      <button class="btn btn-sm" id="btnCloseHostModal">✕</button>
+    </div>
+    <div class="modal-body" id="hostModalBody"></div>
+    <div class="modal-foot">
+      <button class="btn btn-primary" id="btnSaveHostModal">Salvar Contrato</button>
+    </div>
+  </div>
+</div>
+
+<!-- Cutlist & Blender JSON Modal -->
+<div class="modal-backdrop" id="cutlistModal">
+  <div class="modal">
+    <div class="modal-head">
+      <span id="cutlistModalTitle">▤ Lista de Peças &amp; Validação de Chapa Máxima</span>
+      <button class="btn btn-sm" id="btnCloseCutlist">✕</button>
+    </div>
+    <div class="modal-body" id="cutlistModalBody"></div>
+    <div class="modal-foot">
+      <button class="btn" id="btnCopyJson">Copiar JSON</button>
+      <button class="btn btn-primary" id="btnCloseCutlist2">Fechar</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ============================================================================
+// CAFF MOB — CONSTRUTOR DE ARMÁRIOS (BLENDER 5.2.0 PROTOTYPE & LIVE MOCKUP)
+// ============================================================================
+
+const DRAWER_MODELS = [
+  { id: 's_cf_reta',   label: 's/ CF Reta',   hasCF: false, style: 'reta' },
+  { id: 's_cf_normal', label: 's/ CF Normal', hasCF: false, style: 'normal' },
+  { id: 's_cf_vidro',  label: 's/ CF Vidro',  hasCF: false, style: 'vidro' },
+  { id: 's_cf_gola',   label: 's/ CF Gola',   hasCF: false, style: 'gola' },
+  { id: 's_cf_cava',   label: 's/ CF Cava',   hasCF: false, style: 'cava' },
+  { id: 'c_cf_reta',   label: 'c/ CF Reta',   hasCF: true,  style: 'reta' },
+  { id: 'c_cf_normal', label: 'c/ CF Normal', hasCF: true,  style: 'normal' },
+  { id: 'c_cf_vidro',  label: 'c/ CF Vidro',  hasCF: true,  style: 'vidro' },
+  { id: 'c_cf_gola',   label: 'c/ CF Gola',   hasCF: true,  style: 'gola' },
+  { id: 'c_cf_cava',   label: 'c/ CF Cava',   hasCF: true,  style: 'cava' },
+];
+
+const THICKNESS_OPTIONS = [6, 15, 18, 25];
+
+let nextId = 1;
+const uid = (p) => `${p}_${nextId++}`;
+
+// State starts with an EMPTY cabinet (user adds laterais/bases in Estrutura)
+const state = {
+  // Contract provided by the host addon
+  hostContract: {
+    providerName: 'CAFF_MOB_Core',
+    maxSheetLength: 2750,
+    maxSheetWidth: 1830,
+    defaultThickness: {
+      lateralEsq: 15,
+      lateralDir: 15,
+      baseInf: 15,
+      baseSup: 15,
+      divisoria: 15,
+      prateleira: 15,
+      fundo: 6,
+      gaveta: 15,
+    },
+    defaultAssembly: 'LATERAL_PASSANTE', // 'BASE_PASSANTE' | 'LATERAL_PASSANTE'
+    defaultContraFrenteOrient: 'EM_PE',  // 'EM_PE' | 'DEITADA'
+    defaultTraseiraOrient: 'EM_PE',      // 'EM_PE' | 'DEITADA'
+  },
+
+  // Cabinet overall dimensions (mm)
+  width: 1000,
+  height: 2400,
+  depth: 510,
+  assembly: 'LATERAL_PASSANTE',
+  contraFrenteOrient: 'EM_PE',
+  traseiraOrient: 'EM_PE',
+
+  // Structural components — ALL FALSE on startup (empty window!)
+  structure: {
+    lateralEsq: false,
+    lateralDir: false,
+    baseInf: false,
+    baseSup: false,
+    fundo: false,
+    contraFrente: false,
+    travessaTraseira: false,
+    rodape: false,
+    rodapeAltura: 80,
+  },
+  thickness: {
+    lateralEsq: 15,
+    lateralDir: 15,
+    baseInf: 15,
+    baseSup: 15,
+    divisoria: 15,
+    prateleira: 15,
+    fundo: 6,
+    gaveta: 15,
+  },
+  backConfig: {
+    fixacao: 'ENCAIXADO', // 'SOBREPOSTO' | 'ENCAIXADO'
+    recuo: 10,
+  },
+
+  // Internal layout:
+  // verticalDividers: array of { id, x (mm from innerLeft), thickness, recuoFrontal, recuoTraseiro, tipo }
+  verticalDividers: [],
+  // shelves: array of { id, bayIndex, z (mm from innerBottom), thickness, recuoFrontal, recuoTraseiro, tipo }
+  shelves: [],
+  // drawerBanks: array of { id, bayIndex, zStart, zEnd, category, defaultModel, count, gap,
+  //   useSlideModel, separator, sepCols, sepRows, afastadores: {fe,fd,te,td}, drawers: [{id, model, isOpen}] }
+  drawerBanks: [],
+  // internos: array of { id, bayIndex, tipo ('cabideiro'|'calceiro'|'sapateira'|'maleiro'), z }
+  internos: [],
+
+  // Hinged doors
+  hingedDoors: {
+    enabled: false,
+    count: 2,
+    thickness: 18,
+    handle: 'CAVA',
+    material: 'MADEIRA',
+    isOpen: false,
+  },
+
+  // Sliding doors (Porta Deslizante)
+  slidingDoors: {
+    enabled: false,
+    basePosition: 'DENTRO', // 'DENTRO' (recua internos) | 'FRENTE' (sem recuar internos)
+    baseThickness: 18,      // espessura da base inferior/superior da porta deslizante
+    trackDepth: 70,         // profundidade total do trilho/porta que recua os internos quando DENTRO
+    material: 'MDF_AMADEIRADO', // 'MDF_AMADEIRADO' | 'VIDRO' | 'ALUMINIO'
+    leafCount: 2,
+    overlap: 30,
+    isOpen: false,
+  },
+
+  // UI state
+  activeTab: 'estrutura',
+  divSubTab: 'vertical',     // 'vertical' | 'horizontal' | 'multipla'
+  drawerSubTab: 'internas',  // 'internas' | 'sapateiras' | 'corredica' | 'externas'
+  divInsertType: 'movel_s_recuo',
+  matrixRows: 2,
+  matrixCols: 1,
+  matrixPriority: 'horizontal',
+  selectedBay: 0,
+  selectedItem: null, // { type: 'vdiv'|'shelf'|'drawerBank'|'drawer'|'interno'|'slidingDoor'|'hingedDoor', id, subId? }
+  showSplitView: window.innerWidth >= 1060,
+  panelOpen: window.innerWidth >= 640,
+  showCotas: true,
+  showFronts: true,
+  passoInicial: 0,
+  passo: 10,
+};
+
+// ============================================================================
+// GEOMETRY HELPERS (Real millimeter math)
+// ============================================================================
+function hasAnyStructure() {
+  const s = state.structure;
+  return s.lateralEsq || s.lateralDir || s.baseInf || s.baseSup || s.fundo;
+}
+
+function getInnerBounds() {
+  const t = state.thickness;
+  const s = state.structure;
+  const left = s.lateralEsq ? t.lateralEsq : 0;
+  const right = state.width - (s.lateralDir ? t.lateralDir : 0);
+  const bottom = (s.rodape ? s.rodapeAltura : 0) + (s.baseInf ? t.baseInf : 0);
+  const top = state.height - (s.baseSup ? t.baseSup : 0);
+
+  // If sliding doors have base INSIDE the cabinet, base inf/sup of sliding door occupy height near front,
+  // and internal dividers/shelves/drawers recede by slidingDoors.trackDepth!
+  const slidingRecede = (state.slidingDoors.enabled && state.slidingDoors.basePosition === 'DENTRO')
+    ? state.slidingDoors.trackDepth : 0;
+
+  const backDepth = s.fundo ? (t.fundo + (state.backConfig.fixacao === 'ENCAIXADO' ? state.backConfig.recuo : 0)) : 0;
+  const usableDepth = Math.max(80, state.depth - backDepth - slidingRecede);
+
+  return {
+    left, right,
+    width: Math.max(0, right - left),
+    bottom, top,
+    height: Math.max(0, top - bottom),
+    slidingRecede,
+    usableDepth,
+    backDepth,
+  };
+}
+
+function getBays() {
+  const ib = getInnerBounds();
+  const vdivs = [...state.verticalDividers].sort((a, b) => a.x - b.x);
+  const bays = [];
+  let curX = 0;
+  for (let i = 0; i < vdivs.length; i++) {
+    const d = vdivs[i];
+    const xEnd = Math.max(curX, d.x - d.thickness / 2);
+    bays.push({ index: i, xStart: curX, xEnd, width: Math.max(0, xEnd - curX) });
+    curX = Math.min(ib.width, d.x + d.thickness / 2);
+  }
+  bays.push({ index: vdivs.length, xStart: curX, xEnd: ib.width, width: Math.max(0, ib.width - curX) });
+  if (state.selectedBay >= bays.length) state.selectedBay = Math.max(0, bays.length - 1);
+  return bays;
+}
+
+// Compute cutlist & validate against hostContract max sheet size
+function computeCutlist() {
+  const ib = getInnerBounds();
+  const s = state.structure;
+  const t = state.thickness;
+  const parts = [];
+  const basePassante = state.assembly === 'BASE_PASSANTE';
+
+  const latH = basePassante
+    ? state.height - (s.baseInf ? t.baseInf : 0) - (s.baseSup ? t.baseSup : 0) - (s.rodape ? s.rodapeAltura : 0)
+    : state.height - (s.rodape ? s.rodapeAltura : 0);
+  const baseW = basePassante
+    ? state.width
+    : state.width - (s.lateralEsq ? t.lateralEsq : 0) - (s.lateralDir ? t.lateralDir : 0);
+
+  if (s.lateralEsq) parts.push({ name: 'Lateral Esquerda', w: state.depth, h: latH, th: t.lateralEsq, note: state.assembly });
+  if (s.lateralDir) parts.push({ name: 'Lateral Direita', w: state.depth, h: latH, th: t.lateralDir, note: state.assembly });
+  if (s.baseInf) parts.push({ name: 'Base Inferior', w: baseW, h: state.depth, th: t.baseInf, note: state.assembly });
+  if (s.baseSup) parts.push({ name: 'Base Superior', w: baseW, h: state.depth, th: t.baseSup, note: state.assembly });
+  if (s.fundo) parts.push({ name: 'Fundo', w: state.width, h: state.height - (s.rodape ? s.rodapeAltura : 0), th: t.fundo, note: state.backConfig.fixacao });
+  if (s.contraFrente) parts.push({ name: `Contra-frente (${state.contraFrenteOrient === 'EM_PE' ? 'Em pé' : 'Deitada'})`, w: ib.width, h: 100, th: t.baseSup, note: state.contraFrenteOrient });
+  if (s.travessaTraseira) parts.push({ name: `Travessa Traseira (${state.traseiraOrient === 'EM_PE' ? 'Em pé' : 'Deitada'})`, w: ib.width, h: 100, th: t.baseSup, note: state.traseiraOrient });
+
+  state.verticalDividers.forEach((d, idx) => {
+    const dep = Math.max(50, ib.usableDepth - d.recuoFrontal - d.recuoTraseiro);
+    parts.push({
+      name: `Divisória Vertical ${idx + 1}`,
+      w: dep, h: ib.height, th: d.thickness,
+      note: ib.slidingRecede > 0 ? `Recuada -${ib.slidingRecede}mm (Deslizante)` : 'Interna'
+    });
+  });
+
+  const bays = getBays();
+  state.shelves.forEach((sh, idx) => {
+    const bay = bays[sh.bayIndex] || bays[0];
+    const dep = Math.max(50, ib.usableDepth - sh.recuoFrontal - sh.recuoTraseiro);
+    parts.push({
+      name: `Prateleira V${sh.bayIndex + 1}-${idx + 1}`,
+      w: bay ? bay.width : ib.width, h: dep, th: sh.thickness,
+      note: ib.slidingRecede > 0 ? `Recuada -${ib.slidingRecede}mm` : 'Interna'
+    });
+  });
+
+  state.drawerBanks.forEach((bank, bi) => {
+    const bay = bays[bank.bayIndex] || bays[0];
+    const bw = bay ? bay.width : ib.width;
+    const bankH = bank.zEnd - bank.zStart;
+    const eachH = Math.max(60, Math.round((bankH - bank.gap * (bank.drawers.length + 1)) / Math.max(1, bank.drawers.length)));
+    const boxD = Math.min(ib.usableDepth - 30, 450);
+    bank.drawers.forEach((dr, di) => {
+      parts.push({
+        name: `Gaveta B${bi + 1}-G${di + 1} Frente (${dr.model})`,
+        w: Math.max(80, bw - 6), h: eachH, th: t.gaveta,
+        note: bank.useSlideModel ? 'Corrediça ST48-0200' : 'Padrão'
+      });
+      parts.push({
+        name: `Gaveta B${bi + 1}-G${di + 1} Caixa`,
+        w: Math.max(60, bw - 26), h: boxD, th: t.gaveta,
+        note: bank.separator ? `Separador ${bank.sepCols}×${bank.sepRows}` : 'Sem separador'
+      });
+    });
+  });
+
+  if (state.slidingDoors.enabled) {
+    const sd = state.slidingDoors;
+    const baseLen = sd.basePosition === 'DENTRO' ? ib.width : state.width;
+    parts.push({ name: `Base Inf. Porta Deslizante (${sd.basePosition})`, w: baseLen, h: sd.trackDepth, th: sd.baseThickness, note: 'Trilho inferior' });
+    parts.push({ name: `Base Sup. Porta Deslizante (${sd.basePosition})`, w: baseLen, h: sd.trackDepth, th: sd.baseThickness, note: 'Trilho superior' });
+    const leafW = Math.round((baseLen + sd.overlap * (sd.leafCount - 1)) / sd.leafCount);
+    const leafH = Math.round((sd.basePosition === 'DENTRO' ? ib.height : state.height) - sd.baseThickness * 2 - 12);
+    for (let i = 0; i < sd.leafCount; i++) {
+      parts.push({ name: `Folha Deslizante ${i + 1} (${sd.material})`, w: leafW, h: leafH, th: 18, note: sd.material });
+    }
+  }
+
+  const maxL = Math.max(state.hostContract.maxSheetLength, state.hostContract.maxSheetWidth);
+  const maxW = Math.min(state.hostContract.maxSheetLength, state.hostContract.maxSheetWidth);
+  let violations = [];
+  parts.forEach(p => {
+    const pLong = Math.max(p.w, p.h);
+    const pShort = Math.min(p.w, p.h);
+    p.exceeds = (pLong > maxL || pShort > maxW);
+    if (p.exceeds) violations.push(p);
+  });
+  return { parts, violations, maxL, maxW };
+}
+
+function showToast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(showToast._t);
+  showToast._t = setTimeout(() => el.classList.remove('show'), 2600);
+}
+
+// ============================================================================
+// RENDER FRONT ELEVATION SVG (Live Interactive Canvas)
+// ============================================================================
+let frontTransform = { scale: 0.2, ox: 120, oy: 60 };
+
+function renderFrontSVG() {
+  const svg = document.getElementById('frontSvg');
+  const W = 700, H = 620;
+  const padX = 110, padY = 64;
+  const scale = Math.min((W - padX * 2) / Math.max(300, state.width), (H - padY * 2) / Math.max(300, state.height));
+  const drawW = state.width * scale;
+  const drawH = state.height * scale;
+  const ox = (W - drawW) / 2;
+  const oy = (H - drawH) / 2 + 6;
+  frontTransform = { scale, ox, oy };
+
+  const xPx = (mmVal) => ox + mmVal * scale;
+  const yPx = (zMm) => oy + (state.height - zMm) * scale;
+  const ib = getInnerBounds();
+  const s = state.structure;
+  const t = state.thickness;
+  const empty = !hasAnyStructure();
+
+  document.getElementById('emptyOverlay').style.display = empty ? 'flex' : 'none';
+
+  let out = `<defs>
+    <pattern id="gridPat" width="24" height="24" patternUnits="userSpaceOnUse">
+      <path d="M 24 0 L 0 0 0 24" fill="none" stroke="var(--grid-line)" stroke-width="1"/>
+    </pattern>
+    <pattern id="glassPat" width="12" height="12" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+      <line x1="0" y1="0" x2="0" y2="12" stroke="rgba(255,255,255,0.45)" stroke-width="2"/>
+    </pattern>
+  </defs>`;
+  out += `<rect x="0" y="0" width="${W}" height="${H}" fill="url(#gridPat)"/>`;
+
+  // Dashed bounding envelope + clickable inline edge hotspots (toggle Laterais/Bases directly on preview!)
+  out += `<rect x="${ox}" y="${oy}" width="${drawW}" height="${drawH}" fill="none" stroke="var(--border-dark)" stroke-width="1.3" stroke-dasharray="6,4"/>`;
+  out += `<rect class="edge-toggle" data-edge="lateralEsq" x="${ox - 10}" y="${oy + 8}" width="18" height="${Math.max(10, drawH - 16)}" fill="transparent" style="cursor:pointer"><title>Clique para adicionar/remover Lateral Esquerda</title></rect>`;
+  out += `<rect class="edge-toggle" data-edge="lateralDir" x="${ox + drawW - 8}" y="${oy + 8}" width="18" height="${Math.max(10, drawH - 16)}" fill="transparent" style="cursor:pointer"><title>Clique para adicionar/remover Lateral Direita</title></rect>`;
+  out += `<rect class="edge-toggle" data-edge="baseSup" x="${ox + 8}" y="${oy - 10}" width="${Math.max(10, drawW - 16)}" height="18" fill="transparent" style="cursor:pointer"><title>Clique para adicionar/remover Base Superior</title></rect>`;
+  out += `<rect class="edge-toggle" data-edge="baseInf" x="${ox + 8}" y="${oy + drawH - 8}" width="${Math.max(10, drawW - 16)}" height="18" fill="transparent" style="cursor:pointer"><title>Clique para adicionar/remover Base Inferior</title></rect>`;
+
+  // Back panel
+  if (s.fundo) {
+    const rodH = s.rodape ? s.rodapeAltura : 0;
+    out += `<rect x="${xPx(0)}" y="${yPx(state.height)}" width="${drawW}" height="${(state.height - rodH) * scale}" fill="var(--back-fill)" opacity="0.55"/>`;
+  }
+
+  // Clickable bays (vãos)
+  const bays = getBays();
+  if (!empty) {
+    bays.forEach((bay) => {
+      const bx = xPx(ib.left + bay.xStart);
+      const bw = bay.width * scale;
+      const by = yPx(ib.top);
+      const bh = ib.height * scale;
+      const isSel = state.selectedBay === bay.index;
+      out += `<rect class="bay-hit" data-bay="${bay.index}" x="${bx}" y="${by}" width="${Math.max(0, bw)}" height="${Math.max(0, bh)}"
+        fill="${isSel ? 'rgba(37,99,235,0.08)' : 'transparent'}"
+        stroke="${isSel ? 'var(--accent)' : 'none'}" stroke-width="1.2" stroke-dasharray="4,3" style="cursor:pointer"/>`;
+      if (state.showCotas && bw > 36 && bh > 30) {
+        out += `<text x="${bx + bw / 2}" y="${by + 16}" text-anchor="middle" font-size="10" font-weight="700" fill="var(--muted)" pointer-events="none">V${bay.index + 1} (${Math.round(bay.width)}mm)</text>`;
+      }
+    });
+  }
+
+  // Rodapé
+  if (s.rodape) {
+    out += `<rect x="${xPx(0)}" y="${yPx(s.rodapeAltura)}" width="${drawW}" height="${s.rodapeAltura * scale}" fill="var(--wood-dark)" stroke="var(--wood-stroke)" stroke-width="1"/>`;
+  }
+
+  // Structural Panels (respecting Base Passante vs Lateral Passante!)
+  const basePassante = state.assembly === 'BASE_PASSANTE';
+  const rodH = s.rodape ? s.rodapeAltura : 0;
+  const latZ0 = basePassante ? rodH + (s.baseInf ? t.baseInf : 0) : rodH;
+  const latZ1 = basePassante ? state.height - (s.baseSup ? t.baseSup : 0) : state.height;
+  const baseX0 = basePassante ? 0 : (s.lateralEsq ? t.lateralEsq : 0);
+  const baseX1 = basePassante ? state.width : state.width - (s.lateralDir ? t.lateralDir : 0);
+
+  if (s.lateralEsq) {
+    out += `<rect x="${xPx(0)}" y="${yPx(latZ1)}" width="${Math.max(4, t.lateralEsq * scale)}" height="${(latZ1 - latZ0) * scale}" fill="var(--wood-fill)" stroke="var(--wood-stroke)" stroke-width="1.2"/>`;
+  }
+  if (s.lateralDir) {
+    const wPx = Math.max(4, t.lateralDir * scale);
+    out += `<rect x="${xPx(state.width) - wPx}" y="${yPx(latZ1)}" width="${wPx}" height="${(latZ1 - latZ0) * scale}" fill="var(--wood-fill)" stroke="var(--wood-stroke)" stroke-width="1.2"/>`;
+  }
+  if (s.baseInf) {
+    const hPx = Math.max(4, t.baseInf * scale);
+    out += `<rect x="${xPx(baseX0)}" y="${yPx(rodH + t.baseInf)}" width="${(baseX1 - baseX0) * scale}" height="${hPx}" fill="var(--wood-fill)" stroke="var(--wood-stroke)" stroke-width="1.2"/>`;
+  }
+  if (s.baseSup) {
+    const hPx = Math.max(4, t.baseSup * scale);
+    out += `<rect x="${xPx(baseX0)}" y="${yPx(state.height)}" width="${(baseX1 - baseX0) * scale}" height="${hPx}" fill="var(--wood-fill)" stroke="var(--wood-stroke)" stroke-width="1.2"/>`;
+  }
+  if (s.contraFrente) {
+    const cfH = state.contraFrenteOrient === 'EM_PE' ? 90 : t.baseSup;
+    out += `<rect x="${xPx(ib.left)}" y="${yPx(ib.top)}" width="${ib.width * scale}" height="${Math.max(4, cfH * scale)}" fill="var(--wood-dark)" stroke="var(--wood-stroke)" stroke-width="1" opacity="0.85"/>`;
+  }
+
+  // Sliding door internal/front tracks (Base inferior & superior da porta deslizante)
+  if (state.slidingDoors.enabled) {
+    const sd = state.slidingDoors;
+    const isInside = sd.basePosition === 'DENTRO';
+    const tx0 = isInside ? ib.left : 0;
+    const tw = isInside ? ib.width : state.width;
+    const thPx = Math.max(5, sd.baseThickness * scale);
+    const zBot = isInside ? ib.bottom + sd.baseThickness : rodH + sd.baseThickness;
+    const zTop = isInside ? ib.top : state.height;
+    out += `<rect x="${xPx(tx0)}" y="${yPx(zBot)}" width="${tw * scale}" height="${thPx}" fill="#64748b" stroke="#334155" stroke-width="1"/>`;
+    out += `<rect x="${xPx(tx0)}" y="${yPx(zTop)}" width="${tw * scale}" height="${thPx}" fill="#64748b" stroke="#334155" stroke-width="1"/>`;
+  }
+
+  // Vertical dividers (draggable!)
+  state.verticalDividers.forEach((d) => {
+    const isSel = state.selectedItem?.type === 'vdiv' && state.selectedItem.id === d.id;
+    const dx = xPx(ib.left + d.x - d.thickness / 2);
+    const dw = Math.max(5, d.thickness * scale);
+    out += `<g class="drag-piece" data-type="vdiv" data-id="${d.id}" style="cursor:ew-resize">
+      <rect x="${dx - 4}" y="${yPx(ib.top)}" width="${dw + 8}" height="${ib.height * scale}" fill="transparent"/>
+      <rect x="${dx}" y="${yPx(ib.top)}" width="${dw}" height="${ib.height * scale}"
+        fill="${isSel ? '#3b82f6' : 'var(--wood-fill)'}" stroke="${isSel ? '#1d4ed8' : 'var(--wood-stroke)'}" stroke-width="${isSel ? 2 : 1.1}"/>
+    </g>`;
+  });
+
+  // Horizontal shelves (draggable!)
+  state.shelves.forEach((sh) => {
+    const bay = bays[sh.bayIndex];
+    if (!bay) return;
+    const isSel = state.selectedItem?.type === 'shelf' && state.selectedItem.id === sh.id;
+    const sx = xPx(ib.left + bay.xStart);
+    const sw = bay.width * scale;
+    const sy = yPx(ib.bottom + sh.z + sh.thickness / 2);
+    const shPx = Math.max(5, sh.thickness * scale);
+    out += `<g class="drag-piece" data-type="shelf" data-id="${sh.id}" style="cursor:ns-resize">
+      <rect x="${sx}" y="${sy - 4}" width="${sw}" height="${shPx + 8}" fill="transparent"/>
+      <rect x="${sx}" y="${sy}" width="${sw}" height="${shPx}"
+        fill="${isSel ? '#3b82f6' : 'var(--wood-fill)'}" stroke="${isSel ? '#1d4ed8' : 'var(--wood-stroke)'}" stroke-width="${isSel ? 2 : 1.1}"/>
+    </g>`;
+  });
+
+  // Internos (cabideiro, calceiro, etc.)
+  state.internos.forEach((it) => {
+    const bay = bays[it.bayIndex];
+    if (!bay) return;
+    const isSel = state.selectedItem?.type === 'interno' && state.selectedItem.id === it.id;
+    const ix = xPx(ib.left + bay.xStart + 6);
+    const iw = Math.max(10, (bay.width - 12) * scale);
+    const iy = yPx(ib.bottom + it.z);
+    out += `<g class="piece-click" data-type="interno" data-id="${it.id}" style="cursor:pointer">
+      <rect x="${ix}" y="${iy - 3}" width="${iw}" height="6" rx="3" fill="${isSel ? '#3b82f6' : '#94a3b8'}" stroke="#475569" stroke-width="1"/>
+      <text x="${ix + iw / 2}" y="${iy - 6}" text-anchor="middle" font-size="9.5" fill="var(--muted)">${it.tipo}</text>
+    </g>`;
+  });
+
+  // Drawer Banks
+  state.drawerBanks.forEach((bank) => {
+    const bay = bays[bank.bayIndex];
+    if (!bay) return;
+    const bx = xPx(ib.left + bay.xStart + 4);
+    const bw = Math.max(12, (bay.width - 8) * scale);
+    const count = bank.drawers.length;
+    const bankH = bank.zEnd - bank.zStart;
+    const eachH = (bankH - bank.gap * (count + 1)) / Math.max(1, count);
+
+    bank.drawers.forEach((dr, idx) => {
+      const z0 = ib.bottom + bank.zStart + bank.gap + idx * (eachH + bank.gap);
+      const yTop = yPx(z0 + eachH);
+      const hPx = Math.max(10, eachH * scale);
+      const isSel = state.selectedItem?.type === 'drawer' && state.selectedItem.subId === dr.id;
+      const model = DRAWER_MODELS.find(m => m.id === dr.model) || DRAWER_MODELS[0];
+      const openOffset = dr.isOpen ? 10 : 0;
+
+      out += `<g class="piece-click" data-type="drawer" data-id="${bank.id}" data-subid="${dr.id}" style="cursor:pointer">`;
+      // Side slide indicators (ST48-0200)
+      if (bank.useSlideModel) {
+        out += `<rect x="${bx - 3}" y="${yTop + hPx * 0.35}" width="3" height="${hPx * 0.3}" fill="#64748b"/>`;
+        out += `<rect x="${bx + bw}" y="${yTop + hPx * 0.35}" width="3" height="${hPx * 0.3}" fill="#64748b"/>`;
+      }
+      // Drawer front
+      const fillCol = model.style === 'vidro' ? 'var(--glass-fill)' : 'var(--front-fill)';
+      out += `<rect x="${bx}" y="${yTop + openOffset}" width="${bw}" height="${hPx}"
+        fill="${fillCol}" stroke="${isSel ? '#2563eb' : 'var(--wood-stroke)'}" stroke-width="${isSel ? 2.2 : 1.1}" rx="1"/>`;
+      if (model.style === 'vidro') {
+        out += `<rect x="${bx + 4}" y="${yTop + openOffset + 4}" width="${Math.max(4, bw - 8)}" height="${Math.max(4, hPx - 8)}" fill="url(#glassPat)" stroke="#64748b" stroke-width="0.8"/>`;
+      } else if (model.style === 'cava' || model.style === 'gola') {
+        out += `<rect x="${bx + bw * 0.25}" y="${yTop + openOffset + 3}" width="${bw * 0.5}" height="4" rx="2" fill="var(--wood-stroke)"/>`;
+      } else {
+        out += `<line x1="${bx + bw * 0.38}" y1="${yTop + openOffset + hPx / 2}" x2="${bx + bw * 0.62}" y2="${yTop + openOffset + hPx / 2}" stroke="var(--wood-stroke)" stroke-width="2" stroke-linecap="round"/>`;
+      }
+      // Separator preview grid when open or enabled
+      if (bank.separator && hPx > 14) {
+        for (let c = 1; c < bank.sepCols; c++) {
+          const sx = bx + (bw * c) / bank.sepCols;
+          out += `<line x1="${sx}" y1="${yTop + openOffset + 2}" x2="${sx}" y2="${yTop + openOffset + hPx - 2}" stroke="var(--wood-stroke)" stroke-dasharray="2,2" stroke-width="0.9" opacity="0.7"/>`;
+        }
+      }
+      if (dr.isOpen) {
+        out += `<text x="${bx + bw / 2}" y="${yTop + openOffset + hPx - 3}" text-anchor="middle" font-size="8.5" font-weight="700" fill="#1d4ed8">ABERTA</text>`;
+      }
+      out += `</g>`;
+    });
+  });
+
+  // Doors overlay (if showFronts)
+  if (state.showFronts && !empty) {
+    if (state.slidingDoors.enabled) {
+      const sd = state.slidingDoors;
+      const isInside = sd.basePosition === 'DENTRO';
+      const x0 = isInside ? ib.left : 0;
+      const totW = isInside ? ib.width : state.width;
+      const z0 = (isInside ? ib.bottom : rodH) + sd.baseThickness;
+      const z1 = (isInside ? ib.top : state.height) - sd.baseThickness;
+      const leafW = (totW + sd.overlap * (sd.leafCount - 1)) / sd.leafCount;
+      const stepX = (totW - leafW) / Math.max(1, sd.leafCount - 1);
+
+      for (let i = 0; i < sd.leafCount; i++) {
+        let lx = x0 + i * stepX;
+        if (sd.isOpen && i === 0) lx += Math.min(leafW * 0.78, totW - leafW);
+        const fill = sd.material === 'VIDRO' ? 'var(--glass-fill)'
+          : sd.material === 'ALUMINIO' ? 'rgba(203,213,225,0.68)'
+          : 'rgba(216,184,146,0.72)';
+        const stroke = sd.material === 'ALUMINIO' ? '#475569' : '#64748b';
+        out += `<g class="piece-click" data-type="slidingDoor" data-id="sliding_${i}" style="cursor:pointer">
+          <rect x="${xPx(lx)}" y="${yPx(z1)}" width="${leafW * scale}" height="${(z1 - z0) * scale}"
+            fill="${fill}" stroke="${stroke}" stroke-width="${sd.material === 'ALUMINIO' ? 2.5 : 1.5}"/>
+          ${sd.material === 'VIDRO' ? `<rect x="${xPx(lx) + 4}" y="${yPx(z1) + 4}" width="${Math.max(4, leafW * scale - 8)}" height="${Math.max(4, (z1 - z0) * scale - 8)}" fill="url(#glassPat)" pointer-events="none"/>` : ''}
+          <text x="${xPx(lx + leafW / 2)}" y="${yPx((z0 + z1) / 2)}" text-anchor="middle" font-size="10" font-weight="700" fill="var(--text)" opacity="0.75" pointer-events="none">Desl. ${i + 1} (${sd.material.replace('_', ' ')})</text>
+        </g>`;
+      }
+    } else if (state.hingedDoors.enabled) {
+      const hd = state.hingedDoors;
+      const gap = 3;
+      const dw = (state.width - gap * (hd.count + 1)) / hd.count;
+      for (let i = 0; i < hd.count; i++) {
+        const lx = gap + i * (dw + gap);
+        const openScale = hd.isOpen ? 0.28 : 1.0;
+        const dx = i % 2 === 0 ? xPx(lx) : xPx(lx + dw) - dw * scale * openScale;
+        out += `<g class="piece-click" data-type="hingedDoor" data-id="hinged_${i}" style="cursor:pointer">
+          <rect x="${dx}" y="${yPx(state.height - 2)}" width="${dw * scale * openScale}" height="${(state.height - rodH - 4) * scale}"
+            fill="rgba(231,207,169,0.72)" stroke="var(--wood-stroke)" stroke-width="1.5"/>
+        </g>`;
+      }
+    }
+  }
+
+  // Overall Dimension Lines (Cotas externas)
+  if (state.showCotas) {
+    // Top width cota
+    const cyTop = oy - 22;
+    out += `<line x1="${ox}" y1="${cyTop}" x2="${ox + drawW}" y2="${cyTop}" stroke="var(--accent)" stroke-width="1.1"/>`;
+    out += `<line x1="${ox}" y1="${cyTop - 5}" x2="${ox}" y2="${oy - 3}" stroke="var(--accent)" stroke-width="0.9"/>`;
+    out += `<line x1="${ox + drawW}" y1="${cyTop - 5}" x2="${ox + drawW}" y2="${oy - 3}" stroke="var(--accent)" stroke-width="0.9"/>`;
+    out += `<g class="cota-pill" data-cota="width" style="cursor:pointer">
+      <rect x="${ox + drawW / 2 - 36}" y="${cyTop - 10}" width="72" height="19" rx="4" fill="var(--surface)" stroke="var(--accent)" stroke-width="1.1"/>
+      <text x="${ox + drawW / 2}" y="${cyTop + 3}" text-anchor="middle" font-size="10.5" font-weight="700" fill="var(--accent)">${Math.round(state.width)} mm</text>
+    </g>`;
+
+    // Right height cota
+    const cxRight = ox + drawW + 28;
+    out += `<line x1="${cxRight}" y1="${oy}" x2="${cxRight}" y2="${oy + drawH}" stroke="var(--accent)" stroke-width="1.1"/>`;
+    out += `<line x1="${ox + drawW + 3}" y1="${oy}" x2="${cxRight + 5}" y2="${oy}" stroke="var(--accent)" stroke-width="0.9"/>`;
+    out += `<line x1="${ox + drawW + 3}" y1="${oy + drawH}" x2="${cxRight + 5}" y2="${oy + drawH}" stroke="var(--accent)" stroke-width="0.9"/>`;
+    out += `<g class="cota-pill" data-cota="height" style="cursor:pointer">
+      <rect x="${cxRight - 28}" y="${oy + drawH / 2 - 10}" width="64" height="19" rx="4" fill="var(--surface)" stroke="var(--accent)" stroke-width="1.1"/>
+      <text x="${cxRight + 4}" y="${oy + drawH / 2 + 3}" text-anchor="middle" font-size="10.5" font-weight="700" fill="var(--accent)">${Math.round(state.height)} mm</text>
+    </g>`;
+
+    // Live interactive distance cotas for SELECTED vertical divider or horizontal shelf!
+    if (state.selectedItem?.type === 'vdiv') {
+      const d = state.verticalDividers.find(x => x.id === state.selectedItem.id);
+      if (d) {
+        const sorted = [...state.verticalDividers].sort((a, b) => a.x - b.x);
+        const idx = sorted.findIndex(x => x.id === d.id);
+        const leftRef = idx === 0 ? 0 : sorted[idx - 1].x + sorted[idx - 1].thickness / 2;
+        const rightRef = idx === sorted.length - 1 ? ib.width : sorted[idx + 1].x - sorted[idx + 1].thickness / 2;
+        const distLeft = Math.round(d.x - d.thickness / 2 - leftRef);
+        const distRight = Math.round(rightRef - (d.x + d.thickness / 2));
+        const midY = yPx(ib.bottom + ib.height * 0.55);
+
+        out += drawClickableCota(xPx(ib.left + leftRef), midY, xPx(ib.left + d.x - d.thickness / 2), midY, distLeft, 'vdiv_left', d.id);
+        out += drawClickableCota(xPx(ib.left + d.x + d.thickness / 2), midY, xPx(ib.left + rightRef), midY, distRight, 'vdiv_right', d.id);
+      }
+    } else if (state.selectedItem?.type === 'shelf') {
+      const sh = state.shelves.find(x => x.id === state.selectedItem.id);
+      const bay = sh && bays[sh.bayIndex];
+      if (sh && bay) {
+        const bayShelves = state.shelves.filter(s => s.bayIndex === sh.bayIndex).sort((a, b) => a.z - b.z);
+        const idx = bayShelves.findIndex(x => x.id === sh.id);
+        const botRef = idx === 0 ? 0 : bayShelves[idx - 1].z + bayShelves[idx - 1].thickness / 2;
+        const topRef = idx === bayShelves.length - 1 ? ib.height : bayShelves[idx + 1].z - bayShelves[idx + 1].thickness / 2;
+        const distBot = Math.round(sh.z - sh.thickness / 2 - botRef);
+        const distTop = Math.round(topRef - (sh.z + sh.thickness / 2));
+        const midX = xPx(ib.left + bay.xStart + bay.width * 0.5);
+
+        out += drawClickableCota(midX, yPx(ib.bottom + botRef), midX, yPx(ib.bottom + sh.z - sh.thickness / 2), distBot, 'shelf_bot', sh.id);
+        out += drawClickableCota(midX, yPx(ib.bottom + sh.z + sh.thickness / 2), midX, yPx(ib.bottom + topRef), distTop, 'shelf_top', sh.id);
+      }
+    }
+  }
+
+  svg.innerHTML = out;
+  attachFrontSvgEvents();
+}
+
+function drawClickableCota(x1, y1, x2, y2, valMm, cotaKind, targetId) {
+  const mx = (x1 + x2) / 2;
+  const my = (y1 + y2) / 2;
+  return `<g class="cota-pill" data-cota="${cotaKind}" data-target="${targetId}" style="cursor:pointer">
+    <line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="#ea580c" stroke-width="1.5" stroke-dasharray="3,2"/>
+    <circle cx="${x1}" cy="${y1}" r="3" fill="#ea580c"/>
+    <circle cx="${x2}" cy="${y2}" r="3" fill="#ea580c"/>
+    <rect x="${mx - 31}" y="${my - 10}" width="62" height="19" rx="4" fill="#fff7ed" stroke="#ea580c" stroke-width="1.3"/>
+    <text x="${mx}" y="${my + 3}" text-anchor="middle" font-size="10.5" font-weight="700" fill="#c2410c">${valMm} mm</text>
+  </g>`;
+}
+
+// ============================================================================
+// RENDER SIDE SECTION SVG (Shows Sliding Base Inside vs Front & ST48-0200 Slide)
+// ============================================================================
+function renderSideSVG() {
+  const svg = document.getElementById('sideSvg');
+  const W = 420, H = 620;
+  const padX = 56, padY = 64;
+  const extraFront = (state.slidingDoors.enabled && state.slidingDoors.basePosition === 'FRENTE') ? state.slidingDoors.trackDepth + 30 : 120;
+  const totalDepthView = Math.max(400, state.depth + extraFront);
+  const scale = Math.min((W - padX * 2) / totalDepthView, (H - padY * 2) / Math.max(300, state.height));
+  const drawD = state.depth * scale;
+  const drawH = state.height * scale;
+  const ox = 72; // Back of cabinet on left, Front on right!
+  const oy = (H - drawH) / 2 + 6;
+
+  // yCoord: depth mm from back (0 = back, state.depth = front)
+  const dPx = (dMm) => ox + dMm * scale;
+  const zPx = (zMm) => oy + (state.height - zMm) * scale;
+  const ib = getInnerBounds();
+  const s = state.structure;
+  const t = state.thickness;
+  const rodH = s.rodape ? s.rodapeAltura : 0;
+
+  let out = `<rect x="0" y="0" width="${W}" height="${H}" fill="var(--canvas-bg)"/>`;
+  out += `<rect x="${ox}" y="${oy}" width="${drawD}" height="${drawH}" fill="none" stroke="var(--border-dark)" stroke-dasharray="5,4"/>`;
+  out += `<text x="${ox + 4}" y="${oy - 8}" font-size="10" fill="var(--muted)">TRÁS</text>`;
+  out += `<text x="${ox + drawD - 34}" y="${oy - 8}" font-size="10" fill="var(--muted)">FRENTE</text>`;
+
+  if (hasAnyStructure()) {
+    // Lateral outline
+    if (s.lateralEsq || s.lateralDir) {
+      out += `<rect x="${dPx(0)}" y="${zPx(state.height)}" width="${drawD}" height="${(state.height - rodH) * scale}" fill="var(--wood-fill)" opacity="0.22" stroke="var(--wood-stroke)"/>`;
+    }
+    if (s.baseInf) {
+      out += `<rect x="${dPx(0)}" y="${zPx(rodH + t.baseInf)}" width="${drawD}" height="${Math.max(4, t.baseInf * scale)}" fill="var(--wood-fill)" stroke="var(--wood-stroke)"/>`;
+    }
+    if (s.baseSup) {
+      out += `<rect x="${dPx(0)}" y="${zPx(state.height)}" width="${drawD}" height="${Math.max(4, t.baseSup * scale)}" fill="var(--wood-fill)" stroke="var(--wood-stroke)"/>`;
+    }
+    if (s.fundo) {
+      const bx = state.backConfig.fixacao === 'ENCAIXADO' ? state.backConfig.recuo : 0;
+      out += `<rect x="${dPx(bx)}" y="${zPx(state.height)}" width="${Math.max(3, t.fundo * scale)}" height="${(state.height - rodH) * scale}" fill="var(--back-fill)" stroke="var(--wood-stroke)"/>`;
+    }
+    // Contra-frente & Travessa traseira (Em pé vs Deitada!)
+    if (s.contraFrente) {
+      const emPe = state.contraFrenteOrient === 'EM_PE';
+      const wMm = emPe ? t.baseSup : 90;
+      const hMm = emPe ? 90 : t.baseSup;
+      out += `<rect x="${dPx(state.depth - ib.slidingRecede - wMm)}" y="${zPx(ib.top)}" width="${Math.max(4, wMm * scale)}" height="${Math.max(4, hMm * scale)}" fill="var(--wood-dark)" stroke="var(--wood-stroke)"/>`;
+    }
+    if (s.travessaTraseira) {
+      const emPe = state.traseiraOrient === 'EM_PE';
+      const wMm = emPe ? t.baseSup : 90;
+      const hMm = emPe ? 90 : t.baseSup;
+      out += `<rect x="${dPx(ib.backDepth)}" y="${zPx(ib.top)}" width="${Math.max(4, wMm * scale)}" height="${Math.max(4, hMm * scale)}" fill="var(--wood-dark)" stroke="var(--wood-stroke)"/>`;
+    }
+
+    // Internal shelves (showing automatic setback when sliding door base is DENTRO!)
+    state.shelves.forEach(sh => {
+      const dep = Math.max(50, ib.usableDepth - sh.recuoFrontal - sh.recuoTraseiro);
+      const xStart = ib.backDepth + sh.recuoTraseiro;
+      out += `<rect x="${dPx(xStart)}" y="${zPx(ib.bottom + sh.z + sh.thickness / 2)}" width="${dep * scale}" height="${Math.max(4, sh.thickness * scale)}" fill="var(--wood-fill)" stroke="var(--wood-stroke)"/>`;
+    });
+
+    // Drawers + Telescopic Slide ST48-0200 Kinematics!
+    state.drawerBanks.forEach(bank => {
+      const count = bank.drawers.length;
+      const eachH = (bank.zEnd - bank.zStart - bank.gap * (count + 1)) / Math.max(1, count);
+      const boxD = Math.min(ib.usableDepth - 24, 420);
+      const boxStart = state.depth - ib.slidingRecede - boxD;
+      bank.drawers.forEach((dr, i) => {
+        const z0 = ib.bottom + bank.zStart + bank.gap + i * (eachH + bank.gap);
+        const travel = dr.isOpen ? boxD * 0.72 : 0;
+        // Drawer box (moves 100% travel)
+        out += `<rect x="${dPx(boxStart + travel)}" y="${zPx(z0 + eachH - 12)}" width="${boxD * scale}" height="${Math.max(8, (eachH - 22) * scale)}" fill="var(--front-fill)" stroke="var(--wood-stroke)" opacity="0.85"/>`;
+        // Drawer front
+        out += `<rect x="${dPx(boxStart + boxD + travel)}" y="${zPx(z0 + eachH)}" width="${Math.max(4, t.gaveta * scale)}" height="${Math.max(10, eachH * scale)}" fill="var(--wood-dark)" stroke="var(--wood-stroke)"/>`;
+        // ST48-0200 Slide 3-stage telescopic visual!
+        if (bank.useSlideModel) {
+          const sy = zPx(z0 + eachH * 0.45);
+          // Part _1: Outer rail fixed to cabinet side (0% travel)
+          out += `<rect x="${dPx(boxStart + 10)}" y="${sy - 3}" width="${(boxD - 20) * scale}" height="6" fill="#475569" rx="1"/>`;
+          // Parts _3/_4: Ball cages (50% travel)
+          out += `<rect x="${dPx(boxStart + 40 + travel * 0.5)}" y="${sy - 2}" width="${(boxD * 0.45) * scale}" height="4" fill="#f59e0b" rx="1"/>`;
+          // Part _2: Inner runner glued to drawer box (100% travel)
+          out += `<rect x="${dPx(boxStart + 20 + travel)}" y="${sy - 1.5}" width="${(boxD - 30) * scale}" height="3" fill="#38bdf8" rx="1"/>`;
+        }
+      });
+    });
+
+    // Sliding door base + leaves in side section
+    if (state.slidingDoors.enabled) {
+      const sd = state.slidingDoors;
+      const isInside = sd.basePosition === 'DENTRO';
+      const baseD0 = isInside ? (state.depth - sd.trackDepth) : state.depth;
+      const zBot = isInside ? ib.bottom + sd.baseThickness : rodH + sd.baseThickness;
+      const zTop = isInside ? ib.top : state.height;
+      // Base inferior & superior dos trilhos
+      out += `<rect x="${dPx(baseD0)}" y="${zPx(zBot)}" width="${sd.trackDepth * scale}" height="${Math.max(5, sd.baseThickness * scale)}" fill="#64748b" stroke="#1e293b"/>`;
+      out += `<rect x="${dPx(baseD0)}" y="${zPx(zTop)}" width="${sd.trackDepth * scale}" height="${Math.max(5, sd.baseThickness * scale)}" fill="#64748b" stroke="#1e293b"/>`;
+      // Two offset tracks showing sliding leaves
+      const leafH = (zTop - zBot - sd.baseThickness) * scale;
+      out += `<rect x="${dPx(baseD0 + 12)}" y="${zPx(zTop - sd.baseThickness)}" width="${Math.max(4, 18 * scale)}" height="${Math.max(10, leafH)}" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.2"/>`;
+      out += `<rect x="${dPx(baseD0 + sd.trackDepth - 28)}" y="${zPx(zTop - sd.baseThickness)}" width="${Math.max(4, 18 * scale)}" height="${Math.max(10, leafH)}" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.2"/>`;
+
+      // Callout explaining setback
+      const msg = isInside
+        ? `Base DENTRO: internos recuados -${sd.trackDepth} mm`
+        : `Base NA FRENTE: internos sem recuo (${ib.usableDepth} mm)`;
+      out += `<rect x="14" y="${H - 36}" width="${W - 28}" height="24" rx="4" fill="var(--accent-soft)" stroke="var(--accent)"/>`;
+      out += `<text x="${W / 2}" y="${H - 20}" text-anchor="middle" font-size="10.5" font-weight="700" fill="var(--accent)">${msg}</text>`;
+    }
+  }
+
+  // Depth dimension line
+  out += `<line x1="${ox}" y1="${oy + drawH + 18}" x2="${ox + drawD}" y2="${oy + drawH + 18}" stroke="var(--accent)" stroke-width="1.1"/>`;
+  out += `<text x="${ox + drawD / 2}" y="${oy + drawH + 33}" text-anchor="middle" font-size="10.5" font-weight="700" fill="var(--accent)">Prof.: ${state.depth} mm</text>`;
+
+  svg.innerHTML = out;
+}
+
+// ============================================================================
+// INTERACTIVITY: DRAG & DROP, CLICKABLE COTAS, CONTEXT MENU & TOUCH LONG-PRESS
+// ============================================================================
+let dragState = null;
+let longPressTimer = null;
+
+function snapMm(val) {
+  const step = Math.max(1, Number(state.passo) || 10);
+  return Math.round(val / step) * step;
+}
+
+function attachFrontSvgEvents() {
+  const svg = document.getElementById('frontSvg');
+
+  // Inline perimeter edge toggles (click directly on cabinet borders!)
+  svg.querySelectorAll('.edge-toggle').forEach(el => {
+    el.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const k = el.dataset.edge;
+      state.structure[k] = !state.structure[k];
+      renderAll();
+      showToast(`${k}: ${state.structure[k] ? 'adicionada' : 'removida'}`);
+    });
+  });
+
+  // Bay selection
+  svg.querySelectorAll('.bay-hit').forEach(el => {
+    el.addEventListener('click', () => {
+      state.selectedBay = Number(el.dataset.bay);
+      state.selectedItem = null;
+      renderAll();
+    });
+  });
+
+  // Draggable dividers & shelves
+  svg.querySelectorAll('.drag-piece').forEach(el => {
+    const type = el.dataset.type;
+    const id = el.dataset.id;
+
+    el.addEventListener('pointerdown', (e) => {
+      if (e.button === 2) return;
+      e.stopPropagation();
+      state.selectedItem = { type, id };
+      renderAll();
+
+      // Long-press for touch context menu
+      clearTimeout(longPressTimer);
+      const startX = e.clientX, startY = e.clientY;
+      longPressTimer = setTimeout(() => {
+        dragState = null;
+        openContextMenu(startX, startY, { type, id });
+      }, 520);
+
+      dragState = { type, id, startX, startY, moved: false };
+    });
+
+    el.addEventListener('contextmenu', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      state.selectedItem = { type, id };
+      renderAll();
+      openContextMenu(e.clientX, e.clientY, { type, id });
+    });
+  });
+
+  // Clickable non-drag pieces (drawers, internos, doors)
+  svg.querySelectorAll('.piece-click').forEach(el => {
+    const type = el.dataset.type;
+    const id = el.dataset.id;
+    const subId = el.dataset.subid;
+
+    el.addEventListener('click', (e) => {
+      e.stopPropagation();
+      state.selectedItem = { type, id, subId };
+      renderAll();
+    });
+    el.addEventListener('contextmenu', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      state.selectedItem = { type, id, subId };
+      renderAll();
+      openContextMenu(e.clientX, e.clientY, { type, id, subId });
+    });
+    el.addEventListener('pointerdown', (e) => {
+      if (e.button === 2) return;
+      clearTimeout(longPressTimer);
+      longPressTimer = setTimeout(() => {
+        state.selectedItem = { type, id, subId };
+        renderAll();
+        openContextMenu(e.clientX, e.clientY, { type, id, subId });
+      }, 520);
+    });
+  });
+
+  // Clickable Cota pills -> inline numeric editor!
+  svg.querySelectorAll('.cota-pill').forEach(el => {
+    el.addEventListener('click', (e) => {
+      e.stopPropagation();
+      openDimPopover(e.clientX, e.clientY, el.dataset.cota, el.dataset.target);
+    });
+  });
+}
+
+window.addEventListener('pointermove', (e) => {
+  if (!dragState) return;
+  if (Math.hypot(e.clientX - dragState.startX, e.clientY - dragState.startY) > 4) {
+    clearTimeout(longPressTimer);
+    dragState.moved = true;
+  }
+  if (!dragState.moved) return;
+
+  const svg = document.getElementById('frontSvg');
+  const pt = svg.createSVGPoint();
+  pt.x = e.clientX; pt.y = e.clientY;
+  const svgP = pt.matrixTransform(svg.getScreenCTM().inverse());
+  const ib = getInnerBounds();
+
+  if (dragState.type === 'vdiv') {
+    const d = state.verticalDividers.find(x => x.id === dragState.id);
+    if (!d) return;
+    const rawX = (svgP.x - frontTransform.ox) / frontTransform.scale - ib.left;
+    const snapped = snapMm(rawX);
+    d.x = Math.max(60, Math.min(ib.width - 60, snapped));
+    renderFrontSVG();
+    renderSideSVG();
+    updateStatusBar();
+  } else if (dragState.type === 'shelf') {
+    const sh = state.shelves.find(x => x.id === dragState.id);
+    if (!sh) return;
+    const rawZ = state.height - (svgP.y - frontTransform.oy) / frontTransform.scale - ib.bottom;
+    const snapped = snapMm(rawZ);
+    sh.z = Math.max(60, Math.min(ib.height - 60, snapped));
+    renderFrontSVG();
+    renderSideSVG();
+    updateStatusBar();
+  }
+});
+
+window.addEventListener('pointerup', () => {
+  clearTimeout(longPressTimer);
+  if (dragState?.moved) {
+    renderPanel();
+  }
+  dragState = null;
+});
+
+// Keyboard Delete
+window.addEventListener('keydown', (e) => {
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') return;
+  if ((e.key === 'Delete' || e.key === 'Backspace') && state.selectedItem) {
+    e.preventDefault();
+    deleteSelectedItem();
+  }
+});
+
+// Context Menu Logic
+function openContextMenu(x, y, item) {
+  const menu = document.getElementById('ctxMenu');
+  const title = document.getElementById('ctxTitle');
+  const btnOpen = document.getElementById('ctxToggleOpen');
+  const btnDup = document.getElementById('ctxDuplicate');
+
+  const names = {
+    vdiv: 'Divisória Vertical',
+    shelf: 'Prateleira Horizontal',
+    drawer: 'Gaveta (Corrediça ST48-0200)',
+    interno: 'Componente Interno',
+    slidingDoor: 'Porta Deslizante',
+    hingedDoor: 'Porta de Abrir',
+  };
+  title.textContent = names[item.type] || 'Peça';
+
+  // Dynamic Open/Close opposite state (just like Blender 3D Viewport right-click menu!)
+  if (item.type === 'drawer') {
+    const bank = state.drawerBanks.find(b => b.id === item.id);
+    const dr = bank?.drawers.find(d => d.id === item.subId);
+    btnOpen.style.display = 'flex';
+    btnOpen.innerHTML = dr?.isOpen ? '<span>⇤ Fechar gaveta</span>' : '<span>⇥ Abrir gaveta</span>';
+    btnDup.disabled = true;
+  } else if (item.type === 'slidingDoor') {
+    btnOpen.style.display = 'flex';
+    btnOpen.innerHTML = state.slidingDoors.isOpen ? '<span>⇤ Fechar porta deslizante</span>' : '<span>⇥ Abrir porta deslizante</span>';
+    btnDup.disabled = true;
+  } else if (item.type === 'hingedDoor') {
+    btnOpen.style.display = 'flex';
+    btnOpen.innerHTML = state.hingedDoors.isOpen ? '<span>⇤ Fechar portas</span>' : '<span>⇥ Abrir portas</span>';
+    btnDup.disabled = true;
+  } else {
+    btnOpen.style.display = 'none';
+    btnDup.disabled = !(item.type === 'vdiv' || item.type === 'shelf');
+  }
+
+  menu.style.left = `${Math.min(window.innerWidth - 210, x)}px`;
+  menu.style.top = `${Math.min(window.innerHeight - 130, y)}px`;
+  menu.style.display = 'block';
+}
+
+function closeContextMenu() {
+  document.getElementById('ctxMenu').style.display = 'none';
+}
+
+document.addEventListener('click', (e) => {
+  if (!e.target.closest('#ctxMenu')) closeContextMenu();
+  if (!e.target.closest('#dimPopover') && !e.target.closest('.cota-pill')) {
+    document.getElementById('dimPopover').style.display = 'none';
+  }
+});
+
+document.getElementById('ctxToggleOpen').addEventListener('click', () => {
+  const item = state.selectedItem;
+  if (!item) return;
+  if (item.type === 'drawer') {
+    const bank = state.drawerBanks.find(b => b.id === item.id);
+    const dr = bank?.drawers.find(d => d.id === item.subId);
+    if (dr) {
+      dr.isOpen = !dr.isOpen;
+      showToast(dr.isOpen ? 'Gaveta aberta (corrediça ST48-0200 estendida)' : 'Gaveta fechada');
+    }
+  } else if (item.type === 'slidingDoor') {
+    state.slidingDoors.isOpen = !state.slidingDoors.isOpen;
+    showToast(state.slidingDoors.isOpen ? 'Porta deslizante aberta' : 'Porta deslizante fechada');
+  } else if (item.type === 'hingedDoor') {
+    state.hingedDoors.isOpen = !state.hingedDoors.isOpen;
+    showToast(state.hingedDoors.isOpen ? 'Portas abertas' : 'Portas fechadas');
+  }
+  closeContextMenu();
+  renderAll();
+});
+
+document.getElementById('ctxDelete').addEventListener('click', () => {
+  deleteSelectedItem();
+  closeContextMenu();
+});
+
+document.getElementById('ctxDuplicate').addEventListener('click', () => {
+  duplicateSelectedItem();
+  closeContextMenu();
+});
+
+function deleteSelectedItem() {
+  const it = state.selectedItem;
+  if (!it) return;
+  if (it.type === 'vdiv') {
+    state.verticalDividers = state.verticalDividers.filter(x => x.id !== it.id);
+  } else if (it.type === 'shelf') {
+    state.shelves = state.shelves.filter(x => x.id !== it.id);
+  } else if (it.type === 'interno') {
+    state.internos = state.internos.filter(x => x.id !== it.id);
+  } else if (it.type === 'drawer') {
+    state.drawerBanks = state.drawerBanks.filter(b => b.id !== it.id);
+  } else if (it.type === 'slidingDoor') {
+    state.slidingDoors.enabled = false;
+  } else if (it.type === 'hingedDoor') {
+    state.hingedDoors.enabled = false;
+  }
+  state.selectedItem = null;
+  showToast('Peça excluída');
+  renderAll();
+}
+
+// Duplicate respecting available free span!
+function duplicateSelectedItem() {
+  const it = state.selectedItem;
+  if (!it) return;
+  const ib = getInnerBounds();
+  const minClearance = 80; // mm minimum free span required
+
+  if (it.type === 'vdiv') {
+    const src = state.verticalDividers.find(x => x.id === it.id);
+    if (!src) return;
+    const sorted = [...state.verticalDividers].sort((a, b) => a.x - b.x);
+    const idx = sorted.findIndex(x => x.id === src.id);
+    const leftBound = idx === 0 ? 0 : sorted[idx - 1].x + sorted[idx - 1].thickness / 2;
+    const rightBound = idx === sorted.length - 1 ? ib.width : sorted[idx + 1].x - sorted[idx + 1].thickness / 2;
+    const freeRight = rightBound - (src.x + src.thickness / 2);
+    const freeLeft = (src.x - src.thickness / 2) - leftBound;
+
+    let newX = null;
+    if (freeRight >= minClearance + src.thickness && freeRight >= freeLeft) {
+      newX = snapMm((src.x + src.thickness / 2 + rightBound) / 2);
+    } else if (freeLeft >= minClearance + src.thickness) {
+      newX = snapMm((leftBound + src.x - src.thickness / 2) / 2);
+    }
+    if (newX === null) {
+      showToast('Vão livre insuficiente para duplicar a divisória!');
+      return;
+    }
+    const dup = { ...src, id: uid('vdiv'), x: newX };
+    state.verticalDividers.push(dup);
+    state.selectedItem = { type: 'vdiv', id: dup.id };
+    showToast(`Divisória duplicada no vão livre (${Math.round(newX)} mm)`);
+    renderAll();
+  } else if (it.type === 'shelf') {
+    const src = state.shelves.find(x => x.id === it.id);
+    if (!src) return;
+    const bayShelves = state.shelves.filter(s => s.bayIndex === src.bayIndex).sort((a, b) => a.z - b.z);
+    const idx = bayShelves.findIndex(x => x.id === src.id);
+    const botBound = idx === 0 ? 0 : bayShelves[idx - 1].z + bayShelves[idx - 1].thickness / 2;
+    const topBound = idx === bayShelves.length - 1 ? ib.height : bayShelves[idx + 1].z - bayShelves[idx + 1].thickness / 2;
+    const freeTop = topBound - (src.z + src.thickness / 2);
+    const freeBot = (src.z - src.thickness / 2) - botBound;
+
+    let newZ = null;
+    if (freeTop >= minClearance + src.thickness && freeTop >= freeBot) {
+      newZ = snapMm((src.z + src.thickness / 2 + topBound) / 2);
+    } else if (freeBot >= minClearance + src.thickness) {
+      newZ = snapMm((botBound + src.z - src.thickness / 2) / 2);
+    }
+    if (newZ === null) {
+      showToast('Vão vertical livre insuficiente para duplicar a prateleira!');
+      return;
+    }
+    const dup = { ...src, id: uid('shelf'), z: newZ };
+    state.shelves.push(dup);
+    state.selectedItem = { type: 'shelf', id: dup.id };
+    showToast(`Prateleira duplicada no vão livre (${Math.round(newZ)} mm)`);
+    renderAll();
+  }
+}
+
+// Inline Dimension Popover
+let activeDimEdit = null;
+function openDimPopover(x, y, kind, targetId) {
+  const pop = document.getElementById('dimPopover');
+  const inp = document.getElementById('dimPopInput');
+  const lbl = document.getElementById('dimPopLabel');
+  const ib = getInnerBounds();
+  let cur = 0;
+
+  if (kind === 'width') { lbl.textContent = 'Largura total (mm):'; cur = state.width; }
+  else if (kind === 'height') { lbl.textContent = 'Altura total (mm):'; cur = state.height; }
+  else if (kind === 'vdiv_left' || kind === 'vdiv_right') {
+    const d = state.verticalDividers.find(v => v.id === targetId);
+    const sorted = [...state.verticalDividers].sort((a, b) => a.x - b.x);
+    const idx = sorted.findIndex(v => v.id === targetId);
+    const leftRef = idx === 0 ? 0 : sorted[idx - 1].x + sorted[idx - 1].thickness / 2;
+    const rightRef = idx === sorted.length - 1 ? ib.width : sorted[idx + 1].x - sorted[idx + 1].thickness / 2;
+    lbl.textContent = kind === 'vdiv_left' ? 'Distância esquerda (mm):' : 'Distância direita (mm):';
+    cur = kind === 'vdiv_left' ? Math.round(d.x - d.thickness / 2 - leftRef) : Math.round(rightRef - (d.x + d.thickness / 2));
+  } else if (kind === 'shelf_bot' || kind === 'shelf_top') {
+    const sh = state.shelves.find(s => s.id === targetId);
+    const bayShelves = state.shelves.filter(s => s.bayIndex === sh.bayIndex).sort((a, b) => a.z - b.z);
+    const idx = bayShelves.findIndex(s => s.id === targetId);
+    const botRef = idx === 0 ? 0 : bayShelves[idx - 1].z + bayShelves[idx - 1].thickness / 2;
+    const topRef = idx === bayShelves.length - 1 ? ib.height : bayShelves[idx + 1].z - bayShelves[idx + 1].thickness / 2;
+    lbl.textContent = kind === 'shelf_bot' ? 'Distância inferior (mm):' : 'Distância superior (mm):';
+    cur = kind === 'shelf_bot' ? Math.round(sh.z - sh.thickness / 2 - botRef) : Math.round(topRef - (sh.z + sh.thickness / 2));
+  }
+
+  activeDimEdit = { kind, targetId };
+  inp.value = cur;
+  pop.style.left = `${Math.min(window.innerWidth - 290, Math.max(12, x - 90))}px`;
+  pop.style.top = `${Math.min(window.innerHeight - 60, Math.max(12, y - 42))}px`;
+  pop.style.display = 'flex';
+  inp.focus();
+  inp.select();
+}
+
+function commitDimPopover() {
+  if (!activeDimEdit) return;
+  const val = Number(document.getElementById('dimPopInput').value);
+  if (!Number.isFinite(val) || val < 20) return;
+  const ib = getInnerBounds();
+  const { kind, targetId } = activeDimEdit;
+
+  if (kind === 'width') state.width = Math.max(200, Math.min(6000, val));
+  else if (kind === 'height') state.height = Math.max(200, Math.min(4000, val));
+  else if (kind === 'vdiv_left' || kind === 'vdiv_right') {
+    const d = state.verticalDividers.find(v => v.id === targetId);
+    const sorted = [...state.verticalDividers].sort((a, b) => a.x - b.x);
+    const idx = sorted.findIndex(v => v.id === targetId);
+    const leftRef = idx === 0 ? 0 : sorted[idx - 1].x + sorted[idx - 1].thickness / 2;
+    const rightRef = idx === sorted.length - 1 ? ib.width : sorted[idx + 1].x - sorted[idx + 1].thickness / 2;
+    if (kind === 'vdiv_left') d.x = Math.min(rightRef - 40, leftRef + val + d.thickness / 2);
+    else d.x = Math.max(leftRef + 40, rightRef - val - d.thickness / 2);
+  } else if (kind === 'shelf_bot' || kind === 'shelf_top') {
+    const sh = state.shelves.find(s => s.id === targetId);
+    const bayShelves = state.shelves.filter(s => s.bayIndex === sh.bayIndex).sort((a, b) => a.z - b.z);
+    const idx = bayShelves.findIndex(s => s.id === targetId);
+    const botRef = idx === 0 ? 0 : bayShelves[idx - 1].z + bayShelves[idx - 1].thickness / 2;
+    const topRef = idx === bayShelves.length - 1 ? ib.height : bayShelves[idx + 1].z - bayShelves[idx + 1].thickness / 2;
+    if (kind === 'shelf_bot') sh.z = Math.min(topRef - 40, botRef + val + sh.thickness / 2);
+    else sh.z = Math.max(botRef + 40, topRef - val - sh.thickness / 2);
+  }
+  document.getElementById('dimPopover').style.display = 'none';
+  activeDimEdit = null;
+  renderAll();
+}
+
+document.getElementById('dimPopOk').addEventListener('click', commitDimPopover);
+document.getElementById('dimPopCancel').addEventListener('click', () => {
+  document.getElementById('dimPopover').style.display = 'none';
+});
+document.getElementById('dimPopInput').addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') commitDimPopover();
+  if (e.key === 'Escape') document.getElementById('dimPopover').style.display = 'none';
+});
+
+// ============================================================================
+// RIGHT PANEL RENDERING (All 7 Reference Tabs)
+// ============================================================================
+function thicknessSelectHtml(key, val) {
+  return `<select data-th-key="${key}">${THICKNESS_OPTIONS.map(o => `<option value="${o}" ${val === o ? 'selected' : ''}>${o} mm</option>`).join('')}</select>`;
+}
+
+function renderPanel() {
+  const body = document.getElementById('panelBody');
+  const cut = computeCutlist();
+
+  // Sheet validation alert banner if any piece exceeds host max sheet
+  let html = '';
+  if (cut.violations.length > 0) {
+    html += `<div class="alert-box alert-danger">
+      <strong>⚠ Extrapola Chapa Máxima (${cut.maxL}×${cut.maxW} mm):</strong>
+      ${cut.violations.slice(0, 3).map(v => `${v.name} (${Math.round(v.w)}×${Math.round(v.h)}mm)`).join(', ')}
+    </div>`;
+  }
+
+  if (state.activeTab === 'estrutura') {
+    const s = state.structure;
+    const t = state.thickness;
+    html += `
+      <div class="group-box">
+        <div class="group-title"><span>Definições Gerais (mm)</span><span style="font-weight:400;color:var(--muted)">Máx. chapa: ${cut.maxL}×${cut.maxW}</span></div>
+        <div class="group-content">
+          <div class="form-grid">
+            <div class="field-stack"><label>Largura total</label><input type="number" id="inW" value="${state.width}" min="200" max="6000"></div>
+            <div class="field-stack"><label>Altura</label><input type="number" id="inH" value="${state.height}" min="200" max="4000"></div>
+            <div class="field-stack"><label>Profundidade</label><input type="number" id="inD" value="${state.depth}" min="150" max="1200"></div>
+            <div class="field-stack"><label>Tipo de Montagem</label>
+              <select id="inAssembly">
+                <option value="LATERAL_PASSANTE" ${state.assembly === 'LATERAL_PASSANTE' ? 'selected' : ''}>Lateral passante</option>
+                <option value="BASE_PASSANTE" ${state.assembly === 'BASE_PASSANTE' ? 'selected' : ''}>Base passante</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-grid">
+            <div class="field-stack"><label>Contra-frente</label>
+              <select id="inCfOrient">
+                <option value="EM_PE" ${state.contraFrenteOrient === 'EM_PE' ? 'selected' : ''}>Em pé (vertical)</option>
+                <option value="DEITADA" ${state.contraFrenteOrient === 'DEITADA' ? 'selected' : ''}>Deitada (horizontal)</option>
+              </select>
+            </div>
+            <div class="field-stack"><label>Peça de trás (travessa)</label>
+              <select id="inTrOrient">
+                <option value="EM_PE" ${state.traseiraOrient === 'EM_PE' ? 'selected' : ''}>Em pé (vertical)</option>
+                <option value="DEITADA" ${state.traseiraOrient === 'DEITADA' ? 'selected' : ''}>Deitada (horizontal)</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="group-box">
+        <div class="group-title"><span>Componentes Estruturais</span><span style="font-weight:400;color:var(--muted)">Espessura padrão</span></div>
+        <div class="group-content">
+          <div class="comp-row"><label class="check-lbl"><input type="checkbox" data-st="lateralEsq" ${s.lateralEsq ? 'checked' : ''}> Lateral Esquerda</label>${thicknessSelectHtml('lateralEsq', t.lateralEsq)}</div>
+          <div class="comp-row"><label class="check-lbl"><input type="checkbox" data-st="lateralDir" ${s.lateralDir ? 'checked' : ''}> Lateral Direita</label>${thicknessSelectHtml('lateralDir', t.lateralDir)}</div>
+          <div class="comp-row"><label class="check-lbl"><input type="checkbox" data-st="baseInf" ${s.baseInf ? 'checked' : ''}> Base Inferior</label>${thicknessSelectHtml('baseInf', t.baseInf)}</div>
+          <div class="comp-row"><label class="check-lbl"><input type="checkbox" data-st="baseSup" ${s.baseSup ? 'checked' : ''}> Base Superior</label>${thicknessSelectHtml('baseSup', t.baseSup)}</div>
+          <div class="comp-row"><label class="check-lbl"><input type="checkbox" data-st="fundo" ${s.fundo ? 'checked' : ''}> Fundo</label>${thicknessSelectHtml('fundo', t.fundo)}</div>
+          <div class="comp-row"><label class="check-lbl"><input type="checkbox" data-st="contraFrente" ${s.contraFrente ? 'checked' : ''}> Contra-frente (${state.contraFrenteOrient === 'EM_PE' ? 'Em pé' : 'Deitada'})</label><span style="font-size:10.5px;color:var(--muted);text-align:right">${t.baseSup} mm</span></div>
+          <div class="comp-row"><label class="check-lbl"><input type="checkbox" data-st="travessaTraseira" ${s.travessaTraseira ? 'checked' : ''}> Travessa Traseira (${state.traseiraOrient === 'EM_PE' ? 'Em pé' : 'Deitada'})</label><span style="font-size:10.5px;color:var(--muted);text-align:right">${t.baseSup} mm</span></div>
+          <div class="comp-row"><label class="check-lbl"><input type="checkbox" data-st="rodape" ${s.rodape ? 'checked' : ''}> Rodapé</label><input type="number" id="inRodapeH" class="num-sm" value="${s.rodapeAltura}" min="40" max="200"></div>
+        </div>
+      </div>
+    `;
+  } else if (state.activeTab === 'divisoes') {
+    html += `
+      <div class="sub-tabs">
+        <button class="sub-tab ${state.divSubTab === 'vertical' ? 'active' : ''}" data-dsub="vertical">Vertical</button>
+        <button class="sub-tab ${state.divSubTab === 'horizontal' ? 'active' : ''}" data-dsub="horizontal">Horizontal</button>
+        <button class="sub-tab ${state.divSubTab === 'multipla' ? 'active' : ''}" data-dsub="multipla">Inserção múltipla</button>
+      </div>
+    `;
+    if (state.divSubTab === 'vertical') {
+      html += `
+        <div class="group-box">
+          <div class="group-title"><span>Divisórias Verticais (${state.thickness.divisoria}mm)</span></div>
+          <div class="group-content">
+            <div class="card-grid">
+              <div class="opt-card ${state.divInsertType === 'movel_s_recuo' ? 'selected' : ''}" data-divopt="movel_s_recuo"><div class="ico">┃</div><div class="lbl">Interna s/ Recuo Trás ${state.thickness.divisoria}mm</div></div>
+              <div class="opt-card ${state.divInsertType === 'movel_c_recuo' ? 'selected' : ''}" data-divopt="movel_c_recuo"><div class="ico">┆</div><div class="lbl">Interna c/ Recuo Trás ${state.thickness.divisoria}mm</div></div>
+              <div class="opt-card ${state.divInsertType === 'montante' ? 'selected' : ''}" data-divopt="montante"><div class="ico">▮</div><div class="lbl">Montante / Lateral ${state.thickness.divisoria}mm</div></div>
+              <div class="opt-card ${state.divInsertType === 'distanciador' ? 'selected' : ''}" data-divopt="distanciador"><div class="ico">▯▯</div><div class="lbl">Distanciador Duplo 30mm</div></div>
+            </div>
+            <button class="btn btn-primary" id="btnAddVDiv">+ Inserir Divisória Vertical no Vão ${state.selectedBay + 1}</button>
+          </div>
+        </div>`;
+    } else if (state.divSubTab === 'horizontal') {
+      html += `
+        <div class="group-box">
+          <div class="group-title"><span>Prateleiras Horizontais (${state.thickness.prateleira}mm)</span></div>
+          <div class="group-content">
+            <div class="card-grid">
+              <div class="opt-card ${state.divInsertType === 'prat_s_recuo' ? 'selected' : ''}" data-divopt="prat_s_recuo"><div class="ico">━</div><div class="lbl">Móvel s/ Recuo Trás ${state.thickness.prateleira}mm</div></div>
+              <div class="opt-card ${state.divInsertType === 'prat_c_recuo' ? 'selected' : ''}" data-divopt="prat_c_recuo"><div class="ico">┄</div><div class="lbl">Móvel c/ Recuo Trás ${state.thickness.prateleira}mm</div></div>
+              <div class="opt-card ${state.divInsertType === 'prat_fixa' ? 'selected' : ''}" data-divopt="prat_fixa"><div class="ico">═</div><div class="lbl">Fixa c/ Recuo Frontal</div></div>
+              <div class="opt-card ${state.divInsertType === 'prat_corredica' ? 'selected' : ''}" data-divopt="prat_corredica"><div class="ico">⇄</div><div class="lbl">Prateleira Corrediça</div></div>
+            </div>
+            <button class="btn btn-primary" id="btnAddShelf">+ Inserir Prateleira no Vão ${state.selectedBay + 1}</button>
+          </div>
+        </div>`;
+    } else {
+      // 5x5 Matrix (matching screenshot [4]!)
+      let cells = '';
+      for (let r = 1; r <= 5; r++) {
+        for (let c = 1; c <= 5; c++) {
+          const hl = r <= state.matrixRows && c <= state.matrixCols;
+          cells += `<div class="matrix-cell ${hl ? 'hl' : ''}" data-mr="${r}" data-mc="${c}" title="${r} linhas × ${c} colunas"></div>`;
+        }
+      }
+      html += `
+        <div class="group-box">
+          <div class="group-title"><span>Inserção Múltipla (Matriz)</span></div>
+          <div class="group-content">
+            <div class="form-row">
+              <label class="check-lbl"><input type="radio" name="mprio" value="vertical" ${state.matrixPriority === 'vertical' ? 'checked' : ''}> Vertical</label>
+              <label class="check-lbl"><input type="radio" name="mprio" value="horizontal" ${state.matrixPriority === 'horizontal' ? 'checked' : ''}> Horizontal</label>
+            </div>
+            <div class="matrix-wrap">
+              <div class="matrix-grid" id="matrixGrid">${cells}</div>
+              <div class="form-grid" style="width:100%">
+                <div class="form-row"><label>Linhas:</label><input type="number" id="inMR" class="num-sm" value="${state.matrixRows}" min="0" max="8"></div>
+                <div class="form-row"><label>Colunas:</label><input type="number" id="inMC" class="num-sm" value="${state.matrixCols}" min="0" max="6"></div>
+              </div>
+            </div>
+            <button class="btn btn-primary" id="btnInsertMatrix">Inserir Matriz no Vão ${state.selectedBay + 1}</button>
+          </div>
+        </div>`;
+    }
+  } else if (state.activeTab === 'gavetas') {
+    const activeBank = state.drawerBanks.find(b => b.bayIndex === state.selectedBay);
+    html += `
+      <div class="sub-tabs">
+        <button class="sub-tab ${state.drawerSubTab === 'internas' ? 'active' : ''}" data-gsub="internas">Internas</button>
+        <button class="sub-tab ${state.drawerSubTab === 'sapateiras' ? 'active' : ''}" data-gsub="sapateiras">Sapateiras</button>
+        <button class="sub-tab ${state.drawerSubTab === 'corredica' ? 'active' : ''}" data-gsub="corredica">Prat. Corrediça</button>
+        <button class="sub-tab ${state.drawerSubTab === 'externas' ? 'active' : ''}" data-gsub="externas">Externas</button>
+      </div>
+      <div class="group-box">
+        <div class="group-title"><span>Opções de Gavetas (Vão ${state.selectedBay + 1})</span></div>
+        <div class="group-content">
+          <div class="field-stack">
+            <label>Modelo de Frente (aplicar a todas)</label>
+            <select id="inDrawerModelAll">
+              ${DRAWER_MODELS.map(m => `<option value="${m.id}" ${(activeBank?.defaultModel || 's_cf_reta') === m.id ? 'selected' : ''}>${m.label}</option>`).join('')}
+            </select>
+          </div>
+          <div class="form-grid">
+            <div class="field-stack"><label>Número de gavetas</label><input type="number" id="inDrawerCount" value="${activeBank ? activeBank.drawers.length : 4}" min="1" max="10"></div>
+            <div class="field-stack"><label>Altura do bloco (mm)</label><input type="number" id="inDrawerBlockH" value="${activeBank ? Math.round(activeBank.zEnd - activeBank.zStart) : 760}" min="150" max="2000"></div>
+          </div>
+          <div class="group-box" style="background:var(--surface2)">
+            <div class="group-content">
+              <strong style="font-size:11px">Afastadores</strong>
+              <div class="form-grid">
+                <label class="check-lbl"><input type="checkbox" id="afFE" ${(activeBank?.afastadores?.fe ?? true) ? 'checked' : ''}> Frontal esquerdo</label>
+                <label class="check-lbl"><input type="checkbox" id="afFD" ${(activeBank?.afastadores?.fd ?? true) ? 'checked' : ''}> Frontal direito</label>
+                <label class="check-lbl"><input type="checkbox" id="afTE" ${(activeBank?.afastadores?.te ?? true) ? 'checked' : ''}> Traseiro esquerdo</label>
+                <label class="check-lbl"><input type="checkbox" id="afTD" ${(activeBank?.afastadores?.td ?? true) ? 'checked' : ''}> Traseiro direito</label>
+              </div>
+            </div>
+          </div>
+          <label class="check-lbl"><input type="checkbox" id="inUseSlide3D" ${(activeBank?.useSlideModel ?? true) ? 'checked' : ''}> Corrediça telescópica 3D (slide-st48-0200-0.obj)</label>
+          <div class="form-row">
+            <label class="check-lbl"><input type="checkbox" id="inDrawerSep" ${(activeBank?.separator ?? false) ? 'checked' : ''}> Separador de gaveta</label>
+            <span style="display:flex;gap:4px;align-items:center">
+              <input type="number" id="inSepCols" class="num-sm" style="width:46px!important" value="${activeBank?.sepCols ?? 3}" min="2" max="6">×
+              <input type="number" id="inSepRows" class="num-sm" style="width:46px!important" value="${activeBank?.sepRows ?? 2}" min="1" max="5">
+            </span>
+          </div>
+          <div style="display:flex;gap:6px">
+            <button class="btn btn-primary" style="flex:1" id="btnInsertDrawers">${activeBank ? '↻ Atualizar Bloco de Gavetas' : '+ Inserir Gavetas no Vão'}</button>
+            ${activeBank ? '<button class="btn btn-danger" id="btnDelDrawers">✕</button>' : ''}
+          </div>
+        </div>
+      </div>
+    `;
+    if (activeBank) {
+      html += `<div class="group-box"><div class="group-title"><span>Frente Individual por Gaveta &amp; Simulação</span></div><div class="group-content">`;
+      activeBank.drawers.forEach((dr, idx) => {
+        html += `<div class="drawer-item-row">
+          <span style="font-weight:700;min-width:28px">G${idx + 1}</span>
+          <select data-dr-model="${dr.id}" style="flex:1">
+            ${DRAWER_MODELS.map(m => `<option value="${m.id}" ${dr.model === m.id ? 'selected' : ''}>${m.label}</option>`).join('')}
+          </select>
+          <button class="btn btn-sm" data-dr-toggle="${dr.id}">${dr.isOpen ? 'Fechar' : 'Abrir'}</button>
+        </div>`;
+      });
+      html += `</div></div>`;
+    }
+  } else if (state.activeTab === 'internos') {
+    html += `
+      <div class="group-box">
+        <div class="group-title"><span>Componentes Internos (Vão ${state.selectedBay + 1})</span></div>
+        <div class="group-content">
+          <div class="card-grid">
+            <button class="opt-card" data-add-int="cabideiro"><div class="ico">━</div><div class="lbl">+ Cabideiro</div></button>
+            <button class="opt-card" data-add-int="calceiro"><div class="ico">≡</div><div class="lbl">+ Calceiro</div></button>
+            <button class="opt-card" data-add-int="sapateira"><div class="ico">⟋</div><div class="lbl">+ Sapateira</div></button>
+            <button class="opt-card" data-add-int="maleiro"><div class="ico">▭</div><div class="lbl">+ Maleiro</div></button>
+          </div>
+        </div>
+      </div>`;
+  } else if (state.activeTab === 'portas') {
+    const hd = state.hingedDoors;
+    html += `
+      <div class="group-box">
+        <div class="group-title"><span>Portas de Abrir</span></div>
+        <div class="group-content">
+          <label class="check-lbl"><input type="checkbox" id="inHingedOn" ${hd.enabled ? 'checked' : ''}> Ativar portas de abrir</label>
+          <div class="form-grid">
+            <div class="field-stack"><label>Folhas</label><input type="number" id="inHingedCount" value="${hd.count}" min="1" max="6"></div>
+            <div class="field-stack"><label>Espessura (mm)</label><input type="number" id="inHingedTh" value="${hd.thickness}" min="15" max="25"></div>
+          </div>
+          <button class="btn" id="btnToggleHinged">${hd.isOpen ? '⇤ Fechar Portas' : '⇥ Abrir Portas'}</button>
+        </div>
+      </div>`;
+  } else if (state.activeTab === 'deslizantes') {
+    const sd = state.slidingDoors;
+    html += `
+      <div class="group-box">
+        <div class="group-title"><span>Sistema de Porta Deslizante</span></div>
+        <div class="group-content">
+          <label class="check-lbl"><input type="checkbox" id="inSlidingOn" ${sd.enabled ? 'checked' : ''}> Ativar Porta Deslizante</label>
+          <div class="field-stack">
+            <label>Posicionamento das Bases Inferior e Superior (Trilhos)</label>
+            <select id="inSlidingPos">
+              <option value="DENTRO" ${sd.basePosition === 'DENTRO' ? 'selected' : ''}>Base inferior e superior DENTRO do armário (recua internos)</option>
+              <option value="FRENTE" ${sd.basePosition === 'FRENTE' ? 'selected' : ''}>Base inferior e superior NA FRENTE do armário (sem recuo)</option>
+            </select>
+          </div>
+          <div class="alert-box ${sd.basePosition === 'DENTRO' ? 'alert-warn' : 'alert-ok'}">
+            ${sd.basePosition === 'DENTRO'
+              ? `<strong>Modo DENTRO:</strong> Todas as divisórias, prateleiras e gavetas internas recuam automaticamente <strong>${sd.trackDepth} mm</strong>. Laterais, base inferior e base superior mantêm a profundidade total.`
+              : `<strong>Modo NA FRENTE:</strong> Os trilhos ficam montados à frente da caixa. Nenhuma divisória ou componente interno é redimensionado.`}
+          </div>
+          <div class="form-grid">
+            <div class="field-stack"><label>Espessura da Base Inf./Sup. (mm)</label><input type="number" id="inSlidingBaseTh" value="${sd.baseThickness}" min="12" max="40"></div>
+            <div class="field-stack"><label>Profundidade do Trilho / Recuo (mm)</label><input type="number" id="inSlidingTrackD" value="${sd.trackDepth}" min="40" max="120"></div>
+            <div class="field-stack"><label>Tipo de Porta Deslizante</label>
+              <select id="inSlidingMat">
+                <option value="MDF_AMADEIRADO" ${sd.material === 'MDF_AMADEIRADO' ? 'selected' : ''}>MDF Amadeirado</option>
+                <option value="VIDRO" ${sd.material === 'VIDRO' ? 'selected' : ''}>Vidro</option>
+                <option value="ALUMINIO" ${sd.material === 'ALUMINIO' ? 'selected' : ''}>Alumínio</option>
+              </select>
+            </div>
+            <div class="field-stack"><label>Número de Folhas</label><input type="number" id="inSlidingLeaves" value="${sd.leafCount}" min="2" max="4"></div>
+          </div>
+          <button class="btn btn-primary" id="btnToggleSliding">${sd.isOpen ? '⇤ Fechar Porta Deslizante' : '⇥ Abrir Porta Deslizante'}</button>
+        </div>
+      </div>`;
+  } else if (state.activeTab === 'fundos') {
+    html += `
+      <div class="group-box">
+        <div class="group-title"><span>Painel de Fundo</span></div>
+        <div class="group-content">
+          <label class="check-lbl"><input type="checkbox" id="inBackOn" ${state.structure.fundo ? 'checked' : ''}> Aplicar fundo</label>
+          <div class="form-grid">
+            <div class="field-stack"><label>Espessura</label>${thicknessSelectHtml('fundo', state.thickness.fundo)}</div>
+            <div class="field-stack"><label>Recuo traseiro (mm)</label><input type="number" id="inBackRecuo" value="${state.backConfig.recuo}" min="0" max="30"></div>
+          </div>
+          <div class="field-stack"><label>Fixação</label>
+            <select id="inBackFix">
+              <option value="ENCAIXADO" ${state.backConfig.fixacao === 'ENCAIXADO' ? 'selected' : ''}>Encaixado em canal</option>
+              <option value="SOBREPOSTO" ${state.backConfig.fixacao === 'SOBREPOSTO' ? 'selected' : ''}>Sobreposto</option>
+            </select>
+          </div>
+        </div>
+      </div>`;
+  }
+
+  body.innerHTML = html;
+  bindPanelEvents();
+}
+
+function bindPanelEvents() {
+  const byId = (id) => document.getElementById(id);
+
+  // Estrutura
+  byId('inW')?.addEventListener('change', e => { state.width = Math.max(200, Number(e.target.value) || 1000); renderAll(); });
+  byId('inH')?.addEventListener('change', e => { state.height = Math.max(200, Number(e.target.value) || 2400); renderAll(); });
+  byId('inD')?.addEventListener('change', e => { state.depth = Math.max(150, Number(e.target.value) || 510); renderAll(); });
+  byId('inAssembly')?.addEventListener('change', e => { state.assembly = e.target.value; renderAll(); });
+  byId('inCfOrient')?.addEventListener('change', e => { state.contraFrenteOrient = e.target.value; renderAll(); });
+  byId('inTrOrient')?.addEventListener('change', e => { state.traseiraOrient = e.target.value; renderAll(); });
+  byId('inRodapeH')?.addEventListener('change', e => { state.structure.rodapeAltura = Math.max(40, Number(e.target.value) || 80); renderAll(); });
+
+  document.querySelectorAll('[data-st]').forEach(cb => {
+    cb.addEventListener('change', () => {
+      state.structure[cb.dataset.st] = cb.checked;
+      renderAll();
+    });
+  });
+  document.querySelectorAll('[data-th-key]').forEach(sel => {
+    sel.addEventListener('change', () => {
+      state.thickness[sel.dataset.thKey] = Number(sel.value);
+      renderAll();
+    });
+  });
+
+  // Divisões
+  document.querySelectorAll('[data-dsub]').forEach(btn => {
+    btn.addEventListener('click', () => { state.divSubTab = btn.dataset.dsub; renderPanel(); });
+  });
+  document.querySelectorAll('[data-divopt]').forEach(card => {
+    card.addEventListener('click', () => { state.divInsertType = card.dataset.divopt; renderPanel(); });
+  });
+  byId('btnAddVDiv')?.addEventListener('click', () => {
+    if (!hasAnyStructure()) { showToast('Adicione a estrutura (laterais/bases) primeiro!'); return; }
+    const bays = getBays();
+    const bay = bays[state.selectedBay] || bays[0];
+    const d = {
+      id: uid('vdiv'),
+      x: snapMm(bay.xStart + bay.width / 2),
+      thickness: state.divInsertType === 'distanciador' ? 30 : state.thickness.divisoria,
+      recuoFrontal: 0,
+      recuoTraseiro: state.divInsertType.includes('c_recuo') ? 15 : 0,
+      tipo: state.divInsertType,
+    };
+    state.verticalDividers.push(d);
+    state.selectedItem = { type: 'vdiv', id: d.id };
+    renderAll();
+  });
+  byId('btnAddShelf')?.addEventListener('click', () => {
+    if (!hasAnyStructure()) { showToast('Adicione a estrutura primeiro!'); return; }
+    const ib = getInnerBounds();
+    const existing = state.shelves.filter(s => s.bayIndex === state.selectedBay).sort((a, b) => a.z - b.z);
+    let newZ = ib.height / 2;
+    if (existing.length > 0) {
+      // Find largest vertical gap in bay
+      let pts = [0, ...existing.map(e => e.z), ib.height];
+      let bestGap = 0, bestMid = ib.height / 2;
+      for (let i = 0; i < pts.length - 1; i++) {
+        if (pts[i + 1] - pts[i] > bestGap) { bestGap = pts[i + 1] - pts[i]; bestMid = (pts[i] + pts[i + 1]) / 2; }
+      }
+      newZ = bestMid;
+    }
+    const sh = {
+      id: uid('shelf'),
+      bayIndex: state.selectedBay,
+      z: snapMm(newZ),
+      thickness: state.thickness.prateleira,
+      recuoFrontal: state.divInsertType === 'prat_fixa' ? 20 : 0,
+      recuoTraseiro: state.divInsertType.includes('c_recuo') ? 15 : 0,
+      tipo: state.divInsertType,
+    };
+    state.shelves.push(sh);
+    state.selectedItem = { type: 'shelf', id: sh.id };
+    renderAll();
+  });
+
+  // Matrix cells
+  document.querySelectorAll('.matrix-cell').forEach(cell => {
+    cell.addEventListener('click', () => {
+      state.matrixRows = Number(cell.dataset.mr);
+      state.matrixCols = Number(cell.dataset.mc);
+      renderPanel();
+    });
+  });
+  byId('inMR')?.addEventListener('change', e => { state.matrixRows = Math.max(0, Math.min(8, Number(e.target.value) || 0)); renderPanel(); });
+  byId('inMC')?.addEventListener('change', e => { state.matrixCols = Math.max(0, Math.min(6, Number(e.target.value) || 0)); renderPanel(); });
+  document.querySelectorAll('input[name="mprio"]').forEach(r => {
+    r.addEventListener('change', () => { state.matrixPriority = r.value; });
+  });
+  byId('btnInsertMatrix')?.addEventListener('click', () => {
+    if (!hasAnyStructure()) { showToast('Adicione a estrutura primeiro!'); return; }
+    const ib = getInnerBounds();
+    const bay = getBays()[state.selectedBay] || getBays()[0];
+    // Insert columns (verticals) inside selected bay
+    for (let c = 1; c <= state.matrixCols; c++) {
+      state.verticalDividers.push({
+        id: uid('vdiv'),
+        x: snapMm(bay.xStart + (bay.width * c) / (state.matrixCols + 1)),
+        thickness: state.thickness.divisoria,
+        recuoFrontal: 0, recuoTraseiro: 0, tipo: 'matriz',
+      });
+    }
+    // Insert rows (shelves) across created bays
+    const updatedBays = getBays();
+    const targetBays = state.matrixCols > 0 ? updatedBays.map(b => b.index) : [state.selectedBay];
+    targetBays.forEach(bi => {
+      for (let r = 1; r <= state.matrixRows; r++) {
+        state.shelves.push({
+          id: uid('shelf'),
+          bayIndex: bi,
+          z: snapMm((ib.height * r) / (state.matrixRows + 1)),
+          thickness: state.thickness.prateleira,
+          recuoFrontal: 0, recuoTraseiro: 0, tipo: 'matriz',
+        });
+      }
+    });
+    showToast(`Matriz ${state.matrixRows}×${state.matrixCols} inserida`);
+    renderAll();
+  });
+
+  // Gavetas
+  document.querySelectorAll('[data-gsub]').forEach(b => {
+    b.addEventListener('click', () => { state.drawerSubTab = b.dataset.gsub; renderPanel(); });
+  });
+  byId('btnInsertDrawers')?.addEventListener('click', () => {
+    if (!hasAnyStructure()) { showToast('Adicione a estrutura primeiro!'); return; }
+    const count = Math.max(1, Math.min(10, Number(byId('inDrawerCount').value) || 4));
+    const blockH = Math.max(150, Number(byId('inDrawerBlockH').value) || 760);
+    const modelAll = byId('inDrawerModelAll').value;
+    const ib = getInnerBounds();
+    const zEnd = Math.min(ib.height, blockH);
+    const existingIdx = state.drawerBanks.findIndex(b => b.bayIndex === state.selectedBay);
+    const bank = {
+      id: existingIdx >= 0 ? state.drawerBanks[existingIdx].id : uid('dbank'),
+      bayIndex: state.selectedBay,
+      zStart: 0,
+      zEnd,
+      category: state.drawerSubTab,
+      defaultModel: modelAll,
+      gap: 3,
+      useSlideModel: byId('inUseSlide3D').checked,
+      separator: byId('inDrawerSep').checked,
+      sepCols: Math.max(2, Number(byId('inSepCols').value) || 3),
+      sepRows: Math.max(1, Number(byId('inSepRows').value) || 2),
+      afastadores: {
+        fe: byId('afFE').checked, fd: byId('afFD').checked,
+        te: byId('afTE').checked, td: byId('afTD').checked,
+      },
+      drawers: Array.from({ length: count }, (_, i) => ({
+        id: uid('dr'),
+        model: modelAll,
+        isOpen: false,
+      })),
+    };
+    if (existingIdx >= 0) state.drawerBanks[existingIdx] = bank;
+    else state.drawerBanks.push(bank);
+    showToast(`${count} gavetas configuradas no Vão ${state.selectedBay + 1}`);
+    renderAll();
+  });
+  byId('btnDelDrawers')?.addEventListener('click', () => {
+    state.drawerBanks = state.drawerBanks.filter(b => b.bayIndex !== state.selectedBay);
+    renderAll();
+  });
+  document.querySelectorAll('[data-dr-model]').forEach(sel => {
+    sel.addEventListener('change', () => {
+      const bank = state.drawerBanks.find(b => b.bayIndex === state.selectedBay);
+      const dr = bank?.drawers.find(d => d.id === sel.dataset.drModel);
+      if (dr) { dr.model = sel.value; renderAll(); }
+    });
+  });
+  document.querySelectorAll('[data-dr-toggle]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const bank = state.drawerBanks.find(b => b.bayIndex === state.selectedBay);
+      const dr = bank?.drawers.find(d => d.id === btn.dataset.drToggle);
+      if (dr) { dr.isOpen = !dr.isOpen; renderAll(); }
+    });
+  });
+
+  // Internos
+  document.querySelectorAll('[data-add-int]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      if (!hasAnyStructure()) { showToast('Adicione a estrutura primeiro!'); return; }
+      const ib = getInnerBounds();
+      const tipo = btn.dataset.addInt;
+      const z = tipo === 'cabideiro' ? ib.height - 260 : tipo === 'maleiro' ? ib.height - 420 : 480;
+      state.internos.push({ id: uid('int'), bayIndex: state.selectedBay, tipo, z: snapMm(Math.max(120, z)) });
+      showToast(`${tipo} adicionado ao Vão ${state.selectedBay + 1}`);
+      renderAll();
+    });
+  });
+
+  // Portas de abrir
+  byId('inHingedOn')?.addEventListener('change', e => {
+    state.hingedDoors.enabled = e.target.checked;
+    if (e.target.checked) state.slidingDoors.enabled = false;
+    renderAll();
+  });
+  byId('inHingedCount')?.addEventListener('change', e => { state.hingedDoors.count = Math.max(1, Number(e.target.value) || 2); renderAll(); });
+  byId('inHingedTh')?.addEventListener('change', e => { state.hingedDoors.thickness = Number(e.target.value) || 18; renderAll(); });
+  byId('btnToggleHinged')?.addEventListener('click', () => { state.hingedDoors.isOpen = !state.hingedDoors.isOpen; renderAll(); });
+
+  // Deslizantes
+  byId('inSlidingOn')?.addEventListener('change', e => {
+    state.slidingDoors.enabled = e.target.checked;
+    if (e.target.checked) state.hingedDoors.enabled = false;
+    renderAll();
+  });
+  byId('inSlidingPos')?.addEventListener('change', e => { state.slidingDoors.basePosition = e.target.value; renderAll(); });
+  byId('inSlidingBaseTh')?.addEventListener('change', e => { state.slidingDoors.baseThickness = Math.max(12, Number(e.target.value) || 18); renderAll(); });
+  byId('inSlidingTrackD')?.addEventListener('change', e => { state.slidingDoors.trackDepth = Math.max(40, Number(e.target.value) || 70); renderAll(); });
+  byId('inSlidingMat')?.addEventListener('change', e => { state.slidingDoors.material = e.target.value; renderAll(); });
+  byId('inSlidingLeaves')?.addEventListener('change', e => { state.slidingDoors.leafCount = Math.max(2, Math.min(4, Number(e.target.value) || 2)); renderAll(); });
+  byId('btnToggleSliding')?.addEventListener('click', () => { state.slidingDoors.isOpen = !state.slidingDoors.isOpen; renderAll(); });
+
+  // Fundos
+  byId('inBackOn')?.addEventListener('change', e => { state.structure.fundo = e.target.checked; renderAll(); });
+  byId('inBackRecuo')?.addEventListener('change', e => { state.backConfig.recuo = Math.max(0, Number(e.target.value) || 0); renderAll(); });
+  byId('inBackFix')?.addEventListener('change', e => { state.backConfig.fixacao = e.target.value; renderAll(); });
+}
+
+// ============================================================================
+// STATUS BAR & MODALS (Host Contract & Cutlist/JSON Export)
+// ============================================================================
+function updateStatusBar() {
+  const cut = computeCutlist();
+  document.getElementById('sbDims').textContent = `${state.width} × ${state.height} × ${state.depth} mm`;
+  document.getElementById('sbMount').textContent = state.assembly === 'BASE_PASSANTE' ? 'Base Passante' : 'Lateral Passante';
+  document.getElementById('activeBayBadge').textContent = `Vão ativo: Vão ${state.selectedBay + 1}`;
+  document.getElementById('sbSel').textContent = state.selectedItem ? `${state.selectedItem.type} (${state.selectedItem.id})` : `Vão ${state.selectedBay + 1}`;
+
+  const badge = document.getElementById('sheetStatusBadge');
+  if (cut.violations.length > 0) {
+    badge.className = 'badge badge-danger';
+    badge.textContent = `⚠ ${cut.violations.length} peça(s) extrapolam chapa ${cut.maxL}×${cut.maxW}`;
+  } else {
+    badge.className = 'badge badge-ok';
+    badge.textContent = `✓ Chapa OK (${cut.maxL}×${cut.maxW})`;
+  }
+}
+
+function renderInlineHud() {
+  const hud = document.getElementById('inlineHud');
+  if (!hud) return;
+  const s = state.structure;
+  hud.innerHTML = `
+    <button class="hud-chip ${s.lateralEsq ? 'on' : ''}" data-hud-st="lateralEsq" title="Alternar Lateral Esquerda">┃ Lat.E</button>
+    <button class="hud-chip ${s.lateralDir ? 'on' : ''}" data-hud-st="lateralDir" title="Alternar Lateral Direita">┃ Lat.D</button>
+    <button class="hud-chip ${s.baseInf ? 'on' : ''}" data-hud-st="baseInf" title="Alternar Base Inferior">━ Base</button>
+    <button class="hud-chip ${s.baseSup ? 'on' : ''}" data-hud-st="baseSup" title="Alternar Base Superior">━ Topo</button>
+    <button class="hud-chip ${s.fundo ? 'on' : ''}" data-hud-st="fundo" title="Alternar Fundo">▧ Fundo</button>
+    <span class="hud-sep"></span>
+    <button class="hud-chip" data-hud-add="vdiv" title="Inserir Divisória Vertical no Vão ${state.selectedBay + 1}">+ Divisória</button>
+    <button class="hud-chip" data-hud-add="shelf" title="Inserir Prateleira no Vão ${state.selectedBay + 1}">+ Prateleira</button>
+    <button class="hud-chip" data-hud-add="drawers" title="Inserir Gavetas no Vão ${state.selectedBay + 1}">+ Gavetas</button>
+    <button class="hud-chip ${state.slidingDoors.enabled ? 'on' : ''}" data-hud-add="sliding" title="Alternar Porta Deslizante">⇆ Deslizante</button>
+  `;
+  hud.querySelectorAll('[data-hud-st]').forEach(b => {
+    b.addEventListener('click', () => {
+      const k = b.dataset.hudSt;
+      state.structure[k] = !state.structure[k];
+      renderAll();
+    });
+  });
+  hud.querySelectorAll('[data-hud-add]').forEach(b => {
+    b.addEventListener('click', () => {
+      const act = b.dataset.hudAdd;
+      if (!hasAnyStructure() && act !== 'sliding') {
+        quickBuildBox();
+      }
+      const ib = getInnerBounds();
+      const bay = getBays()[state.selectedBay] || getBays()[0];
+      if (act === 'vdiv') {
+        const d = { id: uid('vdiv'), x: snapMm(bay.xStart + bay.width / 2), thickness: state.thickness.divisoria, recuoFrontal: 0, recuoTraseiro: 0, tipo: 'movel_s_recuo' };
+        state.verticalDividers.push(d);
+        state.selectedItem = { type: 'vdiv', id: d.id };
+        renderAll();
+      } else if (act === 'shelf') {
+        const existing = state.shelves.filter(x => x.bayIndex === state.selectedBay).sort((a, b2) => a.z - b2.z);
+        let pts = [0, ...existing.map(e => e.z), ib.height], bestGap = 0, bestMid = ib.height / 2;
+        for (let i = 0; i < pts.length - 1; i++) {
+          if (pts[i + 1] - pts[i] > bestGap) { bestGap = pts[i + 1] - pts[i]; bestMid = (pts[i] + pts[i + 1]) / 2; }
+        }
+        const sh = { id: uid('shelf'), bayIndex: state.selectedBay, z: snapMm(bestMid), thickness: state.thickness.prateleira, recuoFrontal: 0, recuoTraseiro: 0, tipo: 'prat_s_recuo' };
+        state.shelves.push(sh);
+        state.selectedItem = { type: 'shelf', id: sh.id };
+        renderAll();
+      } else if (act === 'drawers') {
+        const existingIdx = state.drawerBanks.findIndex(x => x.bayIndex === state.selectedBay);
+        const bank = {
+          id: existingIdx >= 0 ? state.drawerBanks[existingIdx].id : uid('dbank'),
+          bayIndex: state.selectedBay, zStart: 0, zEnd: Math.min(ib.height, 760),
+          category: 'internas', defaultModel: 's_cf_reta', gap: 3, useSlideModel: true,
+          separator: false, sepCols: 3, sepRows: 2,
+          afastadores: { fe: true, fd: true, te: true, td: true },
+          drawers: Array.from({ length: 4 }, () => ({ id: uid('dr'), model: 's_cf_reta', isOpen: false })),
+        };
+        if (existingIdx >= 0) state.drawerBanks[existingIdx] = bank; else state.drawerBanks.push(bank);
+        state.selectedItem = { type: 'drawer', id: bank.id, subId: bank.drawers[0].id };
+        renderAll();
+      } else if (act === 'sliding') {
+        if (!hasAnyStructure()) quickBuildBox();
+        state.slidingDoors.enabled = !state.slidingDoors.enabled;
+        if (state.slidingDoors.enabled) {
+          state.hingedDoors.enabled = false;
+          state.selectedItem = { type: 'slidingDoor', id: 'sliding_0' };
+        }
+        renderAll();
+      }
+    });
+  });
+}
+
+function renderInlineInspector() {
+  const el = document.getElementById('inlineInspector');
+  if (!el) return;
+  const it = state.selectedItem;
+  if (!it) { el.classList.remove('show'); el.innerHTML = ''; return; }
+
+  const step = Math.max(1, Number(state.passo) || 10);
+  if (it.type === 'vdiv') {
+    const d = state.verticalDividers.find(x => x.id === it.id);
+    if (!d) { el.classList.remove('show'); return; }
+    el.innerHTML = `
+      <span class="ins-title">┃ Divisória</span>
+      <button class="btn btn-sm" id="insMinus">-${step}mm</button>
+      <button class="btn btn-sm" id="insPlus">+${step}mm</button>
+      <select id="insTh">${THICKNESS_OPTIONS.map(o => `<option value="${o}" ${d.thickness === o ? 'selected' : ''}>${o}mm</option>`).join('')}</select>
+      <button class="btn btn-sm" id="insDup">⧉ Duplicar</button>
+      <button class="btn btn-sm btn-danger" id="insDel">✕</button>
+    `;
+    el.classList.add('show');
+    document.getElementById('insMinus').onclick = () => { d.x = Math.max(60, d.x - step); renderAll(); };
+    document.getElementById('insPlus').onclick = () => { d.x = Math.min(getInnerBounds().width - 60, d.x + step); renderAll(); };
+    document.getElementById('insTh').onchange = (e) => { d.thickness = Number(e.target.value); renderAll(); };
+    document.getElementById('insDup').onclick = () => duplicateSelectedItem();
+    document.getElementById('insDel').onclick = () => deleteSelectedItem();
+  } else if (it.type === 'shelf') {
+    const sh = state.shelves.find(x => x.id === it.id);
+    if (!sh) { el.classList.remove('show'); return; }
+    el.innerHTML = `
+      <span class="ins-title">━ Prateleira</span>
+      <button class="btn btn-sm" id="insMinus">↓ -${step}mm</button>
+      <button class="btn btn-sm" id="insPlus">↑ +${step}mm</button>
+      <select id="insTh">${THICKNESS_OPTIONS.map(o => `<option value="${o}" ${sh.thickness === o ? 'selected' : ''}>${o}mm</option>`).join('')}</select>
+      <button class="btn btn-sm" id="insDup">⧉ Duplicar</button>
+      <button class="btn btn-sm btn-danger" id="insDel">✕</button>
+    `;
+    el.classList.add('show');
+    document.getElementById('insMinus').onclick = () => { sh.z = Math.max(60, sh.z - step); renderAll(); };
+    document.getElementById('insPlus').onclick = () => { sh.z = Math.min(getInnerBounds().height - 60, sh.z + step); renderAll(); };
+    document.getElementById('insTh').onchange = (e) => { sh.thickness = Number(e.target.value); renderAll(); };
+    document.getElementById('insDup').onclick = () => duplicateSelectedItem();
+    document.getElementById('insDel').onclick = () => deleteSelectedItem();
+  } else if (it.type === 'drawer') {
+    const bank = state.drawerBanks.find(b => b.id === it.id);
+    const dr = bank?.drawers.find(d => d.id === it.subId);
+    if (!bank || !dr) { el.classList.remove('show'); return; }
+    el.innerHTML = `
+      <span class="ins-title">▤ Gaveta</span>
+      <select id="insDrMod">${DRAWER_MODELS.map(m => `<option value="${m.id}" ${dr.model === m.id ? 'selected' : ''}>${m.label}</option>`).join('')}</select>
+      <button class="btn btn-sm ${bank.separator ? 'btn-primary' : ''}" id="insDrSep">Separador</button>
+      <button class="btn btn-sm btn-primary" id="insDrOpen">${dr.isOpen ? '⇤ Fechar' : '⇥ Abrir'}</button>
+      <button class="btn btn-sm btn-danger" id="insDel">✕</button>
+    `;
+    el.classList.add('show');
+    document.getElementById('insDrMod').onchange = (e) => { dr.model = e.target.value; renderAll(); };
+    document.getElementById('insDrSep').onclick = () => { bank.separator = !bank.separator; renderAll(); };
+    document.getElementById('insDrOpen').onclick = () => { dr.isOpen = !dr.isOpen; renderAll(); };
+    document.getElementById('insDel').onclick = () => deleteSelectedItem();
+  } else if (it.type === 'slidingDoor') {
+    const sd = state.slidingDoors;
+    if (!sd.enabled) { el.classList.remove('show'); return; }
+    el.innerHTML = `
+      <span class="ins-title">⇆ Deslizante</span>
+      <select id="insSdPos">
+        <option value="DENTRO" ${sd.basePosition === 'DENTRO' ? 'selected' : ''}>Base DENTRO (recua)</option>
+        <option value="FRENTE" ${sd.basePosition === 'FRENTE' ? 'selected' : ''}>Base FRENTE (sem recuo)</option>
+      </select>
+      <select id="insSdMat">
+        <option value="MDF_AMADEIRADO" ${sd.material === 'MDF_AMADEIRADO' ? 'selected' : ''}>MDF Amad.</option>
+        <option value="VIDRO" ${sd.material === 'VIDRO' ? 'selected' : ''}>Vidro</option>
+        <option value="ALUMINIO" ${sd.material === 'ALUMINIO' ? 'selected' : ''}>Alumínio</option>
+      </select>
+      <button class="btn btn-sm btn-primary" id="insSdOpen">${sd.isOpen ? '⇤ Fechar' : '⇥ Abrir'}</button>
+      <button class="btn btn-sm btn-danger" id="insDel">✕</button>
+    `;
+    el.classList.add('show');
+    document.getElementById('insSdPos').onchange = (e) => { sd.basePosition = e.target.value; renderAll(); };
+    document.getElementById('insSdMat').onchange = (e) => { sd.material = e.target.value; renderAll(); };
+    document.getElementById('insSdOpen').onclick = () => { sd.isOpen = !sd.isOpen; renderAll(); };
+    document.getElementById('insDel').onclick = () => deleteSelectedItem();
+  } else {
+    el.classList.remove('show');
+  }
+}
+
+function syncResponsiveLayout() {
+  const ws = document.querySelector('.workspace');
+  ws.classList.toggle('panel-collapsed', !state.panelOpen);
+  document.getElementById('btnTogglePanel').classList.toggle('active', state.panelOpen);
+  document.getElementById('viewportViews').classList.toggle('split', state.showSplitView);
+  document.getElementById('sidePane').style.display = state.showSplitView ? 'flex' : 'none';
+  document.getElementById('btnViewSplit').classList.toggle('active', state.showSplitView);
+}
+
+function renderAll() {
+  syncResponsiveLayout();
+  renderFrontSVG();
+  if (state.showSplitView) renderSideSVG();
+  renderInlineHud();
+  renderInlineInspector();
+  renderPanel();
+  updateStatusBar();
+}
+
+// Top Toolbar & Quick Actions
+function quickBuildBox() {
+  state.structure.lateralEsq = true;
+  state.structure.lateralDir = true;
+  state.structure.baseInf = true;
+  state.structure.baseSup = true;
+  state.structure.fundo = true;
+  renderAll();
+  showToast('Caixa estrutural padrão adicionada');
+}
+
+function resetEmpty() {
+  Object.keys(state.structure).forEach(k => { if (typeof state.structure[k] === 'boolean') state.structure[k] = false; });
+  state.verticalDividers = [];
+  state.shelves = [];
+  state.drawerBanks = [];
+  state.internos = [];
+  state.hingedDoors.enabled = false;
+  state.slidingDoors.enabled = false;
+  state.selectedItem = null;
+  state.selectedBay = 0;
+  renderAll();
+  showToast('Construtor reiniciado (janela vazia)');
+}
+
+document.getElementById('btnQuickBox').addEventListener('click', quickBuildBox);
+document.getElementById('btnEmptyQuickBuild').addEventListener('click', quickBuildBox);
+document.getElementById('btnEmptyAddSides').addEventListener('click', () => {
+  state.structure.lateralEsq = true;
+  state.structure.lateralDir = true;
+  renderAll();
+  showToast('Laterais esquerda e direita adicionadas');
+});
+document.getElementById('btnResetEmpty').addEventListener('click', resetEmpty);
+
+document.getElementById('btnViewSplit').addEventListener('click', (e) => {
+  state.showSplitView = !state.showSplitView;
+  e.currentTarget.classList.toggle('active', state.showSplitView);
+  document.getElementById('viewportViews').classList.toggle('split', state.showSplitView);
+  document.getElementById('sidePane').style.display = state.showSplitView ? 'flex' : 'none';
+  renderAll();
+});
+document.getElementById('btnToggleCotas').addEventListener('click', (e) => {
+  state.showCotas = !state.showCotas;
+  e.currentTarget.classList.toggle('active', state.showCotas);
+  renderAll();
+});
+document.getElementById('btnToggleFronts').addEventListener('click', (e) => {
+  state.showFronts = !state.showFronts;
+  e.currentTarget.classList.toggle('active', state.showFronts);
+  renderAll();
+});
+document.getElementById('btnToggleOpenAll').addEventListener('click', () => {
+  const anyClosed = state.drawerBanks.some(b => b.drawers.some(d => !d.isOpen)) ||
+    (state.slidingDoors.enabled && !state.slidingDoors.isOpen) ||
+    (state.hingedDoors.enabled && !state.hingedDoors.isOpen);
+  state.drawerBanks.forEach(b => b.drawers.forEach(d => d.isOpen = anyClosed));
+  if (state.slidingDoors.enabled) state.slidingDoors.isOpen = anyClosed;
+  if (state.hingedDoors.enabled) state.hingedDoors.isOpen = anyClosed;
+  renderAll();
+  showToast(anyClosed ? 'Simulação: tudo aberto' : 'Simulação: tudo fechado');
+});
+document.getElementById('btnTheme').addEventListener('click', () => {
+  document.body.classList.toggle('dark');
+});
+document.getElementById('btnTogglePanel').addEventListener('click', () => {
+  state.panelOpen = !state.panelOpen;
+  syncResponsiveLayout();
+});
+
+// Main tabs
+document.querySelectorAll('.main-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.main-tab').forEach(x => x.classList.remove('active'));
+    tab.classList.add('active');
+    state.activeTab = tab.dataset.tab;
+    renderPanel();
+  });
+});
+
+// Movimentação inputs
+document.getElementById('inpPasso').addEventListener('change', e => {
+  state.passo = Math.max(1, Number(e.target.value) || 10);
+});
+document.getElementById('inpPassoIni').addEventListener('change', e => {
+  state.passoInicial = Math.max(0, Number(e.target.value) || 0);
+});
+
+// Host Contract Modal
+document.getElementById('btnHostConfig').addEventListener('click', () => {
+  const hc = state.hostContract;
+  const body = document.getElementById('hostModalBody');
+  body.innerHTML = `
+    <div class="alert-box alert-ok">
+      <strong>Elicitação de Requisitos — Integração com Addon Host:</strong>
+      O addon principal onde este construtor se integrará deve fornecer obrigatoriamente estes parâmetros antes de instanciar o armário.
+    </div>
+    <div class="form-grid">
+      <div class="field-stack"><label>Comprimento Máximo da Chapa (mm)</label><input type="number" id="hcMaxL" value="${hc.maxSheetLength}"></div>
+      <div class="field-stack"><label>Largura Máxima da Chapa (mm)</label><input type="number" id="hcMaxW" value="${hc.maxSheetWidth}"></div>
+      <div class="field-stack"><label>Montagem Padrão do Addon</label>
+        <select id="hcMount">
+          <option value="LATERAL_PASSANTE" ${hc.defaultAssembly === 'LATERAL_PASSANTE' ? 'selected' : ''}>Lateral Passante</option>
+          <option value="BASE_PASSANTE" ${hc.defaultAssembly === 'BASE_PASSANTE' ? 'selected' : ''}>Base Passante</option>
+        </select>
+      </div>
+      <div class="field-stack"><label>Contra-frente Padrão</label>
+        <select id="hcCF">
+          <option value="EM_PE" ${hc.defaultContraFrenteOrient === 'EM_PE' ? 'selected' : ''}>Em pé</option>
+          <option value="DEITADA" ${hc.defaultContraFrenteOrient === 'DEITADA' ? 'selected' : ''}>Deitada</option>
+        </select>
+      </div>
+    </div>
+    <strong style="font-size:11.5px;margin-top:4px">Espessuras Padrão Fornecidas pelo Addon Host (6 / 15 / 18 / 25 mm)</strong>
+    <div class="form-grid">
+      ${Object.entries(hc.defaultThickness).map(([k, v]) => `
+        <div class="form-row"><label>${k}</label>
+          <select data-hc-th="${k}">${THICKNESS_OPTIONS.map(o => `<option value="${o}" ${v === o ? 'selected' : ''}>${o} mm</option>`).join('')}</select>
+        </div>`).join('')}
+    </div>
+  `;
+  document.getElementById('hostModal').classList.add('open');
+});
+document.getElementById('btnCloseHostModal').addEventListener('click', () => document.getElementById('hostModal').classList.remove('open'));
+document.getElementById('btnSaveHostModal').addEventListener('click', () => {
+  const hc = state.hostContract;
+  hc.maxSheetLength = Number(document.getElementById('hcMaxL').value) || 2750;
+  hc.maxSheetWidth = Number(document.getElementById('hcMaxW').value) || 1830;
+  hc.defaultAssembly = document.getElementById('hcMount').value;
+  hc.defaultContraFrenteOrient = document.getElementById('hcCF').value;
+  state.assembly = hc.defaultAssembly;
+  state.contraFrenteOrient = hc.defaultContraFrenteOrient;
+  document.querySelectorAll('[data-hc-th]').forEach(sel => {
+    const val = Number(sel.value);
+    hc.defaultThickness[sel.dataset.hcTh] = val;
+    state.thickness[sel.dataset.hcTh] = val;
+  });
+  document.getElementById('hostModal').classList.remove('open');
+  renderAll();
+  showToast('Contrato de chapas do addon host atualizado');
+});
+
+// Cutlist & Export JSON Modal
+function buildBlenderPayload() {
+  return {
+    schema: 'caff_mob_armario_v2',
+    blender_target: '5.2.0',
+    host_contract: state.hostContract,
+    dimensions_mm: { width: state.width, height: state.height, depth: state.depth },
+    assembly: state.assembly,
+    contra_frente_orient: state.contraFrenteOrient,
+    traseira_orient: state.traseiraOrient,
+    structure: state.structure,
+    thickness: state.thickness,
+    back_config: state.backConfig,
+    vertical_dividers: state.verticalDividers,
+    shelves: state.shelves,
+    drawer_banks: state.drawerBanks,
+    internos: state.internos,
+    hinged_doors: state.hingedDoors,
+    sliding_doors: state.slidingDoors,
+  };
+}
+
+function openCutlistModal(showJson) {
+  const cut = computeCutlist();
+  const body = document.getElementById('cutlistModalBody');
+  document.getElementById('cutlistModalTitle').textContent = showJson
+    ? '{ } JSON Paramétrico p/ Addon Blender 5.2.0'
+    : '▤ Lista de Peças & Validação de Chapa Máxima';
+  if (showJson) {
+    body.innerHTML = `<textarea id="jsonOut" readonly style="width:100%;height:340px;font-family:monospace;font-size:11px;padding:8px;background:var(--surface2);color:var(--text);border:1px solid var(--border);border-radius:4px">${JSON.stringify(buildBlenderPayload(), null, 2)}</textarea>`;
+  } else {
+    body.innerHTML = `
+      <div class="alert-box ${cut.violations.length ? 'alert-danger' : 'alert-ok'}">
+        ${cut.violations.length ? `⚠ ${cut.violations.length} peça(s) extrapolam a chapa máxima (${cut.maxL}×${cut.maxW} mm).` : `✓ Todas as ${cut.parts.length} peças respeitam a chapa máxima (${cut.maxL}×${cut.maxW} mm).`}
+      </div>
+      <table class="cutlist-table">
+        <thead><tr><th>Peça</th><th>Larg. (mm)</th><th>Alt./Prof. (mm)</th><th>Esp.</th><th>Obs.</th></tr></thead>
+        <tbody>
+          ${cut.parts.map(p => `<tr style="${p.exceeds ? 'background:var(--danger-bg);color:var(--danger);font-weight:700' : ''}">
+            <td>${p.name}</td><td class="num">${Math.round(p.w)}</td><td class="num">${Math.round(p.h)}</td><td class="num">${p.th}mm</td><td>${p.note}</td>
+          </tr>`).join('') || '<tr><td colspan="5" style="text-align:center;color:var(--muted)">Armário vazio — adicione peças na aba Estrutura.</td></tr>'}
+        </tbody>
+      </table>`;
+  }
+  document.getElementById('cutlistModal').classList.add('open');
+}
+
+document.getElementById('btnCutlist').addEventListener('click', () => openCutlistModal(false));
+document.getElementById('btnExportJson').addEventListener('click', () => openCutlistModal(true));
+document.getElementById('btnOk').addEventListener('click', () => openCutlistModal(true));
+document.getElementById('btnApply').addEventListener('click', () => { renderAll(); showToast('Pré-visualização aplicada'); });
+document.getElementById('btnCancel').addEventListener('click', () => { resetEmpty(); });
+document.getElementById('btnCloseCutlist').addEventListener('click', () => document.getElementById('cutlistModal').classList.remove('open'));
+document.getElementById('btnCloseCutlist2').addEventListener('click', () => document.getElementById('cutlistModal').classList.remove('open'));
+document.getElementById('btnCopyJson').addEventListener('click', () => {
+  const txt = JSON.stringify(buildBlenderPayload(), null, 2);
+  if (navigator.clipboard?.writeText) {
+    navigator.clipboard.writeText(txt).then(() => showToast('JSON copiado para a área de transferência!'));
+  } else {
+    const ta = document.createElement('textarea');
+    ta.value = txt; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove();
+    showToast('JSON copiado!');
+  }
+});
+
+// Initial render (opens EMPTY as required!)
+renderAll();
+</script>
+</body>
+</html>

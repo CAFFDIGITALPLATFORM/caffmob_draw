@@ -1,0 +1,11 @@
+schema_version = "1.0.0"
+
+id = "caff_construtor_armarios"
+version = "2.0.0"
+name = "CAFF MOB - Construtor de Armários"
+tagline = "Construtor paramétrico de armários com corrediças 3D, porta deslizante e contrato de chapas"
+maintainer = "CAFF MOB"
+type = "add-on"
+
+blender_version_min = "5.2.0"
+license = ["SPDX:GPL-3.0-or-later"]
