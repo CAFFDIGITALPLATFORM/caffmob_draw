@@ -41,7 +41,7 @@ PROBE_STEP = 0.005           # m: passo da conferência pela malha
 PROBE_TOLERANCE = 0.00005     # m: precisão da parada refinada
 MAX_PROBES = 400
 _SAME = 1e-6                 # diferença de matriz que não conta como movimento
-_MANAGED = {'caffmob.move_over_dialog', 'caffmob.cabinet_editor_modal'}
+_MANAGED = {'caffmob.move_over_dialog'}
 _BOX_TRIS = tuple(tri for a, b, c, d in ((0, 1, 3, 2), (4, 6, 7, 5), (0, 4, 5, 1), (2, 3, 7, 6), (0, 2, 6, 4),
                                          (1, 5, 7, 3)) for tri in ((a, b, c), (a, c, d)))
 

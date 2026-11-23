@@ -7,7 +7,7 @@ from bpy.app.handlers import persistent  # type: ignore
 
 # Hot-reload submodules during active development
 _submodule_names = [
-    "compat", "data", "standards", "geometry", "cutting", "inspection", "move_over", "walls2d", "geometry_free", "customize", "aggregates", "stick", "collision", "cabinet_editor",
+    "compat", "data", "standards", "geometry", "cutting", "inspection", "move_over", "walls2d", "geometry_free", "customize", "armario_v2", "aggregates", "stick", "collision", "cabinet_editor",
     "compat_identity", "target",
     "ui", "overlays",
     "hb_props", "hb_project", "hb_props_obstacles", "ops",
@@ -39,6 +39,7 @@ from . import stick
 from .stick import migrate as _stick_migrate  # noqa: F401
 from . import collision
 from . import cabinet_editor
+from . import armario_v2  # feature 017: construtor de armário v2 (registra depois de customize)
 from . import object_library
 from . import openings
 from . import cladding
@@ -349,6 +350,7 @@ def register():
     ui.register()
     overlays.register()
     customize.register()
+    armario_v2.register()      # feature 017: depois de customize e antes do editor 2D (D-03, D-05)
     aggregates.register()
     stick.register()
     collision.register()
@@ -438,6 +440,7 @@ def unregister():
     cladding.unregister()
     openings.unregister()
     object_library.unregister()
+    armario_v2.unregister()    # feature 017: antes de cabinet_editor, como a ação pede (D-05)
     cabinet_editor.unregister()
     collision.unregister()
     stick.unregister()

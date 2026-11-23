@@ -91,6 +91,10 @@ def iter_modules(scene, ensure_uid=True):
     """
     modules, seen = [], set()
     for obj in scene.objects:
+        # Módulo convertido para o armário v2: `ponte` oculta e marca o antigo, e o caminho sintético não consulta a
+        # marca (T035, D-17). Filtrar aqui vale para todos os adaptadores e para `modules[]` do JSON v2.
+        if getattr(obj, 'btm_cut_exclude', False) or not _visible(obj):
+            continue
         if obj.get("caffmob_modulo"):
             library, line, kind = "caffmob", "", "MODULE"
         elif obj.get(FRAMELESS_TAG):
@@ -441,6 +445,58 @@ def drawer_records(scene):
                 uid=row['uid'], module_uid=module_uid, module_name=module_name, line="", name=row['nome'],
                 component=DRAWER_COMPONENTS[row['papel']], length=row['comprimento'], width=row['largura'],
                 thickness=row['espessura'], source="DRAWERS", drilling=drilling))
+    return records
+
+
+# ----------------------------------------------------------------------------------------------------------------
+# Adaptador ARMARIO_V2 (armário do construtor v2, 017 T029; RN-19, RN-24): o papel gravado em cada malha gerada
+# ----------------------------------------------------------------------------------------------------------------
+
+# `BTM_PG_ArmarioParte.material` guarda a chave do acabamento da malha (`CHAPA`, `VIDRO`, `ALUMINIO`), não o nome da
+# matéria-prima: a chapa comum fica sem material (vale o padrão do componente) e vidro/alumínio viajam como tal.
+ARMARIO_V2_MATERIALS = {'CHAPA': "", 'VIDRO': "VIDRO", 'ALUMINIO': "ALUMINIO"}
+
+
+def _armario_root(obj):
+    """Raiz do armário v2 acima da peça: o vazio com `btm_armario` (o grupo existe em todo objeto, não serve)."""
+    atual = obj.parent
+    while atual is not None:
+        if atual.type == 'EMPTY' and getattr(atual, 'btm_armario', None) is not None:
+            return atual
+        atual = atual.parent
+    return None
+
+
+def armario_v2_records(scene):
+    """Chapas do construtor de armário v2: o papel e as medidas de corte gravados em `btm_armario_parte`.
+
+    Malha sem papel gravado fica fora (peça de ferragem: trilho, gaiola), assim como a marcada com `btm_cut_exclude`
+    e a oculta — inclusive com o armário inteiro oculto, que é o jeito de esconder o móvel. O `uid` já vem do `build`
+    (`<uid do armário>/<papel>/<índice>`); o módulo é a raiz do armário. A linha fica vazia, como nos demais
+    adaptadores de peça solta: a matéria-prima vem do próprio registro, a fita do Padrão fica de fora e o limite de
+    chapa do Padrão não é aplicado (a conferência do armário é a do contrato de chapas, RN-03).
+    """
+    records = []
+    for obj in sorted(scene.objects, key=lambda o: o.name):
+        parte = getattr(obj, 'btm_armario_parte', None)
+        if parte is None or obj.type != 'MESH' or not _visible(obj) or getattr(obj, 'btm_cut_exclude', False):
+            continue
+        papel = str(parte.papel or '')
+        length, width = float(parte.comprimento_mm), float(parte.largura_mm)
+        if not papel or length <= 0.0 or width <= 0.0:      # peça de ferragem e malha sem medida de corte
+            continue
+        raiz = _armario_root(obj)
+        if raiz is not None and not _visible(raiz):      # armário oculto esconde as chapas dele no corte
+            continue
+        records.append(PartRecord(
+            uid=str(parte.uid or obj.name), module_uid=(str(raiz.get(UID_PROP) or raiz.name) if raiz is not None
+                                                        else None),
+            module_name=raiz.name if raiz is not None else "", line="", name=obj.name,
+            component=str(parte.componente or part_roles.UNCLASSIFIED), length=length, width=width,
+            thickness=float(parte.espessura_mm),
+            edges_present=[bool(parte.fita_l1), bool(parte.fita_l2), bool(parte.fita_w1), bool(parte.fita_w2)],
+            grain=str(parte.veio or 'NONE'), source="ARMARIO_V2",
+            material=ARMARIO_V2_MATERIALS.get(str(parte.material or ''), ""), key=obj.name))
     return records
 
 

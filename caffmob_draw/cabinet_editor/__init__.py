@@ -11,17 +11,21 @@
 - Feature 008: `catalog`, `extras`, `bays`, `slides`, `appliances`, `position` (núcleos puros), `scene_parts`,
   `scene_extras`, `scene_interiors`, `scene_slides` (peças na cena), `previews` (miniaturas) e os painéis das abas
   Gavetas, Internos, Portas, Deslizantes e Fundos
+
+Feature 017 (T027, D-04): a interface do editor 2D não é mais registrada — `window`, `ops_editor`, `ops_actions`,
+`panels*` e `props` saem de `_modules()`, e com eles o `WindowManager.btm_cabinet_editor`. Continuam registrados só
+`data_props` (os dados gravados no módulo, lidos pela biblioteca e pelo corte), `previews` (miniaturas),
+`reflow_handler` (divisões acompanhando o vão) e `gallery` (a galeria de estruturas do "Criar armário" da biblioteca,
+que `library_panel/ops_cabinet.py` chama sem guarda). Os núcleos puros (`structure`, `structures_core`, `divisions`,
+`structure_inputs`, `elevation`, `validate`, `state`, `bays`, `catalog`, `extras`, `slides`, `appliances`, `position`,
+`bridge`, `scene_*`, `gallery_core`) seguem importáveis fora do Blender.
 """
 
 
 def _modules():
     # Import tardio: os núcleos puros são usados nos testes fora do Blender sem carregar `bpy`.
-    from . import (data_props, gallery, ops_actions, ops_editor, panels, panels_backs, panels_divisions, panels_doors,
-                   panels_drawers, panels_interior, panels_sliding, panels_structure, previews, props, reflow_handler,
-                   window)
-    return (data_props, props, previews, window, gallery, ops_editor, ops_actions, panels, panels_structure,
-            panels_divisions, panels_drawers, panels_interior, panels_doors, panels_sliding, panels_backs,
-            reflow_handler)
+    from . import data_props, gallery, previews, reflow_handler
+    return (data_props, previews, gallery, reflow_handler)
 
 
 def register():

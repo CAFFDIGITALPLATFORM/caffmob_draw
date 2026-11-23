@@ -1,5 +1,10 @@
 """Teste de fumaça da feature 008 (T051): editor de armário no modelo do Construtor de Armários.
 
+**APOSENTADO** (T034 da 017, 2026-11-22). Dirige a interface do editor 2D que a T027 (D-04) tirou do registro: hoje
+`bpy.ops.caffmob.cabinet_editor` é o `Abrir` do armário v2 e recusa módulo de biblioteca (RN-23), então a fumaça morre no
+primeiro `open_editor`, sem conferência nenhuma. Fica aqui como registro da superfície removida; o motivo, a cobertura
+substituta e a lacuna estão em `tests/retired/README.md`.
+
 Precisa de janela (não roda em --background), numa instância própria (encerra com o código do resultado):
     xvfb-run -a blender --factory-startup --enable-event-simulate --python tests/blender_008_construtor_smoke.py
 
@@ -23,7 +28,7 @@ from pathlib import Path
 
 import bpy
 
-sys.path.insert(0, str(Path(__file__).resolve().parent))
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 import _blender_env as env  # noqa: E402
 from caffmob_draw import hb_utils  # noqa: E402
 from caffmob_draw.cabinet_editor import (bridge, catalog, ops_actions, previews, props,  # noqa: E402

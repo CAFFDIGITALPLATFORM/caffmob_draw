@@ -1481,3 +1481,25 @@
 **Resposta:** aceito (recomendação do Reviewer adotada pelo titular em 2026-10-10)
 
 ---
+
+## Pergunta 99
+
+**Severidade:** Alta · **Unit:** `move_over`
+**Contexto:** Auditoria da frente do objeto no Mover Sobre (`audit/mover-sobre-frente-2026-11-22.md`, achados A001/A002/A006)
+**Spec afetada:** `_reversa_sdd/move_over/requirements.md` (RN-01, RN-03, RN-04, RN-14)
+**Pergunta:** A decisão da frente deve seguir a ordem **propriedade gravada > parede atrás > eixo do objeto**, e qual é o limite de "perto" da parede (0,10 m entre o fundo de B e a face da parede, distância maior para módulos afastados, ou só quando B for filho da parede)? Com B sendo a própria parede, a frente é o lado em que A foi solto pelo arraste?
+**Impacto:** O limite define quando a parede manda na vista e quando a janela pergunta; escolher errado produz frente invertida em módulo afastado ou pergunta a cada objeto importado.
+**Recomendação do Reviewer:** Propriedade > parede (até 0,10 m, ou pai = parede) > eixo; com B parede, frente = lado de A; em canto/península (duas paredes candidatas) perguntar.
+
+---
+
+## Pergunta 100
+
+**Severidade:** Média · **Unit:** `move_over`
+**Contexto:** Auditoria da frente do objeto — achados A003/A004
+**Spec afetada:** `_reversa_sdd/move_over/requirements.md`, `_reversa_sdd/data-dictionary.md`
+**Pergunta:** Onde guardar a frente escolhida (`obj['btm_front_yaw']` em graus, local ao objeto, salvo no `.blend` como idprop, ou um campo novo em `data/properties.py`) e qual o alcance dela: só a janela Mover Sobre ou todo o add-on (cotas, moldura, inserção, Mover na Parede)?
+**Impacto:** Idprop é aditivo e não pede registro/migração; `bpy.props` fica visível no painel, mas amplia o contrato de dados. O alcance decide quantos consumidores mudam junto.
+**Recomendação do Reviewer:** idprop `btm_front_yaw` (graus, local) e alcance inicial só do Mover Sobre; estender depois com decisão própria.
+
+---

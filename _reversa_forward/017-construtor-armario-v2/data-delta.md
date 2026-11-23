@@ -37,6 +37,10 @@ Medidas em milímetros (`subtype='DISTANCE'`, `unit='LENGTH'`), como no motor an
 | `espessura_porta` | enum | 6, 15, 18, 25 | Porta de abrir |
 | `espessura_folha` | enum | 6, 15, 18, 25 | Folha deslizante |
 | `bloquear_chapa` | bool | padrão `True` | RN-03 |
+| `lateral_esq_ativa` | bool | padrão `False` | Presença (RN-01, D-18); Montar Caixa liga (RF-01) |
+| `lateral_dir_ativa` | bool | padrão `False` | Presença (RN-01, D-18) |
+| `base_inf_ativa` | bool | padrão `False` | Presença (RN-01, D-18) |
+| `base_sup_ativa` | bool | padrão `False` | Presença (RN-01, D-18) |
 | `divisoes` | coleção de `BTM_PG_ArmarioDivisao` | — | RN-12 |
 | `gavetas` | coleção de `BTM_PG_ArmarioGaveta` | — | RN-07 a RN-09 |
 | `internos` | coleção de `BTM_PG_ArmarioInterno` | — | RN-13 |
@@ -60,6 +64,11 @@ Medidas em milímetros (`subtype='DISTANCE'`, `unit='LENGTH'`), como no motor an
 | `gerado` | bool | padrão `False` | `False` = móvel antigo ou armário ainda vazio |
 | `origem` | string | nome do módulo de biblioteca, ou vazio | D-13 |
 | `snapshot` | string (JSON) | — | Estado na abertura (RN-18) |
+
+**São nove espessuras no armário e oito no contrato de chapas.** As nove da tabela acima são `espessura_lateral`,
+`espessura_base_inferior`, `espessura_base_superior`, `espessura_divisoria`, `espessura_prateleira`,
+`espessura_fundo`, `espessura_gaveta`, `espessura_porta` e `espessura_folha`. O §4 grava oito: as mesmas, menos a
+`espessura_folha`, porque a folha deslizante é frente de ferragem e não entra no contrato de chapa do fornecedor.
 
 ### 2.1 `BTM_PG_ArmarioDivisao`
 
@@ -127,6 +136,9 @@ Peças de ferragem (trilho externo, trilho interno, gaiola) recebem `papel = ""`
 | `orientacao_frente_padrao` | enum | `EM_PE`, `DEITADA` |
 | `orientacao_tras_padrao` | enum | `EM_PE`, `DEITADA` |
 | `configurado` | bool | Falso = nenhum contrato fornecido (RN-02) |
+
+São **oito** espessuras aqui, não nove: as nove do armário (§2) menos a `espessura_folha`, que pertence à ferragem da
+deslizante. Quem lê o contrato não deve esperar a folha entre as chaves do dicionário de espessuras.
 
 `apply_host_contract(comprimento_max, largura_max, espessuras: dict, montagem, orientacao_frente, orientacao_tras)` é a função pública de injeção (RF-03). O painel semeia o contrato a partir de `standards.api.active_definition` quando `configurado` é falso.
 

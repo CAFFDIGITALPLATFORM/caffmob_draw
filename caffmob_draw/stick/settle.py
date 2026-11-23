@@ -18,7 +18,7 @@ from . import apply, link, magnet, migrate
 
 # Modais que movem objetos: o assentar espera eles terminarem.
 _MOVE_IDS = {'caffmob.stick_move', 'caffmob.stick_to_face', 'caffmob.aggregate_move', 'caffmob.move_on_wall',
-             'caffmob.move_over_drag', 'caffmob.move_over_dialog', 'caffmob.cabinet_editor_modal'}
+             'caffmob.move_over_drag', 'caffmob.move_over_dialog'}
 _MAGNET_KINDS = (classify.MODULE, classify.GEOMETRY)
 
 

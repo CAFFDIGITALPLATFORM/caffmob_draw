@@ -1,5 +1,10 @@
 """Teste de fumaça da feature 006 (T038): editor de armário em abas, Estrutura e Divisão.
 
+**APOSENTADO** (T034 da 017, 2026-11-22). Dirige a interface do editor 2D que a T027 (D-04) tirou do registro: hoje
+`bpy.ops.caffmob.cabinet_editor` é o `Abrir` do armário v2 e recusa módulo de biblioteca (RN-23), então a fumaça morre no
+primeiro `open_editor`, sem conferência nenhuma. Fica aqui como registro da superfície removida; o motivo, a cobertura
+substituta e a lacuna estão em `tests/retired/README.md`.
+
 Precisa de janela (não roda em --background), numa instância própria (encerra com o código do resultado):
     xvfb-run -a blender --factory-startup --enable-event-simulate --python tests/blender_006_cabinet_editor_tabs_smoke.py
 
@@ -25,7 +30,7 @@ from pathlib import Path
 
 import bpy
 
-sys.path.insert(0, str(Path(__file__).resolve().parent))
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 import _blender_env as env  # noqa: E402
 from caffmob_draw import compat, hb_utils  # noqa: E402
 from caffmob_draw.cabinet_editor import (bridge, panels, panels_backs, panels_divisions,  # noqa: E402
@@ -340,7 +345,7 @@ def check_reopen(ctx, results):
             "from caffmob_draw.cabinet_editor import scene_divisions as sd; "
             "print('RESULT', json.dumps({n: {'divisions': len(sd.objects(bpy.data.objects[n])), "
             "'removed': [e.role for e in bpy.data.objects[n].btm_structure.components if e.removed]} "
-            "for n in %r}))") % (str(Path(__file__).resolve().parent), sorted(results))
+            "for n in %r}))") % (str(Path(__file__).resolve().parents[1]), sorted(results))
     out = subprocess.run([bpy.app.binary_path, "--background", "--factory-startup", path, "--python-expr", expr],
                          capture_output=True, text=True, timeout=300).stdout
     line = next((ln for ln in out.splitlines() if ln.startswith("RESULT ")), "RESULT {}")

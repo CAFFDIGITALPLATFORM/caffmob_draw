@@ -1,0 +1,450 @@
+{
+ "15 mm": {
+  "en_US": "15 mm",
+  "pt_BR": "15 mm"
+ },
+ "18 mm": {
+  "en_US": "18 mm",
+  "pt_BR": "18 mm"
+ },
+ "25 mm": {
+  "en_US": "25 mm",
+  "pt_BR": "25 mm"
+ },
+ "6 mm": {
+  "en_US": "6 mm",
+  "pt_BR": "6 mm"
+ },
+ "A geração recusou a mudança: a divisória voltou ao que era": {
+  "en_US": "Generation refused the change: the divider was restored",
+  "pt_BR": "A geração recusou a mudança: a divisória voltou ao que era"
+ },
+ "A geração recusou o módulo: o módulo antigo continua visível": {
+  "en_US": "Generation refused the module: the old module stays visible",
+  "pt_BR": "A geração recusou o módulo: o módulo antigo continua visível"
+ },
+ "A peça {} passa da chapa máxima ({} × {} mm)": {
+  "en_US": "Part {} exceeds the maximum panel ({} × {} mm)",
+  "pt_BR": "A peça {} passa da chapa máxima ({} × {} mm)"
+ },
+ "Abre o construtor do armário e guarda o estado atual para o Cancelar": {
+  "en_US": "Opens the cabinet editor and stores the current state for Cancel",
+  "pt_BR": "Abre o construtor do armário e guarda o estado atual para o Cancelar"
+ },
+ "Abre ou fecha a gaveta, a folha deslizante ou a porta selecionada do armário v2": {
+  "en_US": "Opens or closes the selected drawer, sliding leaf or door of the cabinet v2",
+  "pt_BR": "Abre ou fecha a gaveta, a folha deslizante ou a porta selecionada do armário v2"
+ },
+ "Abrir / Fechar": {
+  "en_US": "Open / Close",
+  "pt_BR": "Abrir / Fechar"
+ },
+ "Abrir armário v2": {
+  "en_US": "Open cabinet v2",
+  "pt_BR": "Abrir armário v2"
+ },
+ "Afastador": {
+  "en_US": "Spacer",
+  "pt_BR": "Afastador"
+ },
+ "Alternada": {
+  "en_US": "Alternating",
+  "pt_BR": "Alternada"
+ },
+ "Alternar chapa da caixa": {
+  "en_US": "Toggle box panel",
+  "pt_BR": "Alternar chapa da caixa"
+ },
+ "Apaga as chapas geradas do armário, sem tocar no resto da cena": {
+  "en_US": "Deletes the generated cabinet panels, without touching the rest of the scene",
+  "pt_BR": "Apaga as chapas geradas do armário, sem tocar no resto da cena"
+ },
+ "Armário: Aplicar": {
+  "en_US": "Cabinet: Apply",
+  "pt_BR": "Armário: Aplicar"
+ },
+ "Ative as laterais, a base inferior e a base superior, ou use Montar Caixa": {
+  "en_US": "Turn on the sides, the bottom base and the top base, or use Build box",
+  "pt_BR": "Ative as laterais, a base inferior e a base superior, ou use Montar Caixa"
+ },
+ "Base inferior": {
+  "en_US": "Bottom panel",
+  "pt_BR": "Base inferior"
+ },
+ "Base superior": {
+  "en_US": "Top panel",
+  "pt_BR": "Base superior"
+ },
+ "Bases cobrem as laterais": {
+  "en_US": "Bases cover the sides",
+  "pt_BR": "Bases cobrem as laterais"
+ },
+ "Bloquear peça fora da chapa": {
+  "en_US": "Block parts exceeding the panel",
+  "pt_BR": "Bloquear peça fora da chapa"
+ },
+ "Branco": {
+  "en_US": "White",
+  "pt_BR": "Branco"
+ },
+ "Cabideiro": {
+  "en_US": "Hanger rod",
+  "pt_BR": "Cabideiro"
+ },
+ "Caixa do armário": {
+  "en_US": "Cabinet box",
+  "pt_BR": "Caixa do armário"
+ },
+ "Calceiro": {
+  "en_US": "Shoe shelf",
+  "pt_BR": "Calceiro"
+ },
+ "Chapa deitada": {
+  "en_US": "Panel lying down",
+  "pt_BR": "Chapa deitada"
+ },
+ "Chapa em pé": {
+  "en_US": "Panel standing",
+  "pt_BR": "Chapa em pé"
+ },
+ "Chapa máxima: {} × {} mm": {
+  "en_US": "Maximum panel: {} × {} mm",
+  "pt_BR": "Chapa máxima: {} × {} mm"
+ },
+ "Cinza": {
+  "en_US": "Grey",
+  "pt_BR": "Cinza"
+ },
+ "Construtor de Armário v2": {
+  "en_US": "Cabinet builder v2",
+  "pt_BR": "Construtor de Armário v2"
+ },
+ "Contrato de chapas": {
+  "en_US": "Panel contract",
+  "pt_BR": "Contrato de chapas"
+ },
+ "Dentro": {
+  "en_US": "Inside",
+  "pt_BR": "Dentro"
+ },
+ "Dentro da chapa": {
+  "en_US": "Fits the panel",
+  "pt_BR": "Dentro da chapa"
+ },
+ "Devolve o armário ao estado da abertura e apaga as peças geradas": {
+  "en_US": "Restores the cabinet to the opening state and deletes the generated parts",
+  "pt_BR": "Devolve o armário ao estado da abertura e apaga as peças geradas"
+ },
+ "Devolve o módulo de biblioteca à cena e apaga o armário novo que saiu dele": {
+  "en_US": "Brings the library module back into the scene and deletes the new cabinet made from it",
+  "pt_BR": "Devolve o módulo de biblioteca à cena e apaga o armário novo que saiu dele"
+ },
+ "Dimensões do armário": {
+  "en_US": "Cabinet dimensions",
+  "pt_BR": "Dimensões do armário"
+ },
+ "Divisões fora do vão raiz ficam de fora no motor novo": {
+  "en_US": "Divisions outside the root bay are left out in the new engine",
+  "pt_BR": "Divisões fora do vão raiz ficam de fora no motor novo"
+ },
+ "Duplica a divisória ou a prateleira no maior vão livre disponível": {
+  "en_US": "Duplicates the divider or shelf in the largest free bay",
+  "pt_BR": "Duplica a divisória ou a prateleira no maior vão livre disponível"
+ },
+ "Em pé": {
+  "en_US": "Standing",
+  "pt_BR": "Em pé"
+ },
+ "Espessuras do armário": {
+  "en_US": "Cabinet thicknesses",
+  "pt_BR": "Espessuras do armário"
+ },
+ "Este móvel é da construção antiga: recrie pelo construtor novo para editar": {
+  "en_US": "This unit uses the old build: recreate it with the new builder to edit it",
+  "pt_BR": "Este móvel é da construção antiga: recrie pelo construtor novo para editar"
+ },
+ "Exclui a divisória ou a prateleira escolhida do armário": {
+  "en_US": "Deletes the selected divider or shelf from the cabinet",
+  "pt_BR": "Exclui a divisória ou a prateleira escolhida do armário"
+ },
+ "Fora da chapa": {
+  "en_US": "Off the panel",
+  "pt_BR": "Fora da chapa"
+ },
+ "Frente da gaveta": {
+  "en_US": "Drawer front",
+  "pt_BR": "Frente da gaveta"
+ },
+ "Gaveta com contra-frente, frente vidro": {
+  "en_US": "Drawer with inner front, glass front",
+  "pt_BR": "Gaveta com contra-frente, frente vidro"
+ },
+ "Gaveta com contra-frente, normal": {
+  "en_US": "Drawer with inner front, standard",
+  "pt_BR": "Gaveta com contra-frente, normal"
+ },
+ "Gaveta com contra-frente, perfil gola": {
+  "en_US": "Drawer with inner front, J-profile pull",
+  "pt_BR": "Gaveta com contra-frente, perfil gola"
+ },
+ "Gaveta com contra-frente, puxador cava": {
+  "en_US": "Drawer with inner front, recessed pull",
+  "pt_BR": "Gaveta com contra-frente, puxador cava"
+ },
+ "Gaveta com contra-frente, puxador reto": {
+  "en_US": "Drawer with inner front, straight pull",
+  "pt_BR": "Gaveta com contra-frente, puxador reto"
+ },
+ "Gaveta sem contra-frente, frente vidro": {
+  "en_US": "Drawer without inner front, glass front",
+  "pt_BR": "Gaveta sem contra-frente, frente vidro"
+ },
+ "Gaveta sem contra-frente, normal": {
+  "en_US": "Drawer without inner front, standard",
+  "pt_BR": "Gaveta sem contra-frente, normal"
+ },
+ "Gaveta sem contra-frente, perfil gola": {
+  "en_US": "Drawer without inner front, J-profile pull",
+  "pt_BR": "Gaveta sem contra-frente, perfil gola"
+ },
+ "Gaveta sem contra-frente, puxador cava": {
+  "en_US": "Drawer without inner front, recessed pull",
+  "pt_BR": "Gaveta sem contra-frente, puxador cava"
+ },
+ "Gaveta sem contra-frente, puxador reto": {
+  "en_US": "Drawer without inner front, straight pull",
+  "pt_BR": "Gaveta sem contra-frente, puxador reto"
+ },
+ "Gera as chapas do armário a partir do spec, das divisórias, das gavetas e dos internos": {
+  "en_US": "Generates the cabinet panels from the spec, the dividers, the drawers and the interiors",
+  "pt_BR": "Gera as chapas do armário a partir do spec, das divisórias, das gavetas e dos internos"
+ },
+ "Gera o armário novo a partir do módulo de biblioteca escolhido e oculta o módulo antigo": {
+  "en_US": "Builds the new cabinet from the selected library module and hides the old module",
+  "pt_BR": "Gera o armário novo a partir do módulo de biblioteca escolhido e oculta o módulo antigo"
+ },
+ "Gerar armário": {
+  "en_US": "Generate cabinet",
+  "pt_BR": "Gerar armário"
+ },
+ "Gerar pelo motor novo": {
+  "en_US": "Generate with the new engine",
+  "pt_BR": "Gerar pelo motor novo"
+ },
+ "Grava um passo de desfazer e fixa o estado atual como ponto de retorno, sem fechar": {
+  "en_US": "Pushes an undo step and sets the current state as the return point, without closing",
+  "pt_BR": "Grava um passo de desfazer e fixa o estado atual como ponto de retorno, sem fechar"
+ },
+ "Instantâneo inválido: falta o spec do armário": {
+  "en_US": "Invalid snapshot: the cabinet spec is missing",
+  "pt_BR": "Instantâneo inválido: falta o spec do armário"
+ },
+ "Instantâneo inválido: {}": {
+  "en_US": "Invalid snapshot: {}",
+  "pt_BR": "Instantâneo inválido: {}"
+ },
+ "Janela de armário vazia": {
+  "en_US": "Empty cabinet window",
+  "pt_BR": "Janela de armário vazia"
+ },
+ "Laterais do piso ao topo": {
+  "en_US": "Sides run from floor to top",
+  "pt_BR": "Laterais do piso ao topo"
+ },
+ "Lateral": {
+  "en_US": "Side panel",
+  "pt_BR": "Lateral"
+ },
+ "Liga laterais, base inferior, base superior e fundo e gera o armário": {
+  "en_US": "Turns on the sides, the bottom base, the top base and the back, then generates the cabinet",
+  "pt_BR": "Liga laterais, base inferior, base superior e fundo e gera o armário"
+ },
+ "Liga ou desliga a chapa da caixa apontada nos alternadores da vista 3D": {
+  "en_US": "Turns on or off the box panel pointed at in the viewport switches",
+  "pt_BR": "Liga ou desliga a chapa da caixa apontada nos alternadores da vista 3D"
+ },
+ "Limpar": {
+  "en_US": "Clear",
+  "pt_BR": "Limpar"
+ },
+ "Limpar armário": {
+  "en_US": "Clear cabinet",
+  "pt_BR": "Limpar armário"
+ },
+ "Madeirado": {
+  "en_US": "Wood grain",
+  "pt_BR": "Madeirado"
+ },
+ "Maleiro": {
+  "en_US": "Top shelf",
+  "pt_BR": "Maleiro"
+ },
+ "Montagem e orientações": {
+  "en_US": "Assembly and orientations",
+  "pt_BR": "Montagem e orientações"
+ },
+ "Montagem: {}": {
+  "en_US": "Assembly: {}",
+  "pt_BR": "Montagem: {}"
+ },
+ "Montar Caixa": {
+  "en_US": "Build box",
+  "pt_BR": "Montar Caixa"
+ },
+ "Módulo de biblioteca: {}": {
+  "en_US": "Library module: {}",
+  "pt_BR": "Módulo de biblioteca: {}"
+ },
+ "Múltipla": {
+  "en_US": "Multiple",
+  "pt_BR": "Múltipla"
+ },
+ "Nenhuma peça escolhida": {
+  "en_US": "No part chosen",
+  "pt_BR": "Nenhuma peça escolhida"
+ },
+ "O contrato de chapas não foi definido: configure a aba Estrutura antes de gerar": {
+  "en_US": "The panel contract is not set: configure the Structure tab before generating",
+  "pt_BR": "O contrato de chapas não foi definido: configure a aba Estrutura antes de gerar"
+ },
+ "O módulo de origem não está mais na cena": {
+  "en_US": "The source module is no longer in the scene",
+  "pt_BR": "O módulo de origem não está mais na cena"
+ },
+ "O módulo não tem medidas para o motor novo": {
+  "en_US": "The module has no measurements for the new engine",
+  "pt_BR": "O módulo não tem medidas para o motor novo"
+ },
+ "O vão livre é menor que 80 mm: não cabe outra peça": {
+  "en_US": "The free space is smaller than 80 mm: another part does not fit",
+  "pt_BR": "O vão livre é menor que 80 mm: não cabe outra peça"
+ },
+ "Peça escolhida: {}": {
+  "en_US": "Chosen part: {}",
+  "pt_BR": "Peça escolhida: {}"
+ },
+ "Prat. c/ Corrediça": {
+  "en_US": "Shelf with slide",
+  "pt_BR": "Prat. c/ Corrediça"
+ },
+ "Prateleira": {
+  "en_US": "Shelf",
+  "pt_BR": "Prateleira"
+ },
+ "Prateleiras do módulo não são convertidas: refaça na aba Divisões": {
+  "en_US": "Module shelves are not converted: redo them in the Divisions tab",
+  "pt_BR": "Prateleiras do módulo não são convertidas: refaça na aba Divisões"
+ },
+ "Preto": {
+  "en_US": "Black",
+  "pt_BR": "Preto"
+ },
+ "Recriar do módulo": {
+  "en_US": "Recreate from module",
+  "pt_BR": "Recriar do módulo"
+ },
+ "Sapateiras": {
+  "en_US": "Shoe racks",
+  "pt_BR": "Sapateiras"
+ },
+ "Selecione o armário v2": {
+  "en_US": "Select the cabinet v2",
+  "pt_BR": "Selecione o armário v2"
+ },
+ "Selecione um armário criado a partir de um módulo": {
+  "en_US": "Select a cabinet created from a module",
+  "pt_BR": "Selecione um armário criado a partir de um módulo"
+ },
+ "Selecione um módulo de biblioteca": {
+  "en_US": "Select a library module",
+  "pt_BR": "Selecione um módulo de biblioteca"
+ },
+ "Selecione uma gaveta, folha ou porta do armário v2": {
+  "en_US": "Select a drawer, leaf or door of the cabinet v2",
+  "pt_BR": "Selecione uma gaveta, folha ou porta do armário v2"
+ },
+ "Sem contrato de chapas na cena": {
+  "en_US": "No panel contract in the scene",
+  "pt_BR": "Sem contrato de chapas na cena"
+ },
+ "Sem divisórias neste vão": {
+  "en_US": "No dividers in this bay",
+  "pt_BR": "Sem divisórias neste vão"
+ },
+ "Sem estado guardado: nada para cancelar": {
+  "en_US": "No stored state: nothing to cancel",
+  "pt_BR": "Sem estado guardado: nada para cancelar"
+ },
+ "Sem gavetas nesta sub-aba": {
+  "en_US": "No drawers in this sub-tab",
+  "pt_BR": "Sem gavetas nesta sub-aba"
+ },
+ "Sem internos neste vão": {
+  "en_US": "No interiors in this bay",
+  "pt_BR": "Sem internos neste vão"
+ },
+ "Sem veio": {
+  "en_US": "No grain",
+  "pt_BR": "Sem veio"
+ },
+ "Semear do Padrão de Dimensões": {
+  "en_US": "Seed from the Dimensions Standard",
+  "pt_BR": "Semear do Padrão de Dimensões"
+ },
+ "Semeia o contrato de chapas do Padrão de Dimensões ativo": {
+  "en_US": "Seeds the panel contract from the active Dimensions Standard",
+  "pt_BR": "Semeia o contrato de chapas do Padrão de Dimensões ativo"
+ },
+ "Separador": {
+  "en_US": "Divider",
+  "pt_BR": "Separador"
+ },
+ "Sobreposto": {
+  "en_US": "Overlaid",
+  "pt_BR": "Sobreposto"
+ },
+ "Vão ativo: {}": {
+  "en_US": "Active space: {}",
+  "pt_BR": "Vão ativo: {}"
+ },
+ "c/ CF Cava": {
+  "en_US": "with inner front, recessed",
+  "pt_BR": "c/ CF Cava"
+ },
+ "c/ CF Gola": {
+  "en_US": "with inner front, J-profile",
+  "pt_BR": "c/ CF Gola"
+ },
+ "c/ CF Normal": {
+  "en_US": "with inner front, standard",
+  "pt_BR": "c/ CF Normal"
+ },
+ "c/ CF Reta": {
+  "en_US": "with inner front, straight",
+  "pt_BR": "c/ CF Reta"
+ },
+ "c/ CF Vidro": {
+  "en_US": "with inner front, glass",
+  "pt_BR": "c/ CF Vidro"
+ },
+ "s/ CF Cava": {
+  "en_US": "no inner front, recessed",
+  "pt_BR": "s/ CF Cava"
+ },
+ "s/ CF Gola": {
+  "en_US": "no inner front, J-profile",
+  "pt_BR": "s/ CF Gola"
+ },
+ "s/ CF Normal": {
+  "en_US": "no inner front, standard",
+  "pt_BR": "s/ CF Normal"
+ },
+ "s/ CF Reta": {
+  "en_US": "no inner front, straight",
+  "pt_BR": "s/ CF Reta"
+ },
+ "s/ CF Vidro": {
+  "en_US": "no inner front, glass",
+  "pt_BR": "s/ CF Vidro"
+ }
+}

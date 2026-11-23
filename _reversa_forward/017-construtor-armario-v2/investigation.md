@@ -76,3 +76,24 @@ Como trocar o construtor de armário do pacote por um motor que calcula as peça
 - `_reversa_sdd/cabinet_editor/requirements.md`, `_reversa_sdd/domain.md`, `_reversa_sdd/cutting/requirements.md` — regras do construtor atual e da extração de peças.
 - `_reversa_forward/015-construtor-armario-promob/roadmap.md` — precedente de estrutura de caixa como dado e de módulo antigo seguindo a construção antiga.
 - Nenhuma pesquisa externa foi necessária: a especificação que prevalece está no repositório.
+
+## 7. Execução: T001 e T002 (2026-11-21)
+
+### 7.1 Modelo da corrediça (`assets/slides/slide-st48-0200-0.obj`)
+
+| Item | Valor |
+|------|-------|
+| Origem | `novo_arm_building/CAFF_MOB_Construtor_Armarios_Blender_5_2/caff_construtor_armarios_blender_5_2/assets/slide-st48-0200-0.obj` |
+| Destino | `caffmob_draw/assets/slides/slide-st48-0200-0.obj` (diretório criado nesta ação) |
+| Tamanho | 254.513 bytes |
+| SHA-256 | `209d2ba9bcccb591cdcf4569a4092df5a971c63bc5f97428b439ce79cccb17ba` (idêntico à origem) |
+| Objetos | 4 — `slide-st48-0200-0_1`, `_2`, `_3`, `_4` |
+| Vértices / faces | 2.572 / 5.156 |
+
+Os quatro objetos são as quatro partes que o RN-08 nomeia: trilho externo (preso na lateral do armário), trilho interno (preso na gaveta) e as duas gaiolas de esferas a meio curso. O import na geração (T020) pode nomear as partes por índice e marcar o papel de cada uma; nada no arquivo identifica o papel por nome, então o mapeamento fica no código.
+
+**Empacotamento:** `build.py#build_zip` percorre `caffmob_draw/` com `os.walk` e só retira `__pycache__` e o `catalog/` da raiz. `assets/slides/` não é filtrado e entra no ZIP como `assets/slides/slide-st48-0200-0.obj`; conferido simulando o mesmo `os.walk` (uma ocorrência, caminho relativo esperado). Nenhuma mudança no empacotador é necessária. `package_problems`, `texture_problems` e `pbr_problems` não olham `assets/`.
+
+### 7.2 Catálogo `data/translations/armario_v2.json`
+
+39 entradas novas, todas com `pt_BR` e `en_US`. Onze textos que o painel usa já existiam em outro catálogo e foram **reaproveitados em vez de duplicados**, porque o teste de cobertura exige que cada msgid pertença a um arquivo só: as sete abas (`cabinet_editor.json`), `Vertical` e `Horizontal` (`aggregates.json`), `Internas` (`cabinet_editor.json`), `Externas` (`construtor_015.json`), `Abrir` (`ui.json`) e `Gerar`, `Aplicar`, `Cancelar`, `Fechar`, `Duplicar`, `Excluir` (`cladding.json` e `geral.json`). Os dez modelos de frente seguem o `DRAWER_MODEL_ITEMS` do anexo, com rótulo curto e descrição própria para o tooltip.

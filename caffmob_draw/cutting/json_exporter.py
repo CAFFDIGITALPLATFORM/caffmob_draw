@@ -27,7 +27,8 @@ ALGORITHM = "guillotine-shelf-openmob"    # 071: motor inspirado no OpenMob (vei
 
 GRAIN_TO_JSON = {'NONE': "NONE", 'VERTICAL': "LENGTH", 'HORIZONTAL': "WIDTH"}
 GRAIN_FROM_JSON = {v: k for k, v in GRAIN_TO_JSON.items()}
-SOURCES = ("CUTPART", "SYNTHETIC", "FREE_GEOMETRY", "STAIRS", "DRAWERS", "PROMOB")   # 2.4: 071/072; 2.5: Promob
+SOURCES = ("CUTPART", "SYNTHETIC", "FREE_GEOMETRY", "STAIRS", "DRAWERS", "PROMOB",
+           "ARMARIO_V2")   # 2.4: 071/072; 2.5: Promob; `ARMARIO_V2`: armário do construtor v2 (017)
 LIMIT_STATUSES = ("OK", "EXCEEDS_WIDTH", "EXCEEDS_LENGTH", "MACHINING_CLIPPED", "STRUCTURE_UNKNOWN", "PART_DEGENERATE")
 
 

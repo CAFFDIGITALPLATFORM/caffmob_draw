@@ -387,9 +387,24 @@ Cenário: Interface em inglês
 - O construtor antigo não fica registrado (RF-23) e os móveis gerados por ele ficam somente leitura no motor novo: nenhuma conversão automática de parâmetros antigos.
 - O adaptador de corte é parte da entrega, porque as peças do motor novo não passam pelas bibliotecas que hoje alimentam o plano de corte.
 
+### Sessão 2026-11-21 (fechamento do cross-check)
+
+- **Q:** A001, o módulo de biblioteca convertido continua gerando peças sintéticas no plano de corte porque `iter_modules` e `synthetic_records` não consultam `btm_cut_exclude`. Onde o filtro deve viver?
+  **R:** Em `iter_modules`: módulo oculto ou com `btm_cut_exclude` deixa de ser módulo do projeto. Aplicado em D-17 e T035.
+- **Q:** A002, o D-04 tirava `gallery` do registro e `library_panel/ops_cabinet.py:46` chama `caffmob.structure_gallery` sem guarda. A galeria sobrevive?
+  **R:** Sim: a galeria é seletor de estrutura, não a janela 2D que a RN-22 aposenta. `gallery` continua registrado e `ops_cabinet.py` não é editado. Aplicado em D-04 e T027.
+- **Q:** A003, RN-01/RF-01 exigem construtor vazio e Montar Caixa ligando laterais e bases, mas o modelo não tem flag de presença. Quais campos entram?
+  **R:** Não houve resposta do titular nesta sessão; a derivação está registrada como premissa 🟡 em D-18 (quatro flags mais o `fundo_ativo` existente) e precisa de confirmação no T003.
+
+**Consequências registradas**
+
+- O plano de corte passa a ter uma regra só sobre módulo convertido: a marca vale na origem, não só no fim da leitura.
+- O diferencial da feature 015 ("Criar armário" com galeria de estruturas) fica preservado durante a troca do construtor.
+
 ## 10. Lacunas
 
-- 🟡 Sem dúvidas abertas: as cinco perguntas da versão anterior foram respondidas na sessão de 2026-11-19.
+- 🟡 Sem dúvidas abertas em RN e RF: as cinco perguntas de 2026-11-19 foram respondidas.
+- 🟡 A003 ficou sem resposta do titular em 2026-11-21: as quatro flags de presença de D-18 são derivação do RF-01, não decisão confirmada. Confirmar ou corrigir no T003.
 - 🟡 A faixa exata das posições editáveis dos internos, os limites dentro do vão e a ordem de prioridade quando dois internos disputam a mesma altura ficam para o `/reversa-plan`.
 - 🟡 O mapeamento dos parâmetros de cada biblioteca de módulo (frameless, face frame, closets) para o modelo do motor novo é trabalho de plano, a validar módulo a módulo.
 
@@ -399,3 +414,4 @@ Cenário: Interface em inglês
 |------|-----------|-------|
 | 2026-11-19 | Versão inicial gerada por `/reversa-requirements` a partir do add-on anexo, do mockup e da extração reversa | reversa |
 | 2026-11-19 | `/reversa-clarify`: escopo em todos os armários, superfície na vista 3D, móveis antigos preservados, posições iniciais dos internos e adaptador de corte; RN-21 a RN-24 e RF-24 a RF-26 acrescentados | reversa |
+| 2026-11-21 | Esclarecimentos do cross-check: filtro de `btm_cut_exclude` em `iter_modules` (A001), galeria mantida registrada (A002), flags de presença derivadas do RF-01 (A003, pendente) | reversa |
