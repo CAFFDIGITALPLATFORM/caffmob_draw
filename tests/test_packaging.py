@@ -57,6 +57,22 @@ class EmpacotamentoTest(unittest.TestCase):
             self.assertIn("blender_manifest.toml", names)
             self.assertIn("__init__.py", names)
             self.assertFalse(any("__pycache__" in n for n in names))
+            # BUG-20261123-RW3G: dotfiles e caches de ferramenta não vão no pacote
+            self.assertEqual([n for n in names if any(p.startswith(".") for p in n.split("/"))], [])
+            self.assertEqual([n for n in names if n.endswith((".pyc", ".pyo"))], [])
+
+    def test_entradas_excluidas_do_pacote(self):
+        """Reprodução (BUG-20261123-RW3G): o filtro do zip barra dotfile, dot-dir, cache e o catalog/ da raiz."""
+        sys.path.insert(0, str(ROOT))
+        import build
+        for nome in (".impeccable", ".git", ".env", "__pycache__", "x.pyc", "x.pyo"):
+            self.assertTrue(build.entrada_excluida(nome, ""), nome)
+            self.assertTrue(build.entrada_excluida(nome, "product_libraries/common"), nome)
+        self.assertTrue(build.entrada_excluida("catalog", ""))
+        self.assertFalse(build.entrada_excluida("catalog", "product_libraries"))   # só o da raiz sai
+        for nome in ("__init__.py", "blender_manifest.toml", "assets", "wheels", "GeoNodeWall.blend"):
+            self.assertFalse(build.entrada_excluida(nome, ""), nome)
+            self.assertFalse(build.entrada_excluida(nome, "geometry_nodes"), nome)
 
     def test_blends_do_pacote_estao_no_git(self):
         """Reprodução (BUG-20261006-KFAR): todo .blend do pacote está no git; um clone do GitHub gera o plugin completo."""

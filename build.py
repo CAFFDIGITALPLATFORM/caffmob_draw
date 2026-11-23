@@ -10,6 +10,19 @@ NODE_PATTERNS = (
     (re.compile(r"add_part_modifier\(\s*['\"](CPM_\w+)['\"]"), os.path.join("geometry_nodes", "CabinetPartModifiers")),
 )
 
+# Entradas que não vão no pacote: dotfiles e dot-dirs (`.impeccable/`, `.git/`), caches do Python e o `catalog/` da
+# raiz (feature 005, D-16). O `paths_exclude_pattern` do manifesto não vale aqui: o zip é montado por este script.
+EXCLUIDOS_NA_RAIZ = {"catalog"}
+
+
+def entrada_excluida(nome, rel_dir):
+    """Arquivo ou pasta que fica fora do pacote; `rel_dir` é relativo à raiz do pacote ("" na raiz)."""
+    if nome.startswith("."):
+        return True
+    if nome == "__pycache__" or nome.endswith((".pyc", ".pyo")):
+        return True
+    return rel_dir == "" and nome in EXCLUIDOS_NA_RAIZ
+
 
 def missing_node_files(source_dir):
     """`.blend` de nós usados no código e ausentes no pacote (BUG-20261006-KFAR: pacote gerado de um clone sem eles)."""
@@ -153,12 +166,10 @@ def build_zip():
 
     with zipfile.ZipFile(zip_filename, 'w', zipfile.ZIP_DEFLATED) as zipf:
         for root, dirs, files in os.walk(source_dir):
-            # Skip python cache directories
-            if "__pycache__" in dirs:
-                dirs.remove("__pycache__")
-            # `catalog/` não é registrado pela extensão (código morto; feature 005, D-16): fica fora do pacote
-            if os.path.abspath(root) == os.path.abspath(source_dir) and "catalog" in dirs:
-                dirs.remove("catalog")
+            rel_root = os.path.relpath(root, source_dir)
+            rel_root = "" if rel_root == "." else rel_root.replace(os.sep, "/")
+            dirs[:] = [name for name in dirs if not entrada_excluida(name, rel_root)]
+            files = [name for name in files if not entrada_excluida(name, rel_root)]
 
             for file in files:
                 file_path = os.path.join(root, file)
