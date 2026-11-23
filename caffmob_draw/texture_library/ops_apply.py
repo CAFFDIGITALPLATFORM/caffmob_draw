@@ -113,10 +113,12 @@ class BTM_OT_TextureSize(bpy.types.Operator):
             self.report({'WARNING'}, tr(NO_TEXTURE))
             return {'CANCELLED'}
         path, _w, _h, rotated, texture_id = info
-        new = retexture.image_material(path, self.width_mm, self.height_mm, rotated=rotated, texture_id=texture_id)
         objs = {o.name: o for o in list(context.selected_objects) + [context.active_object] if o is not None}
         changed = 0
         for obj in objs.values():
+            # Cada alvo usa a fonte que tem: UV na chapa, atributo no cutpart, caixa no resto (018, T023).
+            new = retexture.image_material(path, self.width_mm, self.height_mm, rotated=rotated,
+                                          texture_id=texture_id, projection=retexture.projection_for(obj))
             if current_material(obj) is old and common.set_cutpart_material(obj, new):
                 apply._remember(obj, new)
                 changed += 1

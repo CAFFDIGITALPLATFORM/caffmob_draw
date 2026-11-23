@@ -119,7 +119,19 @@ def is_unclassified(component):
 GRAIN_FROM_PART = {'H': 'HORIZONTAL', 'V': 'VERTICAL'}
 
 
+def grain_direction(grain, angle=0.0):
+    """Veio de corte no contrato do `PartRecord`: o múltiplo de 90 mais próximo do veio visual (018, T022, RN-10)."""
+    from ..texture_library import grain_core
+    return GRAIN_FROM_PART.get(grain_core.direction(grain, angle), 'NONE')
+
+
 def part_grain(obj):
-    """Veio da peça para o `PartRecord`; sem `btm_part` (arquivo antigo) ou NONE → 'NONE'."""
+    """Veio da peça para o `PartRecord`; sem `btm_part` (arquivo antigo) ou NONE → 'NONE'.
+
+    Com `grain_angle`, o corte acompanha o ângulo pelo múltiplo de 90 mais próximo; sem o campo (arquivo antigo), vale
+    o enum.
+    """
     part = getattr(obj, 'btm_part', None)
-    return GRAIN_FROM_PART.get(getattr(part, 'grain', 'NONE'), 'NONE')
+    if part is None:
+        return 'NONE'
+    return grain_direction(getattr(part, 'grain', 'NONE'), getattr(part, 'grain_angle', 0.0))

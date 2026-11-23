@@ -74,7 +74,10 @@ def features_of(objs):
                 found.add('PRODUCTION_PART')
             if agg.kind == 'LEAF':
                 found.add('LEAF_SLIDE' if agg.motion == 'SLIDE' else 'LEAF_SWING')
-        if obj.type == 'MESH' and any(m and m.name.startswith("Textura: ") for m in obj.data.materials):
+        # 018 (RN-09): o material de imagem agora leva o nome do catálogo ("Arauco Anis"), então o que identifica a
+        # textura é `btm_texture_path`; o prefixo antigo continua aceito para item salvo antes da 018.
+        if obj.type == 'MESH' and any(m and (m.get('btm_texture_path') or m.name.startswith("Textura: "))
+                                      for m in obj.data.materials):
             found.add('TEXTURED')
     return [f for f in catalog.FEATURES if f in found]
 

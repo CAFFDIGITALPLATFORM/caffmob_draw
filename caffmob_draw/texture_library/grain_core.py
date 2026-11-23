@@ -14,39 +14,62 @@ import math
 
 BOX, UV = 'BOX', 'UV'
 ZERO = (0.0, 0.0, 0.0)
+# (018, T009) O veio aparece em duas grafias: H/V nas peças das bibliotecas, HORIZONTAL/VERTICAL no armário v2.
+HV = {'H': 'H', 'HORIZONTAL': 'H', 'V': 'V', 'VERTICAL': 'V'}
 # Projeção BOX do Blender 5.2: eixos locais (u, v) da imagem na face de normal n, medidos por render no protótipo T008
 # (`tests/blender_067_proto_veio_box.py`): face X → (Z, Y), face Y → (X, Z), face Z → (Y, X). Com UV, (X, Y).
 BOX_PLANE = {0: (2, 1), 1: (0, 2), 2: (1, 0)}
 UV_PLANE = (0, 1)
 
 
+def normalize(grain):
+    """'H' ou 'V' do veio, aceitando as duas grafias do projeto; None quando a peça não tem veio."""
+    return HV.get(str(grain or '').upper())
+
+
 def grain_axis(grain, fields):
     """Eixo local do veio pedido. `fields` = {eixo: 'WIDTH' | 'HEIGHT' | 'DEPTH'} dos dois eixos da face."""
-    if grain == 'H':
-        wanted = ('WIDTH',)
-    elif grain == 'V':
-        wanted = ('HEIGHT', 'DEPTH')
-    else:
+    axis = normalize(grain)
+    if axis is None:
         return None
-    for label in wanted:
-        for axis, field in fields.items():
+    for label in (('WIDTH',) if axis == 'H' else ('HEIGHT', 'DEPTH')):
+        for eixo, field in fields.items():
             if field == label:
-                return axis
+                return eixo
     return None
 
 
-def rotation(grain, thickness_axis, fields, image_axis='H', projection=BOX):
-    """Euler (x, y, z) que leva o veio da imagem ao eixo pedido na face da chapa; ZERO quando não precisa girar."""
-    axis = grain_axis(grain, fields)
-    if axis is None or thickness_axis is None:
-        return ZERO
+def total_angle(grain, angle=0.0):
+    """Ângulo visual do veio em graus: 0 no horizontal, 90 no vertical, mais o ângulo livre da peça (D-05)."""
+    return (90.0 if normalize(grain) == 'V' else 0.0) + float(angle or 0.0)
+
+
+def direction(grain, angle=0.0):
+    """'H' ou 'V' do corte pelo múltiplo de 90 mais próximo do veio visual; 'NONE' sem enum e sem ângulo (RN-10)."""
+    if normalize(grain) is None and not angle:
+        return 'NONE'
+    total = total_angle(grain, angle) % 180.0
+    return 'H' if total < 45.0 or total >= 135.0 else 'V'
+
+
+def rotation(grain, thickness_axis, fields, image_axis='H', projection=BOX, angle=0.0):
+    """Euler (x, y, z) do veio na face da chapa: a conta do enum mais o ângulo livre, na normal da face.
+
+    `angle` é em graus e soma ao giro do enum (D-05), então o veio visual acompanha o de corte; sem a espessura
+    medida não há normal, e aí não há giro.
+    """
     normal = 2 if projection == UV else thickness_axis
-    u, v = UV_PLANE if projection == UV else BOX_PLANE[normal]
-    image = u if image_axis != 'V' else v
-    if image == axis or axis == normal:
+    if normal is None:
         return ZERO
+    giro = 0.0
+    axis = grain_axis(grain, fields)
+    if axis is not None and thickness_axis is not None:
+        u, v = UV_PLANE if projection == UV else BOX_PLANE[normal]
+        image = u if image_axis != 'V' else v
+        if image != axis and axis != normal:
+            giro = math.pi / 2.0
     out = [0.0, 0.0, 0.0]
-    out[normal] = math.pi / 2.0
+    out[normal] = giro + math.radians(float(angle or 0.0))
     return tuple(out)
 
 

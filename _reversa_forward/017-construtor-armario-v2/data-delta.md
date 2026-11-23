@@ -27,6 +27,8 @@ Medidas em milímetros (`subtype='DISTANCE'`, `unit='LENGTH'`), como no motor an
 | `tipo_montagem` | enum | `LATERAL_PASSANTE`, `BASE_PASSANTE` | RN-04 |
 | `orientacao_frente` | enum | `EM_PE`, `DEITADA` | Contra-frente (RN-04) |
 | `orientacao_tras` | enum | `EM_PE`, `DEITADA` | Peça de trás (RN-04) |
+| `contra_frente_ativa` | bool | padrão `False` | Presença da contra-frente (RF-05, D-22) |
+| `peca_tras_ativa` | bool | padrão `False` | Presença da peça de trás (RF-05, D-22) |
 | `espessura_lateral` | enum | 6, 15, 18, 25 | RN-05 |
 | `espessura_base_inferior` | enum | 6, 15, 18, 25 | RN-05 |
 | `espessura_base_superior` | enum | 6, 15, 18, 25 | RN-05 |
@@ -60,10 +62,23 @@ Medidas em milímetros (`subtype='DISTANCE'`, `unit='LENGTH'`), como no motor an
 | `aba` | enum | `ESTRUTURA`, `DIVISOES`, `GAVETAS`, `INTERNOS`, `PORTAS`, `DESLIZANTES`, `FUNDOS` | Interface |
 | `subaba_divisoes` | enum | `VERTICAL`, `HORIZONTAL`, `MULTIPLA` | Interface |
 | `subaba_gavetas` | enum | `INTERNAS`, `SAPATEIRAS`, `PRAT_CORREDICA`, `EXTERNAS` | Interface |
+| `variante_divisoria` | enum | 4 variantes verticais | Interface da inserção (D-21) |
+| `variante_prateleira` | enum | 4 variantes horizontais | Interface da inserção (D-21) |
+| `interno_tipo` | enum | 4 tipos de interno | Interface da inserção (D-21) |
+| `matriz_linhas` | int | 1–5, padrão 2 | Interface da inserção (D-21) |
+| `matriz_colunas` | int | 1–5, padrão 1 | Interface da inserção (D-21) |
+| `matriz_prioridade` | enum | `VERTICAL`, `HORIZONTAL` | Interface da inserção (D-21) |
+| `bloco_quantidade` | int | 1–10, padrão 4 | Interface da inserção (D-21) |
+| `bloco_altura` | float | 100–3000 mm, padrão 760 | Interface da inserção (D-21) |
+| `bloco_modelo` | enum | os dez modelos de frente | Interface da inserção (D-21) |
 | `aberto` | bool | `True`/`False` | Estado de abertura (RN-10) |
 | `gerado` | bool | padrão `False` | `False` = móvel antigo ou armário ainda vazio |
 | `origem` | string | nome do módulo de biblioteca, ou vazio | D-13 |
 | `snapshot` | string (JSON) | — | Estado na abertura (RN-18) |
+
+As duas presenças novas nascem desligadas pelo mesmo motivo das quatro da caixa (D-18, RN-01): o construtor abre vazio, e a travessa só entra na cena e no corte depois de marcada.
+
+Os nove campos de interface da inserção não são regra de negócio: existem porque o painel só desenha e os operadores precisam de onde ler a variante, a matriz e o bloco, como já acontece com `aba` e `subaba_*`.
 
 **São nove espessuras no armário e oito no contrato de chapas.** As nove da tabela acima são `espessura_lateral`,
 `espessura_base_inferior`, `espessura_base_superior`, `espessura_divisoria`, `espessura_prateleira`,

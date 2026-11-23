@@ -10,6 +10,7 @@ dimensões em pixels das imagens legíveis. Saída: o dicionário do `catalog.js
 """
 
 import json
+import os
 import re
 import unicodedata
 
@@ -21,6 +22,7 @@ DEFAULT_SIZE_MM = 600.0
 FULL_SHEET_PX = (1830, 2750)            # RN-04: os dois lados dentro desta faixa = chapa inteira
 IMAGE_EXT = ('.jpg', '.jpeg', '.png')
 GENERAL = "Geral"
+PREFIXO_NOME_ANTIGO = "Textura: "
 INVALID = N_("Catálogo de texturas inválido")
 
 # RN-01: pasta (sem caixa) → nome mostrado
@@ -44,6 +46,107 @@ def slug(text):
 def display_name(text):
     """Nome legível: `_` vira espaço, espaços repetidos somem, capitalização original."""
     return re.sub(r"\s+", " ", str(text).replace("_", " ")).strip()
+
+
+def nome_de_arquivo(path):
+    """Basename sem pasta e sem extensão, legível (fallback do nome quando o catálogo não identifica o item)."""
+    return display_name(os.path.basename(str(path or "").replace("\\", "/")).rsplit(".", 1)[0])
+
+
+def _fabricante_da_entrada(entry):
+    """Id do fabricante na entrada do catálogo ('arauco/colecao-realce/anis' → 'arauco')."""
+    return str((entry or {}).get("id") or "").split("/")[0]
+
+
+def _localizacao(entry, catalogo):
+    """(nome do fabricante, nome da coleção) onde a entrada está no catálogo; vazio quando não está lá."""
+    man_id = _fabricante_da_entrada(entry)
+    for man in (catalogo or {}).get("manufacturers", []):
+        if man.get("id") != man_id:
+            continue
+        for col in man.get("collections", []):
+            if any(item.get("id") == (entry or {}).get("id") for item in col.get("items", [])):
+                return man.get("name", ""), col.get("name", "")
+        return man.get("name", ""), ""
+    return "", ""
+
+
+def _nome_do_fabricante(entry, catalogo):
+    """Fabricante da entrada: pelo catálogo, pela tabela `MANUFACTURERS` ou pela pasta do arquivo."""
+    fabricante = _localizacao(entry, catalogo)[0]
+    if fabricante:
+        return fabricante
+    man_id = _fabricante_da_entrada(entry)
+    for nome in MANUFACTURERS.values():
+        if slug(nome) == man_id:
+            return nome
+    pastas = str((entry or {}).get("file") or "").replace("\\", "/").split("/")
+    if len(pastas) > 1:
+        return MANUFACTURERS.get(pastas[0].casefold()) or display_name(pastas[0])
+    return ""
+
+
+def _nome_da_colecao(entry, catalogo):
+    """Coleção da entrada: pelo catálogo ou pela segunda pasta do arquivo."""
+    colecao = _localizacao(entry, catalogo)[1]
+    if colecao:
+        return colecao
+    pastas = str((entry or {}).get("file") or "").replace("\\", "/").split("/")
+    return display_name(pastas[1]) if len(pastas) > 2 else ""
+
+
+def _homonimo(nome, man_id, catalogo):
+    """Outro fabricante tem item com o mesmo nome? (a coleção entra no nome para desempatar)."""
+    alvo = fold(nome)
+    for man in (catalogo or {}).get("manufacturers", []):
+        if man.get("id") == man_id:
+            continue
+        for col in man.get("collections", []):
+            if any(fold(item.get("name", "")) == alvo for item in col.get("items", [])):
+                return True
+    return False
+
+
+def nome_de_exibicao(entry, catalogo=None):
+    """Nome do material: "Fabricante Item" (RN-09, D-04).
+
+    A coleção entra no nome só quando o item tem homônimo em outro fabricante ("Arauco Colecao Realce Anis"), o
+    que mantém os dois materiais distintos sem renomear nada. Entrada sem nome cai no basename do arquivo, sem
+    fabricante; sem fabricante conhecido, fica só o nome do item.
+    """
+    entry = entry or {}
+    nome = display_name(entry.get("name") or "")
+    if not nome:
+        return nome_de_arquivo(entry.get("file"))
+    fabricante = _nome_do_fabricante(entry, catalogo)
+    if not fabricante:
+        return nome
+    partes = [fabricante]
+    if _homonimo(nome, _fabricante_da_entrada(entry), catalogo):
+        colecao = _nome_da_colecao(entry, catalogo)
+        if colecao:
+            partes.append(colecao)
+    partes.append(nome)
+    return " ".join(partes)
+
+
+def eh_nome_antigo(nome):
+    """Nome do formato anterior à 018 ("Textura: <arquivo> <tamanho> mm"): o que a migração pode renomear (D-12)."""
+    return str(nome or "").startswith(PREFIXO_NOME_ANTIGO)
+
+
+def nome_migrado(nome_atual, nome_novo, ocupados=()):
+    """(nome a usar, conflito) ao adotar o nome do catálogo: só renomeia com o nome novo livre (D-12).
+
+    Com o nome novo ocupado por outro material, o atual fica e o conflito é sinalizado, sem sobrescrever nem
+    duplicar: o material compartilhado entre armários continua sendo o mesmo.
+    """
+    atual, novo = str(nome_atual or ""), str(nome_novo or "")
+    if not novo or novo == atual:
+        return atual, False
+    if novo in set(ocupados or ()):
+        return atual, True
+    return novo, False
 
 
 def size_mm(px, default=DEFAULT_SIZE_MM, full=FULL_SHEET_PX):

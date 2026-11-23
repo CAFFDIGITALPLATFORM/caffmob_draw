@@ -8,9 +8,14 @@ O `tests/_blender_env.py` registra o add-on inteiro, então tudo aqui passa pelo
    operadores, menu de contexto, HUD, propriedades e o contrato de chapas na cena;
 2. abrir num projeto limpo cria o armário vazio e semeia o contrato; Montar Caixa gera a caixa;
 3. contrato ausente recusa; chapa de 3000 bloqueia e, com o bloqueio desligado, gera com aviso;
-4. bloco de gavetas entra no corte sem peça de ferragem (o OBJ da corrediça ainda não é instanciado pelo motor);
+4. bloco de gavetas entra no corte sem peça de ferragem; corrediça do OBJ e conjunto de reserva com as três marcas
+   (trilho externo, interno e gaiola), e a gaiola andando metade do curso da gaveta;
 5. deslizante com base por dentro recua prateleira e gavetas na profundidade do trilho;
 6. Abrir/Fechar grava `btm_armario.aberto` e leva a frente 72% da profundidade; o segundo toque volta ao fechado;
+6.1. contra-frente e peça de trás saem como travessa de 90 mm, trocam de eixo com a orientação, entram no corte e
+   saem quando a presença é desmarcada;
+6.2. os cinco operadores de inserção criam divisória, prateleira, matriz, bloco de gavetas e interno no vão ativo e
+   recusam sem escrever quando a peça não cabe;
 7. Cancelar devolve o instantâneo da abertura;
 8. módulo de biblioteca: Gerar pelo motor novo oculta e marca o antigo, e o corte deixa de listar as peças dele;
 9. móvel sem `btm_armario` (construção antiga): Abrir recusa, avisa e não cria armário nenhum;
@@ -203,11 +208,9 @@ def run_gavetas(ctx, root):
     itens = corte(ctx)
     ferragem = [item for item in itens if item.source == 'ARMARIO_V2' and
                 (not item.component or item.component == 'UNCLASSIFIED')]
-    corredica = [item for item in itens if item.source == 'ARMARIO_V2' and 'CORREDICA' in item.name.upper()]
+    corredica = [item for item in itens if item.source == 'ARMARIO_V2' and 'CORREDIÇA' in item.name.upper()]
     check("corte lista o armário v2 sem peça de ferragem",
           itens and not ferragem and not corredica, str([item.name for item in ferragem + corredica][:4]))
-    check("o OBJ da corrediça não entra na cena (motor ainda não instancia)",
-          not [obj for obj in root.children_recursive if 'slide' in obj.name.lower()])
     return frentes[0]
 
 
@@ -268,6 +271,74 @@ def run_deslizante(ctx, root):
     bpy.ops.caffmob.armario_v2_gerar()
 
 
+def de_ferragem(root, nome):
+    return [item for item in pecas(root) if getattr(item.btm_armario_parte, 'ferragem', 'NENHUMA') == nome]
+
+
+def da_gaveta(item, indice):
+    """A peça pertence à gaveta `indice`: o sufixo que o `build` usa para agrupar e a animação para andar junto."""
+    if ' da gaveta ' not in item.name:
+        return False
+    return item.name.rsplit(' da gaveta ', 1)[1].split()[0] == str(indice)
+
+
+def run_corredica(ctx, root):
+    """T039: duas corrediças por gaveta, com o OBJ e com o conjunto de reserva, e a gaiola a meio curso."""
+    selecionar(root)
+    armario = root.btm_armario
+    while len(armario.gavetas):
+        armario.gavetas.remove(0)
+    for indice in range(4):
+        gaveta = armario.gavetas.add()
+        gaveta.vao, gaveta.indice, gaveta.altura, gaveta.modelo = 's0', indice, 180.0, 's_cf_reta'
+        gaveta.corredica_3d = True
+    resultado = bpy.ops.caffmob.armario_v2_gerar()
+    externos = de_ferragem(root, 'TRILHO_EXT')
+    internos = de_ferragem(root, 'TRILHO_INT')
+    gaiolas = de_ferragem(root, 'GAIOLA')
+    papel_vazio = all(not item.btm_armario_parte.papel for item in externos + internos + gaiolas)
+    check("corrediça do OBJ: duas por gaveta com trilho externo, interno e gaiola",
+          resultado == {'FINISHED'} and len(externos) == 8 and len(internos) == 8 and len(gaiolas) >= 8
+          and papel_vazio, f"{len(externos)} externo(s), {len(internos)} interno(s), {len(gaiolas)} gaiola(s); "
+          f"papel vazio {papel_vazio}")
+    check("corrediça entra como peça da mesma gaveta",
+          all(' da gaveta ' in item.name for item in externos + internos + gaiolas)
+          and len([indice for indice in range(1, 5) if [item for item in externos if da_gaveta(item, indice)]]) == 4,
+          str(sorted({item.name.rsplit(' da gaveta ', 1)[-1] for item in externos})))
+    itens = corte(ctx)
+    check("plano de corte segue sem peça de corrediça",
+          not [item for item in itens if 'CORREDI' in item.name.upper()],
+          str([item.name for item in itens if 'CORREDI' in item.name.upper()][:4]))
+
+    caminho = build._caminho_obj
+    build._caminho_obj = lambda: Path('/caminho/que/nao/existe/slide-st48-0200-0.obj')
+    build._modelos.clear()
+    try:
+        resultado = bpy.ops.caffmob.armario_v2_gerar()
+        reserva = [item for item in pecas(root) if getattr(item.btm_armario_parte, 'ferragem', 'NENHUMA')
+                   not in ('', 'NENHUMA')]
+        marcas = sorted({item.btm_armario_parte.ferragem for item in reserva})
+        check("sem o OBJ a geração cai no conjunto de reserva com as mesmas três marcas",
+              resultado == {'FINISHED'} and len(reserva) == 24 and marcas == ['GAIOLA', 'TRILHO_EXT', 'TRILHO_INT']
+              and all(not item.btm_armario_parte.papel for item in reserva),
+              f"{len(reserva)} peça(s): {marcas}")
+    finally:
+        build._caminho_obj = caminho
+        build._modelos.clear()
+    bpy.ops.caffmob.armario_v2_gerar()
+    frente = por_papel(root, 'FRENTE_GAVETA')[0]
+    gaiola = [item for item in de_ferragem(root, 'GAIOLA') if da_gaveta(item, 1)][0]
+    y_antes = centro_y(gaiola)
+    anim.alternar(frente)
+    passo_frames(frente)
+    curso = frente.btm_armario_parte.curso_mm
+    deslocamento = abs(centro_y(gaiola) - y_antes)
+    check("Abrir/Fechar move a gaiola a 50% do curso da gaveta",
+          abs(deslocamento - curso * 0.5) < 0.01, f"{deslocamento:.2f} mm de {curso * 0.5:.2f} mm")
+    anim.alternar(frente)
+    passo_frames(frente)
+
+
 def run_animacao(ctx, root):
     armario = root.btm_armario
     frente = por_papel(root, 'FRENTE_GAVETA')[0]
@@ -285,6 +356,107 @@ def run_animacao(ctx, root):
     check("segundo toque fecha e volta a peça",
           abs(centro_y(frente) - y_fechado) < 1e-3 and armario.aberto is False, f"{centro_y(frente):.3f} mm")
     check("nenhum timer sobrou de pé", not anim._handles and not anim._animacoes)
+
+
+def extensao(item, eixo):
+    """Extensão da peça em mm no eixo pedido ('x', 'y' ou 'z'), no mundo."""
+    pontos = [item.matrix_world @ vertice.co for vertice in item.data.vertices]
+    valores = [getattr(ponto, eixo) for ponto in pontos]
+    return (max(valores) - min(valores)) * 1000.0
+
+
+def run_travessas(ctx, root):
+    """T044: contra-frente e peça de trás geradas como travessa de 90 mm, com presença e no corte."""
+    selecionar(root)
+    armario = root.btm_armario
+    for colecao in (armario.divisoes, armario.gavetas, armario.internos):
+        while len(colecao):
+            colecao.remove(0)
+    armario.contra_frente_ativa = True
+    armario.peca_tras_ativa = True
+    armario.orientacao_frente = 'EM_PE'
+    resultado = bpy.ops.caffmob.armario_v2_gerar()
+    frente = por_papel(root, 'CONTRA_FRENTE')
+    tras = por_papel(root, 'PECA_TRAS')
+    medida = frente[0].btm_armario_parte if frente else None
+    check("contra-frente e peça de trás geradas como travessa de 90 mm",
+          resultado == {'FINISHED'} and len(frente) == 1 and len(tras) == 1 and medida is not None
+          and abs(medida.comprimento_mm - 970.0) < 0.01 and abs(medida.largura_mm - 90.0) < 0.01
+          and abs(medida.espessura_mm - 15.0) < 0.01,
+          f"{len(frente)} frente(s), {len(tras)} trás; "
+          f"{getattr(medida, 'comprimento_mm', '?')} × {getattr(medida, 'largura_mm', '?')} × "
+          f"{getattr(medida, 'espessura_mm', '?')} mm")
+    if frente:
+        alto, fundo = extensao(frente[0], 'z'), extensao(frente[0], 'y')
+        check("contra-frente em pé: 90 mm na altura e 15 mm na profundidade",
+              abs(alto - 90.0) < 0.01 and abs(fundo - 15.0) < 0.01, f"z {alto:.1f}; y {fundo:.1f}")
+    armario.orientacao_frente = 'DEITADA'
+    bpy.ops.caffmob.armario_v2_gerar()
+    frente = por_papel(root, 'CONTRA_FRENTE')
+    check("contra-frente deitada troca o eixo de 90 mm",
+          bool(frente) and abs(extensao(frente[0], 'y') - 90.0) < 0.01
+          and abs(extensao(frente[0], 'z') - 15.0) < 0.01,
+          f"y {extensao(frente[0], 'y') if frente else '?'}; z {extensao(frente[0], 'z') if frente else '?'}")
+    nomes = [item.name.upper() for item in corte(ctx) if item.source == 'ARMARIO_V2']
+    check("corte lista as duas travessas",
+          any('CONTRA' in nome for nome in nomes) and any('TRÁS' in nome for nome in nomes),
+          str([nome for nome in nomes if 'CONTRA' in nome or 'TRÁS' in nome]))
+    armario.peca_tras_ativa = False
+    bpy.ops.caffmob.armario_v2_gerar()
+    nomes = [item.name.upper() for item in corte(ctx) if item.source == 'ARMARIO_V2']
+    check("desmarcar a peça de trás remove só ela da cena e do corte",
+          not por_papel(root, 'PECA_TRAS') and len(por_papel(root, 'CONTRA_FRENTE')) == 1
+          and not any('TRÁS' in nome for nome in nomes), str([n for n in nomes if 'TRÁS' in n]))
+    armario.contra_frente_ativa = False
+    armario.orientacao_frente = 'EM_PE'
+    bpy.ops.caffmob.armario_v2_gerar()
+
+
+def run_insercao(ctx, root):
+    """T051: os cinco operadores de inserção (D-21), no vão ativo, com recusa sem escrita."""
+    selecionar(root)
+    armario = root.btm_armario
+    for colecao in (armario.divisoes, armario.gavetas, armario.internos):
+        while len(colecao):
+            colecao.remove(0)
+    for classe in (ops.BTM_OT_ArmarioV2InserirDivisoria, ops.BTM_OT_ArmarioV2InserirPrateleira,
+                   ops.BTM_OT_ArmarioV2InserirMatriz, ops.BTM_OT_ArmarioV2CriarBlocoGavetas,
+                   ops.BTM_OT_ArmarioV2InserirInterno):
+        check(f"{classe.bl_idname} com passo de desfazer", 'UNDO' in classe.bl_options)
+    vao = ops.vao_ativo(armario)
+    resultado = bpy.ops.caffmob.armario_v2_inserir_divisoria()
+    check("Inserir divisória cria a peça no vão ativo e gera",
+          resultado == {'FINISHED'} and len(armario.divisoes) == 1 and armario.divisoes[0].vao == vao
+          and bool(por_papel(root, 'DIVISORIA')),
+          f"{len(armario.divisoes)} divisória(s) no vão {vao!r}")
+    resultado = bpy.ops.caffmob.armario_v2_inserir_prateleira()
+    check("Inserir prateleira cria a segunda peça",
+          resultado == {'FINISHED'} and len(armario.divisoes) == 2 and bool(por_papel(root, 'PRATELEIRA')))
+    armario.matriz_linhas, armario.matriz_colunas = 2, 1
+    armario.matriz_prioridade = 'VERTICAL'
+    resultado = bpy.ops.caffmob.armario_v2_inserir_matriz()
+    verticais = [item for item in armario.divisoes if item.eixo == 'VERTICAL']
+    check("Inserir matriz de 2 × 1 cria uma divisória e duas prateleiras por vão",
+          resultado == {'FINISHED'} and len(verticais) == 2 and len(armario.divisoes) == 7,
+          f"{len(verticais)} vertical(is), {len(armario.divisoes)} no total")
+    armario.bloco_quantidade, armario.bloco_altura = 2, 400.0
+    resultado = bpy.ops.caffmob.armario_v2_criar_bloco_gavetas()
+    check("Criar bloco de gavetas grava as gavetas e gera as frentes",
+          resultado == {'FINISHED'} and len(armario.gavetas) == 2
+          and [item.indice for item in armario.gavetas] == [0, 1]
+          and len(por_papel(root, 'FRENTE_GAVETA')) == 2)
+    antes = len(armario.gavetas)
+    armario.bloco_altura = 3000.0
+    resultado = bpy.ops.caffmob.armario_v2_criar_bloco_gavetas()
+    check("bloco que não cabe recusa sem escrever",
+          resultado == {'CANCELLED'} and len(armario.gavetas) == antes, str(resultado))
+    armario.bloco_altura = 400.0
+    armario.interno_tipo = 'CALCEIRO'
+    resultado = bpy.ops.caffmob.armario_v2_inserir_interno()
+    internos = list(armario.internos)
+    check("Inserir interno cria o calceiro na posição inicial",
+          resultado == {'FINISHED'} and len(internos) == 1 and internos[0].tipo == 'CALCEIRO'
+          and abs(internos[0].altura - 480.0) < 0.01, str([(i.tipo, i.altura) for i in internos]))
 
 
 def run_cancelar(ctx, root):
@@ -399,7 +571,10 @@ def script():
     run_gavetas(ctx, root)
     run_peca_escolhida(ctx, root)
     run_deslizante(ctx, root)
+    run_corredica(ctx, root)
     run_animacao(ctx, root)
+    run_travessas(ctx, root)
+    run_insercao(ctx, root)
     run_cancelar(ctx, root)
     run_ponte(ctx, root)
     run_ponte_btm(ctx)

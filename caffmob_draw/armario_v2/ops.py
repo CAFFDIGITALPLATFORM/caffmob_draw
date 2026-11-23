@@ -23,6 +23,7 @@ reabrir o arquivo.
 """
 
 import json
+from dataclasses import replace
 
 import bpy  # type: ignore
 
@@ -158,6 +159,28 @@ def semear_contrato(scene, forcar=False):
 
 
 # Coleções gravadas ------------------------------------------------------------------------------------------------
+def vao_ativo(armario):
+    """Vão da peça escolhida na coleção ativa; sem escolha, o vão raiz (D-21).
+
+    O `data-delta` §2 não tem campo de vão ativo: a escolha é o `active_index` das três coleções, lido na ordem em
+    que o painel as desenha. A inserção usa o mesmo critério do cabeçalho, para a peça nascer onde o vão anunciado diz.
+    """
+    for colecao in (armario.divisoes, armario.gavetas, armario.internos):
+        indice = getattr(colecao, 'active_index', -1)
+        if 0 <= indice < len(colecao):
+            return colecao[indice].vao or vaos_mod.RAIZ
+    return vaos_mod.RAIZ
+
+
+def _regiao_do_vao(root, armario, vao):
+    """(largura, altura) livres do vão, pela árvore das divisórias gravadas."""
+    regioes = vaos_mod.regioes(divisoes_do_armario(armario), spec_do_armario(root))
+    if vao not in regioes:
+        raise ValueError(tr("Vão desconhecido: {}").format(vao))
+    _x, _z, largura, altura = regioes[vao]
+    return largura, altura
+
+
 def gravar_divisoes(armario, divisoes):
     """Regrava a coleção de divisórias a partir das `vaos.Divisao` (Duplicar e Excluir do menu).
 
@@ -166,6 +189,24 @@ def gravar_divisoes(armario, divisoes):
     _repovoar(armario.divisoes, [
         {'uid': divisao.uid, 'eixo': divisao.eixo, 'vao': divisao.vao, 'posicao': divisao.posicao,
          'tipo': divisao.tipo, 'espessura': str(int(round(divisao.espessura)))} for divisao in divisoes])
+
+
+def gravar_gavetas(armario, lista_gavetas):
+    """Regrava a coleção de gavetas a partir das `gavetas.Gaveta` (bloco novo, D-21)."""
+    _repovoar(armario.gavetas, [
+        {'uid': gaveta.uid, 'vao': gaveta.vao, 'indice': gaveta.indice, 'altura': gaveta.altura,
+         'modelo': gaveta.modelo, 'separador_colunas': gaveta.separador_colunas,
+         'separador_linhas': gaveta.separador_linhas, 'afastador_frente': gaveta.afastador_frente,
+         'afastador_tras': gaveta.afastador_tras, 'afastador_esq': gaveta.afastador_esq,
+         'afastador_dir': gaveta.afastador_dir, 'corredica_3d': gaveta.corredica_3d}
+        for gaveta in lista_gavetas])
+
+
+def gravar_internos(armario, lista_internos):
+    """Regrava a coleção de internos a partir dos `internos.Interno` (inserção do painel, D-21)."""
+    _repovoar(armario.internos, [
+        {'uid': interno.uid, 'vao': interno.vao, 'tipo': interno.tipo, 'altura': interno.altura}
+        for interno in lista_internos])
 
 
 # Instantâneo (o ponto de retorno do Cancelar) ---------------------------------------------------------------------
@@ -426,6 +467,144 @@ class BTM_OT_ArmarioV2MontarCaixa(_ArmarioOperator, bpy.types.Operator):
         return {'FINISHED'}
 
 
+class _InserirOperator(_ArmarioOperator):
+    """Base das inserções do painel (D-21): escreve a coleção e gera de novo só quando o armário já existe."""
+
+    def _regerar(self, context, root):
+        if not root.btm_armario.gerado:
+            return
+        _gerou, avisos = gerar_armario(root, context)
+        self._avisar(avisos)
+
+    def _gravar(self, montar):
+        """Executa a operação do núcleo e devolve `(resultado, None)` ou `(None, erro)`."""
+        try:
+            return montar(), None
+        except ValueError as erro:
+            self.report({'WARNING'}, str(erro))
+            return None, erro
+
+
+class BTM_OT_ArmarioV2InserirDivisoria(_InserirOperator, bpy.types.Operator):
+    """Insere uma divisória vertical no vão ativo, com a variante gravada no armário"""
+    bl_idname = "caffmob.armario_v2_inserir_divisoria"
+    bl_label = "Inserir divisória"
+
+    def execute(self, context):
+        root = _raiz(context)
+        if root is None:
+            return {'CANCELLED'}
+        armario = root.btm_armario
+        vao = vao_ativo(armario)
+        resultado, erro = self._gravar(lambda: vaos_mod.inserir_vertical(
+            divisoes_do_armario(armario), spec_do_armario(root), vao, armario.variante_divisoria))
+        if erro is not None:
+            return {'CANCELLED'}
+        gravar_divisoes(armario, resultado[0])
+        self._regerar(context, root)
+        return {'FINISHED'}
+
+
+class BTM_OT_ArmarioV2InserirPrateleira(_InserirOperator, bpy.types.Operator):
+    """Insere uma prateleira horizontal no vão ativo, com a variante gravada no armário"""
+    bl_idname = "caffmob.armario_v2_inserir_prateleira"
+    bl_label = "Inserir prateleira"
+
+    def execute(self, context):
+        root = _raiz(context)
+        if root is None:
+            return {'CANCELLED'}
+        armario = root.btm_armario
+        vao = vao_ativo(armario)
+        resultado, erro = self._gravar(lambda: vaos_mod.inserir_horizontal(
+            divisoes_do_armario(armario), spec_do_armario(root), vao, armario.variante_prateleira))
+        if erro is not None:
+            return {'CANCELLED'}
+        gravar_divisoes(armario, resultado[0])
+        self._regerar(context, root)
+        return {'FINISHED'}
+
+
+class BTM_OT_ArmarioV2InserirMatriz(_InserirOperator, bpy.types.Operator):
+    """Insere a matriz de divisórias e prateleiras no vão ativo"""
+    bl_idname = "caffmob.armario_v2_inserir_matriz"
+    bl_label = "Inserir matriz"
+
+    def execute(self, context):
+        root = _raiz(context)
+        if root is None:
+            return {'CANCELLED'}
+        armario = root.btm_armario
+        vao = vao_ativo(armario)
+        prioridade = vaos_mod.HORIZONTAL if armario.matriz_prioridade == 'HORIZONTAL' else vaos_mod.VERTICAL
+        resultado, erro = self._gravar(lambda: vaos_mod.matriz(
+            divisoes_do_armario(armario), spec_do_armario(root), vao,
+            armario.matriz_linhas, armario.matriz_colunas, prioridade))
+        if erro is not None:
+            return {'CANCELLED'}
+        gravar_divisoes(armario, resultado)
+        self._regerar(context, root)
+        return {'FINISHED'}
+
+
+class BTM_OT_ArmarioV2CriarBlocoGavetas(_InserirOperator, bpy.types.Operator):
+    """Cria o bloco de gavetas no vão ativo, com quantidade, altura e modelo gravados no armário"""
+    bl_idname = "caffmob.armario_v2_criar_bloco_gavetas"
+    bl_label = "Criar bloco de gavetas"
+
+    def execute(self, context):
+        root = _raiz(context)
+        if root is None:
+            return {'CANCELLED'}
+        armario = root.btm_armario
+        vao = vao_ativo(armario)
+
+        def montar():
+            _largura, altura_vao = _regiao_do_vao(root, armario, vao)
+            if armario.bloco_altura > altura_vao + 1e-9:
+                raise ValueError(tr("Bloco de {} mm não cabe no vão de {} mm").format(
+                    f"{armario.bloco_altura:g}", f"{altura_vao:g}"))
+            lista = gavetas_do_armario(armario)
+            novas = gavetas_mod.bloco(armario.bloco_altura, armario.bloco_quantidade,
+                                      modelo=armario.bloco_modelo, vao=vao)
+            base = len([item for item in lista if item.vao == vao])
+            novas = [replace(item, indice=item.indice + base) for item in novas]
+            return lista + novas
+
+        resultado, erro = self._gravar(montar)
+        if erro is not None:
+            return {'CANCELLED'}
+        gravar_gavetas(armario, resultado)
+        self._regerar(context, root)
+        return {'FINISHED'}
+
+
+class BTM_OT_ArmarioV2InserirInterno(_InserirOperator, bpy.types.Operator):
+    """Insere o interno do tipo gravado no armário, no vão ativo"""
+    bl_idname = "caffmob.armario_v2_inserir_interno"
+    bl_label = "Inserir interno"
+
+    def execute(self, context):
+        root = _raiz(context)
+        if root is None:
+            return {'CANCELLED'}
+        armario = root.btm_armario
+        vao = vao_ativo(armario)
+        spec = spec_do_armario(root)
+
+        def montar():
+            _largura, altura_vao = _regiao_do_vao(root, armario, vao)
+            return internos_mod.inserir(internos_do_armario(armario), vao, armario.interno_tipo,
+                                        altura_vao, spec.espessura_prateleira)[0]
+
+        resultado, erro = self._gravar(montar)
+        if erro is not None:
+            return {'CANCELLED'}
+        gravar_internos(armario, resultado)
+        self._regerar(context, root)
+        return {'FINISHED'}
+
+
 class BTM_OT_ArmarioV2Limpar(_ArmarioOperator, bpy.types.Operator):
     """Apaga as chapas geradas do armário, sem tocar no resto da cena"""
     bl_idname = "caffmob.armario_v2_limpar"
@@ -441,7 +620,9 @@ class BTM_OT_ArmarioV2Limpar(_ArmarioOperator, bpy.types.Operator):
 
 
 classes = (BTM_OT_ArmarioV2Abrir, BTM_OT_ArmarioV2Gerar, BTM_OT_ArmarioV2Aplicar, BTM_OT_ArmarioV2Cancelar,
-           BTM_OT_ArmarioV2MontarCaixa, BTM_OT_ArmarioV2SemearContrato, BTM_OT_ArmarioV2Limpar)
+           BTM_OT_ArmarioV2MontarCaixa, BTM_OT_ArmarioV2SemearContrato, BTM_OT_ArmarioV2Limpar,
+           BTM_OT_ArmarioV2InserirDivisoria, BTM_OT_ArmarioV2InserirPrateleira, BTM_OT_ArmarioV2InserirMatriz,
+           BTM_OT_ArmarioV2CriarBlocoGavetas, BTM_OT_ArmarioV2InserirInterno)
 
 
 def _outro_no_idname(idname):

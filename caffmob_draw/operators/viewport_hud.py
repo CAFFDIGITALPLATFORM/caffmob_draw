@@ -24,6 +24,7 @@ from collections import namedtuple
 from ..data.i18n import N_, tr
 from ..hb_gpu_draw import (
     get_visible_window_bounds,
+    draw_lines,
     draw_rect,
     draw_rect_outline,
     draw_text,
@@ -800,6 +801,46 @@ def _draw_hud():
                 layout[0], layout[1], mouse[0], mouse[1])
 
 
+# ---- Destaque do conta-gotas -------------------------------------------------
+# O conta-gotas (`texture_library/ops_pick`) marca a peça sob o cursor; este handler pinta a caixa dela e o nome da
+# parte, Porta/Exterior/Interior (018, T019; RF-10, RN-18). Fora do conta-gotas `pick.ativo()` é falso: o handler
+# não desenha nada, e o `unregister` o remove como qualquer outro.
+
+_texture_highlight_handle = None
+PART_HIGHLIGHT = (1.0, 0.62, 0.12, 0.95)
+PART_HIGHLIGHT_TEXT = (1.0, 0.80, 0.40, 1.0)
+
+
+def _draw_texture_highlight():
+    """POST_PIXEL: caixa da peça e nome da parte por cima da vista, só durante o conta-gotas."""
+    from ..texture_library import pick
+    if _hud_shutdown or not pick.ativo():
+        return
+    obj = pick.alvo()
+    context = bpy.context
+    region = context.region
+    if obj is None or region is None or region.type != 'WINDOW':
+        return
+    segmentos, ancora = pick.pontos_do_destaque(obj, region, context.region_data)
+    if not segmentos:
+        return
+    shader = gpu.shader.from_builtin('UNIFORM_COLOR')
+    gpu.state.blend_set('ALPHA')
+    shader.bind()
+    pontos = [valor for seg in segmentos for valor in ((seg[0], seg[1]), (seg[2], seg[3]))]
+    draw_lines(shader, pontos, PART_HIGHLIGHT)
+    texto = pick.rotulo()
+    if ancora is not None and texto:
+        font_id = 0
+        font_sz = FONT_SIZE * _s()
+        blf.size(font_id, font_sz)
+        largura = blf.dimensions(font_id, texto)[0]
+        x, y = ancora[0] - largura / 2.0, ancora[1] + 6 * _s()
+        draw_text(font_id, x + 1, y - 1, font_sz, (0.0, 0.0, 0.0, 0.9), texto)
+        draw_text(font_id, x, y, font_sz, PART_HIGHLIGHT_TEXT, texto)
+    gpu.state.blend_set('NONE')
+
+
 # ---- Click + hover routing (addon keymap) -----------------------------------
 # Replaces the old persistent modal listener. Blender's autosave timer skips
 # the save and merely reschedules whenever ANY modal operator handler is
@@ -933,7 +974,7 @@ classes = (
 
 
 def register():
-    global _draw_handle, _hud_shutdown
+    global _draw_handle, _texture_highlight_handle, _hud_shutdown
     _hud_shutdown = False
     for cls in classes:
         reg_cls = (cls if cls.is_registered else getattr(bpy.types, cls.__name__, None))
@@ -952,11 +993,17 @@ def register():
                 _draw_hud, (), 'WINDOW', 'POST_PIXEL')
         except Exception:
             pass
+    if _texture_highlight_handle is None:
+        try:
+            _texture_highlight_handle = bpy.types.SpaceView3D.draw_handler_add(
+                _draw_texture_highlight, (), 'WINDOW', 'POST_PIXEL')
+        except Exception:
+            pass
     _register_keymaps()
 
 
 def unregister():
-    global _draw_handle, _hud_shutdown
+    global _draw_handle, _texture_highlight_handle, _hud_shutdown
     _hud_shutdown = True
     _unregister_keymaps()
     if _draw_handle is not None:
@@ -965,6 +1012,12 @@ def unregister():
         except Exception:
             pass
         _draw_handle = None
+    if _texture_highlight_handle is not None:
+        try:
+            bpy.types.SpaceView3D.draw_handler_remove(_texture_highlight_handle, 'WINDOW')
+        except Exception:
+            pass
+        _texture_highlight_handle = None
     for cls in reversed(classes):
         try:
             bpy.utils.unregister_class(cls)

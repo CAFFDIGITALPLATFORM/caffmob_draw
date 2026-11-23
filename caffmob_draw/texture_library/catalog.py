@@ -149,6 +149,17 @@ def item(item_id):
     return pbr_item(item_id) or _cache['by_id'].get(item_id) or embedded()['by_id'].get(item_id)
 
 
+def nome_de(item_id):
+    """Nome do material para o item: fabricante + item, com a coleção só em conflito (RN-09, T008).
+
+    Item fora do catálogo devolve o basename do arquivo, e item desconhecido devolve "".
+    """
+    entry = item(item_id)
+    if entry is None:
+        return ""
+    return catalog_core.nome_de_exibicao(entry, load()[0]) or catalog_core.nome_de_arquivo(entry.get("file"))
+
+
 def remember(raw):
     entry = from_mobi(raw)
     _cache['by_id'][entry['id']] = entry

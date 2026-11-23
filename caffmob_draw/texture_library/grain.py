@@ -4,9 +4,10 @@
   Rotate em Euler XYZ cujo giro vem do nó Attribute (tipo Object) `btm_grain_rot`, e só depois pela escala métrica do
   Mapping (o giro acontece em metros, antes da conversão anisotrópica da imagem). Todas as imagens do material (cor,
   rugosidade, normal, relevo) leem o mesmo Mapping. Idempotente.
-- `sync(obj)`: grava em `obj["btm_grain_rot"]` o giro que leva o veio da imagem ao veio pedido em `btm_part.grain`,
-  na face semântica da peça (`grain_core.rotation`), e liga o grafo nos materiais de imagem dela. Peça sem material
-  guarda só a intenção (`btm_part.grain`); o giro entra quando o material chega (`finish.apply_to` chama `sync`).
+- `sync(obj)`: grava em `obj["btm_grain_rot"]` o giro que leva o veio da imagem ao veio pedido, na face semântica
+  da peça (`grain_core.rotation`), e liga o grafo nos materiais de imagem dela. O veio pedido é o enum mais o
+  `grain_angle` da peça (T020, D-05), venha de `btm_part` (bibliotecas) ou de `btm_armario_parte` (armário v2).
+  Peça sem material guarda só a intenção; o giro entra quando o material chega (`finish.apply_to` chama `sync`).
   Material antigo `<nome> ROTATED` (M-05) volta ao de origem na primeira edição de veio.
 - `calibrate(mat, axis)`: o eixo do veio na imagem fonte (H ou V), gravado no material (RF-061).
 """
@@ -34,7 +35,7 @@ class suspended:
 
 
 def on_grain_changed(part, _context=None):
-    """`update` de `btm_part.grain`: o veio visual acompanha o de corte (RF-064)."""
+    """`update` do enum e do ângulo do veio: o veio visual acompanha o de corte (RF-064, T020)."""
     if _suspended[0]:
         return
     try:
@@ -55,11 +56,17 @@ def is_image_material(mat):
 
 
 def projection(mat):
+    """BOX ou UV: UV vale para o layer `UVMap` e para o atributo `uv_map` do cutpart (018, T012)."""
     tree = _nodes(mat)
     if tree is None:
         return gc.BOX
     for link in tree.links:
-        if link.from_node.type == 'TEX_COORD' and link.from_socket.name == 'UV':
+        origem = link.from_node
+        if origem.type == 'TEX_COORD' and link.from_socket.name == 'UV':
+            return gc.UV
+        if origem.type == 'UVMAP':
+            return gc.UV
+        if origem.type == 'ATTRIBUTE' and getattr(origem, 'attribute_name', '') == 'uv_map':
             return gc.UV
     return gc.BOX
 
@@ -151,21 +158,30 @@ def image_materials(obj):
     return out
 
 
+def _intencao(obj):
+    """(enum do veio, ângulo em graus) da peça: a chapa do armário v2 guarda os dois em `btm_armario_parte` (D-11)."""
+    grupo = getattr(obj, 'btm_armario_parte', None)
+    if grupo is not None and str(grupo.papel or ''):
+        return str(grupo.veio or 'NONE'), float(grupo.grain_angle or 0.0)
+    part = getattr(obj, 'btm_part', None)
+    return str(getattr(part, 'grain', 'NONE') or 'NONE'), float(getattr(part, 'grain_angle', 0.0) or 0.0)
+
+
 def sync(obj):
     """Grava o giro do veio da peça e liga o grafo nos materiais de imagem dela; devolve o giro gravado."""
-    part = getattr(obj, 'btm_part', None)
-    if obj is None or part is None:
+    if obj is None:
         return gc.ZERO
-    if part.grain != 'NONE':
+    grain, angle = _intencao(obj)
+    if gc.normalize(grain) is not None:
         _restore_legacy(obj)
     materials = image_materials(obj)
     mat = materials[0] if materials else None
     thickness, fields = _measure(obj)
-    value = gc.rotation(part.grain, thickness, fields, image_axis(mat), projection(mat)) if mat is not None \
+    value = gc.rotation(grain, thickness, fields, image_axis(mat), projection(mat), angle) if mat is not None \
         else gc.ZERO
     for material in materials:
         ensure_graph(material)
-    if tuple(obj.get(ATTR, gc.ZERO)) != tuple(value) or ATTR not in obj:
+    if ATTR not in obj or tuple(obj[ATTR]) != tuple(value):
         obj[ATTR] = list(value)
         obj.update_tag()                    # propriedade customizada não avisa o depsgraph sozinha
     return value

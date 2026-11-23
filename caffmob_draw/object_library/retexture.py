@@ -3,9 +3,10 @@
 - **Acabamento do plugin:** os materiais das bibliotecas de chapas (frameless, face frame, closets) e os que já estão no
   arquivo. Um material que ainda não está no arquivo é anexado do `.blend` de origem. Peças `GeoNodeCutpart` recebem o
   material nas duas faces (`common.set_cutpart_material`); as outras malhas, em todos os slots.
-- **Imagem própria:** material "Textura: <arquivo> <tamanho> mm", com Image Texture em projeção de caixa (Box) sobre
-  coordenadas de objeto e escala real (`1 / tamanho em metros`), o que serve para malha importada sem UV boa. Um
-  material com o mesmo arquivo e o mesmo tamanho é reaproveitado.
+- **Imagem própria:** material nomeado pelo item do catálogo ("Arauco Anis", RN-09, D-04) e, sem catálogo, por
+  "Textura: <arquivo> <tamanho> mm"; Image Texture com escala real (`1 / tamanho em metros`) na fonte que o alvo
+  aceita (UV, atributo do cutpart ou caixa). Um material com o mesmo arquivo, tamanho e projeção é reaproveitado, e
+  um nome no formato antigo é renomeado quando o nome novo está livre (D-12).
 
 A troca vale para a cópia na cena: salvar de novo na biblioteca é opcional.
 """
@@ -25,6 +26,9 @@ PATH_PROP = 'btm_texture_path'
 SIZE_PROP = 'btm_texture_size_mm'
 ROTATED_PROP = 'btm_texture_rotated'
 TEXTURE_ID_PROP = 'btm_texture_id'
+PROJECTION_PROP = 'btm_texture_projection'
+NOME_PROP = 'btm_texture_nome'
+CONFLICT_PROP = 'btm_texture_nome_conflito'
 _names_cache = {}
 
 
@@ -81,15 +85,66 @@ def _size_of(mat):
     return width, height
 
 
-def material_name(path, width_mm, height_mm, rotated=False):
-    size = "{:g} mm".format(width_mm) if abs(width_mm - height_mm) < 1e-6 else \
-        "{:g} × {:g} mm".format(width_mm, height_mm)
-    name = "Textura: {} {}".format(os.path.basename(path), size)
+def material_name(path, width_mm, height_mm, rotated=False, nome=""):
+    """Nome do material: o item do catálogo quando houver (RN-09, D-04); senão o formato antigo do arquivo."""
+    if nome:
+        name = nome
+    else:
+        size = "{:g} mm".format(width_mm) if abs(width_mm - height_mm) < 1e-6 else \
+            "{:g} × {:g} mm".format(width_mm, height_mm)
+        name = "Textura: {} {}".format(os.path.basename(path), size)
     return name + " ROTATED" if rotated else name      # convenção do veio girado ('<nome> ROTATED', common.rotated)
 
 
-def image_material(path, size_mm, height_mm=None, rotated=False, texture_id=""):
-    """Material de textura com escala real; reaproveita um igual (mesmo arquivo e tamanho).
+def _catalogado(texture_id):
+    """Nome do catálogo para o item da textura, ou "" (o catálogo local basta: não precisa de conta)."""
+    if not texture_id:
+        return ""
+    try:
+        from ..texture_library import catalog
+        return catalog.nome_de(texture_id)
+    except (AttributeError, KeyError, OSError, TypeError, ValueError):
+        return ""
+
+
+def migrar_nome(mat, nome=""):
+    """Migração do nome antigo no uso (T013, D-12): adota o nome do catálogo se ele estiver livre.
+
+    Só renomeia material no formato antigo ("Textura: <arquivo> <tamanho> mm"); nome escolhido à mão é respeitado.
+    Com o nome novo ocupado por outro material, mantém o atual, grava o conflito em `btm_texture_nome_conflito` e
+    devolve True. O arquivo, o tamanho e a projeção continuam no material: nada é recriado.
+    """
+    from ..texture_library import catalog_core
+    novo = nome or _catalogado(mat.get(TEXTURE_ID_PROP, ""))
+    if not novo:
+        return False
+    if mat.name == novo:
+        mat[NOME_PROP] = novo
+        return False
+    if not catalog_core.eh_nome_antigo(mat.name):
+        return False                      # nome dado pelo usuário: a migração não troca
+    ocupados = {m.name for m in bpy.data.materials if m is not mat}
+    final, conflito = catalog_core.nome_migrado(mat.name, novo, ocupados)
+    mat[NOME_PROP] = novo
+    if conflito:
+        mat[CONFLICT_PROP] = True
+        return True
+    mat.name = final
+    if CONFLICT_PROP in mat:
+        del mat[CONFLICT_PROP]
+    return False
+
+
+def projection_for(obj):
+    """Projeção que o alvo aceita: atributo do cutpart, layer de UV da malha ou caixa (018, T012, D-03, D-14)."""
+    from ..texture_library import uv_core
+    cutpart = common.gn_modifier(obj, 'GeoNodeCutpart') is not None if obj is not None else False
+    layer = bool(obj is not None and obj.type == 'MESH' and obj.data.uv_layers)
+    return uv_core.projecao_do_alvo(cutpart, layer)
+
+
+def image_material(path, size_mm, height_mm=None, rotated=False, texture_id="", projection=None):
+    """Material de textura com escala real; reaproveita um igual (mesmo arquivo, tamanho e projeção).
 
     `size_mm` é a largura (e a altura, se `height_mm` faltar); chapa retangular escala cada eixo pelo seu lado
     (feature 014, D-08). `texture_id` marca o material como do catálogo de texturas (D-09).
@@ -98,42 +153,65 @@ def image_material(path, size_mm, height_mm=None, rotated=False, texture_id=""):
     material só por textura. A variante '<nome> ROTATED' não é mais criada: `rotated` só reaproveita uma que já exista
     no arquivo (arquivos antigos, M-05); sem ela, devolve o material comum.
     """
-    from ..texture_library import grain, grain_core
+    from ..texture_library import grain, grain_core, uv_core
     path = os.path.abspath(path)
     width = float(size_mm)
     height = float(height_mm) if height_mm is not None else width
+    nome = _catalogado(texture_id)
+    projection = projection or uv_core.BOX
+    if projection not in uv_core.PROJECTIONS:
+        raise ValueError("Projeção de textura desconhecida: {}".format(projection))
     for wanted in ((True, False) if rotated else (False,)):
         for mat in bpy.data.materials:
             if mat.get(PATH_PROP) == path and bool(mat.get(ROTATED_PROP, False)) == wanted:
                 w, h = _size_of(mat)
-                if abs(w - width) < 1e-6 and abs(h - height) < 1e-6:
+                if (abs(w - width) < 1e-6 and abs(h - height) < 1e-6
+                        and mat.get(PROJECTION_PROP, uv_core.BOX) == projection):
                     if not wanted:
                         grain.ensure_graph(mat)
                     _attach_pbr(mat, texture_id)
+                    migrar_nome(mat, nome)                    # projeto antigo adota o nome do catálogo (D-12)
                     return mat
     rotated = False
     image = bpy.data.images.load(path, check_existing=True)
-    mat = bpy.data.materials.new(material_name(path, width, height, rotated))
+    mat = bpy.data.materials.new(material_name(path, width, height, rotated, nome))
     mat[PATH_PROP] = path
+    if nome:
+        mat[NOME_PROP] = nome
     mat[SIZE_PROP] = width if abs(width - height) < 1e-6 else [width, height]
     if rotated:
         mat[ROTATED_PROP] = True
     if texture_id:
         mat[TEXTURE_ID_PROP] = texture_id
+    mat[PROJECTION_PROP] = projection
     tree = mat.node_tree
     bsdf = next(n for n in tree.nodes if n.type == 'BSDF_PRINCIPLED')
-    coords = tree.nodes.new('ShaderNodeTexCoord')
     mapping = tree.nodes.new('ShaderNodeMapping')
     tex = tree.nodes.new('ShaderNodeTexImage')
     tex.image = image
-    tex.projection = 'BOX'
-    tex.projection_blend = 0.2
+    if projection == uv_core.ATTRIBUTE_UV:
+        # Peça de biblioteca: o GeoNodeCutpart grava `uv_map` (FLOAT_VECTOR, CORNER) e não tem layer de UV (T001).
+        coords = tree.nodes.new('ShaderNodeAttribute')
+        coords.attribute_type = 'GEOMETRY'
+        coords.attribute_name = uv_core.ATRIBUTO_UV
+        entrada_vetor = coords.outputs['Vector']
+        tex.projection = 'FLAT'
+    elif projection == uv_core.UV:
+        coords = tree.nodes.new('ShaderNodeUVMap')
+        coords.uv_map = uv_core.LAYER_UV
+        entrada_vetor = coords.outputs['UV']
+        tex.projection = 'FLAT'
+    else:
+        coords = tree.nodes.new('ShaderNodeTexCoord')
+        entrada_vetor = coords.outputs['Object']
+        tex.projection = 'BOX'
+        tex.projection_blend = 0.2
     sx, sy = 1.0 / max(width / 1000.0, 1e-4), 1.0 / max(height / 1000.0, 1e-4)
     mapping.inputs['Scale'].default_value = (sx, sy, sy)
     if rotated:
         mapping.inputs['Rotation'].default_value = (0.0, 0.0, math.radians(90.0))
     coords.location, mapping.location, tex.location = (-900, 0), (-700, 0), (-450, 0)
-    tree.links.new(coords.outputs['Object'], mapping.inputs['Vector'])
+    tree.links.new(entrada_vetor, mapping.inputs['Vector'])
     tree.links.new(mapping.outputs['Vector'], tex.inputs['Vector'])
     tree.links.new(tex.outputs['Color'], bsdf.inputs['Base Color'])
     # Calibração inicial pela proporção da imagem (RF-061; editável no painel da peça).
@@ -155,5 +233,10 @@ def _attach_pbr(mat, texture_id):
 
 
 def apply_image(objs, path, size_mm):
-    mat = image_material(path, size_mm)
-    return sum(1 for obj in targets(objs) if common.set_cutpart_material(obj, mat))
+    """Aplica a imagem escolhendo a projeção pelo alvo (018, T012, D-03, D-14)."""
+    mudou = 0
+    for obj in targets(objs):
+        mat = image_material(path, size_mm, projection=projection_for(obj))
+        if common.set_cutpart_material(obj, mat):
+            mudou += 1
+    return mudou

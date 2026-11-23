@@ -85,6 +85,18 @@ FINISH_ITEMS = [
     ('CINZA', "Cinza", ""),
     ('PRETO', "Preto", ""),
 ]
+DIVISION_VARIANT_ITEMS = [
+    ('movel_s_recuo', "Móvel sem recuo", ""),
+    ('movel_c_recuo', "Móvel com recuo", "Recua 15 mm na traseira"),
+    ('montante', "Montante", ""),
+    ('distanciador', "Distanciador", "Duplo de 30 mm"),
+]
+SHELF_VARIANT_ITEMS = [
+    ('prat_s_recuo', "Prateleira sem recuo", ""),
+    ('prat_c_recuo', "Prateleira com recuo", "Recua 15 mm na traseira"),
+    ('prat_fixa', "Prateleira fixa", "Recua 20 mm na frente"),
+    ('prat_corredica', "Prateleira c/ corrediça", ""),
+]
 INTERIOR_TYPE_ITEMS = [
     ('CABIDEIRO', "Cabideiro", ""),
     ('CALCEIRO', "Calceiro", ""),
@@ -108,10 +120,23 @@ GRAIN_ITEMS = [
     ('HORIZONTAL', "Horizontal", ""),
     ('VERTICAL', "Vertical", ""),
 ]
+
+
+def _angle_changed(self, context):
+    """(018, T020) Mudar o ângulo gira o veio da chapa; o corte fica com o múltiplo de 90 mais próximo (RN-10)."""
+    from ..texture_library import grain
+    grain.on_grain_changed(self, context)
 AXIS_ITEMS = [
     ('Y', "Y", ""),
     ('X', "X", ""),
     ('GIRO', "Giro", ""),
+]
+# Papel de ferragem da corrediça (D-19): a peça tem `papel` vazio e este campo preenchido, fora do plano de chapa.
+FERRAGEM_ITEMS = [
+    ('NENHUMA', "Nenhuma", ""),
+    ('TRILHO_EXT', "Trilho externo", ""),
+    ('TRILHO_INT', "Trilho interno", ""),
+    ('GAIOLA', "Gaiola", ""),
 ]
 
 # Coleções do armário ---------------------------------------------------------------------------------------------
@@ -162,6 +187,10 @@ class BTM_PG_ArmarioV2(bpy.types.PropertyGroup):
     orientacao_frente: bpy.props.EnumProperty(items=ORIENTATION_ITEMS, default='EM_PE')  # type: ignore
     orientacao_tras: bpy.props.EnumProperty(items=ORIENTATION_ITEMS, default='EM_PE')  # type: ignore
 
+    # Presença das travessas (RF-05, D-22): desligadas como as chapas da caixa (RN-01).
+    contra_frente_ativa: bpy.props.BoolProperty(default=False)  # type: ignore
+    peca_tras_ativa: bpy.props.BoolProperty(default=False)  # type: ignore
+
     espessura_lateral: bpy.props.EnumProperty(items=THICKNESS_ITEMS, default='15')  # type: ignore
     espessura_base_inferior: bpy.props.EnumProperty(items=THICKNESS_ITEMS, default='15')  # type: ignore
     espessura_base_superior: bpy.props.EnumProperty(items=THICKNESS_ITEMS, default='15')  # type: ignore
@@ -207,6 +236,19 @@ class BTM_PG_ArmarioV2(bpy.types.PropertyGroup):
     subaba_divisoes: bpy.props.EnumProperty(items=SUBTAB_DIVISION_ITEMS, default='VERTICAL')  # type: ignore
     subaba_gavetas: bpy.props.EnumProperty(items=SUBTAB_DRAWER_ITEMS, default='INTERNAS')  # type: ignore
 
+    # Campos da inserção (D-21): o painel desenha e os operadores leem daqui, como fazem com `subaba_*`.
+    variante_divisoria: bpy.props.EnumProperty(items=DIVISION_VARIANT_ITEMS, default='movel_s_recuo')  # type: ignore
+    variante_prateleira: bpy.props.EnumProperty(items=SHELF_VARIANT_ITEMS,
+                                                default='prat_s_recuo')  # type: ignore
+    interno_tipo: bpy.props.EnumProperty(items=INTERIOR_TYPE_ITEMS, default='CABIDEIRO')  # type: ignore
+    matriz_linhas: bpy.props.IntProperty(min=1, max=5, default=2)  # type: ignore
+    matriz_colunas: bpy.props.IntProperty(min=1, max=5, default=1)  # type: ignore
+    matriz_prioridade: bpy.props.EnumProperty(items=DIVISION_AXIS_ITEMS, default='VERTICAL')  # type: ignore
+    bloco_quantidade: bpy.props.IntProperty(min=1, max=10, default=4)  # type: ignore
+    bloco_altura: bpy.props.FloatProperty(subtype='DISTANCE', unit='LENGTH', default=760.0,
+                                          min=100.0, max=3000.0)  # type: ignore
+    bloco_modelo: bpy.props.EnumProperty(items=DRAWER_MODEL_ITEMS, default='s_cf_reta')  # type: ignore
+
     aberto: bpy.props.BoolProperty(default=False)  # type: ignore
     gerado: bpy.props.BoolProperty(default=False)  # type: ignore
     origem: bpy.props.StringProperty()  # type: ignore
@@ -224,6 +266,11 @@ class BTM_PG_ArmarioParte(bpy.types.PropertyGroup):
     espessura_mm: bpy.props.FloatProperty(subtype='DISTANCE', unit='LENGTH', default=0.0)  # type: ignore
     material: bpy.props.StringProperty()  # type: ignore
     veio: bpy.props.EnumProperty(items=GRAIN_ITEMS, default='NONE')  # type: ignore
+    # (018, T020) Giro livre do veio em graus, somado ao enum no `grain.sync`; o enum não é reescrito, e o corte
+    # deriva do total (D-05, D-06).
+    grain_angle: bpy.props.FloatProperty(name="Ângulo do veio (graus)", description="Giro do veio na face da chapa; "
+                                         "o corte usa o múltiplo de 90 mais próximo", min=-180.0, max=180.0,
+                                         default=0.0, update=_angle_changed)  # type: ignore
     fita_l1: bpy.props.BoolProperty(default=False)  # type: ignore
     fita_l2: bpy.props.BoolProperty(default=False)  # type: ignore
     fita_w1: bpy.props.BoolProperty(default=False)  # type: ignore
@@ -232,6 +279,7 @@ class BTM_PG_ArmarioParte(bpy.types.PropertyGroup):
     movel: bpy.props.BoolProperty(default=False)  # type: ignore
     curso_mm: bpy.props.FloatProperty(subtype='DISTANCE', unit='LENGTH', default=0.0)  # type: ignore
     eixo: bpy.props.EnumProperty(items=AXIS_ITEMS, default='Y')  # type: ignore
+    ferragem: bpy.props.EnumProperty(items=FERRAGEM_ITEMS, default='NENHUMA')  # type: ignore
 
 
 class BTM_PG_ContratoChapas(bpy.types.PropertyGroup):

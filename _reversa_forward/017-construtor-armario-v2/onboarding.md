@@ -37,6 +37,9 @@ Roteiro para quem vai testar a feature pela primeira vez, do zero até o plano d
 2. Confira a chapa: 2750 × 1830 mm, espessuras 6/15/18/25, montagem e orientações preenchidas a partir do Padrão de Dimensões.
 3. Se o padrão não estiver configurado, o contrato deve vir com os valores do `dimension_schema` BR e a aba deve avisar que é o padrão de fábrica.
 4. Num arquivo sem contrato (`configurado = False`), **Gerar** deve recusar com mensagem e não criar geometria.
+5. Ainda na aba **Estrutura**, marque **Contra-frente** e **Peça de trás** e gere: as duas travessas aparecem entre as laterais, no topo interno, uma na frente e outra no fundo.
+6. Troque a orientação da contra-frente para **deitada** e gere de novo: a travessa passa a deitar no plano do topo, com a espessura na vertical.
+7. Desmarque a peça de trás e gere: só ela sai da cena e do plano de corte.
 
 ## 4. Montar a caixa
 
@@ -52,21 +55,22 @@ Roteiro para quem vai testar a feature pela primeira vez, do zero até o plano d
 
 ## 6. Divisões
 
-1. Na aba **Divisões**, insira uma divisória vertical no meio do vão.
+1. Na aba **Divisões**, use **Inserir divisória** e **Inserir prateleira**: cada clique cria a peça no vão ativo e gera o armário no mesmo passo de desfazer.
 2. Duplique: a peça nova nasce no maior vão livre.
 3. Tente duplicar num vão com menos de 80 mm livres: comando recusado com aviso.
-4. Use **Inserção múltipla** com 2 linhas e 1 coluna: uma divisória e duas prateleiras por vão resultante.
+4. Na sub-aba **Múltipla**, use **Inserir matriz** com 2 linhas e 1 coluna: uma divisória e duas prateleiras por vão resultante.
+5. Confira que cada inserção volta com um único `Ctrl+Z` e que o vão do cabeçalho é o mesmo onde a peça nasceu.
 
 ## 7. Gavetas e corrediça
 
-1. Na aba **Gavetas**, crie um bloco de quatro gavetas de 760 mm.
+1. Na aba **Gavetas**, preencha quantidade 4 e altura do bloco 760 mm e use **Criar bloco de gavetas**.
 2. Confira quatro alturas iguais com 3 mm de folga entre elas.
 3. Ligue **corrediça 3D**: cada gaveta recebe trilho externo, trilho interno e gaiolas.
 4. Renomeie temporariamente `caffmob_draw/assets/slides/slide-st48-0200-0.obj` e gere de novo: o conjunto geométrico equivalente aparece e a gaveta ainda abre.
 
 ## 8. Internos
 
-1. Na aba **Internos**, insira calceiro, sapateira e maleiro no vão ativo.
+1. Na aba **Internos**, use os botões **Cabideiro**, **Calceiro**, **Sapateira** e **Maleiro**: cada um insere o interno no vão ativo.
 2. Confira as posições iniciais: calceiro e sapateira a 480 mm do piso do vão, maleiro a 420 mm abaixo do topo.
 3. Edite a altura de cada um e confirme que só aquele interno se move.
 
@@ -94,6 +98,7 @@ Roteiro para quem vai testar a feature pela primeira vez, do zero até o plano d
 1. Abra o plano de corte do armário.
 2. Confira nome, largura, altura e espessura de cada chapa, incluindo as peças das gavetas e as folhas.
 3. Confirme que a corrediça **não** aparece como peça de chapa e que nenhuma peça aparece duas vezes.
+4. Com a contra-frente e a peça de trás marcadas, as duas aparecem no corte com 90 mm de altura de peça; desmarcadas, não aparecem.
 
 ## 13. Módulo de biblioteca
 

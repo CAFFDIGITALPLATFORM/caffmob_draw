@@ -23,10 +23,6 @@
   "en_US": "Generation refused the module: the old module stays visible",
   "pt_BR": "A geração recusou o módulo: o módulo antigo continua visível"
  },
- "A peça {} passa da chapa máxima ({} × {} mm)": {
-  "en_US": "Part {} exceeds the maximum panel ({} × {} mm)",
-  "pt_BR": "A peça {} passa da chapa máxima ({} × {} mm)"
- },
  "Abre o construtor do armário e guarda o estado atual para o Cancelar": {
   "en_US": "Opens the cabinet editor and stores the current state for Cancel",
   "pt_BR": "Abre o construtor do armário e guarda o estado atual para o Cancelar"
@@ -79,6 +75,14 @@
   "en_US": "Bases cover the sides",
   "pt_BR": "Bases cobrem as laterais"
  },
+ "Bloco de gavetas": {
+  "en_US": "Drawer block",
+  "pt_BR": "Bloco de gavetas"
+ },
+ "Bloco de {} mm não cabe no vão de {} mm": {
+  "en_US": "A {} mm block does not fit the {} mm bay",
+  "pt_BR": "Bloco de {} mm não cabe no vão de {} mm"
+ },
  "Bloquear peça fora da chapa": {
   "en_US": "Block parts exceeding the panel",
   "pt_BR": "Bloquear peça fora da chapa"
@@ -119,17 +123,33 @@
   "en_US": "Cabinet builder v2",
   "pt_BR": "Construtor de Armário v2"
  },
+ "Contra-frente": {
+  "en_US": "Front rail",
+  "pt_BR": "Contra-frente"
+ },
  "Contrato de chapas": {
   "en_US": "Panel contract",
   "pt_BR": "Contrato de chapas"
  },
+ "Contrato de chapas sem a {}": {
+  "en_US": "Panel contract without the {}",
+  "pt_BR": "Contrato de chapas sem a {}"
+ },
+ "Contrato de chapas sem chapa máxima válida": {
+  "en_US": "Panel contract without a valid maximum panel",
+  "pt_BR": "Contrato de chapas sem chapa máxima válida"
+ },
+ "Cria o bloco de gavetas no vão ativo, com quantidade, altura e modelo gravados no armário": {
+  "en_US": "Creates the drawer block in the active bay with the quantity, height and model stored on the cabinet",
+  "pt_BR": "Cria o bloco de gavetas no vão ativo, com quantidade, altura e modelo gravados no armário"
+ },
+ "Criar bloco de gavetas": {
+  "en_US": "Create drawer block",
+  "pt_BR": "Criar bloco de gavetas"
+ },
  "Dentro": {
   "en_US": "Inside",
   "pt_BR": "Dentro"
- },
- "Dentro da chapa": {
-  "en_US": "Fits the panel",
-  "pt_BR": "Dentro da chapa"
  },
  "Devolve o armário ao estado da abertura e apaga as peças geradas": {
   "en_US": "Restores the cabinet to the opening state and deletes the generated parts",
@@ -143,6 +163,10 @@
   "en_US": "Cabinet dimensions",
   "pt_BR": "Dimensões do armário"
  },
+ "Divisão não encontrada": {
+  "en_US": "Divider not found",
+  "pt_BR": "Divisão não encontrada"
+ },
  "Divisões fora do vão raiz ficam de fora no motor novo": {
   "en_US": "Divisions outside the root bay are left out in the new engine",
   "pt_BR": "Divisões fora do vão raiz ficam de fora no motor novo"
@@ -151,9 +175,49 @@
   "en_US": "Duplicates the divider or shelf in the largest free bay",
   "pt_BR": "Duplica a divisória ou a prateleira no maior vão livre disponível"
  },
+ "Duplo de 30 mm": {
+  "en_US": "Double, 30 mm",
+  "pt_BR": "Duplo de 30 mm"
+ },
  "Em pé": {
   "en_US": "Standing",
   "pt_BR": "Em pé"
+ },
+ "Espessura da base inferior": {
+  "en_US": "Bottom base thickness",
+  "pt_BR": "Espessura da base inferior"
+ },
+ "Espessura da base superior": {
+  "en_US": "Top base thickness",
+  "pt_BR": "Espessura da base superior"
+ },
+ "Espessura da divisória": {
+  "en_US": "Divider thickness",
+  "pt_BR": "Espessura da divisória"
+ },
+ "Espessura da folha": {
+  "en_US": "Leaf thickness",
+  "pt_BR": "Espessura da folha"
+ },
+ "Espessura da gaveta": {
+  "en_US": "Drawer thickness",
+  "pt_BR": "Espessura da gaveta"
+ },
+ "Espessura da lateral": {
+  "en_US": "Side thickness",
+  "pt_BR": "Espessura da lateral"
+ },
+ "Espessura da porta": {
+  "en_US": "Door thickness",
+  "pt_BR": "Espessura da porta"
+ },
+ "Espessura da prateleira": {
+  "en_US": "Shelf thickness",
+  "pt_BR": "Espessura da prateleira"
+ },
+ "Espessura do fundo": {
+  "en_US": "Back panel thickness",
+  "pt_BR": "Espessura do fundo"
  },
  "Espessuras do armário": {
   "en_US": "Cabinet thicknesses",
@@ -167,6 +231,14 @@
   "en_US": "Deletes the selected divider or shelf from the cabinet",
   "pt_BR": "Exclui a divisória ou a prateleira escolhida do armário"
  },
+ "Folhas da deslizante": {
+  "en_US": "Sliding leaves",
+  "pt_BR": "Folhas da deslizante"
+ },
+ "Folhas da porta": {
+  "en_US": "Door leaves",
+  "pt_BR": "Folhas da porta"
+ },
  "Fora da chapa": {
   "en_US": "Off the panel",
   "pt_BR": "Fora da chapa"
@@ -174,6 +246,10 @@
  "Frente da gaveta": {
   "en_US": "Drawer front",
   "pt_BR": "Frente da gaveta"
+ },
+ "Gaiola": {
+  "en_US": "Cage",
+  "pt_BR": "Gaiola"
  },
  "Gaveta com contra-frente, frente vidro": {
   "en_US": "Drawer with inner front, glass front",
@@ -235,6 +311,38 @@
   "en_US": "Pushes an undo step and sets the current state as the return point, without closing",
   "pt_BR": "Grava um passo de desfazer e fixa o estado atual como ponto de retorno, sem fechar"
  },
+ "Insere a matriz de divisórias e prateleiras no vão ativo": {
+  "en_US": "Inserts the divider and shelf matrix in the active bay",
+  "pt_BR": "Insere a matriz de divisórias e prateleiras no vão ativo"
+ },
+ "Insere o interno do tipo gravado no armário, no vão ativo": {
+  "en_US": "Inserts the interior type stored on the cabinet in the active bay",
+  "pt_BR": "Insere o interno do tipo gravado no armário, no vão ativo"
+ },
+ "Insere uma divisória vertical no vão ativo, com a variante gravada no armário": {
+  "en_US": "Inserts a vertical divider in the active bay, using the variant stored on the cabinet",
+  "pt_BR": "Insere uma divisória vertical no vão ativo, com a variante gravada no armário"
+ },
+ "Insere uma prateleira horizontal no vão ativo, com a variante gravada no armário": {
+  "en_US": "Inserts a horizontal shelf in the active bay, using the variant stored on the cabinet",
+  "pt_BR": "Insere uma prateleira horizontal no vão ativo, com a variante gravada no armário"
+ },
+ "Inserir divisória": {
+  "en_US": "Insert divider",
+  "pt_BR": "Inserir divisória"
+ },
+ "Inserir interno": {
+  "en_US": "Insert interior",
+  "pt_BR": "Inserir interno"
+ },
+ "Inserir matriz": {
+  "en_US": "Insert matrix",
+  "pt_BR": "Inserir matriz"
+ },
+ "Inserir prateleira": {
+  "en_US": "Insert shelf",
+  "pt_BR": "Inserir prateleira"
+ },
  "Instantâneo inválido: falta o spec do armário": {
   "en_US": "Invalid snapshot: the cabinet spec is missing",
   "pt_BR": "Instantâneo inválido: falta o spec do armário"
@@ -242,6 +350,10 @@
  "Instantâneo inválido: {}": {
   "en_US": "Invalid snapshot: {}",
   "pt_BR": "Instantâneo inválido: {}"
+ },
+ "Interno a inserir": {
+  "en_US": "Interior to insert",
+  "pt_BR": "Interno a inserir"
  },
  "Janela de armário vazia": {
   "en_US": "Empty cabinet window",
@@ -287,6 +399,10 @@
   "en_US": "Assembly: {}",
   "pt_BR": "Montagem: {}"
  },
+ "Montante": {
+  "en_US": "Fixed upright",
+  "pt_BR": "Montante"
+ },
  "Montar Caixa": {
   "en_US": "Build box",
   "pt_BR": "Montar Caixa"
@@ -294,6 +410,14 @@
  "Módulo de biblioteca: {}": {
   "en_US": "Library module: {}",
   "pt_BR": "Módulo de biblioteca: {}"
+ },
+ "Móvel com recuo": {
+  "en_US": "Movable, with setback",
+  "pt_BR": "Móvel com recuo"
+ },
+ "Móvel sem recuo": {
+  "en_US": "Movable, no setback",
+  "pt_BR": "Móvel sem recuo"
  },
  "Múltipla": {
   "en_US": "Multiple",
@@ -303,9 +427,9 @@
   "en_US": "No part chosen",
   "pt_BR": "Nenhuma peça escolhida"
  },
- "O contrato de chapas não foi definido: configure a aba Estrutura antes de gerar": {
-  "en_US": "The panel contract is not set: configure the Structure tab before generating",
-  "pt_BR": "O contrato de chapas não foi definido: configure a aba Estrutura antes de gerar"
+ "Não há vão livre para duplicar": {
+  "en_US": "There is no free bay to duplicate",
+  "pt_BR": "Não há vão livre para duplicar"
  },
  "O módulo de origem não está mais na cena": {
   "en_US": "The source module is no longer in the scene",
@@ -315,13 +439,17 @@
   "en_US": "The module has no measurements for the new engine",
   "pt_BR": "O módulo não tem medidas para o motor novo"
  },
- "O vão livre é menor que 80 mm: não cabe outra peça": {
-  "en_US": "The free space is smaller than 80 mm: another part does not fit",
-  "pt_BR": "O vão livre é menor que 80 mm: não cabe outra peça"
+ "Peça de trás": {
+  "en_US": "Rear rail",
+  "pt_BR": "Peça de trás"
  },
  "Peça escolhida: {}": {
   "en_US": "Chosen part: {}",
   "pt_BR": "Peça escolhida: {}"
+ },
+ "Porta de abrir e porta deslizante não podem estar ativas ao mesmo tempo": {
+  "en_US": "Hinged door and sliding door cannot be active at the same time",
+  "pt_BR": "Porta de abrir e porta deslizante não podem estar ativas ao mesmo tempo"
  },
  "Prat. c/ Corrediça": {
   "en_US": "Shelf with slide",
@@ -331,6 +459,22 @@
   "en_US": "Shelf",
   "pt_BR": "Prateleira"
  },
+ "Prateleira c/ corrediça": {
+  "en_US": "Shelf with slide",
+  "pt_BR": "Prateleira c/ corrediça"
+ },
+ "Prateleira com recuo": {
+  "en_US": "Shelf, with setback",
+  "pt_BR": "Prateleira com recuo"
+ },
+ "Prateleira fixa": {
+  "en_US": "Fixed shelf",
+  "pt_BR": "Prateleira fixa"
+ },
+ "Prateleira sem recuo": {
+  "en_US": "Shelf, no setback",
+  "pt_BR": "Prateleira sem recuo"
+ },
  "Prateleiras do módulo não são convertidas: refaça na aba Divisões": {
   "en_US": "Module shelves are not converted: redo them in the Divisions tab",
   "pt_BR": "Prateleiras do módulo não são convertidas: refaça na aba Divisões"
@@ -339,9 +483,21 @@
   "en_US": "Black",
   "pt_BR": "Preto"
  },
+ "Profundidade do trilho": {
+  "en_US": "Track depth",
+  "pt_BR": "Profundidade do trilho"
+ },
  "Recriar do módulo": {
   "en_US": "Recreate from module",
   "pt_BR": "Recriar do módulo"
+ },
+ "Recua 15 mm na traseira": {
+  "en_US": "Sets back 15 mm at the rear",
+  "pt_BR": "Recua 15 mm na traseira"
+ },
+ "Recua 20 mm na frente": {
+  "en_US": "Sets back 20 mm at the front",
+  "pt_BR": "Recua 20 mm na frente"
  },
  "Sapateiras": {
   "en_US": "Shoe racks",
@@ -366,6 +522,10 @@
  "Sem contrato de chapas na cena": {
   "en_US": "No panel contract in the scene",
   "pt_BR": "Sem contrato de chapas na cena"
+ },
+ "Sem contrato de chapas: informe a chapa máxima, as espessuras e a montagem antes de gerar": {
+  "en_US": "No panel contract: fill in the maximum panel, the thicknesses and the assembly before generating",
+  "pt_BR": "Sem contrato de chapas: informe a chapa máxima, as espessuras e a montagem antes de gerar"
  },
  "Sem divisórias neste vão": {
   "en_US": "No dividers in this bay",
@@ -399,13 +559,37 @@
   "en_US": "Divider",
   "pt_BR": "Separador"
  },
+ "Sobreposição da deslizante": {
+  "en_US": "Sliding overlap",
+  "pt_BR": "Sobreposição da deslizante"
+ },
  "Sobreposto": {
   "en_US": "Overlaid",
   "pt_BR": "Sobreposto"
  },
+ "Travessas": {
+  "en_US": "Rails",
+  "pt_BR": "Travessas"
+ },
+ "Trilho externo": {
+  "en_US": "Outer rail",
+  "pt_BR": "Trilho externo"
+ },
+ "Trilho interno": {
+  "en_US": "Inner rail",
+  "pt_BR": "Trilho interno"
+ },
  "Vão ativo: {}": {
   "en_US": "Active space: {}",
   "pt_BR": "Vão ativo: {}"
+ },
+ "Vão desconhecido: {}": {
+  "en_US": "Unknown bay: {}",
+  "pt_BR": "Vão desconhecido: {}"
+ },
+ "Vão livre insuficiente para duplicar: {} mm (mínimo {} mm de cada lado)": {
+  "en_US": "Not enough free bay to duplicate: {} mm (minimum {} mm on each side)",
+  "pt_BR": "Vão livre insuficiente para duplicar: {} mm (mínimo {} mm de cada lado)"
  },
  "c/ CF Cava": {
   "en_US": "with inner front, recessed",
@@ -427,6 +611,18 @@
   "en_US": "with inner front, glass",
   "pt_BR": "c/ CF Vidro"
  },
+ "chapa conforme": {
+  "en_US": "panel compliant",
+  "pt_BR": "chapa conforme"
+ },
+ "chapa: fora da chapa — {}": {
+  "en_US": "panel: beyond the sheet — {}",
+  "pt_BR": "chapa: fora da chapa — {}"
+ },
+ "peça {}": {
+  "en_US": "part {}",
+  "pt_BR": "peça {}"
+ },
  "s/ CF Cava": {
   "en_US": "no inner front, recessed",
   "pt_BR": "s/ CF Cava"
@@ -446,5 +642,25 @@
  "s/ CF Vidro": {
   "en_US": "no inner front, glass",
   "pt_BR": "s/ CF Vidro"
+ },
+ "sem peça": {
+  "en_US": "no part",
+  "pt_BR": "sem peça"
+ },
+ "sem vão": {
+  "en_US": "no bay",
+  "pt_BR": "sem vão"
+ },
+ "{} fora da faixa: {} mm (use {}–{} mm)": {
+  "en_US": "{} is out of range: {} mm (use {}–{} mm)",
+  "pt_BR": "{} fora da faixa: {} mm (use {}–{} mm)"
+ },
+ "{} fora das espessuras aceitas: {} mm (use 6, 15, 18 ou 25 mm)": {
+  "en_US": "{} is not an accepted thickness: {} mm (use 6, 15, 18 or 25 mm)",
+  "pt_BR": "{} fora das espessuras aceitas: {} mm (use 6, 15, 18 ou 25 mm)"
+ },
+ "{}: {} mm passa da chapa de {} mm": {
+  "en_US": "{}: {} mm exceeds the {} mm panel",
+  "pt_BR": "{}: {} mm passa da chapa de {} mm"
  }
 }

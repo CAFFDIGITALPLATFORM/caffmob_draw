@@ -40,19 +40,67 @@ def gn_modifier(obj, base_name):
     return None
 
 
+# Parede, piso e teto (feature 018, T014; RN-14, D-10): o material da parede chega pelos sockets do nó, não pelo
+# slot da malha — era a causa do "aplicar textura na parede" não mudar a vista.
+SURFACE_SOCKETS = ('Top Surface', 'Bottom Surface', 'Inside Face', 'Outside Face', 'Left Edge', 'Right Edge')
+SURFACE_FLAGS = ('IS_WALL_BP', 'IS_FLOOR_BP', 'IS_CEILING_BP')
+
+
+def is_surface(obj):
+    """Parede, piso ou teto pelas marcas do projeto."""
+    return obj is not None and any(obj.get(flag) for flag in SURFACE_FLAGS)
+
+
+def surface_modifier(obj):
+    """Modificador com os sockets de superfície (parede); None quando a malha não tem o nó esperado."""
+    if obj is None:
+        return None
+    for mod in obj.modifiers:
+        if mod.type != 'NODES' or mod.node_group is None:
+            continue
+        items = mod.node_group.interface.items_tree
+        if any(socket in items for socket in SURFACE_SOCKETS):
+            return mod
+    return None
+
+
+def _set_slots(obj, mat):
+    """Material em todos os slots da malha (criando o primeiro quando não há)."""
+    if obj.type != 'MESH':
+        return False
+    if not obj.data.materials:
+        obj.data.materials.append(mat)
+    for i in range(len(obj.data.materials)):
+        obj.data.materials[i] = mat
+    return True
+
+
+def set_surface_material(obj, mat):
+    """Material da superfície: os seis sockets do nó na parede, os slots no piso e no teto (RN-14).
+
+    Devolve False quando o objeto é superfície e não tem o modificador esperado: o material não cai no slot em
+    silêncio, e quem chamou consegue avisar.
+    """
+    if mat is None or obj is None:
+        return False
+    mod = surface_modifier(obj)
+    if mod is not None:
+        escritos = [socket for socket in SURFACE_SOCKETS if compat.try_set_gn_input(mod, socket, mat)]
+        return bool(escritos)
+    if obj.get('IS_FLOOR_BP') or obj.get('IS_CEILING_BP'):
+        return _set_slots(obj, mat)
+    return False
+
+
 def set_cutpart_material(obj, mat):
     """Material de uma peça `GeoNodeCutpart` (as duas faces e os materiais de porta 5 peças); outras malhas: slots."""
     if mat is None:
         return False
+    if is_surface(obj) or surface_modifier(obj) is not None:
+        return set_surface_material(obj, mat)
     mod = gn_modifier(obj, 'GeoNodeCutpart')
     if mod is None:
-        if obj.type != 'MESH':
-            return False
-        if not obj.data.materials:
-            obj.data.materials.append(mat)
-        for i in range(len(obj.data.materials)):
-            obj.data.materials[i] = mat
-        return True
+        return _set_slots(obj, mat)
     compat.try_set_gn_input(mod, 'Top Surface', mat)
     compat.try_set_gn_input(mod, 'Bottom Surface', mat)
     if not mod.show_viewport and obj.type == 'MESH' and obj.data.materials:

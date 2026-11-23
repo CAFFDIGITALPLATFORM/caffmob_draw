@@ -17,6 +17,7 @@ nasce no meio desse maior vão livre.
 from dataclasses import dataclass
 from uuid import uuid4
 
+from ..data.i18n import tr
 from . import spec as spec_mod
 
 VERTICAL, HORIZONTAL = 'VERTICAL', 'HORIZONTAL'
@@ -225,21 +226,21 @@ def duplicar(divisoes, uid, spec):
     """(lista, nova divisão ou None, motivo). A nova nasce no meio do maior vão livre do pai (RN-11)."""
     alvo = next((d for d in divisoes if d.uid == uid), None)
     if alvo is None:
-        return list(divisoes), None, "Divisão não encontrada"
+        return list(divisoes), None, tr("Divisão não encontrada")
     largura, altura = _regiao(divisoes, spec, alvo.vao)
     total = largura if alvo.eixo == VERTICAL else altura
     faixas = _faixas(_ordenar(divisoes, alvo.vao, alvo.eixo), total)
     if not faixas:
-        return list(divisoes), None, "Não há vão livre para duplicar"
+        return list(divisoes), None, tr("Não há vão livre para duplicar")
     inicio, fim = max(faixas, key=lambda faixa: faixa[1] - faixa[0])
     meio = (inicio + fim) / 2.0
     livre_esq = meio - inicio
     livre_dir = fim - (meio + alvo.espessura)
     menor_livre = min(livre_esq, livre_dir)
     if menor_livre < VAO_LIVRE_MINIMO - 1e-9:
-        return list(divisoes), None, (
-            f"Vão livre insuficiente para duplicar: {menor_livre:g} mm "
-            f"(mínimo {VAO_LIVRE_MINIMO:g} mm de cada lado)")
+        return list(divisoes), None, tr(
+            "Vão livre insuficiente para duplicar: {} mm (mínimo {} mm de cada lado)").format(
+            f"{menor_livre:g}", f"{VAO_LIVRE_MINIMO:g}")
     nova = Divisao(_uid(), alvo.eixo, alvo.vao, meio, alvo.tipo, alvo.espessura, alvo.recuo_tras, alvo.recuo_frente)
     return list(divisoes) + [nova], nova, ''
 

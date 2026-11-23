@@ -61,6 +61,35 @@ ativo, o catálogo de tradução, os PropertyGroups e a cascata do pacote v2, ma
 no catálogo de T002, acrescentam entradas. Nada do legado mudou: `caffmob_draw/armario_v2/` é o pacote novo e ainda
 não está registrado na extensão (isso é T030).
 
+## 1.1 Arquivos afetados na execução de T036 a T040 (2026-11-23)
+
+| Arquivo afetado | Componente | Tipo | Severidade | Justificativa |
+|-----------------|------------|------|------------|---------------|
+| `caffmob_draw/armario_v2/corredica.py` | Núcleo do construtor v2 | componente-novo | LOW | Medidas do conjunto ST48 em mm, duas corrediças por gaveta, recuo do trilho, casamento dos quatro objetos do OBJ com as três marcas e peças de ferragem com `papel` vazio (T036) |
+| `caffmob_draw/armario_v2/props.py` | Dados do construtor v2 | regra-alterada | LOW | `ferragem` (`NENHUMA`, `TRILHO_EXT`, `TRILHO_INT`, `GAIOLA`) em `BTM_PG_ArmarioParte` (T037) |
+| `caffmob_draw/armario_v2/build.py` | Geração do armário v2 | regra-alterada | MEDIUM | OBJ importado uma vez por sessão (malhas com usuário falso, objetos do import removidos), conjunto por gaveta, queda para o conjunto de reserva sem o arquivo e `ferragem` gravada na peça (T037) |
+| `caffmob_draw/armario_v2/anim.py` | Animação do armário v2 | regra-alterada | LOW | A gaiola passa a ser reconhecida por `ferragem == 'GAIOLA'`, no lugar de `PAPEIS_GAIOLA` (T037) |
+| `caffmob_draw/data/translations/armario_v2.json` | Tradução | regra-alterada | LOW | Catálogo de 136 para 139 entradas: `Trilho externo`, `Trilho interno` e `Gaiola`; `Nenhuma` reaproveitada de `operators.json` (T037) |
+| `tests/test_017_corredica.py` | Harness do núcleo v2 | componente-novo | LOW | 8 casos puros da corrediça, incluindo a ausência no plano de chapa (T038) |
+| `tests/blender_017_armario_smoke.py` | Harness do construtor v2 | regra-alterada | LOW | `run_corredica`: OBJ e conjunto de reserva, marcas de ferragem, gaiola a 50% do curso e corte sem corrediça (T039) |
+| `tests/blender_017_reabrir_smoke.py` | Harness do construtor v2 | componente-novo | LOW | Reabertura por arquivo em `tempdir`: `btm_armario`, `snapshot` e peças iguais depois de `open_mainfile` (T040) |
+
+## 1.2 Arquivos afetados na execução de T041 a T051 (2026-11-23)
+
+| Arquivo afetado | Componente | Tipo | Severidade | Justificativa |
+|-----------------|------------|------|------------|---------------|
+| `caffmob_draw/armario_v2/spec.py` | `armario_v2` (núcleo) | regra-alterada | MEDIUM | RN-04 passa a valer como travessa de 90 mm, com a orientação trocando o eixo dos 90 mm (D-22) |
+| `caffmob_draw/armario_v2/build.py` | `armario_v2` (cena) | regra-alterada | MEDIUM | duas peças novas, `CONTRA_FRENTE` e `PECA_TRAS`, com componente `TRA`, no topo interno |
+| `caffmob_draw/armario_v2/props.py` | `armario_v2` (dados) | delta-de-dados | LOW | duas presenças e nove campos de interface, todos com padrão, sem migração |
+| `caffmob_draw/armario_v2/ops.py` | `armario_v2` (cena) | regra-nova | LOW | cinco operadores de inserção e três gravadores de coleção |
+| `caffmob_draw/armario_v2/panel.py` | `armario_v2` (cena) | regra-alterada | LOW | botões de inserção nas três abas e a caixa Travessas na Estrutura |
+| `caffmob_draw/data/translations/armario_v2.json` | i18n | contrato-alterado | LOW | 27 entradas novas (139 → 166), nas duas línguas |
+
+Nada fora de `caffmob_draw/armario_v2/` e do catálogo foi tocado: o corte continua lendo `btm_armario_parte` por
+`part_sources.armario_v2_records`, e as duas peças novas caem nele como qualquer chapa do armário, com `componente`
+`TRA`. O `part_extractor.limit_status` não mudou. A inserção também não abriu caminho novo no legado: os operadores
+chamam `vaos`, `gavetas` e `internos` do próprio pacote e regravam as mesmas coleções que o Duplicar do menu já regravava.
+
 ## 2. Impacto previsto no legado (ainda não executado)
 
 | Arquivo afetado | Componente | Tipo | Severidade | Ação | Justificativa |
@@ -166,3 +195,16 @@ não está registrado na extensão (isso é T030).
   então o flag registra o último alvo animado; o rótulo do menu (`anim.estado`/`anim.rotulo`) lê a geometria, que é o
   que continua correto com várias gavetas e depois de reabrir o arquivo. Um estado por peça exigiria campo novo no
   delta — fica registrado como lacuna, sem inventar dado.
+- **T031 e T032 em 2026-11-23.** Só `caffmob_draw/blender_manifest.toml` (versão `1.25.0` → `1.26.0`) e o caminho de
+  mensagens do núcleo puro mudaram: `spec.validate`, `chapas.pode_gerar`, `vaos.duplicar`,
+  `conferencia.Violacao.texto()` e `resumo.linha_estado` passaram a montar o texto com `tr(...)` só nos literais, sem
+  tocar em nenhuma conta, medida ou regra. O `data/i18n.py` do legado continua sendo a única fonte de tradução e não
+  foi alterado; os cinco módulos seguem sem importar `bpy` (o pacote `data` é stubado nos testes, e `data/i18n.py` só
+  importa `json`/`os` no topo). O catálogo `armario_v2.json` foi de 112 para 136 entradas, sem tocar em catálogo de
+  outro módulo: `vão {}` reaproveita a entrada de `customize.json` justamente para não duplicar msgid.
+- **T036 a T040 em 2026-11-23.** A corrediça só escreve no armário v2: `build` cria objetos na coleção
+  `CAFFMob Armário v2`, todos filhos da raiz vazia, e o import do OBJ não deixa objeto nenhum na cena (as malhas ficam
+  com usuário falso e são compartilhadas). Nada do editor 2D, do construtor anterior ou do corte foi alterado. O único
+  ponto novo de leitura no legado é o import de `bpy.ops.wm.obj_import`, o mesmo operador que `promob/complemento.py`
+  já usava, agora com `global_scale=MM` porque o OBJ está em milímetros. A reabertura não mudou código de produção:
+  a fumaça nova só exercita o que `Object.btm_armario` já gravava (D-02).

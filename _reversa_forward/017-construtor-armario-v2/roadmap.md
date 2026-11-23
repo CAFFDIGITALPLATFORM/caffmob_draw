@@ -55,6 +55,10 @@ O corte ganha um adaptador que lê o papel gravado em cada malha gerada (`Object
 | D-16 | `caffmob_draw/blender_manifest.toml` sobe de `1.25.0` para `1.26.0` | Feature nova em pacote versionado; `build.py` recusa empacotar sem os ativos | (a) manter a versão | 🟢 |
 | D-17 | O corte deixa de ver módulo convertido filtrando na origem: `part_sources.iter_modules` ignora módulo oculto ou com `btm_cut_exclude` | O caminho sintético (`synthetic_records`) não consulta a marca e deduz peças de `btm_cabinet`, então ocultar só o módulo não basta; filtrar na origem vale também para `modules[]` do JSON v2. Decisão do titular em 2026-11-21 (fechamento do A001) | (a) filtrar em `extract_production_parts`; (b) deletar o módulo antigo da cena, contra RN-23 | 🟢 |
 | D-18 | `BTM_PG_ArmarioV2` ganha as flags `lateral_esq_ativa`, `lateral_dir_ativa`, `base_inf_ativa` e `base_sup_ativa`, todas `False`; `fundo_ativo` continua sendo a presença do fundo | RN-01/RF-01 exigem construtor vazio e Montar Caixa ligando as peças; sem as flags o estado vazio não é representável e o HUD não tem alternador. Confirmado pelo titular em 2026-11-21 (fechamento do A003): presença por flag, não por enum, porque as quatro peças são independentes e o `snapshot` precisa restaurar qualquer combinação | (a) enum de montagem rápida, descartado como modelo de dados (pode voltar como atalho de interface que liga várias flags); (b) presença implícita em `espessura = 0`, descartada (confunde ausência com espessura inválida) | 🟢 |
+| D-19 | Corrediça 3D em duas camadas: `armario_v2/corredica.py` (puro) calcula em milímetros as três partes do conjunto telescópico (trilho externo preso na lateral do vão, trilho interno preso na caixa da gaveta e as gaiolas a meio curso) e o `build` importa `caffmob_draw/assets/slides/slide-st48-0200-0.obj` uma vez por armário e instancia o conjunto por gaveta; sem o arquivo, as mesmas três partes saem do cálculo de `corredica.py`. As partes levam `papel` vazio, para continuarem fora do plano de chapa (`resumo.lista_de_pecas` e `conferencia.conferir` já tratam papel vazio como ferragem, e `part_sources.armario_v2_records` pula papel vazio), e um campo novo `ferragem` (`TRILHO_EXT`, `TRILHO_INT`, `GAIOLA`) em `BTM_PG_ArmarioParte`, que a animação passa a consultar no lugar de `PAPEIS_GAIOLA` | RN-08 e RF-10 são `Must` e a feature fechou sem a peça na cena (achado A012); `anim.PAPEIS_GAIOLA` existe desde a T022 e não tem peça para animar | (a) gravar `papel` `GAIOLA`/`TRILHO` em `btm_armario_parte` (entraria como chapa no corte, contra o RF-19); (b) só geometria procedural, sem o OBJ (perde o trilho real do anexo); (c) importar o OBJ por gaveta (custo em armário de 10 gavetas) | 🟢 |
+| D-20 | A reabertura por arquivo ganha prova em fumaça própria: `tests/blender_017_reabrir_smoke.py` gera um armário com três vãos, quatro gavetas e folha deslizante, salva em `tempdir` com `save_as_mainfile`, reabre com `open_mainfile` e confere abas, medidas, `snapshot` e peças na cena. Nenhuma mudança de desenho: o `Object.btm_armario` de D-02 já é o mecanismo | RN-17 e RF-20 são `Must` e não tinham ação nem prova (achado A013); `PropertyGroup` que não sobrevive ao ciclo só aparece numa ida e volta por arquivo | (a) acrescentar a conferência ao `blender_017_armario_smoke.py` (mistura registro e persistência no mesmo roteiro); (b) conferência manual em janela (não regride) | 🟢 |
+| D-21 | A inserção pela interface sai em operadores próprios no `ops.py`, um por peça, com geração no mesmo passo: `caffmob.armario_v2_inserir_divisoria` (eixo, variante e posição opcional), `..._inserir_matriz` (linhas e colunas de 1 a 5), `..._criar_bloco_gavetas` (quantidade, altura do bloco e modelo) e `..._inserir_interno` (tipo). Cada um lê o vão ativo das coleções do armário, chama o núcleo já testado (`vaos.inserir_vertical`, `vaos.inserir_horizontal`, `vaos.matriz`, `gavetas.bloco`, `internos.inserir`), regrava a coleção e, se o armário já foi gerado, chama `ops.gerar_armario` no mesmo `execute`. O vão ativo sai de `panel._vao_ativo` para `ops.vao_ativo`, e o painel delega | RF-07, RF-09 e RF-12 são `Must` e só existiam no núcleo; o painel editava o que já estava gravado e o Duplicar do menu não cria a primeira peça. Operador com `UNDO` dá um passo por clique, o mesmo contrato de Duplicar e Excluir (D-08, RN-18), e reusa funções com teste puro em vez de recalcular no painel | (a) inserir por `update` de propriedade (sem passo de desfazer e gerando a cada tecla); (b) um operador genérico com `EnumProperty` de peça (mais difícil de rotular e de testar); (c) deixar a inserção só no HUD | 🟢 |
+| D-22 | Contra-frente e peça de trás passam a ser geradas com presença própria: `contra_frente_ativa` e `peca_tras_ativa` em `BTM_PG_ArmarioV2`, ambas `False`, e as duas peças em `build.pecas` como travessa de 90 mm entre as laterais, com `espessura = espessura_base_superior`, no topo interno: a contra-frente na face da frente e a peça de trás na face de trás. `EM_PE` deixa os 90 mm na altura e a espessura na profundidade; `DEITADA` troca os dois eixos, como o motor anexo (`__init__.py:558-568`) e o mockup (`renderPanel`, travessa de 100 mm no cutlist) | RF-05 é `Must` e o `spec` calculava as duas sem geometria; sem presença o usuário não liga nem desliga. A peça do mockup é uma travessa de 90 mm, não um painel da altura toda: `spec.contra_frente` e `peca_de_tras` passam a devolver `{'comprimento': largura_interna, 'altura': ALTURA_TRAVESSA, 'espessura': espessura_base_superior, 'em_pe': ...}`, e o `test_017_spec.py` acompanha | (a) gerar painel da altura total, que fecha a frente do armário; (b) manter o cálculo e não gerar, contra o RF-05 reescrito no clarify de 2026-11-23 | 🟡 |
 
 ## 4. Premissas
 
@@ -65,13 +69,19 @@ Nenhum marcador `[DÚVIDA]` restou no `requirements.md` (clarify de 2026-11-19).
 | Calceiro e sapateira a 480 mm do piso do vão e maleiro a 420 mm abaixo do topo; a faixa editável é `[0, altura do vão − espessura do interno]` | §3, §10 | Peça fora do vão em armário baixo; corrigir a faixa no núcleo, sem tocar nas abas |
 | Quando dois internos disputam a mesma altura, vence o inserido por último e o outro sobe um passo mínimo de 50 mm | §10 | Sobreposição de internos no roupeiro; ajustar `internos.py` |
 | Mapeamento dos módulos de biblioteca para o spec: medidas do módulo, espessuras do `btm_cabinet`/`btm_structure`, montagem de `assembly`, portas de `door_swing`, divisões de `scene_divisions` | §10 | Módulo importado chega com aba vazia; a ponte fica em `ponte.py`, sem tocar o editor antigo |
+| A travessa de contra-frente e de trás tem 90 mm de altura de peça (`ALTURA_TRAVESSA`), e o RF-05 continua valendo como troca de eixo da travessa em pé ou deitada; `spec.contra_frente` e `peca_de_tras` mudam de painel da altura total para travessa (D-22) | §4 (RN-04) e §9 (clarify 2026-11-23) | Peça com altura errada no corte; corrigir a constante no núcleo, sem tocar nas abas |
+| A inserção pela interface usa o vão da peça escolhida na coleção ativa e, sem escolha, o vão raiz `s0`; num armário sem divisórias é sempre o vão raiz | §9 (clarify 2026-11-23) | Peça inserida no vão errado; corrigir `ops.vao_ativo` |
 
 ## 5. Delta arquitetural
 
 | Componente | Arquivo de origem no legado | Tipo de mudança | Resumo |
 |------------|------------------------------|-----------------|--------|
 | `armario_v2` (núcleo) | — (novo) | componente-novo | `spec`, `chapas`, `conferencia`, `gavetas`, `portas`, `internos`, `resumo` em milímetros, sem `bpy` |
+| `armario_v2` (corrediça) | `novo_arm_building/.../__init__.py#attach_drawer_slide_3d` | componente-novo | `corredica.py` calcula em milímetros o trilho externo, o trilho interno e as gaiolas, e o `build` instancia o OBJ uma vez por armário ou o conjunto de reserva (D-19) |
 | `armario_v2` (cena) | — (novo) | componente-novo | `props`, `build`, `panel`, `menu`, `ops`, `anim`, `hud`, `ponte`, `assets/slides` |
+| `armario_v2` (inserção) | `caffmob_draw/armario_v2/ops.py` | componente-alterado | quatro operadores de inserção (`inserir_divisoria`, `inserir_matriz`, `criar_bloco_gavetas`, `inserir_interno`) e o `vao_ativo` que o painel passa a ler |
+| `armario_v2` (painel) | `caffmob_draw/armario_v2/panel.py` | regra-alterada | botões de inserção no topo das abas Divisões, Gavetas e Internos, com a matriz na sub-aba Múltipla, e `_vao_ativo` delegando para `ops` |
+| `armario_v2` (contra-frente) | `caffmob_draw/armario_v2/{spec,build}.py` | regra-alterada | duas flags de presença, travessa de 90 mm emitida em `pecas` e as duas medidas corrigidas no `spec` (D-22) |
 | `cabinet_editor` | `caffmob_draw/cabinet_editor/__init__.py` | componente-extinto (parcial) | `_modules()` perde a UI (`window`, `ops_editor`, `ops_actions`, `panels*`) e mantém `gallery`; os núcleos continuam importáveis |
 | `cabinet_editor.props` | `caffmob_draw/cabinet_editor/props.py` | contrato-removido | `WindowManager.btm_cabinet_editor` deixa de ser registrado junto com a UI |
 | `part_sources` | `caffmob_draw/cutting/part_sources.py` | contrato-novo | `armario_v2_records(scene)` lê `btm_armario_parte` e devolve `PartRecord` com `source="ARMARIO_V2"`; `iter_modules` passa a ignorar módulo oculto ou com `btm_cut_exclude` (D-17) |
@@ -87,6 +97,8 @@ Nenhum marcador `[DÚVIDA]` restou no `requirements.md` (clarify de 2026-11-19).
 Resumo: um PropertyGroup novo no armário (spec completo + estado + snapshot), um por peça (papel, medidas de corte, material, veio, fitas, alvo de animação) e um na cena (contrato de chapas). Os PropertyGroups do editor antigo deixam de existir; nada é migrado.
 
 Detalhe completo em: `_reversa_forward/017-construtor-armario-v2/data-delta.md`
+
+O clarify de 2026-11-23 acrescenta duas flags de presença no armário (`contra_frente_ativa`, `peca_tras_ativa`) e nenhuma estrutura nova: a inserção grava nas coleções que já existem (`divisoes`, `gavetas`, `internos`).
 
 ## 7. Delta de contratos externos
 
@@ -110,21 +122,28 @@ A feature não cria nem altera contrato externo: não há HTTP, fila, gRPC, Grap
 | Móvel antigo perde a edição (RF-26) e o projetista não entende por quê | alto | média | Aviso no cabeçalho do painel, em português e inglês, dizendo o que fazer; `legacy-impact.md` no `/reversa-coding` |
 | Módulo de biblioteca convertido gera peça duplicada no plano de corte | alto | média | Ocultar o módulo, marcar `btm_cut_exclude` e filtrar em `iter_modules` — o caminho sintético não consulta a marca (`part_sources.py:87` e `:221`), então a marca sozinha não protege; teste de contagem antes e depois de `Gerar` (D-17, T035) |
 | Timer de abrir/fechar pendurado depois de desregistrar ou de trocar de armário | médio | média | Handle em dicionário de módulo, removido em `unregister`, em `Esc` e ao apagar a coleção |
-| Importar o OBJ por gaveta estoura o tempo em armário com 10 gavetas | médio | média | Importar uma vez por armário e duplicar o conjunto; medir com `tests/blender_017_armario_smoke.py` |
+| Importar o OBJ por gaveta estoura o tempo em armário com 10 gavetas | médio | média | Importar uma vez por armário e duplicar o conjunto (T037); a fumaça conta as instâncias por gaveta e as três marcas de `ferragem` (T039) |
+| A corrediça entra no plano de chapa como se fosse MDF | alto | baixa | `papel` vazio e `ferragem` preenchido (D-19); `resumo`, `conferencia` e `part_sources.armario_v2_records` já descartam papel vazio, e `tests/test_017_corredica.py` mais `tests/test_017_corte.py` fecham a contagem (T038, T039) |
 | Sem Padrão de Dimensões ativo, o contrato nasce vazio | médio | baixa | Semear pelo `dimension_schema` BR, mesma fallback de `part_extractor._schema_values` |
 | Catálogo de i18n incompleto quebra `tests/test_i18n_coverage.py` | médio | alta | Chaves no mesmo commit do texto; o teste roda antes da fumaça |
 | `cabinet_editor` sem UI quebra um chamador esquecido | alto | baixa | `code_search` por `btm_cabinet_editor` e `cabinet_editor_modal` antes de remover; `check_api.py` e a fumaça 008 no aceite |
+| Inserir pelo painel regenerar o armário inteiro a cada clique | médio | média | `gerar_armario` só roda quando o armário já foi gerado e o NFR de 0,5 s cobre 4 vãos, 20 divisões e 10 gavetas; medir na fumaça e, se passar, segurar a geração no Aplicar |
+| Vão inválido ou peça que não cabe deixar coleção pela metade | alto | média | O núcleo levanta `ValueError` antes de qualquer escrita; o operador captura, reporta aviso e só regrava a coleção depois do sucesso |
+| Mudar a travessa para 90 mm quebrar o contrato do `spec` fechado em T012 | médio | alta | A mudança é decisão D-22 com premissa registrada no §4; `test_017_spec.py` muda no mesmo passo e o `resumo`/corte passam a listar 90 mm |
 
 ## 10. Critério de pronto
 
-- [ ] Todas as ações do `actions.md` marcadas `[X]`
-- [ ] `cross-check.md` (se executado) sem CRITICAL nem HIGH
-- [ ] `regression-watch.md` gerado
-- [ ] `ruff check caffmob_draw/` limpo
-- [ ] `python3 docs/rag/tools/check_api.py` sem `[UNKNOWN in 5.2]`
-- [ ] `tests/blender_017_armario_smoke.py` verde e as fumaças 004, 006, 008 e 015 sem regressão
-- [ ] `tests/test_i18n_coverage.py` verde com as chaves novas
-- [ ] Plano de corte de um armário v2 com gavetas lista as peças com papel e sem a corrediça
+- [x] T036 a T040 concluídas (corrediça 3D e reabertura por arquivo, achados A012 e A013)
+- [x] Inserção pela interface nas três abas, com um passo de desfazer por clique (RF-07, RF-09, RF-12, D-21; T046 a T051)
+- [x] Contra-frente e peça de trás na cena com presença, nas duas orientações, e presentes no corte com 90 mm (RF-05, D-22; T041 a T044)
+- [x] `regression-watch.md` gerado
+- [x] `ruff check` nos caminhos da feature (decisão 1 da T034), limpo em `caffmob_draw/armario_v2/`, `tests/blender_017_armario_smoke.py` e `tests/test_017_*.py`; os 21 erros do pacote inteiro ficam como dívida separada, fora do portão desta feature
+- [x] `python3 docs/rag/tools/check_api.py` sem `[UNKNOWN in 5.2]` (599 arquivos, T034)
+- [x] `tests/blender_017_armario_smoke.py` verde com 48 conferências, e as demais fumaças resolvidas: 004 colisão e 004 assentar verdes, 015 reescrita enxuta verde, 006 e 008 aposentadas em `tests/retired/` (T034)
+- [x] `tests/test_i18n_coverage.py` verde com as chaves novas (`armario_v2.json` com 136 entradas, T032)
+- [x] Plano de corte de um armário v2 com gavetas lista as peças com papel e sem a corrediça (T029, T035 e `tests/test_017_corte.py`)
+- [x] A corrediça aparece na cena em cada gaveta, com o OBJ e com o conjunto de reserva, e continua fora do plano de chapa (RN-08, T037 e T039)
+- [x] Salvar, fechar, reabrir o arquivo e abrir o construtor devolve o mesmo armário, com as peças na cena (RN-17, T040)
 - [ ] Re-extração reversa executada e sem regressão vermelha (recomendado, não obrigatório)
 
 ## 11. Histórico de alterações
@@ -133,3 +152,5 @@ A feature não cria nem altera contrato externo: não há HTTP, fila, gRPC, Grap
 |------|-----------|-------|
 | 2026-11-19 | Versão inicial gerada por `/reversa-plan` a partir do requirements da 017 já esclarecido | reversa |
 | 2026-11-21 | Fechamento do cross-check A001–A003: D-04 mantém `gallery`, D-17 (filtro em `iter_modules`) e D-18 (flags de presença) acrescentados, risco de duplicação no §9 corrigido | reversa |
+| 2026-11-23 | Segunda auditoria (A012 e A013): D-19 (corrediça 3D em `corredica.py` mais o OBJ no `build`) e D-20 (fumaça de reabertura por arquivo) acrescentados, componente `armario_v2` (corrediça) no §5, dois riscos no §9 e critério de pronto do §10 refletindo o estado real | reversa |
+| 2026-11-23 | Clarify da auditoria de mockup e frente: D-21 (inserção por operadores com geração no mesmo passo) e D-22 (contra-frente e peça de trás geradas como travessa de 90 mm com presença), §4 com duas premissas, §5 com três componentes e §9 com três riscos | reversa |

@@ -85,17 +85,26 @@ def size_mm(item_id):
     return catalog.default_size(entry) if entry else (catalog.catalog_core.DEFAULT_SIZE_MM,) * 2
 
 
-def apply_cached(objs, item_id, path, size=None):
-    """Aplica a imagem já baixada; devolve quantas malhas mudaram."""
+def material_for(obj, item_id, path, size=None):
+    """Material de imagem do alvo, com a projeção que ele aceita e os dados do fabricante.
+
+    A chapa tem UV próprio: textura retangular só mantém a escala real por UV (018, T012, T023).
+    """
     entry = catalog.item(item_id) or {}
     width, height = size or size_mm(item_id)
+    mat = retexture.image_material(path, width, height, texture_id=item_id, projection=retexture.projection_for(obj))
+    if entry.get("sha256"):
+        mat["btm_texture_sha256"] = entry["sha256"]
+        mat["btm_texture_formato"] = entry.get("formato", entry.get("ext", "jpg"))
+    bump.request(mat, entry)                           # relevo, quando o fabricante tem (T045)
+    return mat
+
+
+def apply_cached(objs, item_id, path, size=None):
+    """Aplica a imagem já baixada; devolve quantas malhas mudaram."""
     changed = 0
     for obj in _meshes(objs):
-        mat = retexture.image_material(path, width, height, texture_id=item_id)
-        if entry.get("sha256"):
-            mat["btm_texture_sha256"] = entry["sha256"]
-            mat["btm_texture_formato"] = entry.get("formato", entry.get("ext", "jpg"))
-        bump.request(mat, entry)                       # relevo, quando o fabricante tem (T045)
+        mat = material_for(obj, item_id, path, size)
         if common.set_cutpart_material(obj, mat):
             changed += 1
             from . import grain

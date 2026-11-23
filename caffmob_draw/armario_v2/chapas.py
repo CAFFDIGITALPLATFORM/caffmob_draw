@@ -15,6 +15,8 @@ cena do Blender, então fica no painel (T023), que chama `apply_host_contract` c
 
 from dataclasses import dataclass, field
 
+from ..data.i18n import tr
+
 LATERAL_PASSANTE, BASE_PASSANTE = 'LATERAL_PASSANTE', 'BASE_PASSANTE'
 EM_PE, DEITADA = 'EM_PE', 'DEITADA'
 
@@ -79,11 +81,11 @@ def apply_host_contract(comprimento_max, largura_max, espessuras=None, montagem=
 def pode_gerar(contrato):
     """Motivos que impedem gerar; lista vazia = pode. Contrato ausente vem primeiro (RN-02)."""
     if contrato is None or not contrato.configurado:
-        return ["Sem contrato de chapas: informe a chapa máxima, as espessuras e a montagem antes de gerar"]
+        return [tr("Sem contrato de chapas: informe a chapa máxima, as espessuras e a montagem antes de gerar")]
     motivos = []
     if contrato.comprimento_max <= 0.0 or contrato.largura_max <= 0.0:
-        motivos.append("Contrato de chapas sem chapa máxima válida")
+        motivos.append(tr("Contrato de chapas sem chapa máxima válida"))
     for papel in PAPEIS:
         if papel not in contrato.espessuras:
-            motivos.append(f"Contrato de chapas sem a {papel}")
+            motivos.append(tr("Contrato de chapas sem a {}").format(papel))
     return motivos

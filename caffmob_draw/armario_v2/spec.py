@@ -21,6 +21,7 @@ própria chapa; sobreposto, ele fica na face de trás e o recuo sai da profundid
 from dataclasses import dataclass
 
 from ..cabinet_editor import structure
+from ..data.i18n import tr
 
 # Encontros, orientações, fixação do fundo e origem das frestas (mesmas grafias dos enums de `props.py`).
 LATERAL_PASSANTE, BASE_PASSANTE = 'LATERAL_PASSANTE', 'BASE_PASSANTE'
@@ -28,6 +29,10 @@ EM_PE, DEITADA = 'EM_PE', 'DEITADA'
 CANAL, SOBREPOSTO = 'CANAL', 'SOBREPOSTO'
 
 THICKNESSES = (6, 15, 18, 25)
+
+# Altura da travessa de contra-frente e de peça de trás: o valor do motor anexo (`__init__.py:558-568`), não a altura
+# do armário. `EM_PE` deixa os 90 mm na vertical e a espessura na profundidade; `DEITADA` troca os dois eixos (D-22).
+ALTURA_TRAVESSA = 90.0
 
 # As nove espessuras do armário (§2). O contrato de chapas grava oito: a `espessura_folha` é ferragem da deslizante.
 THICKNESS_FIELDS = (
@@ -107,6 +112,10 @@ class Spec:
     base_inf_ativa: bool = False
     base_sup_ativa: bool = False
 
+    # Presença das travessas (RF-05, D-22): nascem desligadas pelo mesmo motivo das chapas da caixa (RN-01).
+    contra_frente_ativa: bool = False
+    peca_tras_ativa: bool = False
+
     porta_ativa: bool = False
     porta_folhas: int = 1
     porta_dobradica: str = 'ESQUERDA'
@@ -141,15 +150,15 @@ def validate(spec):
     for campo, (lo, hi) in RANGES.items():
         valor = getattr(spec, campo)
         if not lo - 1e-9 <= valor <= hi + 1e-9:
-            problemas.append("{} fora da faixa: {} mm (use {}–{} mm)".format(
-                RANGE_LABELS[campo], _fmt(valor), _fmt(lo), _fmt(hi)))
+            problemas.append(tr("{} fora da faixa: {} mm (use {}–{} mm)").format(
+                tr(RANGE_LABELS[campo]), _fmt(valor), _fmt(lo), _fmt(hi)))
     for campo in THICKNESS_FIELDS:
         valor = getattr(spec, campo)
         if not thickness_ok(valor):
-            problemas.append("{} fora das espessuras aceitas: {} mm (use 6, 15, 18 ou 25 mm)".format(
-                THICKNESS_LABELS[campo], _fmt(valor)))
+            problemas.append(tr("{} fora das espessuras aceitas: {} mm (use 6, 15, 18 ou 25 mm)").format(
+                tr(THICKNESS_LABELS[campo]), _fmt(valor)))
     if spec.porta_ativa and spec.deslizante_ativa:
-        problemas.append("Porta de abrir e porta deslizante não podem estar ativas ao mesmo tempo")
+        problemas.append(tr("Porta de abrir e porta deslizante não podem estar ativas ao mesmo tempo"))
     return problemas
 
 
@@ -207,20 +216,27 @@ def lateral_offset_z(spec):
 # Contra-frente, peça de trás e fundo -----------------------------------------------------------------------------
 
 
-def _painel_de_fundo(spec, orientacao):
-    """Medidas do painel que fica no plano de trás: em pé segue a altura; deitada, a profundidade (RN-04)."""
+def _travessa(spec, orientacao):
+    """Travessa de 90 mm entre as laterais: a orientação decide em que eixo ficam os 90 mm (RN-04, D-22).
+
+    O comprimento de corte é sempre a largura interna e a espessura é a da base superior; `em_pe` diz como a peça
+    senta na cena, e não muda a medida de corte. A leitura anterior (painel da altura total ou da profundidade) fecharia
+    a frente do armário e está registrada nas premissas do roadmap §4.
+    """
     return {'comprimento': largura_interna(spec),
-            'altura': spec.altura if orientacao == EM_PE else spec.profundidade}
+            'altura': ALTURA_TRAVESSA,
+            'espessura': spec.espessura_base_superior,
+            'em_pe': orientacao == EM_PE}
 
 
 def contra_frente(spec):
-    """Contra-frente: comprimento entre as laterais e altura pela orientação dela (RN-04)."""
-    return _painel_de_fundo(spec, spec.orientacao_frente)
+    """Contra-frente: travessa entre as laterais, com a orientação dela (RN-04, D-22)."""
+    return _travessa(spec, spec.orientacao_frente)
 
 
 def peca_de_tras(spec):
-    """Peça de trás: mesma conta da contra-frente, com a orientação própria dela (RN-04)."""
-    return _painel_de_fundo(spec, spec.orientacao_tras)
+    """Peça de trás: mesma conta da contra-frente, com a orientação própria dela (RN-04, D-22)."""
+    return _travessa(spec, spec.orientacao_tras)
 
 
 def fundo(spec):

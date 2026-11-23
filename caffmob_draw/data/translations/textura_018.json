@@ -1,0 +1,50 @@
+{
+  "Conta-gotas": {
+    "pt_BR": "Conta-gotas",
+    "en_US": "Eyedropper"
+  },
+  "Aplicar textura copiada": {
+    "pt_BR": "Aplicar textura copiada",
+    "en_US": "Apply copied texture"
+  },
+  "Na porta": {
+    "pt_BR": "Na porta",
+    "en_US": "On the door"
+  },
+  "No exterior": {
+    "pt_BR": "No exterior",
+    "en_US": "On the exterior"
+  },
+  "No interior": {
+    "pt_BR": "No interior",
+    "en_US": "On the interior"
+  },
+  "Falta a origem da textura": {
+    "pt_BR": "Falta a origem da textura",
+    "en_US": "The texture source is missing"
+  },
+  "A malha não tem UV: a textura entra em projeção de caixa": {
+    "pt_BR": "A malha não tem UV: a textura entra em projeção de caixa",
+    "en_US": "The mesh has no UV: the texture uses box projection"
+  },
+  "Esta parede não aceita textura": {
+    "pt_BR": "Esta parede não aceita textura",
+    "en_US": "This wall does not accept a texture"
+  },
+  "O ângulo do veio é visual; o corte usa o horizontal ou vertical mais próximo": {
+    "pt_BR": "O ângulo do veio é visual; o corte usa o horizontal ou vertical mais próximo",
+    "en_US": "The grain angle is visual; cutting uses the nearest horizontal or vertical"
+  },
+  "Ângulo do veio não é múltiplo de 90": {
+    "pt_BR": "Ângulo do veio não é múltiplo de 90",
+    "en_US": "Grain angle is not a multiple of 90"
+  },
+  "Ângulo do veio (graus)": {
+    "pt_BR": "Ângulo do veio (graus)",
+    "en_US": "Grain angle (degrees)"
+  },
+  "Projeção da textura": {
+    "pt_BR": "Projeção da textura",
+    "en_US": "Texture projection"
+  }
+}

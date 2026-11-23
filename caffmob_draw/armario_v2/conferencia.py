@@ -10,6 +10,7 @@ avisos com a mesma medida que a lista de peças mostra (RN-16).
 
 from dataclasses import dataclass, field
 
+from ..data.i18n import tr
 from . import chapas as chapas_mod
 
 TOLERANCIA = 1e-6
@@ -36,7 +37,8 @@ class Violacao:
     limite: float
 
     def texto(self):
-        return f"{self.nome}: {self.medida:g} mm passa da chapa de {self.limite:g} mm"
+        return tr("{}: {} mm passa da chapa de {} mm").format(
+            self.nome, f"{self.medida:g}", f"{self.limite:g}")
 
 
 @dataclass(frozen=True)

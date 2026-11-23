@@ -3,8 +3,8 @@
 Um alvo por vez, por timer de 16 ms e no máximo 18 quadros (`QUADROS`), como a D-08 fixa. O curso de cada peça já vem
 gravado em `btm_armario_parte.curso_mm` e `eixo` por `build.pecas`, então a animação não recalcula medida nenhuma:
 
-- gaveta (`eixo='Y'`) anda `72%` da profundidade para a frente, e as peças da corrediça (`PAPEIS_GAIOLA`) andam
-  `50%` do curso da gaveta;
+- gaveta (`eixo='Y'`) anda `72%` da profundidade para a frente, e a gaiola da corrediça (`ferragem = 'GAIOLA'`)
+  anda `50%` do curso da gaveta;
 - folha deslizante (`eixo='X'`) corre `80%` da própria largura, com sentidos opostos entre folhas vizinhas;
 - porta de abrir (`eixo='GIRO'`) gira `95°` em torno da dobradiça, no sentido do lado escolhido.
 
@@ -36,7 +36,6 @@ QUADROS = 18             # quadros por alvo, no máximo (D-08)
 CURSO_GAIOLA = 0.5       # a gaiola da corrediça anda metade do curso da gaveta (RN-10)
 
 PAPEIS_ANIMAVEIS = ('FRENTE_GAVETA', 'SEPARADOR', 'AFASTADOR', 'FOLHA', 'PORTA')
-PAPEIS_GAIOLA = ('GAIOLA', 'CORREDICA', 'TRILHO')
 SEPARADOR_GAVETA = ' da gaveta '
 
 # Timer em curso de cada alvo (nome do objeto) -> função registrada em `bpy.app.timers`.
@@ -109,8 +108,9 @@ def _sufixo_da_gaveta(obj):
 def _grupo(alvo):
     """O alvo e as peças que andam com ele: as da mesma gaveta e o conjunto pendurado embaixo dele.
 
-    A corrediça 3D (T029) entra na animação como irmã da frente, com o nome marcado pelo mesmo sufixo de gaveta: assim
-    ela anda `CURSO_GAIOLA` do curso no referencial do armário. Objeto filho da frente anda com ela, sem conta própria.
+    A corrediça 3D entra na animação como irmã da frente, com o nome marcado pelo mesmo sufixo de gaveta: assim o
+    trilho interno anda o curso inteiro e a gaiola (`ferragem = 'GAIOLA'`) anda `CURSO_GAIOLA` dele. Objeto filho da
+    frente anda com ela, sem conta própria.
     """
     grupo = [alvo]
     if getattr(alvo, 'btm_armario_parte', None).papel not in ('FOLHA', 'PORTA'):
@@ -164,7 +164,7 @@ def _deslocamento_de(obj, raiz):
         sentido = -1.0 if esquerda else 1.0
         return ('girar', pivo, sentido * math.radians(float(parte.curso_mm)))
     curso = float(parte.curso_mm) * build.MM
-    if parte.papel in PAPEIS_GAIOLA:
+    if getattr(parte, 'ferragem', 'NENHUMA') == 'GAIOLA':
         curso *= CURSO_GAIOLA
     if parte.eixo == 'Y':
         return ('mover', Vector((0.0, -curso, 0.0)))

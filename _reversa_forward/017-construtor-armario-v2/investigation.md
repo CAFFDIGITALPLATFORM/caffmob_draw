@@ -97,3 +97,29 @@ Os quatro objetos são as quatro partes que o RN-08 nomeia: trilho externo (pres
 ### 7.2 Catálogo `data/translations/armario_v2.json`
 
 39 entradas novas, todas com `pt_BR` e `en_US`. Onze textos que o painel usa já existiam em outro catálogo e foram **reaproveitados em vez de duplicados**, porque o teste de cobertura exige que cada msgid pertença a um arquivo só: as sete abas (`cabinet_editor.json`), `Vertical` e `Horizontal` (`aggregates.json`), `Internas` (`cabinet_editor.json`), `Externas` (`construtor_015.json`), `Abrir` (`ui.json`) e `Gerar`, `Aplicar`, `Cancelar`, `Fechar`, `Duplicar`, `Excluir` (`cladding.json` e `geral.json`). Os dez modelos de frente seguem o `DRAWER_MODEL_ITEMS` do anexo, com rótulo curto e descrição própria para o tooltip.
+
+## 8. Inserção pela interface e travessa de 90 mm (2026-11-23)
+
+### 8.1 Como o painel cria peça
+
+| Alternativa | Prós | Contras | Veredito |
+|-------------|------|---------|----------|
+| A. Operador por peça, com geração no mesmo `execute` | Um passo de desfazer por clique; reusa o núcleo já testado; o painel continua só desenhando | Repete a validação em cada operador, resolvida por uma base comum | **escolhida** (D-21) |
+| B. Inserir pelo `update` de uma propriedade | Menos código | Sem passo de desfazer, gera a cada tecla e escreve na cena durante o desenho | descartada |
+| C. Um operador com `EnumProperty` de peça | Um só `bl_idname` | Rótulo e ícone genéricos; testar exige percorrer o enum | descartada |
+
+O núcleo já cobre as quatro inserções e tem teste puro: `vaos.inserir_vertical`, `vaos.inserir_horizontal` e `vaos.matriz` (T013), `gavetas.bloco` (T016) e `internos.inserir` (T018). A lacuna era só o caminho de uso: nenhum dos quatro tinha chamador no pacote.
+
+### 8.2 Geometria da contra-frente e da peça de trás
+
+O motor anexo gera as duas como travessa de 90 mm no topo interno, com `espessura = base superior`, e a orientação decide em qual eixo ficam os 90 mm:
+
+```python
+if p.contra_frente:
+    em_pe = (p.orient_contra_frente == 'EM_PE')
+    dy = mm(t_bs) if em_pe else mm(90.0)
+    dz = mm(90.0) if em_pe else mm(t_bs)
+    make_panel("Contra-frente", ..., internal_y_front + dy / 2.0, z_in_t - dz / 2.0, inner_w, dy, dz)
+```
+
+O mockup desenha a mesma travessa (`wMm`/`hMm` valendo 90 ou a espessura) e lista 100 mm no cutlist; o pacote adota 90 mm, o valor do motor de referência. `spec.contra_frente` e `spec.peca_de_tras` foram escritos como painel da altura total (teste de T005 espera 2000 mm em pé e 560 mm deitada), o que fecharia a frente do armário; a correção para travessa está em D-22 e a premissa no roadmap §4.

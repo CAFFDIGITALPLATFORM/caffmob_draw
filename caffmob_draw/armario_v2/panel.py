@@ -18,8 +18,9 @@ própria vista (RN-22, D-05).
   desenho do painel só lê — desenhar não escreve na cena.
 
 As listas de divisórias, gavetas e internos são as coleções gravadas no armário: o painel edita o que existe, campo a
-campo, sem recriar peça nenhuma. Quem insere é a inserção múltipla do HUD (T025) e o Duplicar do menu (T024) — o
-`actions.md` não prevê operador de inserção aqui.
+campo, e **insere** pelas ações de D-21 (`Inserir divisória`, `Inserir prateleira`, `Inserir matriz`, `Criar bloco de
+gavetas` e `Inserir interno`), que regravam a coleção e geram de novo num único passo de desfazer. Os campos de
+variante, matriz e bloco ficam no armário, como as sub-abas, porque o painel só desenha: quem escreve é o operador.
 """
 
 import bpy  # type: ignore
@@ -70,15 +71,8 @@ def movel_antigo(context):
 
 # Estado do armário -----------------------------------------------------------------------------------------------
 def _vao_ativo(armario):
-    """Vão da peça escolhida na coleção ativa; sem escolha, o vão raiz.
-
-    O `§2` do `data-delta` não tem campo de vão ativo, então o cabeçalho lê o `active_index` das três coleções.
-    """
-    for colecao in (armario.divisoes, armario.gavetas, armario.internos):
-        indice = getattr(colecao, 'active_index', -1)
-        if 0 <= indice < len(colecao):
-            return colecao[indice].vao or 's0'
-    return 's0'
+    """Vão da peça escolhida na coleção ativa; o mesmo critério da inserção (D-21)."""
+    return ops.vao_ativo(armario)
 
 
 def peca_da_selecao(context):
@@ -198,6 +192,12 @@ def _estrutura(layout, context, raiz):
     linha.prop(armario, 'orientacao_tras')
 
     caixa = layout.box()
+    caixa.label(text=tr("Travessas"), icon='MOD_LENGTHWISE')
+    linha = caixa.row(align=True)
+    linha.prop(armario, 'contra_frente_ativa', text=tr("Contra-frente"))
+    linha.prop(armario, 'peca_tras_ativa', text=tr("Peça de trás"))
+
+    caixa = layout.box()
     caixa.label(text=tr("Espessuras do armário"), icon='MOD_SOLIDIFY')
     grade = caixa.grid_flow(columns=2, even_columns=True, align=True)
     for campo in spec_mod.THICKNESS_FIELDS:
@@ -218,6 +218,20 @@ def _estrutura(layout, context, raiz):
 def _divisoes(layout, _context, raiz):
     armario = raiz.btm_armario
     layout.prop(armario, 'subaba_divisoes', expand=True)
+    if armario.subaba_divisoes in ('VERTICAL', 'MULTIPLA'):
+        layout.prop(armario, 'variante_divisoria')
+        layout.operator("caffmob.armario_v2_inserir_divisoria", text=tr("Inserir divisória"), icon='ADD')
+    if armario.subaba_divisoes in ('HORIZONTAL', 'MULTIPLA'):
+        layout.prop(armario, 'variante_prateleira')
+        layout.operator("caffmob.armario_v2_inserir_prateleira", text=tr("Inserir prateleira"), icon='ADD')
+    if armario.subaba_divisoes == 'MULTIPLA':
+        caixa = layout.box()
+        caixa.label(text=tr("Inserção múltipla"), icon='GRID')
+        linha = caixa.row(align=True)
+        linha.prop(armario, 'matriz_linhas')
+        linha.prop(armario, 'matriz_colunas')
+        caixa.prop(armario, 'matriz_prioridade', expand=True)
+        caixa.operator("caffmob.armario_v2_inserir_matriz", text=tr("Inserir matriz"), icon='ADD')
     itens = _divisoes_da_subaba(armario, armario.subaba_divisoes)
     if not itens:
         layout.label(text=tr("Sem divisórias neste vão"), icon='INFO')
@@ -235,6 +249,13 @@ def _divisoes(layout, _context, raiz):
 def _gavetas(layout, _context, raiz):
     armario = raiz.btm_armario
     layout.prop(armario, 'subaba_gavetas', expand=True)
+    caixa = layout.box()
+    caixa.label(text=tr("Bloco de gavetas"), icon='MOD_BEVEL')
+    linha = caixa.row(align=True)
+    linha.prop(armario, 'bloco_quantidade')
+    linha.prop(armario, 'bloco_altura')
+    caixa.prop(armario, 'bloco_modelo')
+    caixa.operator("caffmob.armario_v2_criar_bloco_gavetas", text=tr("Criar bloco de gavetas"), icon='ADD')
     itens = _gavetas_da_subaba(armario, armario.subaba_gavetas)
     if not itens:
         layout.label(text=tr("Sem gavetas nesta sub-aba"), icon='INFO')
@@ -259,6 +280,10 @@ def _gavetas(layout, _context, raiz):
 
 def _internos(layout, _context, raiz):
     armario = raiz.btm_armario
+    caixa = layout.box()
+    caixa.label(text=tr("Interno a inserir"), icon='MOD_BEVEL')
+    caixa.prop(armario, 'interno_tipo', expand=True)
+    caixa.operator("caffmob.armario_v2_inserir_interno", text=tr("Inserir interno"), icon='ADD')
     if not len(armario.internos):
         layout.label(text=tr("Sem internos neste vão"), icon='INFO')
         return

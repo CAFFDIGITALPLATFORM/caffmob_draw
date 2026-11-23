@@ -1,7 +1,8 @@
 """Propriedades do alvo da seleção (feature 067, data-delta §1).
 
 - `Object.btm_part.grain`: veio da peça (NONE/H/V), guardado por objeto e lido pelo corte (D-13). Desde a onda 3 a
-  textura gira junto (`texture_library/grain`, RF-064).
+  textura gira junto (`texture_library/grain`, RF-064); `grain_angle` soma o giro livre em graus e o corte fica com o
+  múltiplo de 90 mais próximo (018, T020).
 - `Object.btm_part.finish_role`: papel da peça nos acabamentos (onda 2, D-14), gravado pelo assistente.
 - `WindowManager.btm_target`: estado de interface fora do arquivo e do Undo: o escopo das cotas (Peça ou Conjunto,
   D-07) e o último erro de um setter (D-04).
@@ -40,6 +41,12 @@ class BTM_PG_Part(bpy.types.PropertyGroup):
     # Sem 'ANIMATABLE': o veio é intenção de fabricação, não muda por quadro (RNF da 067).
     grain: bpy.props.EnumProperty(name=N_("Veio"), items=GRAIN_ITEMS, default='NONE', options=set(),
                                   update=_grain_changed)  # type: ignore
+    # (018, T020) Giro livre do veio em graus, somado ao enum no `grain.sync`; o corte usa o múltiplo de 90 mais
+    # próximo (D-05, D-06), sem reescrever o enum, o que evitaria o vaivém dele em ângulos entre 45° e 90°.
+    grain_angle: bpy.props.FloatProperty(name=N_("Ângulo do veio (graus)"),
+                                         description=N_("Giro do veio na face da peça; o corte usa o múltiplo de 90 "
+                                                         "mais próximo"), min=-180.0, max=180.0, default=0.0,
+                                         options=set(), update=_grain_changed)  # type: ignore
     # (onda 2, D-14) Papel da peça nos acabamentos, onde não há papel por face (bibliotecas HB e autoral).
     finish_role: bpy.props.EnumProperty(name=N_("Papel no acabamento"), items=FINISH_ROLE_ITEMS, default='UNKNOWN',
                                         options=set())  # type: ignore

@@ -1,114 +1,108 @@
 # Cross-check: Construtor de armário v2 no CAFFMob Draw
 
 > Identificador: `017-construtor-armario-v2`
-> Data da auditoria: `2026-11-21`
+> Data da auditoria: `2026-11-23` (segunda passada; a primeira foi em `2026-11-21`)
 > Artefatos analisados:
 > - `_reversa_forward/017-construtor-armario-v2/requirements.md` (24 RN, 26 RF, 26 cenários Gherkin)
-> - `_reversa_forward/017-construtor-armario-v2/roadmap.md` (D-01 a D-16)
-> - `_reversa_forward/017-construtor-armario-v2/actions.md` (T001 a T034)
-> - Apoio: `data-delta.md`, `investigation.md`, `onboarding.md`, `_reversa_sdd/domain.md`, código de `caffmob_draw/`
+> - `_reversa_forward/017-construtor-armario-v2/roadmap.md` (D-01 a D-18)
+> - `_reversa_forward/017-construtor-armario-v2/actions.md` (T001 a T035, 35 ações, todas `[X]`)
+> - Apoio: `data-delta.md`, `_reversa_sdd/domain.md`, `_reversa_sdd/cutting/requirements.md`, código de `caffmob_draw/`, `.reversa/state.json` e `.reversa/active-requirements.json`
 > Natureza: relatório leitor. Nenhum dos três artefatos foi alterado.
 
 ## 1. Resumo
 
 | Severidade | Quantidade |
 |------------|------------|
-| CRITICAL | 1 |
+| CRITICAL | 0 |
 | HIGH | 2 |
-| MEDIUM | 4 |
+| MEDIUM | 3 |
 | LOW | 4 |
-| **Total** | **11** |
+| **Total** | **9** |
 
-Um CRITICAL de contrato de produção (peça duplicada no plano de corte), dois HIGH de elo quebrado (operador da galeria e flags de presença ausentes no modelo de dados). Os quatro MEDIUM são divergências de documento e cobertura parcial; os LOW são rastreabilidade.
+Os três achados da primeira passada (A001 a A003) foram fechados de verdade: `btm_cut_exclude` passou a valer na origem do corte (T035), a galeria continua registrada (T027) e as quatro flags de presença existem em `props.py` (T003). O que resta é diferente: a feature está com 35 de 35 ações `[X]`, e o que sobra são **dois requisitos `Must` sem implementação ou sem verificação** (`RF-10`/`RN-08`, a corrediça 3D; e `RF-20`/`RN-17`, reabrir o arquivo), mais divergências de documento.
 
 ## 2. Findings
 
 | ID | Severidade | Eixo | Descrição | Onde está |
 |----|------------|------|-----------|-----------|
-| A001 | CRITICAL | 3, coerência com o legado / 1.2 | `btm_cut_exclude` não protege o caminho BTM: `iter_modules` percorre `scene.objects` sem filtro de visibilidade e `synthetic_records` não consulta a marca. Módulo de biblioteca convertido (face frame, que é módulo `btm_*`) continua emitindo peças sintéticas, duplicando-as no plano de corte ao lado do armário v2 | `roadmap.md` §9 (risco "duplicada no plano de corte", mitigação "`part_sources._visible` e `geometry_records` já respeitam"); `roadmap.md` D-13; `actions.md` T026/T029; código `caffmob_draw/cutting/part_sources.py:87` e `:221` |
-| A002 | HIGH | 1.2 / 3.2 | `library_panel/ops_cabinet.py` chama `bpy.ops.caffmob.structure_gallery` sem guarda, e esse operador vive em `cabinet_editor/gallery.py`, que o D-04 tira do registro. O roadmap §5 declara `ops_cabinet.py` "contrato-mantido" sem edição; na prática "Criar armário" da biblioteca perde a galeria e o acesso ao operador não registrado levanta `AttributeError` antes do `.poll()` | `roadmap.md` §1, §5 e D-04; `actions.md` T027 (não prevê `gallery` em `ops_cabinet.py`); código `caffmob_draw/library_panel/ops_cabinet.py:46-47` e `caffmob_draw/cabinet_editor/__init__.py:19-24` |
-| A003 | HIGH | 1.1 | RN-01 e RF-01 exigem construtor vazio com "Montar Caixa" ligando laterais, base inferior, base superior e fundo, e o HUD mostra "alternadores da estrutura". O modelo de dados não tem flag de presença por peça: `data-delta.md` §2 só tem `gerado`, e nenhuma ação cria `laterais_ativa`, `base_inf_ativa`, `base_sup_ativa`. Sem isso a janela vazia e o Montar Caixa não são representáveis | `requirements.md` RN-01, RF-01; `roadmap.md` D-05; `data-delta.md` §2; `actions.md` T003, T012, T020, T023, T025 |
-| A004 | MEDIUM | 2.1 / 4.4 | O roadmap §5 manda registrar `armario_v2` "depois de `customize` ... e antes de `cutting`", mas não existe `cutting.register()` na cascata do addon: `cutting` é importado no topo, não registrado. O T030 já corrigiu o ponto de inserção para "antes de `cabinet_editor.register()`", ficando divergente do roadmap | `roadmap.md` §5; `actions.md` T030; código `caffmob_draw/__init__.py:9-30` e `:340-360` |
-| A005 | MEDIUM | 2.1 / 1.2 | `vaos.py` (núcleo) e `test_017_vaos.py` não existem no delta arquitetural: o roadmap §3 D-01 e §5 enumeram sete núcleos (`spec`, `chapas`, `conferencia`, `gavetas`, `portas`, `internos`, `resumo`) e não atribuem módulo a RN-11 (duplicar) nem RN-12 (inserção múltipla). A ação criou um oitavo arquivo | `roadmap.md` §3 D-01 e §5; `actions.md` T006 e T013 (a divergência já está declarada no Resumo do actions) |
-| A006 | MEDIUM | 1.3 | RF-20 e o cenário "Reabrir mantém o armário" não têm ação com verificação. T003 grava os PropertyGroups e T023 lê, mas nenhuma ação exercita salvar → reabrir → painel; a fumaça T033 é headless e não faz ida e volta por arquivo `.blend` | `requirements.md` RF-20, §7; `actions.md` T003, T023, T033; `onboarding.md` §14 (só manual) |
-| A007 | MEDIUM | 1.3 | O cenário "Erro bloqueante impede OK" e RN-18 ("erro bloqueante impede OK e Aplicar") não aparecem em nenhuma ação de forma explícita: T023 desabilita Gerar e Aplicar apenas para móvel da construção antiga, e T021 trata contrato ausente e snapshot, não erro de faixa | `requirements.md` RN-18, RF-22, §7; `actions.md` T021, T023 |
-| A008 | LOW | 1.2 | D-07 (sem modal; Gerar/Cancelar) e D-15 (um teste puro por regra e uma fumaça) não são citados por nenhuma ação, embora estejam implementados de fato em T021 e no par T005–T011/T033. Rastreabilidade decisão → ação incompleta | `roadmap.md` D-07, D-15; `actions.md` inteiro |
-| A009 | LOW | 1.1 | RF-17 (acabamento) não tem decisão própria no roadmap: D-01 a D-16 não cobrem o tema, que aparece só em RN-14 e na ação T020 | `requirements.md` RF-17; `roadmap.md` §3 |
-| A010 | LOW | 4.4 | O roadmap §5 e o T029 dizem somar o adaptador "depois das gavetas"; em `extract_production_parts` a ordem é caffmob → BTM → cutpart → geometry → stairs → drawers → **promob**, então "depois das gavetas" tem duas leituras. Sem impacto funcional porque há `parts.sort` no fim | `roadmap.md` §5; `actions.md` T029; código `caffmob_draw/cutting/part_extractor.py:94-110` |
-| A011 | LOW | 0, instalação | `.reversa/state.json` e `.reversa/active-requirements.json` não existem nesta instalação. O skill manda abortar sem o segundo; a auditoria foi feita resolvendo a feature pelos artefatos (única com `roadmap.md` e sem `actions.md`) | ausência em `.reversa/` |
+| A012 | HIGH | 1.1 / 1.3 | `RN-08` e `RF-10` (`Must`) exigem a corrediça telescópica 3D na cena, com trilho externo, trilho interno e gaiolas, e um conjunto geométrico equivalente quando falta o OBJ. **Nada disso existe no motor**: nenhuma ação do plano instancia o modelo, `caffmob_draw/armario_v2/` não tem um único import de OBJ (`import_scene.obj`/`wm.obj_import` só aparece em `promob/complemento.py`) e `GAIOLA`/`CORREDICA`/`TRILHO` em `armario_v2/` só existem como papel de animação e como item de enum. O T033 registra o limite nas próprias notas ("o OBJ da corrediça continua não instanciado pelo motor") e mesmo assim o T020 e a feature fecham | `requirements.md` RN-08, RF-10 e cenário "Corrediça 3D ausente do pacote"; `roadmap.md` D-12; `actions.md` T001, T020, T022, T033 (Notas de execução, 2026-11-22) |
+| A013 | HIGH | 1.3 | `RN-17` e `RF-20` (`Must`) exigem que os parâmetros fiquem gravados no armário e que salvar, fechar, reabrir e abrir o construtor devolva o mesmo estado. O mecanismo existe (`BTM_PG_ArmarioV2` em `Object.btm_armario`, D-02), mas não há **ação nem teste** que o exercite: as 35 ações não citam `RF-20` nem `RN-17`, e `tests/blender_017_armario_smoke.py` não tem uma linha de `save_as_mainfile` ou `open_mainfile`. Era o A006 (MEDIUM no plano); com a feature fechada, requisito `Must` sem nenhuma prova sobe para HIGH | `requirements.md` RN-17, RF-20 e cenário "Reabrir mantém o armário"; `actions.md` T003, T023, T033; código `tests/blender_017_armario_smoke.py` |
+| A014 | MEDIUM | 1.1 | `RN-18` e `RF-22` dizem que "erro bloqueante impede OK e Aplicar" e o critério de aceite pede o botão desabilitado. No código, `spec.validate` só roda dentro de `ops.Gerar` (recusa no clique, com `report`), e o painel desabilita `Gerar` apenas por `chapas.pode_gerar`. Uma largura fora de faixa deixa o botão habilitado e o erro só aparece depois do clique. Era o A007, permanece aberto | `requirements.md` RN-18, RF-22, cenário "Erro bloqueante impede OK"; `caffmob_draw/armario_v2/panel.py:105` e `:324`; `caffmob_draw/armario_v2/ops.py:262` |
+| A015 | MEDIUM | 2.1 | Os documentos divergem sobre a mesma decisão do titular: o `requirements.md` §9 diz que o A003 ficou **sem resposta** ("Não houve resposta do titular nesta sessão; a derivação está registrada como premissa 🟡 em D-18") e o §10 repete que faltava confirmar no T003, mas o `roadmap.md` D-18 está 🟢 e afirma "Confirmado pelo titular em 2026-11-21 (fechamento do A003)", e o fechamento registrado na primeira passada também diz decisão do titular. Um dos dois está errado sobre um fato verificável | `requirements.md` §9 (sessão 2026-11-21) e §10; `roadmap.md` D-18; histórico do `requirements.md` §11 |
+| A016 | MEDIUM | 4.1 | O Resumo do `actions.md` declara "Maior cadeia de dependência: 10 (T005 → T012 → T013 → T020 → T021 → T023 → T027 → T030 → T033 → T034)". A cadeia real tem **11** elos e passa por T014 e T015: T005 → T012 → T014 → T015 → T020 → T021 → T023 → T027 → T030 → T033 → T034. O `T013` citado não é ancestral do `T020` (`T020` depende de `T012`, `T013`, `T015`, `T016`, `T017`, `T018`, `T003`) | `actions.md` §Resumo |
+| A017 | LOW | 1.1 | Cinco requisitos não são citados por nenhuma ação, embora estejam cobertos de fato pelas regras que os originam: `RF-05` (montagem/orientações, via `RN-04` em T005/T012), `RF-06` (espessura por papel, via `RN-05`), `RF-07` e `RF-08` (divisões e duplicar, via `RN-12`/`RN-11` em T006/T013), `RF-15` (fundo, via `RN-15`). `RN-17` é o único RN sem citação, e esse é o A013 | `requirements.md` §5; `actions.md` inteiro |
+| A018 | LOW | 1.2 | `D-07` (sem modal) e `D-15` (um teste puro por regra e uma fumaça) continuam sem citação em ação alguma, apesar de implementados em T021 e no par T005–T011/T033. Rastreabilidade decisão → ação incompleta, sem efeito funcional. Era o A008 | `roadmap.md` D-07, D-15; `actions.md` inteiro |
+| A019 | LOW | 0 / 2.1 | O critério de pronto do `roadmap.md` §10 está com os nove itens desmarcados, inclusive "Todas as ações do `actions.md` marcadas `[X]`", que hoje é verdade (35 de 35). E o item "`ruff check caffmob_draw/` limpo" é contradito pela decisão 1 registrada na T034 (21 erros preexistentes, de propósito não corrigidos nesta feature) | `roadmap.md` §10; `actions.md` T034, Notas de execução |
+| A020 | LOW | 0 / instalação | `.reversa/active-requirements.json` continua em `current-stage: plan` com `stages-completed: [requirements, clarify]`, enquanto o `actions.md` está 35 de 35 `[X]` e o `roadmap.md` §10 fala em critério de pronto. O estado da feature não reflete o estágio real | `.reversa/active-requirements.json` |
 
-## 3. Detalhe dos CRITICAL e HIGH
+## 3. Detalhe dos HIGH
 
-### A001, peça duplicada no plano de corte (CRITICAL)
+### A012, a corrediça 3D nunca é criada (HIGH)
 
-O D-13 resolve a conversão de módulo de biblioteca por ocultação do módulo antigo mais `btm_cut_exclude`, e o roadmap §9 justifica que `part_sources._visible` e `geometry_records` "já respeitam as duas marcas". Isso é verdade só para as peças filhas lidas pelo caminho CUTPART: `_cutpart_found` filtra `_visible(obj)` e `getattr(obj, 'btm_cut_exclude', False)` por filho. Não vale para o caminho BTM: `iter_modules` (`part_sources.py:87`) varre `scene.objects` sem checar ocultação nem exclusão, e `synthetic_records` (`:221`) deduz laterais, bases, prateleira e portas de `btm_cabinet`/`dimensions` sem nunca consultar a marca. Como face frame é módulo `btm_*` (o próprio `requirements.md` §2 cita `btm_cabinet`/`btm_structure` como origem dos parâmetros), o cenário de A001 é o caminho normal do RF-24, não uma borda.
+O `RN-08` é explícito: com corrediça 3D ligada, cada gaveta recebe o conjunto importado do arquivo de modelo, com trilho externo preso na lateral do armário, trilho interno preso na gaveta e gaiolas a meio curso, e **sem o arquivo** entra o conjunto geométrico equivalente com as mesmas três partes marcadas. O `RF-10` é `Must` e repete a regra no critério de aceite ("cada gaveta recebe duas corrediças").
 
-Impacto: o plano de corte lista duas vezes as peças do mesmo móvel, com medidas diferentes (sintéticas do módulo antigo e reais do armário v2). É exatamente o dado que vai para a produção e o risco que o §9 diz ter mitigado, o que o torna pior: a mitigação declarada impede que alguém procure o defeito. Contraria a regra 🟢 de `_reversa_sdd/cutting/requirements.md#Origem das peças` (objeto marcado como excluído não entra).
+O que existe hoje no pacote: o arquivo `caffmob_draw/assets/slides/slide-st48-0200-0.obj` copiado em T001, o campo `corredica_3d` em `gavetas.py` e em `ops.py`, o item de enum e o papel `GAIOLA`/`CORREDICA`/`TRILHO` que a animação consulta em `anim.py:39`. O que não existe: o import do OBJ, a instanciação por gaveta e o conjunto geométrico de reserva. Nenhum arquivo de `armario_v2/` importa OBJ (o único import de OBJ do pacote está em `promob/complemento.py`), e a fumaça da 017 não tem uma conferência sobre a corrediça.
 
-Direção da correção (não executada aqui): decidir onde o filtro vive — provavelmente em `iter_modules` (ignorar módulo oculto ou com `btm_cut_exclude`) e um teste puro que conte as peças antes e depois de `Gerar` a partir de módulo, como o §9 já pede. O `actions.md` precisa de uma ação com esse alvo; hoje o T029 só acrescenta o adaptador novo. Skill sugerido para o humano: `/reversa-clarify` no escopo do corte, ou edição manual do roadmap §9 e do T029.
+Impacto: é uma peça de ferragem que o projetista promete ao cliente e que não aparece no projeto. A gaveta abre e fecha (a animação foi provada com 72% de curso), mas o trilho que deveria acompanhá-la não está na cena. Como a feature já está fechada com 35 de 35 ações, o defeito não tem dono no plano: o T020 fecha sem a corrediça e o T033 declara o limite nas notas em vez de abrir ação. E o critério de pronto do `roadmap.md` §10 não inclui "a corrediça aparece na cena", então ele não pega isso.
 
-### A002, o operador da galeria desaparece com a interface (HIGH)
+Direção da correção (não executada aqui): abrir ação nova para instanciar o OBJ em `build.py` (uma importação por armário, instâncias por gaveta, como o D-12 descreve) mais a alternativa geométrica, e acrescentar à fumaça uma conferência de que cada gaveta tem trilho externo, trilho interno e gaiola, com e sem o arquivo. Skill sugerido para o humano: `/reversa-plan` (ação nova) ou `/reversa-clarify` se a decisão for adiar o `RN-08` e rebaixar o requisito.
 
-`library_panel/ops_cabinet.py:46` faz `bpy.ops.caffmob.structure_gallery.poll()` dentro de `invoke`, sem `try/except`, e `:47` invoca o operador. Esse operador é `bl_idname = "caffmob.structure_gallery"`, registrado por `cabinet_editor/gallery.py:250`, que está na lista de módulos que o D-04 remove de `_modules()` (`cabinet_editor/__init__.py:19-24`). O roadmap §1 lista `gallery` entre o que sai do registro e, três seções depois, §5 declara `library_panel/ops_cabinet.py:79` "contrato-mantido, sem edição". As duas afirmações não podem valer juntas.
+### A013, reabrir o arquivo nunca foi provado (HIGH)
 
-Impacto: o botão "Criar armário" da biblioteca é o caminho pelo qual o módulo nasce na feature 015 (T036), e é justamente o ponto de entrada do RF-24 (módulos de biblioteca no motor novo). Acesso a operador não registrado não devolve `poll()` falso de forma silenciosa: levanta `AttributeError` na obtenção do atributo. Mesmo que devolvesse falso, o fluxo cairia no diálogo antigo e a galeria de estruturas sumiria sem aviso — perda de função não declarada em nenhum requisito.
+`RN-17` e `RF-20` são o motivo de o spec viver em `Object.btm_armario` (D-02): gerar, salvar, fechar, reabrir e abrir o construtor devolvendo as mesmas medidas, divisões, gavetas, portas e fundo, com as peças na cena. O desenho está certo, propriedades de `PropertyGroup` viajam no `.blend` e a abertura grava `snapshot`, mas **nenhuma ação e nenhuma fumaça fazem a ida e volta por arquivo**: o `blender_017_armario_smoke.py` não chama `save_as_mainfile` nem `open_mainfile` (outras fumaças do repositório chamam, a da 017 não).
 
-Direção da correção: escolher entre manter `gallery` registrado (é UI, mas é o único caminho de criação de módulo por estrutura) ou adaptar `ops_cabinet.py` com guarda e um substituto. Isso muda o escopo do T027 e a linha correspondente do §5. Skill sugerido: `/reversa-clarify`.
+Impacto: é o requisito que sustenta a decisão de modelo de dados inteira, e o único caminho que o exercita hoje é manual, numa janela. Um `PointerProperty` mal declarado, um `EnumProperty` que reescreve o valor ao carregar ou um `snapshot` que não sobrevive ao ciclo passariam por todos os 48 testes puros e pela fumaça atual sem aparecer. A feature estava com o A006 aberto desde 2026-11-21 e o plano fechou assim mesmo.
 
-### A003, o modelo não representa "construtor vazio" (HIGH)
-
-RN-01 é a regra de abertura da feature: nada marcado, nenhuma peça, estado "janela de armário vazia", com Montar Caixa e Limpar. RF-01 detalha que Montar Caixa "liga laterais, base inferior, base superior e fundo". O painel também teria alternadores da estrutura no HUD (T025). O `data-delta.md` §2 descreve o `BTM_PG_ArmarioV2` campo a campo e não traz nenhuma flag de presença de peça estrutural; o único estado é `gerado` (booleano) e `aberto`. Com esse contrato, "Montar Caixa" não tem o que ligar: ou as peças existem desde que o spec existe, ou não existem nunca.
-
-Impacto: é a primeira coisa que o projetista vê (`onboarding.md` §2 e §4) e o primeiro critério de aceite do RF-01. Descobrir no T023 que o campo não existe força mexer no `props.py`, no `spec.py`, no `build.py` e no `data-delta.md` no meio da integração.
-
-Direção da correção: acrescentar as flags de presença ao §2 do `data-delta.md` e uma ação que as crie antes do `build` (o T012 é o lugar natural, junto das faixas). Skill sugerido: `/reversa-clarify`.
+Direção da correção: uma ação de verificação, sem tocar no desenho: gravar, salvar em `tempdir`, reabrir com `bpy.ops.wm.open_mainfile`, conferir abas, medidas e peças. Skill sugerido para o humano: `/reversa-plan`.
 
 ## 4. Verificados e aprovados
 
 ### Eixo 1, cobertura
 
-- RF-01 a RF-26 têm pelo menos um destino nas ações: os 26 aparecem citados ou são cobertos pelas regras que os originam, com as três exceções acima (A003, A006, A007).
-- D-01 a D-16 têm ação correspondente: D-01/D-02 em T003–T004, D-03 em T021, D-04 em T027, D-05 em T023, D-06 em T024, D-08 em T022, D-09 em T015, D-10 em T012, D-11 em T014, D-12 em T001, D-13 em T026, D-14 em T023, D-16 em T031. D-07 e D-15 são cobertos de fato, só não citados (A008).
-- 26 cenários Gherkin: 24 com ação que os exercita (testes puros T005–T011 ou fumaça T033); 2 com cobertura parcial (A006, A007).
-- RN-16, RN-19 e RN-24 (o corte ler o papel gravado) têm três pontos independentes: papel em T020, adaptador em T029, lista em T019.
+- `RF-01` a `RF-26`: 19 aparecem citados nas ações e, dos 7 restantes, 5 têm cobertura real por outra via (A017). Só `RF-20` (A013) não tem cobertura nem citação, e `RF-10` (A012) tem citação mas não implementação.
+- `RN-01` a `RN-24`: 23 citados; `RN-17` é o único ausente (A013). `RN-08` é citado e não implementado (A012).
+- `D-01` a `D-18`: 16 citados em ação; `D-07` e `D-15` são cobertos de fato (A018). `D-17` aparece em T035 e `D-18` em T003, fechando os achados da primeira passada.
+- 26 cenários Gherkin: 24 com teste puro ou conferência de fumaça que os exercita; "Reabrir mantém o armário" sem prova (A013) e "Corrediça 3D ausente do pacote" sem implementação (A012).
+- Os três achados da primeira passada estão fechados com prova: A001 em T035 e `tests/test_017_corte.py` (6 casos) mais a fumaça (7 → 0 peças); A002 em T027 (galeria registrada, `ops_cabinet.py` intocado); A003 em T003 e D-18 (quatro flags, `False` por padrão, confirmadas pela fumaça do HUD).
 
 ### Eixo 2, consistência
 
-- Terminologia estável nos três documentos: `btm_armario`, `btm_armario_parte`, `btm_armario_contrato`, `papel`, `vão`, `bloquear_chapa`, `Gerar`/`Aplicar`/`Cancelar`, `deslizante`, `folha`, `afastador`, `separador`.
-- Todos os identificadores citados existem: RN-01 a RN-24 e RF-01 a RF-26 conferem nos requisitos; D-01 a D-16 conferem no roadmap. Nenhum identificador fantasma.
-- O roadmap §7 declara que não há contrato externo novo e não há `interfaces/`; o corte continua no JSON v2 existente. A declaração confere com `actions.md` (nenhuma ação de formato externo).
-- `data-delta.md` e `props.py` previsto em T003 batem campo a campo, com a exceção A003.
+- Terminologia estável: `btm_armario`, `btm_armario_parte`, `btm_armario_contrato`, `papel`, `vão`, `bloquear_chapa`, `Gerar`/`Aplicar`/`Cancelar`, `deslizante`, `folha`, `afastador`, `separador`, `Montar Caixa` aparecem com o mesmo nome nos três documentos.
+- Identificadores citados existem: `RF-01` a `RF-26` e `RN-01` a `RN-24` conferem no `requirements.md`; `D-01` a `D-18` conferem no `roadmap.md`; `T001` a `T035` conferem no `actions.md`. Nenhum identificador fantasma.
+- O `RN-27` citado no `requirements.md` §2 é do `_reversa_sdd/cabinet_editor/requirements.md`, não deste documento, e está identificado como tal.
+- Contratos: o `roadmap.md` §7 declara que não há contrato externo novo e o `actions.md` confere (o JSON de corte é o mesmo, com `ARMARIO_V2` acrescentado a `json_exporter.SOURCES` em T029).
+- `data-delta.md` e o código batem: nove espessuras no armário, oito no contrato, com a diferença da `espessura_folha` registrada nas notas de T003 e T004.
 
 ### Eixo 3, coerência com o legado
 
-- RN-CABINET_EDITOR-01 (🟢 um passo de desfazer por confirmação; Cancelar reaplica o instantâneo) é preservada por D-07/T021, com o instantâneo em `snapshot` JSON em vez da sessão em memória.
-- RN-CABINET_EDITOR-02 (🟢 erro impede OK e Aplicar) é preservada em intenção; a ação explícita falta (A007).
-- RN-CABINET_EDITOR-11 (🟢 divisões, extras, internos e deslizantes como filhos diretos da raiz) confere com a raiz vazia de T020.
-- RN-CABINET_EDITOR-12 (🟢 vãos em cadeia `s0`, `s0.b`…) confere com o caminho de vão de T006/T013.
-- Componentes citados no roadmap existem no código: `cabinet_editor.structure.carcass_lengths`, `part_extractor.limit_status` (`:23`), `part_extractor.extract_production_parts` (`:94`), `part_sources.PartRecord`, `part_sources._visible` (`:123`), `standards.api`, `data/i18n.py`, `ui/context_menu.py`.
-- Conflito consciente e arbitrado, não reportado como defect: RN-22 e RF-26 tiram o móvel antigo da edição, contra o comportamento 🟢 do editor 2D. A decisão do titular está registrada no `requirements.md` §9 (sessão 2026-11-19) e o roadmap §2 a marca "conflita (aceito)". O RF-26 preserva os móveis existentes na cena e no corte.
+- RN-CABINET_EDITOR-01 (🟢 um passo de desfazer por confirmação) preservada: `Gerar`/`Aplicar`/`Cancelar` com `UNDO`, `Cancelar` reaplicando o `snapshot` (T021), provado na fumaça.
+- RN-CABINET_EDITOR-11 (🟢 divisões, extras e internos como filhos diretos da raiz) preservada pela raiz vazia de `build.criar_raiz` e por `build.e_raiz` (T033, defeito 4 corrigido).
+- RN-CABINET_EDITOR-12 (🟢 vãos em cadeia `s0`, `s0.b`, `s0.a`) preservada em `vaos.arvore` e provada em `test_017_vaos.py`, inclusive depois da correção de colisão de caminhos de 2026-11-22.
+- Regra 🟢 de `_reversa_sdd/cutting/requirements.md#Origem das peças` (objeto marcado como excluído não entra) agora vale na origem, em `iter_modules` (T035).
+- Componentes citados existem: `cabinet_editor.structure.carcass_lengths`, `part_extractor.extract_production_parts`, `part_sources.PartRecord`, `part_sources._visible`, `standards.api`, `data/i18n.py`, `json_exporter.SOURCES`.
+- Conflito consciente e arbitrado, não reportado como defeito: RN-22 e RF-26 tiram o móvel antigo do editor 2D, contra o comportamento 🟢 do legado. A decisão está no `requirements.md` §9 e o `roadmap.md` §2 a marca "conflita (aceito)"; as fumaças 006 e 008 foram aposentadas com README em `tests/retired/`.
 
 ### Eixo 4, sanidade do actions
 
-- 34 IDs únicos e sequenciais, `T001` a `T034`, nenhum reciclado; todos os `Status` em `[ ]`.
-- Toda dependência aponta para ID existente; nenhuma aponta para si mesma; todas apontam para ID menor, portanto não há ciclo.
-- As 21 ações `[//]` não compartilham arquivo alvo entre si dentro da mesma onda: os sete testes (T005–T011) são arquivos distintos, os seis núcleos (T013–T019) idem, e os itens avulsos (T001, T002, T024, T025, T028, T029, T031) também.
-- Nenhuma ação de configuração de IDE, lint avulso ou abertura de PR. T034 é verificação de critério de pronto, no padrão das features 004/006/008/016.
-- Toda ação cabe num turno: nenhuma passa de cinco subpontos, de três arquivos não relacionados ou de encadeamento "e também/depois".
+- 35 IDs únicos e sequenciais, `T001` a `T035`, nenhum reciclado, nenhum duplicado; todas as 35 em `[X]`.
+- Toda dependência aponta para ID existente e para ID menor: nenhuma quebrada, nenhuma autorreferência, **nenhum ciclo** (verificado por percurso completo do grafo).
+- As 21 ações `[//]` não compartilham arquivo alvo entre si: os sete testes (T005–T011), os seis núcleos paralelos (T013–T019, menos T012 e T018 que são sequenciais por dependência), e os avulsos (T001, T002, T024, T028, T029, T031) apontam cada um para um arquivo distinto. `part_sources.py` aparece em T029 (`[//]`) e T035 (sequencial, dependente de T029), sem violação.
+- Distribuição por fase: preparação 4 (T001–T004), testes 7 (T005–T011), núcleo 8 (T012–T019), integração 13 (T020–T031 e T035), polimento 3 (T032–T034). Soma 35, confere com o Resumo.
+- Nenhuma ação de configuração de IDE, lint avulso ou abertura de PR.
 
 ## 5. Observações de contexto
 
-- A ausência de `.reversa/state.json` (A011) é de instalação, não de conteúdo: os caminhos usados foram `_reversa_forward/` e `_reversa_sdd/`, que existem.
-- O `_reversa_sdd/` não foi auditado nesta passada; a comparação com o legado se limitou às regras 🟢 de `domain.md` e de `cutting/requirements.md` citadas pelos artefatos da 017.
+- A primeira passada desta auditoria (2026-11-21) teve 1 CRITICAL e 2 HIGH, todos fechados por decisão do titular e registrados no histórico do `requirements.md` §11 e do `actions.md`. Este relatório substitui aquele, como o skill manda.
+- O que mudou entre as duas passadas: T035 (achado A001) foi criado e executado, D-17 e D-18 entraram no roadmap, e as 35 ações foram fechadas. A cobertura de teste cresceu de 34 para 48 casos puros mais a fumaça no Blender 5.2 com 48 conferências.
+- `_reversa_sdd/` não foi auditado nesta passada; a comparação com o legado se limitou às regras 🟢 de `domain.md` e de `cutting/requirements.md` citadas pelos artefatos da 017.
+- O `audit/janela/` guarda três capturas da conferência em janela de 2026-11-22 (`1-armario-vazio.png`, `2-peca-escolhida.png`, `3-painel-em-popup.png`). Elas provam desenho, não regra: nenhum dos dois HIGH depende delas.
 
-## 6. Fechamento (2026-11-21)
+## 6. Próximo passo sugerido
 
-| ID | Estado | Como foi fechado |
-|----|--------|------------------|
-| A001 | ✅ fechado | Ação **T035** criada: filtrar módulo oculto ou com `btm_cut_exclude` em `part_sources.iter_modules`, com `tests/test_017_corte.py` contando as peças antes e depois de `Gerar` a partir de módulo. Roadmap §9 corrigido e D-17 acrescentado. |
-| A002 | ✅ fechado | Decisão do titular: `gallery` **permanece registrado** em `cabinet_editor._modules()`; `library_panel/ops_cabinet.py` não é editado. T027 e roadmap §1/§5 ajustados. |
-| A003 | ✅ fechado | Decisão do titular: **quatro flags de presença mais `fundo_ativo`**, não um enum de montagem rápida. `data-delta.md` §2 já traz `lateral_esq_ativa`, `lateral_dir_ativa`, `base_inf_ativa` e `base_sup_ativa` (padrão `False`); D-18 passou de 🟡 a 🟢 e T003 as cria. |
+Há dois HIGH abertos, nenhum deles corrigível por este relatório:
 
-Motivo de A003 ficar por flags: as peças estruturais são independentes umas das outras (RN-01 e RF-01 pedem alternadores por peça no HUD e um `snapshot` que restaure qualquer combinação). Um enum de montagem rápida só representaria presets fechados — quatro peças já dão quinze combinações não vazias, e a combinação escolhida pelo projetista teria de ser convertida de volta para flags ao salvar. O enum pode ser acrescentado depois como *atalho de interface* que liga várias flags de uma vez, sem mudar o modelo de dados.
+1. A012 e A013 pedem **ação nova** no `actions.md` (a corrediça 3D e a ida e volta por arquivo). Isso é `/reversa-plan`, ou `/reversa-to-do` se a decisão do titular for só acrescentar as ações ao plano existente.
+2. A014, A015, A016, A019 e A020 são correções de documento: `requirements.md` §9/§10 contra o D-18, o Resumo do `actions.md`, o §10 do roadmap e o `active-requirements.json`. Isso é edição manual ou `/reversa-clarify`, nunca este skill.
+3. A012 tem uma decisão de produto embutida: implementar o `RN-08` agora ou rebaixá-lo no `requirements.md` e fechar a feature sem a corrediça 3D. Só o titular decide.
 
-A007 e A006 continuam abertos: nenhuma ação exercita salvar → reabrir → painel e nenhuma trata erro de faixa bloqueando OK/Aplicar de forma explícita.
+Estado: nenhum dos três artefatos foi alterado por esta auditoria.

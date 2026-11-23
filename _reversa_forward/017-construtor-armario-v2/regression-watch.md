@@ -22,6 +22,7 @@ ser tocado. Elas precisam continuar verdadeiras nas próximas extrações.
 | W008 | `data/i18n.py` (RN-20) | Todo texto novo tem `pt_BR` e `en_US` e cada msgid pertence a um arquivo só | automática | `tests/test_i18n_coverage.py` falhando por texto sem tradução ou msgid duplicado |
 | W009 | `build.py` (RNF de compatibilidade) | O pacote continua empacotando o ativo da corrediça e recusando empacotar sem os `.blend` obrigatórios | automática | `assets/slides/slide-st48-0200-0.obj` ausente do ZIP, ou `build.py` recusando por causa dele |
 | W010 | `cabinet_editor/structure.py` (RN-04) | `carcass_lengths` continua com o mesmo contrato de montagem lateral passante / base passante | regressão | `spec.py` reimplementar a conta e divergir do editor antigo |
+| W011 | `domain.md` (RN-04) e `armario_v2/spec.py` | Contra-frente e peça de trás são travessas de 90 mm com a espessura da base superior, e a orientação troca o eixo dos 90 mm entre altura e profundidade | redação | A peça voltar a sair como painel da altura total, sumir do corte ou o check de presença deixar de valer |
 
 ## 2. Histórico de re-extrações
 
@@ -41,6 +42,8 @@ ser tocado. Elas precisam continuar verdadeiras nas próximas extrações.
 | 2026-11-22 | T026: `ponte.py` e a aba do módulo no painel | RN-21 é 🟢 e passa a valer: o módulo de biblioteca é editado pelo motor novo. Nenhum operador ou adaptador da biblioteca foi desregistrado ou reescrito; o módulo só é ocultado e marcado, e só quando a geração passa. W001 e W002 seguem: a ponte só lê o módulo e grava no armário v2. W008 verde com os 12 textos novos. Fica aberto o risco de peça duplicada no corte pelo caminho sintético (A001), tratado em T035 |
 | 2026-11-22 | Correção do painel (T026): seleção de módulo vence o recuo para a coleção | Nenhuma regra 🟢 tocada; a aba do módulo de biblioteca volta a aparecer com outro armário v2 na cena e o `poll` aceita arquivo só com módulos. Fumaça simulada com 4 casos, o novo incluído |
 | 2026-11-22 | T028: `caffmob.cabinet_editor_modal` sai dos modais gerenciados | Nenhuma regra 🟢 tocada. Guarda de colisão e assentar só classificam operador em andamento, e o modal não é registrado desde T027, então a remoção é inerte. `grep` em `collision/` e `stick/` sem o nome; W001–W010 inalteradas |
+| 2026-11-23 | T031 e T032: manifesto em 1.26.0 e mensagens do núcleo no catálogo | Nenhuma regra 🟢 tocada. **W008** conferida de novo: `tests/test_i18n_coverage.py` verde e `tools/i18n_scan.py` sem texto sem tradução, agora incluindo as recusas de `spec`, `chapas`, `vaos`, `conferencia` e `resumo`, que passaram a ser montadas sobre o catálogo por `tr()`. **W009** conferida: `build.py` empacotou 2367 arquivos com o OBJ da corrediça dentro do ZIP e o manifesto em 1.26.0. Nada executado no Blender |
+| 2026-11-23 | T036 a T040: corrediça 3D e reabertura por arquivo | Nenhuma regra 🟢 do legado foi alterada: a corrediça nasce no armário v2 com `papel` vazio, W005 e W006 seguem verdadeiras (o corte não lista ferragem e a fumaça confere o plano sem corrediça), W009 continua verde (nenhum ativo novo) e W008 conferida de novo com as três chaves novas. A reabertura não muda código de produção. Nenhum watch item novo |
 | 2026-11-22 | T027: interface do editor 2D fora do registro de `cabinet_editor` | Nenhuma regra 🟢 removida: W001–W004 continuam valendo, agora no construtor v2 (a interface 2D apenas deixa de existir). `data_props`, `previews`, `gallery` e `reflow_handler` seguem registrados; W007 coberto porque `gallery` foi mantido. W008 e W009 não mudam. O `Abrir` do armário v2 passa a poder registrar (guarda de D-03 sem casar) |
 
 ## 3. Arquivadas
@@ -94,3 +97,14 @@ ser tocado. Elas precisam continuar verdadeiras nas próximas extrações.
 - W010 precisa de leitura cuidadosa: `spec.carcass_lengths` reusa a função antiga só na montagem lateral passante. Na
   base passante as duas bases cobrem a largura (RN-04 da 017), o que a função da 012 não faz. Se uma extração futura
   encontrar as duas regras na mesma chave de watch, isso é divergência de leitura, não regressão.
+- **T036 a T040 não abrem watch item.** A corrediça é componente novo dentro de `armario_v2/` e não altera nenhum
+  adaptador do legado: as partes saem com `papel` vazio, então `part_sources.armario_v2_records` (W005/W006) e
+  `resumo`/`conferencia` continuam descartando ferragem. A gaiola passou a ser reconhecida por `ferragem` na animação,
+  campo do próprio `BTM_PG_ArmarioParte`; nenhum `papel` novo foi gravado, então o corte não muda. A fumaça da 017
+  cobre o caso com OBJ, o conjunto de reserva e o plano sem corrediça; a de reabertura cobre a permanência de
+  `btm_armario` depois de `open_mainfile`.
+- **T041 a T051 não abrem watch item de adaptador.** A inserção grava nas coleções que já existiam e não muda caminho de
+  vão (`s0`, `s0.b`…), então W004 continua valendo. As duas travessas entram no corte com `papel` preenchido e
+  componente `TRA`, o que W005/W006 já cobrem; a única regra de domínio que mudou de leitura é a RN-04, e ela ganhou
+  W011 por isso. O sinal a vigiar numa re-extração: `spec.contra_frente` deixar de devolver `{'altura': 90, ...}` e
+  voltar a devolver a altura do armário.

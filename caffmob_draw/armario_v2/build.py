@@ -14,8 +14,18 @@ módulo — continuam importáveis fora do Blender, e o teste puro da lista de c
 O fundo segue a fixação (RN-15): em canal fica entre as chapas da caixa e recua da face de trás sem consumir
 profundidade; sobreposto usa as medidas externas. Os quatro acabamentos viram materiais próprios, com vidro e alumínio
 em materiais separados (RF-17).
+
+A corrediça (RN-08, D-19) segue as caixas de `corredica.pecas`: com o OBJ do anexo disponível, o `gerar` importa o
+arquivo uma vez, guarda as malhas e instancia o conjunto por gaveta e por lado; sem o arquivo, as mesmas três partes
+saem como caixas equivalentes. Em qualquer dos casos a peça tem `papel` vazio e `ferragem` preenchida, então continua
+fora do plano de chapa (RF-19) e a gaiola é reconhecida pela animação (RN-10).
 """
 
+import math
+import os
+from pathlib import Path
+
+from . import corredica as corredica_mod
 from . import gavetas as gavetas_mod
 from . import portas as portas_mod
 from . import spec as spec_mod
@@ -25,6 +35,11 @@ MM = 0.001
 
 COLECAO = "CAFFMob Armário v2"
 RAIZ = "Armário v2"
+
+# Corrediça do anexo (RN-08, D-19): o OBJ é importado uma vez e as malhas ficam guardadas por caminho.
+OBJ_CORREDICA = ('assets', 'slides', 'slide-st48-0200-0.obj')
+ROTACAO_MODELO = -math.pi / 2.0     # deita o conjunto: comprimento em Y, altura em Z
+_modelos = {}
 
 # Componente do Padrão de Dimensões de cada papel (`data/dimension_schema.py`), para casar com o corte.
 COMPONENTES = {
@@ -37,6 +52,8 @@ COMPONENTES = {
     'FRENTE_GAVETA': 'FRE_GAV_INT',
     'PORTA': 'POR',
     'FOLHA': 'POR',
+    'CONTRA_FRENTE': 'TRA',
+    'PECA_TRAS': 'TRA',
 }
 FITA_FRENTE = (True, False, False, False)
 SEM_FITA = (False, False, False, False)
@@ -77,6 +94,7 @@ def pecas(spec, divisoes=(), lista_gavetas=(), lista_internos=()):
     # RN-06: com a deslizante apoiada por dentro, o trilho come a profundidade — divisórias, prateleiras, gavetas e
     # internos recuam e encurtam nesse tanto, e as chapas da caixa ficam como estão.
     recuo = portas_mod.recuo_por_papel(spec.deslizante_ativa, spec.deslizante_base, spec.trilho_profundidade)
+    recuo_gaveta = corredica_mod.recuo(spec)
     itens = []
 
     # Caixa (RN-04): laterais na altura da montagem; bases entre elas ou por cima, conforme a montagem.
@@ -107,6 +125,24 @@ def pecas(spec, divisoes=(), lista_gavetas=(), lista_internos=()):
             fx0, fx1, fz0, fz1 = x_interno0, x1 - dir_, inf, altura - sup
         fy1 = -medidas['recuo']
         itens.append(_peca('FUNDO', "Fundo", _caixa(fx0, fx1, fy1 - t_fundo, fy1, fz0, fz1), t_fundo))
+
+    # Contra-frente e peça de trás (RN-04, D-22): travessa de 90 mm entre as laterais, no topo interno, uma na face
+    # da frente e outra na face de trás. A orientação decide em que eixo ficam os 90 mm.
+    topo_travessa = altura - sup
+    for papel, nome, medidas, ativa, na_frente in (
+            ('CONTRA_FRENTE', "Contra-frente", spec_mod.contra_frente(spec), spec.contra_frente_ativa, True),
+            ('PECA_TRAS', "Peça de trás", spec_mod.peca_de_tras(spec), spec.peca_tras_ativa, False)):
+        if not ativa:
+            continue
+        t_travessa = medidas['espessura']
+        if medidas['em_pe']:
+            dy, dz = t_travessa, medidas['altura']
+        else:
+            dy, dz = medidas['altura'], t_travessa
+        py0 = y_frente if na_frente else y_tras - (spec.espessura_fundo if spec.fundo_ativo else 0.0) - dy
+        itens.append(_peca(papel, nome, _caixa(x_interno0, x1 - dir_, py0, py0 + dy,
+                                               topo_travessa - dz, topo_travessa),
+                           t_travessa, veio='HORIZONTAL', fitas=FITA_FRENTE if na_frente else SEM_FITA))
 
     # Divisórias e prateleiras: o caminho do vão diz onde a peça começa (RN-12).
     regioes = vaos_mod.regioes(divisoes, spec)
@@ -157,11 +193,11 @@ def pecas(spec, divisoes=(), lista_gavetas=(), lista_internos=()):
         t_frente = spec.espessura_porta
         px0 = x_interno0 + reg_x
         itens.append(_peca('FRENTE_GAVETA', f"Frente da gaveta {gaveta.indice + 1}",
-                           _caixa(px0, px0 + reg_largura, y_frente - t_frente + recuo['GAVETA'],
-                                  y_frente + recuo['GAVETA'], pz, min(pz + gaveta.altura, topo)),
+                           _caixa(px0, px0 + reg_largura, y_frente - t_frente + recuo_gaveta,
+                                  y_frente + recuo_gaveta, pz, min(pz + gaveta.altura, topo)),
                            t_frente, veio='HORIZONTAL', fitas=FITA_FRENTE, movel=True,
                            curso=profundidade * 0.72, eixo='Y'))
-        itens.extend(_caixa_da_gaveta(gaveta, spec, px0, pz, reg_largura, profundidade - recuo['GAVETA']))
+        itens.extend(_caixa_da_gaveta(gaveta, spec, px0, pz, reg_largura, profundidade - recuo_gaveta))
 
     # Portas de abrir e folhas deslizantes são exclusivas (RN-14).
     comprimento_frente = x1 - dir_ - x_interno0
@@ -246,6 +282,9 @@ def _caixa_da_gaveta(gaveta, spec, x0, z0, largura, profundidade):
             caixa = _caixa(x1 - esp, x1, y0, y0 + comprimento, z1 - largura_ta, z1)
         saida.append(_peca('AFASTADOR', f"{afastador['nome']} da gaveta {gaveta.indice + 1}", caixa, esp,
                            movel=True, curso=curso, eixo='Y'))
+    if gaveta.corredica_3d:
+        saida.extend(corredica_mod.pecas(_caixa(x0, x1, y0, y1, z0, z1), curso=curso,
+                                         indice=gaveta.indice + 1))
     return saida
 
 
@@ -345,8 +384,30 @@ def limpar(root):
             bpy.data.meshes.remove(malha)
 
 
+def _uv_metros(malha):
+    """UV planar por eixo dominante da face, em metros: 1 unidade de UV = 1 m (018, T010, RN-08, D-02).
+
+    A escala real da textura fica no `Mapping` do material (`1 / tamanho em metros`), então trocar a textura da peça
+    não exige refazer o UV. O layer é `UVMap`, o mesmo nome que o resto do pacote usa e que o UV Editor mostra.
+    """
+    camada = malha.uv_layers.new(name='UVMap')
+    for poligono in malha.polygons:
+        normal = poligono.normal
+        eixo = max(range(3), key=lambda i: abs(normal[i]))
+        for indice in poligono.loop_indices:
+            co = malha.vertices[malha.loops[indice].vertex_index].co
+            if eixo == 0:
+                u, v = co.y, co.z
+            elif eixo == 1:
+                u, v = co.x, co.z
+            else:
+                u, v = co.x, co.y
+            camada.data[indice].uv = (u, v)
+    return camada
+
+
 def _malha(nome, box):
-    """Malha de caixa em metros, com normais recalculadas (RAG: seção BMesh do guia do projeto)."""
+    """Malha de caixa em metros, com UV em metros e normais recalculadas (RAG: seção BMesh do guia do projeto)."""
     import bmesh  # type: ignore
     import bpy  # type: ignore
 
@@ -364,7 +425,122 @@ def _malha(nome, box):
     finally:
         bm.free()
     malha.update()
+    _uv_metros(malha)
     return malha
+
+
+def _caminho_obj():
+    """Caminho do OBJ da corrediça dentro do pacote da extensão."""
+    return Path(__file__).resolve().parents[1].joinpath(*OBJ_CORREDICA)
+
+
+def _modelo_corredica():
+    """Conjunto do OBJ importado uma vez, com as malhas e a caixa de cada parte em metros, ou `None` sem o arquivo.
+
+    O OBJ vem em milímetros e com o comprimento em Z: o import aplica o milímetro (`global_scale`) e o conjunto é
+    deitado por `ROTACAO_MODELO`, para o comprimento correr em Y e a altura em Z, como nas caixas de `corredica`.
+    As malhas ficam com usuário falso (sobrevivem ao salvamento e são compartilhadas pelas instâncias) e os objetos
+    do import são removidos, então nada sobra na cena. O resultado é guardado por caminho de arquivo.
+    """
+    import bpy  # type: ignore
+    from mathutils import Matrix, Vector  # type: ignore
+
+    caminho = str(_caminho_obj())
+    guardado = _modelos.get(caminho)
+    if guardado is not None:
+        if all(nome in bpy.data.meshes for nome in guardado['malhas']):
+            return guardado
+        _modelos.pop(caminho, None)
+    if not os.path.exists(caminho):
+        _modelos[caminho] = None
+        return None
+    rotacao = Matrix.Rotation(ROTACAO_MODELO, 4, 'X')
+    antes = set(bpy.data.objects)
+    try:
+        bpy.ops.wm.obj_import(filepath=caminho, forward_axis='Y', up_axis='Z', global_scale=MM)
+    except RuntimeError:
+        _modelos[caminho] = None
+        return None
+    novos = [obj for obj in bpy.data.objects if obj not in antes and obj.type == 'MESH']
+    itens = []
+    for obj in novos:
+        ferragem = corredica_mod.papel_do_objeto(obj.name)
+        if ferragem is None:
+            continue
+        cantos = [rotacao @ (obj.matrix_world @ Vector(canto)) for canto in obj.bound_box]
+        minimo = Vector([min(canto[i] for canto in cantos) for i in range(3)])
+        maximo = Vector([max(canto[i] for canto in cantos) for i in range(3)])
+        obj.data.use_fake_user = True
+        itens.append((obj.data.name, ferragem, minimo, maximo))
+    for obj in novos:
+        bpy.data.objects.remove(obj, do_unlink=True)
+    if not itens:
+        _modelos[caminho] = None
+        return None
+    modelo = {
+        'itens': itens,
+        'malhas': [item[0] for item in itens],
+        'minimo': Vector([min(item[2][i] for item in itens) for i in range(3)]),
+        'maximo': Vector([max(item[3][i] for item in itens) for i in range(3)]),
+    }
+    _modelos[caminho] = modelo
+    return modelo
+
+
+def _objetos_da_peca(dados, modelo):
+    """[(nome, malha, deslocamento, rotação)] de uma peça: a malha do modelo importado ou a caixa de reserva.
+
+    A ferragem alinha o conjunto do OBJ pelo trilho externo (`conjunto`), então o trilho interno e as gaiolas ficam
+    na posição relativa que o arquivo traz. Sem arquivo, `corredica` já devolve as três caixas equivalentes.
+    """
+    import bpy  # type: ignore
+    from mathutils import Vector  # type: ignore
+
+    ferragem = dados.get('ferragem')
+    if ferragem and modelo is not None:
+        escolhidas = [item for item in modelo['itens'] if item[1] == ferragem]
+        if escolhidas:
+            (x0, y0, z0), _ = dados['conjunto']  # o conjunto alinha pelo canto mínimo do trilho externo
+            alvo = Vector((x0 * MM, y0 * MM, z0 * MM))
+            deslocamento = alvo - modelo['minimo']
+            objetos = []
+            for numero, (nome_malha, _ferragem, _minimo, _maximo) in enumerate(escolhidas):
+                # O número fica antes do sufixo " da gaveta N", que é o que agrupa a peça na animação.
+                nome = dados['nome'] if len(escolhidas) == 1 else dados['nome'].replace(
+                    ' da gaveta ', f' {numero + 1} da gaveta ')
+                objetos.append((nome, bpy.data.meshes[nome_malha], deslocamento.copy(), ROTACAO_MODELO))
+            return objetos
+    return [(dados['nome'], _malha(dados['nome'], dados['box']), None, None)]
+
+
+def _materiais_das_pecas(root):
+    """{uid: material gravado} das peças atuais, lido antes de refazer (018, T011; D-11).
+
+    `BTM_PG_ArmarioParte.material` guarda a chave do acabamento da malha (`CHAPA`, `VIDRO`, `ALUMINIO`) — é o que o
+    plano de corte lê — ou o nome de um material do arquivo, quando a peça recebeu um.
+    """
+    escolhidos = {}
+    for filho in list(root.children):
+        grupo = getattr(filho, 'btm_armario_parte', None)
+        if grupo is None or not grupo.material:
+            continue
+        escolhidos[str(grupo.uid or filho.name)] = str(grupo.material)
+    return escolhidos
+
+
+def _material_da_peca(dados, mapa, escolhido=''):
+    """(material, rótulo) da chapa: o material escolhido na peça vence o acabamento do spec (D-11).
+
+    Nome que não existe mais no arquivo volta ao acabamento do spec, sem aviso: a escolha some junto com o material.
+    """
+    import bpy  # type: ignore
+
+    material = bpy.data.materials.get(str(escolhido or ''))
+    if material is not None:
+        return material, material.name
+    if dados.get('ferragem'):
+        return mapa['ALUMINIO'], dados['material']
+    return mapa.get(dados['material'], mapa['CHAPA']), dados['material']
 
 
 def gerar(root, spec, divisoes=(), lista_gavetas=(), lista_internos=()):
@@ -373,29 +549,42 @@ def gerar(root, spec, divisoes=(), lista_gavetas=(), lista_internos=()):
     from mathutils import Matrix  # type: ignore
 
     destino = (root.users_collection or (bpy.context.scene.collection,))[0]
+    escolhidos = _materiais_das_pecas(root)
     limpar(root)
     mapa = materiais(spec.acabamento)
+    lista = pecas(spec, divisoes, lista_gavetas, lista_internos)
+    modelo = _modelo_corredica() if any(item.get('ferragem') for item in lista) else None
     objetos = []
-    for indice, dados in enumerate(pecas(spec, divisoes, lista_gavetas, lista_internos)):
-        objeto = bpy.data.objects.new(dados['nome'], _malha(dados['nome'], dados['box']))
-        destino.objects.link(objeto)
-        objeto.parent = root
-        objeto.matrix_parent_inverse = Matrix.Identity(4)
-        material = mapa.get(dados['material'], mapa['CHAPA'])
-        objeto.data.materials.append(material)
-        parte = objeto.btm_armario_parte
-        parte.papel = dados['papel']
-        parte.componente = dados['componente']
-        parte.comprimento_mm, parte.largura_mm = medidas_de_corte(dados)
-        parte.espessura_mm = dados['espessura']
-        parte.material = dados['material']
-        parte.veio = dados['veio']
-        parte.fita_l1, parte.fita_l2, parte.fita_w1, parte.fita_w2 = dados['fitas']
-        parte.uid = f"{root.name}/{dados['papel']}/{indice}"
-        parte.movel = dados['movel']
-        parte.curso_mm = dados['curso']
-        parte.eixo = dados['eixo']
-        objetos.append(objeto)
+    for indice, dados in enumerate(lista):
+        uid = f"{root.name}/{dados.get('ferragem') or dados['papel']}/{indice}"
+        material, rotulo = _material_da_peca(dados, mapa, escolhidos.get(uid, ""))
+        for nome, malha, deslocamento, rotacao in _objetos_da_peca(dados, modelo):
+            objeto = bpy.data.objects.new(nome, malha)
+            destino.objects.link(objeto)
+            objeto.parent = root
+            objeto.matrix_parent_inverse = Matrix.Identity(4)
+            if deslocamento is not None:
+                objeto.location = deslocamento
+                objeto.rotation_euler = (rotacao, 0.0, 0.0)
+            if material.name not in [slot.name for slot in objeto.data.materials]:
+                objeto.data.materials.append(material)
+            parte = objeto.btm_armario_parte
+            parte.papel = dados['papel']
+            parte.ferragem = dados.get('ferragem') or 'NENHUMA'
+            parte.componente = dados.get('componente') or 'ESP'
+            if dados.get('ferragem'):
+                parte.comprimento_mm = parte.largura_mm = 0.0      # ferragem não tem medida de corte
+            else:
+                parte.comprimento_mm, parte.largura_mm = medidas_de_corte(dados)
+            parte.espessura_mm = dados['espessura']
+            parte.material = rotulo
+            parte.veio = dados.get('veio') or 'NONE'
+            parte.fita_l1, parte.fita_l2, parte.fita_w1, parte.fita_w2 = dados.get('fitas') or SEM_FITA
+            parte.uid = uid
+            parte.movel = dados['movel']
+            parte.curso_mm = dados['curso']
+            parte.eixo = dados['eixo']
+            objetos.append(objeto)
     if getattr(root, 'btm_armario', None) is not None:
         root.btm_armario.gerado = True
     return objetos

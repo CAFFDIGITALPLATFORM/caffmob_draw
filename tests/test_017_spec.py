@@ -76,13 +76,24 @@ class SpecTest(unittest.TestCase):
                          {'LEFT': 1970.0, 'RIGHT': 1970.0, 'BOTTOM': 1000.0, 'TOP': 1000.0})
         self.assertEqual(spec.lateral_offset_z(s), 15.0)
 
-    def test_orientacao_troca_altura_por_profundidade(self):
+    def test_orientacao_da_travessa_troca_o_eixo(self):
+        # D-22: a peça é travessa de 90 mm, não painel da altura (ou da profundidade) toda.
         em_pe = _spec()
-        self.assertEqual(spec.contra_frente(em_pe), {'comprimento': 970.0, 'altura': 2000.0})
-        self.assertEqual(spec.peca_de_tras(em_pe), {'comprimento': 970.0, 'altura': 2000.0})
+        self.assertEqual(spec.contra_frente(em_pe),
+                         {'comprimento': 970.0, 'altura': 90.0, 'espessura': 15.0, 'em_pe': True})
+        self.assertEqual(spec.peca_de_tras(em_pe),
+                         {'comprimento': 970.0, 'altura': 90.0, 'espessura': 15.0, 'em_pe': True})
         deitada = _spec(orientacao_frente='DEITADA', orientacao_tras='DEITADA')
-        self.assertEqual(spec.contra_frente(deitada), {'comprimento': 970.0, 'altura': 560.0})
-        self.assertEqual(spec.peca_de_tras(deitada), {'comprimento': 970.0, 'altura': 560.0})
+        self.assertEqual(spec.contra_frente(deitada),
+                         {'comprimento': 970.0, 'altura': 90.0, 'espessura': 15.0, 'em_pe': False})
+        self.assertEqual(spec.peca_de_tras(deitada),
+                         {'comprimento': 970.0, 'altura': 90.0, 'espessura': 15.0, 'em_pe': False})
+
+    def test_travessas_nascem_desligadas(self):
+        padrao = spec.Spec()
+        self.assertEqual(spec.ALTURA_TRAVESSA, 90.0)
+        self.assertFalse(padrao.contra_frente_ativa)
+        self.assertFalse(padrao.peca_tras_ativa)
 
     def test_espessuras_aceitas_e_padroes(self):
         self.assertEqual(spec.THICKNESSES, (6, 15, 18, 25))

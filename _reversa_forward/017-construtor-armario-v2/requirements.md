@@ -144,7 +144,7 @@ inglês e um único passo de desfazer por confirmação.
 | RF-02 | As sete abas Estrutura, Divisões, Gavetas, Internos, Portas, Deslizantes e Fundos, com o conteúdo do mockup (RN-02 a RN-15, RN-22) | Must | Cada aba mostra os campos da seção 4 e o cabeçalho mostra o tipo e o vão ativo | 🟢 |
 | RF-03 | Contrato de chapas obrigatório, injetável pelo addon hospedeiro e editável na aba Estrutura (RN-02) | Must | A função pública de injeção grava chapa, espessuras, montagem e orientações; sem contrato, gerar devolve recusa com mensagem | 🟢 |
 | RF-04 | Validação de todas as peças contra a chapa máxima, com bloqueio opcional (RN-03) | Must | Armário de 3000 mm com chapa de 2750 mm lista a peça e a medida; com bloqueio ligado não gera nada; desligado gera com aviso | 🟢 |
-| RF-05 | Dimensões, montagem e orientações de contra-frente e peça de trás (RN-04) | Must | Trocar lateral passante por base passante muda o comprimento das bases e a posição das laterais; trocar a orientação troca altura por profundidade na peça | 🟢 |
+| RF-05 | Contra-frente e peça de trás geradas como peças do armário, cada uma com presença própria, além das dimensões, montagem e orientações (RN-04) | Must | Trocar lateral passante por base passante muda o comprimento das bases e a posição das laterais; trocar a orientação troca altura por profundidade na peça; desmarcar a presença da contra-frente remove só ela da cena e da lista de peças | 🟢 |
 | RF-06 | Espessura por papel, restrita a 6, 15, 18 e 25 mm (RN-05) | Must | Mudar a espessura da lateral para 25 muda a espessura da chapa gerada e a posição das peças vizinhas | 🟢 |
 | RF-07 | Divisões: vertical com quatro variantes, horizontal com quatro variantes e inserção múltipla em matriz (RN-12) | Must | Inserir matriz de 2 linhas por 1 coluna num vão cria uma divisória e duas prateleiras em cada vão resultante | 🟢 |
 | RF-08 | Duplicar divisória e prateleira respeitando o vão livre mínimo de 80 mm (RN-11) | Should | Duplicar em vão apertado é recusado com aviso; em vão amplo, a peça nova fica no meio do maior espaço livre | 🟢 |
@@ -394,19 +394,45 @@ Cenário: Interface em inglês
 - **Q:** A002, o D-04 tirava `gallery` do registro e `library_panel/ops_cabinet.py:46` chama `caffmob.structure_gallery` sem guarda. A galeria sobrevive?
   **R:** Sim: a galeria é seletor de estrutura, não a janela 2D que a RN-22 aposenta. `gallery` continua registrado e `ops_cabinet.py` não é editado. Aplicado em D-04 e T027.
 - **Q:** A003, RN-01/RF-01 exigem construtor vazio e Montar Caixa ligando laterais e bases, mas o modelo não tem flag de presença. Quais campos entram?
-  **R:** Não houve resposta do titular nesta sessão; a derivação está registrada como premissa 🟡 em D-18 (quatro flags mais o `fundo_ativo` existente) e precisa de confirmação no T003.
+  **R:** Presença por flag: `lateral_esq_ativa`, `lateral_dir_ativa`, `base_inf_ativa` e `base_sup_ativa`, todas em `False`, mais o `fundo_ativo` existente como presença do fundo. Confirmado pelo titular em 2026-11-21 (fechamento do A003), como o D-18 🟢 registra e como o T003 executou. Aplicado em D-18 e T003.
 
 **Consequências registradas**
 
 - O plano de corte passa a ter uma regra só sobre módulo convertido: a marca vale na origem, não só no fim da leitura.
 - O diferencial da feature 015 ("Criar armário" com galeria de estruturas) fica preservado durante a troca do construtor.
 
+### Sessão 2026-11-23 (lacunas da auditoria de mockup e frente)
+
+- **Q:** RF-07, RF-09 e RF-12 são `Must` e não têm caminho de uso: não existe botão para criar divisória, prateleira, bloco de gavetas nem interno. Onde a inserção deve ser resolvida?
+  **R:** Na própria 017, por ações novas depois do T040. O núcleo já está testado (`vaos.inserir_vertical`, `vaos.inserir_horizontal`, `vaos.matriz`, `gavetas.bloco`, `internos.inserir`); falta o caminho de uso no painel. Aplicado em `requirements.md` RF-07, RF-09 e RF-12, que ficam como estão, e no `/reversa-plan`.
+- **Q:** Contra-frente e peça de trás são calculadas pelo `spec` e nunca viram malha. O que a 017 deve entregar?
+  **R:** As duas peças geradas, cada uma com flag de presença. Aplicado no RF-05 reescrito.
+
+**Decisões de outra unidade (não alteram os requisitos desta feature)**
+
+A frente do objeto no Mover Sobre pertence à unit `move_over`, não à 017. As respostas abaixo ficam registradas aqui só para não se perderem até a feature própria (a 018 está livre) e não mexem em RN nem RF desta feature.
+
+- **Q:** Como o Mover Sobre deve decidir qual lado do objeto é a frente?
+  **R:** Escolha manual gravada vence sempre; sem ela, a parede próxima atrás do objeto decide; sem parede, o eixo local. Quando parede e eixo discordam além da tolerância, a janela pergunta.
+- **Q:** A que distância a parede atrás ainda define a frente?
+  **R:** 100 mm, constante no núcleo puro, sem campo novo na cena.
+- **Q:** Onde guardar a frente escolhida pelo usuário?
+  **R:** Idprop `btm_front_yaw` no objeto, em graus locais, válida para todo o add-on e preservada ao salvar e reabrir.
+
+**Consequências registradas**
+
+- A 017 volta a ter ações abertas: o `actions.md` fechado em 40/40 não cobre a inserção nem a geração da contra-frente e da peça de trás.
+- Nenhuma linha do RF-05 muda de sentido: só passa a exigir a geometria, que o `spec` já mede.
+- As três decisões da frente não entram no `roadmap.md` da 017; elas alimentam a feature da unit `move_over`.
+
 ## 10. Lacunas
 
 - 🟡 Sem dúvidas abertas em RN e RF: as cinco perguntas de 2026-11-19 foram respondidas.
-- 🟡 A003 ficou sem resposta do titular em 2026-11-21: as quatro flags de presença de D-18 são derivação do RF-01, não decisão confirmada. Confirmar ou corrigir no T003.
+- 🟢 A003 fechado: as quatro flags de presença de D-18 são decisão confirmada do titular em 2026-11-21 e estão em `props.py` desde o T003, então não há lacuna.
 - 🟡 A faixa exata das posições editáveis dos internos, os limites dentro do vão e a ordem de prioridade quando dois internos disputam a mesma altura ficam para o `/reversa-plan`.
 - 🟡 O mapeamento dos parâmetros de cada biblioteca de módulo (frameless, face frame, closets) para o modelo do motor novo é trabalho de plano, a validar módulo a módulo.
+- 🟡 A inserção pela interface e a geração da contra-frente e da peça de trás têm decisão tomada em 2026-11-23, mas ainda não têm ação: entram no `/reversa-plan` depois do T040.
+- 🟡 A frente do objeto no Mover Sobre tem decisão tomada em 2026-11-23 e nenhuma linha de código; falta feature própria para a unit `move_over`.
 
 ## 11. Histórico de alterações
 
@@ -415,3 +441,5 @@ Cenário: Interface em inglês
 | 2026-11-19 | Versão inicial gerada por `/reversa-requirements` a partir do add-on anexo, do mockup e da extração reversa | reversa |
 | 2026-11-19 | `/reversa-clarify`: escopo em todos os armários, superfície na vista 3D, móveis antigos preservados, posições iniciais dos internos e adaptador de corte; RN-21 a RN-24 e RF-24 a RF-26 acrescentados | reversa |
 | 2026-11-21 | Esclarecimentos do cross-check: filtro de `btm_cut_exclude` em `iter_modules` (A001), galeria mantida registrada (A002), flags de presença derivadas do RF-01 (A003, pendente) | reversa |
+| 2026-11-23 | A003 alinhado ao D-18: decisão confirmada do titular em 2026-11-21, não premissa pendente (segunda auditoria, A015); RN-08 e RN-17 receberam decisão e ação no planejamento (D-19 e D-20) | reversa |
+| 2026-11-23 | `/reversa-clarify` da auditoria de mockup: inserção fica na 017 por ações novas; contra-frente e peça de trás passam a ser geradas com presença (RF-05 reescrito); três decisões da frente do Mover Sobre registradas para a unit `move_over` | reversa |
