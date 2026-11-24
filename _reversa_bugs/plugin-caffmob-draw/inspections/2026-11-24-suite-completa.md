@@ -71,7 +71,7 @@ python3 _reversa_bugs/tools/reversa_debugger.py --suite all --blender /opt/blend
 - Placar do runner: **pura 186/186**; **Blender 197/203**; 5 ambiente, 1 performance, 0 defeitos.
 - Tempo total: 991,7 s.
 
-## Resultado final
+## Resultado da primeira passada (Linux)
 
 - Pura: **186/186 passam** (0 falhas, 0 timeouts).
 - Blender: **197/203 passam, 6 falham, 0 timeouts**.
@@ -84,3 +84,68 @@ python3 _reversa_bugs/tools/reversa_debugger.py --suite all --blender /opt/blend
 - Testes com janela/GUI e os de rede não foram executados neste ambiente headless.
 - `066_cladding_bench` passa com limite de 300 s; o teste de performance não cabe nos 90 s da primeira passada.
 - `067_proto_snapshot` mede tempo de máquina; não foi reproduzido como defeito funcional.
+
+## Segunda passada (Windows 11, 2026-11-24) — estado final
+
+Runner: `python _reversa_bugs/tools/reversa_debugger.py --suite all --blender "C:/Program Files/Blender Foundation/Blender 5.2/blender.exe" --pure-timeout 45 --blender-timeout 360 --out _reversa_bugs/plugin-caffmob-draw/inspections/2026-11-24-debugger`
+
+- Exit code **0**, 994,6 s, sem outro processo na máquina durante a medição.
+- Saída real no repo: `2026-11-24-debugger/report.md`, `results.json` e um log por ensaio (`pure/` 186, `blender/` 203).
+- Antes das correções a mesma máquina dava pura **181/186** e Blender **193/203**, com 10 falhas classificadas
+  como **defeito** pelo runner. Cada uma foi reproduzida, diagnosticada e corrigida; **nenhuma asserção foi
+  afrouxada** — o que mudou foi portabilidade do ensaio e, em dois casos, o produto.
+
+### Defeitos de produto corrigidos
+
+| Arquivo | Sintoma | Causa | Correção |
+|---|---|---|---|
+| `caffmob_draw/texture_library/downloads.py` | `blender_014_apply` e `blender_014_textures_net` falhavam com `AssertionError: A ponte não respondeu dentro do prazo`; a ponte nunca entregava resposta | `proc.stdout.read()` num pipe **texto não-bloqueante** levanta `TypeError` no Windows e `_read_lines` engolia o erro, devolvendo vazio (catálogo, login e downloads ficavam mudos) | thread leitora `_pump` enfileira as linhas sob lock e o `bpy.app.timers` drena; `os.set_blocking` sai; `eof` marca o fim do pipe (achado T004 preservado) |
+| `caffmob_draw/texture_library/downloader.py` | mensagens acentuadas do worker saíam em cp1252 e o Blender (que lê UTF-8) não decodificava — `UnicodeDecodeError`/mensagem perdida | `sys.stdout` do filho usava o locale do sistema | `sys.stdin`/`sys.stdout.reconfigure(encoding="utf-8")` no `main()` |
+
+Evidência da correção: `blender_014_apply: OK` e `BLENDER_014_TEXTURES_NET_OK`, com os logs em
+`2026-11-24-debugger/blender/`.
+
+### Ensaios ajustados para Windows (sem afrouxar asserção)
+
+| Arquivo | Ajuste | Por quê |
+|---|---|---|
+| `test_071_texturas` | `ps.__file__.rsplit('/', 2)` → `Path(...).parents[1]` | separador `/` fixo não resolve caminho no Windows |
+| `test_identity` | `read_text(encoding="utf-8")` | `read_text()` sem encoding usa cp1252 e quebra em fonte UTF-8 |
+| `test_object_library` | `endswith("DECOR/vaso-1.blend")` → `Path(...).parts[-2:]` | o produto usa `os.path.join` (correto); a asserção era POSIX |
+| `test_standards_store` | conexões `sqlite3` fechadas num helper `_snapshot` | o Windows tranca o arquivo e o `rmtree` do tearDown falhava |
+| `test_texture_downloader` | `select()` → thread + `queue`; `call(..., timeout=)` | `select()` só aceita soquetes no Windows; a recusa de loopback leva ~2 s por tentativa e o retry 2+4+8 s do produto pedia 60 s |
+| `blender_014_textures_net` | assert de `chmod 600` só em `os.name == "posix"` | o Windows não tem modo POSIX; a proteção é o ACL do perfil |
+| `blender_067_onda1_padroes` | `with sqlite3.connect(...)` → `try/finally: close()` | `with` só confirma a transação; o arquivo ficava trancado no `TemporaryDirectory` |
+| `blender_073_pbr` | dois `endswith(".../...")` → `Path(...).parts[-2:]` | separador POSIX |
+| `blender_mobi_operadores` | `mat['btm_texture_path'] == cached` → `Path(a) == Path(b)` | separador POSIX |
+
+### Placar final
+
+| Suíte | Arquivos | Passaram | Falharam | Timeouts | Classificação |
+|---|---:|---:|---:|---:|---|
+| Pura | 186 | **186** | 0 | 0 | — |
+| Blender | 203 | **198** | 5 | 0 | ambiente: 5, defeito: 0, performance: 0 |
+
+Os dois ensaios de tempo passam nesta passada: `blender_066_cladding_bench` (exit 0) e
+`blender_067_proto_snapshot` com `PROTO_SNAPSHOT {"refresh": {"n": 360, "p50": 0.23, "p95": 1.32, "p99": 1.43}}` e
+`PROTO_SNAPSHOT_OK` (alvo de p95: 2,0 ms).
+
+### Falhas restantes — todas bloqueadas por ambiente
+
+| Ensaio | Classificação | Evidência (comando + trecho do log em `2026-11-24-debugger/blender/`) |
+|---|---|---|
+| `blender_065_baixar_v2` | ambiente | `{"status": "erro", "blender": "5.2.0 LTS", "online_access": false}` |
+| `blender_065_cena_v2` | ambiente | `{"status": "erro", "blender": "5.2.0 LTS", "online_access": false, "verificacoes": []}` |
+| `blender_065_ida_e_volta` | ambiente | `assert urlsplit(BASE).scheme == 'http' and urlsplit(BASE).hostname == '127.0.0.1', 'Somente o MOBI de ensaio em 127.0.0.1'` |
+| `blender_ensaio_mobi` | ambiente | `assert urlsplit(base).hostname == '127.0.0.1' and urlsplit(base).scheme == 'http', base` |
+| `blender_increment1_smoke` | ambiente | `ValueError: The "package" does not name an extension` em `bpy.utils.extension_path_user` (extensão não instalada) |
+
+Não foram reabertos: exigem `online_access`, o MOBI de ensaio em `127.0.0.1` ou a extensão instalada. Nenhuma
+falha de rede/MOBI/extensão foi reinterpretada como defeito, e nenhuma sobrou como defeito real ou performance.
+
+### Limitações desta passada
+
+- Ensaios com janela/GUI continuam fora (execução headless).
+- `ruff` não está instalado nesta máquina (`command not found`): o estilo não foi conferido pelo lint.
+- `git diff`/`git status` globais falham por causa do symlink `AGENTS.md` (`core.symlinks=false` no clone +
+symlink real no worktree): as conferências de diff foram feitas por caminho (`git diff -- caffmob_draw tests`).

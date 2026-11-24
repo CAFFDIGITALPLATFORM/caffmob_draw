@@ -36,9 +36,12 @@ def check(ok, label, detail=""):
 
 def db_rows(path):
     store.close()
-    with sqlite3.connect(path) as con:
+    con = sqlite3.connect(path)         # `with` só confirma a transação; no Windows o arquivo fica trancado até o close
+    try:
         return (sorted(con.execute("SELECT uid, documento, atualizado_em, sujo, excluida FROM definicao").fetchall()),
                 sorted(con.execute("SELECT chave, valor FROM meta").fetchall()))
+    finally:
+        con.close()
 
 
 def scene():

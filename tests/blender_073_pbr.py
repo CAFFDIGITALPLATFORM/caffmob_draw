@@ -99,7 +99,7 @@ def sem_internet():
         check(not pedidos, "nenhuma requisição de download")
         caminhos = []
         ops_finish_drop.fetch(INOX, lambda p, e, imediato: caminhos.append((p, e, imediato)))
-        check(caminhos and caminhos[0][0].endswith('inox-escovado/cor.jpg') and caminhos[0][2],
+        check(caminhos and Path(caminhos[0][0]).parts[-2:] == ('inox-escovado', 'cor.jpg') and caminhos[0][2],
               "soltar a textura do pacote não espera download")
         mat, _largura = ops_finish_drop.material_for(INOX, caminhos[0][0])
         check(ligado(mat, pbr.METALLIC, 'Metallic'), "o material do soltar também é PBR")
@@ -113,7 +113,8 @@ def painel():
                                                                                                     'metal'],
           "a biblioteca abre com Revestimentos e metais (Parede, Piso, Metal)", str(arvore[:1]))
     check(library_draw.texture_state(catalog.item(TIJOLO)) == ('DOWNLOADED', 1.0), "a textura do pacote aparece à mão")
-    check(catalog.thumb_path(catalog.item(TIJOLO)).endswith('tijolo-aparente/miniatura.jpg'), "miniatura do pacote")
+    check(Path(catalog.thumb_path(catalog.item(TIJOLO))).parts[-2:] == ('tijolo-aparente', 'miniatura.jpg'),
+          "miniatura do pacote")
 
 
 def importacao():

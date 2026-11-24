@@ -254,6 +254,10 @@ def main(argv=None):
     parser.add_argument("--base", required=True)
     parser.add_argument("--ua", default="CAFFMobDraw")
     args = parser.parse_args(argv)
+    # O pipe é UTF-8 por contrato (`download_core.encode`); sem isto o Windows usa o locale (cp1252) e uma
+    # mensagem acentuada sai em bytes que o Blender, que lê UTF-8, não decodifica.
+    for stream in (sys.stdin, sys.stdout):
+        stream.reconfigure(encoding="utf-8")
     return Worker(args.base, args.ua).run(sys.stdin)
 
 

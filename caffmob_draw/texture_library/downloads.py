@@ -17,6 +17,7 @@ import json
 from urllib.parse import urlsplit
 import subprocess
 import sys
+import threading
 
 import bpy  # type: ignore
 
@@ -33,10 +34,12 @@ NO_ACCOUNT = N_("Entre com a sua conta CAF Mob para baixar texturas")
 NETWORK = N_("Sem resposta do servidor de texturas")
 
 _state = {"proc": None, "buffer": "", "rid": 0, "base": "", "server_items": None, "catalog_waiting": [],
-          "server_override": None, "token_sent": ""}
+          "server_override": None, "token_sent": "", "eof": False}
 _queue = download_core.Queue()
 _callbacks = {}                  # id → [callback(path, error)]
 _requests = {}                   # rid → callback(status, body)
+_pipe_lock = threading.Lock()
+_pipe_lines = []                 # linhas do stdout do worker, preenchidas pela thread leitora
 
 
 # Configuração -------------------------------------------------------------------------------------------------------
@@ -139,8 +142,12 @@ def _ensure_process():
     _state["proc"] = subprocess.Popen([sys.executable, "-I", WORKER, "--base", _state["base"], "--ua", ua],
                                       stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL,
                                       text=True, encoding="utf-8", bufsize=1)
-    os.set_blocking(_state["proc"].stdout.fileno(), False)
-    _state["buffer"], _state["token_sent"] = "", ""
+    _state["buffer"], _state["token_sent"], _state["eof"] = "", "", False
+    with _pipe_lock:
+        _pipe_lines.clear()
+    # O pipe em modo texto não aceita leitura não bloqueante no Windows (`read()` levanta TypeError): uma thread
+    # só lê o stdout e o `bpy.app.timers` drena as linhas, sem bloquear o thread principal.
+    threading.Thread(target=_pump, args=(_state["proc"],), daemon=True).start()
     if not bpy.app.timers.is_registered(_tick):
         bpy.app.timers.register(_tick, first_interval=TICK, persistent=True)
     return True
@@ -229,18 +236,22 @@ def cancel_request(ticket):
         _send({"type": "cancel", "id": rid})
 
 
-def _read_lines():
-    proc = _state["proc"]
+def _pump(proc):
+    """Lê o stdout do worker até o fim do pipe (thread, sem bpy)."""
     try:
-        chunk = proc.stdout.read() or ""
-    except (BlockingIOError, TypeError, ValueError):
-        chunk = ""
-    if proc.poll() is not None:                       # terminou: lê o resto do pipe (achado da prova T004)
-        try:
-            os.set_blocking(proc.stdout.fileno(), True)
-            chunk += proc.stdout.read() or ""
-        except (OSError, ValueError):
-            pass
+        for line in iter(proc.stdout.readline, ""):
+            with _pipe_lock:
+                _pipe_lines.append(line)
+    except (OSError, ValueError):                     # pipe fechado no shutdown
+        pass
+    finally:
+        if _state["proc"] is proc:                    # a thread de um worker já trocado não derruba o atual
+            _state["eof"] = True                      # terminou: o que ficou no buffer já foi enfileirado (T004)
+
+
+def _read_lines():
+    with _pipe_lock:
+        chunk, _pipe_lines[:] = "".join(_pipe_lines), []
     _state["buffer"] += chunk
     lines = _state["buffer"].split("\n")
     _state["buffer"] = lines.pop()
@@ -315,7 +326,7 @@ def _tick():
         return None
     for message in _read_lines():
         _dispatch(message)
-    if not _running():                                # caiu ou saiu: o que estava ativo falhou
+    if _state["eof"]:                                 # caiu ou saiu: o que estava ativo falhou
         for item_id, entry in list(_queue.items.items()):
             if entry["state"] in (download_core.PENDING, download_core.ACTIVE):
                 _queue.finish(item_id, False, {"code": "network", "message": NETWORK})
@@ -452,7 +463,9 @@ def shutdown():
     _queue.order.clear()
     _callbacks.clear()
     _requests.clear()
-    _state.update(buffer="", server_items=None, catalog_waiting=[], token_sent="")
+    with _pipe_lock:
+        _pipe_lines.clear()
+    _state.update(buffer="", server_items=None, catalog_waiting=[], token_sent="", eof=True)
 
 
 def process_alive():

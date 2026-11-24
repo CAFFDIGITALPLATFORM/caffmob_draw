@@ -103,7 +103,7 @@ class StoreTest(unittest.TestCase):
             store.delete(items[1])
             self.assertFalse(any((Path(user) / "DOORS").iterdir()))
             paths = store.paths_for(user, 'DECOR', "vaso-1")
-            self.assertTrue(paths["blend"].endswith("DECOR/vaso-1.blend"))
+            self.assertEqual(Path(paths["blend"]).parts[-2:], ("DECOR", "vaso-1.blend"))
 
     def test_embutido_sem_3d_warehouse(self):
         good = [catalog.read_manifest(manifest())]

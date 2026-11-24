@@ -14,6 +14,15 @@ from caffmob_draw.standards import io_json, store
 from caffmob_draw.standards.store_core import StandardsStore, StoreError, same_content
 
 
+def _snapshot(path):
+    """Linhas da definição num conexão fechada (o Windows tranca o arquivo enquanto ela vive)."""
+    db = sqlite3.connect(path)
+    try:
+        return db.execute("SELECT documento, atualizado_em FROM definicao").fetchall()
+    finally:
+        db.close()
+
+
 def _document(uid, name="Marcenaria X", lateral=15.0, version=1):
     values = {'COZ.sheets.LAT.thickness': lateral, 'COZ.sheets.LAT.material': 'MDF'}
     return io_json.values_to_document(name, uid, 'BR', 'USER', version, "2026-10-24T12:00:00-03:00", values)
@@ -103,10 +112,10 @@ class StoreTest(unittest.TestCase):
 
     def test_importar_uid_existente_sem_confirmar_nao_muda_nada(self):
         self.store.put(_document("u1", lateral=15.0))
-        before = sqlite3.connect(self.path).execute("SELECT documento, atualizado_em FROM definicao").fetchall()
+        before = _snapshot(self.path)
         report = self.store.import_documents([_document("u1", lateral=18.0)])
         self.assertEqual(report['pending'], ["u1"])
-        after = sqlite3.connect(self.path).execute("SELECT documento, atualizado_em FROM definicao").fetchall()
+        after = _snapshot(self.path)
         self.assertEqual(before, after)
         report = self.store.import_documents([_document("u1", lateral=18.0), _document("u2")], replace={"u1"})
         self.assertEqual((report['replaced'], report['added']), (["u1"], ["u2"]))

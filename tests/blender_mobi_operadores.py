@@ -157,7 +157,7 @@ with tempfile.TemporaryDirectory() as directory, patch.object(downloads, 'reques
     old = bpy.data.materials.new('014 antigo'); old['btm_texture_id']='slug/antigo'; old['btm_texture_path']='/original.jpg'
     with patch.object(downloads, 'cache_dir', return_value=directory):
         assert handlers.relink([mat,old])[0] == 1
-    assert mat['btm_texture_path'] == cached
+    assert Path(mat['btm_texture_path']) == Path(cached)      # separador do SO, não `/` fixo
     assert old['btm_texture_path'] == '/original.jpg'
     # T040: envio por If-Match e conflito com duas versões; pedido cancelado não altera versão.
     bpy.ops.caffmob.mobi_enviar_ambiente()

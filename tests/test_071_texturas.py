@@ -5,13 +5,15 @@ O material de chapa do Promob é o código do catálogo dele (`Dur_Cri_titanio_h
 """
 import json
 import unittest
+from pathlib import Path
 
 import _promob_sintetico as ps
 from caffmob_draw.promob import leitor, para_v2, texturas
 
 from test_071_referencial import converter, por_nome
 
-CATALOGO = texturas.itens_do_catalogo(json.load(open(ps.__file__.rsplit('/', 2)[0] + '/caffmob_draw/textures/catalog.json',
+CATALOGO = texturas.itens_do_catalogo(json.load(open(Path(ps.__file__).resolve().parents[1]
+                                                     / 'caffmob_draw' / 'textures' / 'catalog.json',
                                                      encoding='utf-8')))
 
 

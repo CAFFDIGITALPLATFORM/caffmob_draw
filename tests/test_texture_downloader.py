@@ -6,7 +6,7 @@ Sem Blender: roda `caffmob_draw/texture_library/downloader.py` com este Python e
 import hashlib
 import json
 import os
-import select
+import queue
 import subprocess
 import sys
 import tempfile
@@ -51,10 +51,22 @@ class Server:
 
 class Worker:
     def __init__(self, base):
-        # select observa o pipe; sem leitura adiantada, nenhuma resposta fica retida no TextIOWrapper.
+        # select() do Windows só aceita soquetes: uma thread lê o pipe e enfileira as linhas.
         self.proc = subprocess.Popen([sys.executable, str(WORKER), "--base", base, "--ua", "CAFFMobDraw/teste"],
                                      stdin=subprocess.PIPE, stdout=subprocess.PIPE, bufsize=0)
         self.rid = 0
+        self._lines = queue.Queue()
+        self._reader = threading.Thread(target=self._pump, daemon=True)
+        self._reader.start()
+
+    def _pump(self):
+        try:
+            for line in iter(self.proc.stdout.readline, b""):
+                self._lines.put(line)
+        except (ValueError, OSError):            # pipe fechado durante a leitura
+            pass
+        finally:
+            self._lines.put(None)                # fim do pipe
 
     def send(self, **message):
         self.proc.stdin.write((json.dumps(message) + "\n").encode("utf-8"))
@@ -63,12 +75,15 @@ class Worker:
     def wait(self, predicate, timeout=20.0):
         deadline = time.monotonic() + timeout
         seen = []
-        while time.monotonic() < deadline:
-            ready, _w, _x = select.select([self.proc.stdout], [], [], 0.2)
-            if not ready:
+        while True:
+            remaining = deadline - time.monotonic()
+            if remaining <= 0:
+                break
+            try:
+                line = self._lines.get(timeout=min(0.2, remaining))
+            except queue.Empty:
                 continue
-            line = self.proc.stdout.readline()
-            if not line:
+            if line is None:
                 break
             message = json.loads(line)
             seen.append(message)
@@ -76,11 +91,11 @@ class Worker:
                 return message
         raise AssertionError(f"mensagem esperada não chegou; recebidas: {[m.get('type') for m in seen]}")
 
-    def call(self, method, path, body=None, auth=True):
+    def call(self, method, path, body=None, auth=True, timeout=20.0):
         self.rid += 1
         rid = self.rid
         self.send(type="request", rid=rid, method=method, path=path, body=body, auth=auth, form=not auth and method == "POST")
-        reply = self.wait(lambda m: m["type"] == "reply" and m["rid"] == rid)
+        reply = self.wait(lambda m: m["type"] == "reply" and m["rid"] == rid, timeout=timeout)
         return reply["status"], reply["body"]
 
     def login(self):
@@ -100,7 +115,11 @@ class Worker:
         if not self.proc.stdin.closed:
             self.proc.stdin.close()
         self.proc.wait(timeout=5)
-        self.proc.stdout.close()
+        try:
+            self.proc.stdout.close()
+        except OSError:
+            pass
+        self._reader.join(timeout=5)
 
 
 class DownloaderTest(unittest.TestCase):
@@ -184,7 +203,8 @@ class DownloaderTest(unittest.TestCase):
     def test_sem_rede(self):
         worker = Worker("http://127.0.0.1:9")
         self.workers.append(worker)
-        status, body = worker.call("GET", "/api/draw/v1/texturas/fabricantes")
+        # A recusa do loopback no Windows leva ~2 s por tentativa e o worker repete em 2+4+8 s: ~22 s no total.
+        status, body = worker.call("GET", "/api/draw/v1/texturas/fabricantes", timeout=60)
         self.assertIsNone(status)
         self.assertEqual(body["error"], "network")
 

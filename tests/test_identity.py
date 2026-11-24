@@ -31,7 +31,7 @@ def package_sources():
 
 
 def visible_strings(path):
-    tree = ast.parse(path.read_text())
+    tree = ast.parse(path.read_text(encoding="utf-8"))
     hidden = set()
     for node in ast.walk(tree):
         if isinstance(node, (ast.Module, ast.FunctionDef, ast.AsyncFunctionDef)) and node.body:
@@ -45,7 +45,7 @@ def visible_strings(path):
 class IdentidadeTest(unittest.TestCase):
     def test_pacote_e_manifesto(self):
         self.assertTrue(PACKAGE.is_dir(), "o pacote deve ser caffmob_draw/")
-        text = (PACKAGE / "blender_manifest.toml").read_text()
+        text = (PACKAGE / "blender_manifest.toml").read_text(encoding="utf-8")
         data = dict(re.findall(r'^(\w+)\s*=\s*"([^"]*)"', text, re.M))
         self.assertEqual(data["id"], "caffmob_draw")
         self.assertEqual(data["name"], "CAFFMob Draw")
@@ -59,7 +59,7 @@ class IdentidadeTest(unittest.TestCase):
     def test_operadores_com_prefixo_caffmob(self):
         wrong = []
         for p in package_sources():
-            for m in re.finditer(r"bl_idname\s*=\s*['\"]([a-z0-9_]+)\.([a-z0-9_]+)['\"]", p.read_text()):
+            for m in re.finditer(r"bl_idname\s*=\s*['\"]([a-z0-9_]+)\.([a-z0-9_]+)['\"]", p.read_text(encoding="utf-8")):
                 if not m.group(1).startswith("caffmob"):
                     wrong.append(f"{p.relative_to(ROOT)}: {m.group(1)}.{m.group(2)}")
         self.assertEqual(wrong, [])
@@ -67,7 +67,7 @@ class IdentidadeTest(unittest.TestCase):
     def test_uma_aba_so(self):
         categories = set()
         for p in package_sources():
-            categories |= set(re.findall(r"bl_category\s*=\s*['\"]([^'\"]+)['\"]", p.read_text()))
+            categories |= set(re.findall(r"bl_category\s*=\s*['\"]([^'\"]+)['\"]", p.read_text(encoding="utf-8")))
         self.assertEqual(categories - {EDITOR_WINDOW_CATEGORY}, {"CAFFMob Draw"})
 
     def test_migracao_copia_so_quando_vazio(self):

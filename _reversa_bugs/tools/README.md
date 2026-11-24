@@ -31,6 +31,16 @@ Código de saída: `0` sem defeito candidato, `1` com defeito candidato, `2` err
 
 ## Última execução
 
-Em 2026-11-24, exit code `0`: pura **186/186**, Blender **197/203** (5 ambiente, 1 performance, 0 defeitos).
+Em 2026-11-24 (11:04Z, Windows 11, Blender 5.2.0 LTS), exit code `0`: pura **186/186**, Blender **198/203**
+(5 ambiente, 0 performance, 0 defeitos), 994,6 s:
+
+```bash
+python _reversa_bugs/tools/reversa_debugger.py --suite all \
+  --blender "C:/Program Files/Blender Foundation/Blender 5.2/blender.exe" \
+  --pure-timeout 45 --blender-timeout 360 \
+  --out _reversa_bugs/plugin-caffmob-draw/inspections/2026-11-24-debugger
+```
+
+A passada anterior (Linux, `/opt/blender/blender`) deu pura 186/186 e Blender 197/203 (5 ambiente, 1 performance).
 Relatório, logs e `results.json` em
 `_reversa_bugs/plugin-caffmob-draw/inspections/2026-11-24-debugger/`.

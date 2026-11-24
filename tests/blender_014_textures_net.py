@@ -3,6 +3,7 @@
 Roda com --background; bombeia os timers da ponte explicitamente. Só 127.0.0.1.
 """
 import json
+import os
 import stat
 import sys
 from pathlib import Path
@@ -17,7 +18,8 @@ try:
     entries = server.connect()
     assert len(entries) == 3 and auth.titular_nome() == 'Oficina de teste'
     session = Path(auth.session_path())
-    assert stat.S_IMODE(session.stat().st_mode) == 0o600
+    if os.name == "posix":          # o Windows não tem modo POSIX: o arquivo herda o ACL do perfil do usuário
+        assert stat.S_IMODE(session.stat().st_mode) == 0o600
     saved = json.loads(session.read_text())
     assert saved['tokens']['access_token'] and saved['refresh_token'] and saved['titular']['nome']
     assert 'password' not in json.dumps(saved) and 'account' not in saved
