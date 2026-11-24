@@ -7,18 +7,32 @@ lista de peças a partir dos GeoNodeCutpart (frameless + closets), limite de cha
 exportação JSON v2 e CSV.
 """
 
+import importlib.util
 import json
 import sys
 import tempfile
+from importlib import import_module
 from pathlib import Path
 
 import bpy
 
 ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(ROOT))
-import caffmob_draw as addon  # noqa: E402
-from caffmob_draw.cutting import part_extractor  # noqa: E402
-from caffmob_draw.standards import api as standards_api  # noqa: E402
+# Como extensão (`bl_ext.*`): o addon lê `extension_path_user` no registro; módulo solto dá ValueError.
+PACKAGE = 'bl_ext.ensaio_increment1.caffmob_draw'
+spec = importlib.util.spec_from_file_location(PACKAGE, ROOT / 'caffmob_draw/__init__.py',
+                                             submodule_search_locations=[str(ROOT / 'caffmob_draw')])
+addon = importlib.util.module_from_spec(spec)
+sys.modules[PACKAGE] = addon
+spec.loader.exec_module(addon)
+part_extractor = import_module(PACKAGE + '.cutting.part_extractor')
+standards_api = import_module(PACKAGE + '.standards.api')
+# O Padrão de Dimensões persiste em `extension_path_user(<pacote>, 'standards')`. Sem isolar o banco, a cópia que
+# este ensaio cria fica gravada e a próxima execução já começa com "Padrão Brasil - cópia" ativo (mesmo padrão do
+# `_fixtures_067.banco_temporario`).
+_BANCO = tempfile.TemporaryDirectory(prefix='caffmob_increment1_')
+store = import_module(PACKAGE + '.standards.store')
+store.close()
+store.override_path = str(Path(_BANCO.name) / store.FILENAME)
 
 FIXTURE = ROOT / "tests" / "fixtures" / "dimensionexport_me_moveis.xml"
 
@@ -34,8 +48,8 @@ assert standards_api.get_value(scene, 'COZ.sheets.LAT.thickness') == 15.0
 # 2. Gabinetes: um balcão frameless e um roupeiro closets.
 assert bpy.ops.caffmob.standards_duplicate() == {'FINISHED'}
 assert standards_api.active_definition(scene).name.startswith("Padrão Brasil")
-from caffmob_draw.product_libraries.frameless import types_frameless  # noqa: E402
-from caffmob_draw.product_libraries.closets import types_closets  # noqa: E402
+types_frameless = import_module(PACKAGE + '.product_libraries.frameless.types_frameless')
+types_closets = import_module(PACKAGE + '.product_libraries.closets.types_closets')
 
 cabinet = types_frameless.BaseCabinet()
 cabinet.create("Balcão Teste")
@@ -46,7 +60,7 @@ bpy.context.view_layer.update()
 # 3. Aplicar definição com lateral 18 mm propaga aos gabinetes existentes. Feature 012 (D-21): fora do modo de suporte,
 #    os armários herdados não são refeitos ("não aplicável" até a conversão para CAFFMob); este teste cobre a
 #    sincronização herdada, que continua no modo de suporte (preferência show_legacy_libraries).
-from caffmob_draw.legacy import gate  # noqa: E402
+gate = import_module(PACKAGE + '.legacy.gate')
 _gate = gate.legacy_ui
 report = None
 draft = standards_api.begin_draft(scene, bpy.context.window_manager)
@@ -99,4 +113,6 @@ addon.unregister()
 assert not hasattr(bpy.types.Scene, 'btm_standards')
 addon.register()
 addon.unregister()
+store.close()
+_BANCO.cleanup()
 print('BLENDER_INCREMENT1_SMOKE_OK', flush=True)
