@@ -46,5 +46,77 @@
   "Projeção da textura": {
     "pt_BR": "Projeção da textura",
     "en_US": "Texture projection"
+  },
+  "Giro do veio na face da chapa; o corte usa o múltiplo de 90 mais próximo": {
+    "pt_BR": "Giro do veio na face da chapa; o corte usa o múltiplo de 90 mais próximo",
+    "en_US": "Grain rotation on the panel face; cutting uses the nearest multiple of 90"
+  },
+  "Giro do veio na face da peça; o corte usa o múltiplo de 90 mais próximo": {
+    "pt_BR": "Giro do veio na face da peça; o corte usa o múltiplo de 90 mais próximo",
+    "en_US": "Grain rotation on the part face; cutting uses the nearest multiple of 90"
+  },
+  "Abra o conta-gotas numa vista 3D": {
+    "pt_BR": "Abra o conta-gotas numa vista 3D",
+    "en_US": "Open the eyedropper in a 3D view"
+  },
+  "Textura copiada de {}": {
+    "pt_BR": "Textura copiada de {}",
+    "en_US": "Texture copied from {}"
+  },
+  "Os alvos do conta-gotas saíram da cena: escolha de novo": {
+    "pt_BR": "Os alvos do conta-gotas saíram da cena: escolha de novo",
+    "en_US": "The eyedropper targets left the scene: choose again"
+  },
+  "Marque ao menos uma parte: Porta, Exterior ou Interior": {
+    "pt_BR": "Marque ao menos uma parte: Porta, Exterior ou Interior",
+    "en_US": "Mark at least one part: Door, Exterior or Interior"
+  },
+  "Nenhum alvo do conta-gotas recebe essa parte": {
+    "pt_BR": "Nenhum alvo do conta-gotas recebe essa parte",
+    "en_US": "No eyedropper target takes this part"
+  },
+  "Textura aplicada em {} peça(s)": {
+    "pt_BR": "Textura aplicada em {} peça(s)",
+    "en_US": "Texture applied to {} part(s)"
+  },
+  "Acende a peça sob o cursor e copia a textura dela no clique (Esc cancela)": {
+    "pt_BR": "Acende a peça sob o cursor e copia a textura dela no clique (Esc cancela)",
+    "en_US": "Highlights the part under the cursor and copies its texture on click (Esc cancels)"
+  },
+  "Conta-gotas: apontar a parte": {
+    "pt_BR": "Conta-gotas: apontar a parte",
+    "en_US": "Eyedropper: point at the part"
+  },
+  "Aplica a textura copiada nos alvos do conta-gotas, só nas partes marcadas": {
+    "pt_BR": "Aplica a textura copiada nos alvos do conta-gotas, só nas partes marcadas",
+    "en_US": "Applies the copied texture to the eyedropper targets, only on the marked parts"
+  },
+  "Conta-gotas ativo": {
+    "pt_BR": "Conta-gotas ativo",
+    "en_US": "Eyedropper active"
+  },
+  "Arquivo da textura": {
+    "pt_BR": "Arquivo da textura",
+    "en_US": "Texture file"
+  },
+  "Nome da textura": {
+    "pt_BR": "Nome da textura",
+    "en_US": "Texture name"
+  },
+  "Item do catálogo": {
+    "pt_BR": "Item do catálogo",
+    "en_US": "Catalog item"
+  },
+  "Peça de origem": {
+    "pt_BR": "Peça de origem",
+    "en_US": "Source part"
+  },
+  "Alvos": {
+    "pt_BR": "Alvos",
+    "en_US": "Targets"
+  },
+  "Nomes separados por quebra de linha": {
+    "pt_BR": "Nomes separados por quebra de linha",
+    "en_US": "Names separated by line breaks"
   }
 }

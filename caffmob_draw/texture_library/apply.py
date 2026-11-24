@@ -2,6 +2,8 @@
 
 - `targets(obj)`: o que muda quando a textura cai sobre `obj` (`selection.classify`): a peça, a frente inteira, as
   peças do módulo ou o próprio objeto. Cota e anotação não recebem textura.
+- `apply_domains(objs, item_id, path, size, domains)`: o mesmo funil, só nos domínios de parte escolhidos
+  (`FRONTS`/`EXTERNAL`/`INTERNAL`) e com a contagem por domínio (018, T023, RN-11, D-08).
 - `apply(objs, item_id)`: com a imagem no cache, cria (ou reaproveita) o material de imagem
   (`object_library.retexture.image_material`, com o tamanho do catálogo, D-08) e aplica por
   `common.set_cutpart_material`. A escolha fica gravada na personalização, para sobreviver a refazer o módulo
@@ -14,11 +16,12 @@
 
 import bpy  # type: ignore
 
+from ..customize import finish
 from ..customize.adapters import common
 from ..data.i18n import N_, tr
 from ..object_library import retexture
 from ..selection import classify as classify_mod
-from . import bump, catalog, downloads
+from . import bump, catalog, downloads, grain, pick, uv_core
 
 APPLIED, QUEUED, ERROR = 'APPLIED', 'QUEUED', 'ERROR'
 NO_TARGET = N_("Solte a textura sobre uma peça, frente, módulo ou objeto")
@@ -26,6 +29,7 @@ UNKNOWN = N_("Textura fora do catálogo")
 DONE_LATER = N_("Textura {} aplicada em {} peça(s)")
 FAILED_LATER = N_("Textura {} não aplicada: {}")
 DOWNLOADING = N_("Baixando {}… a textura entra quando o download terminar")
+NO_UV = N_("A malha não tem UV: a textura entra em projeção de caixa")
 
 
 def _meshes(objs):
@@ -100,26 +104,79 @@ def material_for(obj, item_id, path, size=None):
     return mat
 
 
+def _copiar_giro(obj, angulo):
+    """Leva o giro do veio da origem para a peça; a sincronia é uma só, feita depois do material (T020, RN-10)."""
+    for dono in (getattr(obj, 'btm_armario_parte', None), getattr(obj, 'btm_part', None)):
+        if getattr(dono, 'grain_angle', None) is not None:
+            with grain.suspended():
+                dono.grain_angle = float(angulo)
+            return
+
+
+def apply_domains(objs, item_id, path, size=None, domains=(), angle=None):
+    """Aplica a imagem já baixada só nos domínios de parte pedidos (018, T023; RN-11, D-08).
+
+    Devolve `(APPLIED, {domínio: peças})` ou `(ERROR, NO_TARGET)`. O plano é resolvido antes de tocar na cena: peça
+    que não cobre nenhum domínio marcado (fita, cota, peça sem papel) fica de fora e nada é aplicado quando o plano
+    sai vazio — não existe aplicação parcial. A escolha fica em `btm_finish` e em `btm_armario_parte.material`
+    (D-11), o giro `angle` entra na peça junto com a textura e o veio é sincronizado uma vez por peça.
+    """
+    plano = []
+    for obj in _meshes(objs):
+        cobertos = tuple(dominio for dominio in pick.dominios_do_objeto(obj) if dominio in domains)
+        if cobertos:
+            plano.append((obj, cobertos))
+    if not plano:
+        return ERROR, tr(NO_TARGET)
+    contagem = {dominio: 0 for dominio in domains}
+    aplicados = []
+    for obj, cobertos in plano:
+        mat = material_for(obj, item_id, path, size)
+        if not common.set_cutpart_material(obj, mat):
+            continue
+        aplicados.append(obj)
+        for dominio in cobertos:
+            finish.remember(obj, dominio, mat)
+            contagem[dominio] += 1
+        parte = getattr(obj, 'btm_armario_parte', None)
+        if parte is not None and str(parte.papel or ''):
+            parte.material = mat.name
+        if angle is not None:
+            _copiar_giro(obj, angle)
+        grain.sync(obj)
+    mudou = sum(contagem.values())
+    _avisar_projecao(aplicados)
+    return (APPLIED, contagem) if mudou else (ERROR, tr(NO_TARGET))
+
+
 def apply_cached(objs, item_id, path, size=None):
     """Aplica a imagem já baixada; devolve quantas malhas mudaram."""
     changed = 0
+    aplicados = []
     for obj in _meshes(objs):
         mat = material_for(obj, item_id, path, size)
         if common.set_cutpart_material(obj, mat):
             changed += 1
-            from . import grain
+            aplicados.append(obj)
             grain.sync(obj)                            # a intenção de veio da peça entra no material (D-30)
             if obj.get("caffmob_modulo"):
                 from ..mobi.texturas import remember
                 remember(obj, item_id)
             else:
                 _remember(obj, mat)
+    _avisar_projecao(aplicados)
     return changed
 
 
 def _notify(text):
     from ..ui import save_feedback
     save_feedback.show(text)
+
+
+def _avisar_projecao(aplicados):
+    """Avisa quando a textura entrou em projeção de caixa: o UV Editor não mexe nessa malha (018, RN-15, D-14)."""
+    if any(retexture.projection_for(obj) == uv_core.BOX for obj in aplicados):
+        _notify(tr(NO_UV))
 
 
 def apply(objs, item_id, size=None):

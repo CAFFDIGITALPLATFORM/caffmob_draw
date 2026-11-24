@@ -5,6 +5,7 @@ objeto ATIVO e só os grupos do tipo dele, no máximo 4 abertos:
 - linha de estado: tipo, nome, L × A × P e rotação;
 - Dimensões: largura, altura, profundidade (módulos; largura e altura de portas e janelas de ambiente);
 - Cotas: afastamento da parede, anterior, posterior, inferior e superior (módulos), editáveis;
+- Chapa: medidas, veio e o ângulo do veio em graus, com o aviso quando ele não é múltiplo de 90 (018, T024);
 - Abrir: frentes do módulo (inspeção da 001);
 - Parede: comprimento, pé-direito inicial e final, espessura;
 - Outras: biblioteca e coleções;
@@ -396,6 +397,37 @@ def _draw_items(layout, context, target, obj, items):
             _draw_note(col, context, target, obj, item)
 
 
+# Veio em graus (018, T024; RN-10, RF-09) ---------------------------------------------------------------------
+
+def _draw_grain_angle(layout, obj, grupo):
+    """Ângulo do veio da peça e o aviso quando ele não é múltiplo de 90 (o corte arredonda para H ou V)."""
+    if obj is None or grupo is None:
+        return
+    row = layout.row(align=True)
+    row.prop(grupo, 'grain_angle', text=tr("Veio (graus)"))
+    if float(grupo.grain_angle or 0.0) % 90.0:
+        alert = layout.row()
+        alert.alert = True
+        alert.label(text=tr("Ângulo do veio não é múltiplo de 90"), icon='ERROR')
+
+
+def _v2_piece_group(obj):
+    """A chapa do armário v2 não tem painel próprio: o grupo com papel é o que diz que o objeto é peça."""
+    grupo = getattr(obj, 'btm_armario_parte', None) if obj is not None else None
+    return grupo if grupo is not None and str(grupo.papel or '') else None
+
+
+def _grain_section_group(obj, section_id):
+    """Grupo do veio na seção que a peça usa: a biblioteca na Chapa, a chapa do v2 no acabamento ou no fallback.
+
+    A peça de biblioteca é `btm_part`; a chapa do armário v2 é `btm_armario_parte`, e ela aparece em "Acabamentos"
+    quando o módulo está na cena e no fallback quando não há adaptador (T024).
+    """
+    if section_id == 'sheet':
+        return getattr(obj, 'btm_part', None)
+    return _v2_piece_group(obj)
+
+
 def _draw_cotas(layout, context, target, section):
     """Cotas fixas do alvo móvel com o nome da referência; lado sem referência diz isso, nunca 0 (RF-028)."""
     from ..overlays import side_cotas
@@ -515,6 +547,11 @@ def _draw_section(layout, context, target, obj, section):
             _draw_items(body, context, target, obj, [i for i in section.items if not isinstance(i, view.Action)])
             from .menus import draw_door_controls
             draw_door_controls(body, context)
+        elif section.id in ('sheet', 'fallback', 'finish'):
+            # Peça: o ângulo do veio vem junto do Veio, onde a peça mostra o acabamento. 'sheet' é a peça de
+            # biblioteca; 'finish' é a chapa do armário v2 com o módulo na cena; 'fallback' é a chapa sem adaptador.
+            _draw_items(body, context, target, obj, section.items)
+            _draw_grain_angle(body, obj, _grain_section_group(obj, section.id))
         else:
             _draw_items(body, context, target, obj, section.items)
 

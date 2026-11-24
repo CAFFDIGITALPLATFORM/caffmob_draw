@@ -50,7 +50,10 @@
 2. Girar a mesma textura para 30° numa chapa e abrir o plano de corte.
    **Esperado**: a chapa continua listada como veio horizontal ou vertical (o múltiplo mais próximo) e o painel avisa
    que o ângulo é visual.
-3. Aplicar a mesma textura em outro armário e conferir que ele não girou junto.
+3. No painel da peça, conferir o campo **Veio (graus)**: fica na seção **Chapa** ao lado de **Veio** (peça de
+   biblioteca) ou na seção **Acabamentos** (chapa gerada pelo armário v2, com o módulo na cena). Com 30° ou 45°,
+   aparece abaixo do campo o aviso em vermelho "Ângulo do veio não é múltiplo de 90"; com 90° ou 180°, o aviso some.
+4. Aplicar a mesma textura em outro armário e conferir que ele não girou junto.
 
 ### 2.5 Conta-gotas (RF-10)
 
@@ -77,6 +80,17 @@
 - Peça com Geometry Node que gere UV próprio: ver a verificação pendente em `investigation.md` §4.
 - Textura de fabricante que exige download: depende de rede e conta.
 - Planilha de corte com veio em ângulo intermediário: o corte só entende H/V/NONE por decisão de plano (D-06).
+- Dicas ao passar o mouse (descrição dos operadores e das props do conta-gotas e do ângulo do veio): o roteiro confere
+  os rótulos na tela; as dicas são cobertas só por `tests/test_i18n_coverage.py` (T026), que olha o catálogo, não o que
+  o Blender mostra no tooltip.
+- Desenho do painel e do destaque do conta-gotas: só com janela. `tests/blender_018_janela.py` já confere o campo,
+  o aviso (45° mostra, 90° não) e a caixa da parte na vista; a conferência com o olho continua valendo porque o ensaio
+  roda o desenho real, mas não julga se ele está bonito ou no lugar certo.
+- Material migrado do formato antigo com nome ocupado: o conflito é sinalizado em `btm_texture_nome_conflito` e ainda
+  não tem linha no painel; o roteiro não abre o material para ver a marca.
+- Aviso de malha sem UV: aparece na barra de status por alguns segundos ao aplicar a textura, sem linha própria no
+  painel. A fumaça `tests/blender_018_textura_smoke.py` (T025) confere o texto e a projeção de caixa; a leitura na tela
+  depende desta conferência, porque o aviso some sozinho.
 
 ## 4. Se algo falhar
 

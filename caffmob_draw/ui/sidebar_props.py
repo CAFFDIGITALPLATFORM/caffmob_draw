@@ -21,7 +21,8 @@ GROUPS = (
     ('sel_aggregates', False), ('sel_collision', False), ('sel_arrangement', False), ('sel_actions', False),
     ('sel_library', False), ('sel_retexture', False),
     # Selecionado da 067 (seções do ViewModel; os detalhes técnicos começam recolhidos)
-    ('sel_sheet', True), ('sel_cotas', True), ('sel_module', False), ('sel_geometry', True), ('sel_material', True),
+    ('sel_sheet', True), ('sel_finish', True), ('sel_cotas', True), ('sel_module', False), ('sel_geometry', True),
+    ('sel_material', True),
     ('sel_wall', True), ('sel_opening', True), ('sel_leaf', True), ('sel_member', True), ('sel_front', True),
     ('sel_cladding', True), ('sel_surface', True), ('sel_light', True), ('sel_camera', True), ('sel_multiple', True),
     ('sel_limits', True), ('sel_fallback', True), ('sel_legacy_cotas', False), ('sel_stair', True), ('sel_drawer', True),

@@ -158,13 +158,25 @@ def image_materials(obj):
     return out
 
 
-def _intencao(obj):
-    """(enum do veio, ângulo em graus) da peça: a chapa do armário v2 guarda os dois em `btm_armario_parte` (D-11)."""
+def piece_group(obj):
+    """Grupo que guarda o veio da peça: `btm_armario_parte` (armário v2) ou `btm_part` (bibliotecas), D-11.
+
+    O `btm_part` existe em todo `Object` (o PointerProperty é do tipo, não da peça), então a chapa do v2 se reconhece
+    pelo papel gravado antes de cair nele. O painel da peça lê o ângulo pelo mesmo lugar (T024).
+    """
     grupo = getattr(obj, 'btm_armario_parte', None)
     if grupo is not None and str(grupo.papel or ''):
-        return str(grupo.veio or 'NONE'), float(grupo.grain_angle or 0.0)
-    part = getattr(obj, 'btm_part', None)
-    return str(getattr(part, 'grain', 'NONE') or 'NONE'), float(getattr(part, 'grain_angle', 0.0) or 0.0)
+        return grupo
+    return getattr(obj, 'btm_part', None)
+
+
+def _intencao(obj):
+    """(enum do veio, ângulo em graus) da peça, na fonte de `piece_group`."""
+    grupo = piece_group(obj)
+    if grupo is None:
+        return 'NONE', 0.0
+    veio = getattr(grupo, 'veio', None) or getattr(grupo, 'grain', 'NONE')
+    return str(veio or 'NONE'), float(getattr(grupo, 'grain_angle', 0.0) or 0.0)
 
 
 def sync(obj):

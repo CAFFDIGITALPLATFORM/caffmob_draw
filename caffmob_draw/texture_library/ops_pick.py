@@ -6,16 +6,15 @@
 
 `caffmob.texture_apply_parts` aplica a assinatura guardada nos alvos congelados, só nos domínios marcados
 (Porta = `FRONTS`, Exterior = `EXTERNAL`, Interior = `INTERNAL`), revalidando os nomes antes de tocar em qualquer
-peça: alvo que sumiu cancela tudo, sem aplicação parcial. Um passo de Undo.
+peça: alvo que sumiu cancela tudo, sem aplicação parcial. A aplicação em si é de `apply.apply_domains` (T023), que
+devolve a contagem por domínio. Um passo de Undo.
 """
 
 import bpy  # type: ignore
 
-from ..customize import finish
-from ..customize.adapters import common
 from ..data.i18n import N_, tr
 from ..object_library import retexture
-from . import apply, grain, ops_apply, pick, uv_core
+from . import apply, ops_apply, pick, uv_core
 
 SEM_VIEWPORT = N_("Abra o conta-gotas numa vista 3D")
 FALTA_ORIGEM = N_("Falta a origem da textura")
@@ -136,41 +135,14 @@ class BTM_OT_TextureApplyParts(bpy.types.Operator):
             self.report({'WARNING'}, tr(ALVOS_MUDARAM))
             return {'CANCELLED'}
         tamanho = (float(grupo.size_mm), float(grupo.height_mm or grupo.size_mm))
-        mudou = 0
-        for obj in objs:
-            dominios = tuple(dominio for dominio in pick.dominios_do_objeto(obj) if dominio in marcados)
-            if not dominios:
-                continue
-            material = apply.material_for(obj, grupo.texture_id, grupo.path, tamanho)
-            if not common.set_cutpart_material(obj, material):
-                continue
-            mudou += 1
-            self._lembrar(obj, dominios, material)
-            self._copiar_giro(obj, grupo.angle)
-            grain.sync(obj)
+        status, contagem = apply.apply_domains(objs, grupo.texture_id, grupo.path, tamanho, marcados,
+                                               angle=grupo.angle)
+        mudou = sum(contagem.values()) if status == apply.APPLIED else 0
         if not mudou:
             self.report({'WARNING'}, tr(SEM_ALVO))
             return {'CANCELLED'}
         self.report({'INFO'}, tr(APLICADO).format(mudou))
         return {'FINISHED'}
-
-    @staticmethod
-    def _lembrar(obj, dominios, material):
-        """Guarda a escolha onde o refazer a lê: `btm_finish` (067) e o material da chapa do armário v2 (D-11)."""
-        for dominio in dominios:
-            finish.remember(obj, dominio, material)
-        parte = getattr(obj, 'btm_armario_parte', None)
-        if parte is not None and str(parte.papel or ''):
-            parte.material = material.name
-
-    @staticmethod
-    def _copiar_giro(obj, angulo):
-        """Leva o giro do veio da origem para a peça; a sincronia é uma só, feita por quem chamou (T020, RN-10)."""
-        for dono in (getattr(obj, 'btm_armario_parte', None), getattr(obj, 'btm_part', None)):
-            if getattr(dono, 'grain_angle', None) is not None:
-                with grain.suspended():
-                    dono.grain_angle = float(angulo)
-                return
 
 
 classes = (BTM_OT_TexturePick, BTM_OT_TextureApplyParts)
