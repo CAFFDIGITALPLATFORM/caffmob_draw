@@ -59,7 +59,7 @@
 | `python tests/test_i18n_coverage.py` | 3/3 OK |
 | `python docs/rag/tools/check_api.py` | 619 arquivos, 0 símbolos desconhecidos |
 | `python _reversa_bugs/tools/reversa_debugger.py --suite pure --out .../2026-11-24-coding-022` | pura **187/187**, 97,4 s |
-| `python _reversa_bugs/tools/reversa_debugger.py --suite blender --blender ... --out .../2026-11-24-coding-022-blender` | ver `report.md` do diretório |
+| `python _reversa_bugs/tools/reversa_debugger.py --suite blender --blender ... --out .../2026-11-24-coding-022-blender` | Blender **199/204**, 1 315,7 s, 0 defeito — as 5 falhas são ambiente (rede/MOBI/extensão), as mesmas de sempre |
 
 ## Próximo passo sugerido
 
