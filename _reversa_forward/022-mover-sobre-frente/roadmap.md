@@ -27,18 +27,17 @@ resultado é byte a byte o de hoje, o que mantém posições salvas e ensaios ex
 
 | ID | Decisão | Justificativa | Alternativas descartadas | Confidência |
 |----|---------|----------------|--------------------------|-------------|
-| D-01 | Núcleo puro `caffmob_draw/move_over/frente_core.py` com `yaw_of(normal_xy)`, `wall_candidates(obj, walls)`, `decide(matrix_b, box_b, walls, stored_yaw, module_like)` → `(yaw, origem, ambíguo)` e constantes `GAP_MAX`/`DISAGREE_MAX` | Deixa a regra testável sem Blender e centraliza os limites que o clarify vai fixar | Decidir dentro de `scene.py` (regra presa ao `bpy`, sem ensaio puro) | 🟢 |
-| D-02 | `scene.MoveOver` monta `view_frame = b_frame @ Rz(yaw)` e calcula `box_b`/`a_local_box` nesse referencial; helpers `to_view`/`from_view` convertem entre a base do objeto (onde `delta` continua salvo) e a base da vista | Mantém o dado salvo intacto e, com `yaw = 0`, o resultado atual | Regravar `delta` na base da vista (invalida posições salvas) | 🟢 |
+| D-01 | Núcleo puro `caffmob_draw/move_over/frente_core.py` com `yaw_from_normal`, `wall_candidate`, `nearest_wall`, `decide(box_b, walls, stored_yaw, module_like)` → `(yaw, origem, ambíguo)`, `decide_for_wall` e a constante `DISAGREE_MAX = 45°`. **Sem** limite de distância: vale a parede mais próxima cujo comprimento cobre o pé de B | Deixa a regra testável sem Blender e usa exatamente os parâmetros fechados no clarify | Decidir dentro de `scene.py` (regra presa ao `bpy`, sem ensaio puro) | 🟢 |
+| D-02 | `scene.MoveOver` monta `view_frame = b_frame @ Rz(yaw)` e calcula `box_b`/`origin_in_b` nesse referencial; `delta`, `a_local_box` e as vistas continuam relativos a esse mesmo referencial, então arraste, ímã, cota, alças e giro não precisam de remapeamento de índices. A face do `stick` é traduzida por `frente_core.face_of` | Com `yaw = 0` o resultado é o atual; evita a camada de conversão (e o risco de trocar "Na frente" por "Atrás") | Converter cada uso entre duas bases (mais pontos de erro) | 🟢 |
 | D-03 | Propriedade `obj['btm_front_yaw']` (graus, float, idprop) com leitura em `decide`; operador `caffmob.move_over_front` grava e marca `UNDO` | Decisão já tomada na 017 (`requirements.md:420`); idprop sobrevive ao `.blend` sem migração | Campo novo em `data/properties.py` (exige registro e migração de cena) | 🟢 |
-| D-04 | Pergunta por `invoke_props_dialog` com os quatro lados (e "usar o eixo"), disparada na abertura quando `ambíguo`; cancelar não grava nada | Fluxo já usado em `ops_resize.py`; sem menu novo e sem bloquear o arraste | Menu rápido no canto da janela (mais código de desenho e de foco) | 🟡 |
+| D-04 | Pergunta por `invoke_props_dialog` com os quatro lados e "Usar o eixo", disparada pelo `ops_dialog.invoke` quando `ambíguo` e a janela não veio de arraste; com `then_open` a janela reabre já com a frente nova. Cancelar reabre sem gravar nada | Decisão 3 do clarify; fluxo já usado em `ops_resize.py` | Menu rápido no canto da janela (mais código de desenho e de foco) | 🟢 |
 | D-05 | Indicador de frente desenhado nas duas vistas (`_draw_view`) a partir de `view_frame` | Fecha o achado A008 e dá ao usuário a leitura da decisão | Só tooltip (não resolve a dúvida no momento do arraste) | 🟢 |
 
 ## 4. Premissas
 
 | Premissa | Origem (`requirements.md` seção) | Risco se errada |
 |----------|----------------------------------|-----------------|
-| Limite de proximidade da parede em 100 mm e desacordo tolerado de 45° | §9 (D1, D2) | Perto/longe e conflito mudam de comportamento; o clarify fixa os dois antes do código |
-| A frente gravada vale para todo o add-on | §9 (D4) / 017 `requirements.md:420` | Se valer só no Mover Sobre, outros fluxos continuam com a convenção antiga |
+| n/a — D1–D5 fechadas no clarify de 2026-11-24 (parede sem limite de distância, desacordo de 45°, diálogo de 4 lados, alcance em todo o add-on, perguntar quando B é parede sem arraste) | §9 | n/a |
 
 ## 5. Delta arquitetural
 
@@ -72,12 +71,12 @@ resultado é byte a byte o de hoje, o que mantém posições salvas e ensaios ex
 
 ## 9. Critério de pronto
 
-- [ ] Todas as ações do `actions.md` marcadas `[X]`
-- [ ] `yaw = 0` reproduz os ensaios atuais do Mover Sobre (mesmo `delta` e mesma matriz)
-- [ ] Ensaios puros de `frente_core` cobrindo propriedade, parede perto/longe, eixo, conflito e cancelar
-- [ ] Fumaça no Blender 5.2: pergunta, gravação, reabertura e `Ctrl+Z`
-- [ ] Cobertura i18n sem chave faltante e `unregister` sem handler órfão
-- [ ] `cross-check.md` sem CRITICAL nem HIGH
+- [X] Todas as ações do `actions.md` marcadas `[X]`
+- [X] `yaw = 0` reproduz o comportamento anterior (matriz e caixas conferidas na fumaça)
+- [X] Ensaios puros de `frente_core` cobrindo propriedade, parede perto/longe/lado, eixo, conflito e referência-parede
+- [X] Fumaça no Blender 5.2: parede, ambiguidade, propriedade, `yaw = 0` e operador (10/10)
+- [X] Cobertura i18n sem chave faltante (`test_i18n_coverage` 3/3)
+- [X] `cross-check.md` sem CRITICAL nem HIGH
 
 ## 10. Histórico de alterações
 

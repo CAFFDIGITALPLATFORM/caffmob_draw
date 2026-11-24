@@ -48,13 +48,14 @@ Esta entrega faz a janela **descobrir a frente por evidência** (parede atrás p
 ## 4. Regras de negócio novas ou alteradas
 
 1. **RN-01 (Precedência da frente):** a frente de B é decidida nesta ordem: (1) frente gravada no objeto pelo usuário;
-   (2) parede atrás de B dentro do limite de proximidade, quando a normal da parede aponta para o lado de B;
-   (3) eixo do objeto (comportamento atual, `yaw = 0`); (4) sem evidência confiável → **perguntar**. 🟢
+   (2) parede atrás de B — **sem limite de distância**, desde que o comprimento da parede cubra o pé de B em planta —
+   quando a normal da parede aponta para o lado de B; (3) eixo do objeto (comportamento atual, `yaw = 0`);
+   (4) sem evidência confiável → **perguntar**. 🟢
    - Origem: auditoria de 2026-11-22 §4 (`RF-F01`, `RF-F02`, `RF-F03`).
    - Tipo: nova.
 2. **RN-02 (Frente gravada vence sempre):** a escolha do usuário é gravada em `obj['btm_front_yaw']` (graus, local ao
    objeto, salvo no `.blend` como idprop) e tem precedência sobre parede e eixo em todas as sessões, inclusive depois
-   de salvar e reabrir. 🟢
+   de salvar e reabrir. Vale para **todo o add-on** (esclarecimento de 2026-11-24). 🟢
    - Origem: decisão da 017 (`requirements.md:420`) e `_reversa_sdd/questions.md:1501`.
    - Tipo: nova.
 3. **RN-03 (Referencial das vistas pela frente decidida):** as vistas Frontal e Planta passam a ser calculadas no
@@ -68,12 +69,14 @@ Esta entrega faz a janela **descobrir a frente por evidência** (parede atrás p
    - Origem: auditoria de 2026-11-22 A005/A007.
    - Tipo: alterada.
 5. **RN-05 (Perguntar só quando necessário, sem bloquear):** a pergunta aparece quando (a) não há parede atrás e B não
-   é módulo de biblioteca, ou (b) parede e eixo discordam acima da tolerância. Cancelar a pergunta não altera a cena e
-   não grava propriedade. 🟢
+   é módulo de biblioteca, ou (b) parede e eixo discordam acima de **45°** (esclarecimento de 2026-11-24). A pergunta
+   é um **diálogo com os quatro lados e a opção "Usar o eixo"**. Cancelar a pergunta não altera a cena e não grava
+   propriedade. 🟢
    - Origem: auditoria de 2026-11-22 `RF-F03`/`RF-F07`.
    - Tipo: nova.
-6. **RN-06 (B é parede):** quando a referência é a parede, a frente é o lado de onde A chegou pelo arraste; se A
-   estiver sobre a parede, perguntar. 🟢
+6. **RN-06 (B é parede):** quando a referência é a parede e a janela veio de um **arraste**, a frente é o lado de onde
+   A chegou; **sem arraste** (janela aberta pelo menu) ou com A sobre a espessura da parede, **perguntar**
+   (esclarecimento de 2026-11-24). 🟢
    - Origem: auditoria de 2026-11-22 §5.1 regra 6.
    - Tipo: nova.
 7. **RN-07 (Indicador de frente):** as duas vistas exibem um sinal explícito do lado tratado como frente (seta/linha
@@ -156,18 +159,28 @@ Cenário: "Na frente" continua sendo a frente do objeto com a base girada (RF-04
 | RF-07 | Should | Sem indicador o usuário não vê a decisão |
 | RF-08 | Must | Padrão de qualidade do add-on |
 
-## 9. Lacunas
+## 9. Esclarecimentos
 
-| ID | Lacuna | Tipo |
-|----|--------|------|
-| D1 | Qual é o limite de "perto" da parede para a frente vir dela (proposta: 100 mm entre o fundo de B e a face) | [DÚVIDA] |
-| D2 | Qual é a tolerância de desacordo entre parede e eixo antes de perguntar (proposta: 45°) | [DÚVIDA] |
-| D3 | Forma da pergunta: diálogo com os quatro lados, menu rápido no canto da janela ou só marca visual + atalho | [DÚVIDA] |
-| D4 | Alcance da frente gravada: só o Mover Sobre ou todo o add-on (a decisão de 2026-11-23 diz todo o add-on) | [DÚVIDA] |
-| D5 | Quando B é parede e A não veio de arraste (ex.: A já estava na cena), qual lado vale | [DÚVIDA] |
+### Sessão 2026-11-24
 
-## 10. Histórico de alterações
+- **Q:** D1 — A que distância a parede atrás de B ainda define a frente?
+  **R:** Qualquer distância: a parede atrás sempre vence (sem limite), desde que ela corra atrás do pé de B.
+- **Q:** D2 — Quando parede e eixo discordam, a partir de quanto o add-on pergunta?
+  **R:** Acima de 45°.
+- **Q:** D3 — Como a janela pergunta qual lado é a frente?
+  **R:** Diálogo com os quatro lados e a opção "Usar o eixo".
+- **Q:** D4 — A frente gravada vale onde?
+  **R:** Em todo o add-on.
+- **Q:** D5 — Quando B é parede e A não veio de arraste, qual lado vale?
+  **R:** Perguntar.
+
+## 10. Lacunas
+
+Nenhuma lacuna ou dúvida pendente após a sessão de esclarecimentos de 2026-11-24.
+
+## 11. Histórico de alterações
 
 | Data | Alteração | Autor |
 |------|-----------|-------|
 | 2026-11-24 | Versão inicial gerada por `/reversa-requirements` a partir da auditoria de 2026-11-22 e do achado A002 da auditoria da 021 | reversa |
+| 2026-11-24 | Esclarecimentos de `/reversa-clarify` integrados (D1–D5 fechadas, 0 dúvidas restantes) | reversa |

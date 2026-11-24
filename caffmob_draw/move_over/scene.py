@@ -10,7 +10,12 @@
   giro é em torno de um pivô escolhido entre os cantos e o centro da caixa local de A (`pivot`), pelo eixo da vista
   (planta: vertical; frontal: profundidade), com `M = T(P)·R(N,θ)·T(−P)·M0` (`rotation.rotate_about`). Escolher o
   pivô ou a âncora não move nada. `rotation` (graus em Z) continua valendo para quem já usava, pelo centro da base.
+- 022: o referencial de B é girado pelo yaw da frente decidida (`frente_core`), de modo que a frente do objeto fica
+  sempre em −Y da vista; com `yaw = 0` o resultado é o de antes.
 """
+
+from math import radians
+
 
 
 from mathutils import Matrix, Vector  # type: ignore
@@ -18,7 +23,7 @@ from mathutils import Matrix, Vector  # type: ignore
 from ..aggregates import group
 from ..data.i18n import tr
 from ..selection import classify
-from . import align, reposition
+from . import align, frente_core, reposition
 from . import rotation as rot
 
 
@@ -46,9 +51,9 @@ def _box(corners):
     return (tuple(min(c[i] for c in corners) for i in range(3)), tuple(max(c[i] for c in corners) for i in range(3)))
 
 
-def _local_box(obj, depsgraph):
-    """Caixa da árvore visível do objeto no seu espaço (posição e rotação), já com a escala do objeto."""
-    to_frame = _frame(obj).inverted()
+def _local_box(obj, depsgraph, frame=None):
+    """Caixa da árvore visível do objeto num referencial (o dele por padrão)."""
+    to_frame = (frame if frame is not None else _frame(obj)).inverted()
     return _box([to_frame @ c for c in tree_corners(obj, depsgraph)])
 
 
@@ -57,9 +62,14 @@ def _wall_of(obj):
     return parent if parent is not None and parent.get('IS_WALL_BP') else None
 
 
+def _world_box(obj, depsgraph):
+    return _box(tree_corners(obj, depsgraph))
+
+
 class MoveOver:
-    def __init__(self, context, obj_a, obj_b):
+    def __init__(self, context, obj_a, obj_b, from_drag=False):
         self.context = context
+        self.from_drag = bool(from_drag)
         self.a = classify.movable_root(obj_a)
         self.b = classify.reference_root(obj_b)
         if self.a is None or self.b is None or self.a == self.b:
@@ -70,9 +80,11 @@ class MoveOver:
         self.original_matrix = self.a.matrix_world.copy()
         self.original_parent_inverse = self.a.matrix_parent_inverse.copy()
         depsgraph = context.evaluated_depsgraph_get()
-        self.b_frame = _frame(self.b)
+        self.b_world_box = _world_box(self.b, depsgraph)
+        self.front_yaw, self.front_origem, self.front_ambiguo = self._decide_front(depsgraph)
+        self.b_frame = _frame(self.b) @ Matrix.Rotation(radians(self.front_yaw), 4, 'Z')
         self.b_frame_inv = self.b_frame.inverted()
-        self.box_b = _local_box(self.b, depsgraph)
+        self.box_b = _local_box(self.b, depsgraph, self.b_frame)
         self.a_local_box = _local_box(self.a, depsgraph)
         _loc, _rot, self.a_scale = self.a.matrix_world.decompose()
         self.origin_in_b = self.b_frame_inv @ self.original_matrix.translation
@@ -80,6 +92,20 @@ class MoveOver:
         self.orientation = rot.IDENTITY        # quaternion de A no referencial de B (067 D-24)
         self.pivot = 'BASE_CENTER'             # pivô do giro (ponto local de A)
         self.anchor = 'C000'                   # âncora das coordenadas (ponto local de A)
+
+    def _decide_front(self, depsgraph):
+        """Frente de B pela precedência da 022 (RN-01): propriedade, parede atrás e, por fim, o eixo."""
+        stored = self.b.get('btm_front_yaw')
+        stored = None if stored is None else float(stored)
+        if self.b_is_wall:
+            return frente_core.decide_for_wall(self.b_world_box, _world_box(self.a, depsgraph),
+                                               self.from_drag, stored, self.b.matrix_world.to_euler().z)
+        walls = []
+        for obj in self.context.scene.objects:
+            if obj.get('IS_WALL_BP'):
+                walls.append((*_world_box(obj, depsgraph), obj.matrix_world.to_euler().z))
+        module_like = classify.module_library(self.b) is not None
+        return frente_core.decide(self.b_world_box, walls, stored, module_like)
 
     # Orientação, pivô e âncora (067 onda 6) -------------------------------------------------------------
     @property

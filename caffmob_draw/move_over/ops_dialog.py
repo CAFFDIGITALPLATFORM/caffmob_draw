@@ -26,7 +26,7 @@ from ..canvas2d import draw
 from ..canvas2d.view import View2D
 from ..data import units
 from ..hb_gpu_draw import point_in_rect
-from . import encostar, reposition
+from . import encostar, frente_core, reposition
 from .dialog_rotate import RotateMixin
 from .scene import MoveOver
 
@@ -69,6 +69,8 @@ class BTM_OT_MoveOverDialog(RotateMixin, bpy.types.Operator):
 
     a_name: bpy.props.StringProperty(options={'HIDDEN', 'SKIP_SAVE'})  # type: ignore
     b_name: bpy.props.StringProperty(options={'HIDDEN', 'SKIP_SAVE'})  # type: ignore
+    from_drag: bpy.props.BoolProperty(default=False, options={'HIDDEN', 'SKIP_SAVE'})  # type: ignore
+    skip_front: bpy.props.BoolProperty(default=False, options={'HIDDEN', 'SKIP_SAVE'})  # type: ignore
 
     _handle = None
 
@@ -81,10 +83,16 @@ class BTM_OT_MoveOverDialog(RotateMixin, bpy.types.Operator):
         objects = context.scene.objects
         a, b = objects.get(self.a_name), objects.get(self.b_name)
         try:
-            self.mo = MoveOver(context, a, b)
+            self.mo = MoveOver(context, a, b, from_drag=self.from_drag)
         except ValueError as exc:
             self.report({'WARNING'}, str(exc))
             return {'CANCELLED'}
+        if self.mo.front_ambiguo and not self.skip_front:
+            # Sem evidência ou com parede e eixo em desacordo: pergunta a frente antes de abrir as vistas (RN-05).
+            self.mo.restore()
+            bpy.ops.caffmob.move_over_front('INVOKE_DEFAULT', a_name=self.mo.a.name, b_name=self.mo.b.name,
+                                            then_open=True)
+            return {'FINISHED'}
         for obj in context.selected_objects:
             obj.select_set(False)
         self.mo.a.select_set(True)
@@ -223,6 +231,7 @@ class BTM_OT_MoveOverDialog(RotateMixin, bpy.types.Operator):
         self.button_ok = (x + width - pad - 112 * s, y + 13 * s, 112 * s, 34 * s)
         self.button_cancel = (self.button_ok[0] - 10 * s - 106 * s, y + 13 * s, 106 * s, 34 * s)
         self.button_more = (x + pad, y + 13 * s, 130 * s, 34 * s)
+        self.button_front = (x + pad + 138 * s, y + 13 * s, 96 * s, 34 * s)
         self._layout_form()
 
     def _layout_form(self):
@@ -417,8 +426,23 @@ class BTM_OT_MoveOverDialog(RotateMixin, bpy.types.Operator):
                 py = view.to_screen((0.0, value))[1]
                 draw.lines(sh, draw.dashed((x0, py), (x0 + w, py)), L['blue'])
                 draw.pill(sh, x0 + 44 * self.s, py + 12 * self.s, label, L['blue'], L['paper'], size=self._font(10))
+        if key == 'plan':
+            label = tr("frente: {}").format(self._front_label())
+            draw.text(rect[0] + 12 * self.s, rect[1] + 10 * self.s, label, L['teal_ink'], size=self._font(10))
+            cx = rect[0] + rect[2] / 2.0
+            draw.lines(sh, [(cx, rect[1] + 36 * self.s), (cx, rect[1] + 22 * self.s)], L['teal_ink'])
+            draw.lines(sh, [(cx - 5 * self.s, rect[1] + 28 * self.s), (cx, rect[1] + 22 * self.s),
+                            (cx + 5 * self.s, rect[1] + 28 * self.s)], L['teal_ink'])
         self._draw_gap(sh, view, box, h, v)
         self._draw_rotate_layer(sh, key)              # 067: arestas, alças, pivô, âncora, origem e ângulo
+
+    def _front_label(self):
+        """De onde veio a frente: a escolha do usuário, a parede atrás ou o eixo do objeto."""
+        if self.mo.front_origem == frente_core.PROPRIEDADE:
+            return tr("escolhida")
+        if self.mo.front_origem == frente_core.PAREDE:
+            return tr("parede atrás")
+        return tr("eixo do objeto")
 
     def _draw_gap(self, sh, view, box, h, v):
         """Cota de proximidade dos dois na vista, como o artefato: no eixo de maior folga não negativa."""
@@ -493,6 +517,7 @@ class BTM_OT_MoveOverDialog(RotateMixin, bpy.types.Operator):
         draw.rect(sh, (f[0], f[1] + f[3] / 2.0, f[2], f[3] / 2.0), L['paper'])
         draw.lines(sh, [(f[0], f[1] + f[3]), (f[0] + f[2], f[1] + f[3])], L['line'])
         self._button(sh, self.button_more, N_("Menos opções") if self.more else N_("Mais opções"))
+        self._button(sh, self.button_front, N_("Frente do objeto"))
         self._button(sh, self.button_cancel, N_("Cancelar"))
         self._button(sh, self.button_ok, N_("Encostar"), primary=True)
         draw.end()
@@ -604,7 +629,7 @@ class BTM_OT_MoveOverDialog(RotateMixin, bpy.types.Operator):
         if self.glue:
             from ..stick import link
             if link.can_stick(a, b) is None:
-                link.link_in_place(a, b, encostar.SIDE_FACE[side])
+                link.link_in_place(a, b, frente_core.face_of(encostar.SIDE_FACE[side], self.mo.front_yaw))
                 message += tr(" e grudado")
         self.state.glue, self.state.snap_on = self.glue, self.snap_on
         self._finish(context)
@@ -613,6 +638,12 @@ class BTM_OT_MoveOverDialog(RotateMixin, bpy.types.Operator):
 
     def _click(self, context, pixel):
         """Clique com o botão esquerdo dentro do painel; devolve o resultado do modal ou None para seguir."""
+        if point_in_rect(*pixel, self.button_front):
+            # A escolha muda o referencial das vistas: devolve A à origem e reabre a janela com a frente nova.
+            a_name, b_name = self.mo.a.name, self.mo.b.name
+            self.cancel(context)
+            bpy.ops.caffmob.move_over_front('INVOKE_DEFAULT', a_name=a_name, b_name=b_name, then_open=True)
+            return {'CANCELLED'}
         if point_in_rect(*pixel, self.button_ok):
             return self._confirm(context)
         if point_in_rect(*pixel, self.button_cancel) or point_in_rect(*pixel, self.button_close):

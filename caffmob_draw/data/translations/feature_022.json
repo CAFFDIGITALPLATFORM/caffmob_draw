@@ -1,0 +1,46 @@
+{
+ "Frente do objeto": {
+  "pt_BR": "Frente do objeto",
+  "en_US": "Object front"
+ },
+ "escolhida": {
+  "pt_BR": "escolhida",
+  "en_US": "chosen"
+ },
+ "parede atrás": {
+  "pt_BR": "parede atrás",
+  "en_US": "wall behind"
+ },
+ "eixo do objeto": {
+  "pt_BR": "eixo do objeto",
+  "en_US": "object axis"
+ },
+ "frente: {}": {
+  "pt_BR": "frente: {}",
+  "en_US": "front: {}"
+ },
+ "Qual lado de “{}” é a frente?": {
+  "pt_BR": "Qual lado de “{}” é a frente?",
+  "en_US": "Which side of “{}” is the front?"
+ },
+ "objeto": {
+  "pt_BR": "objeto",
+  "en_US": "object"
+ },
+ "Sem escolha gravada: vale o eixo do objeto.": {
+  "pt_BR": "Sem escolha gravada: vale o eixo do objeto.",
+  "en_US": "Nothing saved yet: the object axis applies."
+ },
+ "Trás (+Y)": {
+  "pt_BR": "Trás (+Y)",
+  "en_US": "Back (+Y)"
+ },
+ "Escolhe o lado que o add-on deve tratar como frente do objeto de referência": {
+  "pt_BR": "Escolhe o lado que o add-on deve tratar como frente do objeto de referência",
+  "en_US": "Choose which side of the reference object the add-on treats as the front"
+ },
+ "Usar o eixo": {
+  "pt_BR": "Usar o eixo",
+  "en_US": "Use the object axis"
+ }
+}

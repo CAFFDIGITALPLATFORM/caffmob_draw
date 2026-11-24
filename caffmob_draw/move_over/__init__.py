@@ -14,8 +14,8 @@ superior e frontal.
 
 def _modules():
     # Import tardio: `align` é usado nos testes fora do Blender sem carregar `bpy`.
-    from . import insertion_plane, ops_dialog, ops_drag, ops_move_on_wall, ops_substitute, props
-    return (props, ops_dialog, ops_drag, ops_move_on_wall, ops_substitute, insertion_plane)
+    from . import insertion_plane, ops_dialog, ops_drag, ops_front, ops_move_on_wall, ops_substitute, props
+    return (props, ops_dialog, ops_drag, ops_front, ops_move_on_wall, ops_substitute, insertion_plane)
 
 
 def register():

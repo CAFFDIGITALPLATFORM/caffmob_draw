@@ -167,7 +167,7 @@ class BTM_OT_MoveOverDrag(bpy.types.Operator):
                 self.report({'INFO'}, tr("“{}” preso na face de “{}”").format(a.name, pin[0].name))
                 return {'FINISHED'}
             if moved >= DRAG_THRESHOLD_PX and b is not None:
-                bpy.ops.caffmob.move_over_dialog('INVOKE_DEFAULT', a_name=a.name, b_name=b.name)
+                bpy.ops.caffmob.move_over_dialog('INVOKE_DEFAULT', a_name=a.name, b_name=b.name, from_drag=True)
             return {'FINISHED'}
         if event.type == 'ESC':
             self.pin = None
