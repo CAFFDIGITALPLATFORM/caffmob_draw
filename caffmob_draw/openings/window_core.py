@@ -123,7 +123,13 @@ def _add_perimeter_and_sill(parts, w, h, wall, prof_mat):
 
 
 def window_parts(width, height, wall, model='janela_correr_2f', material='aluminio'):
-    """Peças da janela no furo `width` × `height` de uma parede `wall`."""
+    """Peças da janela no furo `width` × `height` de uma parede `wall`.
+
+    Abertura do contrato sem `modelo`/`material` (como a da 010) é a janela de correr de 2 folhas
+    em alumínio: explícito aqui porque chamadores passam `None`, que não aciona o padrão do parâmetro.
+    """
+    model = model or 'janela_correr_2f'
+    material = material or 'aluminio'
     finish = resolve_finish(material)
     prof_mat = WOOD if finish == WOOD else ALU
     hw_mat = ALU if prof_mat == ALU else METAL
