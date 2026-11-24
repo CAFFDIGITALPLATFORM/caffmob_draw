@@ -61,6 +61,13 @@
 | `python _reversa_bugs/tools/reversa_debugger.py --suite pure --out .../2026-11-24-coding-022` | pura **187/187**, 97,4 s |
 | `python _reversa_bugs/tools/reversa_debugger.py --suite blender --blender ... --out .../2026-11-24-coding-022-blender` | Blender **199/204**, 1 315,7 s, 0 defeito — as 5 falhas são ambiente (rede/MOBI/extensão), as mesmas de sempre |
 
+> **Nota da reconciliação (2026-11-24, fechamento da auditoria da 021):** das 5 falhas que esta rodada classificou
+> como ambiente, **3 não eram** — `blender_065_cena_v2` e `blender_065_baixar_v2` falhavam por um defeito real de
+> produto (abertura sem `modelo` caía no caminho de janela fixa, em `openings/window_core.py`; corrigido em
+> `window_parts`) e `blender_increment1_smoke` era ensaio carregando o addon fora de `bl_ext.*`. Só
+> `blender_065_ida_e_volta` e `blender_ensaio_mobi` continuam exigindo o MOBI de ensaio em `127.0.0.1` com
+> `--online-mode`. Números da reexecução em `_reversa_bugs/plugin-caffmob-draw/inspections/2026-11-24-reconciliacao*`.
+
 ## Próximo passo sugerido
 
 Sem CRITICAL nem HIGH: a feature está pronta para revisão do titular. A001 e A002 são melhorias de cobertura

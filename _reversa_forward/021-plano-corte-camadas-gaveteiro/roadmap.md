@@ -88,15 +88,16 @@ A entrega é estruturada como um conjunto de deltas cirúrgicos sobre os módulo
 
 ## 10. Critério de pronto
 
-- [ ] Todas as ações do `actions.md` marcadas `[X]`
-- [ ] Testes puros (`pytest` / `unittest`) passando para OpCut, lista agrupada por módulo, supressão do ímã, direção de espessura do piso, detecção geométrica de gaveteiro e roteamento de camadas
-- [ ] Smoke tests no Blender 5.2 validando registro/desregistro limpo, cabeçalho de colisão, camadas, parede rebaixada e conversão em gaveteiro
-- [ ] Cobertura de internacionalização (`pt_BR` e `en_US`) passando sem chaves faltantes
-- [ ] `cross-check.md` (se executado) sem CRITICAL nem HIGH
-- [ ] `regression-watch.md` gerado
+- [X] Todas as ações do `actions.md` marcadas `[X]` — 32/32 desde `f2f35215`
+- [X] Testes puros (`pytest` / `unittest`) passando para OpCut, lista agrupada por módulo, supressão do ímã, direção de espessura do piso, detecção geométrica de gaveteiro e roteamento de camadas — 24 ensaios da 021 na suíte pura (`2026-11-24-audit`: 186/186; `2026-11-24-coding-022`: 187/187)
+- [X] Smoke tests no Blender 5.2 validando registro/desregistro limpo, cabeçalho de colisão, camadas, parede rebaixada e conversão em gaveteiro — `tests/test_smoke_021.py` e `tests/blender_021_mcp_e2e.py` (50/50, exit 0)
+- [X] Cobertura de internacionalização (`pt_BR` e `en_US`) passando sem chaves faltantes — `tests/test_i18n_coverage.py` 3/3; strings da 021 em `caffmob_draw/data/translations/feature_021.json`
+- [X] `cross-check.md` (se executado) sem CRITICAL nem HIGH — 0 CRITICAL e, depois da reconciliação de 2026-11-24, nenhum HIGH/MEDIUM em aberto (A001 e A002 retratados com evidência; A003–A005 corrigidos)
+- [X] `regression-watch.md` gerado — `_reversa_forward/021-plano-corte-camadas-gaveteiro/regression-watch.md`
 
 ## 11. Histórico de alterações
 
 | Data | Alteração | Autor |
 |------|-----------|-------|
 | 2026-11-24 | Versão inicial gerada por `/reversa-plan` | reversa |
+| 2026-11-24 | §10 marcado com a evidência de cada critério na reconciliação do `/reversa-audit` (a feature já estava entregue; os `[ ]` eram do plano, não do código) | reversa |

@@ -23,7 +23,11 @@
 | #159 `BUG-20261124-5N6R` | plano vazio criava `Arquitetura` vazia | coleções Piso/Teto criadas antes de usar | criação preguiçosa |
 | #160 `BUG-20261124-2C8T` | Redimensionar não adaptava agregados | caminho direto da 080 pulava a adaptação | estado + adaptação após a transação |
 
-Todos fechados com `DONE.md`; as views foram regeneradas por `regenerate.py`.
+**Estado dos registros (corrigido na reconciliação de 2026-11-24):** só o #156 tem cartão próprio em `bugs/`
+(`BUG-20261124-7K2M-contrato-sem-notrequired/`, com `DONE.md`). Os cartões `3Q9X` (#157), `8W4D` (#158),
+`5N6R` (#159) e `2C8T` (#160) **não existem no repositório** — foram corrigidos direto no código junto da feature
+021 (commit `f2f35215`), sem abrir cartão, e esta tabela é o único registro deles. Não houve regeneração de views
+por `regenerate.py` nesta rodada.
 
 ## Ensaios desatualizados ajustados
 
@@ -38,9 +42,17 @@ Todos fechados com `DONE.md`; as views foram regeneradas por `regenerate.py`.
 
 ## Falhas de ambiente
 
+> **Correção da reconciliação de 2026-11-24:** as duas primeiras linhas abaixo estavam **mal classificadas**.
+> `blender_065_cena_v2` e `blender_065_baixar_v2` não falhavam por rede: falhavam numa contagem de objetos
+> (13 em vez de 14 e 17), causada por um defeito real de produto — abertura sem `modelo` caía no caminho de janela
+> fixa em `openings/window_core.py` (regressão da 078). Corrigido em `window_parts` (`model = model or
+> 'janela_correr_2f'` e `material = material or 'aluminio'`); os dois ensaios passam com as asserções originais.
+> `blender_increment1_smoke` também deixou de ser ambiente: o ensaio carregava o addon como módulo solto em vez de
+> `bl_ext.*`; ajustado, passa. Restam como ambiente só os dois que exigem MOBI de ensaio em `127.0.0.1`.
+
 | Arquivo | Motivo |
 |---|---|
-| `blender_065_baixar_v2.py`, `blender_065_cena_v2.py` | `online_access: false`; referência remota não baixada |
+| `blender_065_baixar_v2.py`, `blender_065_cena_v2.py` | ~~`online_access: false`; referência remota não baixada~~ **defeito real corrigido** (ver aviso acima) |
 | `blender_065_ida_e_volta.py`, `blender_ensaio_mobi.py` | exigem o MOBI de ensaio em `127.0.0.1` |
 | `blender_increment1_smoke.py` | `ValueError: The "package" does not name an extension` sem a extensão instalada |
 | `blender_066_cladding_bench.py` | passa com limite maior; o teste de performance leva mais de 90 s |
@@ -71,7 +83,11 @@ python3 _reversa_bugs/tools/reversa_debugger.py --suite all --blender /opt/blend
 - Placar do runner: **pura 186/186**; **Blender 197/203**; 5 ambiente, 1 performance, 0 defeitos.
 - Tempo total: 991,7 s.
 
-## Resultado da primeira passada (Linux)
+## Segunda passada (Linux)
+
+> Rótulo das linhas de base: a seção **Resultado da primeira passada** é a fotografia de *antes* das correções
+> (pura 156/30). A seção **Segunda passada (Windows 11)** é a fotografia *depois* — é ela que vale como placar.
+> O "30" da primeira linha é o número de falhas de então, não um placar atual.
 
 - Pura: **186/186 passam** (0 falhas, 0 timeouts).
 - Blender: **197/203 passam, 6 falham, 0 timeouts**.
@@ -138,12 +154,42 @@ Os dois ensaios de tempo passam nesta passada: `blender_066_cladding_bench` (exi
 | `blender_065_cena_v2` | ambiente | `{"status": "erro", "blender": "5.2.0 LTS", "online_access": false, "verificacoes": []}` |
 | `blender_065_ida_e_volta` | ambiente | `assert urlsplit(BASE).scheme == 'http' and urlsplit(BASE).hostname == '127.0.0.1', 'Somente o MOBI de ensaio em 127.0.0.1'` |
 | `blender_ensaio_mobi` | ambiente | `assert urlsplit(base).hostname == '127.0.0.1' and urlsplit(base).scheme == 'http', base` |
-| `blender_increment1_smoke` | ambiente | `ValueError: The "package" does not name an extension` em `bpy.utils.extension_path_user` (extensão não instalada) |
+| `blender_increment1_smoke` | ~~ambiente~~ **ensaio corrigido** | o ensaio carregava o addon como módulo solto (`import caffmob_draw`), não como `bl_ext.*`; ajustado, passa (`BLENDER_INCREMENT1_SMOKE_OK`) |
 
-Não foram reabertos: exigem `online_access`, o MOBI de ensaio em `127.0.0.1` ou a extensão instalada. Nenhuma
-falha de rede/MOBI/extensão foi reinterpretada como defeito, e nenhuma sobrou como defeito real ou performance.
+**Correção da reconciliação de 2026-11-24:** três destas cinco "falhas de ambiente" não eram ambiente.
+`blender_065_cena_v2` e `blender_065_baixar_v2` falhavam por um **defeito real**: abertura sem `modelo` caía no
+caminho de janela fixa em `openings/window_core.py` (regressão da 078), gerando 2 peças em vez de 3; corrigido em
+`window_parts` (`model = model or 'janela_correr_2f'`, `material = material or 'aluminio'`), e os dois ensaios
+passam com as asserções originais (14 e 17 objetos). `blender_increment1_smoke` era ensaio desatualizado, também
+corrigido. Só os dois que exigem MOBI descartável em `127.0.0.1` + `--online-mode`
+(`blender_065_ida_e_volta`, `blender_ensaio_mobi`) continuam bloqueados por recurso externo — ambos param no
+`assert` de `CAFFMOB_BASE` antes de tocar a cena.
 
-### Limitações desta passada
+## Reconciliação (2026-11-24) — fechamento da auditoria da 021
+
+Depois de revisar as cinco "falhas de ambiente" uma a uma, três deixaram de ser ambiente:
+
+| Ensaio | Era | Virou |
+|---|---|---|
+| `blender_065_cena_v2` | `AssertionError: Referência rica original: 14 objetos` (com 13), classificado como `online_access: false` | **defeito real corrigido**: `openings/window_core.window_parts` recebia `model=None` e caía no ramo de janela fixa (2 peças em vez de 3). O padrão do contrato (`caffmob/v2/contrato.py`: `WINDOW` → `janela_correr_2f`/`aluminio`) agora vale dentro da função |
+| `blender_065_baixar_v2` | `AssertionError: Referência rica monta 17 objetos` | mesma causa; passa com 17 objetos |
+| `blender_increment1_smoke` | `ValueError: The "package" does not name an extension` | **ensaio corrigido**: carga como `bl_ext.*` (não como módulo solto) e banco de padrões em diretório temporário — antes ele deixava "Padrão Brasil - cópia" gravado no `padroes.sqlite3` do pacote de ensaio e a execução seguinte falhava na primeira asserção |
+
+Restam como ambiente apenas `blender_065_ida_e_volta` e `blender_ensaio_mobi`, que exigem um MOBI descartável em
+`127.0.0.1` com `--online-mode` (ambos param no `assert` de `CAFFMOB_BASE`, antes de tocar a cena).
+
+### Placar depois da reconciliação
+
+| Suíte | Arquivos | Passaram | Falharam | Timeouts | Exit |
+|---|---:|---:|---:|---:|---:|
+| Pura | 187 | **187** | 0 | 0 | 0 |
+| Blender | 204 | **202** | 2 (ambiente: 2) | 0 | 0 |
+
+Saída real: `2026-11-24-reconciliacao-2/report.md` (pura, 98,4 s) e
+`2026-11-24-reconciliacao-blender-2/report.md` (Blender, 980,9 s). Os relatórios das passadas anteriores desta seção
+continuam válidos como histórico (199/204 e 198/203), mas o placar de hoje é o das duas linhas acima.
+
+## Limitações da passada de Windows
 
 - Ensaios com janela/GUI continuam fora (execução headless).
 - `ruff` não está instalado nesta máquina (`command not found`): o estilo não foi conferido pelo lint.

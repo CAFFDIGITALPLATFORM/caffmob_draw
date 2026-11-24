@@ -51,8 +51,8 @@
 
 | ID | Descrição | Dependências | Paralelismo | Arquivo alvo | Confidência | Status |
 |----|-----------|--------------|-------------|--------------|-------------|--------|
-| T021 | Integrar lista agrupada por módulo, visualizador interno de chapas OpCut e botões de exportação HTML/SVG/PDF na interface de corte | T001, T012, T013, T014 | - | `caffmob_draw/ui/panels.py` | 🟢 | `[X]` |
-| T022 | Adicionar botão "Sincronizar Texturas Perdidas" no painel de Texturas/Materiais conectado ao operador de sincronização assíncrona | T019 | `[//]` | `caffmob_draw/texture_library/ops_apply.py` | 🟢 | `[X]` |
+| T021 | Integrar lista agrupada por módulo, visualizador interno de chapas OpCut e botões de exportação HTML/SVG/PDF na interface de corte | T001, T012, T013, T014 | - | `caffmob_draw/cutting/ops_opcut.py` (+ `cutting/plan_render.py`, `cutting/plan_export.py`) | 🟢 | `[X]` |
+| T022 | Adicionar botão "Sincronizar Texturas Perdidas" no painel de Texturas/Materiais conectado ao operador de sincronização assíncrona | T019 | `[//]` | `caffmob_draw/texture_library/ops_sync_missing.py` | 🟢 | `[X]` |
 | T023 | Adicionar botão global de Ativar/Desativar Colisões (`collision_global`) no cabeçalho `VIEW3D_HT_header` com remoção limpa no `unregister` | - | `[//]` | `caffmob_draw/ui/header_collision.py` | 🟢 | `[X]` |
 | T024 | Adicionar controles rápidos de pé-direito e espessura padrão na aba Ferramentas e conectá-los como padrão inicial do Editor de Parede | T001, T017 | - | `caffmob_draw/walls2d/ops_editor.py` | 🟢 | `[X]` |
 | T025 | Alterar "Criar Armário" para abrir diretamente o Construtor v2 e manter armários da Biblioteca compatíveis com o Construtor v2 em `Marcenaria` | T004, T020 | - | `caffmob_draw/library_panel/ops_cabinet.py` | 🟢 | `[X]` |
