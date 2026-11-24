@@ -3657,6 +3657,8 @@ class home_builder_walls_OT_add_floor(bpy.types.Operator):
                 name = "Floor" if floors_created == 0 else f"Floor.{floors_created:03d}"
                 floor_obj = self.create_floor_mesh(name, points)
                 floor_obj['IS_FLOOR_BP'] = True
+                from ..data import layers as data_layers
+                data_layers.place(floor_obj, data_layers.ensure_arquitetura(context.scene, 'FLOOR'), context.scene)
                 floors_created += 1
         else:
             # No closed loops — create bounding box floors from open chains
@@ -3692,6 +3694,8 @@ class home_builder_walls_OT_add_floor(bpy.types.Operator):
                 name = "Floor" if floors_created == 0 else f"Floor.{floors_created:03d}"
                 floor_obj = self.create_floor_mesh(name, points)
                 floor_obj['IS_FLOOR_BP'] = True
+                from ..data import layers as data_layers
+                data_layers.place(floor_obj, data_layers.ensure_arquitetura(context.scene, 'FLOOR'), context.scene)
                 floors_created += 1
 
         if floors_created > 0:
@@ -3783,6 +3787,8 @@ class home_builder_walls_OT_add_ceiling(bpy.types.Operator):
                 name = "Ceiling" if ceilings_created == 0 else f"Ceiling.{ceilings_created:03d}"
                 ceiling_obj = self.create_ceiling_mesh(name, points, chain_height)
                 ceiling_obj['IS_CEILING_BP'] = True
+                from ..data import layers as data_layers
+                data_layers.place(ceiling_obj, data_layers.ensure_arquitetura(context.scene, 'CEILING'), context.scene)
                 ceilings_created += 1
         else:
             for chain in open_chains:
@@ -3821,6 +3827,8 @@ class home_builder_walls_OT_add_ceiling(bpy.types.Operator):
                 name = "Ceiling" if ceilings_created == 0 else f"Ceiling.{ceilings_created:03d}"
                 ceiling_obj = self.create_ceiling_mesh(name, points, chain_height)
                 ceiling_obj['IS_CEILING_BP'] = True
+                from ..data import layers as data_layers
+                data_layers.place(ceiling_obj, data_layers.ensure_arquitetura(context.scene, 'CEILING'), context.scene)
                 ceilings_created += 1
 
         if ceilings_created > 0:

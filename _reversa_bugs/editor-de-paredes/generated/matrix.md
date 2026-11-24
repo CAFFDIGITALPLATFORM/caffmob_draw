@@ -1,4 +1,4 @@
-<!-- GENERATED, DO NOT EDIT: regenerado por /reversa-debugger-graph em 2026-11-18T15:34:10+00:00 a partir de 16 bugs -->
+<!-- GENERATED, DO NOT EDIT: regenerado por /reversa-debugger-graph em 2026-11-24T06:45:20+00:00 a partir de 17 bugs -->
 
 # Relações · editor-de-paredes
 
@@ -14,3 +14,4 @@
 | BUG-20261117-V4I3 | related-to | BUG-20261117-EELF (walls2d) | supported | sim |
 | BUG-20261117-4MF7 | related-to | BUG-20261117-JXDJ (walls2d) | proposed | não |
 | BUG-20261118-PLNT | regression-of | BUG-20261117-JXDJ (walls2d) | confirmed | sim |
+| BUG-20261124-5N6R | regression-of | BUG-20261117-4MF7 (walls2d) | confirmed | sim |

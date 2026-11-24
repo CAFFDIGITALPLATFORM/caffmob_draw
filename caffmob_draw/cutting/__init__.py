@@ -5,10 +5,12 @@ from .json_exporter import export_cut_plan_to_json as export_cut_plan_to_json
 
 
 def register():
-    from . import stale
+    from . import ops_opcut, stale
     stale.register()
+    ops_opcut.register()
 
 
 def unregister():
-    from . import stale
+    from . import ops_opcut, stale
+    ops_opcut.unregister()
     stale.unregister()

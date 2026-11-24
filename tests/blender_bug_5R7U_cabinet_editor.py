@@ -15,6 +15,10 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import _blender_env  # noqa: E402,F401
 from caffmob_draw.cabinet_editor import bays, bridge, ops_actions, ops_editor, props, scene_slides  # noqa: E402
 
+if not hasattr(bpy.types.WindowManager, 'btm_cabinet_editor'):
+    print("blender_bug_5R7U_cabinet_editor: OBSOLETO (editor 2D removido pela feature 017)")
+    sys.exit(0)
+
 ctx = bpy.context
 FAILURES = []
 

@@ -1,4 +1,4 @@
-<!-- GENERATED, DO NOT EDIT: regenerado por /reversa-debugger-graph em 2026-11-18T15:34:10+00:00 a partir de 153 bugs -->
+<!-- GENERATED, DO NOT EDIT: regenerado por /reversa-debugger-graph em 2026-11-24T06:45:20+00:00 a partir de 160 bugs -->
 
 # Bugs que atingem as specs
 
@@ -74,6 +74,10 @@
 ## `_reversa_sdd/addenda/bug-BUG-20261007-ZZUK-v001.md`
 
 - BUG-20261007-ZZUK (resolved/fixed, P1): Ctrl+Z não desfaz dentro do editor de paredes — `_reversa_bugs/editor-de-paredes/bugs/BUG-20261007-ZZUK-ctrl-z-no-editor-de-paredes`
+
+## `_reversa_sdd/addenda/bug-BUG-20261117-4MF7-v001.md`
+
+- BUG-20261124-5N6R (resolved/fixed, P1): Plano vazio recria Arquitetura com Piso e Teto vazios — `_reversa_bugs/editor-de-paredes/bugs/BUG-20261124-5N6R-colecoes-vazias-no-plano-vazio`
 
 ## `_reversa_sdd/addenda/bug-BUG-20261117-6KBC-v001.md`
 
@@ -350,6 +354,10 @@
 
 - BUG-20261012-YUDY (resolved/fixed, P2): Shift+D num módulo repete o btm_uid e as peças dos dois módulos ficam com o mesmo uid — `_reversa_bugs/cutting/bugs/BUG-20261012-YUDY-shift-d-num-modulo-repete-o-btm`
 
+## `_reversa_sdd/cutting/requirements.md#R-03`
+
+- BUG-20261124-3Q9X (resolved/fixed, P2): Plano de corte quebra em parte sem grain_angle — `_reversa_bugs/cutting/bugs/BUG-20261124-3Q9X-grain-angle-em-fonte-antiga`
+
 ## `_reversa_sdd/data/requirements.md`
 
 - BUG-20261007-TBY3 (resolved/fixed, P2): Todo objeto é tratado como parede (object_kind padrão WALL) — `_reversa_bugs/editor-de-paredes/bugs/BUG-20261007-TBY3-todo-objeto-vira-parede`
@@ -357,6 +365,8 @@
 ## `_reversa_sdd/deployment.md`
 
 - BUG-20261006-SCVF (resolved/fixed, P0): Cópia antiga do plugin na raiz do repositório com o mesmo id e add-on legado nas preferências — `_reversa_bugs/plugin-caffmob-draw/bugs/BUG-20261006-SCVF-copia-antiga-na-raiz-e-addon-legado`
+- BUG-20261123-56YQ (open/null, P1): Arrastar o zip para o Blender 5.2 falha no lock do repositório (cookie da pasta temporária ausente) — `_reversa_bugs/plugin-caffmob-draw/bugs/BUG-20261123-56YQ-instalar-zip-falha-no-lock-do-repositorio`
+- BUG-20261123-RW3G (resolved/fixed, P3): build.py empacota dotfiles e caches no zip (sai .impeccable/hook.cache.json) — `_reversa_bugs/plugin-caffmob-draw/bugs/BUG-20261123-RW3G-build-empacota-dotfiles-e-caches`
 
 ## `_reversa_sdd/domain.md#2.1 Regras de Paredes e Piso`
 
@@ -637,6 +647,10 @@
 
 - BUG-20261011-IDPP (resolved/fixed, P2): Porta real não acompanha largura e altura editadas pelo painel — `_reversa_bugs/openings/bugs/BUG-20261011-IDPP-porta-real-nao-acompanha-largura-e-altura`
 
+## `_reversa_sdd/openings/requirements.md#RF-03`
+
+- BUG-20261124-8W4D (resolved/fixed, P0): Janela sem modelo explícito virava de giro em vez de correr — `_reversa_bugs/openings/bugs/BUG-20261124-8W4D-janela-sem-modelo-vira-giro`
+
 ## `_reversa_sdd/openings/tasks.md#DT-01`
 
 - BUG-20261011-7SNG (resolved/fixed, P2): Porta inserida em região do lado de trás abre invertida — `_reversa_bugs/openings/bugs/BUG-20261011-7SNG-porta-inserida-em-regiao-do-lado-de`
@@ -788,6 +802,14 @@
 
 - BUG-20261011-7DHT (resolved/fixed, P0): X/Delete numa parede faz os filhos não grudados pularem de lugar — `_reversa_bugs/selection/bugs/BUG-20261011-7DHT-x-delete-numa-parede-faz-os-filhos`
 
+## `_reversa_sdd/selection/requirements.md#RF-12`
+
+- BUG-20261124-2C8T (resolved/fixed, P1): Redimensionar módulo das 5 famílias não adapta os agregados — `_reversa_bugs/selection/bugs/BUG-20261124-2C8T-redimensionar-modulo-nao-adapta-agregados`
+
+## `_reversa_sdd/selection/requirements.md#RN-24`
+
+- BUG-20261124-2C8T (resolved/fixed, P1): Redimensionar módulo das 5 famílias não adapta os agregados — `_reversa_bugs/selection/bugs/BUG-20261124-2C8T-redimensionar-modulo-nao-adapta-agregados`
+
 ## `_reversa_sdd/selection/tasks.md#DT-01`
 
 - BUG-20261011-TUWO (resolved/fixed, P0): Apagar parede sem 'Apagar também os agregados' solta os agregados dos módulos que ficam — `_reversa_bugs/selection/bugs/BUG-20261011-TUWO-apagar-parede-sem-apagar-tambem-os-agregados`
@@ -934,6 +956,7 @@
 ## `_reversa_sdd/walls2d/requirements.md#RF-08`
 
 - BUG-20261117-4MF7 (resolved/fixed, P2): Sem coleção Arquitetura com subcoleção Parede na organização da cena — `_reversa_bugs/editor-de-paredes/bugs/BUG-20261117-4MF7-colecoes-arquitetura-parede`
+- BUG-20261124-5N6R (resolved/fixed, P1): Plano vazio recria Arquitetura com Piso e Teto vazios — `_reversa_bugs/editor-de-paredes/bugs/BUG-20261124-5N6R-colecoes-vazias-no-plano-vazio`
 
 ## `_reversa_sdd/walls2d/requirements.md#RF-13`
 

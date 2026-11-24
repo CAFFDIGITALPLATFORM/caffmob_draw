@@ -24,6 +24,10 @@ KEEP_WITH_WALL = ('obj_x', 'IS_2D_ANNOTATION', 'IS_ENTRY_DOOR_BP', 'IS_WINDOW_BP
 def wall_of(obj):
     if obj is None:
         return None
+    from ..selection import lowered_wall_core
+    resolved = lowered_wall_core.resolve_lowered_wall(obj, bpy.data.objects)
+    if resolved is not None:
+        return resolved
     if obj.get('IS_WALL_BP'):
         return obj
     if obj.parent is not None and obj.parent.get('IS_WALL_BP'):
@@ -156,6 +160,8 @@ def lower_wall(context, obj):
         collection.objects.link(proxy)
     proxy.parent = obj
     proxy[LOWERED_PROXY] = True
+    proxy['btm_is_lowered_wall'] = True
+    proxy['btm_lowered_wall_ref'] = obj.name
     if obj.active_material is not None:
         data.materials.append(obj.active_material)
     obj[LOWERED_PROP] = True

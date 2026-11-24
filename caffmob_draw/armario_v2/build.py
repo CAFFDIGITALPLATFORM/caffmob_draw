@@ -33,7 +33,8 @@ from . import vaos as vaos_mod
 
 MM = 0.001
 
-COLECAO = "CAFFMob Armário v2"
+COLECAO = "Marcenaria"
+COLECAO_LEGADA = "CAFFMob Armário v2"
 RAIZ = "Armário v2"
 
 # Corrediça do anexo (RN-08, D-19): o OBJ é importado uma vez e as malhas ficam guardadas por caminho.
@@ -326,31 +327,23 @@ def materiais(acabamento):
 
 
 def colecao(scene):
-    """Coleção do armário v2 na cena, criada na primeira geração."""
-    import bpy  # type: ignore
+    """Coleção de Marcenaria na cena, criada na primeira geração (feature 021, RN-06)."""
+    from ..data import layers
 
-    existente = bpy.data.collections.get(COLECAO)
-    if existente is None:
-        existente = bpy.data.collections.new(COLECAO)
-    if existente.name not in scene.collection.children:
-        scene.collection.children.link(existente)
-    return existente
+    return layers.ensure_marcenaria(scene)
 
 
 def e_raiz(obj):
-    """O objeto é a raiz vazia do armário v2 (vazio na coleção própria criada por `colecao`)."""
+    """O objeto é a raiz vazia do armário v2 (flag explícita `btm_armario_v2_root` ou coleção legada)."""
     if obj is None or obj.type != 'EMPTY':
         return False
-    return any(colecao.name == COLECAO for colecao in obj.users_collection)
+    if obj.get('btm_armario_v2_root'):
+        return True
+    return any(c.name == COLECAO_LEGADA for c in obj.users_collection)
 
 
 def raiz_de(obj):
-    """Raiz do armário v2 acima de `obj` (ela inclusive), ou `None`.
-
-    Todo `Object` carrega o grupo `btm_armario` — o `PointerProperty` existe em todos e devolve uma instância vazia —,
-    então testar se ele está preenchido parava na primeira peça (a fumaça de T033 pegou isso no Abrir/Fechar e no
-    menu). A raiz é o vazio da coleção do construtor, o mesmo critério em todo o pacote.
-    """
+    """Raiz do armário v2 acima de `obj` (ela inclusive), ou `None`."""
     while obj is not None:
         if e_raiz(obj):
             return obj
@@ -359,12 +352,13 @@ def raiz_de(obj):
 
 
 def criar_raiz(scene, nome=RAIZ):
-    """Raiz vazia do armário, na coleção própria; as peças nascem filhas dela."""
+    """Raiz vazia do armário na camada `Marcenaria`; as peças nascem filhas dela."""
     import bpy  # type: ignore
 
     vazio = bpy.data.objects.new(nome, None)
     vazio.empty_display_type = 'PLAIN_AXES'
     vazio.empty_display_size = 0.05
+    vazio['btm_armario_v2_root'] = True
     colecao(scene).objects.link(vazio)
     if getattr(vazio, 'btm_armario', None) is not None:
         vazio.btm_armario.gerado = False

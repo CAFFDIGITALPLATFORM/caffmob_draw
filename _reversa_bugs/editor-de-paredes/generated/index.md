@@ -1,4 +1,4 @@
-<!-- GENERATED, DO NOT EDIT: regenerado por /reversa-debugger-graph em 2026-11-18T15:34:10+00:00 a partir de 16 bugs -->
+<!-- GENERATED, DO NOT EDIT: regenerado por /reversa-debugger-graph em 2026-11-24T06:45:20+00:00 a partir de 17 bugs -->
 
 # Bugs · editor-de-paredes
 
@@ -6,12 +6,12 @@
 
 | status | qtd |
 |---|---|
-| resolved | 16 |
+| resolved | 17 |
 
 | phase | qtd |
 |---|---|
 | delivered | 3 |
-| delivering | 13 |
+| delivering | 14 |
 
 ## Abertos / ativos
 
@@ -22,7 +22,7 @@
 
 | resolution_kind | qtd |
 |---|---|
-| fixed | 16 |
+| fixed | 17 |
 
 - #4 BUG-20261006-KFAR (fixed) · travado: Erro ao salvar no Windows com o editor de paredes e o construtor de paredes
 - #6 BUG-20261007-A2G7 (fixed) · travado: Ajustar Piso ignora as paredes do editor e do construtor
@@ -40,6 +40,7 @@
 - #151 BUG-20261117-4MF7 (fixed) · travado: Sem coleção Arquitetura com subcoleção Parede na organização da cena
 - #152 BUG-20261117-RP9Q (fixed) · travado: Menu lateral de paredes com estilo antigo; quer botão de toggle moderno
 - #153 BUG-20261118-PLNT (fixed) · travado: Planta baixa derruba o desenho do editor com curva, texto ou vazio na cena
+- #159 BUG-20261124-5N6R (fixed) · travado: Plano vazio recria Arquitetura com Piso e Teto vazios
 
 ## Inconsistências
 

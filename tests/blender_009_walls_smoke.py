@@ -51,7 +51,7 @@ def setup():
     window.editor_area = lambda c: (None, None, types.SimpleNamespace(width=1000, height=800, x=0, y=0))
     op = types.SimpleNamespace(dragging=None, panning=None, shift=False)
     for name in ('_handle', '_handle_click', '_handle_draw', '_append', '_finish_drawing', '_handle_prompt',
-                 '_handle_typing', '_answer_no', '_update_snap'):
+                 '_handle_typing', '_answer_no', '_update_snap', '_handle_menu'):
         setattr(op, name, getattr(ops_editor.BTM_OT_WallEditorModal, name).__get__(op))
     state = ctx.window_manager.btm_wall_editor
     state.tool, state.magnetic = 'DRAW', False

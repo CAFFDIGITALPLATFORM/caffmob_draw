@@ -30,7 +30,7 @@ def floor_box_and_area():
     pts = [obj.matrix_world @ v.co for v in obj.data.vertices]
     bm = bmesh.new()
     bm.from_mesh(obj.data)
-    area = sum(f.calc_area() for f in bm.faces)
+    area = sum(f.calc_area() for f in bm.faces if f.normal.z > 0.9)   # face superior: o piso virou laje
     bm.free()
     lo = tuple(round(min(p[i] for p in pts), 3) for i in range(2))
     hi = tuple(round(max(p[i] for p in pts), 3) for i in range(2))

@@ -64,7 +64,7 @@ def setup(tool='SELECT'):
     window.editor_area = lambda c: (None, None, types.SimpleNamespace(width=W, height=H, x=0, y=0))
     op = types.SimpleNamespace(dragging=None, panning=None, shift=False)
     for name in ('_handle', '_handle_click', '_handle_draw', '_append', '_finish_drawing', '_handle_prompt',
-                 '_handle_typing', '_answer_no', '_update_snap', '_is_navigation', '_local'):
+                 '_handle_typing', '_answer_no', '_update_snap', '_is_navigation', '_local', '_handle_menu'):
         setattr(op, name, getattr(ops_editor.BTM_OT_WallEditorModal, name).__get__(op))
     state = ctx.window_manager.btm_wall_editor
     state.tool, state.magnetic = tool, False
@@ -167,7 +167,7 @@ def main():
 
     # Lupa com quadrado
     s, op = setup()
-    bar, lupa = ops_editor._toolbar_rects(s.view)
+    bar, lupa, _mover = ops_editor._toolbar_rects(s.view)
     check("a barra fica no topo, acima da vista", bar[1] == s.view.rect[3] and bar[1] + bar[3] == H, str(bar))
     center_btn = (lupa[0] + lupa[2] / 2, lupa[1] + lupa[3] / 2)
     scale0, steps = s.view.scale, undo_steps(s)

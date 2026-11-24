@@ -107,6 +107,15 @@ def classify(obj):
     if obj.get('IS_2D_ANNOTATION'):
         return Classified(ANNOTATION, obj, obj, 'HB')
 
+    # Feature 021 (T018; RF-11, RN-10): proxy de parede rebaixada (<parede>_Rebaixada) resolve para a parede original.
+    from . import lowered_wall_core
+    if lowered_wall_core.is_lowered_wall_proxy(obj):
+        import bpy  # type: ignore
+        orig = lowered_wall_core.resolve_lowered_wall(obj, bpy.data.objects)
+        if orig is not None:
+            lib = 'MOBI' if orig.get('caffmob_tipo') == 'parede' else 'HB'
+            return Classified(WALL, orig, orig, lib)
+
     root, library = module_root(obj)
     if root is not None:
         # Frente: o primeiro ancestral (até o módulo) que é frente.

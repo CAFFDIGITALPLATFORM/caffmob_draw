@@ -14,20 +14,21 @@ def hex_rgba(value, alpha=1.0):
 
 
 # Cores ---------------------------------------------------------------------------------------------------------------
-SURFACE = hex_rgba("#10302F", 0.96)          # Noite CAFF MOBI DRAW
-SURFACE_RAISED = hex_rgba("#16403E", 0.98)   # cabeçalho, coluna de filtros
-SURFACE_HOVER = hex_rgba("#1F5250")
-SURFACE_SUNKEN = hex_rgba("#0B2322")         # fundo da miniatura, busca, chip da conta
+# Feature 021 (T020; RF-10, RN-09): paleta oficial CAFFMob (neutro escuro + laranja CAFF), sem o verde escuro legado.
+SURFACE = hex_rgba("#1A1B1E", 0.96)          # Superfície principal CAFFMob
+SURFACE_RAISED = hex_rgba("#23252A", 0.98)   # Cabeçalho, coluna de filtros
+SURFACE_HOVER = hex_rgba("#2E3138")
+SURFACE_SUNKEN = hex_rgba("#131417")         # Fundo da miniatura, busca, chip da conta
 BORDER = (1.0, 1.0, 1.0, 0.10)
 BORDER_STRONG = (1.0, 1.0, 1.0, 0.22)
-TEXT = hex_rgba("#EEF4F2")
-TEXT_MUTED = hex_rgba("#C9D6D2")
-TEXT_SUBTLE = hex_rgba("#93ADA8")            # 3,7:1 sobre SURFACE_HOVER: não usar ali
-ACCENT = hex_rgba("#F07A2A")                 # laranja CAFF: seleção, aba ativa, ação principal, fixar ligado
-ACCENT_INK = hex_rgba("#10302F")             # texto sobre o laranja
+TEXT = hex_rgba("#F2F4F7")
+TEXT_MUTED = hex_rgba("#C4C9D4")
+TEXT_SUBTLE = hex_rgba("#8F96A3")
+ACCENT = hex_rgba("#F07A2A")                 # Laranja CAFF: seleção, aba ativa, ação principal, fixar ligado
+ACCENT_INK = hex_rgba("#1A1B1E")             # Texto sobre o laranja
 ACCENT_TINT = hex_rgba("#F07A2A", 0.18)
-SUCCESS = hex_rgba("#1BB3AD")                # baixada, conta conectada
-INFO = hex_rgba("#5BC0FF")                   # progresso, aviso de rede, espera do login
+SUCCESS = hex_rgba("#22C55E")                # Baixada, conta conectada
+INFO = hex_rgba("#5BC0FF")                   # Progresso, aviso de rede, espera do login
 ERROR = hex_rgba("#FF6B5E")
 CREAM, ORANGE, BLUE_SPARK = hex_rgba("#FFF4EA"), hex_rgba("#D35400"), hex_rgba("#2EA8F5")   # só no ícone
 

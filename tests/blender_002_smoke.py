@@ -181,8 +181,14 @@ props.end()
 
 # 3e. Todo operador citado nos painéis, menus e HUD do add-on existe (A002).
 import re  # noqa: E402
+# A interface do editor 2D antigo não é registrada desde a 017; os arquivos ficam só como referência.
+LEGACY_UI = {"cabinet_editor/ops_editor.py", "cabinet_editor/ops_actions.py", "cabinet_editor/window.py",
+             "cabinet_editor/panels.py", "cabinet_editor/panels_divisions.py", "cabinet_editor/panels_interior.py",
+             "cabinet_editor/panels_sliding.py", "cabinet_editor/panels_structure.py"}
 missing = set()
 for path in (ROOT / "caffmob_draw").rglob("*.py"):
+    if path.relative_to(ROOT / "caffmob_draw").as_posix() in LEGACY_UI:
+        continue
     for idname in re.findall(r'\.operator(?:_menu_enum)?\(\s*"([a-z0-9_]+\.[a-z0-9_]+)"', path.read_text()):
         module, name = idname.split(".")
         try:

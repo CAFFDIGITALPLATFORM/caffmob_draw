@@ -648,6 +648,9 @@ class BTM_OT_WallEditor(bpy.types.Operator):
         from ..measure import scene_cotas
         session.project_height = scene_cotas.ceiling_height(context.scene)
         context.window_manager.btm_wall_editor.new_height = session.project_height   # pé-direito do projeto (D-36)
+        settings = getattr(context.scene, 'btm_settings', None)
+        if settings is not None and hasattr(context.window_manager.btm_wall_editor, 'new_thickness'):
+            context.window_manager.btm_wall_editor.new_thickness = settings.default_wall_thickness
         try:
             win, area, region = window.open_editor(context)
         except RuntimeError as exc:

@@ -60,7 +60,27 @@ def draw_wall_region(layout, context):
     grid.prop(region, "z1", text=tr("Topo"))
 
 
+def draw_project_defaults(layout, context):
+    """Padrões rápidos do projeto (feature 021, T024; RF-06, RF-08, RN-07): pé-direito, parede e piso."""
+    scene = context.scene
+    hb = getattr(scene, 'home_builder', None)
+    settings = getattr(scene, 'btm_settings', None)
+    if hb is None and settings is None:
+        return
+    box = layout.box()
+    box.label(text=tr("Padrões Rápidos do Projeto"), icon='PREFERENCES')
+    col = box.column(align=True)
+    if hb is not None and hasattr(hb, 'ceiling_height'):
+        col.prop(hb, 'ceiling_height', text=tr("Pé-direito"))
+    if settings is not None:
+        col.prop(settings, 'default_wall_thickness', text=tr("Espessura parede"))
+        row = col.row(align=True)
+        row.prop(settings, 'floor_thickness', text=tr("Espessura piso"))
+        row.prop(settings, 'floor_thickness_direction', text="")
+
+
 def draw(layout, context):
+    draw_project_defaults(layout, context)
     walls = has_walls(context.scene)
     row = layout.row(align=True)
     row.scale_y = 1.3

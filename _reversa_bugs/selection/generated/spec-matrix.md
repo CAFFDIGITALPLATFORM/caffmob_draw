@@ -1,4 +1,4 @@
-<!-- GENERATED, DO NOT EDIT: regenerado por /reversa-debugger-graph em 2026-11-18T15:34:10+00:00 a partir de 3 bugs -->
+<!-- GENERATED, DO NOT EDIT: regenerado por /reversa-debugger-graph em 2026-11-24T06:45:20+00:00 a partir de 4 bugs -->
 
 # Bugs × specs · selection
 
@@ -12,12 +12,17 @@
 | `_reversa_sdd/selection/edge-cases.md#EC-07` | nenhum | nenhum | BUG-20261011-TUWO |
 | `_reversa_sdd/selection/edge-cases.md#EC-10` | nenhum | nenhum | BUG-20261011-CHWX |
 | `_reversa_sdd/selection/edge-cases.md#EC-18` | nenhum | nenhum | BUG-20261011-7DHT |
+| `_reversa_sdd/selection/requirements.md#RF-12` | nenhum | nenhum | BUG-20261124-2C8T |
+| `_reversa_sdd/selection/requirements.md#RN-24` | nenhum | nenhum | BUG-20261124-2C8T |
 | `_reversa_sdd/selection/tasks.md#DT-01` | nenhum | nenhum | BUG-20261011-TUWO |
 | `_reversa_sdd/selection/tasks.md#DT-03` | nenhum | nenhum | BUG-20261011-CHWX |
 | `_reversa_sdd/selection/tasks.md#DT-05` | nenhum | nenhum | BUG-20261011-7DHT |
 
 ## Adendos de bug vigentes
 
+- `_reversa_sdd/addenda/016-seletor-sobreposicao.md`
+- `_reversa_sdd/addenda/017-construtor-armario-v2.md`
+- `_reversa_sdd/addenda/021-plano-corte-camadas-gaveteiro.md`
 - `_reversa_sdd/addenda/066-reparo-do-addon-caffmob.md`
 - `_reversa_sdd/addenda/067-propriedades-por-selecao.md`
 - `_reversa_sdd/addenda/bug-BUG-20261006-KFAR-v001.md`
@@ -65,3 +70,4 @@
 - `_reversa_sdd/addenda/bug-BUG-20261117-RP9Q-v001.md`
 - `_reversa_sdd/addenda/bug-BUG-20261117-V4I3-v001.md`
 - `_reversa_sdd/addenda/bug-BUG-20261118-PLNT-v001.md`
+- `_reversa_sdd/addenda/bug-BUG-20261123-RW3G-v001.md`

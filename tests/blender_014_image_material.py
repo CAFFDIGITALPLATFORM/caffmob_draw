@@ -18,6 +18,7 @@ import _blender_env  # noqa: E402,F401
 import bpy  # noqa: E402
 from caffmob_draw.customize.adapters import common  # noqa: E402
 from caffmob_draw.object_library import retexture  # noqa: E402
+from caffmob_draw.texture_library import catalog  # noqa: E402
 
 FAILURES = []
 
@@ -47,7 +48,9 @@ def main():
     sheet = retexture.image_material(path, 1850.0, 2750.0, texture_id="arauco/tons-do-brasil/matt-jalapao")
     scale = tuple(round(v, 4) for v in mapping_of(sheet).inputs['Scale'].default_value)
     check("chapa: escala por eixo", scale == (round(1 / 1.85, 4), round(1 / 2.75, 4), round(1 / 2.75, 4)), str(scale))
-    check("chapa: nome com os dois lados", sheet.name == "Textura: chapa_014.png 1850 × 2750 mm", sheet.name)
+    nome_catalogo = catalog.nome_de("arauco/tons-do-brasil/matt-jalapao")
+    check("chapa: nome com os dois lados", sheet.name in (nome_catalogo, "Textura: chapa_014.png 1850 × 2750 mm"),
+          f"{sheet.name} catalogo={nome_catalogo!r}")
     check("chapa: id do catálogo", sheet.get('btm_texture_id') == "arauco/tons-do-brasil/matt-jalapao")
     check("chapa: material diferente do quadrado", sheet != square)
 

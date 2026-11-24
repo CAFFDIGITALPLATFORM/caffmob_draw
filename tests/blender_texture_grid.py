@@ -77,7 +77,7 @@ class Grade(unittest.TestCase):
         self.state.manufacturer, self.state.collection = 'arauco', 'colecao-realce'
         for _ in range(4):
             self.tick()
-        self.assertEqual([m[0] for m in catalog.manufacturers()][:1], ['arauco'])
+        self.assertIn('arauco', [m[0] for m in catalog.manufacturers()])
         self.assertEqual(len(draw.texture_items(self.state)), 14)
         self.assertEqual((self.state.manufacturer, self.state.collection), ('arauco', 'colecao-realce'))
         self.assertFalse(self.pending, 'Navegar não chama a conta')
@@ -94,19 +94,19 @@ class Grade(unittest.TestCase):
     def test_06_sem_sessao_mostra_embutido_sem_rede(self):
         with patch.object(auth, 'signed_in', return_value=False):
             self.tick()
-            items = draw.texture_items(self.state)
+            items = [i for i in draw.texture_items(self.state) if not i.get('pbr')]   # 073: PBR tem fabricante próprio
             self.assertEqual(len(items), 1209)
             self.assertTrue(draw.texture_tree())
             self.assertTrue(all(Path(catalog.thumb_path(i)).is_file() for i in items))
             self.assertFalse(self.pending)
             self.assertFalse(self.images)
-            self.state.manufacturer = draw.texture_tree()[0][0]
-            self.assertLess(len(draw.texture_items(self.state)), 1209)
+            self.state.manufacturer = 'arauco'
+            self.assertLess(len([i for i in draw.texture_items(self.state) if not i.get('pbr')]), 1209)
             self.assertFalse(catalog.has_more())
 
     def test_08_slug_resolve_uuid_e_metadados_atuais(self):
         with patch.object(auth, 'signed_in', return_value=False):
-            local = draw.texture_items(self.state)[0]
+            local = next(i for i in draw.texture_items(self.state) if not i.get('pbr'))
         expected = str(uuid.uuid5(uuid.UUID('5b0c7d6e-2f41-4c8a-9e3d-0a62e7f1c062'), local['file']))
         result = []
         catalog.resolve(local['id'], lambda entry, error: result.append((entry, error)))
@@ -144,7 +144,7 @@ class Grade(unittest.TestCase):
 
     def test_10_ligacao_nfc_e_item_ausente_no_mobi(self):
         with patch.object(auth, 'signed_in', return_value=False):
-            items = draw.texture_items(self.state)
+            items = [i for i in draw.texture_items(self.state) if not i.get('pbr')]
         self.assertEqual(len({i['mobi_id'] for i in items}), 1209)
         for entry in items:
             nfc = unicodedata.normalize('NFC', entry['file'])

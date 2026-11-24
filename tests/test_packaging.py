@@ -20,7 +20,7 @@ import zipfile
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 PACKAGE = ROOT / "caffmob_draw"
 IGNORED_DIRS = {".git", ".kilo", ".claude", ".agents", "docs", "_reversa_sdd", "_reversa_forward", "_reversa_bugs",
-                "node_modules", "__pycache__"}
+                "node_modules", "__pycache__", "novo_arm_building"}
 
 
 def manifests():

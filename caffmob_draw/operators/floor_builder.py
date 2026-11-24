@@ -70,15 +70,38 @@ def room_outlines(scene):
     return polygons, [tuple(p[:2]) for p in ends]
 
 
-def build_floor_mesh(floor_obj, polygons):
-    """Um n-gono por sala (aceita sala côncava), em coordenadas do mundo, com o piso na matriz identidade."""
+def build_floor_mesh(floor_obj, polygons, thickness=0.0, direction='DOWN'):
+    """Um n-gono por sala (aceita sala côncava), com espessura opcional para baixo (−Z) ou para cima (+Z) (RN-05, RF-06)."""
+    from ..data import layers
+
     bm = bmesh.new()
-    for polygon in polygons:
-        verts = [bm.verts.new((x, y, 0.0)) for x, y in polygon]
-        try:
-            bm.faces.new(verts)
-        except ValueError:
-            continue
+    if thickness and float(thickness) > 1e-4:
+        z_min, z_max = layers.floor_z_bounds(0.0, float(thickness), direction)
+        for polygon in polygons:
+            bottom = [bm.verts.new((x, y, z_min)) for x, y in polygon]
+            top = [bm.verts.new((x, y, z_max)) for x, y in polygon]
+            try:
+                bm.faces.new(top)
+                bm.faces.new(list(reversed(bottom)))
+            except ValueError:
+                continue
+            n = len(polygon)
+            for i in range(n):
+                j = (i + 1) % n
+                try:
+                    bm.faces.new([bottom[i], bottom[j], top[j], top[i]])
+                except ValueError:
+                    pass
+        floor_obj['btm_floor_thickness'] = float(thickness)
+        floor_obj['btm_floor_direction'] = str(direction).upper()
+    else:
+        for polygon in polygons:
+            verts = [bm.verts.new((x, y, 0.0)) for x, y in polygon]
+            try:
+                bm.faces.new(verts)
+            except ValueError:
+                continue
+    bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
     bm.to_mesh(floor_obj.data)
     bm.free()
     floor_obj.data.update()
@@ -125,13 +148,17 @@ class BTM_OT_AdjustFloor(bpy.types.Operator):
                 floor_obj = obj
                 break
 
+        from ..data import layers
         if floor_obj is None:
             mesh = bpy.data.meshes.new(name="BTM_Floor_Mesh")
             floor_obj = bpy.data.objects.new("BTM_Floor", mesh)
-            context.collection.objects.link(floor_obj)
             floor_obj.btm_plane.object_kind = 'FLOOR'
 
-        build_floor_mesh(floor_obj, polygons)
+        layers.place(floor_obj, layers.ensure_arquitetura(context.scene, 'FLOOR'), context.scene)
+        settings = getattr(context.scene, 'btm_settings', None)
+        thickness = getattr(settings, 'floor_thickness', 0.15) if settings else 0.15
+        direction = getattr(settings, 'floor_thickness_direction', 'DOWN') if settings else 'DOWN'
+        build_floor_mesh(floor_obj, polygons, thickness=thickness, direction=direction)
         context.view_layer.objects.active = floor_obj
         floor_obj.select_set(True)
         self.report({'INFO'}, message)
@@ -148,16 +175,21 @@ class BTM_OT_FloorBuilder(bpy.types.Operator):
     size_y: bpy.props.FloatProperty(name="Comprimento Y", default=5.0, subtype='DISTANCE')
 
     def execute(self, context):
+        from ..data import layers
         mesh = bpy.data.meshes.new(name="BTM_Floor_Mesh")
         obj = bpy.data.objects.new("BTM_Floor", mesh)
 
-        context.collection.objects.link(obj)
+        layers.place(obj, layers.ensure_arquitetura(context.scene, 'FLOOR'), context.scene)
         context.view_layer.objects.active = obj
         obj.select_set(True)
 
         obj.btm_plane.object_kind = 'FLOOR'
 
-        generate_floor_mesh(obj, self.size_x, self.size_y)
+        settings = getattr(context.scene, 'btm_settings', None)
+        thickness = getattr(settings, 'floor_thickness', 0.15) if settings else 0.15
+        direction = getattr(settings, 'floor_thickness_direction', 'DOWN') if settings else 'DOWN'
+        hx, hy = self.size_x * 0.5, self.size_y * 0.5
+        build_floor_mesh(obj, [[(-hx, -hy), (hx, -hy), (hx, hy), (-hx, hy)]], thickness=thickness, direction=direction)
 
         x_str = units.format_value(self.size_x, context.scene)
         y_str = units.format_value(self.size_y, context.scene)

@@ -121,9 +121,11 @@ def main():
     mat = bpy.data.materials.get(next(iter(names)))
     mapping = next(n for n in mat.node_tree.nodes if n.type == 'MAPPING')
     scale = tuple(round(v, 4) for v in mapping.inputs['Scale'].default_value)
-    check("tamanho real muda para 1200 × 900 mm", result == {'FINISHED'} and "1200 × 900 mm" in mat.name
+    nome_catalogo = catalog.nome_de(square)
+    check("tamanho real muda para 1200 × 900 mm", result == {'FINISHED'}
+          and ((nome_catalogo and mat.name.startswith(nome_catalogo)) or "1200 × 900 mm" in mat.name)
           and scale[:2] == (round(1 / 1.2, 4), round(1 / 0.9, 4)) and mat.get("btm_texture_id") == square,
-          f"{mat.name} {scale}")
+          f"{mat.name} {scale} catalogo={nome_catalogo!r}")
 
     # T045: relevo do fabricante ligado ao material quando a imagem está no cache
     from caffmob_draw.texture_library import bump

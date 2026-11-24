@@ -233,12 +233,20 @@ def refresh_floors_and_ceilings(context):
                     key=lambda o: o.name)
     ceilings = sorted((o for o in context.scene.objects if o.get('IS_CEILING_BP') and o.type == 'MESH'),
                       key=lambda o: o.name)
+    from ..data import layers as data_layers
+    piso_col = teto_col = None
     floor_op, ceiling_op = walls_ops.home_builder_walls_OT_add_floor, walls_ops.home_builder_walls_OT_add_ceiling
     for obj, (_chain, points) in zip(floors, loops):
         _swap_mesh(obj, floor_op.create_floor_mesh(None, obj.name + "_tmp", points))
+        if piso_col is None:                 # sem piso para colocar, nenhuma coleção vazia (BUG-20261117-4MF7)
+            piso_col = data_layers.ensure_arquitetura(context.scene, 'FLOOR')
+        data_layers.place(obj, piso_col, context.scene)
     for obj, (chain, points) in zip(ceilings, loops):
         height = hb_types.GeoNodeWall(chain[0]).get_input('Height') or context.scene.home_builder.ceiling_height
         _swap_mesh(obj, ceiling_op.create_ceiling_mesh(None, obj.name + "_tmp", points, height))
+        if teto_col is None:
+            teto_col = data_layers.ensure_arquitetura(context.scene, 'CEILING')
+        data_layers.place(obj, teto_col, context.scene)
     return min(len(floors), len(loops)), min(len(ceilings), len(loops))
 
 

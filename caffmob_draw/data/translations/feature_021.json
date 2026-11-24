@@ -1,0 +1,386 @@
+{
+ "Gerar Plano de Corte (OpCut)": {
+  "pt_BR": "Gerar Plano de Corte (OpCut)",
+  "en_US": "Generate Cutting Plan (OpCut)"
+ },
+ "Nenhuma peça de corte encontrada na cena.": {
+  "pt_BR": "Nenhuma peça de corte encontrada na cena.",
+  "en_US": "No cutting parts found in the scene."
+ },
+ "Plano de corte OpCut gerado: {} chapa(s), {} módulo(s).": {
+  "pt_BR": "Plano de corte OpCut gerado: {} chapa(s), {} módulo(s).",
+  "en_US": "OpCut cutting plan generated: {} sheet(s), {} module(s)."
+ },
+ "Atenção: {} peça(s) excedem a área útil da chapa.": {
+  "pt_BR": "Atenção: {} peça(s) excedem a área útil da chapa.",
+  "en_US": "Warning: {} part(s) exceed the usable sheet area."
+ },
+ "Alternar Chapa da Prévia": {
+  "pt_BR": "Alternar Chapa da Prévia",
+  "en_US": "Switch Preview Sheet"
+ },
+ "Exportar Plano de Corte": {
+  "pt_BR": "Exportar Plano de Corte",
+  "en_US": "Export Cutting Plan"
+ },
+ "Nenhuma chapa disponível para exportar.": {
+  "pt_BR": "Nenhuma chapa disponível para exportar.",
+  "en_US": "No sheets available to export."
+ },
+ "Erro ao gravar arquivo: {}": {
+  "pt_BR": "Erro ao gravar arquivo: {}",
+  "en_US": "Error writing file: {}"
+ },
+ "Plano de corte exportado em {}.": {
+  "pt_BR": "Plano de corte exportado em {}.",
+  "en_US": "Cutting plan exported to {}."
+ },
+ "Plano de Corte (OpCut)": {
+  "pt_BR": "Plano de Corte (OpCut)",
+  "en_US": "Cutting Plan (OpCut)"
+ },
+ "Motor": {
+  "pt_BR": "Motor",
+  "en_US": "Engine"
+ },
+ "Agrupar peças por módulo": {
+  "pt_BR": "Agrupar peças por módulo",
+  "en_US": "Group parts by module"
+ },
+ "Lista de Peças por Módulo ({})": {
+  "pt_BR": "Lista de Peças por Módulo ({})",
+  "en_US": "Parts List by Module ({})"
+ },
+ "Chapa {}/{} — {} {:.0f}mm ({:.1f}%)": {
+  "pt_BR": "Chapa {}/{} — {} {:.0f}mm ({:.1f}%)",
+  "en_US": "Sheet {}/{} — {} {:.0f}mm ({:.1f}%)"
+ },
+ "Prévia disponível no Image Editor: CAFFMob_PlanoCorte_Preview": {
+  "pt_BR": "Prévia disponível no Image Editor: CAFFMob_PlanoCorte_Preview",
+  "en_US": "Preview available in Image Editor: CAFFMob_PlanoCorte_Preview"
+ },
+ "Sincronizar Texturas Perdidas": {
+  "pt_BR": "Sincronizar Texturas Perdidas",
+  "en_US": "Sync Missing Textures"
+ },
+ "Sincronização de texturas já está em andamento.": {
+  "pt_BR": "Sincronização de texturas já está em andamento.",
+  "en_US": "Texture sync is already running."
+ },
+ "Baixando {} textura(s) perdida(s)...": {
+  "pt_BR": "Baixando {} textura(s) perdida(s)...",
+  "en_US": "Downloading {} missing texture(s)..."
+ },
+ "Todas as texturas do addon já estão presentes localmente.": {
+  "pt_BR": "Todas as texturas do addon já estão presentes localmente.",
+  "en_US": "All addon textures are already present locally."
+ },
+ "Cancelar Sincronização": {
+  "pt_BR": "Cancelar Sincronização",
+  "en_US": "Cancel Sync"
+ },
+ "Sincronização de texturas cancelada.": {
+  "pt_BR": "Sincronização de texturas cancelada.",
+  "en_US": "Texture sync cancelled."
+ },
+ "Texturas / Materiais": {
+  "pt_BR": "Texturas / Materiais",
+  "en_US": "Textures / Materials"
+ },
+ "Sincronizando texturas...": {
+  "pt_BR": "Sincronizando texturas...",
+  "en_US": "Syncing textures..."
+ },
+ "Colisões ativadas": {
+  "pt_BR": "Colisões ativadas",
+  "en_US": "Collisions enabled"
+ },
+ "Colisões desativadas": {
+  "pt_BR": "Colisões desativadas",
+  "en_US": "Collisions disabled"
+ },
+ "Colisão: ON": {
+  "pt_BR": "Colisão: ON",
+  "en_US": "Collision: ON"
+ },
+ "Colisão: OFF": {
+  "pt_BR": "Colisão: OFF",
+  "en_US": "Collision: OFF"
+ },
+ "Padrões Rápidos do Projeto": {
+  "pt_BR": "Padrões Rápidos do Projeto",
+  "en_US": "Quick Project Defaults"
+ },
+ "Espessura parede": {
+  "pt_BR": "Espessura parede",
+  "en_US": "Wall Thickness"
+ },
+ "Espessura piso": {
+  "pt_BR": "Espessura piso",
+  "en_US": "Floor Thickness"
+ },
+ "Restaurar Parede": {
+  "pt_BR": "Restaurar Parede",
+  "en_US": "Restore Wall"
+ },
+ "Converter em": {
+  "pt_BR": "Converter em",
+  "en_US": "Convert to"
+ },
+ "Gaveteiro": {
+  "pt_BR": "Gaveteiro",
+  "en_US": "Drawer Unit"
+ },
+ "Armário (Construtor v2)": {
+  "pt_BR": "Armário (Construtor v2)",
+  "en_US": "Cabinet (Builder v2)"
+ },
+ "Peças reconhecidas ({}):": {
+  "pt_BR": "Peças reconhecidas ({}):",
+  "en_US": "Recognized parts ({}):"
+ },
+ "Nenhuma peça padrão reconhecida automaticamente (conversão liberada).": {
+  "pt_BR": "Nenhuma peça padrão reconhecida automaticamente (conversão liberada).",
+  "en_US": "No standard parts recognized automatically (conversion allowed)."
+ },
+ "Peças faltantes ({}):": {
+  "pt_BR": "Peças faltantes ({}):",
+  "en_US": "Missing parts ({}):"
+ },
+ "Ferragens e Acabamentos": {
+  "pt_BR": "Ferragens e Acabamentos",
+  "en_US": "Hardware and Finishes"
+ },
+ "Selecione ao menos uma malha para converter em Gaveteiro.": {
+  "pt_BR": "Selecione ao menos uma malha para converter em Gaveteiro.",
+  "en_US": "Select at least one mesh to convert into a Drawer Unit."
+ },
+ "Gaveteiro criado com peças faltantes: {}": {
+  "pt_BR": "Gaveteiro criado com peças faltantes: {}",
+  "en_US": "Drawer unit created with missing parts: {}"
+ },
+ "Gaveteiro criado na camada Marcenaria.": {
+  "pt_BR": "Gaveteiro criado na camada Marcenaria.",
+  "en_US": "Drawer unit created in the Marcenaria layer."
+ },
+ "Completar peças faltantes automaticamente": {
+  "pt_BR": "Completar peças faltantes automaticamente",
+  "en_US": "Auto-complete missing parts"
+ },
+ "Abrir editor após converter": {
+  "pt_BR": "Abrir editor após converter",
+  "en_US": "Open editor after converting"
+ },
+ "Converte a seleção (malha única ou peças separadas) em Gaveteiro na camada Marcenaria": {
+  "pt_BR": "Converte a seleção (malha única ou peças separadas) em Gaveteiro na camada Marcenaria",
+  "en_US": "Converts the selection (single mesh or separate parts) into a Drawer Unit in the Marcenaria layer"
+ },
+ "Quando faltarem peças da gaveta, gera automaticamente as peças ausentes (opcional)": {
+  "pt_BR": "Quando faltarem peças da gaveta, gera automaticamente as peças ausentes (opcional)",
+  "en_US": "When drawer parts are missing, automatically generates the missing parts (optional)"
+ },
+ "Telescópica (lateral)": {
+  "pt_BR": "Telescópica (lateral)",
+  "en_US": "Telescopic (side-mount)"
+ },
+ "Par de corrediças telescópicas fixadas nas laterais": {
+  "pt_BR": "Par de corrediças telescópicas fixadas nas laterais",
+  "en_US": "Pair of telescopic slides mounted on the sides"
+ },
+ "Oculta / Invisível (base)": {
+  "pt_BR": "Oculta / Invisível (base)",
+  "en_US": "Concealed / Undermount (bottom)"
+ },
+ "Par de corrediças ocultas fixadas por baixo": {
+  "pt_BR": "Par de corrediças ocultas fixadas por baixo",
+  "en_US": "Pair of concealed slides mounted underneath"
+ },
+ "Puxador externo parafusado na frente": {
+  "pt_BR": "Puxador externo parafusado na frente",
+  "en_US": "External handle screwed to the drawer front"
+ },
+ "Embutido": {
+  "pt_BR": "Embutido",
+  "en_US": "Recessed"
+ },
+ "Puxador embutido": {
+  "pt_BR": "Puxador embutido",
+  "en_US": "Recessed handle"
+ },
+ "Cava (usinado)": {
+  "pt_BR": "Cava (usinado)",
+  "en_US": "Routed pull"
+ },
+ "Puxador usinado na própria frente": {
+  "pt_BR": "Puxador usinado na própria frente",
+  "en_US": "Handle routed directly into the drawer front"
+ },
+ "Fixação do Fundo": {
+  "pt_BR": "Fixação do Fundo",
+  "en_US": "Bottom Mounting"
+ },
+ "Em rasgo (canal)": {
+  "pt_BR": "Em rasgo (canal)",
+  "en_US": "Dado groove"
+ },
+ "Fundo 6 mm encaixado em canais nas laterais": {
+  "pt_BR": "Fundo 6 mm encaixado em canais nas laterais",
+  "en_US": "6 mm bottom fitted into side dado grooves"
+ },
+ "Fixado por baixo": {
+  "pt_BR": "Fixado por baixo",
+  "en_US": "Bottom-mounted"
+ },
+ "Fundo 6 mm aparafusado ou pregado por baixo": {
+  "pt_BR": "Fundo 6 mm aparafusado ou pregado por baixo",
+  "en_US": "6 mm bottom screwed or nailed from underneath"
+ },
+ "Abre o editor de armário/gaveteiro ao concluir para edição livre": {
+  "pt_BR": "Abre o editor de armário/gaveteiro ao concluir para edição livre",
+  "en_US": "Opens the cabinet/drawer editor upon completion for free editing"
+ },
+ "Gera a lista de peças agrupadas por módulo e o plano de corte otimizado offline (OpCut)": {
+  "pt_BR": "Gera a lista de peças agrupadas por módulo e o plano de corte otimizado offline (OpCut)",
+  "en_US": "Generates the module-grouped parts list and offline optimized cutting plan (OpCut)"
+ },
+ "Alterna a chapa exibida na prévia interna do plano de corte": {
+  "pt_BR": "Alterna a chapa exibida na prévia interna do plano de corte",
+  "en_US": "Switches the sheet shown in the internal cutting plan preview"
+ },
+ "Exporta o plano de corte OpCut e a lista agrupada por módulo em HTML, SVG ou PDF": {
+  "pt_BR": "Exporta o plano de corte OpCut e a lista agrupada por módulo em HTML, SVG ou PDF",
+  "en_US": "Exports the OpCut cutting plan and module-grouped list as HTML, SVG, or PDF"
+ },
+ "HTML": {
+  "pt_BR": "HTML",
+  "en_US": "HTML"
+ },
+ "SVG": {
+  "pt_BR": "SVG",
+  "en_US": "SVG"
+ },
+ "PDF": {
+  "pt_BR": "PDF",
+  "en_US": "PDF"
+ },
+ "Espessura do Piso": {
+  "pt_BR": "Espessura do Piso",
+  "en_US": "Floor Thickness"
+ },
+ "Espessura do piso gerado pelo addon": {
+  "pt_BR": "Espessura do piso gerado pelo addon",
+  "en_US": "Thickness of the floor generated by the addon"
+ },
+ "Direção da Espessura do Piso": {
+  "pt_BR": "Direção da Espessura do Piso",
+  "en_US": "Floor Thickness Direction"
+ },
+ "Define se a espessura do piso cresce para baixo (−Z) ou para cima (+Z) a partir do nível de referência": {
+  "pt_BR": "Define se a espessura do piso cresce para baixo (−Z) ou para cima (+Z) a partir do nível de referência",
+  "en_US": "Sets whether floor thickness extends downward (−Z) or upward (+Z) from the reference plane"
+ },
+ "Para baixo": {
+  "pt_BR": "Para baixo",
+  "en_US": "Downward"
+ },
+ "Topo do piso no nível Z de referência; espessura cresce para −Z": {
+  "pt_BR": "Topo do piso no nível Z de referência; espessura cresce para −Z",
+  "en_US": "Floor top at reference Z level; thickness extends downward (−Z)"
+ },
+ "Para cima": {
+  "pt_BR": "Para cima",
+  "en_US": "Upward"
+ },
+ "Base do piso no nível Z de referência; espessura cresce para +Z": {
+  "pt_BR": "Base do piso no nível Z de referência; espessura cresce para +Z",
+  "en_US": "Floor bottom at reference Z level; thickness extends upward (+Z)"
+ },
+ "Espessura Padrão de Parede": {
+  "pt_BR": "Espessura Padrão de Parede",
+  "en_US": "Default Wall Thickness"
+ },
+ "Espessura padrão usada pelo Editor de Parede antes de desenhar qualquer trecho": {
+  "pt_BR": "Espessura padrão usada pelo Editor de Parede antes de desenhar qualquer trecho",
+  "en_US": "Default thickness used by the Wall Editor before drawing any segment"
+ },
+ "Motor de Plano de Corte": {
+  "pt_BR": "Motor de Plano de Corte",
+  "en_US": "Cutting Plan Engine"
+ },
+ "Algoritmo de otimização de corte de chapas": {
+  "pt_BR": "Algoritmo de otimização de corte de chapas",
+  "en_US": "Sheet cutting optimization algorithm"
+ },
+ "OpCut (Guilhotinado Offline)": {
+  "pt_BR": "OpCut (Guilhotinado Offline)",
+  "en_US": "OpCut (Offline Guillotine)"
+ },
+ "Otimizador guilhotinado 2D compatível com OpCut": {
+  "pt_BR": "Otimizador guilhotinado 2D compatível com OpCut",
+  "en_US": "2D guillotine optimizer compatible with OpCut"
+ },
+ "Clássico (Prateleiras)": {
+  "pt_BR": "Clássico (Prateleiras)",
+  "en_US": "Classic (Shelf)"
+ },
+ "Algoritmo legado Next-Fit Decreasing em prateleiras": {
+  "pt_BR": "Algoritmo legado Next-Fit Decreasing em prateleiras",
+  "en_US": "Legacy Next-Fit Decreasing shelf algorithm"
+ },
+ "Agrupar Peças por Módulo": {
+  "pt_BR": "Agrupar Peças por Módulo",
+  "en_US": "Group Parts by Module"
+ },
+ "Agrupa a lista de peças hierarquicamente por módulo proprietário": {
+  "pt_BR": "Agrupa a lista de peças hierarquicamente por módulo proprietário",
+  "en_US": "Groups the parts list hierarchically by owner module"
+ },
+ "Chapa da Prévia": {
+  "pt_BR": "Chapa da Prévia",
+  "en_US": "Preview Sheet"
+ },
+ "Índice da chapa exibida no visualizador interno do plano de corte": {
+  "pt_BR": "Índice da chapa exibida no visualizador interno do plano de corte",
+  "en_US": "Index of the sheet shown in the internal cutting plan viewer"
+ },
+ "Detecta texturas do addon ausentes no disco, baixa novamente e reconecta os materiais da cena": {
+  "pt_BR": "Detecta texturas do addon ausentes no disco, baixa novamente e reconecta os materiais da cena",
+  "en_US": "Detects missing addon textures on disk, re-downloads them, and reconnects scene materials"
+ },
+ "Cancela a sincronização de texturas perdidas em andamento": {
+  "pt_BR": "Cancela a sincronização de texturas perdidas em andamento",
+  "en_US": "Cancels the ongoing missing texture sync"
+ },
+ "Ativa ou desativa globalmente o sistema de colisões do CAFFMob Draw": {
+  "pt_BR": "Ativa ou desativa globalmente o sistema de colisões do CAFFMob Draw",
+  "en_US": "Globally enables or disables the CAFFMob Draw collision system"
+ },
+ "{}: {} pç ({:.2f} m²)": {
+  "pt_BR": "{}: {} pç ({:.2f} m²)",
+  "en_US": "{}: {} pcs ({:.2f} m²)"
+ },
+ "Construtor de Armários": {
+  "pt_BR": "Construtor de Armários",
+  "en_US": "Cabinet Builder"
+ },
+ "Plano de Corte": {
+  "pt_BR": "Plano de Corte",
+  "en_US": "Cutting Plan"
+ },
+ "Chapa OK ({}×{})": {
+  "pt_BR": "Chapa OK ({}×{})",
+  "en_US": "Sheet OK ({}×{})"
+ },
+ "Fora da chapa ({})": {
+  "pt_BR": "Fora da chapa ({})",
+  "en_US": "Exceeds sheet ({})"
+ },
+ "Contrato de chapas pendente": {
+  "pt_BR": "Contrato de chapas pendente",
+  "en_US": "Sheet contract pending"
+ },
+ "Armário: {} × {} × {} mm": {
+  "pt_BR": "Armário: {} × {} × {} mm",
+  "en_US": "Cabinet: {} × {} × {} mm"
+ }
+}

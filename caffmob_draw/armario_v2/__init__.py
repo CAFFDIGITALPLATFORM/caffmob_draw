@@ -24,7 +24,7 @@ Blender não carrega `bpy`. `unregister()` percorre a mesma tupla ao contrário,
 from importlib import import_module
 
 # Cascata de registro, na ordem de `register()`; desregistro na ordem inversa.
-_MODULES = ('props', 'anim', 'ops', 'panel', 'menu', 'hud', 'ponte')
+_MODULES = ('props', 'anim', 'ops', 'ops_drawer_convert', 'panel', 'menu', 'hud', 'ponte')
 
 
 def _modules():

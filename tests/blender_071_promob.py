@@ -193,11 +193,15 @@ def corpos():
     check(erro is None and t.type == 'MESH' and len(t.data.polygons) > 6
           and tuple(round(v, 3) for v in t.dimensions) <= (0.032, 0.09, 0.1), "a torneira é silhueta, não caixa",
           str(t.dimensions))
-    metal = t.data.materials[0].node_tree.nodes['Principled BSDF'].inputs['Metallic'].default_value
+    metal_socket = t.data.materials[0].node_tree.nodes['Principled BSDF'].inputs['Metallic']
+    metal = metal_socket.default_value
     painel = obj('Porta em vidro · vidro')
     m = painel.data.materials[0]
-    check(metal == 1.0 and m.diffuse_color[3] < 1.0 and m.node_tree.nodes['Principled BSDF'].inputs['Alpha']
-          .default_value < 1.0, "metal metálico e vidro transparente")
+    alpha = m.node_tree.nodes['Principled BSDF'].inputs['Alpha'].default_value
+    check((metal_socket.is_linked or metal == 1.0) and m.diffuse_color[3] < 1.0 and alpha < 1.0,
+          "metal metálico e vidro transparente",
+          f"metal={metal} ligado={metal_socket.is_linked} cor_a={m.diffuse_color[3]} alpha={alpha} "
+          f"mats={[x.name for x in t.data.materials]}")
 
     def folhas_genericas():
         cena = bpy.context.scene

@@ -102,6 +102,7 @@ try:
     conferir(view.rect[2] == 1430 and not getattr(s, 'studio_painel_area', None),
              'Prancheta com a largura toda da região, como no editor clássico')
     op = SimpleNamespace(dragging=None, panning=None, shift=False)
+    op._handle_menu = editor.BTM_OT_WallEditorModal._handle_menu.__get__(op)
     modal = editor.BTM_OT_WallEditorModal._handle
 
     def ev(tipo, pixel, value='PRESS', char='', **m):

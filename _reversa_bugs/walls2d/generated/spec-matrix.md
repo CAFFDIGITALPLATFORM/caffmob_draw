@@ -1,4 +1,4 @@
-<!-- GENERATED, DO NOT EDIT: regenerado por /reversa-debugger-graph em 2026-11-18T15:34:10+00:00 a partir de 8 bugs -->
+<!-- GENERATED, DO NOT EDIT: regenerado por /reversa-debugger-graph em 2026-11-24T06:45:20+00:00 a partir de 8 bugs -->
 
 # Bugs × specs · walls2d
 
@@ -26,6 +26,9 @@
 
 ## Adendos de bug vigentes
 
+- `_reversa_sdd/addenda/016-seletor-sobreposicao.md`
+- `_reversa_sdd/addenda/017-construtor-armario-v2.md`
+- `_reversa_sdd/addenda/021-plano-corte-camadas-gaveteiro.md`
 - `_reversa_sdd/addenda/066-reparo-do-addon-caffmob.md`
 - `_reversa_sdd/addenda/067-propriedades-por-selecao.md`
 - `_reversa_sdd/addenda/bug-BUG-20261006-KFAR-v001.md`
@@ -73,3 +76,4 @@
 - `_reversa_sdd/addenda/bug-BUG-20261117-RP9Q-v001.md`
 - `_reversa_sdd/addenda/bug-BUG-20261117-V4I3-v001.md`
 - `_reversa_sdd/addenda/bug-BUG-20261118-PLNT-v001.md`
+- `_reversa_sdd/addenda/bug-BUG-20261123-RW3G-v001.md`

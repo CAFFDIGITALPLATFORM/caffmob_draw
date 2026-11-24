@@ -137,22 +137,64 @@ def _gavetas_da_subaba(armario, subaba):
 
 
 # Desenho ---------------------------------------------------------------------------------------------------------
-def _cabecalho(layout, context, raiz):
+def _cabecalho(layout, context, raiz, spec, contrato):
     armario = raiz.btm_armario
-    caixa = layout.box()
-    linha = caixa.row()
-    linha.label(text=tr("Construtor de Armário v2"), icon='MESH_CUBE')
+    violacoes = _violacoes(raiz, spec, contrato)
+
+    # Barra de título estilo mockup (título + status de chapa + acesso rápido ao Plano de Corte)
+    topo = layout.box()
+    linha = topo.row(align=True)
+    linha.label(text=tr("Construtor de Armários"), icon='MESH_CUBE')
+    linha.operator("caffmob.opcut_generate", text=tr("Plano de Corte"), icon='MOD_ARRAY')
+
+    # Badge de status de chapa + dimensões + montagem
+    status = topo.row(align=True)
+    if contrato.configurado:
+        status_txt = tr("Chapa OK ({}×{})").format(f"{contrato.comprimento_max:g}", f"{contrato.largura_max:g}")
+        status.label(text=tr("Fora da chapa ({})").format(len(violacoes)) if violacoes else status_txt,
+                     icon='ERROR' if violacoes else 'CHECKMARK')
+    else:
+        status.label(text=tr("Contrato de chapas pendente"), icon='INFO')
+
+    # Barra de ferramentas superior estilo mockup (Montar Caixa | Limpar | Abrir/Fechar)
+    tb = layout.row(align=True)
+    tb.operator("caffmob.armario_v2_montar_caixa", text=tr("Montar Caixa"), icon='CUBE')
+    tb.operator("caffmob.armario_v2_limpar", text=tr("Limpar"), icon='TRASH')
     alvo = anim.alvo_de(context)
     if alvo is not None:
-        linha.operator("caffmob.armario_v2_alternar", text=anim.rotulo(alvo),
-                       icon='TRIA_DOWN' if anim.estado(alvo) else 'TRIA_RIGHT')
-    caixa.label(text=tr("Montagem: {}").format(tr(resumo.MONTAGENS.get(armario.tipo_montagem,
-                                                                      armario.tipo_montagem))))
-    caixa.label(text=tr("Vão ativo: {}").format(_vao_ativo(armario)))
-    contrato = ops.contrato_da_cena(context.scene)
-    if contrato.configurado:
-        caixa.label(text=tr("Chapa máxima: {} × {} mm").format(f"{contrato.comprimento_max:g}",
-                                                              f"{contrato.largura_max:g}"))
+        tb.operator("caffmob.armario_v2_alternar", text=anim.rotulo(alvo),
+                    icon='TRIA_DOWN' if anim.estado(alvo) else 'TRIA_RIGHT')
+
+
+def _desenhar_abas(layout, armario):
+    """Grade de 7 abas em 2 linhas (4 + 3) com ícones, fiel ao mockup sem truncar texto no painel estreito."""
+    abas_l1 = (
+        ('ESTRUTURA', "Estrutura", 'CUBE'),
+        ('DIVISOES', "Divisões", 'GRID'),
+        ('GAVETAS', "Gavetas", 'MOD_ARRAY'),
+        ('INTERNOS', "Internos", 'MOD_BEVEL'),
+    )
+    abas_l2 = (
+        ('PORTAS', "Portas", 'MESH_PLANE'),
+        ('DESLIZANTES', "Deslizantes", 'ARROW_LEFTRIGHT'),
+        ('FUNDOS', "Fundos", 'MOD_SOLIDIFY'),
+    )
+    for grupo in (abas_l1, abas_l2):
+        row = layout.row(align=True)
+        for chave, rotulo, icone in grupo:
+            row.prop_enum(armario, 'aba', chave, text=tr(rotulo), icon=icone)
+
+
+def _subcabecalho(layout, raiz, spec):
+    armario = raiz.btm_armario
+    sub = layout.box()
+    r1 = sub.row(align=True)
+    r1.label(text=tr("Armário: {} × {} × {} mm").format(
+        f"{spec.largura:g}", f"{spec.altura:g}", f"{spec.profundidade:g}"
+    ), icon='FULLSCREEN_ENTER')
+    r2 = sub.row(align=True)
+    r2.label(text=tr("Montagem: {}").format(tr(resumo.MONTAGENS.get(armario.tipo_montagem, armario.tipo_montagem))))
+    r2.label(text=tr("Vão ativo: {}").format(_vao_ativo(armario)))
 
 
 def _janela_vazia(layout, armario):
@@ -382,11 +424,12 @@ def draw_painel(layout, context):
     if raiz is None:
         return
     armario = raiz.btm_armario
-    _cabecalho(layout, context, raiz)
-    _janela_vazia(layout, armario)
-    layout.prop(armario, 'aba', expand=True)
     spec = ops.spec_do_armario(raiz)
     contrato = ops.contrato_da_cena(context.scene)
+    _cabecalho(layout, context, raiz, spec, contrato)
+    _janela_vazia(layout, armario)
+    _desenhar_abas(layout, armario)
+    _subcabecalho(layout, raiz, spec)
     ABAS.get(armario.aba, _estrutura)(layout, context, raiz)
     layout.separator()
     _estado(layout, context, raiz, spec, contrato)

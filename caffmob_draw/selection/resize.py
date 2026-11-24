@@ -104,32 +104,18 @@ def _set_width(context, el, width):
         hb_types.GeoNodeObject(obj).set_input('Dim X', width)
 
 
-def resize(context, el, width):
-    """066 RF-012: largura e agregados voltam juntos se o novo corpo penetrar."""
-    if not can_resize(el) or not MIN_WIDTH <= width <= MAX_WIDTH:
-        return _resize(context, el, width)       # mantém a validação e as mensagens de domínio
-    from . import module_resize
-    if el.info.library == 'AUTHORED' or module_resize.handles(el.info):
-        # 080 D-04: módulo das 5 famílias vai direto à transação (já atômica, com rollback e sem veto por colisão).
-        return editing.set_dimension(context, el.info, 'width', width)
-    from ..collision import guard
-    old = element_size.size(el)[0]
-    return guard.reconfigure(el.obj, lambda: _resize(context, el, width), lambda: _resize(context, el, old))
-
-
-def _resize(context, el, width):
-    """Muda a largura do elemento para `width` (m) e adapta os agregados; levanta ValueError se não der."""
-    if not can_resize(el):
-        raise ValueError(tr("Valor Inválido: este elemento não pode ser redimensionado por aqui."))
-    if not MIN_WIDTH <= width <= MAX_WIDTH:
-        raise ValueError(tr("Valor Inválido: a largura deve estar entre {} e {} m.").format(MIN_WIDTH, MAX_WIDTH))
+def _aggregate_state(el):
+    """Medidas e posições dos agregados antes da mudança; vazio para o que é esticado em X (os filhos acompanham)."""
     from ..aggregates import apply
-    # Esticado em X, os filhos acompanham a escala do pai; com largura própria, os agregados são adaptados aqui.
-    # `u`/`v` guardados antes: o gancho dos agregados ajusta a posição ao limite assim que o pai muda.
-    before = {} if _stretched(el) else {
-        o.name: (_width_x(o), {c.name: (c.btm_aggregate.u, c.btm_aggregate.v) for c in apply.aggregates_of(o)})
-        for o in _parents_with_aggregates(el.obj)}
-    _set_width(context, el, width)
+    if _stretched(el):
+        return {}
+    return {o.name: (_width_x(o), {c.name: (c.btm_aggregate.u, c.btm_aggregate.v) for c in apply.aggregates_of(o)})
+            for o in _parents_with_aggregates(el.obj)}
+
+
+def _resize_aggregates(context, before):
+    """Estica e reposiciona os agregados pela razão da largura do pai, a partir do estado guardado."""
+    from ..aggregates import apply
     context.view_layer.update()
     for name, (old, positions) in before.items():
         parent = bpy.data.objects.get(name)
@@ -142,3 +128,32 @@ def _resize(context, el, width):
             if child.name in positions:
                 _stretch_aggregate(child, factor, *positions[child.name])
     context.view_layer.update()
+
+
+def resize(context, el, width):
+    """066 RF-012: largura e agregados voltam juntos se o novo corpo penetrar."""
+    if not can_resize(el) or not MIN_WIDTH <= width <= MAX_WIDTH:
+        return _resize(context, el, width)       # mantém a validação e as mensagens de domínio
+    from . import module_resize
+    if el.info.library == 'AUTHORED' or module_resize.handles(el.info):
+        # 080 D-04: módulo das 5 famílias vai direto à transação (já atômica, com rollback e sem veto por colisão).
+        before = _aggregate_state(el)
+        result = editing.set_dimension(context, el.info, 'width', width)
+        _resize_aggregates(context, before)
+        return result
+    from ..collision import guard
+    old = element_size.size(el)[0]
+    return guard.reconfigure(el.obj, lambda: _resize(context, el, width), lambda: _resize(context, el, old))
+
+
+def _resize(context, el, width):
+    """Muda a largura do elemento para `width` (m) e adapta os agregados; levanta ValueError se não der."""
+    if not can_resize(el):
+        raise ValueError(tr("Valor Inválido: este elemento não pode ser redimensionado por aqui."))
+    if not MIN_WIDTH <= width <= MAX_WIDTH:
+        raise ValueError(tr("Valor Inválido: a largura deve estar entre {} e {} m.").format(MIN_WIDTH, MAX_WIDTH))
+    # Esticado em X, os filhos acompanham a escala do pai; com largura própria, os agregados são adaptados aqui.
+    # `u`/`v` guardados antes: o gancho dos agregados ajusta a posição ao limite assim que o pai muda.
+    before = _aggregate_state(el)
+    _set_width(context, el, width)
+    _resize_aggregates(context, before)

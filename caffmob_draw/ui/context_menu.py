@@ -57,6 +57,19 @@ def _legacy_menu_hidden(context, obj):
     return library in gate.LEGACY_LIBRARIES
 
 
+class BTM_MT_ConvertToMenu(bpy.types.Menu):
+    """Submenu unificado 'Converter em:' (feature 021, T028; RF-12, RN-11)"""
+    bl_idname = "BTM_MT_ConvertToMenu"
+    bl_label = "Converter em"
+
+    def draw(self, context):
+        layout = self.layout
+        if hasattr(bpy.ops.caffmob, 'convert_to_drawer') and bpy.ops.caffmob.convert_to_drawer.poll():
+            layout.operator("caffmob.convert_to_drawer", text=tr("Gaveteiro"), icon='MESH_GRID')
+        if hasattr(bpy.ops.caffmob, 'armario_v2_gerar_do_modulo') and bpy.ops.caffmob.armario_v2_gerar_do_modulo.poll():
+            layout.operator("caffmob.armario_v2_gerar_do_modulo", text=tr("Armário (Construtor v2)"), icon='MESH_CUBE')
+
+
 def draw_context_menu(self, context):
     layout = self.layout
     obj = context.object
@@ -68,12 +81,24 @@ def draw_context_menu(self, context):
         layout.menu(menu_id)
         layout.separator()
     layout.operator_context = 'INVOKE_DEFAULT'
+
+    # Feature 021 (T026; RF-11, RN-10): reconhece parede rebaixada e exibe ação explícita "Restaurar Parede".
+    from ..selection import lowered_wall_core
+    if obj is not None and (lowered_wall_core.is_lowered_wall_proxy(obj) or obj.get(lowered_wall_core.LOWERED_PROP)):
+        layout.operator("caffmob.wall_lower", text=tr("Restaurar Parede"), icon='LOOP_BACK')
+        layout.separator()
+
     from .ops_resize import BTM_OT_ResizeWidth
     if BTM_OT_ResizeWidth.poll(context):
         draw_action(layout, 'RESIZE')
     actions = item_actions(context)
     for key, props in actions:
         draw_action(layout, key, **props)
+
+    # Feature 021 (T028; RF-12, RN-11): submenu "Converter em:" (Gaveteiro / Armário) no botão direito e toque longo.
+    if obj is not None and obj.type == 'MESH':
+        layout.menu(BTM_MT_ConvertToMenu.bl_idname, text=tr("Converter em"), icon='MOD_BUILD')
+
     draw_action(layout, 'INSERTION_PLANE')
     plane = getattr(context.window_manager, 'btm_insertion_plane', None)
     if plane is not None and plane.active:
@@ -85,8 +110,11 @@ def draw_context_menu(self, context):
 
 
 def register():
+    bpy.utils.register_class(BTM_MT_ConvertToMenu)
     bpy.types.VIEW3D_MT_object_context_menu.prepend(draw_context_menu)
 
 
 def unregister():
     bpy.types.VIEW3D_MT_object_context_menu.remove(draw_context_menu)
+    if BTM_MT_ConvertToMenu.is_registered:
+        bpy.utils.unregister_class(BTM_MT_ConvertToMenu)

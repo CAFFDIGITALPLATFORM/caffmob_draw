@@ -1,4 +1,4 @@
-<!-- GENERATED, DO NOT EDIT: regenerado por /reversa-debugger-graph em 2026-11-18T15:34:10+00:00 a partir de 3 bugs -->
+<!-- GENERATED, DO NOT EDIT: regenerado por /reversa-debugger-graph em 2026-11-24T06:45:20+00:00 a partir de 4 bugs -->
 
 # Grafo · selection
 
@@ -7,6 +7,7 @@ graph LR
   BUG_20261011_7DHT["#12 X/Delete numa parede faz os filhos não g…"]
   BUG_20261011_TUWO["#13 Apagar parede sem 'Apagar também os agre…"]
   BUG_20261011_CHWX["#125 Redimensionar janela BTM sempre falha co…"]
+  BUG_20261124_2C8T["#160 Redimensionar módulo das 5 famílias não…"]
   BUG_20261011_7DHT -->|related-to| BUG_20261011_TUWO
 ```
 

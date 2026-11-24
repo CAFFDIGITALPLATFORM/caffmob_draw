@@ -1,0 +1,33 @@
+diff --git a/caffmob_draw/openings/sync.py b/caffmob_draw/openings/sync.py
+index c02bf3e4..aa664ccc 100644
+--- a/caffmob_draw/openings/sync.py
++++ b/caffmob_draw/openings/sync.py
+@@ -78,7 +78,7 @@ def signature(cage):
+ def _parts(cage, kind):
+     width, wall, height = _dims(cage)
+     data = cage.btm_opening_real
+-    model = data.opening_model or None
++    model = data.opening_model or (window_core.SLIDING_WINDOW_MODELS[0] if kind == 'WINDOW' else None)
+     material = data.opening_material if data.opening_model or data.is_property_set('opening_material') else None
+     if kind == 'WINDOW':
+         return window_core.window_parts(width, height, wall, model=model, material=material)
+@@ -186,7 +186,9 @@ def sync(context, cage, force=False):
+                 finishes[(obj['btm_opening_role'], obj.get('btm_opening_index', -1))] = list(obj.data.materials)
+     clear(cage)
+     room_door_leaf.remove_leaves(cage)      # folha cinza da porta de ambiente (005) de arquivos antigos
+-    collection = cage.users_collection[0] if cage.users_collection else context.scene.collection
++    from ..data import layers
++    collection = layers.ensure_arquitetura(context.scene, 'OPENING')
++    layers.place(cage, collection, context.scene)
+     context.view_layer.update()
+     built = build.build(_parts(cage, kind), collection)
+     for (role, index), obj in built.items():
+@@ -220,7 +222,7 @@ def sync(context, cage, force=False):
+         _parent_keep(sash, frame)
+         sashes.append((index, sash))
+     context.view_layer.update()
+-    model = data.opening_model or None
++    model = data.opening_model or (window_core.SLIDING_WINDOW_MODELS[0] if kind == 'WINDOW' else None)
+     for index, sash in sashes:
+         if kind == 'WINDOW':
+             if window_core.is_sliding_window(model):

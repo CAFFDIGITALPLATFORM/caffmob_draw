@@ -1,4 +1,4 @@
-<!-- GENERATED, DO NOT EDIT: regenerado por /reversa-debugger-graph em 2026-11-18T15:34:10+00:00 a partir de 16 bugs -->
+<!-- GENERATED, DO NOT EDIT: regenerado por /reversa-debugger-graph em 2026-11-24T06:45:20+00:00 a partir de 17 bugs -->
 
 # Bugs × specs · editor-de-paredes
 
@@ -14,6 +14,7 @@
 | `_reversa_sdd/addenda/bug-BUG-20261007-VQ72-v001.md` | nenhum | nenhum | BUG-20261007-VQ72 |
 | `_reversa_sdd/addenda/bug-BUG-20261007-YIMY-v001.md` | nenhum | nenhum | BUG-20261007-YIMY |
 | `_reversa_sdd/addenda/bug-BUG-20261007-ZZUK-v001.md` | nenhum | nenhum | BUG-20261007-ZZUK |
+| `_reversa_sdd/addenda/bug-BUG-20261117-4MF7-v001.md` | nenhum | nenhum | BUG-20261124-5N6R |
 | `_reversa_sdd/addenda/bug-BUG-20261117-6KBC-v001.md` | nenhum | nenhum | BUG-20261117-6KBC |
 | `_reversa_sdd/addenda/bug-BUG-20261117-744U-v001.md` | nenhum | nenhum | BUG-20261117-744U |
 | `_reversa_sdd/addenda/bug-BUG-20261117-V4I3-v001.md` | nenhum | nenhum | BUG-20261117-V4I3 |
@@ -31,7 +32,7 @@
 | `_reversa_sdd/walls2d/requirements.md#RF-02` | nenhum | nenhum | BUG-20261117-6KBC |
 | `_reversa_sdd/walls2d/requirements.md#RF-03` | nenhum | nenhum | BUG-20261117-EELF |
 | `_reversa_sdd/walls2d/requirements.md#RF-05` | nenhum | nenhum | BUG-20261117-AKYJ |
-| `_reversa_sdd/walls2d/requirements.md#RF-08` | nenhum | nenhum | BUG-20261117-4MF7 |
+| `_reversa_sdd/walls2d/requirements.md#RF-08` | nenhum | nenhum | BUG-20261117-4MF7, BUG-20261124-5N6R |
 | `_reversa_sdd/walls2d/requirements.md#RF-13` | nenhum | nenhum | BUG-20261117-6OXN, BUG-20261117-744U, BUG-20261117-AKYJ, BUG-20261117-JXDJ, BUG-20261117-RP9Q, BUG-20261117-V4I3, BUG-20261118-PLNT |
 | `_reversa_sdd/walls2d/requirements.md#RN-25` | nenhum | nenhum | BUG-20261117-EELF |
 | `docs/usuario/editor-paredes-e-mover-sobre.md#1. Editor de Paredes (planta 2D)` | nenhum | nenhum | BUG-20261117-JXDJ |
@@ -39,6 +40,9 @@
 
 ## Adendos de bug vigentes
 
+- `_reversa_sdd/addenda/016-seletor-sobreposicao.md`
+- `_reversa_sdd/addenda/017-construtor-armario-v2.md`
+- `_reversa_sdd/addenda/021-plano-corte-camadas-gaveteiro.md`
 - `_reversa_sdd/addenda/066-reparo-do-addon-caffmob.md`
 - `_reversa_sdd/addenda/067-propriedades-por-selecao.md`
 - `_reversa_sdd/addenda/bug-BUG-20261006-KFAR-v001.md`
@@ -86,3 +90,4 @@
 - `_reversa_sdd/addenda/bug-BUG-20261117-RP9Q-v001.md`
 - `_reversa_sdd/addenda/bug-BUG-20261117-V4I3-v001.md`
 - `_reversa_sdd/addenda/bug-BUG-20261118-PLNT-v001.md`
+- `_reversa_sdd/addenda/bug-BUG-20261123-RW3G-v001.md`

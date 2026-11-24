@@ -495,7 +495,7 @@ def armario_v2_records(scene):
             component=str(parte.componente or part_roles.UNCLASSIFIED), length=length, width=width,
             thickness=float(parte.espessura_mm),
             edges_present=[bool(parte.fita_l1), bool(parte.fita_l2), bool(parte.fita_w1), bool(parte.fita_w2)],
-            grain=part_roles.grain_direction(parte.veio, parte.grain_angle), source="ARMARIO_V2",
+            grain=part_roles.grain_direction(parte.veio, getattr(parte, 'grain_angle', 0.0)), source="ARMARIO_V2",
             material=ARMARIO_V2_MATERIALS.get(str(parte.material or ''), ""), key=obj.name))
     return records
 

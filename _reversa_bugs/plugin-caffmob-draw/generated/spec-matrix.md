@@ -1,4 +1,4 @@
-<!-- GENERATED, DO NOT EDIT: regenerado por /reversa-debugger-graph em 2026-11-18T15:34:10+00:00 a partir de 6 bugs -->
+<!-- GENERATED, DO NOT EDIT: regenerado por /reversa-debugger-graph em 2026-11-24T06:45:20+00:00 a partir de 9 bugs -->
 
 # Bugs × specs · plugin-caffmob-draw
 
@@ -9,16 +9,19 @@
 | `_reversa_sdd/addenda/bug-BUG-20261007-FLZO-v001.md` | nenhum | nenhum | BUG-20261007-FLZO |
 | `_reversa_sdd/addenda/bug-BUG-20261007-FLZO-v002.md` | nenhum | nenhum | BUG-20261007-FLZO |
 | `_reversa_sdd/architecture.md` | nenhum | nenhum | BUG-20261006-NO4Q, BUG-20261006-QAVK, BUG-20261012-RCOU |
-| `_reversa_sdd/deployment.md` | nenhum | nenhum | BUG-20261006-SCVF |
+| `_reversa_sdd/deployment.md` | BUG-20261123-56YQ | nenhum | BUG-20261006-SCVF, BUG-20261123-RW3G |
 | `_reversa_sdd/hb_core/design.md` | nenhum | nenhum | BUG-20261012-WBKI |
 | `_reversa_sdd/hb_core/requirements.md` | nenhum | nenhum | BUG-20261006-NO4Q |
 | `_reversa_sdd/soul.md` | nenhum | nenhum | BUG-20261006-QAVK |
 | `_reversa_sdd/ui/requirements.md` | nenhum | nenhum | BUG-20261007-FLZO |
 | `_reversa_sdd/ui/requirements.md#R-01` | nenhum | nenhum | BUG-20261006-NO4Q, BUG-20261012-RCOU |
-| **spec-gap** | nenhum | nenhum | BUG-20261006-NO4Q, BUG-20261006-QAVK, BUG-20261007-FLZO, BUG-20261012-WBKI |
+| **spec-gap** | BUG-20261123-56YQ | nenhum | BUG-20261006-NO4Q, BUG-20261006-QAVK, BUG-20261007-FLZO, BUG-20261012-WBKI, BUG-20261123-RW3G, BUG-20261124-7K2M |
 
 ## Adendos de bug vigentes
 
+- `_reversa_sdd/addenda/016-seletor-sobreposicao.md`
+- `_reversa_sdd/addenda/017-construtor-armario-v2.md`
+- `_reversa_sdd/addenda/021-plano-corte-camadas-gaveteiro.md`
 - `_reversa_sdd/addenda/066-reparo-do-addon-caffmob.md`
 - `_reversa_sdd/addenda/067-propriedades-por-selecao.md`
 - `_reversa_sdd/addenda/bug-BUG-20261006-KFAR-v001.md`
@@ -66,3 +69,4 @@
 - `_reversa_sdd/addenda/bug-BUG-20261117-RP9Q-v001.md`
 - `_reversa_sdd/addenda/bug-BUG-20261117-V4I3-v001.md`
 - `_reversa_sdd/addenda/bug-BUG-20261118-PLNT-v001.md`
+- `_reversa_sdd/addenda/bug-BUG-20261123-RW3G-v001.md`

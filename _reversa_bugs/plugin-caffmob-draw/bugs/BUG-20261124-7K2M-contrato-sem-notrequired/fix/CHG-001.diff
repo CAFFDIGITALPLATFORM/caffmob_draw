@@ -1,0 +1,16 @@
+diff --git a/caffmob_draw/caffmob/v2/contrato.py b/caffmob_draw/caffmob/v2/contrato.py
+index 8a1d8a68..99016a9e 100644
+--- a/caffmob_draw/caffmob/v2/contrato.py
++++ b/caffmob_draw/caffmob/v2/contrato.py
+@@ -1,5 +1,10 @@
+ """Tipos de transporte e limites do contrato fechado shared/studio/tipos.ts."""
+-from typing import Literal, NotRequired, TypedDict
++from typing import Literal, TypedDict
++
++try:                                        # Python 3.10 não traz NotRequired no typing
++    from typing import NotRequired
++except ImportError:                         # pragma: no cover - depende da versão do Python
++    from typing_extensions import NotRequired
+
+ SCHEMA_AMBIENTE = SCHEMA_STUDIO = "caffmob.ambiente/v2"
+ SCHEMA_CONFIGURACAO_STUDIO = "caffmob.studio-config/v1"

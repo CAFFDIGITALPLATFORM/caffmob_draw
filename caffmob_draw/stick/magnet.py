@@ -47,11 +47,17 @@ def find(item, distance, depsgraph=None):
         if obj in own or obj.get('IS_CUTTING_OBJ') or obj.get('IS_2D_ANNOTATION'):
             start = location + direction * 0.0001
             continue
-        if (location - origin).dot(direction) > distance or normal.dot(direction) > _FACING:
+        hit_dist = (location - origin).dot(direction)
+        if hit_dist > distance or normal.dot(direction) > _FACING:
             return None
         host = link.host_for(obj)
         kind = classify.classify(host).kind if host is not None else classify.OTHER
         if kind in (classify.FLOOR, classify.CEILING):
+            return None
+        from . import release_guard_core
+        st = getattr(item, 'btm_stick', None)
+        released = getattr(st, 'released_host_name', '') if st is not None else ''
+        if host is not None and release_guard_core.should_suppress_magnet(released, host.name, hit_dist, distance):
             return None
         return obj, location, normal, _polygon(obj, index, depsgraph)
     return None

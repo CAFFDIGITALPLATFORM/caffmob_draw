@@ -141,12 +141,17 @@ def link_in_place(item, host, face):
 
 
 def release(item):
-    """Desgruda: pai anterior, mesma posição no mundo, sem vínculo (RN-09)."""
+    """Desgruda: pai anterior, mesma posição no mundo, sem vínculo (RN-09; feature 021 RN-08)."""
     st = item.btm_stick
     if not st.is_stuck:
         return False
     world = item.matrix_world.copy()
+    prev_host = st.host
     parent = st.orig_parent
+    if prev_host is not None:
+        apply.write(item, 'released_host_name', prev_host.name)
+        if prev_host.get('IS_WALL_BP') or classify.classify(prev_host).kind == classify.WALL:
+            apply.write(item, 'opt_out', True)
     if parent is not None and (parent.get('IS_WALL_BP') or classify.classify(parent).kind == classify.WALL):
         apply.write(item, 'opt_out', True)        # desgrudar da parede é durável (questions.md, pergunta 38)
     if parent is not None and parent not in item.children_recursive and parent != item:

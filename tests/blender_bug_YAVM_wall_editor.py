@@ -70,7 +70,7 @@ def answer_no_survives_ok():
 
 def release_on_bar():
     view = View2D((0, 0, 800, 600), scale=100.0)
-    bar, _lupa = ops_editor._toolbar_rects(view)
+    bar, _lupa, _mover = ops_editor._toolbar_rects(view)
     on_bar = (bar[0] + bar[2] / 2, bar[1] + bar[3] / 2)
     release = types.SimpleNamespace(type='LEFTMOUSE', value='RELEASE')
     s = types.SimpleNamespace(zoom_window=(100.0, 100.0), zoom_box_end=(300.0, 400.0))

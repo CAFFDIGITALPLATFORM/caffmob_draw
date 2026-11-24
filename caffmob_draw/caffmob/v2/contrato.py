@@ -1,5 +1,10 @@
 """Tipos de transporte e limites do contrato fechado shared/studio/tipos.ts."""
-from typing import Literal, NotRequired, TypedDict
+from typing import Literal, TypedDict
+
+try:                                        # Python 3.10 não traz NotRequired no typing
+    from typing import NotRequired
+except ImportError:                         # pragma: no cover - depende da versão do Python
+    from typing_extensions import NotRequired
 
 SCHEMA_AMBIENTE = SCHEMA_STUDIO = "caffmob.ambiente/v2"
 SCHEMA_CONFIGURACAO_STUDIO = "caffmob.studio-config/v1"

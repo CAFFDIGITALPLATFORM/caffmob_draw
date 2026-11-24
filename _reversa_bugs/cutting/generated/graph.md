@@ -1,17 +1,19 @@
-<!-- GENERATED, DO NOT EDIT: regenerado por /reversa-debugger-graph em 2026-11-18T15:34:10+00:00 a partir de 1 bugs -->
+<!-- GENERATED, DO NOT EDIT: regenerado por /reversa-debugger-graph em 2026-11-24T06:45:20+00:00 a partir de 2 bugs -->
 
 # Grafo · cutting
 
 ```mermaid
 graph LR
   BUG_20261012_YUDY["#138 Shift+D num módulo repete o btm_uid e as…"]
+  BUG_20261124_3Q9X["#157 Plano de corte quebra em parte sem grain…"]
   BUG_20261012_YUDY -.->|related-to| BUG_20261011_SKDL
 ```
 
 ## Clusters
 
+- `caffmob_draw/cutting/part_sources.py`: 2 bugs (BUG-20261012-YUDY, BUG-20261124-3Q9X)
 
-Leitura: 1 bugs convergem em `caffmob_draw/cutting/part_sources.py`, o maior ponto de convergência do contexto. Nenhum bug aberto neste contexto: o cluster mostra onde as correções se acumularam.
+Leitura: 2 bugs convergem em `caffmob_draw/cutting/part_sources.py`, o maior ponto de convergência do contexto. Nenhum bug aberto neste contexto: o cluster mostra onde as correções se acumularam.
 
 ## Impact score
 

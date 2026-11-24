@@ -13,8 +13,8 @@ O `unregister` desfaz tudo (princípio VII): operadores, handlers, timers e o su
 
 
 def _modules():
-    from . import grain_migration, handlers, ops_account, ops_apply, ops_finish_drop, ops_grain, ops_pick, props
-    return (props, ops_account, ops_apply, ops_finish_drop, ops_grain, ops_pick, grain_migration, handlers)
+    from . import grain_migration, handlers, ops_account, ops_apply, ops_finish_drop, ops_grain, ops_pick, ops_sync_missing, props
+    return (props, ops_account, ops_apply, ops_finish_drop, ops_grain, ops_pick, ops_sync_missing, grain_migration, handlers)
 
 
 def register():

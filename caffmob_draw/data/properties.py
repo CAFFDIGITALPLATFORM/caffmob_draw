@@ -763,6 +763,53 @@ class BTM_PG_SceneSettings(bpy.types.PropertyGroup):
                      "desligado, a edição fica livre. Não muda as medidas laterais"),
         default=True
     )  # type: ignore
+    floor_thickness: bpy.props.FloatProperty(
+        name="Espessura do Piso",
+        description="Espessura do piso gerado pelo addon",
+        default=0.15,
+        min=0.005,
+        max=1.0,
+        subtype='DISTANCE',
+        unit='LENGTH'
+    )  # type: ignore
+    floor_thickness_direction: bpy.props.EnumProperty(
+        name="Direção da Espessura do Piso",
+        description="Define se a espessura do piso cresce para baixo (−Z) ou para cima (+Z) a partir do nível de referência",
+        items=[
+            ('DOWN', "Para baixo", "Topo do piso no nível Z de referência; espessura cresce para −Z"),
+            ('UP', "Para cima", "Base do piso no nível Z de referência; espessura cresce para +Z"),
+        ],
+        default='DOWN'
+    )  # type: ignore
+    default_wall_thickness: bpy.props.FloatProperty(
+        name="Espessura Padrão de Parede",
+        description="Espessura padrão usada pelo Editor de Parede antes de desenhar qualquer trecho",
+        default=0.15,
+        min=0.01,
+        max=2.0,
+        subtype='DISTANCE',
+        unit='LENGTH'
+    )  # type: ignore
+    cutting_engine: bpy.props.EnumProperty(
+        name="Motor de Plano de Corte",
+        description="Algoritmo de otimização de corte de chapas",
+        items=[
+            ('OPCUT', "OpCut (Guilhotinado Offline)", "Otimizador guilhotinado 2D compatível com OpCut"),
+            ('LEGACY_SHELF', "Clássico (Prateleiras)", "Algoritmo legado Next-Fit Decreasing em prateleiras"),
+        ],
+        default='OPCUT'
+    )  # type: ignore
+    cutting_group_by_module: bpy.props.BoolProperty(
+        name="Agrupar Peças por Módulo",
+        description="Agrupa a lista de peças hierarquicamente por módulo proprietário",
+        default=True
+    )  # type: ignore
+    cutting_preview_sheet_index: bpy.props.IntProperty(
+        name="Chapa da Prévia",
+        description="Índice da chapa exibida no visualizador interno do plano de corte",
+        default=0,
+        min=0
+    )  # type: ignore
     show_side_dimensions: bpy.props.BoolProperty(
         name="Medidas laterais",
         description=("Mostra as duas cotas laterais do item ativo, pela vista: da superfície dele ao primeiro "

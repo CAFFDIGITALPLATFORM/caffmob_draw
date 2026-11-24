@@ -26,7 +26,9 @@ def check(name, ok, detail=""):
 real = op.bpy
 try:
     # Contexto de timer, MCP ou salvamento: tem a cena, mas não `active_object`.
-    op.bpy = types.SimpleNamespace(context=types.SimpleNamespace(scene=bpy.context.scene))
+    op.bpy = types.SimpleNamespace(context=types.SimpleNamespace(
+        scene=bpy.context.scene, view_layer=bpy.context.view_layer,
+        window_manager=bpy.context.window_manager))
     try:
         value = op._cota_getter('afastamento')(None)
         check("reprodução: getter sem objeto ativo devolve 0", value == 0.0, value)

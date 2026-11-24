@@ -1,4 +1,4 @@
-<!-- GENERATED, DO NOT EDIT: regenerado por /reversa-debugger-graph em 2026-11-18T15:34:10+00:00 a partir de 16 bugs -->
+<!-- GENERATED, DO NOT EDIT: regenerado por /reversa-debugger-graph em 2026-11-24T06:45:20+00:00 a partir de 17 bugs -->
 
 # Grafo · editor-de-paredes
 
@@ -20,6 +20,7 @@ graph LR
   BUG_20261117_4MF7["#151 Sem coleção Arquitetura com subcoleção P…"]
   BUG_20261117_RP9Q["#152 Menu lateral de paredes com estilo antig…"]
   BUG_20261118_PLNT["#153 Planta baixa derruba o desenho do editor…"]
+  BUG_20261124_5N6R["#159 Plano vazio recria Arquitetura com Piso…"]
   BUG_20261006_KFAR -->|caused-by| BUG_20261006_SCVF
   BUG_20261007_A2G7 -.->|related-to| BUG_20261007_YIMY
   BUG_20261007_ZZUK -.->|related-to| BUG_20261007_VQ72
@@ -30,6 +31,7 @@ graph LR
   BUG_20261117_V4I3 -->|related-to| BUG_20261117_EELF
   BUG_20261117_4MF7 -.->|related-to| BUG_20261117_JXDJ
   BUG_20261118_PLNT -->|regression-of| BUG_20261117_JXDJ
+  BUG_20261124_5N6R -->|regression-of| BUG_20261117_4MF7
 ```
 
 ## Clusters
@@ -38,7 +40,7 @@ graph LR
 - `caffmob_draw/walls2d/classico_v2.py`: 8 bugs (BUG-20261117-AKYJ, BUG-20261117-EELF, BUG-20261117-6OXN, BUG-20261117-JXDJ, BUG-20261117-744U, BUG-20261117-V4I3, BUG-20261117-RP9Q, BUG-20261118-PLNT)
 - `caffmob_draw/walls2d/panels.py`: 6 bugs (BUG-20261007-VQ72, BUG-20261117-AKYJ, BUG-20261117-EELF, BUG-20261117-744U, BUG-20261117-V4I3, BUG-20261117-RP9Q)
 - `caffmob_draw/walls2d/props.py`: 6 bugs (BUG-20261007-ZZUK, BUG-20261007-VQ72, BUG-20261117-AKYJ, BUG-20261117-EELF, BUG-20261117-6OXN, BUG-20261117-V4I3)
-- `caffmob_draw/walls2d/apply.py`: 3 bugs (BUG-20261007-A2G7, BUG-20261007-YIMY, BUG-20261117-4MF7)
+- `caffmob_draw/walls2d/apply.py`: 4 bugs (BUG-20261007-A2G7, BUG-20261007-YIMY, BUG-20261117-4MF7, BUG-20261124-5N6R)
 - `caffmob_draw/walls2d/model.py`: 3 bugs (BUG-20261007-YIMY, BUG-20261007-ZZUK, BUG-20261117-EELF)
 - `caffmob_draw/walls2d/scene_io.py`: 3 bugs (BUG-20261007-TBY3, BUG-20261117-JXDJ, BUG-20261118-PLNT)
 - `caffmob_draw/data/properties.py`: 2 bugs (BUG-20261007-A2G7, BUG-20261007-TBY3)
@@ -53,5 +55,6 @@ Heurística de triagem (não substitui priority/severity): causados ×3, bloquea
 | # | ID | score |
 |---|---|---|
 | 148 | BUG-20261117-JXDJ | 6 |
+| 151 | BUG-20261117-4MF7 | 4 |
 | 6 | BUG-20261007-A2G7 | 1 |
 | 146 | BUG-20261117-EELF | 1 |
