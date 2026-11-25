@@ -16,7 +16,7 @@ sys.path.insert(0, str(ROOT / "tests"))
 sys.path.insert(0, str(ROOT))
 import _blender_env  # noqa: F401,E402  (registra o add-on)
 
-from caffmob_draw.armario_v2 import build, fila, ops, selecao, window  # noqa: E402
+from caffmob_draw.armario_v2 import build, fila, menu, ops, selecao, window  # noqa: E402
 
 PASS, FAIL = [], []
 
@@ -130,6 +130,57 @@ check("instantâneo guarda os ajustes", '"ajustes"' in snap and len(root.btm_arm
       len(root.btm_armario.ajustes))
 ops.aplicar_snapshot(root, snap)
 check("instantâneo restaura os ajustes", len(root.btm_armario.ajustes) >= 1, len(root.btm_armario.ajustes))
+
+# --- menu de contexto: abre a janela do construtor ---------------------------------------------------------------
+class _LayoutFalso:
+    def __init__(self):
+        self.itens = []
+
+    def separator(self):
+        pass
+
+    def operator(self, idname, **_kw):
+        self.itens.append(idname)
+
+
+bpy.context.view_layer.objects.active = root
+layout_falso = _LayoutFalso()
+menu.desenhar_menu(layout_falso, bpy.context)
+check("menu de contexto abre a janela do construtor", "caffmob.armario_v2_window_open" in layout_falso.itens,
+      layout_falso.itens)
+
+# --- T020: pivô do espelho em peça fora do centro -----------------------------------------------------------------
+bpy.context.view_layer.objects.active = root
+root.select_set(True)
+bpy.ops.caffmob.armario_v2_criar_bloco_gavetas()
+fora = next((o for o in root.children if o.btm_armario_parte.ferragem != 'NENHUMA'
+             and abs(o.location.x) > 1e-6 and o.scale.x > 0.0), None)
+if fora is None:                                  # sem ferragem com deslocamento: emula porta fora do centro
+    fora = pecas(root)[0]
+    fora.location.x = 120.0
+base_x, nome_fora = fora.location.x, fora.name
+window.definir_selecao(s, [{"nome": nome_fora, "vista": "FRONTAL"}])
+window.aplicar_lote(root, s, "ESPELHAR")
+check("espelho fora do centro troca de lado", abs(fora.location.x + base_x) < 1e-6,
+      f"{base_x} -> {fora.location.x}")
+check("espelho fora do centro inverte a geometria", fora.scale.x < 0.0, fora.scale.x)
+bpy.context.view_layer.objects.active = root
+root.select_set(True)
+bpy.ops.caffmob.armario_v2_gerar()
+novo_fora = bpy.data.objects.get(nome_fora)
+check("Gerar mantém o pivô do espelho", novo_fora is not None and abs(novo_fora.location.x + base_x) < 1e-6,
+      None if novo_fora is None else novo_fora.location.x)
+
+# --- T020: limpar ajustes manuais ---------------------------------------------------------------------------------
+ajustes_antes = len(root.btm_armario.ajustes)
+check("contador de ajustes manuais", ajustes_antes >= 2, ajustes_antes)
+bpy.ops.caffmob.armario_v2_window_limpar_ajustes()
+check("limpar ajustes zera a coleção", len(root.btm_armario.ajustes) == 0, len(root.btm_armario.ajustes))
+restauradas = {o.name for o in pecas(root)}
+check("Gerar volta a criar as peças apagadas", all(nome in restauradas for nome in apagados), apagados)
+check("peças voltam sem deslocamento manual",
+      all(abs(o.location.x) < 1e-6 for o in pecas(root) if o.btm_armario_parte.ferragem == 'NENHUMA'),
+      [(o.name, o.location.x) for o in pecas(root)][:3])
 
 # --- T021: memória por cena ---------------------------------------------------------------------------------------
 padrao = window.ler_memoria(scene)

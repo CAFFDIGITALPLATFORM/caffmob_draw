@@ -680,11 +680,12 @@ def gerar(root, spec, divisoes=(), lista_gavetas=(), lista_internos=()):
                 bpy.data.objects.remove(objeto, do_unlink=True)
                 continue
             if ajuste is not None:
+                if ajuste.espelho_x:                 # reflexo em torno de x = 0, não do pivô do objeto
+                    objeto.location.x = -objeto.location.x
+                    objeto.scale.x = -1.0
                 objeto.location.x += ajuste.dx
                 objeto.location.y += ajuste.dy
                 objeto.location.z += ajuste.dz
-                if ajuste.espelho_x:
-                    objeto.scale.x = -1.0
             objetos.append(objeto)
     if getattr(root, 'btm_armario', None) is not None:
         root.btm_armario.gerado = True

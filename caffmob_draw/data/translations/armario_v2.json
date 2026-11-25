@@ -59,6 +59,10 @@
   "en_US": "Open cabinet v2",
   "pt_BR": "Abrir armário v2"
  },
+ "Abrir janela do construtor": {
+  "en_US": "Open builder window",
+  "pt_BR": "Abrir janela do construtor"
+ },
  "Acumular": {
   "en_US": "Accumulate",
   "pt_BR": "Acumular"
@@ -66,6 +70,10 @@
  "Afastador": {
   "en_US": "Spacer",
   "pt_BR": "Afastador"
+ },
+ "Ajustes manuais: {}": {
+  "en_US": "Manual adjustments: {}",
+  "pt_BR": "Ajustes manuais: {}"
  },
  "Alterações descartadas: armário voltou ao estado da abertura": {
   "en_US": "Changes discarded: cabinet restored to the opening state",
@@ -387,6 +395,10 @@
   "en_US": "Cabinet thicknesses",
   "pt_BR": "Espessuras do armário"
  },
+ "Esquece os ajustes manuais do lote e refaz as peças a partir do spec (T020)": {
+  "en_US": "Forgets the batch manual adjustments and rebuilds the parts from the spec (T020)",
+  "pt_BR": "Esquece os ajustes manuais do lote e refaz as peças a partir do spec (T020)"
+ },
  "Estado aplicado: este vira o ponto de retorno do Cancelar": {
   "en_US": "State applied: this becomes the Cancel restore point",
   "pt_BR": "Estado aplicado: este vira o ponto de retorno do Cancelar"
@@ -595,6 +607,14 @@
   "en_US": "Clear",
   "pt_BR": "Limpar"
  },
+ "Limpar Ajustes": {
+  "en_US": "Clear Adjustments",
+  "pt_BR": "Limpar Ajustes"
+ },
+ "Limpar ajustes manuais": {
+  "en_US": "Clear manual adjustments",
+  "pt_BR": "Limpar ajustes manuais"
+ },
  "Limpar armário": {
   "en_US": "Clear cabinet",
   "pt_BR": "Limpar armário"
@@ -682,6 +702,10 @@
  "Múltipla": {
   "en_US": "Multiple",
   "pt_BR": "Múltipla"
+ },
+ "Nenhum ajuste manual para limpar": {
+  "en_US": "No manual adjustment to clear",
+  "pt_BR": "Nenhum ajuste manual para limpar"
  },
  "Nenhum armário v2 na cena": {
   "en_US": "No v2 cabinet in the scene",
@@ -1006,6 +1030,10 @@
  "sem vão": {
   "en_US": "no bay",
   "pt_BR": "sem vão"
+ },
+ "{} ajuste(s) manual(is) removido(s)": {
+  "en_US": "{} manual adjustment(s) removed",
+  "pt_BR": "{} ajuste(s) manual(is) removido(s)"
  },
  "{} fora da faixa: {} mm (use {}–{} mm)": {
   "en_US": "{} is out of range: {} mm (use {}–{} mm)",

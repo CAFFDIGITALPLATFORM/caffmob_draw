@@ -435,6 +435,13 @@ class BTM_PT_ArmarioV2WindowFooter(bpy.types.Panel):
         s = win_mod.sessao()
         suja = s is not None and s.suja
         bloqueado = bool(_erros(raiz))
+        ajustes = len(raiz.btm_armario.ajustes)
+
+        if ajustes:
+            linha = layout.row(align=True)
+            linha.label(text=tr("Ajustes manuais: {}").format(ajustes), icon="MOD_MIRROR")
+            linha.operator("caffmob.armario_v2_window_limpar_ajustes", text="Limpar Ajustes",
+                           icon="TRASH")
 
         col = layout.column(align=True)
         col.scale_y = 1.3

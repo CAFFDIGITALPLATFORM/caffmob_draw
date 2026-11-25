@@ -41,6 +41,8 @@ plataforma declarada e a verificação que só uma sessão gráfica fecha.
 | A013 | MEDIUM | Cobertura | NFR de desempenho sem medição | **Resolvido** — abertura **127,5 ms** (sonda gráfica), preview **0,4 ms** máx. em 54 peças/30 passadas, assert de 200 ms no ensaio |
 | A014 | LOW | Cobertura | Evento de mouse real e ensaios de GUI não exercitados | **Aberto por ambiente** — o núcleo do clique/Shift é provado; o caminho `modal → LEFTMOUSE` e o desenho das abas exigem sessão gráfica |
 | A016 | LOW | Cobertura | O lote mexia só nos objetos: o Gerar recriava as chapas do spec e descartava mover/espelhar/apagar sem aviso | **Resolvido** — `Armário v2.ajustes` (uid + papel + nome) é gravado no lote, entra no instantâneo e o `build.gerar` reaplica; ensaio: mover 10 mm + espelhar + 2 apagadas sobrevivem ao Gerar |
+| A016b | LOW | Consistência | O espelho do lote usava o pivô do objeto (`scale.x = −1`), então porta/ferragem fora do centro espelhava no lugar | **Resolvido** — `loc.x = −loc.x` + `scale.x = −scale.x` = reflexo em torno de x = 0; o Gerar reproduz; ensaio com corrediça em 0,482 → −0,482 |
+| A017 | MEDIUM | Usabilidade | O menu de botão direito do armário não oferecia abrir o editor (só peça animável ou divisão desenhava itens; a raiz não desenhava nada) | **Resolvido** — item "Abrir janela do construtor" (`caffmob.armario_v2_window_open`) sempre que houver armário v2 sob a seleção; ensaio com layout falso |
 | A015 | MEDIUM | Consistência | RN-07 pede restaurar **tamanho** da janela; `Window.width/height` são readonly no Blender 5.2 (`docs/rag/.../bpy.types.Window.md#bpy.types.Window.width`) e `area_dupli` não recebe tamanho | **Aberto por plataforma** — a aba é restaurada e o tamanho fica registrado na cena; reaplicar o tamanho não é possível por script. Precisa de decisão do titular: aceitar aba+registro ou desenhar a janela numa camada própria |
 
 ## 3. Impacto e direção (o que segue aberto)
@@ -62,7 +64,14 @@ uma das 7 abas e conferir o chrome. O que dá para provar headless já está pro
 - Seleção: clique simples, vazio limpa, Shift acumula e alterna; lote move 10 mm, espelha o eixo X, apaga as duas peças.
 - Memória: cena sem histórico abre em Estrutura; aba gravada volta ao reabrir.
 - Desempenho: abertura 127,5 ms (< 2 s) e preview 0,4 ms (< 200 ms) com 54 peças.
-- Lote persistente: mover/espelhar/apagar sobrevivem ao Gerar (28/28 no ensaio de fase 7); o instantâneo guarda e restaura a coleção de ajustes.
+- Lote persistente: mover/espelhar/apagar sobrevivem ao Gerar (36/36 no ensaio de fase 7); o instantâneo guarda e restaura a coleção de ajustes; Limpar ajustes zera e o Gerar recria as apagadas.
+
+### Pendências de produto levantadas no pedido de 2026-11-25 (não implementadas; exigem ciclo de requisitos)
+
+- **Cor padrão e textura no Solid/Preview:** o armário nasce com cor de objeto e o Solid não mostra a textura. Precisa decidir fonte de material por peça, `color_type` e o que o Preview usa.
+- **UV por face (caixa externa/interna, fita de borda) com o mesmo mapa em todos os modos:** é trabalho de pipeline de material + UV, não um ajuste de janela.
+- **Preferências recomendadas do add-on:** "Cor por objeto" → "Textura", com as opções "Somente textura" e "Textura com linhas", e sem esconder Cursos 3D.
+- **Menu de toque (pressão longa):** o gancho é o mesmo `VIEW3D_MT_object_context_menu`; agora há item de abertura, mas o gesto de toque só se prova em sessão gráfica com tela sensível.
 
 **Consistência**
 - `actions.md` (24 ações) bate com as linhas da tabela; T019–T024 têm ensaio correspondente.

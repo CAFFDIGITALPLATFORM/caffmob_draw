@@ -288,6 +288,37 @@ class BTM_OT_ArmarioV2WindowModal(bpy.types.Operator):
         return {'PASS_THROUGH'}
 
 
+class BTM_OT_ArmarioV2WindowLimparAjustes(_WindowOperator, bpy.types.Operator):
+    """Esquece os ajustes manuais do lote e refaz as peças a partir do spec (T020)"""
+    bl_idname = "caffmob.armario_v2_window_limpar_ajustes"
+    bl_label = "Limpar ajustes manuais"
+
+    def execute(self, context):
+        s = win_mod.sessao()
+        root = s.armario_root if s is not None else None
+        if root is None:
+            return {'CANCELLED'}
+        quantos = len(root.btm_armario.ajustes)
+        if not quantos:
+            self.report({'INFO'}, "Nenhum ajuste manual para limpar")
+            return {'CANCELLED'}
+        while len(root.btm_armario.ajustes):
+            root.btm_armario.ajustes.remove(0)
+        s.selecionados = []
+        s.selecionado = None
+        s.suja = True
+        if root.btm_armario.gerado:
+            gerou, avisos = ops_v2.gerar_armario(root, context)
+            self._avisar(avisos)
+            if not gerou:
+                return {'CANCELLED'}
+        _janela, area, _region = win_mod._area_da_sessao()
+        if area is not None:
+            area.tag_redraw()
+        self.report({'INFO'}, tr("{} ajuste(s) manual(is) removido(s)").format(quantos))
+        return {'FINISHED'}
+
+
 class BTM_OT_ArmarioV2WindowToggle(bpy.types.Operator):
     """Liga/desliga Cotas ou Mostrar Portas no preview da janela"""
     bl_idname = "caffmob.armario_v2_window_toggle"
@@ -394,6 +425,7 @@ classes = (
     BTM_OT_ArmarioV2WindowAba,
     BTM_OT_ArmarioV2WindowSelecionar,
     BTM_OT_ArmarioV2WindowLote,
+    BTM_OT_ArmarioV2WindowLimparAjustes,
     BTM_OT_ArmarioV2WindowPedido,
     BTM_OT_ArmarioV2WindowToggle,
     BTM_OT_ArmarioV2WindowAplicar,

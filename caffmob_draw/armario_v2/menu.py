@@ -145,6 +145,8 @@ def desenhar_menu(layout, context):
     raiz, peca = _alvo(context)
     if raiz is None or peca is None:
         return
+    layout.separator()
+    layout.operator("caffmob.armario_v2_window_open", text=tr("Abrir janela do construtor"), icon='WINDOW')
     if anim.animavel(peca):
         aberto = anim.estado(peca)
         layout.separator()

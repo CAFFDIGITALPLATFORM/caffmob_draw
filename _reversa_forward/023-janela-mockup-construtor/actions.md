@@ -100,3 +100,5 @@ Não use isso para corrigir ações, edits manuais ficam fora desse arquivo, vã
 | 2026-11-25 | T018 fechada (paridade híbrida) e Fase 7 aberta com o escopo decidido no clarify (T019–T024) | reversa |
 | 2026-11-25 | Fase 7 executada: T019–T024 `[X]`; T021 com a limitação de plataforma no tamanho da janela | reversa |
 | 2026-11-25 | T020 reforçada: edições em lote passam a sobreviver ao Gerar (coleção `ajustes` + reaplicação no `build.gerar`) | reversa |
+| 2026-11-25 | T020: pivô do espelho no centro do módulo (porta/ferragem fora do centro); contador e ação "Limpar ajustes manuais" com regeneração | reversa |
+| 2026-11-25 | T024: menu de contexto ganhou "Abrir janela do construtor" no armário (antes só peça animável/divisão desenhava itens) | reversa |

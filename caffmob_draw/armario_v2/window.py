@@ -256,7 +256,10 @@ def aplicar_lote(root, s, acao, delta=DELTA_LOTE):
                 ajuste.removida = False
                 setattr(ajuste, campo, getattr(ajuste, campo) + passo)
     elif acao == 'ESPELHAR':
+        # Reflexo em torno do centro do módulo (x = 0), não do pivô do objeto: peças fora do centro (portas,
+        # ferragens com deslocamento) precisam trocar de lado, e isso é loc.x = −loc.x com scale.x = −scale.x.
         for obj in alvos:
+            obj.location.x = -obj.location.x
             obj.scale.x *= -1.0
             ajuste = _ajuste_de(root, obj)
             if ajuste is not None:
