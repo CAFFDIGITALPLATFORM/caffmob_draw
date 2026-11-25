@@ -10,8 +10,8 @@ from caffmob_draw.library_panel import categories_core as cc
 class CategoriesTest(unittest.TestCase):
     def test_fixas_em_ordem(self):
         names = [c.name for c in cc.all_categories([])]
-        self.assertEqual(names, ["Cozinha", "Banheiro", "Sala", "Home office"])
-        self.assertEqual([c.line for c in cc.FIXED], ['COZ', 'BAN', 'SAL', 'ESC'])
+        self.assertEqual(names, ["Cozinha", "Dormitório", "Banheiro", "Sala", "Home office"])
+        self.assertEqual([c.line for c in cc.FIXED], ['COZ', 'DOR', 'BAN', 'SAL', 'ESC'])
         user = [cc.Category("Lavanderia", 'DOR', False)]
         self.assertEqual([c.name for c in cc.all_categories(user)][-1], "Lavanderia")
 

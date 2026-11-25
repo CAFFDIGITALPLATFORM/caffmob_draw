@@ -18,6 +18,7 @@ LINE_LABELS = {'COZ': N_("Cozinha"), 'DOR': N_("Dormitório"), 'BAN': N_("Banhei
                'ESC': N_("Escritório")}
 FIXED = (
     Category("Cozinha", 'COZ', True),
+    Category("Dormitório", 'DOR', True),
     Category("Banheiro", 'BAN', True),
     Category("Sala", 'SAL', True),
     Category("Home office", 'ESC', True),

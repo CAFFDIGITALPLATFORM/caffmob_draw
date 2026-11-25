@@ -163,6 +163,38 @@
   "pt_BR": "Banheiro",
   "en_US": "Bathroom"
  },
+ "Dormitório": {
+  "pt_BR": "Dormitório",
+  "en_US": "Bedroom"
+ },
+ "Roupeiro 2 portas": {
+  "pt_BR": "Roupeiro 2 portas",
+  "en_US": "Wardrobe 2 doors"
+ },
+ "Cômoda 4 gavetas": {
+  "pt_BR": "Cômoda 4 gavetas",
+  "en_US": "Chest of drawers 4 drawers"
+ },
+ "Gabinete de banheiro": {
+  "pt_BR": "Gabinete de banheiro",
+  "en_US": "Bathroom vanity"
+ },
+ "Espelheira de banheiro": {
+  "pt_BR": "Espelheira de banheiro",
+  "en_US": "Bathroom wall cabinet"
+ },
+ "Buffet de sala": {
+  "pt_BR": "Buffet de sala",
+  "en_US": "Living room buffet"
+ },
+ "Estante de sala": {
+  "pt_BR": "Estante de sala",
+  "en_US": "Living room bookcase"
+ },
+ "Armário de arquivo": {
+  "pt_BR": "Armário de arquivo",
+  "en_US": "Filing cabinet"
+ },
  "Base passante": {
   "pt_BR": "Base passante",
   "en_US": "Full-width bottom"

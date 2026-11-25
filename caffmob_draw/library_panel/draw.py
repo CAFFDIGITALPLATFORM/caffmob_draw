@@ -276,12 +276,14 @@ def block_entries(state):
         found = categories.find(name)
         line = found.line if found is not None else categories_core.DEFAULT_LINE
         models, _warnings = models_core.load_default()
+        models = models_core.by_environment(models, line)      # 032: cada ambiente com o seu acervo
         for m in models:
             width, height, z = _model_size(line, m.cabinet_type)
             entries.append({"id": "BLK:MODEL:" + m.id, "name": tr(m.label), "kind": 'MODEL', "model": m.id, "line": line,
                             "thumb_file": "", "cabinet_type": m.cabinet_type, "door_swing": m.door_swing,
                             "shelves": m.shelves, "size_mm": (m.width_mm or width, height, z)})
         presets, _pw = models_core.load_presets()
+        presets = models_core.by_environment(presets, line)
         for m in presets:
             width, height, z = _model_size(line, m.cabinet_type)
             entries.append({"id": "BLK:PRESET:" + m.id, "name": tr(m.label), "kind": 'PRESET', "model": m.id,

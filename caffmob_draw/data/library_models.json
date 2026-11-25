@@ -1,23 +1,30 @@
 {
   "schema-version": 2,
   "models": [
-    {"id": "balcao_1p", "label": "Balcão 1 porta", "cabinet_type": "BASE", "width_mm": 450, "door_swing": "LEFT", "shelves": 1, "structure_id": "coz_inferior_divisoria"},
-    {"id": "balcao_2p", "label": "Balcão 2 portas", "cabinet_type": "BASE", "width_mm": 800, "door_swing": "DOUBLE", "shelves": 1, "structure_id": "coz_inferior_divisoria"},
-    {"id": "aereo_1p", "label": "Aéreo 1 porta", "cabinet_type": "WALL", "width_mm": 450, "door_swing": "LEFT", "shelves": 1, "structure_id": "coz_superior_divisoria"},
-    {"id": "aereo_2p", "label": "Aéreo 2 portas", "cabinet_type": "WALL", "width_mm": 800, "door_swing": "DOUBLE", "shelves": 1, "structure_id": "coz_superior_divisoria"},
-    {"id": "torre", "label": "Torre", "cabinet_type": "TALL", "width_mm": 600, "door_swing": "DOUBLE", "shelves": 4, "structure_id": "coz_torre_eletros"}
+    {"id": "balcao_1p", "label": "Balcão 1 porta", "cabinet_type": "BASE", "width_mm": 450, "door_swing": "LEFT", "shelves": 1, "structure_id": "coz_inferior_divisoria", "environments": ["COZ"]},
+    {"id": "balcao_2p", "label": "Balcão 2 portas", "cabinet_type": "BASE", "width_mm": 800, "door_swing": "DOUBLE", "shelves": 1, "structure_id": "coz_inferior_divisoria", "environments": ["COZ"]},
+    {"id": "aereo_1p", "label": "Aéreo 1 porta", "cabinet_type": "WALL", "width_mm": 450, "door_swing": "LEFT", "shelves": 1, "structure_id": "coz_superior_divisoria", "environments": ["COZ"]},
+    {"id": "aereo_2p", "label": "Aéreo 2 portas", "cabinet_type": "WALL", "width_mm": 800, "door_swing": "DOUBLE", "shelves": 1, "structure_id": "coz_superior_divisoria", "environments": ["COZ"]},
+    {"id": "torre", "label": "Torre", "cabinet_type": "TALL", "width_mm": 600, "door_swing": "DOUBLE", "shelves": 4, "structure_id": "coz_torre_eletros", "environments": ["COZ"]}
   ],
   "presets": [
-    {"id": "balcao_3p", "label": "Balcão 3 portas", "cabinet_type": "BASE", "width_mm": 1200, "door_swing": "DOUBLE", "shelves": 1, "structure_id": "coz_inferior_divisoria"},
-    {"id": "balcao_pia", "label": "Balcão de pia 2 portas", "cabinet_type": "BASE", "width_mm": 1200, "door_swing": "DOUBLE", "shelves": 0, "structure_id": "coz_inferior_2lat_piso"},
-    {"id": "gaveteiro_3g", "label": "Gaveteiro 3 gavetas", "cabinet_type": "BASE", "width_mm": 500, "door_swing": "NONE", "shelves": 0, "drawers": 3, "structure_id": "coz_gaveteiro"},
-    {"id": "gaveteiro_4g", "label": "Gaveteiro 4 gavetas", "cabinet_type": "BASE", "width_mm": 450, "door_swing": "NONE", "shelves": 0, "drawers": 4, "structure_id": "coz_gaveteiro"},
-    {"id": "gaveteiro_pan", "label": "Gaveteiro 2 gavetões + 1 gaveta", "cabinet_type": "BASE", "width_mm": 700, "door_swing": "NONE", "shelves": 0, "drawers": 3, "structure_id": "coz_gaveteiro"},
-    {"id": "canto_l_balcao", "label": "Balcão de canto em L", "cabinet_type": "BASE", "width_mm": 900, "right_width_mm": 900, "corner_kind": "L", "door_swing": "DOUBLE", "shelves": 1, "structure_id": "coz_inferior_divisoria"},
-    {"id": "canto_obliquo_balcao", "label": "Balcão de canto oblíquo", "cabinet_type": "BASE", "width_mm": 900, "right_width_mm": 900, "corner_kind": "OBLIQUE", "door_swing": "LEFT", "shelves": 1, "structure_id": "coz_inferior_divisoria"},
-    {"id": "canto_l_aereo", "label": "Aéreo de canto em L", "cabinet_type": "WALL", "width_mm": 800, "right_width_mm": 800, "corner_kind": "L", "door_swing": "DOUBLE", "shelves": 1, "structure_id": "coz_superior_divisoria"},
-    {"id": "aereo_basculante", "label": "Aéreo basculante", "cabinet_type": "WALL", "width_mm": 800, "door_swing": "FLIP", "shelves": 1, "structure_id": "coz_superior_2lat"},
-    {"id": "torre_forno", "label": "Torre quente (forno e micro)", "cabinet_type": "TALL", "width_mm": 700, "door_swing": "DOUBLE", "shelves": 3, "structure_id": "coz_torre_eletros"}
+    {"id": "balcao_3p", "label": "Balcão 3 portas", "cabinet_type": "BASE", "width_mm": 1200, "door_swing": "DOUBLE", "shelves": 1, "structure_id": "coz_inferior_divisoria", "environments": ["COZ"]},
+    {"id": "balcao_pia", "label": "Balcão de pia 2 portas", "cabinet_type": "BASE", "width_mm": 1200, "door_swing": "DOUBLE", "shelves": 0, "structure_id": "coz_inferior_2lat_piso", "environments": ["COZ"]},
+    {"id": "gaveteiro_3g", "label": "Gaveteiro 3 gavetas", "cabinet_type": "BASE", "width_mm": 500, "door_swing": "NONE", "shelves": 0, "drawers": 3, "structure_id": "coz_gaveteiro", "environments": ["COZ"]},
+    {"id": "gaveteiro_4g", "label": "Gaveteiro 4 gavetas", "cabinet_type": "BASE", "width_mm": 450, "door_swing": "NONE", "shelves": 0, "drawers": 4, "structure_id": "coz_gaveteiro", "environments": ["COZ"]},
+    {"id": "gaveteiro_pan", "label": "Gaveteiro 2 gavetões + 1 gaveta", "cabinet_type": "BASE", "width_mm": 700, "door_swing": "NONE", "shelves": 0, "drawers": 3, "structure_id": "coz_gaveteiro", "environments": ["COZ"]},
+    {"id": "canto_l_balcao", "label": "Balcão de canto em L", "cabinet_type": "BASE", "width_mm": 900, "right_width_mm": 900, "corner_kind": "L", "door_swing": "DOUBLE", "shelves": 1, "structure_id": "coz_inferior_divisoria", "environments": ["COZ"]},
+    {"id": "canto_obliquo_balcao", "label": "Balcão de canto oblíquo", "cabinet_type": "BASE", "width_mm": 900, "right_width_mm": 900, "corner_kind": "OBLIQUE", "door_swing": "LEFT", "shelves": 1, "structure_id": "coz_inferior_divisoria", "environments": ["COZ"]},
+    {"id": "canto_l_aereo", "label": "Aéreo de canto em L", "cabinet_type": "WALL", "width_mm": 800, "right_width_mm": 800, "corner_kind": "L", "door_swing": "DOUBLE", "shelves": 1, "structure_id": "coz_superior_divisoria", "environments": ["COZ"]},
+    {"id": "aereo_basculante", "label": "Aéreo basculante", "cabinet_type": "WALL", "width_mm": 800, "door_swing": "FLIP", "shelves": 1, "structure_id": "coz_superior_2lat", "environments": ["COZ"]},
+    {"id": "torre_forno", "label": "Torre quente (forno e micro)", "cabinet_type": "TALL", "width_mm": 700, "door_swing": "DOUBLE", "shelves": 3, "structure_id": "coz_torre_eletros", "environments": ["COZ"]},
+    {"id": "roupeiro_2p", "label": "Roupeiro 2 portas", "cabinet_type": "TALL", "width_mm": 900, "door_swing": "DOUBLE", "shelves": 3, "structure_id": "dor_armario", "environments": ["DOR"]},
+    {"id": "comoda_4g", "label": "Cômoda 4 gavetas", "cabinet_type": "BASE", "width_mm": 1200, "door_swing": "NONE", "shelves": 0, "drawers": 4, "structure_id": "coz_gaveteiro", "environments": ["DOR"]},
+    {"id": "gabinete_banho", "label": "Gabinete de banheiro", "cabinet_type": "BASE", "width_mm": 600, "door_swing": "LEFT", "shelves": 1, "structure_id": "coz_inferior_divisoria", "environments": ["BAN"]},
+    {"id": "espelheira_banho", "label": "Espelheira de banheiro", "cabinet_type": "WALL", "width_mm": 600, "door_swing": "LEFT", "shelves": 1, "structure_id": "coz_superior_divisoria", "environments": ["BAN"]},
+    {"id": "buffet_sala", "label": "Buffet de sala", "cabinet_type": "BASE", "width_mm": 1600, "door_swing": "DOUBLE", "shelves": 1, "structure_id": "coz_inferior_divisoria", "environments": ["SAL"]},
+    {"id": "estante_sala", "label": "Estante de sala", "cabinet_type": "TALL", "width_mm": 900, "door_swing": "NONE", "shelves": 4, "structure_id": "coz_torre_eletros", "environments": ["SAL"]},
+    {"id": "armario_arquivo", "label": "Armário de arquivo", "cabinet_type": "TALL", "width_mm": 800, "door_swing": "DOUBLE", "shelves": 3, "structure_id": "dor_armario", "environments": ["ESC"]}
   ],
   "openings": [
     {"id": "porta_giro_lisa", "label": "Porta de giro lisa", "kind": "DOOR", "category": "portas_giro", "opening_model": "porta_giro_lisa", "default_material": "madeira", "width_mm": 800, "height_mm": 2100, "sill_mm": 0},

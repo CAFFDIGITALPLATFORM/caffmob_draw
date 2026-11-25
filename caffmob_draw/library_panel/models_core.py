@@ -13,13 +13,15 @@ from collections import namedtuple
 from pathlib import Path
 
 from ..caffmob.v2 import contrato as v2_contrato
+from ..data.dimension_schema import LINE_CODES
 from ..data.i18n import tr
 
 Model = namedtuple(
     'Model',
     'id label cabinet_type width_mm door_swing shelves structure_id '
-    'drawers corner_kind right_width_mm kind opening_model default_material height_mm sill_mm category',
-    defaults=("", 0, 'NONE', 0, 'MODULE', "", "", 0, 0, ""),
+    'drawers corner_kind right_width_mm kind opening_model default_material height_mm sill_mm category '
+    'environments',
+    defaults=("", 0, 'NONE', 0, 'MODULE', "", "", 0, 0, "", ()),
 )
 CABINET_TYPES = ('BASE', 'WALL', 'TALL')
 DOOR_SWINGS = ('NONE', 'LEFT', 'RIGHT', 'DOUBLE', 'FLIP')
@@ -59,6 +61,15 @@ def _parse_cabinet_item(item, warnings):
     if structure_id and not _known_structure(structure_id):
         warnings.append(tr("Modelo {}: estrutura desconhecida").format(item['id']))
         return None
+    environments = item.get('environments')                 # 032: acervo por ambiente (vazio = todos)
+    if environments is None:
+        envs = ()
+    elif (not isinstance(environments, list)
+          or any(not isinstance(code, str) or code not in LINE_CODES for code in environments)):
+        warnings.append(tr("Modelo {}: ambiente desconhecido").format(item['id']))
+        return None
+    else:
+        envs = tuple(environments)
     return Model(
         str(item['id']),
         str(item.get('label') or item['id']),
@@ -76,6 +87,7 @@ def _parse_cabinet_item(item, warnings):
         0,
         0,
         "",
+        envs,
     )
 
 
@@ -161,6 +173,16 @@ def parse_all(text):
         if parsed is not None:
             openings.append(parsed)
     return cabinets, openings, warnings
+
+
+def in_environment(model, line):
+    """O modelo aparece no ambiente `line`? Sem `environments` no catálogo, aparece em todos."""
+    return not model.environments or not line or line in model.environments
+
+
+def by_environment(models, line):
+    """Modelos disponíveis no ambiente `line` (vazio = catálogo inteiro)."""
+    return [model for model in models if in_environment(model, line)]
 
 
 def _known_structure(structure_id):
