@@ -44,6 +44,7 @@ Delta cirúrgico sobre o construtor v2 e a biblioteca de texturas, sem tocar geo
 | D-05 | Nas `BTM_AddonPreferences`, **acrescentar** `exibicao_armario` (Enum `TEXTURA_SO`/`TEXTURA_LINHAS`, default `TEXTURA_SO`) e **manter** `cabinet_color` e a linha `layout.prop(self, "cabinet_color")` (`__init__.py:304`) — esse valor é lido em `ops_placement.py:40` como `obj.color` dos armários herdados e não é a opção "Cor por objeto"; `show_legacy_libraries`, `panel_mode`, `stick_magnet`, `mobi_url` e demais opções ficam intactas | Decisão 2 do pedido + T009 do audit; o controle "Cor por objeto" que muda é o do diálogo `ops.py:39`, não a preferência de cor | Renomear `cabinet_color` (perderia o valor lido por `ops_placement.py:40`); criar uma segunda tela de preferências | 🟢 |
 | D-06 | "Textura com linhas" liga o **interruptor Linhas já existente** — `Scene.btm_view_lines` → `overlay.show_wireframes`, por `ui/view_mode_core.settings` (`:24`) e `ui/view_mode.apply` (`:26`, reaplicado no `load_post`); "Somente textura" desliga. Sem Freestyle, sem `show_object_outline` e sem objeto de wireframe por peça | Decisão 3 **confirmada pelo titular** em 2026-11-25: as arestas de todos os objetos são aceitas e o mecanismo já existe e é testado (`tests/test_view_mode.py`) | Contorno só das chapas (mecanismo novo, mais caro); objeto de wireframe por peça (custo de cena e de undo) | 🟢 |
 | D-07 | Migração única em `load_post`: se o armário não tem marca `btm_armario.exibicao_versao`, aplica a textura padrão nas peças sem material, grava `exibicao_versao = 1` e emite um aviso único por cena | Decisão 5a do clarify; idempotente e não reaplica em toda abertura | Migrar em `depsgraph_update` (rodaria a cada frame) | 🟢 |
+| D-08 | **Dois níveis de exibição:** `BTM_AddonPreferences.exibicao_armario` é o padrão de fábrica dos armários novos (aplicado pelo código na criação, já que `bpy.props` não herda default) e `Scene.btm_view_mode` continua sendo o estado gravado no arquivo, com o controle "Sólido·Textura" da barra lateral mandando na cena | Resposta do titular em 2026-11-25 (4ª pergunta do clarify): preserva o controle existente e evita que abrir outro `.blend` mude a leitura de todos | Um só nível (preferência global sobrescrevendo a cena, ou só `Scene.btm_view_mode`, descartando `exibicao_armario`) | 🟢 |
 
 ## 4. Premissas
 
@@ -69,8 +70,7 @@ A premissa “Cursos 3D” foi **confirmada** pelo titular em 2026-11-25 (sessã
 
 ## 6. Delta no modelo de dados
 
-- `Object.btm_armario` (raiz): `exibicao_versao` (Int, padrão 0; 1 = migrado) e `exibicao` (Enum `TEXTURA_SO` |
-  `TEXTURA_LINHAS`, padrão herdado da preferência).
+- `Object.btm_armario` (raiz): `exibicao_versao` (Int, padrão 0; 1 = migrado) e `exibicao` (Enum `TEXTURA_SO` | `TEXTURA_LINHAS`, padrão `TEXTURA_SO`; a preferência `exibicao_armario` é aplicada pelo código na criação, porque `bpy.props` não herda default).
 - `Object.btm_edgeband`: nada novo; o UV é geometria, não dado.
 - `Scene.btm_settings`: nada novo; a escolha é de preferência do add-on, não da cena.
 - Migração: nenhum campo removido. `cabinet_color` continua existindo como legado lido pela migração.
@@ -115,3 +115,4 @@ Nenhum: a feature não abre HTTP, fila ou formato de arquivo. Por isso não há 
 |------|-----------|-------|
 | 2026-11-25 | Versão inicial gerada por `/reversa-plan` a partir das cinco decisões do `/reversa-clarify` | reversa |
 | 2026-11-25 | Segunda sessão do `/reversa-clarify`: D-05 corrigida (mantém `cabinet_color`), D-06 passou a reusar o interruptor Linhas existente, premissa “Cursos 3D” confirmada | reversa |
+| 2026-11-25 | D-08 acrescentada (preferência + `Scene.btm_view_mode` em dois níveis) e modelo de dados corrigido: `exibicao` nasce em `TEXTURA_SO` e a preferência é aplicada na criação | reversa |

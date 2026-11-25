@@ -61,7 +61,7 @@
 | T008 | Trocar `space.shading.color_type = 'OBJECT'` por `'TEXTURE'` em `hb_details.py:99`, mantendo `shading.type = 'SOLID'` (`:98`); nenhum outro fluxo é tocado — `hb_utils.set_layout_shading` (`:384`), `hb_layouts` (render 2D) e `catalog/render_thumbnails.py:154` **ficam como estão** | T005 | - | `caffmob_draw/hb_details.py` | `tests/blender_024_exibicao.py`: após o fluxo de detalhes, `space.shading.color_type == 'TEXTURE'` num `VIEW_3D` de teste | `[ ]` |
 | T016 | **Diálogo de preferências recomendadas** (`ops.py:30-110`): `turn_on_object_color_type` (`:39`) deixa de ser “REQUIRED”/`'OBJECT'` e passa a aplicar `'TEXTURE'` (rótulo em `:110`); `turn_off_3d_cursor` (`:54`, o “Cursos 3D” da T001), `show_wireframes`, `turn_off_relationship_lines`, `change_studio_lighting` e `use_vertex_snapping` ficam **intactos** | T001, T008 | - | `caffmob_draw/ops.py` | `tests/blender_024_exibicao.py`: executar o operador com defaults e ler `shading.color_type == 'TEXTURE'`; `git diff` mostra que só as linhas do controle de cor mudaram | `[ ]` |
 | T017 | **Aviso da barra lateral**: `ui/view3d_sidebar.py:38-46` acusa “Object Color Type is not enabled!” quando `color_type != 'OBJECT'`; com o Solid em `TEXTURE` o aviso passaria a acusar erro sempre. A condição passa a aceitar `TEXTURE` (e o texto/rótulo acompanham) | T008 | - | `caffmob_draw/ui/view3d_sidebar.py` | `tests/blender_024_exibicao.py`: com `color_type = 'TEXTURE'` o bloco de erro não é desenhado (contagem de `layout.label`/flag) | `[ ]` |
-| T009 | **Preferência de exibição**: criar `exibicao_armario` (Enum `TEXTURA_SO`/`TEXTURA_LINHAS`, default `TEXTURA_SO`) em `BTM_AddonPreferences` (`__init__.py:146`, junto de `cabinet_color` em `:185`) e desenhá-lo; **manter** `cabinet_color` e a linha `layout.prop(self, "cabinet_color")` (`:304`) — esse valor é lido em `ops_placement.py:40` como `obj.color` dos armários das bibliotecas herdadas, não é a opção “Cor por objeto”. Nenhuma outra preferência é removida (`show_legacy_libraries`, `panel_mode`, `stick_magnet`, `mobi_url`, cores de parede/porta/anotação) | T001 | - | `caffmob_draw/__init__.py` | `tests/blender_024_prefs.py` (novo): enum com exatamente 2 itens; `cabinet_color` e o `layout.prop` continuam; demais preferências intactas | `[ ]` **aguarda §Lacunas 1 (preferência vs. `Scene.btm_view_mode`)** |
+| T009 | **Preferência de exibição**: criar `exibicao_armario` (Enum `TEXTURA_SO`/`TEXTURA_LINHAS`, default `TEXTURA_SO`) em `BTM_AddonPreferences` (`__init__.py:146`, junto de `cabinet_color` em `:185`) e desenhá-lo; **manter** `cabinet_color` e a linha `layout.prop(self, "cabinet_color")` (`:304`) — esse valor é lido em `ops_placement.py:40` como `obj.color` dos armários das bibliotecas herdadas, não é a opção “Cor por objeto”. Nenhuma outra preferência é removida (`show_legacy_libraries`, `panel_mode`, `stick_magnet`, `mobi_url`, cores de parede/porta/anotação) | T001 | - | `caffmob_draw/__init__.py` | `tests/blender_024_prefs.py` (novo): enum com exatamente 2 itens; `cabinet_color` e o `layout.prop` continuam; demais preferências intactas | `[ ]` (dois níveis: preferência + `Scene.btm_view_mode`) |
 | T010 | **Aplicar a variante sem criar mecanismo novo**: `armario_v2/exibicao.py` mapeia `exibicao_armario`/`btm_armario.exibicao` para o modo de vista já existente — `TEXTURA_SO` → `TEXTURE` + linhas desligadas, `TEXTURA_LINHAS` → `TEXTURE` + linhas ligadas — chamando `ui/view_mode_core.settings` (`:24`) e `ui/view_mode.apply` (`:26`), que já gravam `color_type`/`show_wireframes`/limiar em todas as vistas e reaplicam no `load_post`. Nada de `show_object_outline` nem objeto wireframe por peça | T005, T009 | - | `caffmob_draw/armario_v2/exibicao.py` | `tests/blender_024_exibicao.py`: alternar a variante muda `overlay.show_wireframes` sem trocar material; `tests/test_view_mode.py` continua OK | `[ ]` (linhas globais confirmadas em 2026-11-25) |
 | T011 | Migração idempotente: handler `load_post` no módulo `exibicao.py` (padrão de `armario_v2/anim.py:362`, `:400-407`, com `@persistent` e remoção no `unregister`) que percorre raízes de `Marcenaria` com `exibicao_versao == 0`, aplica a textura padrão só nas peças sem material, grava `1` e avisa **uma vez**; registrar o módulo em `_MODULES` (`armario_v2/__init__.py:30`) e removê-lo no `unregister` | T002, T005 | - | `caffmob_draw/armario_v2/exibicao.py`, `caffmob_draw/armario_v2/__init__.py` | `tests/blender_024_migracao.py` (novo): primeira passada migra e conta 1 aviso; segunda passada não altera nada; após `unregister()` o handler não está em `bpy.app.handlers.load_post` | `[ ]` |
 
@@ -85,17 +85,16 @@
 
 ## Lacunas
 
-**Resolvidas na segunda rodada do `/reversa-clarify` (2026-11-25), integradas em `requirements.md` §6:**
+**Nenhuma.** As quatro perguntas abertas pelo `/reversa-audit` foram respondidas pelo titular em
+2026-11-25 e estão integradas em `requirements.md` §6 (sessão 2) e no roadmap (D-05, D-06 e D-08):
 
-- ~~**“Cursos 3D” (T001):** é o checkbox **“Turn Off 3D Cursor”** (`turn_off_3d_cursor`, `ops.py:54`) — preservar intacto.~~ T001 fechada; T009/T016 desbloqueadas.
-- ~~**Escopo do `color_type` (T008/T016):** global — paredes, portas e armários herdados passam a mostrar a cor média do material no Solid.~~ Nenhuma ação mudou.
-- ~~**Arestas de “Textura com linhas” (T010):** reusar o interruptor Linhas existente (`Scene.btm_view_lines` → `overlay.show_wireframes`), arestas de todos os objetos.~~ T010 confirmada como está.
+1. Cursos 3D = “Turn Off 3D Cursor” (`turn_off_3d_cursor`, `ops.py:54`) — preservar intacto.
+2. `color_type` global — paredes, portas e armários herdados mostram a cor média do material no Solid.
+3. “Textura com linhas” reusa o interruptor Linhas existente (`overlay.show_wireframes`).
+4. Dois níveis: `exibicao_armario` (padrão de fábrica) + `Scene.btm_view_mode` (estado do arquivo).
 
-**Pendente (1), antes de `/reversa-coding`:**
-
-1. **`exibicao_armario` vs. modo de vista da cena (T009/T010):** manter os dois (preferência do add-on como padrão de fábrica e `Scene.btm_view_mode` como estado do arquivo) ou um só? A preferência não pode herdar default em `bpy.props` (ver T002). *Única pergunta em aberto; decide a forma final de T009 e o destino de T010.*
-
-> Reabrir qualquer uma das três resolvidas seria contradizer a sessão 2 do clarify. A pergunta “asset PNG vs. textura em runtime” continua fora: a decisão 1 do clarify já a fechou.
+> A pergunta “asset PNG vs. textura em runtime” também segue fechada (decisão 1 do clarify). Nada impede o
+> `/reversa-coding`; nenhuma pergunta foi reaberta.
 
 ## Notas de execução
 
@@ -108,3 +107,4 @@
 | 2026-11-25 | Versão inicial do `/reversa-to-do` (15 ações) | reversa |
 | 2026-11-25 | 2ª rodada: to-do revisado pelo `/reversa-audit` — T009 corrigida (o “Cor por objeto” real é o diálogo de `ops.py`, não `cabinet_color`), T010 passou a reusar `ui/view_mode_core`, criadas T016 (diálogo recomendado) e T017 (aviso da barra lateral), T012 ampliada para `ops.json`/`ui.json`, lacuna do asset removida (decisão já fechada). 17 ações | reversa |
 | 2026-11-25 | 3ª rodada: `/reversa-clarify` (2ª sessão) — três das quatro perguntas respondidas (Cursos 3D = `turn_off_3d_cursor`; `color_type` global; linhas globais). T001 fechada; resta 1 pergunta (preferência vs. `Scene.btm_view_mode`). Nenhum código tocado | reversa |
+| 2026-11-25 | 4ª rodada: 4ª resposta do clarify integrada (dois níveis: `exibicao_armario` + `Scene.btm_view_mode`); T009 desbloqueada e §Lacunas zerada. Nenhum código tocado | reversa |

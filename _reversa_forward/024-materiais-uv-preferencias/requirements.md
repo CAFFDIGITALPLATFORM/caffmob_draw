@@ -101,18 +101,15 @@ mantendo a opção "Cursos 3D" intacta.
 - **Q:** "Textura com linhas" — quais arestas desenhar?
   **R:** Reusar o **interruptor Linhas já existente** (`Scene.btm_view_lines` → `overlay.show_wireframes`): arestas de
   todos os objetos, sem contorno exclusivo das chapas e sem objeto de wireframe novo.
+- **Q:** A preferência `exibicao_armario` convive com `Scene.btm_view_mode`?
+  **R:** **Dois níveis**: a preferência do add-on é o padrão de fábrica dos armários novos; `Scene.btm_view_mode`
+  continua sendo o estado gravado no arquivo e o controle "Sólido·Textura" da barra lateral manda na cena.
 
 ## 7. Lacunas
 
-Resta **uma** dúvida, aberta pelo `/reversa-audit` e ainda não respondida pelo titular (as outras três foram fechadas
-na segunda rodada de 2026-11-25, em §6):
-
-1. **`exibicao_armario` vs. `Scene.btm_view_mode` (T009/T010):** manter os dois níveis — a preferência do add-on como
-   padrão de fábrica e `Scene.btm_view_mode` como estado gravado no arquivo — ou um só? A preferência não consegue
-   herdar default em `bpy.props` (ver T002), e o controle "Sólido·Textura" da barra lateral já grava o estado na cena.
-   *Decide a forma final de T009 e o destino de T010.*
-
-Nenhuma implementação começou; o próximo ciclo é `/reversa-clarify` (uma pergunta) e depois `/reversa-coding`.
+Nenhuma dúvida pendente após as duas rodadas de esclarecimento de 2026-11-25 (três respostas na segunda rodada e a
+quarta, sobre preferência vs. `Scene.btm_view_mode`, fechada em seguida). Nenhuma implementação começou; o próximo
+ciclo é o `/reversa-coding`.
 
 ## 8. Histórico de alterações
 
@@ -121,3 +118,4 @@ Nenhuma implementação começou; o próximo ciclo é `/reversa-clarify` (uma pe
 | 2026-11-25 | Versão inicial gerada na auditoria da feature 021 (lacuna de material/UV/preferências separada como candidata) | reversa |
 | 2026-11-25 | `/reversa-clarify`: cinco decisões integradas (textura padrão MDF, Solid `TEXTURE`, linhas em todas as arestas, UV próprio da fita, migração única com aviso); 0 dúvidas restantes | reversa |
 | 2026-11-25 | `/reversa-clarify` (2ª sessão): três respostas do titular integradas ("Cursos 3D" = `turn_off_3d_cursor`; `color_type` global; linhas pelo interruptor existente); resta 1 dúvida (`exibicao_armario` vs. `Scene.btm_view_mode`) | reversa |
+| 2026-11-25 | `/reversa-clarify` (2ª sessão, conclusão): quarta resposta integrada — preferência `exibicao_armario` (padrão de fábrica) e `Scene.btm_view_mode` (estado do arquivo) convivem; 0 dúvidas restantes | reversa |
