@@ -1,106 +1,162 @@
 {
  "$: o documento deve ser um objeto JSON": {
-  "pt_BR": "$: o documento deve ser um objeto JSON",
-  "en_US": "$: the document must be a JSON object"
+  "en_US": "$: the document must be a JSON object",
+  "pt_BR": "$: o documento deve ser um objeto JSON"
+ },
+ "COMP. mm": {
+  "en_US": "LEN. mm",
+  "pt_BR": "COMP. mm"
  },
  "Corrediça (par)": {
-  "pt_BR": "Corrediça (par)",
-  "en_US": "Drawer slide (pair)"
+  "en_US": "Drawer slide (pair)",
+  "pt_BR": "Corrediça (par)"
  },
  "Corrediça Blum (par)": {
-  "pt_BR": "Corrediça Blum (par)",
-  "en_US": "Blum drawer slide (pair)"
+  "en_US": "Blum drawer slide (pair)",
+  "pt_BR": "Corrediça Blum (par)"
  },
  "Dimensões ({}x{}mm) excedem a área útil ({}x{}mm)": {
-  "pt_BR": "Dimensões ({}x{}mm) excedem a área útil ({}x{}mm)",
-  "en_US": "Dimensions ({}x{}mm) exceed the usable area ({}x{}mm)"
+  "en_US": "Dimensions ({}x{}mm) exceed the usable area ({}x{}mm)",
+  "pt_BR": "Dimensões ({}x{}mm) excedem a área útil ({}x{}mm)"
+ },
+ "ESP. mm": {
+  "en_US": "THK. mm",
+  "pt_BR": "ESP. mm"
  },
  "Espaço insuficiente para inicializar chapa": {
-  "pt_BR": "Espaço insuficiente para inicializar chapa",
-  "en_US": "Not enough space to start a sheet"
+  "en_US": "Not enough space to start a sheet",
+  "pt_BR": "Espaço insuficiente para inicializar chapa"
  },
  "Ferragens": {
-  "pt_BR": "Ferragens",
-  "en_US": "Hardware"
+  "en_US": "Hardware",
+  "pt_BR": "Ferragens"
  },
  "JSON global inválido.": {
-  "pt_BR": "JSON global inválido.",
-  "en_US": "Invalid global JSON."
+  "en_US": "Invalid global JSON.",
+  "pt_BR": "JSON global inválido."
+ },
+ "LARG. mm": {
+  "en_US": "WID. mm",
+  "pt_BR": "LARG. mm"
+ },
+ "Lista de Materiais": {
+  "en_US": "Bill of Materials",
+  "pt_BR": "Lista de Materiais"
+ },
+ "Lista de Materiais (imprimir)": {
+  "en_US": "Bill of Materials (print)",
+  "pt_BR": "Lista de Materiais (imprimir)"
+ },
+ "Lista de Materiais — {}": {
+  "en_US": "Bill of Materials — {}",
+  "pt_BR": "Lista de Materiais — {}"
+ },
+ "Lista de materiais: {} linha(s), {} peça(s). Tabela no console e no texto \"{}\".": {
+  "en_US": "Bill of materials: {} row(s), {} part(s). Table in the console and in the text \"{}\".",
+  "pt_BR": "Lista de materiais: {} linha(s), {} peça(s). Tabela no console e no texto \"{}\"."
+ },
+ "MATERIAL": {
+  "en_US": "MATERIAL",
+  "pt_BR": "MATERIAL"
+ },
+ "Nenhum objeto de malha no projeto aberto.": {
+  "en_US": "No mesh object in the open project.",
+  "pt_BR": "Nenhum objeto de malha no projeto aberto."
  },
  "Nenhuma ferragem no projeto": {
-  "pt_BR": "Nenhuma ferragem no projeto",
-  "en_US": "No hardware in the project"
+  "en_US": "No hardware in the project",
+  "pt_BR": "Nenhuma ferragem no projeto"
  },
  "O arquivo não é um JSON global válido do CAFFMob Draw.": {
-  "pt_BR": "O arquivo não é um JSON global válido do CAFFMob Draw.",
-  "en_US": "The file is not a valid CAFFMob Draw global JSON."
+  "en_US": "The file is not a valid CAFFMob Draw global JSON.",
+  "pt_BR": "O arquivo não é um JSON global válido do CAFFMob Draw."
+ },
+ "OBJETO": {
+  "en_US": "OBJECT",
+  "pt_BR": "OBJETO"
+ },
+ "PAPEL": {
+  "en_US": "ROLE",
+  "pt_BR": "PAPEL"
  },
  "Pistão": {
-  "pt_BR": "Pistão",
-  "en_US": "Gas piston"
+  "en_US": "Gas piston",
+  "pt_BR": "Pistão"
  },
  "Plano de corte do arquivo v1 não convertido: gere o plano novamente.": {
-  "pt_BR": "Plano de corte do arquivo v1 não convertido: gere o plano novamente.",
-  "en_US": "Cut plan from the v1 file not converted: generate the plan again."
+  "en_US": "Cut plan from the v1 file not converted: generate the plan again.",
+  "pt_BR": "Plano de corte do arquivo v1 não convertido: gere o plano novamente."
  },
  "Pé plástico": {
-  "pt_BR": "Pé plástico",
-  "en_US": "Plastic foot"
+  "en_US": "Plastic foot",
+  "pt_BR": "Pé plástico"
+ },
+ "QTD": {
+  "en_US": "QTY",
+  "pt_BR": "QTD"
  },
  "Sem módulo": {
-  "pt_BR": "Sem módulo",
-  "en_US": "No module"
+  "en_US": "No module",
+  "pt_BR": "Sem módulo"
  },
  "Trilho inferior deslizante": {
-  "pt_BR": "Trilho inferior deslizante",
-  "en_US": "Sliding door bottom track"
+  "en_US": "Sliding door bottom track",
+  "pt_BR": "Trilho inferior deslizante"
  },
  "Trilho superior deslizante": {
-  "pt_BR": "Trilho superior deslizante",
-  "en_US": "Sliding door top track"
+  "en_US": "Sliding door top track",
+  "pt_BR": "Trilho superior deslizante"
  },
  "cut_plan: tipo inválido": {
-  "pt_BR": "cut_plan: tipo inválido",
-  "en_US": "cut_plan: invalid type"
+  "en_US": "cut_plan: invalid type",
+  "pt_BR": "cut_plan: tipo inválido"
+ },
+ "linha(s)": {
+  "en_US": "row(s)",
+  "pt_BR": "linha(s)"
  },
  "não coube na chapa": {
-  "pt_BR": "não coube na chapa",
-  "en_US": "did not fit on the sheet"
+  "en_US": "did not fit on the sheet",
+  "pt_BR": "não coube na chapa"
+ },
+ "peça(s)": {
+  "en_US": "part(s)",
+  "pt_BR": "peça(s)"
  },
  "schema: esperado {!r}": {
-  "pt_BR": "schema: esperado {!r}",
-  "en_US": "schema: expected {!r}"
+  "en_US": "schema: expected {!r}",
+  "pt_BR": "schema: esperado {!r}"
  },
  "schema_version: versão {} não suportada (máximo {}.x)": {
-  "pt_BR": "schema_version: versão {} não suportada (máximo {}.x)",
-  "en_US": "schema_version: version {} not supported (maximum {}.x)"
+  "en_US": "schema_version: version {} not supported (maximum {}.x)",
+  "pt_BR": "schema_version: versão {} não suportada (máximo {}.x)"
  },
  "{}: maior que o limite de chapa do componente {}.": {
-  "pt_BR": "{}: maior que o limite de chapa do componente {}.",
-  "en_US": "{}: larger than the sheet limit of component {}."
+  "en_US": "{}: larger than the sheet limit of component {}.",
+  "pt_BR": "{}: maior que o limite de chapa do componente {}."
  },
  "{}: peça sem componente do padrão de dimensões.": {
-  "pt_BR": "{}: peça sem componente do padrão de dimensões.",
-  "en_US": "{}: part without a dimension standard component."
+  "en_US": "{}: part without a dimension standard component.",
+  "pt_BR": "{}: peça sem componente do padrão de dimensões."
  },
  "{}module_uid: tipo inválido": {
-  "pt_BR": "{}module_uid: tipo inválido",
-  "en_US": "{}module_uid: invalid type"
+  "en_US": "{}module_uid: invalid type",
+  "pt_BR": "{}module_uid: tipo inválido"
  },
  "{}uid: duplicado ({})": {
-  "pt_BR": "{}uid: duplicado ({})",
-  "en_US": "{}uid: duplicate ({})"
+  "en_US": "{}uid: duplicate ({})",
+  "pt_BR": "{}uid: duplicado ({})"
  },
  "{}{}: campo obrigatório ausente": {
-  "pt_BR": "{}{}: campo obrigatório ausente",
-  "en_US": "{}{}: required field missing"
+  "en_US": "{}{}: required field missing",
+  "pt_BR": "{}{}: campo obrigatório ausente"
  },
  "{}{}: tipo inválido": {
-  "pt_BR": "{}{}: tipo inválido",
-  "en_US": "{}{}: invalid type"
+  "en_US": "{}{}: invalid type",
+  "pt_BR": "{}{}: tipo inválido"
  },
  "{}{}: valor inválido ({!r})": {
-  "pt_BR": "{}{}: valor inválido ({!r})",
-  "en_US": "{}{}: invalid value ({!r})"
+  "en_US": "{}{}: invalid value ({!r})",
+  "pt_BR": "{}{}: valor inválido ({!r})"
  }
 }

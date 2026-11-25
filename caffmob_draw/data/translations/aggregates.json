@@ -1,546 +1,558 @@
 {
  "0 = fechada; 1 = abertura máxima. Para ao encostar em parede ou objeto": {
-  "pt_BR": "0 = fechada; 1 = abertura máxima. Para ao encostar em parede ou objeto",
-  "en_US": "0 = closed; 1 = fully open. Stops on touching a wall or object"
- },
- "A folha desliza num trilho": {
-  "pt_BR": "A folha desliza num trilho",
-  "en_US": "The leaf slides on a track"
- },
- "A folha gira em torno de um eixo": {
-  "pt_BR": "A folha gira em torno de um eixo",
-  "en_US": "The leaf turns around an axis"
- },
- "Abre para o lado da frente": {
-  "pt_BR": "Abre para o lado da frente",
-  "en_US": "Opens to the front side"
- },
- "Abre para o lado de trás": {
-  "pt_BR": "Abre para o lado de trás",
-  "en_US": "Opens to the back side"
- },
- "Agregado": {
-  "pt_BR": "Agregado",
-  "en_US": "Aggregate"
- },
- "Agregado(s) de {}: ": {
-  "pt_BR": "Agregado(s) de {}: ",
-  "en_US": "Aggregate(s) of {}: "
- },
- "Agregados e folhas": {
-  "pt_BR": "Agregados e folhas",
-  "en_US": "Aggregates and leaves"
- },
- "Apaga os objetos selecionados; se tiverem agregados, pergunta se eles vão junto": {
-  "pt_BR": "Apaga os objetos selecionados; se tiverem agregados, pergunta se eles vão junto",
-  "en_US": "Deletes the selected objects; if they have aggregates, asks whether they go too"
- },
- "Apagar também os agregados": {
-  "pt_BR": "Apagar também os agregados",
-  "en_US": "Also delete the aggregates"
- },
- "Arrasta o agregado no plano da face do pai; ele para na borda (Esc ou botão direito cancela)": {
-  "pt_BR": "Arrasta o agregado no plano da face do pai; ele para na borda (Esc ou botão direito cancela)",
-  "en_US": "Drags the aggregate on the parent face plane; it stops at the edge (Esc or right button cancels)"
- },
- "Converte as malhas selecionadas em agregados do objeto ativo (selecione o pai por último)": {
-  "pt_BR": "Converte as malhas selecionadas em agregados do objeto ativo (selecione o pai por último)",
-  "en_US": "Converts the selected meshes into aggregates of the active object (select the parent last)"
- },
- "Converter em agregado": {
-  "pt_BR": "Converter em agregado",
-  "en_US": "Convert to aggregate"
- },
- "Converter em folha de porta": {
-  "pt_BR": "Converter em folha de porta",
-  "en_US": "Convert to door leaf"
- },
- "Correr": {
-  "pt_BR": "Correr",
-  "en_US": "Slide"
- },
- "Curso": {
-  "pt_BR": "Curso",
-  "en_US": "Travel"
- },
- "Desconverter": {
-  "pt_BR": "Desconverter",
-  "en_US": "Unconvert"
- },
- "Desfaz a conversão: tira recortes e folha e devolve o objeto como estava": {
-  "pt_BR": "Desfaz a conversão: tira recortes e folha e devolve o objeto como estava",
-  "en_US": "Undoes the conversion: removes cutouts and leaf and returns the object as it was"
- },
- "Desligado: os agregados ficam soltos na mesma posição": {
-  "pt_BR": "Desligado: os agregados ficam soltos na mesma posição",
-  "en_US": "Off: the aggregates stay loose in the same position"
- },
- "Eixo": {
-  "pt_BR": "Eixo",
-  "en_US": "Axis"
- },
- "Encostou em": {
-  "pt_BR": "Encostou em",
-  "en_US": "Touched"
- },
- "Face": {
-  "pt_BR": "Face",
-  "en_US": "Face"
- },
- "Folha bateu em {}": {
-  "pt_BR": "Folha bateu em {}",
-  "en_US": "Leaf hit {}"
- },
- "Folha de porta": {
-  "pt_BR": "Folha de porta",
-  "en_US": "Door leaf"
- },
- "Folha que abre e fecha": {
-  "pt_BR": "Folha que abre e fecha",
-  "en_US": "Leaf that opens and closes"
- },
- "Formato não suportado: {} (use OBJ, FBX, glTF ou GLB)": {
-  "pt_BR": "Formato não suportado: {} (use OBJ, FBX, glTF ou GLB)",
-  "en_US": "Unsupported format: {} (use OBJ, FBX, glTF or GLB)"
- },
- "Furo real no plano de corte": {
-  "pt_BR": "Furo real no plano de corte",
-  "en_US": "Real hole in the cut plan"
- },
- "Gire a vista para enxergar a face do pai": {
-  "pt_BR": "Gire a vista para enxergar a face do pai",
-  "en_US": "Rotate the view to see the parent face"
- },
- "Giro": {
-  "pt_BR": "Giro",
-  "en_US": "Swing"
- },
- "Horizontal": {
-  "pt_BR": "Horizontal",
-  "en_US": "Horizontal"
- },
- "Importa um modelo 3D (OBJ, FBX, glTF/GLB) para converter em agregado ou folha de porta": {
-  "pt_BR": "Importa um modelo 3D (OBJ, FBX, glTF/GLB) para converter em agregado ou folha de porta",
-  "en_US": "Imports a 3D model (OBJ, FBX, glTF/GLB) to convert into an aggregate or door leaf"
- },
- "Importar modelo 3D": {
-  "pt_BR": "Importar modelo 3D",
-  "en_US": "Import 3D model"
- },
- "Importação cancelada: {}": {
-  "pt_BR": "Importação cancelada: {}",
-  "en_US": "Import cancelled: {}"
- },
- "Leva o recorte para a usinagem da peça pai no plano de corte e na exportação de produção": {
-  "pt_BR": "Leva o recorte para a usinagem da peça pai no plano de corte e na exportação de produção",
-  "en_US": "Sends the cutout to the parent part machining in the cut plan and the production export"
- },
- "Mais próxima": {
-  "pt_BR": "Mais próxima",
-  "en_US": "Nearest"
- },
- "Mover agregado": {
-  "pt_BR": "Mover agregado",
-  "en_US": "Move aggregate"
- },
- "Mover agregado  |  Clique: confirmar  |  Botão direito/Esc: cancelar": {
-  "pt_BR": "Mover agregado  |  Clique: confirmar  |  Botão direito/Esc: cancelar",
-  "en_US": "Move aggregate  |  Click: confirm  |  Right button/Esc: cancel"
- },
- "Movimento": {
-  "pt_BR": "Movimento",
-  "en_US": "Motion"
- },
- "O Blender não conseguiu importar {}: {}": {
-  "pt_BR": "O Blender não conseguiu importar {}: {}",
-  "en_US": "Blender could not import {}: {}"
- },
- "O agregado entra na lista de peças do plano de corte": {
-  "pt_BR": "O agregado entra na lista de peças do plano de corte",
-  "en_US": "The aggregate goes into the cut plan part list"
- },
- "O furo real só vale quando o agregado entra pela face da chapa (topo ou base da peça)": {
-  "pt_BR": "O furo real só vale quando o agregado entra pela face da chapa (topo ou base da peça)",
-  "en_US": "A real hole only applies when the aggregate enters through the sheet face (top or bottom of the part)"
- },
- "O objeto tem agregados": {
-  "pt_BR": "O objeto tem agregados",
-  "en_US": "The object has aggregates"
- },
- "O pai não pode ser o próprio objeto nem um filho dele": {
-  "pt_BR": "O pai não pode ser o próprio objeto nem um filho dele",
-  "en_US": "The parent cannot be the object itself or one of its children"
- },
- "O pai não é uma peça do plano de corte": {
-  "pt_BR": "O pai não é uma peça do plano de corte",
-  "en_US": "The parent is not a cut plan part"
- },
- "Pai": {
-  "pt_BR": "Pai",
-  "en_US": "Parent"
- },
- "Para a direita": {
-  "pt_BR": "Para a direita",
-  "en_US": "To the right"
- },
- "Para a esquerda": {
-  "pt_BR": "Para a esquerda",
-  "en_US": "To the left"
- },
- "Para dentro": {
-  "pt_BR": "Para dentro",
-  "en_US": "Inward"
- },
- "Para fora": {
-  "pt_BR": "Para fora",
-  "en_US": "Outward"
- },
- "Perfurar": {
-  "pt_BR": "Perfurar",
-  "en_US": "Perforate"
- },
- "Peça de produção": {
-  "pt_BR": "Peça de produção",
-  "en_US": "Production part"
- },
- "Peça presa ao pai": {
-  "pt_BR": "Peça presa ao pai",
-  "en_US": "Part attached to the parent"
- },
- "Pivô ausente; desconverta e converta de novo": {
-  "pt_BR": "Pivô ausente; desconverta e converta de novo",
-  "en_US": "Pivot missing; unconvert and convert again"
- },
- "Positivo afasta do pai; negativo afunda no pai até a espessura dele": {
-  "pt_BR": "Positivo afasta do pai; negativo afunda no pai até a espessura dele",
-  "en_US": "Positive moves away from the parent; negative sinks into the parent up to its thickness"
- },
- "Recorta o pai no volume em que o agregado afunda (só no 3D)": {
-  "pt_BR": "Recorta o pai no volume em que o agregado afunda (só no 3D)",
-  "en_US": "Cuts the parent where the aggregate sinks in (3D only)"
- },
- "Selecione a malha e, por último, o elemento pai.": {
-  "pt_BR": "Selecione a malha e, por último, o elemento pai.",
-  "en_US": "Select the mesh and, last, the parent element."
- },
- "Selecione também o elemento pai (por último, como ativo)": {
-  "pt_BR": "Selecione também o elemento pai (por último, como ativo)",
-  "en_US": "Also select the parent element (last, as active)"
- },
- "Selecione um objeto de malha para converter": {
-  "pt_BR": "Selecione um objeto de malha para converter",
-  "en_US": "Select a mesh object to convert"
- },
- "Sentido": {
-  "pt_BR": "Sentido",
-  "en_US": "Direction"
- },
- "Tipo": {
-  "pt_BR": "Tipo",
-  "en_US": "Type"
- },
- "Uma folha de porta não pode receber agregados": {
-  "pt_BR": "Uma folha de porta não pode receber agregados",
-  "en_US": "A door leaf cannot receive aggregates"
- },
- "Vertical": {
-  "pt_BR": "Vertical",
-  "en_US": "Vertical"
- },
- "mín. {}": {
-  "pt_BR": "mín. {}",
-  "en_US": "min. {}"
- },
- "sem extensão": {
-  "pt_BR": "sem extensão",
-  "en_US": "no extension"
- },
- "{} agregado(s) presos aos objetos selecionados.": {
-  "pt_BR": "{} agregado(s) presos aos objetos selecionados.",
-  "en_US": "{} aggregate(s) attached to the selected objects."
- },
- "{} malha(s) importada(s). Selecione o pai por último e use \"Converter em agregado\"": {
-  "pt_BR": "{} malha(s) importada(s). Selecione o pai por último e use \"Converter em agregado\"",
-  "en_US": "{} mesh(es) imported. Select the parent last and use \"Convert to aggregate\""
- },
- "{} objeto(s) desconvertido(s)": {
-  "pt_BR": "{} objeto(s) desconvertido(s)",
-  "en_US": "{} object(s) unconverted"
- },
- "{} virou folha de porta de {}; use a barra Abertura": {
-  "pt_BR": "{} virou folha de porta de {}; use a barra Abertura",
-  "en_US": "{} became a door leaf of {}; use the Opening slider"
- },
- "{} — pai: {}": {
-  "pt_BR": "{} — pai: {}",
-  "en_US": "{} — parent: {}"
- },
- "Ângulo máximo": {
-  "pt_BR": "Ângulo máximo",
-  "en_US": "Maximum angle"
- },
- "A janela já está instalada": {
-  "pt_BR": "A janela já está instalada",
-  "en_US": "The window is already installed"
- },
- "Abrindo": {
-  "pt_BR": "Abrindo",
-  "en_US": "Opening"
- },
- "Automática": {
-  "pt_BR": "Automática",
-  "en_US": "Automatic"
- },
- "Converta a parede pelo editor de paredes antes de instalar": {
-  "pt_BR": "Converta a parede pelo editor de paredes antes de instalar",
-  "en_US": "Convert the wall with the wall editor before installing"
- },
- "Criar grupo": {
-  "pt_BR": "Criar grupo",
-  "en_US": "Create group"
- },
- "Desfaz o grupo: as peças voltam soltas, com nome e material intactos": {
-  "pt_BR": "Desfaz o grupo: as peças voltam soltas, com nome e material intactos",
-  "en_US": "Ungroups: the parts come back loose, with name and material intact"
- },
- "Desfazer grupo": {
-  "pt_BR": "Desfazer grupo",
-  "en_US": "Ungroup"
- },
- "Desinstalar": {
-  "pt_BR": "Desinstalar",
-  "en_US": "Uninstall"
- },
- "Desliza no trilho": {
-  "pt_BR": "Desliza no trilho",
-  "en_US": "Slides on the track"
- },
- "Eixo vertical": {
-  "pt_BR": "Eixo vertical",
-  "en_US": "Up axis"
- },
- "Escolha ao menos um grupo como esquadria": {
-  "pt_BR": "Escolha ao menos um grupo como esquadria",
-  "en_US": "Choose at least one group as the frame"
- },
- "Esquadria": {
-  "pt_BR": "Esquadria",
-  "en_US": "Frame"
- },
- "Esquadria: {}": {
-  "pt_BR": "Esquadria: {}",
-  "en_US": "Frame: {}"
- },
- "Fechando": {
-  "pt_BR": "Fechando",
-  "en_US": "Closing"
- },
- "Fica solta": {
-  "pt_BR": "Fica solta",
-  "en_US": "Stays loose"
- },
- "Folha": {
-  "pt_BR": "Folha",
-  "en_US": "Sash"
- },
- "Folha de correr": {
-  "pt_BR": "Folha de correr",
-  "en_US": "Sliding sash"
- },
- "Folha de giro": {
-  "pt_BR": "Folha de giro",
-  "en_US": "Swing sash"
- },
- "Folha encostou em {}": {
-  "pt_BR": "Folha encostou em {}",
-  "en_US": "Sash stopped against {}"
- },
- "Gira num eixo": {
-  "pt_BR": "Gira num eixo",
-  "en_US": "Turns on a hinge"
- },
- "Grupo {} com {} peça(s)": {
-  "pt_BR": "Grupo {} com {} peça(s)",
-  "en_US": "Group {} with {} part(s)"
- },
- "Grupo {} desfeito: {} peça(s)": {
-  "pt_BR": "Grupo {} desfeito: {} peça(s)",
-  "en_US": "Group {} ungrouped: {} part(s)"
- },
- "Ignorar": {
-  "pt_BR": "Ignorar",
-  "en_US": "Ignore"
- },
- "Instala a janela importada na parede selecionada, cortando o vão": {
-  "pt_BR": "Instala a janela importada na parede selecionada, cortando o vão",
-  "en_US": "Installs the imported window on the selected wall, cutting the opening"
- },
- "Instalar na parede": {
-  "pt_BR": "Instalar na parede",
-  "en_US": "Install on wall"
- },
- "Janela desinstalada": {
-  "pt_BR": "Janela desinstalada",
-  "en_US": "Window uninstalled"
- },
- "Junta as peças selecionadas num grupo que se move como uma coisa só (as peças continuam separadas)": {
-  "pt_BR": "Junta as peças selecionadas num grupo que se move como uma coisa só (as peças continuam separadas)",
-  "en_US": "Joins the selected parts into a group that moves as one (the parts stay separate)"
- },
- "Mede o modelo: mais de 50 unidades numa medida = milímetros": {
-  "pt_BR": "Mede o modelo: mais de 50 unidades numa medida = milímetros",
-  "en_US": "Measures the model: more than 50 units in a dimension = millimeters"
- },
- "Monta a janela ou porta a partir das peças selecionadas: sugere a esquadria e as folhas pelo nome das peças": {
-  "pt_BR": "Monta a janela ou porta a partir das peças selecionadas: sugere a esquadria e as folhas pelo nome das peças",
-  "en_US": "Assembles the window or door from the selected parts: suggests the frame and the sashes from the part names"
- },
- "Montar esquadria": {
-  "pt_BR": "Montar esquadria",
-  "en_US": "Assemble frame"
- },
- "Nenhum": {
-  "pt_BR": "Nenhum",
-  "en_US": "None"
- },
- "O arquivo usa Y para cima (padrão do OBJ do Blender, glTF)": {
-  "pt_BR": "O arquivo usa Y para cima (padrão do OBJ do Blender, glTF)",
-  "en_US": "The file uses Y up (Blender OBJ default, glTF)"
- },
- "O arquivo usa Z para cima (SketchUp, Promob, a maioria dos CAD)": {
-  "pt_BR": "O arquivo usa Z para cima (SketchUp, Promob, a maioria dos CAD)",
-  "en_US": "The file uses Z up (SketchUp, Promob, most CAD tools)"
- },
- "Papel": {
-  "pt_BR": "Papel",
-  "en_US": "Role"
- },
- "Parte fixa": {
-  "pt_BR": "Parte fixa",
-  "en_US": "Fixed part"
- },
- "Parte fixa da janela ou porta: marco, bordas, trilhos e guias": {
-  "pt_BR": "Parte fixa da janela ou porta: marco, bordas, trilhos e guias",
-  "en_US": "Fixed part of the window or door: jamb, trims, tracks and guides"
- },
- "Parte móvel: abre e fecha": {
-  "pt_BR": "Parte móvel: abre e fecha",
-  "en_US": "Moving part: opens and closes"
- },
- "Peças que se movem juntas": {
-  "pt_BR": "Peças que se movem juntas",
-  "en_US": "Parts that move together"
- },
- "Pouco curso para este lado: inverta o sentido": {
-  "pt_BR": "Pouco curso para este lado: inverta o sentido",
-  "en_US": "Little travel on this side: reverse the direction"
- },
- "Selecione a esquadria (Montar esquadria) e a parede": {
-  "pt_BR": "Selecione a esquadria (Montar esquadria) e a parede",
-  "en_US": "Select the frame (Assemble frame) and the wall"
- },
- "Selecione as peças do grupo": {
-  "pt_BR": "Selecione as peças do grupo",
-  "en_US": "Select the parts of the group"
- },
- "Selecione também a parede": {
-  "pt_BR": "Selecione também a parede",
-  "en_US": "Also select the wall"
- },
- "Tira a janela da parede: ela fica solta no mesmo lugar e o vão fecha": {
-  "pt_BR": "Tira a janela da parede: ela fica solta no mesmo lugar e o vão fecha",
-  "en_US": "Takes the window off the wall: it stays loose in place and the opening closes"
- },
- "Unidade do arquivo": {
-  "pt_BR": "Unidade do arquivo",
-  "en_US": "File unit"
- },
- "{} ({} peças)": {
-  "pt_BR": "{} ({} peças)",
-  "en_US": "{} ({} parts)"
- },
- "{} instalada em {}": {
-  "pt_BR": "{} instalada em {}",
-  "en_US": "{} installed on {}"
- },
- "{} malha(s) importada(s), unidade: {}. Selecione o pai por último e use \"Converter em agregado\" ou \"Montar esquadria\"": {
-  "pt_BR": "{} malha(s) importada(s), unidade: {}. Selecione o pai por último e use \"Converter em agregado\" ou \"Montar esquadria\"",
-  "en_US": "{} mesh(es) imported, unit: {}. Select the parent last and use \"Convert to aggregate\" or \"Assemble frame\""
- },
- "{}: esquadria com {} peça(s) e {} folha(s)": {
-  "pt_BR": "{}: esquadria com {} peça(s) e {} folha(s)",
-  "en_US": "{}: frame with {} part(s) and {} sash(es)"
- },
- "Importa um modelo 3D (OBJ, FBX, glTF/GLB ou SketchUp) para converter em agregado ou folha de porta": {
-  "pt_BR": "Importa um modelo 3D (OBJ, FBX, glTF/GLB ou SketchUp) para converter em agregado ou folha de porta",
-  "en_US": "Imports a 3D model (OBJ, FBX, glTF/GLB or SketchUp) to turn into an add-on part or a door leaf"
- },
- "SketchUp importado: {} grupo(s) de peças de {}": {
-  "pt_BR": "SketchUp importado: {} grupo(s) de peças de {}",
-  "en_US": "SketchUp imported: {} part group(s) from {}"
- },
- "Formato não suportado: {} (use OBJ, FBX, glTF, GLB ou SKP)": {
-  "pt_BR": "Formato não suportado: {} (use OBJ, FBX, glTF, GLB ou SKP)",
-  "en_US": "Unsupported format: {} (use OBJ, FBX, glTF, GLB or SKP)"
- },
- "Não foi possível ler o SketchUp: {}. Salve numa versão recente do SketchUp ou exporte em glTF, OBJ ou FBX.": {
-  "pt_BR": "Não foi possível ler o SketchUp: {}. Salve numa versão recente do SketchUp ou exporte em glTF, OBJ ou FBX.",
-  "en_US": "Could not read the SketchUp file: {}. Save it in a recent SketchUp version or export it as glTF, OBJ or FBX."
- },
- "SketchUp padrão": {
-  "pt_BR": "SketchUp padrão",
-  "en_US": "SketchUp default"
- },
- "leitor de SketchUp indisponível nesta instalação ({})": {
-  "pt_BR": "leitor de SketchUp indisponível nesta instalação ({})",
-  "en_US": "SketchUp reader unavailable in this installation ({})"
- },
- "arquivo não encontrado": {
-  "pt_BR": "arquivo não encontrado",
-  "en_US": "file not found"
- },
- "o arquivo não tem geometria": {
-  "pt_BR": "o arquivo não tem geometria",
-  "en_US": "the file has no geometry"
+  "en_US": "0 = closed; 1 = fully open. Stops on touching a wall or object",
+  "pt_BR": "0 = fechada; 1 = abertura máxima. Para ao encostar em parede ou objeto"
  },
  "; {} figura(s) de escala ignorada(s)": {
-  "pt_BR": "; {} figura(s) de escala ignorada(s)",
-  "en_US": "; {} scale figure(s) skipped"
- },
- "Apaga os objetos selecionados com tudo que está abaixo deles; se tiverem agregados, pergunta se eles vão junto": {
-  "pt_BR": "Apaga os objetos selecionados com tudo que está abaixo deles; se tiverem agregados, pergunta se eles vão junto",
-  "en_US": "Deletes the selected objects with everything below them; if they have aggregates, asks whether they go too"
- },
- "{} malha(s) importada(s) num grupo, unidade: {}. Alt + clique seleciona uma peça; para converter, selecione as peças com Alt + Shift + clique, o pai por último": {
-  "pt_BR": "{} malha(s) importada(s) num grupo, unidade: {}. Alt + clique seleciona uma peça; para converter, selecione as peças com Alt + Shift + clique, o pai por último",
-  "en_US": "{} mesh(es) imported into a group, unit: {}. Alt + click selects one part; to convert, select the parts with Alt + Shift + click, the parent last"
- },
- "Direita (+X)": {
-  "pt_BR": "Direita (+X)",
-  "en_US": "Right (+X)"
- },
- "Esquerda (−X)": {
-  "pt_BR": "Esquerda (−X)",
-  "en_US": "Left (−X)"
- },
- "Fundo (+Y)": {
-  "pt_BR": "Fundo (+Y)",
-  "en_US": "Back (+Y)"
- },
- "Frente (−Y)": {
-  "pt_BR": "Frente (−Y)",
-  "en_US": "Front (−Y)"
- },
- "Topo (+Z)": {
-  "pt_BR": "Topo (+Z)",
-  "en_US": "Top (+Z)"
- },
- "Base (−Z)": {
-  "pt_BR": "Base (−Z)",
-  "en_US": "Bottom (−Z)"
+  "en_US": "; {} scale figure(s) skipped",
+  "pt_BR": "; {} figura(s) de escala ignorada(s)"
  },
  "A esquadria não tem peças para instalar": {
-  "pt_BR": "A esquadria não tem peças para instalar",
-  "en_US": "The frame has no parts to install"
+  "en_US": "The frame has no parts to install",
+  "pt_BR": "A esquadria não tem peças para instalar"
+ },
+ "A folha desliza num trilho": {
+  "en_US": "The leaf slides on a track",
+  "pt_BR": "A folha desliza num trilho"
+ },
+ "A folha gira em torno de um eixo": {
+  "en_US": "The leaf turns around an axis",
+  "pt_BR": "A folha gira em torno de um eixo"
+ },
+ "A janela já está instalada": {
+  "en_US": "The window is already installed",
+  "pt_BR": "A janela já está instalada"
+ },
+ "Abre para o lado da frente": {
+  "en_US": "Opens to the front side",
+  "pt_BR": "Abre para o lado da frente"
+ },
+ "Abre para o lado de trás": {
+  "en_US": "Opens to the back side",
+  "pt_BR": "Abre para o lado de trás"
+ },
+ "Abrindo": {
+  "en_US": "Opening",
+  "pt_BR": "Abrindo"
+ },
+ "Agregado": {
+  "en_US": "Aggregate",
+  "pt_BR": "Agregado"
+ },
+ "Agregado(s) de {}: ": {
+  "en_US": "Aggregate(s) of {}: ",
+  "pt_BR": "Agregado(s) de {}: "
+ },
+ "Agregados e folhas": {
+  "en_US": "Aggregates and leaves",
+  "pt_BR": "Agregados e folhas"
+ },
+ "Apaga os objetos selecionados com tudo que está abaixo deles; se tiverem agregados, pergunta se eles vão junto": {
+  "en_US": "Deletes the selected objects with everything below them; if they have aggregates, asks whether they go too",
+  "pt_BR": "Apaga os objetos selecionados com tudo que está abaixo deles; se tiverem agregados, pergunta se eles vão junto"
+ },
+ "Apaga os objetos selecionados; se tiverem agregados, pergunta se eles vão junto": {
+  "en_US": "Deletes the selected objects; if they have aggregates, asks whether they go too",
+  "pt_BR": "Apaga os objetos selecionados; se tiverem agregados, pergunta se eles vão junto"
+ },
+ "Apagar também os agregados": {
+  "en_US": "Also delete the aggregates",
+  "pt_BR": "Apagar também os agregados"
+ },
+ "Arrasta o agregado no plano da face do pai; ele para na borda (Esc ou botão direito cancela)": {
+  "en_US": "Drags the aggregate on the parent face plane; it stops at the edge (Esc or right button cancels)",
+  "pt_BR": "Arrasta o agregado no plano da face do pai; ele para na borda (Esc ou botão direito cancela)"
+ },
+ "Automática": {
+  "en_US": "Automatic",
+  "pt_BR": "Automática"
+ },
+ "Base (−Z)": {
+  "en_US": "Bottom (−Z)",
+  "pt_BR": "Base (−Z)"
+ },
+ "Converta a parede pelo editor de paredes antes de instalar": {
+  "en_US": "Convert the wall with the wall editor before installing",
+  "pt_BR": "Converta a parede pelo editor de paredes antes de instalar"
+ },
+ "Converte as malhas selecionadas em agregados do objeto ativo (selecione o pai por último)": {
+  "en_US": "Converts the selected meshes into aggregates of the active object (select the parent last)",
+  "pt_BR": "Converte as malhas selecionadas em agregados do objeto ativo (selecione o pai por último)"
+ },
+ "Converter em agregado": {
+  "en_US": "Convert to aggregate",
+  "pt_BR": "Converter em agregado"
+ },
+ "Converter em folha de porta": {
+  "en_US": "Convert to door leaf",
+  "pt_BR": "Converter em folha de porta"
+ },
+ "Correr": {
+  "en_US": "Slide",
+  "pt_BR": "Correr"
+ },
+ "Criar grupo": {
+  "en_US": "Create group",
+  "pt_BR": "Criar grupo"
+ },
+ "Curso": {
+  "en_US": "Travel",
+  "pt_BR": "Curso"
+ },
+ "Desconverter": {
+  "en_US": "Unconvert",
+  "pt_BR": "Desconverter"
+ },
+ "Desfaz a conversão: tira recortes e folha e devolve o objeto como estava": {
+  "en_US": "Undoes the conversion: removes cutouts and leaf and returns the object as it was",
+  "pt_BR": "Desfaz a conversão: tira recortes e folha e devolve o objeto como estava"
+ },
+ "Desfaz o grupo: as peças voltam soltas, com nome e material intactos": {
+  "en_US": "Ungroups: the parts come back loose, with name and material intact",
+  "pt_BR": "Desfaz o grupo: as peças voltam soltas, com nome e material intactos"
+ },
+ "Desfazer grupo": {
+  "en_US": "Ungroup",
+  "pt_BR": "Desfazer grupo"
+ },
+ "Desinstalar": {
+  "en_US": "Uninstall",
+  "pt_BR": "Desinstalar"
+ },
+ "Desligado: os agregados ficam soltos na mesma posição": {
+  "en_US": "Off: the aggregates stay loose in the same position",
+  "pt_BR": "Desligado: os agregados ficam soltos na mesma posição"
+ },
+ "Desliza no trilho": {
+  "en_US": "Slides on the track",
+  "pt_BR": "Desliza no trilho"
+ },
+ "Direita (+X)": {
+  "en_US": "Right (+X)",
+  "pt_BR": "Direita (+X)"
+ },
+ "Eixo": {
+  "en_US": "Axis",
+  "pt_BR": "Eixo"
+ },
+ "Eixo vertical": {
+  "en_US": "Up axis",
+  "pt_BR": "Eixo vertical"
+ },
+ "Encostou em": {
+  "en_US": "Touched",
+  "pt_BR": "Encostou em"
+ },
+ "Escolha ao menos um grupo como esquadria": {
+  "en_US": "Choose at least one group as the frame",
+  "pt_BR": "Escolha ao menos um grupo como esquadria"
+ },
+ "Escolha um arquivo do SketchUp (.skp)": {
+  "en_US": "Pick a SketchUp file (.skp)",
+  "pt_BR": "Escolha um arquivo do SketchUp (.skp)"
+ },
+ "Esquadria": {
+  "en_US": "Frame",
+  "pt_BR": "Esquadria"
+ },
+ "Esquadria: {}": {
+  "en_US": "Frame: {}",
+  "pt_BR": "Esquadria: {}"
+ },
+ "Esquerda (−X)": {
+  "en_US": "Left (−X)",
+  "pt_BR": "Esquerda (−X)"
+ },
+ "Face": {
+  "en_US": "Face",
+  "pt_BR": "Face"
+ },
+ "Fechando": {
+  "en_US": "Closing",
+  "pt_BR": "Fechando"
+ },
+ "Fica solta": {
+  "en_US": "Stays loose",
+  "pt_BR": "Fica solta"
+ },
+ "Folha": {
+  "en_US": "Sash",
+  "pt_BR": "Folha"
+ },
+ "Folha bateu em {}": {
+  "en_US": "Leaf hit {}",
+  "pt_BR": "Folha bateu em {}"
+ },
+ "Folha de correr": {
+  "en_US": "Sliding sash",
+  "pt_BR": "Folha de correr"
+ },
+ "Folha de giro": {
+  "en_US": "Swing sash",
+  "pt_BR": "Folha de giro"
+ },
+ "Folha de porta": {
+  "en_US": "Door leaf",
+  "pt_BR": "Folha de porta"
+ },
+ "Folha encostou em {}": {
+  "en_US": "Sash stopped against {}",
+  "pt_BR": "Folha encostou em {}"
+ },
+ "Folha que abre e fecha": {
+  "en_US": "Leaf that opens and closes",
+  "pt_BR": "Folha que abre e fecha"
+ },
+ "Formato não suportado: {} (use OBJ, FBX, glTF ou GLB)": {
+  "en_US": "Unsupported format: {} (use OBJ, FBX, glTF or GLB)",
+  "pt_BR": "Formato não suportado: {} (use OBJ, FBX, glTF ou GLB)"
+ },
+ "Formato não suportado: {} (use OBJ, FBX, glTF, GLB ou SKP)": {
+  "en_US": "Unsupported format: {} (use OBJ, FBX, glTF, GLB or SKP)",
+  "pt_BR": "Formato não suportado: {} (use OBJ, FBX, glTF, GLB ou SKP)"
+ },
+ "Frente (−Y)": {
+  "en_US": "Front (−Y)",
+  "pt_BR": "Frente (−Y)"
+ },
+ "Fundo (+Y)": {
+  "en_US": "Back (+Y)",
+  "pt_BR": "Fundo (+Y)"
+ },
+ "Furo real no plano de corte": {
+  "en_US": "Real hole in the cut plan",
+  "pt_BR": "Furo real no plano de corte"
+ },
+ "Gira num eixo": {
+  "en_US": "Turns on a hinge",
+  "pt_BR": "Gira num eixo"
+ },
+ "Gire a vista para enxergar a face do pai": {
+  "en_US": "Rotate the view to see the parent face",
+  "pt_BR": "Gire a vista para enxergar a face do pai"
+ },
+ "Giro": {
+  "en_US": "Swing",
+  "pt_BR": "Giro"
+ },
+ "Grupo {} com {} peça(s)": {
+  "en_US": "Group {} with {} part(s)",
+  "pt_BR": "Grupo {} com {} peça(s)"
+ },
+ "Grupo {} desfeito: {} peça(s)": {
+  "en_US": "Group {} ungrouped: {} part(s)",
+  "pt_BR": "Grupo {} desfeito: {} peça(s)"
+ },
+ "Horizontal": {
+  "en_US": "Horizontal",
+  "pt_BR": "Horizontal"
+ },
+ "Ignorar": {
+  "en_US": "Ignore",
+  "pt_BR": "Ignorar"
+ },
+ "Importa um modelo 3D (OBJ, FBX, glTF/GLB ou SketchUp) para converter em agregado ou folha de porta": {
+  "en_US": "Imports a 3D model (OBJ, FBX, glTF/GLB or SketchUp) to turn into an add-on part or a door leaf",
+  "pt_BR": "Importa um modelo 3D (OBJ, FBX, glTF/GLB ou SketchUp) para converter em agregado ou folha de porta"
+ },
+ "Importa um modelo 3D (OBJ, FBX, glTF/GLB) para converter em agregado ou folha de porta": {
+  "en_US": "Imports a 3D model (OBJ, FBX, glTF/GLB) to convert into an aggregate or door leaf",
+  "pt_BR": "Importa um modelo 3D (OBJ, FBX, glTF/GLB) para converter em agregado ou folha de porta"
+ },
+ "Importa um modelo do SketchUp (.skp) direto pela lista de importação do Blender": {
+  "en_US": "Imports a SketchUp model (.skp) straight from Blender's import list",
+  "pt_BR": "Importa um modelo do SketchUp (.skp) direto pela lista de importação do Blender"
+ },
+ "Importar modelo 3D": {
+  "en_US": "Import 3D model",
+  "pt_BR": "Importar modelo 3D"
+ },
+ "Importação cancelada: {}": {
+  "en_US": "Import cancelled: {}",
+  "pt_BR": "Importação cancelada: {}"
+ },
+ "Instala a janela importada na parede selecionada, cortando o vão": {
+  "en_US": "Installs the imported window on the selected wall, cutting the opening",
+  "pt_BR": "Instala a janela importada na parede selecionada, cortando o vão"
+ },
+ "Instalar na parede": {
+  "en_US": "Install on wall",
+  "pt_BR": "Instalar na parede"
+ },
+ "Janela desinstalada": {
+  "en_US": "Window uninstalled",
+  "pt_BR": "Janela desinstalada"
+ },
+ "Junta as peças selecionadas num grupo que se move como uma coisa só (as peças continuam separadas)": {
+  "en_US": "Joins the selected parts into a group that moves as one (the parts stay separate)",
+  "pt_BR": "Junta as peças selecionadas num grupo que se move como uma coisa só (as peças continuam separadas)"
+ },
+ "Leva o recorte para a usinagem da peça pai no plano de corte e na exportação de produção": {
+  "en_US": "Sends the cutout to the parent part machining in the cut plan and the production export",
+  "pt_BR": "Leva o recorte para a usinagem da peça pai no plano de corte e na exportação de produção"
+ },
+ "Mais próxima": {
+  "en_US": "Nearest",
+  "pt_BR": "Mais próxima"
+ },
+ "Mede o modelo: mais de 50 unidades numa medida = milímetros": {
+  "en_US": "Measures the model: more than 50 units in a dimension = millimeters",
+  "pt_BR": "Mede o modelo: mais de 50 unidades numa medida = milímetros"
+ },
+ "Monta a janela ou porta a partir das peças selecionadas: sugere a esquadria e as folhas pelo nome das peças": {
+  "en_US": "Assembles the window or door from the selected parts: suggests the frame and the sashes from the part names",
+  "pt_BR": "Monta a janela ou porta a partir das peças selecionadas: sugere a esquadria e as folhas pelo nome das peças"
+ },
+ "Montar esquadria": {
+  "en_US": "Assemble frame",
+  "pt_BR": "Montar esquadria"
+ },
+ "Mover agregado": {
+  "en_US": "Move aggregate",
+  "pt_BR": "Mover agregado"
+ },
+ "Mover agregado  |  Clique: confirmar  |  Botão direito/Esc: cancelar": {
+  "en_US": "Move aggregate  |  Click: confirm  |  Right button/Esc: cancel",
+  "pt_BR": "Mover agregado  |  Clique: confirmar  |  Botão direito/Esc: cancelar"
+ },
+ "Movimento": {
+  "en_US": "Motion",
+  "pt_BR": "Movimento"
+ },
+ "Nenhum": {
+  "en_US": "None",
+  "pt_BR": "Nenhum"
+ },
+ "Não foi possível ler o SketchUp: {}. Salve numa versão recente do SketchUp ou exporte em glTF, OBJ ou FBX.": {
+  "en_US": "Could not read the SketchUp file: {}. Save it in a recent SketchUp version or export it as glTF, OBJ or FBX.",
+  "pt_BR": "Não foi possível ler o SketchUp: {}. Salve numa versão recente do SketchUp ou exporte em glTF, OBJ ou FBX."
+ },
+ "O Blender não conseguiu importar {}: {}": {
+  "en_US": "Blender could not import {}: {}",
+  "pt_BR": "O Blender não conseguiu importar {}: {}"
+ },
+ "O agregado entra na lista de peças do plano de corte": {
+  "en_US": "The aggregate goes into the cut plan part list",
+  "pt_BR": "O agregado entra na lista de peças do plano de corte"
+ },
+ "O arquivo usa Y para cima (padrão do OBJ do Blender, glTF)": {
+  "en_US": "The file uses Y up (Blender OBJ default, glTF)",
+  "pt_BR": "O arquivo usa Y para cima (padrão do OBJ do Blender, glTF)"
+ },
+ "O arquivo usa Z para cima (SketchUp, Promob, a maioria dos CAD)": {
+  "en_US": "The file uses Z up (SketchUp, Promob, most CAD tools)",
+  "pt_BR": "O arquivo usa Z para cima (SketchUp, Promob, a maioria dos CAD)"
+ },
+ "O furo real só vale quando o agregado entra pela face da chapa (topo ou base da peça)": {
+  "en_US": "A real hole only applies when the aggregate enters through the sheet face (top or bottom of the part)",
+  "pt_BR": "O furo real só vale quando o agregado entra pela face da chapa (topo ou base da peça)"
+ },
+ "O objeto tem agregados": {
+  "en_US": "The object has aggregates",
+  "pt_BR": "O objeto tem agregados"
+ },
+ "O pai não pode ser o próprio objeto nem um filho dele": {
+  "en_US": "The parent cannot be the object itself or one of its children",
+  "pt_BR": "O pai não pode ser o próprio objeto nem um filho dele"
+ },
+ "O pai não é uma peça do plano de corte": {
+  "en_US": "The parent is not a cut plan part",
+  "pt_BR": "O pai não é uma peça do plano de corte"
+ },
+ "Pai": {
+  "en_US": "Parent",
+  "pt_BR": "Pai"
+ },
+ "Papel": {
+  "en_US": "Role",
+  "pt_BR": "Papel"
+ },
+ "Para a direita": {
+  "en_US": "To the right",
+  "pt_BR": "Para a direita"
+ },
+ "Para a esquerda": {
+  "en_US": "To the left",
+  "pt_BR": "Para a esquerda"
+ },
+ "Para dentro": {
+  "en_US": "Inward",
+  "pt_BR": "Para dentro"
+ },
+ "Para fora": {
+  "en_US": "Outward",
+  "pt_BR": "Para fora"
+ },
+ "Parte fixa": {
+  "en_US": "Fixed part",
+  "pt_BR": "Parte fixa"
+ },
+ "Parte fixa da janela ou porta: marco, bordas, trilhos e guias": {
+  "en_US": "Fixed part of the window or door: jamb, trims, tracks and guides",
+  "pt_BR": "Parte fixa da janela ou porta: marco, bordas, trilhos e guias"
+ },
+ "Parte móvel: abre e fecha": {
+  "en_US": "Moving part: opens and closes",
+  "pt_BR": "Parte móvel: abre e fecha"
+ },
+ "Perfurar": {
+  "en_US": "Perforate",
+  "pt_BR": "Perfurar"
+ },
+ "Peça de produção": {
+  "en_US": "Production part",
+  "pt_BR": "Peça de produção"
+ },
+ "Peça presa ao pai": {
+  "en_US": "Part attached to the parent",
+  "pt_BR": "Peça presa ao pai"
+ },
+ "Peças que se movem juntas": {
+  "en_US": "Parts that move together",
+  "pt_BR": "Peças que se movem juntas"
+ },
+ "Pivô ausente; desconverta e converta de novo": {
+  "en_US": "Pivot missing; unconvert and convert again",
+  "pt_BR": "Pivô ausente; desconverta e converta de novo"
+ },
+ "Positivo afasta do pai; negativo afunda no pai até a espessura dele": {
+  "en_US": "Positive moves away from the parent; negative sinks into the parent up to its thickness",
+  "pt_BR": "Positivo afasta do pai; negativo afunda no pai até a espessura dele"
+ },
+ "Pouco curso para este lado: inverta o sentido": {
+  "en_US": "Little travel on this side: reverse the direction",
+  "pt_BR": "Pouco curso para este lado: inverta o sentido"
+ },
+ "Recorta o pai no volume em que o agregado afunda (só no 3D)": {
+  "en_US": "Cuts the parent where the aggregate sinks in (3D only)",
+  "pt_BR": "Recorta o pai no volume em que o agregado afunda (só no 3D)"
+ },
+ "Selecione a esquadria (Montar esquadria) e a parede": {
+  "en_US": "Select the frame (Assemble frame) and the wall",
+  "pt_BR": "Selecione a esquadria (Montar esquadria) e a parede"
+ },
+ "Selecione a malha e, por último, o elemento pai.": {
+  "en_US": "Select the mesh and, last, the parent element.",
+  "pt_BR": "Selecione a malha e, por último, o elemento pai."
+ },
+ "Selecione as peças do grupo": {
+  "en_US": "Select the parts of the group",
+  "pt_BR": "Selecione as peças do grupo"
+ },
+ "Selecione também a parede": {
+  "en_US": "Also select the wall",
+  "pt_BR": "Selecione também a parede"
+ },
+ "Selecione também o elemento pai (por último, como ativo)": {
+  "en_US": "Also select the parent element (last, as active)",
+  "pt_BR": "Selecione também o elemento pai (por último, como ativo)"
+ },
+ "Selecione um objeto de malha para converter": {
+  "en_US": "Select a mesh object to convert",
+  "pt_BR": "Selecione um objeto de malha para converter"
+ },
+ "Sentido": {
+  "en_US": "Direction",
+  "pt_BR": "Sentido"
+ },
+ "SketchUp (.skp)": {
+  "en_US": "SketchUp (.skp)",
+  "pt_BR": "SketchUp (.skp)"
+ },
+ "SketchUp importado: {} grupo(s) de peças de {}": {
+  "en_US": "SketchUp imported: {} part group(s) from {}",
+  "pt_BR": "SketchUp importado: {} grupo(s) de peças de {}"
+ },
+ "SketchUp padrão": {
+  "en_US": "SketchUp default",
+  "pt_BR": "SketchUp padrão"
+ },
+ "Tipo": {
+  "en_US": "Type",
+  "pt_BR": "Tipo"
+ },
+ "Tira a janela da parede: ela fica solta no mesmo lugar e o vão fecha": {
+  "en_US": "Takes the window off the wall: it stays loose in place and the opening closes",
+  "pt_BR": "Tira a janela da parede: ela fica solta no mesmo lugar e o vão fecha"
+ },
+ "Topo (+Z)": {
+  "en_US": "Top (+Z)",
+  "pt_BR": "Topo (+Z)"
+ },
+ "Uma folha de porta não pode receber agregados": {
+  "en_US": "A door leaf cannot receive aggregates",
+  "pt_BR": "Uma folha de porta não pode receber agregados"
+ },
+ "Unidade do arquivo": {
+  "en_US": "File unit",
+  "pt_BR": "Unidade do arquivo"
+ },
+ "Vertical": {
+  "en_US": "Vertical",
+  "pt_BR": "Vertical"
+ },
+ "arquivo não encontrado": {
+  "en_US": "file not found",
+  "pt_BR": "arquivo não encontrado"
+ },
+ "leitor de SketchUp indisponível nesta instalação ({})": {
+  "en_US": "SketchUp reader unavailable in this installation ({})",
+  "pt_BR": "leitor de SketchUp indisponível nesta instalação ({})"
+ },
+ "mín. {}": {
+  "en_US": "min. {}",
+  "pt_BR": "mín. {}"
+ },
+ "o arquivo não tem geometria": {
+  "en_US": "the file has no geometry",
+  "pt_BR": "o arquivo não tem geometria"
+ },
+ "sem extensão": {
+  "en_US": "no extension",
+  "pt_BR": "sem extensão"
+ },
+ "{} ({} peças)": {
+  "en_US": "{} ({} parts)",
+  "pt_BR": "{} ({} peças)"
+ },
+ "{} agregado(s) presos aos objetos selecionados.": {
+  "en_US": "{} aggregate(s) attached to the selected objects.",
+  "pt_BR": "{} agregado(s) presos aos objetos selecionados."
+ },
+ "{} instalada em {}": {
+  "en_US": "{} installed on {}",
+  "pt_BR": "{} instalada em {}"
+ },
+ "{} malha(s) importada(s) num grupo, unidade: {}. Alt + clique seleciona uma peça; para converter, selecione as peças com Alt + Shift + clique, o pai por último": {
+  "en_US": "{} mesh(es) imported into a group, unit: {}. Alt + click selects one part; to convert, select the parts with Alt + Shift + click, the parent last",
+  "pt_BR": "{} malha(s) importada(s) num grupo, unidade: {}. Alt + clique seleciona uma peça; para converter, selecione as peças com Alt + Shift + clique, o pai por último"
+ },
+ "{} malha(s) importada(s), unidade: {}. Selecione o pai por último e use \"Converter em agregado\" ou \"Montar esquadria\"": {
+  "en_US": "{} mesh(es) imported, unit: {}. Select the parent last and use \"Convert to aggregate\" or \"Assemble frame\"",
+  "pt_BR": "{} malha(s) importada(s), unidade: {}. Selecione o pai por último e use \"Converter em agregado\" ou \"Montar esquadria\""
+ },
+ "{} malha(s) importada(s). Selecione o pai por último e use \"Converter em agregado\"": {
+  "en_US": "{} mesh(es) imported. Select the parent last and use \"Convert to aggregate\"",
+  "pt_BR": "{} malha(s) importada(s). Selecione o pai por último e use \"Converter em agregado\""
+ },
+ "{} objeto(s) desconvertido(s)": {
+  "en_US": "{} object(s) unconverted",
+  "pt_BR": "{} objeto(s) desconvertido(s)"
+ },
+ "{} virou folha de porta de {}; use a barra Abertura": {
+  "en_US": "{} became a door leaf of {}; use the Opening slider",
+  "pt_BR": "{} virou folha de porta de {}; use a barra Abertura"
+ },
+ "{} — pai: {}": {
+  "en_US": "{} — parent: {}",
+  "pt_BR": "{} — pai: {}"
+ },
+ "{}: esquadria com {} peça(s) e {} folha(s)": {
+  "en_US": "{}: frame with {} part(s) and {} sash(es)",
+  "pt_BR": "{}: esquadria com {} peça(s) e {} folha(s)"
+ },
+ "Ângulo máximo": {
+  "en_US": "Maximum angle",
+  "pt_BR": "Ângulo máximo"
  }
 }

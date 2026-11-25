@@ -146,6 +146,7 @@ def _cabecalho(layout, context, raiz, spec, contrato):
     linha = topo.row(align=True)
     linha.label(text=tr("Construtor de Armários"), icon='MESH_CUBE')
     linha.operator("caffmob.opcut_generate", text=tr("Plano de Corte"), icon='MOD_ARRAY')
+    linha.operator("caffmob.armario_v2_window_open", text=tr("Abrir Janela"), icon='FULLSCREEN_ENTER')
 
     # Badge de status de chapa + dimensões + montagem
     status = topo.row(align=True)
@@ -422,6 +423,9 @@ def draw_painel(layout, context):
                     icon='ERROR')
         return
     if raiz is None:
+        layout.operator("caffmob.armario_v2_window_open", text=tr("Abrir Janela do Construtor"),
+                        icon='FULLSCREEN_ENTER')
+        ponte.desenhar_conversao(layout, context)
         return
     armario = raiz.btm_armario
     spec = ops.spec_do_armario(raiz)

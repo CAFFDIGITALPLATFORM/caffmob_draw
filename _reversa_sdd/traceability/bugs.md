@@ -1,6 +1,10 @@
-<!-- GENERATED, DO NOT EDIT: regenerado por /reversa-debugger-graph em 2026-11-24T06:45:20+00:00 a partir de 160 bugs -->
+<!-- GENERATED, DO NOT EDIT: regenerado por /reversa-debugger-graph em 2026-11-24T16:57:54+00:00 a partir de 162 bugs -->
 
 # Bugs que atingem as specs
+
+## `**spec-gap**`
+
+- BUG-20261124-7K2M (resolved/fixed, P1): Contrato v2 não importa em Python 3.10 por causa de NotRequired — `_reversa_bugs/plugin-caffmob-draw/bugs/BUG-20261124-7K2M-contrato-sem-notrequired`
 
 ## `CLAUDE.md#onde-editar`
 
@@ -38,6 +42,10 @@
 ## `_reversa_forward/014-texturas-fabricantes-grade/requirements.md#RN-08`
 
 - BUG-20261014-RWU2 (resolved/fixed, P1): Modelos prontos aparecem com a mesma miniatura na grade da biblioteca — `_reversa_bugs/library_panel/bugs/BUG-20261014-RWU2-modelos-prontos-com-a-mesma-miniatura`
+
+## `_reversa_forward/021-plano-corte-camadas-gaveteiro/roadmap.md#10. Critério de pronto`
+
+- BUG-20261124-7H3K (resolved/fixed, P2): Ensaios de SHA256SUMS ordenam por Path e divergem no Windows — `_reversa_bugs/plugin-caffmob-draw/bugs/BUG-20261124-7H3K-sha256sums-ordem-case-insensitive-windows`
 
 ## `_reversa_sdd/addenda/bug-BUG-20261006-KFAR-v001.md`
 
@@ -109,8 +117,8 @@
 
 ## `_reversa_sdd/aggregates/edge-cases.md#EC-16`
 
-- BUG-20261011-TUWO (resolved/fixed, P0): Apagar parede sem 'Apagar também os agregados' solta os agregados dos módulos que ficam — `_reversa_bugs/selection/bugs/BUG-20261011-TUWO-apagar-parede-sem-apagar-tambem-os-agregados`
 - BUG-20261011-DXOV (resolved/fixed, P0): Apagar parede com 'Apagar também os agregados' ligado não apaga os agregados dos módulos — `_reversa_bugs/aggregates/bugs/BUG-20261011-DXOV-apagar-parede-com-apagar-tambem-os-agregados`
+- BUG-20261011-TUWO (resolved/fixed, P0): Apagar parede sem 'Apagar também os agregados' solta os agregados dos módulos que ficam — `_reversa_bugs/selection/bugs/BUG-20261011-TUWO-apagar-parede-sem-apagar-tambem-os-agregados`
 
 ## `_reversa_sdd/aggregates/edge-cases.md#EC-23`
 
@@ -161,6 +169,10 @@
 - BUG-20261006-NO4Q (resolved/fixed, P0): Interface legada Home Builder aparece separada do plugin — `_reversa_bugs/plugin-caffmob-draw/bugs/BUG-20261006-NO4Q-interface-home-builder-separada`
 - BUG-20261006-QAVK (resolved/fixed, P0): Nome e identificador do plugin devem ser CAFFMob Draw — `_reversa_bugs/plugin-caffmob-draw/bugs/BUG-20261006-QAVK-nome-e-identificador-caffmob-draw`
 - BUG-20261012-RCOU (resolved/fixed, P2): test_identity falha: btm.door_invert_hand e btm.resize_width fogem do prefixo caffmob — `_reversa_bugs/plugin-caffmob-draw/bugs/BUG-20261012-RCOU-test-identity-falha-btm-door-invert-hand`
+
+## `_reversa_sdd/architecture.md#Re-extração 2026-10-10 — arquitetura atual`
+
+- BUG-20261124-Q2MF (resolved/fixed, P2): Ensaio do transporte por subprocesso usa select num pipe e quebra no Windows — `_reversa_bugs/plugin-caffmob-draw/bugs/BUG-20261124-Q2MF-ensaio-select-em-pipe-windows`
 
 ## `_reversa_sdd/cabinet_editor/design.md#F-12`
 
@@ -365,7 +377,7 @@
 ## `_reversa_sdd/deployment.md`
 
 - BUG-20261006-SCVF (resolved/fixed, P0): Cópia antiga do plugin na raiz do repositório com o mesmo id e add-on legado nas preferências — `_reversa_bugs/plugin-caffmob-draw/bugs/BUG-20261006-SCVF-copia-antiga-na-raiz-e-addon-legado`
-- BUG-20261123-56YQ (open/null, P1): Arrastar o zip para o Blender 5.2 falha no lock do repositório (cookie da pasta temporária ausente) — `_reversa_bugs/plugin-caffmob-draw/bugs/BUG-20261123-56YQ-instalar-zip-falha-no-lock-do-repositorio`
+- BUG-20261123-56YQ (open/None, P1): Arrastar o zip para o Blender 5.2 falha no lock do repositório (cookie da pasta temporária ausente) — `_reversa_bugs/plugin-caffmob-draw/bugs/BUG-20261123-56YQ-instalar-zip-falha-no-lock-do-repositorio`
 - BUG-20261123-RW3G (resolved/fixed, P3): build.py empacota dotfiles e caches no zip (sai .impeccable/hook.cache.json) — `_reversa_bugs/plugin-caffmob-draw/bugs/BUG-20261123-RW3G-build-empacota-dotfiles-e-caches`
 
 ## `_reversa_sdd/domain.md#2.1 Regras de Paredes e Piso`
@@ -722,8 +734,8 @@
 
 ## `_reversa_sdd/questions.md#pergunta-2`
 
-- BUG-20261011-TUWO (resolved/fixed, P0): Apagar parede sem 'Apagar também os agregados' solta os agregados dos módulos que ficam — `_reversa_bugs/selection/bugs/BUG-20261011-TUWO-apagar-parede-sem-apagar-tambem-os-agregados`
 - BUG-20261011-DXOV (resolved/fixed, P0): Apagar parede com 'Apagar também os agregados' ligado não apaga os agregados dos módulos — `_reversa_bugs/aggregates/bugs/BUG-20261011-DXOV-apagar-parede-com-apagar-tambem-os-agregados`
+- BUG-20261011-TUWO (resolved/fixed, P0): Apagar parede sem 'Apagar também os agregados' solta os agregados dos módulos que ficam — `_reversa_bugs/selection/bugs/BUG-20261011-TUWO-apagar-parede-sem-apagar-tambem-os-agregados`
 
 ## `_reversa_sdd/questions.md#pergunta-20`
 
@@ -759,8 +771,8 @@
 
 ## `_reversa_sdd/questions.md#pergunta-4`
 
-- BUG-20261011-TUWO (resolved/fixed, P0): Apagar parede sem 'Apagar também os agregados' solta os agregados dos módulos que ficam — `_reversa_bugs/selection/bugs/BUG-20261011-TUWO-apagar-parede-sem-apagar-tambem-os-agregados`
 - BUG-20261011-DXOV (resolved/fixed, P0): Apagar parede com 'Apagar também os agregados' ligado não apaga os agregados dos módulos — `_reversa_bugs/aggregates/bugs/BUG-20261011-DXOV-apagar-parede-com-apagar-tambem-os-agregados`
+- BUG-20261011-TUWO (resolved/fixed, P0): Apagar parede sem 'Apagar também os agregados' solta os agregados dos módulos que ficam — `_reversa_bugs/selection/bugs/BUG-20261011-TUWO-apagar-parede-sem-apagar-tambem-os-agregados`
 
 ## `_reversa_sdd/questions.md#pergunta-41`
 
@@ -812,8 +824,8 @@
 
 ## `_reversa_sdd/selection/tasks.md#DT-01`
 
-- BUG-20261011-TUWO (resolved/fixed, P0): Apagar parede sem 'Apagar também os agregados' solta os agregados dos módulos que ficam — `_reversa_bugs/selection/bugs/BUG-20261011-TUWO-apagar-parede-sem-apagar-tambem-os-agregados`
 - BUG-20261011-DXOV (resolved/fixed, P0): Apagar parede com 'Apagar também os agregados' ligado não apaga os agregados dos módulos — `_reversa_bugs/aggregates/bugs/BUG-20261011-DXOV-apagar-parede-com-apagar-tambem-os-agregados`
+- BUG-20261011-TUWO (resolved/fixed, P0): Apagar parede sem 'Apagar também os agregados' solta os agregados dos módulos que ficam — `_reversa_bugs/selection/bugs/BUG-20261011-TUWO-apagar-parede-sem-apagar-tambem-os-agregados`
 
 ## `_reversa_sdd/selection/tasks.md#DT-02`
 
@@ -911,9 +923,9 @@
 ## `_reversa_sdd/wall_editor/requirements.md`
 
 - BUG-20261006-KFAR (resolved/fixed, P0): Erro ao salvar no Windows com o editor de paredes e o construtor de paredes — `_reversa_bugs/editor-de-paredes/bugs/BUG-20261006-KFAR-erro-ao-salvar-no-windows`
+- BUG-20261007-VQ72 (resolved/fixed, P1): Trecho selecionado não mostra a medida no painel do editor de paredes — `_reversa_bugs/editor-de-paredes/bugs/BUG-20261007-VQ72-medida-do-trecho-no-painel`
 - BUG-20261007-YIMY (resolved/fixed, P1): Porta e janela inseridas viram bloco liso com a espessura fora da parede — `_reversa_bugs/editor-de-paredes/bugs/BUG-20261007-YIMY-porta-bloco-fora-da-parede`
 - BUG-20261007-ZZUK (resolved/fixed, P1): Ctrl+Z não desfaz dentro do editor de paredes — `_reversa_bugs/editor-de-paredes/bugs/BUG-20261007-ZZUK-ctrl-z-no-editor-de-paredes`
-- BUG-20261007-VQ72 (resolved/fixed, P1): Trecho selecionado não mostra a medida no painel do editor de paredes — `_reversa_bugs/editor-de-paredes/bugs/BUG-20261007-VQ72-medida-do-trecho-no-painel`
 
 ## `_reversa_sdd/walls2d/design.md#Interface`
 
@@ -960,12 +972,12 @@
 
 ## `_reversa_sdd/walls2d/requirements.md#RF-13`
 
-- BUG-20261117-AKYJ (resolved/fixed, P2): Falta menu de contexto na parede com toggles de linha, sentido e tipo — `_reversa_bugs/editor-de-paredes/bugs/BUG-20261117-AKYJ-menu-de-contexto-tipo-e-sentido`
 - BUG-20261117-6OXN (resolved/fixed, P3): Editor de parede só no tema escuro, sem opção de fundo branco — `_reversa_bugs/editor-de-paredes/bugs/BUG-20261117-6OXN-tema-claro-do-editor`
-- BUG-20261117-JXDJ (resolved/fixed, P2): Sem planta baixa dos objetos da cena com corte superior e cores — `_reversa_bugs/editor-de-paredes/bugs/BUG-20261117-JXDJ-planta-baixa-com-corte-e-cores`
 - BUG-20261117-744U (resolved/fixed, P3): Sem botão de imprimir a planta baixa — `_reversa_bugs/editor-de-paredes/bugs/BUG-20261117-744U-imprimir-planta-baixa`
-- BUG-20261117-V4I3 (resolved/fixed, P2): Sem ferramenta de medir entre dois pontos dentro do editor — `_reversa_bugs/editor-de-paredes/bugs/BUG-20261117-V4I3-ferramenta-de-medir-dois-pontos`
+- BUG-20261117-AKYJ (resolved/fixed, P2): Falta menu de contexto na parede com toggles de linha, sentido e tipo — `_reversa_bugs/editor-de-paredes/bugs/BUG-20261117-AKYJ-menu-de-contexto-tipo-e-sentido`
+- BUG-20261117-JXDJ (resolved/fixed, P2): Sem planta baixa dos objetos da cena com corte superior e cores — `_reversa_bugs/editor-de-paredes/bugs/BUG-20261117-JXDJ-planta-baixa-com-corte-e-cores`
 - BUG-20261117-RP9Q (resolved/fixed, P2): Menu lateral de paredes com estilo antigo; quer botão de toggle moderno — `_reversa_bugs/editor-de-paredes/bugs/BUG-20261117-RP9Q-menu-lateral-estilo-antigo-toggle-botao`
+- BUG-20261117-V4I3 (resolved/fixed, P2): Sem ferramenta de medir entre dois pontos dentro do editor — `_reversa_bugs/editor-de-paredes/bugs/BUG-20261117-V4I3-ferramenta-de-medir-dois-pontos`
 - BUG-20261118-PLNT (resolved/fixed, P1): Planta baixa derruba o desenho do editor com curva, texto ou vazio na cena — `_reversa_bugs/editor-de-paredes/bugs/BUG-20261118-PLNT-planta-baixa-quebra-com-curva-na-cena`
 
 ## `_reversa_sdd/walls2d/requirements.md#RN-25`

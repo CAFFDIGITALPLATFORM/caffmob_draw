@@ -91,7 +91,7 @@ O projetista de interiores e o marceneiro que utilizam o CAFFMob Draw enfrentam 
 | RF-07 | Vincular automaticamente todos os armários criados, inseridos ou convertidos pelo addon à camada (coleção) `Marcenaria` (RN-06) | Must | Ao criar um armário pelo construtor, inserir da biblioteca ou converter um móvel, a raiz e suas peças ficam organizadas dentro da coleção `Marcenaria` na cena | 🟢 |
 | RF-08 | Exibir na aba Ferramentas controles rápidos para definir o pé-direito padrão e detalhes padrão de parede do projeto, consumidos automaticamente pelo Editor de Parede antes de desenhar qualquer trecho (RN-07) | Must | Ao alterar o pé-direito para 2,80 m e a espessura padrão para 150 mm na aba Ferramentas antes de abrir o Editor de Parede, qualquer nova parede desenhada já nasce com 2,80 m de altura e 150 mm de espessura | 🟢 |
 | RF-09 | Eliminar o ciclo infinito de reacoplamento ao desgrudar um armário e movê-lo para frente (RN-08) | Must | Após clicar em "Desgrudar" num armário grudado em uma parede e movê-lo 30 mm ou 100 mm para frente, o armário permanece na nova posição após o tempo de assentamento (0,2 s+) sem voltar para a parede nem reacoplar automaticamente | 🟢 |
-| RF-10 | Fazer o botão "Criar Armário" abrir diretamente o Construtor de Armários v2, mantendo a biblioteca acessível no painel de Biblioteca com a paleta visual oficial da CAFFMob (sem o verde escuro legado) e com armários compatíveis com o Construtor v2 (RN-09) | Must | Clicar em "Criar Armário" abre imediatamente o Construtor de Armários v2; acessar a Biblioteca de Armários pelo painel de Biblioteca exibe o visual na paleta CAFFMob e qualquer armário inserido dela abre e edita normalmente no Construtor v2 | 🟢 |
+| RF-10 | Fazer o botão "Criar Armário" abrir diretamente o Construtor de Armários v2 quando não há móvel legado ativo (com móvel legado ativo, mantém de propósito o diálogo antigo da RN-23), mantendo a biblioteca acessível no painel de Biblioteca com a paleta visual oficial da CAFFMob (sem o verde escuro legado) e com armários compatíveis com o Construtor v2 (RN-09) | Must | Clicar em "Criar Armário" sem móvel legado ativo abre imediatamente o Construtor de Armários v2; acessar a Biblioteca de Armários pelo painel de Biblioteca exibe o visual na paleta CAFFMob e qualquer armário inserido dela abre e edita normalmente no Construtor v2 | 🟢 |
 | RF-11 | Reconhecer paredes rebaixadas ao serem clicadas na viewport e exibir a opção "Restaurar Parede" para desfazer o rebaixamento (RN-10) | Must | Após rebaixar uma parede fora do editor e clicar no objeto rebaixado de 150 mm, o addon o reconhece como parede rebaixada e exibe o botão "Restaurar Parede"; ao acioná-lo, a parede volta à altura original e o representante rebaixado é removido | 🟢 |
 | RF-12 | Adicionar submenu "Converter em:" no menu de botão direito e toque longo contendo a opção "Gaveteiro", aceitando malha única ou objetos separados (RN-11) | Must | Ao clicar com botão direito (ou toque longo) em uma malha única de gaveta ou em um conjunto de objetos separados de um gaveteiro manual, o submenu "Converter em:" exibe "Gaveteiro" | 🟢 |
 | RF-13 | Analisar geometricamente a malha ou os objetos selecionados na conversão em Gaveteiro para classificar peças estruturais (2 laterais, contrafrente, traseira, fundo), acabamento (frente) e registrar ferragens/acessórios (corrediças, puxador, fixadores/fita de borda); quando faltarem peças, perguntar ao usuário se deseja completá-las automaticamente sem nunca bloquear a criação, e abrir o editor ao final para edição livre (RN-11) | Must | Converter uma malha com 6 peças classifica as 6 e abre o editor; converter uma malha sem contrafrente e sem fundo exibe aviso com as 2 peças ausentes, pergunta se o usuário deseja gerá-las automaticamente, respeita a escolha (gerando ou mantendo parcial) e abre o editor do gaveteiro para edição livre | 🟢 |
@@ -167,7 +167,7 @@ Cenário: Desgrudar armário e movê-lo para frente sem reacoplamento infinito (
   Então após o período de assentamento o armário permanece 30 mm à frente da parede e não volta a grudar na parede
 
 Cenário: Abrir Construtor v2 diretamente no Criar Armário e manter Biblioteca compatível com paleta CAFFMob (RF-10)
-  Dado a barra lateral do CAFFMob Draw aberta no modo Objeto
+  Dado a barra lateral do CAFFMob Draw aberta no modo Objeto e nenhum móvel legado ativo
   Quando o projetista clica em "Criar Armário"
   Então o Construtor de Armários v2 abre diretamente sem exibir a biblioteca antes
   Quando o projetista acessa a biblioteca de armários pelo painel de Biblioteca
@@ -246,3 +246,18 @@ Nenhuma lacuna ou dúvida pendente após a sessão de esclarecimentos de 2026-11
 |------|-----------|-------|
 | 2026-11-24 | Versão inicial gerada por `/reversa-requirements` | reversa |
 | 2026-11-24 | Esclarecimentos integrados por `/reversa-clarify` (5 decisões fechadas, 0 dúvidas restantes) | reversa |
+| 2026-11-24 | Verificação de interface do `/reversa-debugger`: nenhum requisito mudou. Registrado que o "Editor de Armário" vivo é o construtor v2 (`caffmob.cabinet_editor` pertence ao `Abrir` do v2 desde a 017/T027; o editor 2D está aposentado) e que a paridade visual com o mockup é a única pendência (T033) | reversa |
+
+## 12. Verificação de interface (2026-11-24)
+
+Nenhuma regra de negócio foi alterada. O que a inspeção fixou, para quem retomar esta feature:
+
+1. **RF-04 (colisão global):** verificado em execução. O operador alterna `collision_global` e `block_penetration`,
+   o desenho do cabeçalho não levanta exceção e os quatro rótulos traduzem em pt_BR.
+2. **RF-07 (camada Marcenaria):** verificado. A raiz criada pelo construtor nasce em `Marcenaria`. O caminho antigo
+   (`caffmob.library_create_cabinet` com um móvel legado ativo) cria um `BTM_Cabinet` na coleção corrente; é o
+   comportamento legado da RN-23, fora do escopo desta feature.
+3. **RF-10 (Criar Armário):** o operador abre o construtor v2 quando não há móvel legado ativo; com móvel legado
+   ativo cai no diálogo antigo de propósito. Não é regressão.
+4. **RF-11 e RF-12/13:** cobertos por `tests/blender_021_mcp_e2e.py` (50/50).
+5. **Pendência:** paridade visual com `mockup_construtor_armarios.html` (T033), que exige GUI.

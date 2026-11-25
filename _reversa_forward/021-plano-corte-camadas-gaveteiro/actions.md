@@ -69,12 +69,30 @@
 | T031 | Criar testes smoke no Blender 5.2 cobrindo camadas, cabeçalho de colisão, parede rebaixada, desgrudar sem ciclo, conversão em gaveteiro e `unregister` | T021, T022, T023, T024, T025, T028, T029 | - | `tests/test_smoke_021.py` | 🟢 | `[X]` |
 | T032 | Executar suíte completa de testes unitários, smokes Blender e empacotamento `build.py` confirmando zero regressões | T030, T031 | - | `build.py` | 🟢 | `[X]` |
 
+## Fase 6, Verificação aberta
+
+| ID | Descrição | Dependências | Paralelismo | Arquivo alvo | Confidência | Status |
+|----|-----------|--------------|-------------|--------------|-------------|--------|
+| T033 | Comparar o painel do construtor com `novo_arm_building/.../mockup_construtor_armarios.html` numa sessão gráfica (paleta, espaçamento, ícones) e registrar divergências | T030 | - | `caffmob_draw/armario_v2/panel.py` | 🟢 | `[ ]` |
+
 ## Notas de execução
 
 > Reservado para `/reversa-coding` registrar avisos ou observações durante a execução.
+
+- **2026-11-24, `/reversa-debugger`:** T032 estava marcada `[X]` sem que a suíte tivesse sido executada. A execução real
+  encontrou cinco falhas na suíte pura: três de ordenação de `SHA256SUMS`, uma de `select` em pipe (defeitos de ensaio,
+  corrigidos) e uma de permissão POSIX que não se reproduziu na reexecução final. Na suíte Blender, as duas falhas
+  restantes exigem MOBI em 127.0.0.1. O código de produto não precisou de correção nesta rodada. Evidência em
+  `_reversa_bugs/cabinet_editor/inspections/2026-11-24-debugger/report.md`.
+- **2026-11-24, fechamento da auditoria:** o RF-08 passou a ter prova headless na seção 12 de
+  `tests/blender_021_mcp_e2e.py` — a aba Ferramentas expõe pé-direito e espessura padrão e o Editor de Paredes nasce
+  com os valores gravados na cena (2,85 m e 180 mm); o ensaio foi a **52/52**. O RF-10 foi redigido com a condição
+  real do móvel legado (RN-23). A001/A002/A003/A005 fechados; resta A004 (GUI) e a T033.
 
 ## Histórico de alterações
 
 | Data | Alteração | Autor |
 |------|-----------|-------|
 | 2026-11-24 | Versão inicial gerada por `/reversa-to-do` (32 ações em 5 fases) | reversa |
+| 2026-11-24 | `/reversa-to-do` após a inspeção: T033 aberta (única pendência real), notas da execução da suíte | reversa |
+| 2026-11-24 | Fechamento da auditoria: prova headless do RF-08 no e2e (52/52) e RF-10 condicionado ao móvel legado | reversa |

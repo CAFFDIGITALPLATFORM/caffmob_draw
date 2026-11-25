@@ -15,6 +15,7 @@ NAMES = {
     'PISTAO': N_("Pistão"),
     'CORREDICA': N_("Corrediça (par)"),
     'CORREDICA_BLUM': N_("Corrediça Blum (par)"),
+    'DOBRADICA': N_("Dobradiça"),
     'TRILHO_SUP': N_("Trilho superior deslizante"),
     'TRILHO_INF': N_("Trilho inferior deslizante"),
     # Feature 015 (T040; interfaces/cut-plan-json.md 2.3.0)
@@ -114,8 +115,27 @@ def _stair_handrails(scene):
             if stairs_scene.visible(root)]
 
 
+def _armario_v2_hinges(scene):
+    """[(DOBRADICA, uid do armário)] das dobradiças geradas pelo armário v2 (026).
+
+    A dobradiça é peça de ferragem do armário (`papel` vazio e `ferragem = 'DOBRADICA'`), e o armário v2 é um vazio,
+    fora de `iter_modules`: por isso a coleta é própria, pela raiz do armário, como no adaptador de corte.
+    """
+    from .part_sources import UID_PROP, _armario_root, _visible
+    items = []
+    for obj in scene.objects:
+        parte = getattr(obj, 'btm_armario_parte', None)
+        if parte is None or str(parte.ferragem or '') != 'DOBRADICA' or not _visible(obj):
+            continue
+        raiz = _armario_root(obj)
+        if raiz is not None and not _visible(raiz):
+            continue
+        items.append(('DOBRADICA', str(raiz.get(UID_PROP) or raiz.name) if raiz is not None else None))
+    return items
+
+
 def collect(scene, ensure_uid=True):
-    """Linhas de `hardware[]` de todos os módulos visíveis da cena (`ensure_uid=False` na interface)."""
+    """Linhas de `hardware[]` de todos os módulos e armários visíveis da cena (`ensure_uid=False` na interface)."""
     from .part_sources import _visible, iter_modules
     items = []
     for module in iter_modules(scene, ensure_uid):
@@ -130,4 +150,5 @@ def collect(scene, ensure_uid=True):
                 items.append((str(code), module.uid))
             elif _is_drawer_front(obj):
                 items += drawer_items(1, module.uid, _blum(obj, module.obj))
+    items += _armario_v2_hinges(scene)
     return summarize(items) + slide_rows(_drawer_slides(scene)) + handrail_rows(_stair_handrails(scene))

@@ -4,7 +4,9 @@ import os
 import bpy  # type: ignore
 
 from ..data.i18n import tr
-from . import module_list_core, opcut_core, part_extractor, plan_export, plan_render
+from . import lista_materiais, module_list_core, opcut_core, part_extractor, plan_export, plan_render
+
+NOME_BLOCO = "Lista de Materiais"
 
 _last_result = {
     'plan': None,
@@ -57,6 +59,35 @@ class BTM_OT_GenerateOpCutPlan(bpy.types.Operator):
             self.report({'WARNING'}, msg)
         else:
             self.report({'INFO'}, msg)
+        return {'FINISHED'}
+
+
+class BTM_OT_ListaMateriais(bpy.types.Operator):
+    """Imprime a lista de materiais de todos os objetos do projeto aberto (026)
+
+    Cobre todo objeto de malha da cena, com o papel de cada peça (chapa, ferragem ou `OUTRO`), o material e as medidas
+    em milímetros; as linhas iguais somam a quantidade. A tabela vai para o console e para o texto `Lista de Materiais`
+    do arquivo, que é o que a impressão usa.
+    """
+    bl_idname = "caffmob.lista_materiais"
+    bl_label = "Lista de Materiais"
+    bl_options = {'REGISTER'}
+
+    def execute(self, context):
+        linhas = lista_materiais.coletar(context.scene)
+        if not linhas:
+            self.report({'WARNING'}, tr("Nenhum objeto de malha no projeto aberto."))
+            return {'CANCELLED'}
+        texto = lista_materiais.tabela(linhas, tr("Lista de Materiais — {}").format(context.scene.name))
+        print(texto)
+        bloco = bpy.data.texts.get(NOME_BLOCO)
+        if bloco is None:
+            bloco = bpy.data.texts.new(NOME_BLOCO)
+        bloco.clear()
+        bloco.write(texto)
+        total = sum(item['quantidade'] for item in linhas)
+        self.report({'INFO'}, tr("Lista de materiais: {} linha(s), {} peça(s). Tabela no console e no texto \"{}\".")
+                    .format(len(linhas), total, NOME_BLOCO))
         return {'FINISHED'}
 
 
@@ -139,6 +170,7 @@ class BTM_PT_OpCutPanel(bpy.types.Panel):
         layout.prop(settings, "cutting_engine", text=tr("Motor"))
         layout.prop(settings, "cutting_group_by_module", text=tr("Agrupar peças por módulo"))
         layout.operator("caffmob.opcut_generate", text=tr("Gerar Plano de Corte (OpCut)"), icon='MOD_ARRAY')
+        layout.operator("caffmob.lista_materiais", text=tr("Lista de Materiais (imprimir)"), icon='TEXT')
 
         plan = _last_result.get('plan')
         groups = _last_result.get('groups') or []
@@ -172,6 +204,7 @@ class BTM_PT_OpCutPanel(bpy.types.Panel):
 
 classes = (
     BTM_OT_GenerateOpCutPlan,
+    BTM_OT_ListaMateriais,
     BTM_OT_OpCutPreviewStep,
     BTM_OT_ExportOpCutPlan,
     BTM_PT_OpCutPanel,

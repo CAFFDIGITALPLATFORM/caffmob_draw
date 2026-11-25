@@ -1,21 +1,23 @@
-<!-- GENERATED, DO NOT EDIT: regenerado por /reversa-debugger-graph em 2026-11-24T06:45:20+00:00 a partir de 9 bugs -->
+<!-- GENERATED, DO NOT EDIT: regenerado por /reversa-debugger-graph em 2026-11-24T16:57:54+00:00 a partir de 11 bugs -->
 
 # Bugs × specs · plugin-caffmob-draw
 
 | spec | open | active | resolved |
 |---|---|---|---|
+| `**spec-gap**` | nenhum | nenhum | BUG-20261124-7K2M |
 | `CLAUDE.md#onde-editar` | nenhum | nenhum | BUG-20261006-SCVF |
+| `_reversa_forward/021-plano-corte-camadas-gaveteiro/roadmap.md#10. Critério de pronto` | nenhum | nenhum | BUG-20261124-7H3K |
 | `_reversa_sdd/addenda/bug-BUG-20261006-QAVK-v001.md` | nenhum | nenhum | BUG-20261007-FLZO |
 | `_reversa_sdd/addenda/bug-BUG-20261007-FLZO-v001.md` | nenhum | nenhum | BUG-20261007-FLZO |
 | `_reversa_sdd/addenda/bug-BUG-20261007-FLZO-v002.md` | nenhum | nenhum | BUG-20261007-FLZO |
 | `_reversa_sdd/architecture.md` | nenhum | nenhum | BUG-20261006-NO4Q, BUG-20261006-QAVK, BUG-20261012-RCOU |
+| `_reversa_sdd/architecture.md#Re-extração 2026-10-10 — arquitetura atual` | nenhum | nenhum | BUG-20261124-Q2MF |
 | `_reversa_sdd/deployment.md` | BUG-20261123-56YQ | nenhum | BUG-20261006-SCVF, BUG-20261123-RW3G |
 | `_reversa_sdd/hb_core/design.md` | nenhum | nenhum | BUG-20261012-WBKI |
 | `_reversa_sdd/hb_core/requirements.md` | nenhum | nenhum | BUG-20261006-NO4Q |
 | `_reversa_sdd/soul.md` | nenhum | nenhum | BUG-20261006-QAVK |
 | `_reversa_sdd/ui/requirements.md` | nenhum | nenhum | BUG-20261007-FLZO |
 | `_reversa_sdd/ui/requirements.md#R-01` | nenhum | nenhum | BUG-20261006-NO4Q, BUG-20261012-RCOU |
-| **spec-gap** | BUG-20261123-56YQ | nenhum | BUG-20261006-NO4Q, BUG-20261006-QAVK, BUG-20261007-FLZO, BUG-20261012-WBKI, BUG-20261123-RW3G, BUG-20261124-7K2M |
 
 ## Adendos de bug vigentes
 

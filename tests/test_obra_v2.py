@@ -52,7 +52,8 @@ def lacos_de_borda(m, tag):
 
 class ObraV2(unittest.TestCase):
     def test_inventario_e_hashes(self):
-        linhas = [f'{hashlib.sha256(p.read_bytes()).hexdigest()}  {p.name}' for p in sorted(PASTA.glob('*.json'))]
+        linhas = [f'{hashlib.sha256(p.read_bytes()).hexdigest()}  {p.name}'
+                  for p in sorted(PASTA.glob('*.json'), key=lambda p: p.name)]
         self.assertEqual('\n'.join(linhas) + '\n', (PASTA / 'SHA256SUMS').read_text())
         self.assertEqual(len(linhas), 54)
 

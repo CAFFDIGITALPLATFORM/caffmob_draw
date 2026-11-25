@@ -48,39 +48,7 @@ class BTM_OT_ImportModel(bpy.types.Operator, ImportHelper):
         return {}
 
     def _import_skp(self, context):
-        """SketchUp pelo OpenSKP: lê, monta e seleciona; nada fica pela metade se falhar (RF-12)."""
-        from . import skp, skp_build, skp_core
-        name = os.path.basename(self.filepath)
-        wm = context.window_manager
-        wm.progress_begin(0, 2)
-        before = set(bpy.data.objects)
-        try:
-            try:
-                model, scene = skp.read(self.filepath)
-            except ValueError as exc:
-                self.report({'ERROR'}, skp_core.failure_message(exc))
-                return {'CANCELLED'}
-            wm.progress_update(1)
-            try:
-                groups, skipped = skp_build.build(context, model, scene)
-            except Exception as exc:          # falha na montagem: desfaz o que foi criado
-                for obj in [o for o in bpy.data.objects if o not in before]:
-                    bpy.data.objects.remove(obj, do_unlink=True)
-                self.report({'ERROR'}, skp_core.failure_message(exc))
-                return {'CANCELLED'}
-        finally:
-            wm.progress_end()
-        for obj in context.selected_objects:
-            obj.select_set(False)
-        for root in groups:
-            root.select_set(True)
-        if groups:
-            context.view_layer.objects.active = groups[0]
-        message = tr("SketchUp importado: {} grupo(s) de peças de {}").format(len(groups), name)
-        if skipped:
-            message += tr("; {} figura(s) de escala ignorada(s)").format(skipped)
-        self.report({'INFO'}, message)
-        return {'FINISHED'}
+        return importar_skp(context, self.filepath, self.report)
 
     def execute(self, context):
         ext = os.path.splitext(self.filepath)[1].lower()
@@ -146,15 +114,74 @@ class BTM_OT_ImportModel(bpy.types.Operator, ImportHelper):
                                                                 else unit]
 
 
-classes = (BTM_OT_ImportModel,)
+class BTM_OT_ImportSkp(bpy.types.Operator, ImportHelper):
+    """Importa um modelo do SketchUp (.skp) direto pela lista de importação do Blender"""
+    bl_idname = "caffmob.import_skp"
+    bl_label = "SketchUp (.skp)"
+    bl_options = {'REGISTER', 'UNDO'}
+
+    filter_glob: bpy.props.StringProperty(default="*.skp", options={'HIDDEN'})  # type: ignore
+    filename_ext = ".skp"
+
+    def execute(self, context):
+        if os.path.splitext(self.filepath)[1].lower() != '.skp':
+            self.report({'ERROR'}, tr("Escolha um arquivo do SketchUp (.skp)"))
+            return {'CANCELLED'}
+        return importar_skp(context, self.filepath, self.report)
+
+
+def importar_skp(context, filepath, report):
+    """SketchUp pelo OpenSKP: lê, monta e seleciona; nada fica pela metade se falhar (RF-12)."""
+    from . import skp, skp_build, skp_core
+    name = os.path.basename(filepath)
+    wm = context.window_manager
+    wm.progress_begin(0, 2)
+    before = set(bpy.data.objects)
+    try:
+        try:
+            model, scene = skp.read(filepath)
+        except ValueError as exc:
+            report({'ERROR'}, skp_core.failure_message(exc))
+            return {'CANCELLED'}
+        wm.progress_update(1)
+        try:
+            groups, skipped = skp_build.build(context, model, scene)
+        except Exception as exc:          # falha na montagem: desfaz o que foi criado
+            for obj in [o for o in bpy.data.objects if o not in before]:
+                bpy.data.objects.remove(obj, do_unlink=True)
+            report({'ERROR'}, skp_core.failure_message(exc))
+            return {'CANCELLED'}
+    finally:
+        wm.progress_end()
+    for obj in context.selected_objects:
+        obj.select_set(False)
+    for root in groups:
+        root.select_set(True)
+    if groups:
+        context.view_layer.objects.active = groups[0]
+    message = tr("SketchUp importado: {} grupo(s) de peças de {}").format(len(groups), name)
+    if skipped:
+        message += tr("; {} figura(s) de escala ignorada(s)").format(skipped)
+    report({'INFO'}, message)
+    return {'FINISHED'}
+
+
+def menu_importar(self, _context):
+    """Entrada na lista de importação do Blender (File > Import), como o Promob faz (026)."""
+    self.layout.operator(BTM_OT_ImportSkp.bl_idname, text=tr("SketchUp (.skp)"))
+
+
+classes = (BTM_OT_ImportModel, BTM_OT_ImportSkp)
 
 
 def register():
     for cls in classes:
         bpy.utils.register_class(cls)
+    bpy.types.TOPBAR_MT_file_import.append(menu_importar)
 
 
 def unregister():
+    bpy.types.TOPBAR_MT_file_import.remove(menu_importar)
     for cls in reversed(classes):
         if cls.is_registered:
             bpy.utils.unregister_class(cls)

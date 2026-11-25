@@ -63,7 +63,8 @@ def maior_diferenca(obtido, esperado, caminho='$'):
 
 class ParedesEdicaoV2(unittest.TestCase):
     def test_somas_e_fontes(self):
-        linhas = [f'{hashlib.sha256(p.read_bytes()).hexdigest()}  {p.name}' for p in sorted(PASTA.glob('*.json'))]
+        linhas = [f'{hashlib.sha256(p.read_bytes()).hexdigest()}  {p.name}'
+                  for p in sorted(PASTA.glob('*.json'), key=lambda p: p.name)]
         self.assertEqual('\n'.join(linhas) + '\n', (PASTA / 'SHA256SUMS').read_text())
         self.assertIn('shared/studio/paredes.ts', json.loads((PASTA / 'fontes.json').read_text()))
 

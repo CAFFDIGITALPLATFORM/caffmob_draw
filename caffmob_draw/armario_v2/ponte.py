@@ -27,6 +27,7 @@ from ..cabinet_editor import scene_divisions
 from ..data.i18n import tr
 from ..selection import classify, editing
 from . import build
+from . import converter
 from . import ops
 from . import resumo
 from . import spec as spec_mod
@@ -61,6 +62,7 @@ TIPOS_DE_DIVISAO = {'FIXED': vaos_mod.FIXA, 'MOVABLE': vaos_mod.MOVEL, 'SPACER':
 
 PROP_MODULO = 'btm_armario_modulo'      # nome do módulo de origem gravado na raiz do armário v2
 PROP_MARCADOS = 'btm_armario_marcados'  # nomes dos objetos que o Gerar ocultou e marcou
+PROP_PAPEL = 'btm_conversao_papel'      # papel que a peça recebeu para a conversão peça por peça
 
 
 # Leitura -----------------------------------------------------------------------------------------------------------
@@ -83,11 +85,6 @@ def armario_da_selecao(context):
             return obj
         obj = obj.parent
     return None
-
-
-def _mm_no_enum(valor):
-    """Espessura encaixada num dos itens do enum (6, 15, 18 ou 25 mm), como o contrato de chapas."""
-    return float(min(spec_mod.THICKNESSES, key=lambda item: abs(item - float(valor))))
 
 
 def medidas_do_modulo(modulo):
@@ -121,7 +118,7 @@ def espessuras_do_modulo(modulo):
         valor = float(getattr(entrada, 'thickness', 0.0) or 0.0)
         if papel is not None and valor > 0.0 and not getattr(entrada, 'removed', False):
             papeis[papel] = valor * 1000.0
-    return {papel: _mm_no_enum(valor) for papel, valor in papeis.items()}
+    return {papel: converter.mm_no_enum(valor) for papel, valor in papeis.items()}
 
 
 def presenca_do_modulo(modulo):
@@ -253,6 +250,188 @@ def recriar_do_modulo(context, raiz):
     return []
 
 
+# Conversão peça por peça (020) -------------------------------------------------------------------------------------
+ROTULOS_DOS_PAPEIS = {
+    'lateral_esq': "Lateral esquerda",
+    'lateral_dir': "Lateral direita",
+    'base_inf': "Base inferior",
+    'base_sup': "Base superior",
+    'fundo': "Fundo",
+    'porta': "Porta",
+}
+
+
+def _caixa_mundo(obj):
+    """Caixa de mundo do objeto, em milímetros."""
+    from mathutils import Vector  # type: ignore
+
+    cantos = [obj.matrix_world @ Vector(canto) for canto in obj.bound_box]
+    return (tuple(min(canto[i] for canto in cantos) * 1000.0 for i in range(3)),
+            tuple(max(canto[i] for canto in cantos) * 1000.0 for i in range(3)))
+
+
+def _marcar_pecas(objetos):
+    """Oculta e marca o corte das peças de origem, sem apagar nada; devolve os nomes marcados (RN-02)."""
+    marcados = []
+    for obj in objetos:
+        if obj is None:
+            continue
+        if not getattr(obj, 'btm_cut_exclude', False):
+            obj.btm_cut_exclude = True
+            marcados.append(obj.name)
+        obj.hide_viewport = True
+    return marcados
+
+
+class BTM_OT_ArmarioV2SepararPecas(bpy.types.Operator):
+    """Separa as peças soltas da malha selecionada, para converter uma por uma"""
+
+    bl_idname = "caffmob.armario_v2_separar_pecas"
+    bl_label = "Separar peças da malha"
+    bl_options = {'REGISTER', 'UNDO'}
+
+    @classmethod
+    def poll(cls, context):
+        obj = context.active_object
+        if obj is None or obj.type != 'MESH':
+            cls.poll_message_set(tr("Selecione a malha com as peças juntas"))
+            return False
+        return True
+
+    def execute(self, context):
+        obj = context.active_object
+        if obj is None or obj.type != 'MESH':
+            return {'CANCELLED'}
+        for outro in context.selected_objects:
+            outro.select_set(False)
+        obj.select_set(True)
+        context.view_layer.objects.active = obj
+        antes = len([item for item in bpy.data.objects if item.type == 'MESH'])
+        try:
+            bpy.ops.object.mode_set(mode='EDIT')
+            bpy.ops.mesh.select_all(action='SELECT')
+            bpy.ops.mesh.separate(type='LOOSE')
+        except RuntimeError as exc:
+            self.report({'ERROR'}, str(exc))
+            return {'CANCELLED'}
+        finally:
+            if getattr(context, 'object', None) is not None and context.object.mode != 'OBJECT':
+                try:
+                    bpy.ops.object.mode_set(mode='OBJECT')
+                except RuntimeError:
+                    pass
+        depois = len([item for item in bpy.data.objects if item.type == 'MESH'])
+        self.report({'INFO'}, tr("Malha separada em {} peça(s). Selecione cada uma para converter").format(
+            depois - antes + 1))
+        return {'FINISHED'}
+
+
+def pecas_marcadas(scene):
+    """{papel: objeto} das peças marcadas na cena (`BTM_OT_ArmarioV2MarcarPapel`)."""
+    marcadas = {}
+    for obj in scene.objects:
+        papel = obj.get(PROP_PAPEL)
+        if obj.type == 'MESH' and papel in converter.PAPEIS:
+            marcadas[papel] = obj
+    return marcadas
+
+
+class BTM_OT_ArmarioV2MarcarPapel(bpy.types.Operator):
+    """Marca a peça selecionada com o papel dela na conversão em armário"""
+
+    bl_idname = "caffmob.armario_v2_marcar_papel"
+    bl_label = "Marcar peça como"
+    bl_options = {'REGISTER', 'UNDO'}
+
+    papel: bpy.props.EnumProperty(
+        name="Papel",
+        items=[('NENHUM', "Nenhum", ""),
+               ('lateral_esq', "Lateral esquerda", ""),
+               ('lateral_dir', "Lateral direita", ""),
+               ('base_inf', "Base inferior", ""),
+               ('base_sup', "Base superior", ""),
+               ('fundo', "Fundo", ""),
+               ('porta', "Porta", "")],
+        default='NENHUM')  # type: ignore
+
+    @classmethod
+    def poll(cls, context):
+        obj = context.active_object
+        if obj is None or obj.type != 'MESH':
+            cls.poll_message_set(tr("Selecione a peça na viewport"))
+            return False
+        return True
+
+    def execute(self, context):
+        obj = context.active_object
+        if obj is None:
+            return {'CANCELLED'}
+        if self.papel == 'NENHUM':
+            if PROP_PAPEL in obj:
+                del obj[PROP_PAPEL]
+            return {'FINISHED'}
+        # Um papel aceita uma peça só: a anterior do mesmo papel perde a marca (RN-03).
+        for outro in context.scene.objects:
+            if outro is not obj and outro.get(PROP_PAPEL) == self.papel:
+                del outro[PROP_PAPEL]
+        obj[PROP_PAPEL] = self.papel
+        self.report({'INFO'}, tr("Peça marcada como {}").format(tr(ROTULOS_DOS_PAPEIS[self.papel])))
+        return {'FINISHED'}
+
+
+class BTM_OT_ArmarioV2ConverterPecas(bpy.types.Operator):
+    """Cria um armário v2 com as peças marcadas, sem gerar peças nem mover nada"""
+
+    bl_idname = "caffmob.armario_v2_converter_pecas"
+    bl_label = "Converter em armário (peça por peça)"
+    bl_options = {'REGISTER', 'UNDO'}
+
+    @classmethod
+    def poll(cls, context):
+        if not pecas_marcadas(context.scene):
+            cls.poll_message_set(tr("Marque ao menos uma peça antes de converter"))
+            return False
+        return True
+
+    def execute(self, context):
+        papeis = pecas_marcadas(context.scene)
+        if not papeis:
+            self.report({'ERROR'}, tr("Marque ao menos uma peça antes de converter"))
+            return {'CANCELLED'}
+        caixas = {papel: _caixa_mundo(obj) for papel, obj in papeis.items()}
+        campos = converter.spec_das_pecas(caixas)
+        if campos is None:
+            self.report({'ERROR'}, tr("As peças não têm volume para medir"))
+            return {'CANCELLED'}
+        spec = spec_mod.Spec(**campos)
+        problemas = spec_mod.validate(spec)
+        if problemas:
+            for problema in problemas:
+                self.report({'ERROR'}, problema)
+            return {'CANCELLED'}
+        limite = converter.limites([caixas[papel] for papel in converter.PAPEIS
+                                    if papel != 'porta' and caixas.get(papel) is not None])
+        limite = limite or converter.limites(caixas.values())
+        raiz = build.criar_raiz(context.scene, nome=tr("Armário convertido"))
+        (x0, _y0, z0), (x1, y1, _z1) = limite
+        # Mesmo referencial de `build`: X centrado, Y de −profundidade a 0 e Z do piso. Assim as peças geradas
+        # caem exatamente onde as originais estão (RN-02).
+        raiz.location = ((x0 + x1) / 2.0 * build.MM, y1 * build.MM, z0 * build.MM)
+        armario = raiz.btm_armario
+        _gravar_spec(armario, spec)
+        ops.semear_contrato(context.scene)
+        raiz[PROP_MARCADOS] = json.dumps(_marcar_pecas(papeis.values()))
+        for obj in papeis.values():
+            if PROP_PAPEL in obj:
+                del obj[PROP_PAPEL]
+        armario.snapshot = ops.snapshot_de(raiz)
+        context.view_layer.update()
+        context.view_layer.objects.active = raiz
+        self.report({'INFO'}, tr("Armário criado com {} peça(s) apontada(s). Ajuste nas abas e use Gerar quando "
+                                 "quiser").format(len(papeis)))
+        return {'FINISHED'}
+
+
 # Painel ------------------------------------------------------------------------------------------------------------
 def desenhar_modulo(layout, context, modulo):
     """Aba do construtor para o módulo de biblioteca ainda não convertido (D-13)."""
@@ -270,6 +449,9 @@ def desenhar_modulo(layout, context, modulo):
     for aviso in avisos:
         caixa.label(text=aviso, icon='ERROR')
     caixa.operator("caffmob.armario_v2_gerar_do_modulo", text=tr("Gerar pelo motor novo"), icon='FILE_REFRESH')
+    caixa.operator_menu_enum("caffmob.armario_v2_marcar_papel", "papel", text=tr("Marcar peça como…"),
+                             icon='EYEDROPPER')
+    caixa.operator("caffmob.armario_v2_converter_pecas", text=tr("Converter agora"), icon='OUTLINER_OB_EMPTY')
 
 
 # Operadores --------------------------------------------------------------------------------------------------------
@@ -328,7 +510,22 @@ class BTM_OT_ArmarioV2RecriarDoModulo(bpy.types.Operator):
         return {'FINISHED'}
 
 
-classes = (BTM_OT_ArmarioV2GerarDoModulo, BTM_OT_ArmarioV2RecriarDoModulo)
+def desenhar_conversao(layout, context):
+    """Caixa da conversão peça por peça (020) no painel, com a separação da malha junto."""
+    caixa = layout.box()
+    caixa.label(text=tr("Converter em armário"), icon='OUTLINER_OB_EMPTY')
+    caixa.label(text=tr("Selecione a peça e escolha o papel dela; nada é gerado nem move de lugar"))
+    caixa.operator_menu_enum("caffmob.armario_v2_marcar_papel", "papel", text=tr("Marcar peça como…"),
+                             icon='EYEDROPPER')
+    marcadas = pecas_marcadas(context.scene)
+    if marcadas:
+        caixa.label(text=tr("{} peça(s) marcada(s)").format(len(marcadas)))
+    caixa.operator("caffmob.armario_v2_converter_pecas", text=tr("Converter agora"), icon='OUTLINER_OB_EMPTY')
+    caixa.operator("caffmob.armario_v2_separar_pecas", text=tr("Separar peças da malha"), icon='MESH_DATA')
+
+
+classes = (BTM_OT_ArmarioV2GerarDoModulo, BTM_OT_ArmarioV2RecriarDoModulo, BTM_OT_ArmarioV2SepararPecas,
+           BTM_OT_ArmarioV2MarcarPapel, BTM_OT_ArmarioV2ConverterPecas)
 
 
 def register():

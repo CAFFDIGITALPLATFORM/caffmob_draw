@@ -559,8 +559,82 @@ def panels_extra_block():
     check("painel Texturas: botão Sincronizar Texturas Perdidas", "caffmob.sync_missing_textures" in lay2.ops, lay2.ops)
 
 
+# 12. RF-08: padrões rápidos do projeto alimentam o Editor de Paredes
+def project_defaults_block():
+    from caffmob_draw.ui import sidebar_build
+    from caffmob_draw.walls2d import ops_editor
+
+    clean()
+    ambiente = SCENE.get("caffmob_ambiente")
+    if ambiente is not None:
+        del SCENE["caffmob_ambiente"]
+    hb = SCENE.home_builder
+    settings = SCENE.btm_settings
+    antes = (hb.ceiling_height, settings.default_wall_thickness)
+    hb.ceiling_height = 2.85
+    settings.default_wall_thickness = 0.18
+
+    class L:
+        def __init__(self):
+            self.props, self.labels = [], []
+
+        def box(self):
+            return self
+
+        def column(self, *a, **kw):
+            return self
+
+        def row(self, *a, **kw):
+            return self
+
+        def prop(self, owner, name, **kw):
+            self.props.append(name)
+
+        def label(self, text="", **kw):
+            self.labels.append(text)
+
+    lay = L()
+    sidebar_build.draw_project_defaults(lay, SimpleNamespace(scene=SCENE))
+    check(
+        "RF-08: aba Ferramentas expõe pé-direito e espessura padrão",
+        {"ceiling_height", "default_wall_thickness"} <= set(lay.props),
+        lay.props,
+    )
+
+    original = ops_editor.window.open_editor
+    poll = ops_editor.BTM_OT_WallEditor.poll
+
+    def sem_janela(context):
+        raise RuntimeError("ensaio headless: sem janela do Blender")
+
+    def sem_gui(cls, context):
+        return True
+
+    ops_editor.window.open_editor = sem_janela
+    ops_editor.BTM_OT_WallEditor.poll = classmethod(sem_gui)
+    try:
+        try:
+            resultado = bpy.ops.caffmob.wall_editor()
+        except RuntimeError as exc:
+            resultado = {"CANCELLED"} if "sem janela" in str(exc) else {"ERRO", str(exc)}
+    finally:
+        ops_editor.window.open_editor = original
+        ops_editor.BTM_OT_WallEditor.poll = poll
+    wm = bpy.context.window_manager.btm_wall_editor
+    check(
+        "RF-08: Editor de Paredes nasce com pé-direito e espessura do projeto",
+        resultado == {"CANCELLED"} and abs(wm.new_height - 2.85) < 1e-6 and abs(wm.new_thickness - 0.18) < 1e-6,
+        (resultado, wm.new_height, wm.new_thickness),
+    )
+
+    hb.ceiling_height, settings.default_wall_thickness = antes
+    if ambiente is not None:
+        SCENE["caffmob_ambiente"] = ambiente
+
+
 def run():
     global result
+    section(project_defaults_block)
     section(layers_block)
     section(floor_block)
     section(opcut_block)

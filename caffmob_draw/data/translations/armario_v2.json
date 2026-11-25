@@ -23,6 +23,18 @@
   "en_US": "Generation refused the module: the old module stays visible",
   "pt_BR": "A geração recusou o módulo: o módulo antigo continua visível"
  },
+ "Aba do construtor": {
+  "en_US": "Constructor tab",
+  "pt_BR": "Aba do construtor"
+ },
+ "Abre a janela própria do construtor de armário v2": {
+  "en_US": "Opens the cabinet v2 builder window",
+  "pt_BR": "Abre a janela própria do construtor de armário v2"
+ },
+ "Abre a janela própria do construtor de armário v2 (modal com timer).": {
+  "en_US": "Opens the v2 cabinet builder window (modal with a timer).",
+  "pt_BR": "Abre a janela própria do construtor de armário v2 (modal com timer)."
+ },
  "Abre o construtor do armário e guarda o estado atual para o Cancelar": {
   "en_US": "Opens the cabinet editor and stores the current state for Cancel",
   "pt_BR": "Abre o construtor do armário e guarda o estado atual para o Cancelar"
@@ -35,33 +47,125 @@
   "en_US": "Open / Close",
   "pt_BR": "Abrir / Fechar"
  },
+ "Abrir Janela": {
+  "en_US": "Open Window",
+  "pt_BR": "Abrir Janela"
+ },
+ "Abrir Janela do Construtor": {
+  "en_US": "Open Builder Window",
+  "pt_BR": "Abrir Janela do Construtor"
+ },
  "Abrir armário v2": {
   "en_US": "Open cabinet v2",
   "pt_BR": "Abrir armário v2"
+ },
+ "Acumular": {
+  "en_US": "Accumulate",
+  "pt_BR": "Acumular"
  },
  "Afastador": {
   "en_US": "Spacer",
   "pt_BR": "Afastador"
  },
+ "Alterações descartadas: armário voltou ao estado da abertura": {
+  "en_US": "Changes discarded: cabinet restored to the opening state",
+  "pt_BR": "Alterações descartadas: armário voltou ao estado da abertura"
+ },
  "Alternada": {
   "en_US": "Alternating",
   "pt_BR": "Alternada"
+ },
+ "Alternar Exibição": {
+  "en_US": "Toggle Display",
+  "pt_BR": "Alternar Exibição"
  },
  "Alternar chapa da caixa": {
   "en_US": "Toggle box panel",
   "pt_BR": "Alternar chapa da caixa"
  },
+ "Altura do bloco (mm)": {
+  "en_US": "Block height (mm)",
+  "pt_BR": "Altura do bloco (mm)"
+ },
+ "Alvo": {
+  "en_US": "Target",
+  "pt_BR": "Alvo"
+ },
  "Apaga as chapas geradas do armário, sem tocar no resto da cena": {
   "en_US": "Deletes the generated cabinet panels, without touching the rest of the scene",
   "pt_BR": "Apaga as chapas geradas do armário, sem tocar no resto da cena"
+ },
+ "Apagar peças": {
+  "en_US": "Delete parts",
+  "pt_BR": "Apagar peças"
+ },
+ "Aplica mover / espelhar / apagar a todas as peças selecionadas, num passo de desfazer": {
+  "en_US": "Applies move / mirror / delete to all selected parts in one undo step",
+  "pt_BR": "Aplica mover / espelhar / apagar a todas as peças selecionadas, num passo de desfazer"
+ },
+ "Armário atualizado": {
+  "en_US": "Cabinet updated",
+  "pt_BR": "Armário atualizado"
+ },
+ "Armário convertido": {
+  "en_US": "Converted cabinet",
+  "pt_BR": "Armário convertido"
+ },
+ "Armário criado com {} peça(s) apontada(s). Ajuste nas abas e use Gerar quando quiser": {
+  "en_US": "Cabinet created with {} part(s) picked. Adjust it in the tabs and use Generate when ready",
+  "pt_BR": "Armário criado com {} peça(s) apontada(s). Ajuste nas abas e use Gerar quando quiser"
  },
  "Armário: Aplicar": {
   "en_US": "Cabinet: Apply",
   "pt_BR": "Armário: Aplicar"
  },
+ "Armário: OK": {
+  "en_US": "Cabinet: OK",
+  "pt_BR": "Armário: OK"
+ },
+ "Armário: edição em lote": {
+  "en_US": "Cabinet: batch edit",
+  "pt_BR": "Armário: edição em lote"
+ },
+ "Armário: {} x {} x {} mm": {
+  "en_US": "Cabinet: {} x {} x {} mm",
+  "pt_BR": "Armário: {} x {} x {} mm"
+ },
+ "As peças não têm volume para medir": {
+  "en_US": "The parts have no volume to measure",
+  "pt_BR": "As peças não têm volume para medir"
+ },
+ "Ative as chapas ou use a montagem rápida.": {
+  "en_US": "Enable the panels or use quick assembly.",
+  "pt_BR": "Ative as chapas ou use a montagem rápida."
+ },
  "Ative as laterais, a base inferior e a base superior, ou use Montar Caixa": {
   "en_US": "Turn on the sides, the bottom base and the top base, or use Build box",
   "pt_BR": "Ative as laterais, a base inferior e a base superior, ou use Montar Caixa"
+ },
+ "Ação em lote": {
+  "en_US": "Batch action",
+  "pt_BR": "Ação em lote"
+ },
+ "Base Inf.": {
+  "en_US": "Bottom",
+  "pt_BR": "Base Inf."
+ },
+ "Base Inferior": {
+  "en_US": "Bottom",
+  "pt_BR": "Base Inferior"
+ },
+ "Base Sup.": {
+  "en_US": "Top",
+  "pt_BR": "Base Sup."
+ },
+ "Base Superior": {
+  "en_US": "Top",
+  "pt_BR": "Base Superior"
+ },
+ "Base Superior e Fundo ou use a montagem rápida.": {
+  "en_US": "Top and Back, or use the quick build.",
+  "pt_BR": "Base Superior e Fundo ou use a montagem rápida."
  },
  "Base inferior": {
   "en_US": "Bottom panel",
@@ -115,9 +219,21 @@
   "en_US": "Maximum panel: {} × {} mm",
   "pt_BR": "Chapa máxima: {} × {} mm"
  },
+ "Chapas da caixa": {
+  "en_US": "Carcass panels",
+  "pt_BR": "Chapas da caixa"
+ },
  "Cinza": {
   "en_US": "Grey",
   "pt_BR": "Cinza"
+ },
+ "Colunas": {
+  "en_US": "Columns",
+  "pt_BR": "Colunas"
+ },
+ "Confirma: grava um passo de desfazer e fecha a janela": {
+  "en_US": "Confirms: pushes an undo step and closes the window",
+  "pt_BR": "Confirma: grava um passo de desfazer e fecha a janela"
  },
  "Construtor de Armário v2": {
   "en_US": "Cabinet builder v2",
@@ -139,9 +255,37 @@
   "en_US": "Panel contract without a valid maximum panel",
   "pt_BR": "Contrato de chapas sem chapa máxima válida"
  },
+ "Converter agora": {
+  "en_US": "Convert now",
+  "pt_BR": "Converter agora"
+ },
+ "Converter em armário": {
+  "en_US": "Convert to cabinet",
+  "pt_BR": "Converter em armário"
+ },
+ "Converter em armário (peça por peça)": {
+  "en_US": "Convert to cabinet (piece by piece)",
+  "pt_BR": "Converter em armário (peça por peça)"
+ },
+ "Corrija os erros GEO antes de confirmar": {
+  "en_US": "Fix the GEO errors before confirming",
+  "pt_BR": "Corrija os erros GEO antes de confirmar"
+ },
+ "Corte Lateral": {
+  "en_US": "Side cut",
+  "pt_BR": "Corte Lateral"
+ },
+ "Cotas: {}": {
+  "en_US": "Dimensions: {}",
+  "pt_BR": "Cotas: {}"
+ },
  "Cria o bloco de gavetas no vão ativo, com quantidade, altura e modelo gravados no armário": {
   "en_US": "Creates the drawer block in the active bay with the quantity, height and model stored on the cabinet",
   "pt_BR": "Cria o bloco de gavetas no vão ativo, com quantidade, altura e modelo gravados no armário"
+ },
+ "Cria um armário v2 com as peças marcadas, sem gerar peças nem mover nada": {
+  "en_US": "Creates a v2 cabinet from the marked parts, without generating parts or moving anything",
+  "pt_BR": "Cria um armário v2 com as peças marcadas, sem gerar peças nem mover nada"
  },
  "Criar bloco de gavetas": {
   "en_US": "Create drawer block",
@@ -159,6 +303,10 @@
   "en_US": "Brings the library module back into the scene and deletes the new cabinet made from it",
   "pt_BR": "Devolve o módulo de biblioteca à cena e apaga o armário novo que saiu dele"
  },
+ "Dimensões (mm)": {
+  "en_US": "Dimensions (mm)",
+  "pt_BR": "Dimensões (mm)"
+ },
  "Dimensões do armário": {
   "en_US": "Cabinet dimensions",
   "pt_BR": "Dimensões do armário"
@@ -166,6 +314,10 @@
  "Divisão não encontrada": {
   "en_US": "Divider not found",
   "pt_BR": "Divisão não encontrada"
+ },
+ "Divisórias: {}": {
+  "en_US": "Divisions: {}",
+  "pt_BR": "Divisórias: {}"
  },
  "Divisões fora do vão raiz ficam de fora no motor novo": {
   "en_US": "Divisions outside the root bay are left out in the new engine",
@@ -182,6 +334,14 @@
  "Em pé": {
   "en_US": "Standing",
   "pt_BR": "Em pé"
+ },
+ "Enfileira um pedido do painel; quem escreve na cena é o modal (RN-02)": {
+  "en_US": "Queues a panel request; the modal is what writes to the scene (RN-02)",
+  "pt_BR": "Enfileira um pedido do painel; quem escreve na cena é o modal (RN-02)"
+ },
+ "Espelhar no eixo X": {
+  "en_US": "Mirror on X axis",
+  "pt_BR": "Espelhar no eixo X"
  },
  "Espessura da base inferior": {
   "en_US": "Bottom base thickness",
@@ -219,9 +379,17 @@
   "en_US": "Back panel thickness",
   "pt_BR": "Espessura do fundo"
  },
+ "Espessuras": {
+  "en_US": "Thicknesses",
+  "pt_BR": "Espessuras"
+ },
  "Espessuras do armário": {
   "en_US": "Cabinet thicknesses",
   "pt_BR": "Espessuras do armário"
+ },
+ "Estado aplicado: este vira o ponto de retorno do Cancelar": {
+  "en_US": "State applied: this becomes the Cancel restore point",
+  "pt_BR": "Estado aplicado: este vira o ponto de retorno do Cancelar"
  },
  "Este móvel é da construção antiga: recrie pelo construtor novo para editar": {
   "en_US": "This unit uses the old build: recreate it with the new builder to edit it",
@@ -230,6 +398,10 @@
  "Exclui a divisória ou a prateleira escolhida do armário": {
   "en_US": "Deletes the selected divider or shelf from the cabinet",
   "pt_BR": "Exclui a divisória ou a prateleira escolhida do armário"
+ },
+ "Fixação": {
+  "en_US": "Fixation",
+  "pt_BR": "Fixação"
  },
  "Folhas da deslizante": {
   "en_US": "Sliding leaves",
@@ -246,6 +418,10 @@
  "Frente da gaveta": {
   "en_US": "Drawer front",
   "pt_BR": "Frente da gaveta"
+ },
+ "Fundo ativo": {
+  "en_US": "Back on",
+  "pt_BR": "Fundo ativo"
  },
  "Gaiola": {
   "en_US": "Cage",
@@ -291,6 +467,10 @@
   "en_US": "Drawer without inner front, straight pull",
   "pt_BR": "Gaveta sem contra-frente, puxador reto"
  },
+ "Gavetas: {}": {
+  "en_US": "Drawers: {}",
+  "pt_BR": "Gavetas: {}"
+ },
  "Gera as chapas do armário a partir do spec, das divisórias, das gavetas e dos internos": {
   "en_US": "Generates the cabinet panels from the spec, the dividers, the drawers and the interiors",
   "pt_BR": "Gera as chapas do armário a partir do spec, das divisórias, das gavetas e dos internos"
@@ -299,6 +479,10 @@
   "en_US": "Builds the new cabinet from the selected library module and hides the old module",
   "pt_BR": "Gera o armário novo a partir do módulo de biblioteca escolhido e oculta o módulo antigo"
  },
+ "Gerar Plano de Corte": {
+  "en_US": "Generate Cut Plan",
+  "pt_BR": "Gerar Plano de Corte"
+ },
  "Gerar armário": {
   "en_US": "Generate cabinet",
   "pt_BR": "Gerar armário"
@@ -306,6 +490,10 @@
  "Gerar pelo motor novo": {
   "en_US": "Generate with the new engine",
   "pt_BR": "Gerar pelo motor novo"
+ },
+ "Gerar plano de corte": {
+  "en_US": "Generate cut plan",
+  "pt_BR": "Gerar plano de corte"
  },
  "Grava um passo de desfazer e fixa o estado atual como ponto de retorno, sem fechar": {
   "en_US": "Pushes an undo step and sets the current state as the return point, without closing",
@@ -351,9 +539,25 @@
   "en_US": "Invalid snapshot: {}",
   "pt_BR": "Instantâneo inválido: {}"
  },
+ "Interação da janela do construtor: timer, seleção, ESC e fechamento": {
+  "en_US": "Builder window interaction: timer, selection, ESC and closing",
+  "pt_BR": "Interação da janela do construtor: timer, seleção, ESC e fechamento"
+ },
  "Interno a inserir": {
   "en_US": "Interior to insert",
   "pt_BR": "Interno a inserir"
+ },
+ "Internos: {}": {
+  "en_US": "Interiors: {}",
+  "pt_BR": "Internos: {}"
+ },
+ "Janela de Armário Vazia": {
+  "en_US": "Empty Cabinet Window",
+  "pt_BR": "Janela de Armário Vazia"
+ },
+ "Janela de Armário Vazia — ative as chapas na aba Estrutura": {
+  "en_US": "Empty Cabinet Window — turn on the panels in the Structure tab",
+  "pt_BR": "Janela de Armário Vazia — ative as chapas na aba Estrutura"
  },
  "Janela de armário vazia": {
   "en_US": "Empty cabinet window",
@@ -367,6 +571,14 @@
   "en_US": "Side panel",
   "pt_BR": "Lateral"
  },
+ "Lateral Direita": {
+  "en_US": "Right Side",
+  "pt_BR": "Lateral Direita"
+ },
+ "Lateral Esquerda": {
+  "en_US": "Left Side",
+  "pt_BR": "Lateral Esquerda"
+ },
  "Liga laterais, base inferior, base superior e fundo e gera o armário": {
   "en_US": "Turns on the sides, the bottom base, the top base and the back, then generates the cabinet",
   "pt_BR": "Liga laterais, base inferior, base superior e fundo e gera o armário"
@@ -374,6 +586,10 @@
  "Liga ou desliga a chapa da caixa apontada nos alternadores da vista 3D": {
   "en_US": "Turns on or off the box panel pointed at in the viewport switches",
   "pt_BR": "Liga ou desliga a chapa da caixa apontada nos alternadores da vista 3D"
+ },
+ "Liga/desliga Cotas ou Mostrar Portas no preview da janela": {
+  "en_US": "Turns Cotas or Mostrar Portas on/off in the window preview",
+  "pt_BR": "Liga/desliga Cotas ou Mostrar Portas no preview da janela"
  },
  "Limpar": {
   "en_US": "Clear",
@@ -391,6 +607,26 @@
   "en_US": "Top shelf",
   "pt_BR": "Maleiro"
  },
+ "Malha separada em {} peça(s). Selecione cada uma para converter": {
+  "en_US": "Mesh split into {} part(s). Select each one to convert",
+  "pt_BR": "Malha separada em {} peça(s). Selecione cada uma para converter"
+ },
+ "Marca a peça selecionada com o papel dela na conversão em armário": {
+  "en_US": "Marks the selected part with its role in the cabinet conversion",
+  "pt_BR": "Marca a peça selecionada com o papel dela na conversão em armário"
+ },
+ "Marcar peça como": {
+  "en_US": "Mark part as",
+  "pt_BR": "Marcar peça como"
+ },
+ "Marcar peça como…": {
+  "en_US": "Mark part as…",
+  "pt_BR": "Marcar peça como…"
+ },
+ "Marque ao menos uma peça antes de converter": {
+  "en_US": "Mark at least one part before converting",
+  "pt_BR": "Marque ao menos uma peça antes de converter"
+ },
  "Montagem e orientações": {
   "en_US": "Assembly and orientations",
   "pt_BR": "Montagem e orientações"
@@ -406,6 +642,30 @@
  "Montar Caixa": {
   "en_US": "Build box",
   "pt_BR": "Montar Caixa"
+ },
+ "Mostra as cotas das vistas": {
+  "en_US": "Shows the view dimensions",
+  "pt_BR": "Mostra as cotas das vistas"
+ },
+ "Mostra as portas no preview": {
+  "en_US": "Shows the doors in the preview",
+  "pt_BR": "Mostra as portas no preview"
+ },
+ "Mover para a direita": {
+  "en_US": "Move right",
+  "pt_BR": "Mover para a direita"
+ },
+ "Mover para a esquerda": {
+  "en_US": "Move left",
+  "pt_BR": "Mover para a esquerda"
+ },
+ "Mover para baixo": {
+  "en_US": "Move down",
+  "pt_BR": "Mover para baixo"
+ },
+ "Mover para cima": {
+  "en_US": "Move up",
+  "pt_BR": "Mover para cima"
  },
  "Módulo de biblioteca: {}": {
   "en_US": "Library module: {}",
@@ -423,6 +683,10 @@
   "en_US": "Multiple",
   "pt_BR": "Múltipla"
  },
+ "Nenhum armário v2 na cena": {
+  "en_US": "No v2 cabinet in the scene",
+  "pt_BR": "Nenhum armário v2 na cena"
+ },
  "Nenhuma peça escolhida": {
   "en_US": "No part chosen",
   "pt_BR": "Nenhuma peça escolhida"
@@ -430,6 +694,10 @@
  "Não há vão livre para duplicar": {
   "en_US": "There is no free bay to duplicate",
   "pt_BR": "Não há vão livre para duplicar"
+ },
+ "O construtor inicia vazio. Ative Laterais, Base Inferior,": {
+  "en_US": "The builder starts empty. Turn on Sides, Bottom,",
+  "pt_BR": "O construtor inicia vazio. Ative Laterais, Base Inferior,"
  },
  "O módulo de origem não está mais na cena": {
   "en_US": "The source module is no longer in the scene",
@@ -439,6 +707,18 @@
   "en_US": "The module has no measurements for the new engine",
   "pt_BR": "O módulo não tem medidas para o motor novo"
  },
+ "Passo (mm)": {
+  "en_US": "Step (mm)",
+  "pt_BR": "Passo (mm)"
+ },
+ "Pedido": {
+  "en_US": "Request",
+  "pt_BR": "Pedido"
+ },
+ "Pedido do construtor": {
+  "en_US": "Constructor request",
+  "pt_BR": "Pedido do construtor"
+ },
  "Peça de trás": {
   "en_US": "Rear rail",
   "pt_BR": "Peça de trás"
@@ -447,9 +727,29 @@
   "en_US": "Chosen part: {}",
   "pt_BR": "Peça escolhida: {}"
  },
+ "Peça marcada como {}": {
+  "en_US": "Part marked as {}",
+  "pt_BR": "Peça marcada como {}"
+ },
+ "Porta de abrir": {
+  "en_US": "Hinged door",
+  "pt_BR": "Porta de abrir"
+ },
  "Porta de abrir e porta deslizante não podem estar ativas ao mesmo tempo": {
   "en_US": "Hinged door and sliding door cannot be active at the same time",
   "pt_BR": "Porta de abrir e porta deslizante não podem estar ativas ao mesmo tempo"
+ },
+ "Porta deslizante": {
+  "en_US": "Sliding door",
+  "pt_BR": "Porta deslizante"
+ },
+ "Portas: {}": {
+  "en_US": "Doors: {}",
+  "pt_BR": "Portas: {}"
+ },
+ "Posição da base": {
+  "en_US": "Base position",
+  "pt_BR": "Posição da base"
  },
  "Prat. c/ Corrediça": {
   "en_US": "Shelf with slide",
@@ -487,6 +787,10 @@
   "en_US": "Track depth",
   "pt_BR": "Profundidade do trilho"
  },
+ "Profundidade trilho (mm)": {
+  "en_US": "Track depth (mm)",
+  "pt_BR": "Profundidade trilho (mm)"
+ },
  "Recriar do módulo": {
   "en_US": "Recreate from module",
   "pt_BR": "Recriar do módulo"
@@ -499,9 +803,37 @@
   "en_US": "Sets back 20 mm at the front",
   "pt_BR": "Recua 20 mm na frente"
  },
+ "Recuo (mm)": {
+  "en_US": "Setback (mm)",
+  "pt_BR": "Recuo (mm)"
+ },
+ "Restaura o estado da abertura e fecha a janela": {
+  "en_US": "Restores the opening state and closes the window",
+  "pt_BR": "Restaura o estado da abertura e fecha a janela"
+ },
  "Sapateiras": {
   "en_US": "Shoe racks",
   "pt_BR": "Sapateiras"
+ },
+ "Seleciona uma peça pelo nome (o clique do modal usa o mesmo núcleo)": {
+  "en_US": "Selects a part by name (the modal click uses the same core)",
+  "pt_BR": "Seleciona uma peça pelo nome (o clique do modal usa o mesmo núcleo)"
+ },
+ "Selecionado: nenhuma peça (clique numa peça do preview)": {
+  "en_US": "Selected: no part (click a part in the preview)",
+  "pt_BR": "Selecionado: nenhuma peça (clique numa peça do preview)"
+ },
+ "Selecione a malha com as peças juntas": {
+  "en_US": "Select the mesh holding the parts together",
+  "pt_BR": "Selecione a malha com as peças juntas"
+ },
+ "Selecione a peça e escolha o papel dela; nada é gerado nem move de lugar": {
+  "en_US": "Select the part and choose its role; nothing is generated or moved",
+  "pt_BR": "Selecione a peça e escolha o papel dela; nada é gerado nem move de lugar"
+ },
+ "Selecione a peça na viewport": {
+  "en_US": "Select the part in the viewport",
+  "pt_BR": "Selecione a peça na viewport"
  },
  "Selecione o armário v2": {
   "en_US": "Select the cabinet v2",
@@ -555,9 +887,21 @@
   "en_US": "Seeds the panel contract from the active Dimensions Standard",
   "pt_BR": "Semeia o contrato de chapas do Padrão de Dimensões ativo"
  },
+ "Separa as peças soltas da malha selecionada, para converter uma por uma": {
+  "en_US": "Splits the selected mesh into loose parts so each one can be converted",
+  "pt_BR": "Separa as peças soltas da malha selecionada, para converter uma por uma"
+ },
  "Separador": {
   "en_US": "Divider",
   "pt_BR": "Separador"
+ },
+ "Separar peças da malha": {
+  "en_US": "Split mesh into parts",
+  "pt_BR": "Separar peças da malha"
+ },
+ "Sobreposição (mm)": {
+  "en_US": "Overlap (mm)",
+  "pt_BR": "Sobreposição (mm)"
  },
  "Sobreposição da deslizante": {
   "en_US": "Sliding overlap",
@@ -578,6 +922,18 @@
  "Trilho interno": {
   "en_US": "Inner rail",
   "pt_BR": "Trilho interno"
+ },
+ "Troca a aba ativa da janela do construtor (e grava a escolha na cena)": {
+  "en_US": "Switches the active tab of the constructor window (and saves the choice in the scene)",
+  "pt_BR": "Troca a aba ativa da janela do construtor (e grava a escolha na cena)"
+ },
+ "Variante": {
+  "en_US": "Variant",
+  "pt_BR": "Variante"
+ },
+ "Vista": {
+  "en_US": "View",
+  "pt_BR": "Vista"
  },
  "Vão ativo: {}": {
   "en_US": "Active space: {}",
@@ -659,8 +1015,68 @@
   "en_US": "{} is not an accepted thickness: {} mm (use 6, 15, 18 or 25 mm)",
   "pt_BR": "{} fora das espessuras aceitas: {} mm (use 6, 15, 18 ou 25 mm)"
  },
+ "{} mm": {
+  "en_US": "{} mm",
+  "pt_BR": "{} mm"
+ },
+ "{} peça(s)": {
+  "en_US": "{} part(s)",
+  "pt_BR": "{} peça(s)"
+ },
+ "{} peça(s) marcada(s)": {
+  "en_US": "{} part(s) marked",
+  "pt_BR": "{} peça(s) marcada(s)"
+ },
+ "{} peça(s): {}": {
+  "en_US": "{} part(s): {}",
+  "pt_BR": "{} peça(s): {}"
+ },
+ "{} × {} mm": {
+  "en_US": "{} × {} mm",
+  "pt_BR": "{} × {} mm"
+ },
  "{}: {} mm passa da chapa de {} mm": {
   "en_US": "{}: {} mm exceeds the {} mm panel",
   "pt_BR": "{}: {} mm passa da chapa de {} mm"
+ },
+ "{}: {} × {} × {} mm": {
+  "en_US": "{}: {} × {} × {} mm",
+  "pt_BR": "{}: {} × {} × {} mm"
+ },
+ "… e mais {} peça(s)": {
+  "en_US": "… and {} more part(s)",
+  "pt_BR": "… e mais {} peça(s)"
+ },
+ "⇆ Deslizantes": {
+  "en_US": "⇆ Sliding",
+  "pt_BR": "⇆ Deslizantes"
+ },
+ "⊞ Divisões": {
+  "en_US": "⊞ Divisions",
+  "pt_BR": "⊞ Divisões"
+ },
+ "▣ Estrutura": {
+  "en_US": "▣ Structure",
+  "pt_BR": "▣ Estrutura"
+ },
+ "▤ Gavetas": {
+  "en_US": "▤ Drawers",
+  "pt_BR": "▤ Gavetas"
+ },
+ "▤ Lista de Peças & Plano de Corte": {
+  "en_US": "▤ Parts List & Cut Plan",
+  "pt_BR": "▤ Lista de Peças & Plano de Corte"
+ },
+ "▧ Fundos": {
+  "en_US": "▧ Backs",
+  "pt_BR": "▧ Fundos"
+ },
+ "▯ Portas": {
+  "en_US": "▯ Doors",
+  "pt_BR": "▯ Portas"
+ },
+ "◫ Internos": {
+  "en_US": "◫ Interiors",
+  "pt_BR": "◫ Internos"
  }
 }

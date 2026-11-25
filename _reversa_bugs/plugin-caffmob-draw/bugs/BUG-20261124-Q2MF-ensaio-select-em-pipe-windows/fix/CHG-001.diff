@@ -1,0 +1,22 @@
+diff --git a/tests/test_download_core_mobi.py b/tests/test_download_core_mobi.py
+index b706b1eb..b4b9317c 100644
+--- a/tests/test_download_core_mobi.py
++++ b/tests/test_download_core_mobi.py
+@@ -160,9 +160,14 @@ class Protocolo(unittest.TestCase):
+             proc.stdin.write(download_core.encode({'type':'request','rid':1,'method':'POST','path':'/codigo',
+                              'body':{'client_id':'caffmob-draw'},'auth':False,'form':True,'headers':{'If-Match':'"7"'}}))
+             proc.stdin.flush()
+-            import select
+-            self.assertTrue(select.select([proc.stdout], [], [], 5)[0])
+-            reply = json.loads(proc.stdout.readline())
++            # `select` só vale para soquetes no Windows: a espera é feita por uma thread que lê a linha.
++            import threading
++            lida = []
++            leitora = threading.Thread(target=lambda: lida.append(proc.stdout.readline()), daemon=True)
++            leitora.start()
++            leitora.join(5)
++            self.assertTrue(lida and lida[0], "worker não respondeu em 5 s")
++            reply = json.loads(lida[0])
+             self.assertEqual(reply['status'],200)
+             self.assertEqual(reply['etag'],'"pagina"')
+             self.assertEqual(self.http.seen[-1][1]['If-Match'],'"7"')

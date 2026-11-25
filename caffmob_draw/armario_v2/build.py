@@ -19,6 +19,10 @@ A corrediça (RN-08, D-19) segue as caixas de `corredica.pecas`: com o OBJ do an
 arquivo uma vez, guarda as malhas e instancia o conjunto por gaveta e por lado; sem o arquivo, as mesmas três partes
 saem como caixas equivalentes. Em qualquer dos casos a peça tem `papel` vazio e `ferragem` preenchida, então continua
 fora do plano de chapa (RF-19) e a gaiola é reconhecida pela animação (RN-10).
+
+A dobradiça (026) segue o mesmo caminho com `dobradica.pecas` e o `assets/hinges/dobradica.obj` do anexo: cada folha
+de porta de abrir recebe as dobradiças na aresta dela (`ferragem = 'DOBRADICA'`), fora do plano de chapa, e a animação
+as gira no pivô da folha dona.
 """
 
 import math
@@ -26,6 +30,7 @@ import os
 from pathlib import Path
 
 from . import corredica as corredica_mod
+from . import dobradica as dobradica_mod
 from . import gavetas as gavetas_mod
 from . import portas as portas_mod
 from . import spec as spec_mod
@@ -37,8 +42,10 @@ COLECAO = "Marcenaria"
 COLECAO_LEGADA = "CAFFMob Armário v2"
 RAIZ = "Armário v2"
 
-# Corrediça do anexo (RN-08, D-19): o OBJ é importado uma vez e as malhas ficam guardadas por caminho.
+# Corrediça do anexo (RN-08, D-19) e dobradiça (026): os OBJ são importados uma vez e as malhas ficam guardadas
+# por caminho.
 OBJ_CORREDICA = ('assets', 'slides', 'slide-st48-0200-0.obj')
+OBJ_DOBRADICA = ('assets', 'hinges', 'dobradica.obj')
 ROTACAO_MODELO = -math.pi / 2.0     # deita o conjunto: comprimento em Y, altura em Z
 _modelos = {}
 
@@ -208,11 +215,13 @@ def pecas(spec, divisoes=(), lista_gavetas=(), lista_internos=()):
                                             espessura=spec.espessura_porta, material='MDF')
         cursor = x_interno0
         for folha in folhas:
-            itens.append(_peca('PORTA', f"Porta {folha.indice + 1}",
-                               _caixa(cursor, cursor + folha.largura, y_frente - folha.espessura, y_frente,
-                                      z_interno0, topo),
+            caixa_folha = _caixa(cursor, cursor + folha.largura, y_frente - folha.espessura, y_frente,
+                                 z_interno0, topo)
+            itens.append(_peca('PORTA', f"Porta {folha.indice + 1}", caixa_folha,
                                folha.espessura, veio='VERTICAL', fitas=SEM_FITA, movel=True,
                                curso=folha.graus, eixo='GIRO'))
+            # Dobradiças da folha (026): ferragem no verso da porta, fora do plano de chapa.
+            itens.extend(dobradica_mod.pecas(caixa_folha, folha.dobradica, folha.indice + 1, folha.graus))
             cursor += folha.largura
     elif spec.deslizante_ativa:
         folhas = portas_mod.folhas_deslizantes(comprimento_frente, spec.deslizante_folhas,
@@ -476,25 +485,99 @@ def _modelo_corredica():
         'malhas': [item[0] for item in itens],
         'minimo': Vector([min(item[2][i] for item in itens) for i in range(3)]),
         'maximo': Vector([max(item[3][i] for item in itens) for i in range(3)]),
+        'rotacao': ROTACAO_MODELO,
     }
     _modelos[caminho] = modelo
     return modelo
 
 
-def _objetos_da_peca(dados, modelo):
+def _caminho_obj_dobradica():
+    """Caminho do OBJ da dobradiça dentro do pacote da extensão."""
+    return Path(__file__).resolve().parents[1].joinpath(*OBJ_DOBRADICA)
+
+
+def _modelo_dobradica():
+    """Dobradiça do OBJ importado uma vez, com as malhas e a caixa de cada parte em metros, ou `None`.
+
+    O arquivo já vem em metros e com Z para cima (27,2 × 87,8 × 52,2 mm), então o import não escala nem gira: a
+    caixa de `dobradica` é a mesma do modelo. As malhas ficam com usuário falso (sobrevivem ao salvamento e são
+    compartilhadas pelas instâncias) e os objetos do import são removidos, então nada sobra na cena.
+    """
+    import bpy  # type: ignore
+    from mathutils import Vector  # type: ignore
+
+    caminho = str(_caminho_obj_dobradica())
+    guardado = _modelos.get(caminho)
+    if guardado is not None:
+        if all(nome in bpy.data.meshes for nome in guardado['malhas']):
+            return guardado
+        _modelos.pop(caminho, None)
+    if not os.path.exists(caminho):
+        _modelos[caminho] = None
+        return None
+    antes = set(bpy.data.objects)
+    try:
+        bpy.ops.wm.obj_import(filepath=caminho, forward_axis='Y', up_axis='Z', global_scale=1.0)
+    except RuntimeError:
+        _modelos[caminho] = None
+        return None
+    novos = [obj for obj in bpy.data.objects if obj not in antes and obj.type == 'MESH']
+    itens = []
+    for obj in novos:
+        cantos = [obj.matrix_world @ Vector(canto) for canto in obj.bound_box]
+        minimo = Vector([min(canto[i] for canto in cantos) for i in range(3)])
+        maximo = Vector([max(canto[i] for canto in cantos) for i in range(3)])
+        obj.data.use_fake_user = True
+        itens.append((obj.data.name, dobradica_mod.DOBRADICA, minimo, maximo))
+    for obj in novos:
+        bpy.data.objects.remove(obj, do_unlink=True)
+    if not itens:
+        _modelos[caminho] = None
+        return None
+    modelo = {
+        'itens': itens,
+        'malhas': [item[0] for item in itens],
+        'minimo': Vector([min(item[2][i] for item in itens) for i in range(3)]),
+        'maximo': Vector([max(item[3][i] for item in itens) for i in range(3)]),
+        'rotacao': 0.0,
+    }
+    _modelos[caminho] = modelo
+    return modelo
+
+
+def _modelos_das_ferragens(lista):
+    """{ferragem: modelo do OBJ} das ferragens que a lista usa; vazio quando não há nenhuma ou falta o arquivo."""
+    ferragens = {item.get('ferragem') for item in lista if item.get('ferragem')}
+    modelos = {}
+    if ferragens & set(corredica_mod.FERRAGENS):
+        modelo = _modelo_corredica()
+        if modelo is not None:
+            for codigo in corredica_mod.FERRAGENS:
+                modelos[codigo] = modelo
+    if dobradica_mod.DOBRADICA in ferragens:
+        modelo = _modelo_dobradica()
+        if modelo is not None:
+            modelos[dobradica_mod.DOBRADICA] = modelo
+    return modelos
+
+
+def _objetos_da_peca(dados, modelos):
     """[(nome, malha, deslocamento, rotação)] de uma peça: a malha do modelo importado ou a caixa de reserva.
 
-    A ferragem alinha o conjunto do OBJ pelo trilho externo (`conjunto`), então o trilho interno e as gaiolas ficam
-    na posição relativa que o arquivo traz. Sem arquivo, `corredica` já devolve as três caixas equivalentes.
+    A ferragem alinha o conjunto do OBJ pela caixa de referência (`conjunto`), então as partes que o arquivo traz
+    ficam na posição relativa entre si: na corrediça, o trilho interno e as gaiolas em relação ao trilho externo;
+    na dobradiça, o braço e o copo em relação à caixa dela. Sem arquivo, o núcleo de cada ferragem já devolve as
+    caixas equivalentes.
     """
     import bpy  # type: ignore
     from mathutils import Vector  # type: ignore
 
     ferragem = dados.get('ferragem')
-    if ferragem and modelo is not None:
+    modelo = (modelos or {}).get(ferragem) if ferragem else None
+    if modelo is not None:
         escolhidas = [item for item in modelo['itens'] if item[1] == ferragem]
         if escolhidas:
-            (x0, y0, z0), _ = dados['conjunto']  # o conjunto alinha pelo canto mínimo do trilho externo
+            (x0, y0, z0), _ = dados.get('conjunto') or dados['box']
             alvo = Vector((x0 * MM, y0 * MM, z0 * MM))
             deslocamento = alvo - modelo['minimo']
             objetos = []
@@ -502,7 +585,7 @@ def _objetos_da_peca(dados, modelo):
                 # O número fica antes do sufixo " da gaveta N", que é o que agrupa a peça na animação.
                 nome = dados['nome'] if len(escolhidas) == 1 else dados['nome'].replace(
                     ' da gaveta ', f' {numero + 1} da gaveta ')
-                objetos.append((nome, bpy.data.meshes[nome_malha], deslocamento.copy(), ROTACAO_MODELO))
+                objetos.append((nome, bpy.data.meshes[nome_malha], deslocamento.copy(), modelo['rotacao']))
             return objetos
     return [(dados['nome'], _malha(dados['nome'], dados['box']), None, None)]
 
@@ -547,19 +630,19 @@ def gerar(root, spec, divisoes=(), lista_gavetas=(), lista_internos=()):
     limpar(root)
     mapa = materiais(spec.acabamento)
     lista = pecas(spec, divisoes, lista_gavetas, lista_internos)
-    modelo = _modelo_corredica() if any(item.get('ferragem') for item in lista) else None
+    modelos = _modelos_das_ferragens(lista)
     objetos = []
     for indice, dados in enumerate(lista):
         uid = f"{root.name}/{dados.get('ferragem') or dados['papel']}/{indice}"
         material, rotulo = _material_da_peca(dados, mapa, escolhidos.get(uid, ""))
-        for nome, malha, deslocamento, rotacao in _objetos_da_peca(dados, modelo):
+        for nome, malha, deslocamento, rotacao in _objetos_da_peca(dados, modelos):
             objeto = bpy.data.objects.new(nome, malha)
             destino.objects.link(objeto)
             objeto.parent = root
             objeto.matrix_parent_inverse = Matrix.Identity(4)
             if deslocamento is not None:
                 objeto.location = deslocamento
-                objeto.rotation_euler = (rotacao, 0.0, 0.0)
+                objeto.rotation_euler = (rotacao or 0.0, 0.0, 0.0)
             if material.name not in [slot.name for slot in objeto.data.materials]:
                 objeto.data.materials.append(material)
             parte = objeto.btm_armario_parte

@@ -88,12 +88,37 @@ A entrega é estruturada como um conjunto de deltas cirúrgicos sobre os módulo
 
 ## 10. Critério de pronto
 
-- [X] Todas as ações do `actions.md` marcadas `[X]` — 32/32 desde `f2f35215`
-- [X] Testes puros (`pytest` / `unittest`) passando para OpCut, lista agrupada por módulo, supressão do ímã, direção de espessura do piso, detecção geométrica de gaveteiro e roteamento de camadas — 24 ensaios da 021 na suíte pura (`2026-11-24-audit`: 186/186; `2026-11-24-coding-022`: 187/187)
-- [X] Smoke tests no Blender 5.2 validando registro/desregistro limpo, cabeçalho de colisão, camadas, parede rebaixada e conversão em gaveteiro — `tests/test_smoke_021.py` e `tests/blender_021_mcp_e2e.py` (50/50, exit 0)
-- [X] Cobertura de internacionalização (`pt_BR` e `en_US`) passando sem chaves faltantes — `tests/test_i18n_coverage.py` 3/3; strings da 021 em `caffmob_draw/data/translations/feature_021.json`
-- [X] `cross-check.md` (se executado) sem CRITICAL nem HIGH — 0 CRITICAL e, depois da reconciliação de 2026-11-24, nenhum HIGH/MEDIUM em aberto (A001 e A002 retratados com evidência; A003–A005 corrigidos)
+- [X] As 32 ações de implementação fechadas desde `f2f35215` — resta aberta **apenas** a T033 (verificação visual)
+- [X] Suíte pura com os ensaios da 021: **1582 de 1582**, OK com 5 pulados (`unittest discover`, 198,7 s). Os
+      pulados são ensaios que exigem as fontes do MOBI da pasta de entrega. Os números anteriores (186/186, 187/187)
+      contavam **arquivos**, não ensaios
+- [X] Blender 5.2: `tests/blender_021_mcp_e2e.py` **52/52** exit 0 (inclui a prova headless do RF-08);
+      `tests/blender_022_mover_sobre_frente.py` **10/10**; `tests/blender_017_armario_smoke.py` OK; sonda de
+      interface da 021 **22/22**
+      (`_reversa_bugs/cabinet_editor/inspections/2026-11-24-debugger/`)
+- [X] Cobertura de internacionalização (`pt_BR` e `en_US`) sem chaves faltantes — `tests/test_i18n_coverage.py`;
+      strings da 021 em `caffmob_draw/data/translations/feature_021.json`
+- [X] `cross-check.md` fechado pela auditoria de 2026-11-24, sem CRITICAL nem HIGH: 0 MEDIUM e 1 LOW (A004), com a
+      situação de cada achado declarada
 - [X] `regression-watch.md` gerado — `_reversa_forward/021-plano-corte-camadas-gaveteiro/regression-watch.md`
+- [ ] **Aberto:** paridade visual do construtor com o `mockup_construtor_armarios.html` (T033). Exige sessão gráfica;
+      a estrutura (sete abas, título, Plano de Corte) está provada, o pixel a pixel não
+
+### 10.1 O que mudou na verificação de 2026-11-24
+
+A auditoria anterior afirmava `202/204` na suíte Blender e `187/187` na pura sem executar. A inspeção do
+`/reversa-debugger` executou: das cinco falhas puras, três eram defeito real de ensaio no Windows (ordenação de
+`SHA256SUMS`) e uma era `select` em pipe (também defeito de ensaio); as duas viraram os cartões
+`BUG-20261124-7H3K` e `BUG-20261124-Q2MF`. A quinta (permissão POSIX) não se reproduziu na reexecução final: a suíte
+fechou **1582/1582, OK**, com 5 pulados por fontes do MOBI da pasta de entrega. Na suíte Blender, as duas falhas
+restantes são as que exigem MOBI em 127.0.0.1 e foram reproduzidas na asserção exata
+(`blender_065_ida_e_volta.py:34` e `blender_ensaio_mobi.py:19`).
+
+O fechamento desta rodada também tirou o RF-08 da cobertura só por inspeção: a seção 12 do
+`tests/blender_021_mcp_e2e.py` prova que a aba Ferramentas expõe pé-direito e espessura padrão e que o Editor de
+Paredes nasce com os valores gravados na cena (2,85 m e 180 mm). Com isso o ensaio passou a **52/52**. O RF-10 foi
+redigido com a condição real do móvel legado (RN-23), e o `cross-check.md` fechou A001/A002/A003/A005; resta aberto
+apenas A004, que exige GUI.
 
 ## 11. Histórico de alterações
 

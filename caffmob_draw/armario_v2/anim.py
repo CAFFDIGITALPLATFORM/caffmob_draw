@@ -37,10 +37,12 @@ CURSO_GAIOLA = 0.5       # a gaiola da corrediça anda metade do curso da gaveta
 
 PAPEIS_ANIMAVEIS = ('FRENTE_GAVETA', 'SEPARADOR', 'AFASTADOR', 'FOLHA', 'PORTA')
 SEPARADOR_GAVETA = ' da gaveta '
+SEPARADOR_PORTA = ' da porta '
 
 # Timer em curso de cada alvo (nome do objeto) -> função registrada em `bpy.app.timers`.
 _handles = {}
 # Estado de cada animação em curso: passo, progresso, destino, raiz e as matrizes fechadas dos objetos.
+_fechadas = {}   # nome -> matriz de mundo da peça fechada, referência do pivô da porta e da dobradiça
 _animacoes = {}
 
 
@@ -105,15 +107,56 @@ def _sufixo_da_gaveta(obj):
     return SEPARADOR_GAVETA + obj.name.rsplit(SEPARADOR_GAVETA, 1)[1]
 
 
+def _indice_da_porta(porta):
+    """Número da folha no nome da porta (`"Porta 2"` → `"2"`), como `build` a nomeia, ou `None`."""
+    if not porta.name.startswith('Porta '):
+        return None
+    return porta.name[len('Porta '):].split('.')[0].strip()
+
+
+def _dobradicas_da_porta(porta):
+    """As dobradiças da folha: irmãs com `ferragem = 'DOBRADICA'` e o mesmo número no nome (026)."""
+    indice = _indice_da_porta(porta)
+    if indice is None or porta.parent is None:
+        return ()
+    sufixo = f"{SEPARADOR_PORTA}{indice}"
+    achadas = []
+    for irmao in porta.parent.children:
+        parte = getattr(irmao, 'btm_armario_parte', None)
+        if parte is None or parte.ferragem != 'DOBRADICA':
+            continue
+        if irmao.name.endswith(sufixo) or f"{sufixo}." in irmao.name:
+            achadas.append(irmao)
+    return tuple(achadas)
+
+
+def _porta_da_dobradica(obj):
+    """A folha dona da dobradiça, pelo número gravado no nome dela, ou `None`."""
+    if SEPARADOR_PORTA not in obj.name or obj.parent is None:
+        return None
+    indice = obj.name.rsplit(SEPARADOR_PORTA, 1)[1].split('.')[0].strip()
+    for irmao in obj.parent.children:
+        parte = getattr(irmao, 'btm_armario_parte', None)
+        if irmao is obj or parte is None or parte.papel != 'PORTA':
+            continue
+        if _indice_da_porta(irmao) == indice:
+            return irmao
+    return None
+
+
 def _grupo(alvo):
-    """O alvo e as peças que andam com ele: as da mesma gaveta e o conjunto pendurado embaixo dele.
+    """O alvo e as peças que andam com ele: as da mesma gaveta, as dobradiças da porta e os filhos.
 
     A corrediça 3D entra na animação como irmã da frente, com o nome marcado pelo mesmo sufixo de gaveta: assim o
-    trilho interno anda o curso inteiro e a gaiola (`ferragem = 'GAIOLA'`) anda `CURSO_GAIOLA` dele. Objeto filho da
-    frente anda com ela, sem conta própria.
+    trilho interno anda o curso inteiro e a gaiola (`ferragem = 'GAIOLA'`) anda `CURSO_GAIOLA` dele. As dobradiças
+    entram como irmãs da folha pelo sufixo de porta (026) e giram no mesmo pivô dela. Objeto filho da frente anda com
+    ela, sem conta própria.
     """
     grupo = [alvo]
-    if getattr(alvo, 'btm_armario_parte', None).papel not in ('FOLHA', 'PORTA'):
+    parte = getattr(alvo, 'btm_armario_parte', None)
+    if parte.papel == 'PORTA':
+        grupo.extend(_dobradicas_da_porta(alvo))
+    elif parte.papel not in ('FOLHA', 'PORTA'):
         sufixo = _sufixo_da_gaveta(alvo)
         if sufixo is not None and alvo.parent is not None:
             for irmao in alvo.parent.children:
@@ -127,10 +170,14 @@ def _grupo(alvo):
 
 # Deslocamento de cada peça ----------------------------------------------------------------------------------------
 def _limites(obj):
-    """(x mínimo, x máximo, y mínimo) da peça em coordenadas de mundo, para achar a linha da dobradiça."""
+    """(x mínimo, x máximo, y mínimo) da peça em coordenadas de mundo, para achar a linha da dobradiça.
+
+    Vale a pose de quando a peça estava **fechada**: com ela já aberta, o `matrix_world` está girado e o pivô sairia
+    do lugar a cada toque (`_fechadas` guarda a matriz de referência).
+    """
     if obj.type != 'MESH':
         return None
-    matriz = obj.matrix_world
+    matriz = _fechadas.get(obj.name, obj.matrix_world)
     pontos = [matriz @ vertice.co for vertice in obj.data.vertices]
     if not pontos:
         return None
@@ -154,11 +201,15 @@ def _deslocamento_de(obj, raiz):
     if parte is None or float(parte.curso_mm) <= 0.0:
         return None
     if parte.eixo == 'GIRO':
-        limites = _limites(obj)
+        # A dobradiça gira no pivô da folha dona dela, não no próprio canto (026).
+        referencia = obj
+        if getattr(parte, 'ferragem', 'NENHUMA') == 'DOBRADICA':
+            referencia = _porta_da_dobradica(obj) or obj
+        limites = _limites(referencia)
         if limites is None:
             return None
         x_min, x_max, y_min = limites
-        esquerda = _lado_da_dobradica(obj, raiz) == portas_mod.ESQUERDA
+        esquerda = _lado_da_dobradica(referencia, raiz) == portas_mod.ESQUERDA
         pivo = Vector((x_min if esquerda else x_max, y_min, 0.0))
         # Sentido da dobradiça igual ao de `portas.portas_de_abrir`: esquerda abre para −95°, direita para +95°.
         sentido = -1.0 if esquerda else 1.0
@@ -214,6 +265,7 @@ def cancelar_tudo():
     for nome in tuple(_handles):
         cancelar(nome)
     _animacoes.clear()
+    _fechadas.clear()
 
 
 def _concluir(nome, raiz):
@@ -268,8 +320,12 @@ def _iniciar(alvo, abrir, progresso_inicial):
     anterior = _animacoes.get(alvo.name) or {}
     anteriores = {nome: espec for nome, espec, _fechada in anterior.get('objetos', ())}
     cancelar(alvo.name)
+    grupo = _grupo(alvo)
+    if progresso_inicial <= 1e-6:
+        for objeto in grupo:
+            _fechadas[objeto.name] = objeto.matrix_world.copy()
     objetos = []
-    for objeto in _grupo(alvo):
+    for objeto in grupo:
         especificacao = anteriores.get(objeto.name) or _deslocamento_de(objeto, raiz)
         if especificacao is None:
             continue

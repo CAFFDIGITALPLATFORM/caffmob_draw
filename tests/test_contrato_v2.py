@@ -19,7 +19,9 @@ def casos(prefixo):
 class ContratoV2(unittest.TestCase):
     def test_somas_e_inventario(self):
         # A mesma ordenação ordinal do SHA256SUMS gerado pelo TypeScript.
-        linhas = [f'{hashlib.sha256(p.read_bytes()).hexdigest()}  {p.name}' for p in sorted(PASTA.glob('*.json'))]
+        # Ordem ordinal pelo nome: `sorted(Path)` é insensível a maiúsculas no Windows e inverteria o SHA256SUMS.
+        linhas = [f'{hashlib.sha256(p.read_bytes()).hexdigest()}  {p.name}'
+                  for p in sorted(PASTA.glob('*.json'), key=lambda p: p.name)]
         self.assertEqual('\n'.join(linhas) + '\n', (PASTA / 'SHA256SUMS').read_text())
         self.assertGreaterEqual(len(casos('invalido-')), 15)
 

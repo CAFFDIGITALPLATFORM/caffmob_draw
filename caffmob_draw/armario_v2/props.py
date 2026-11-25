@@ -131,12 +131,14 @@ AXIS_ITEMS = [
     ('X', "X", ""),
     ('GIRO', "Giro", ""),
 ]
-# Papel de ferragem da corrediça (D-19): a peça tem `papel` vazio e este campo preenchido, fora do plano de chapa.
+# Papel de ferragem da corrediça (D-19) e da dobradiça (026): a peça tem `papel` vazio e este campo preenchido,
+# fora do plano de chapa.
 FERRAGEM_ITEMS = [
     ('NENHUMA', "Nenhuma", ""),
     ('TRILHO_EXT', "Trilho externo", ""),
     ('TRILHO_INT', "Trilho interno", ""),
     ('GAIOLA', "Gaiola", ""),
+    ('DOBRADICA', "Dobradiça", ""),
 ]
 
 # Coleções do armário ---------------------------------------------------------------------------------------------
@@ -177,12 +179,11 @@ class BTM_PG_ArmarioInterno(bpy.types.PropertyGroup):
 
 
 class BTM_PG_ArmarioV2(bpy.types.PropertyGroup):
-    largura: bpy.props.FloatProperty(subtype='DISTANCE', unit='LENGTH', default=1000.0,
-                                     min=100.0, max=6000.0)  # type: ignore
-    altura: bpy.props.FloatProperty(subtype='DISTANCE', unit='LENGTH', default=2400.0,
-                                    min=100.0, max=3000.0)  # type: ignore
-    profundidade: bpy.props.FloatProperty(subtype='DISTANCE', unit='LENGTH', default=510.0,
-                                          min=100.0, max=1200.0)  # type: ignore
+    # Medidas em milímetros: sem subtype/unit, senão o Blender lê o número como metros e mostra 1000 mm como
+    # 1.000.000 mm no campo (achado da sonda da janela 023).
+    largura: bpy.props.FloatProperty(default=1000.0, min=100.0, max=6000.0)  # type: ignore
+    altura: bpy.props.FloatProperty(default=2400.0, min=100.0, max=3000.0)  # type: ignore
+    profundidade: bpy.props.FloatProperty(default=510.0, min=100.0, max=1200.0)  # type: ignore
     tipo_montagem: bpy.props.EnumProperty(items=MOUNT_ITEMS, default='LATERAL_PASSANTE')  # type: ignore
     orientacao_frente: bpy.props.EnumProperty(items=ORIENTATION_ITEMS, default='EM_PE')  # type: ignore
     orientacao_tras: bpy.props.EnumProperty(items=ORIENTATION_ITEMS, default='EM_PE')  # type: ignore
@@ -218,17 +219,14 @@ class BTM_PG_ArmarioV2(bpy.types.PropertyGroup):
 
     deslizante_ativa: bpy.props.BoolProperty(default=False)  # type: ignore
     deslizante_folhas: bpy.props.IntProperty(min=2, max=4, default=2)  # type: ignore
-    deslizante_sobreposicao: bpy.props.FloatProperty(subtype='DISTANCE', unit='LENGTH', default=30.0,
-                                                    min=10.0, max=60.0)  # type: ignore
+    deslizante_sobreposicao: bpy.props.FloatProperty(default=30.0, min=10.0, max=60.0)  # type: ignore
     deslizante_material: bpy.props.EnumProperty(items=SLIDING_MATERIAL_ITEMS, default='MDF')  # type: ignore
     deslizante_base: bpy.props.EnumProperty(items=SLIDING_BASE_ITEMS, default='DENTRO')  # type: ignore
-    trilho_profundidade: bpy.props.FloatProperty(subtype='DISTANCE', unit='LENGTH', default=70.0,
-                                                 min=30.0, max=120.0)  # type: ignore
+    trilho_profundidade: bpy.props.FloatProperty(default=70.0, min=30.0, max=120.0)  # type: ignore
 
     fundo_ativo: bpy.props.BoolProperty(default=False)  # type: ignore
     fundo_fixacao: bpy.props.EnumProperty(items=BACK_FIX_ITEMS, default='CANAL')  # type: ignore
-    fundo_recuo: bpy.props.FloatProperty(subtype='DISTANCE', unit='LENGTH', default=10.0,
-                                         min=0.0, max=40.0)  # type: ignore
+    fundo_recuo: bpy.props.FloatProperty(default=10.0, min=0.0, max=40.0)  # type: ignore
 
     acabamento: bpy.props.EnumProperty(items=FINISH_ITEMS, default='MADEIRADO')  # type: ignore
 
@@ -245,8 +243,7 @@ class BTM_PG_ArmarioV2(bpy.types.PropertyGroup):
     matriz_colunas: bpy.props.IntProperty(min=1, max=5, default=1)  # type: ignore
     matriz_prioridade: bpy.props.EnumProperty(items=DIVISION_AXIS_ITEMS, default='VERTICAL')  # type: ignore
     bloco_quantidade: bpy.props.IntProperty(min=1, max=10, default=4)  # type: ignore
-    bloco_altura: bpy.props.FloatProperty(subtype='DISTANCE', unit='LENGTH', default=760.0,
-                                          min=100.0, max=3000.0)  # type: ignore
+    bloco_altura: bpy.props.FloatProperty(default=760.0, min=100.0, max=3000.0)  # type: ignore
     bloco_modelo: bpy.props.EnumProperty(items=DRAWER_MODEL_ITEMS, default='s_cf_reta')  # type: ignore
 
     aberto: bpy.props.BoolProperty(default=False)  # type: ignore
