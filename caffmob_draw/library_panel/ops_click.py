@@ -205,6 +205,7 @@ class BTM_OT_LibraryClick(bpy.types.Operator):
         self.start = (mx, my)
         self.rect = tuple(lay.rect)
         self.cell = ""
+        self._dragged = False
         if part in ('HEADER', 'LEFT', 'RIGHT', 'TOP', 'BOTTOM'):
             self.action = 'MOVE' if part == 'HEADER' else part
         else:
@@ -225,6 +226,12 @@ class BTM_OT_LibraryClick(bpy.types.Operator):
             return {'CANCELLED'}
         if event.type == 'LEFTMOUSE' and event.value == 'RELEASE':
             draw.tag_redraw(context)
+            if self.action == 'CELL' and not self._dragged:
+                try:
+                    from . import ops_detail
+                    ops_detail.abrir(context, self.cell)
+                except Exception:
+                    pass
             return {'FINISHED'}
         if event.type != 'MOUSEMOVE':
             return {'RUNNING_MODAL'}
@@ -232,9 +239,10 @@ class BTM_OT_LibraryClick(bpy.types.Operator):
         dx, dy = mx - self.start[0], my - self.start[1]
         s = draw._scale(context)
         if self.action == 'CELL':
-            if (dx * dx + dy * dy) ** 0.5 >= DRAG_THRESHOLD * s and \
-                    _run("caffmob.library_drag", key=self.cell, start_x=mx, start_y=my):
-                return {'FINISHED'}              # o arraste segue no modal dele (T032)
+            if (dx * dx + dy * dy) ** 0.5 >= DRAG_THRESHOLD * s:
+                self._dragged = True
+                if _run("caffmob.library_drag", key=self.cell, start_x=mx, start_y=my):
+                    return {'FINISHED'}          # o arraste segue no modal dele (T032)
             return {'RUNNING_MODAL'}
         bounds, hud = _bounds(context), draw.hud_rects(context, context.area)
         if self.action == 'MOVE':

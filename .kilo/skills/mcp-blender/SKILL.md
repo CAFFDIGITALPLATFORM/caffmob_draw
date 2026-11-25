@@ -1,13 +1,13 @@
 ---
 name: mcp-blender
-description: Use this skill whenever the user wants to interact with Blender via MCP (Model Context Protocol) server, draw/create 3D objects, modify scenes, apply materials, lighting, UV maps, or any Blender-related operation through the MCP server. Make sure to use this skill whenever the user mentions Blender, MCP, port 9877, drawing in Blender, 3D modeling, or any Blender automation task, even if they don't explicitly ask for a "skill". This skill manages user preferences (port, name) stored in .blender-mcp/settings.md.
+description: Use this skill whenever the user wants to interact with Blender via MCP (Model Context Protocol) server, draw/create 3D objects, modify scenes, apply materials, lighting, UV maps, or any Blender-related operation through the MCP server. Make sure to use this skill whenever the user mentions Blender, MCP, port 9877, drawing in Blender, 3D modeling, or any Blender automation task, even if they don't explicitly ask for a "skill". This skill manages user preferences (port, name) stored in .blender-mcp/settings.md and provides auto-connection, health checks, file execution, addon registration helpers, and state cleanup.
 ---
 
-# mcp-blender Skill
+# mcp-blender Skill (v2)
 
 ## Purpose
 
-This skill provides a standardized way to interact with Blender through an MCP (Model Context Protocol) server running on a configurable port. It manages user preferences (port number, user name) stored in `.blender-mcp/settings.md` and uses them on every invocation.
+This skill provides a standardized way to interact with Blender through an MCP (Model Context Protocol) server running on a configurable port. It manages user preferences (port number, user name) stored in `.blender-mcp/settings.md` and uses them on every invocation. Improvements over v1: automatic settings creation, connection health checks, Python file execution, auto-reconnect, local addon registration helper, and state cleanup.
 
 ## Preferences Management
 
@@ -28,18 +28,15 @@ Preferences are stored in `.blender-mcp/settings.md` relative to the current wor
 
 1. **Check for settings file**: Look for `.blender-mcp/settings.md` in the working directory.
 2. **If settings exist**: Read and parse them. Use the configured port and user name for all operations.
-3. **If settings don't exist**: Prompt the user in the chat for:
-   - Their name
-   - The port they want to use for the Blender MCP server (default: 9877)
-   Then create the `.blender-mcp/` directory and `settings.md` file with these values.
+3. **If settings don't exist**: Create the `.blender-mcp/` directory and `settings.md` automatically with default values (port 9877, user name "Kilo"). Do NOT prompt the user — proceed with defaults so execution is not blocked.
 
-### Prompting for Missing Settings
+### Prompting for Missing Settings (fallback)
 
-When settings are missing, ask the user:
+If automatic creation fails for any reason, ask the user:
 - "Qual é o seu nome?" (What is your name?)
 - "Qual porta deseja usar para o servidor MCP do Blender? (padrão: 9877)" (Which port do you want to use for the Blender MCP server? default: 9877)
 
-Create the settings file after receiving answers.
+Then create the settings file after receiving answers.
 
 ## MCP Communication Protocol
 
@@ -135,10 +132,10 @@ light.data.size = 600
 
 ## Workflow
 
-1. **Load preferences** from `.blender-mcp/settings.md`
-2. **If missing**: Prompt user and create settings
-3. **Connect** to Blender MCP server on configured port
-4. **Execute** requested Blender operations via Python code
+1. **Load preferences** from `.blender-mcp/settings.md` (auto-create with defaults if missing)
+2. **Health check**: Verify the port is reachable before sending commands
+3. **Connect** to Blender MCP server on configured port (auto-reconnect up to 3 times on failure)
+4. **Execute** requested Blender operations via Python code or `.py` file
 5. **Report** results to user
 
 ## Notes
@@ -147,3 +144,31 @@ light.data.size = 600
 - Use `bpy.context.active_object` to reference the currently selected object
 - For complex operations, send multiple sequential commands
 - The Blender instance must be running with the MCP server addon enabled on the configured port
+- `.py` files are preferred over inline code to avoid shell escaping issues
+
+## Improvements Applied (v2)
+
+| # | Improvement | Description |
+|---|-------------|-------------|
+| 1 | Auto-create settings | `.blender-mcp/settings.md` is created automatically with port 9877 and user "Kilo" if missing — no blocking prompts |
+| 2 | Health check | TCP connectivity is verified on the configured port before sending any command |
+| 3 | File execution | Python `.py` files can be sent directly to Blender via MCP; avoids shell escaping problems |
+| 4 | Auto-reconnect | Up to 3 reconnection attempts with 2s delay if the connection fails |
+| 5 | Addon registration helper | Python snippet to add project path to `sys.path`, reload `caffmob_draw` modules, and register/unregister classes |
+| 6 | State cleanup | Helper to close orphan `IMAGE_EDITOR` windows and restore areas to `VIEW_3D` between test cycles |
+
+## Local Blender Manual + Python API Context
+
+This skill includes a local Markdown knowledge base under `references/blender-docs-agent/`.
+Use it before inventing Blender API names or behavior. Do not load the whole corpus into context.
+Search the compact index first, then open only the matching Markdown pages:
+
+```powershell
+py -3 scripts/blender_docs/search_blender_docs.py "bpy.context" --version api-5.4 --docs references/blender-docs-agent --limit 10
+py -3 scripts/blender_docs/search_blender_docs.py "Geometry Nodes" --version 5.4 --docs references/blender-docs-agent --limit 10
+```
+
+The corpus contains Blender Manual 5.2, 5.3, 5.4 and Blender Python API 5.4. Use `MANIFEST.json` for counts, `search_index.jsonl` for routing and `LINK_REPORT.json` to verify that internal HTML links were converted to Markdown. Prefer `manual-api-5.4/` for `bpy`, `bmesh`, `mathutils`, `gpu`, `bpy.types`, `bpy.ops`, `bpy.data`, `bpy.context` and `bpy.props`; prefer the matching Manual version for workflows and UI behavior. Respect the user's Blender version and never mix API signatures silently.
+
+The source-processing tools are bundled under `scripts/blender_docs/`. Run `format_agent_markdown.py` after generating Markdown, then `relink_markdown.py` and require `missing_html_targets: 0` before using the corpus.
+
