@@ -56,6 +56,7 @@ MONTAGEM_DA_API = {'LATERAL': 'LATERAL_PASSANTE', 'BASE': 'BASE_PASSANTE'}
 CAMPOS_GAVETA = ('uid', 'vao', 'indice', 'altura', 'modelo', 'separador_colunas', 'separador_linhas',
                  'afastador_frente', 'afastador_tras', 'afastador_esq', 'afastador_dir', 'corredica_3d')
 CAMPOS_INTERNO = ('uid', 'vao', 'tipo', 'altura')
+CAMPOS_AJUSTE = ('uid', 'nome', 'papel', 'dx', 'dy', 'dz', 'espelho_x', 'removida')
 
 
 # Spec e coleções -------------------------------------------------------------------------------------------------
@@ -220,6 +221,7 @@ def snapshot_de(root):
         'divisoes': _itens(armario.divisoes, CAMPOS_DIVISAO),
         'gavetas': _itens(armario.gavetas, CAMPOS_GAVETA),
         'internos': _itens(armario.internos, CAMPOS_INTERNO),
+        'ajustes': _itens(armario.ajustes, CAMPOS_AJUSTE),
     }
     return json.dumps(estado, sort_keys=True)
 
@@ -255,6 +257,8 @@ def aplicar_snapshot(root, texto):
     _repovoar(armario.divisoes, estado.get('divisoes'))
     _repovoar(armario.gavetas, estado.get('gavetas'))
     _repovoar(armario.internos, estado.get('internos'))
+    if 'ajustes' in estado:                       # instantâneos antigos não têm ajustes: não mexe nos atuais
+        _repovoar(armario.ajustes, estado.get('ajustes'))
     armario.gerado = bool(estado.get('gerado'))
     armario.aberto = bool(estado.get('aberto', False))
     return estado

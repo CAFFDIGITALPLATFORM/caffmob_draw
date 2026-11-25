@@ -78,7 +78,7 @@ O que a sonda mediu como divergente de D-01/RF-01 e o que foi corrigido. A parid
 | ID | Descrição | Dependências | Paralelismo | Arquivo alvo | Confidência | Status |
 |----|-----------|--------------|-------------|--------------|-------------|--------|
 | T019 | Fila + modal UNDO: painéis enfileiram, `processar_fila` aplica com um único passo de desfazer; remover chamadas diretas | T015 | - | `caffmob_draw/armario_v2/panel_window.py`, `ops_window.py`, `fila.py` | 🟢 | `[X]` (botão só enfileira; modal processa; ensaio `blender_023_fase7`) |
-| T020 | Seleção múltipla (Shift/Ctrl+clique) e ações em lote mover/apagar/espelhar num passo de desfazer | T015 | - | `caffmob_draw/armario_v2/selecao.py`, `ops_window.py`, `window.py` | 🟢 | `[X]` (clique simples/Shift/vazio + lote com undo_push; 6 ensaios puros + 11 no Blender) |
+| T020 | Seleção múltipla (Shift/Ctrl+clique) e ações em lote mover/apagar/espelhar num passo de desfazer, **sobrevivendo ao Gerar** | T015 | - | `caffmob_draw/armario_v2/selecao.py`, `ops_window.py`, `window.py`, `build.py`, `props.py` | 🟢 | `[X]` (lote grava `Armário.ajustes` e o Gerar reaplica; 6 ensaios puros + 17 no Blender, incluindo regerar) |
 | T021 | Persistir por cena a última aba e o último tamanho da janela (padrão 1009×831, Estrutura) | T013 | `[//]` | `caffmob_draw/armario_v2/window.py` | 🟢 | `[X]` com limitação: aba restaurada e tamanho **registrado**, mas `Window.width/height` são readonly no Blender 5.2 — não há como aplicar o tamanho |
 | T022 | Aplicar paleta, espaçamento e ícones do mockup onde a UI do Blender permitir (sem titlebar/abas horizontais) | T017 | `[//]` | `caffmob_draw/armario_v2/panel_window.py`, `preview.py` | 🟢 | `[X]` (barra de abas 4+3 com aba ativa, barras de título/seleção/lote, espaçamento e ícones; paleta do preview já era do mockup) |
 | T023 | Sonda de desempenho: abrir < 2 s e preview < 200 ms por interação, com o armário montado | T022 | - | `tests/blender_023_desempenho.py` | 🟢 | `[X]` (abrir 127,5 ms na sessão gráfica; preview 0,4 ms máx. com 54 peças; sonda `--background` com assert da meta) |
@@ -99,3 +99,4 @@ Não use isso para corrigir ações, edits manuais ficam fora desse arquivo, vã
 | 2026-11-25 | Fase 6 acrescentada pela correção da auditoria; T004 aponta para o ensaio Blender; T018 aberta (decisão do clarify) | reversa |
 | 2026-11-25 | T018 fechada (paridade híbrida) e Fase 7 aberta com o escopo decidido no clarify (T019–T024) | reversa |
 | 2026-11-25 | Fase 7 executada: T019–T024 `[X]`; T021 com a limitação de plataforma no tamanho da janela | reversa |
+| 2026-11-25 | T020 reforçada: edições em lote passam a sobreviver ao Gerar (coleção `ajustes` + reaplicação no `build.gerar`) | reversa |

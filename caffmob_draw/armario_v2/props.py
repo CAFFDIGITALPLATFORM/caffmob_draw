@@ -175,6 +175,22 @@ class BTM_PG_ArmarioInterno(bpy.types.PropertyGroup):
     altura: bpy.props.FloatProperty(subtype='DISTANCE', unit='LENGTH', default=0.0)  # type: ignore
 
 
+class BTM_PG_ArmarioAjuste(bpy.types.PropertyGroup):
+    """Ajuste manual de uma peça gerada (mover/espelhar/apagar em lote), reaplicado no Gerar (023, T020).
+
+    A chave é `uid` + `papel` + `nome`: se uma inserção mudar a ordem das peças, o ajuste deixa de casar e não é
+    aplicado na peça errada — fica guardado para quando a mesma peça voltar.
+    """
+    uid: bpy.props.StringProperty()  # type: ignore
+    nome: bpy.props.StringProperty()  # type: ignore
+    papel: bpy.props.StringProperty()  # type: ignore
+    dx: bpy.props.FloatProperty(subtype='DISTANCE', unit='LENGTH', default=0.0)  # type: ignore
+    dy: bpy.props.FloatProperty(subtype='DISTANCE', unit='LENGTH', default=0.0)  # type: ignore
+    dz: bpy.props.FloatProperty(subtype='DISTANCE', unit='LENGTH', default=0.0)  # type: ignore
+    espelho_x: bpy.props.BoolProperty(default=False)  # type: ignore
+    removida: bpy.props.BoolProperty(default=False)  # type: ignore
+
+
 # Spec do armário -------------------------------------------------------------------------------------------------
 
 
@@ -212,6 +228,7 @@ class BTM_PG_ArmarioV2(bpy.types.PropertyGroup):
     divisoes: bpy.props.CollectionProperty(type=BTM_PG_ArmarioDivisao)  # type: ignore
     gavetas: bpy.props.CollectionProperty(type=BTM_PG_ArmarioGaveta)  # type: ignore
     internos: bpy.props.CollectionProperty(type=BTM_PG_ArmarioInterno)  # type: ignore
+    ajustes: bpy.props.CollectionProperty(type=BTM_PG_ArmarioAjuste)  # type: ignore
 
     porta_ativa: bpy.props.BoolProperty(default=False)  # type: ignore
     porta_folhas: bpy.props.IntProperty(min=1, max=4, default=1)  # type: ignore
@@ -297,8 +314,8 @@ class BTM_PG_ContratoChapas(bpy.types.PropertyGroup):
     configurado: bpy.props.BoolProperty(default=False)  # type: ignore
 
 
-classes = (BTM_PG_ArmarioDivisao, BTM_PG_ArmarioGaveta, BTM_PG_ArmarioInterno, BTM_PG_ArmarioV2,
-           BTM_PG_ArmarioParte, BTM_PG_ContratoChapas)
+classes = (BTM_PG_ArmarioDivisao, BTM_PG_ArmarioGaveta, BTM_PG_ArmarioInterno, BTM_PG_ArmarioAjuste,
+           BTM_PG_ArmarioV2, BTM_PG_ArmarioParte, BTM_PG_ContratoChapas)
 
 
 def register():

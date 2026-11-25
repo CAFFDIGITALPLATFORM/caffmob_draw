@@ -620,6 +620,18 @@ def _material_da_peca(dados, mapa, escolhido=''):
     return mapa.get(dados['material'], mapa['CHAPA']), dados['material']
 
 
+def _ajuste_da_peca(root, objeto):
+    """Ajuste manual gravado no armário para esta peça (uid + papel + nome), ou None (023, T020)."""
+    armario = getattr(root, 'btm_armario', None)
+    if armario is None:
+        return None
+    parte = objeto.btm_armario_parte
+    for ajuste in armario.ajustes:
+        if ajuste.uid == parte.uid and ajuste.papel == parte.papel and ajuste.nome == objeto.name:
+            return ajuste
+    return None
+
+
 def gerar(root, spec, divisoes=(), lista_gavetas=(), lista_internos=()):
     """Refaz as chapas do armário a partir do spec e devolve [objetos] na cena."""
     import bpy  # type: ignore
@@ -661,6 +673,18 @@ def gerar(root, spec, divisoes=(), lista_gavetas=(), lista_internos=()):
             parte.movel = dados['movel']
             parte.curso_mm = dados['curso']
             parte.eixo = dados['eixo']
+            # As edições em lote (mover/espelhar/apagar) sobrevivem ao Gerar: o ajuste gravado no armário é
+            # reaplicado em cada peça recriada, casando uid + papel + nome para não cair na peça errada (T020).
+            ajuste = _ajuste_da_peca(root, objeto)
+            if ajuste is not None and ajuste.removida:
+                bpy.data.objects.remove(objeto, do_unlink=True)
+                continue
+            if ajuste is not None:
+                objeto.location.x += ajuste.dx
+                objeto.location.y += ajuste.dy
+                objeto.location.z += ajuste.dz
+                if ajuste.espelho_x:
+                    objeto.scale.x = -1.0
             objetos.append(objeto)
     if getattr(root, 'btm_armario', None) is not None:
         root.btm_armario.gerado = True

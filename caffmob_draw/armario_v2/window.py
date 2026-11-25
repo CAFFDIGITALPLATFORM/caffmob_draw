@@ -220,12 +220,26 @@ def objetos_da_selecao(root, s):
             if getattr(filho, 'btm_armario_parte', None) is not None and filho.name in nomes]
 
 
+def _ajuste_de(root, obj):
+    """Ajuste gravado no armário para a peça, criando-o na primeira edição (chave uid + papel + nome)."""
+    armario = getattr(root, 'btm_armario', None)
+    if armario is None:
+        return None
+    parte = obj.btm_armario_parte
+    for ajuste in armario.ajustes:
+        if ajuste.uid == parte.uid and ajuste.papel == parte.papel and ajuste.nome == obj.name:
+            return ajuste
+    ajuste = armario.ajustes.add()
+    ajuste.uid, ajuste.nome, ajuste.papel = parte.uid, obj.name, parte.papel
+    return ajuste
+
+
 def aplicar_lote(root, s, acao, delta=DELTA_LOTE):
     """Aplica mover / espelhar / apagar à seleção e devolve quantas peças mudaram (RN-06).
 
-    As peças são objetos gerados: mover desloca em X/Z, espelhar inverte o eixo X no lugar e apagar remove o objeto.
-    Regenerar o armário (mudar uma medida) refaz as chapas a partir do spec e descarta esses ajustes — o mesmo
-    comportamento do Gerar, que refaz todas as peças.
+    Mover desloca em X/Z, espelhar inverte o eixo X no lugar e apagar remove o objeto. Cada alteração fica gravada
+    em `Armário v2.ajustes`, então o **Gerar** recria as peças e reaplica o ajuste (T020); Cancelar restaura o
+    instantâneo com a coleção de ajustes junto.
     """
     alvos = objetos_da_selecao(root, s)
     if not alvos:
@@ -233,13 +247,25 @@ def aplicar_lote(root, s, acao, delta=DELTA_LOTE):
     if acao in ('MOVER_ESQ', 'MOVER_DIR', 'MOVER_CIMA', 'MOVER_BAIXO'):
         sinal = -1.0 if acao in ('MOVER_ESQ', 'MOVER_BAIXO') else 1.0
         eixo = 2 if acao in ('MOVER_CIMA', 'MOVER_BAIXO') else 0
+        campo = 'dz' if eixo == 2 else 'dx'
         for obj in alvos:
-            obj.location[eixo] += sinal * abs(delta)
+            passo = sinal * abs(delta)
+            obj.location[eixo] += passo
+            ajuste = _ajuste_de(root, obj)
+            if ajuste is not None:
+                ajuste.removida = False
+                setattr(ajuste, campo, getattr(ajuste, campo) + passo)
     elif acao == 'ESPELHAR':
         for obj in alvos:
             obj.scale.x *= -1.0
+            ajuste = _ajuste_de(root, obj)
+            if ajuste is not None:
+                ajuste.espelho_x = obj.scale.x < 0.0
     elif acao == 'APAGAR':
         for obj in alvos:
+            ajuste = _ajuste_de(root, obj)
+            if ajuste is not None:
+                ajuste.removida = True
             bpy.data.objects.remove(obj, do_unlink=True)
         s.selecionados = []
         s.selecionado = None

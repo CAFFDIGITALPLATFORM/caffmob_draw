@@ -16,7 +16,7 @@ sys.path.insert(0, str(ROOT / "tests"))
 sys.path.insert(0, str(ROOT))
 import _blender_env  # noqa: F401,E402  (registra o add-on)
 
-from caffmob_draw.armario_v2 import build, fila, selecao, window  # noqa: E402
+from caffmob_draw.armario_v2 import build, fila, ops, selecao, window  # noqa: E402
 
 PASS, FAIL = [], []
 
@@ -100,11 +100,36 @@ check("fila: erro vira aviso e a próxima roda", fila_mod.processar(fila_erro, w
 
 # --- T020: apagar em lote -----------------------------------------------------------------------------------------
 dois = pecas(root)[:2]
+nomes_apagados = [obj.name for obj in dois]          # antes do remove: depois o StructRNA não existe mais
 window.definir_selecao(s, [{"nome": obj.name, "vista": "FRONTAL"} for obj in dois])
 quantos = len(pecas(root))
 window.aplicar_lote(root, s, "APAGAR")
 check("lote: apagar remove as duas peças", len(pecas(root)) == quantos - 2 and s.selecionados == [],
       f"{quantos} -> {len(pecas(root))}")
+
+# --- T020: o ajuste sobrevive ao Gerar -----------------------------------------------------------------------------
+restante = pecas(root)[0]
+nome_restante = restante.name
+apagados = list(nomes_apagados)
+window.definir_selecao(s, [{"nome": nome_restante, "vista": "FRONTAL"}])
+window.aplicar_lote(root, s, "MOVER_DIR", 10.0)
+window.aplicar_lote(root, s, "ESPELHAR")
+bpy.context.view_layer.objects.active = root
+root.select_set(True)
+bpy.ops.caffmob.armario_v2_gerar()
+recriada = bpy.data.objects.get(nome_restante)
+check("Gerar devolve a peça ajustada", recriada is not None, nome_restante)
+check("Gerar reaplica o mover", recriada is not None and abs(recriada.location.x - 10.0) < 1e-6,
+      None if recriada is None else recriada.location.x)
+check("Gerar reaplica o espelhar", recriada is not None and recriada.scale.x == -1.0,
+      None if recriada is None else recriada.scale.x)
+check("Gerar mantém as peças apagadas fora", all(nome not in {o.name for o in pecas(root)} for nome in apagados),
+      apagados)
+snap = ops.snapshot_de(root)
+check("instantâneo guarda os ajustes", '"ajustes"' in snap and len(root.btm_armario.ajustes) >= 1,
+      len(root.btm_armario.ajustes))
+ops.aplicar_snapshot(root, snap)
+check("instantâneo restaura os ajustes", len(root.btm_armario.ajustes) >= 1, len(root.btm_armario.ajustes))
 
 # --- T021: memória por cena ---------------------------------------------------------------------------------------
 padrao = window.ler_memoria(scene)
