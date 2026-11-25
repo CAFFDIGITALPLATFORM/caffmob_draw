@@ -181,6 +181,16 @@ class BTM_AddonPreferences(bpy.types.AddonPreferences):
         update=_update_use_viewport_hud,
     )  # type: ignore
 
+    # Feature 024 (RN-01, D-08): padrão de fábrica da exibição dos armários novos. A cena continua com o estado
+    # próprio (`Scene.btm_view_mode`), então abrir outro arquivo não muda a leitura do armário.
+    exibicao_armario: bpy.props.EnumProperty(
+        name="Textura do armário",
+        description="Leitura de exibição dos armários novos: só a textura ou textura com as arestas",
+        items=[('TEXTURA_SO', "Somente textura", "Material puro, sem linhas de aresta"),
+               ('TEXTURA_LINHAS', "Textura com linhas", "Material com as arestas de todos os objetos")],
+        default='TEXTURA_SO',
+    )  # type: ignore
+
     wall_color: bpy.props.FloatVectorProperty(name="Cor das Paredes", size=4, min=0, max=1, default=(0.252832, 0.500434, 0.735662, 1.0), subtype="COLOR")  # type: ignore
     cabinet_color: bpy.props.FloatVectorProperty(name="Cor dos Armários", size=4, min=0, max=1, default=(0.0, 0.5, 0.7, 0.3), subtype="COLOR")  # type: ignore
     door_window_color: bpy.props.FloatVectorProperty(name="Cor de Portas/Janelas", size=4, min=0, max=1, default=(0.0, 0.5, 0.7, 0.1), subtype="COLOR")  # type: ignore
@@ -300,6 +310,7 @@ class BTM_AddonPreferences(bpy.types.AddonPreferences):
         col.separator()
         col.operator("caffmob.refresh_asset_libraries", text="", icon='FILE_REFRESH')
 
+        layout.prop(self, "exibicao_armario")
         layout.prop(self, "wall_color")
         layout.prop(self, "cabinet_color")
         layout.prop(self, "door_window_color")

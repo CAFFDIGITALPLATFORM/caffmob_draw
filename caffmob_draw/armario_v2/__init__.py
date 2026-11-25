@@ -4,6 +4,7 @@ Cascata de submódulos do pacote. Só os módulos que registram algo no Blender 
 `register()` os chama:
 
 - `props`: PropertyGroups do armário, da peça e do contrato de chapas (T003)
+- `exibicao`: variante de exibição e a migração de `exibicao_versao` no `load_post` (024, T010/T011)
 - `build`: as chapas na cena (T020)
 - `ops`: operadores Abrir, Gerar, Aplicar, Cancelar, Montar Caixa, Semear Contrato e Limpar (T021, T023); `Abrir`
   divide o `bl_idname` com o editor 2D antigo e se protege com a guarda de `ops.register` (D-03, T027)
@@ -27,7 +28,8 @@ Blender não carrega `bpy`. `unregister()` percorre a mesma tupla ao contrário,
 from importlib import import_module
 
 # Cascata de registro, na ordem de `register()`; desregistro na ordem inversa.
-_MODULES = ('props', 'anim', 'ops', 'ops_drawer_convert', 'panel', 'menu', 'hud', 'ponte', 'window', 'ops_window', 'panel_window')
+_MODULES = ('props', 'exibicao', 'anim', 'ops', 'ops_drawer_convert', 'panel', 'menu', 'hud', 'ponte', 'window',
+            'ops_window', 'panel_window')
 
 
 def _modules():

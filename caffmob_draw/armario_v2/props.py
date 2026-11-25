@@ -16,6 +16,8 @@ dado e os itens dos enums, lidos por atributo (`obj.btm_armario.largura`), nunca
 
 import bpy  # type: ignore
 
+from .exibicao import EXIBICAO_ITEMS
+
 # Itens dos enums --------------------------------------------------------------------------------------------------
 
 THICKNESS_ITEMS = [
@@ -267,6 +269,11 @@ class BTM_PG_ArmarioV2(bpy.types.PropertyGroup):
     gerado: bpy.props.BoolProperty(default=False)  # type: ignore
     origem: bpy.props.StringProperty()  # type: ignore
     snapshot: bpy.props.StringProperty()  # type: ignore
+
+    # Feature 024 (RN-01, RN-04, D-08): marca da migração de exibição e a variante gravada no armário. O default é
+    # fixo porque `bpy.props` não herda default de preferência; quem aplica `exibicao_armario` é a geração/migração.
+    exibicao_versao: bpy.props.IntProperty(default=0)  # type: ignore
+    exibicao: bpy.props.EnumProperty(items=EXIBICAO_ITEMS, default='TEXTURA_SO')  # type: ignore
 
 
 # Chapa gerada e contrato de chapas -------------------------------------------------------------------------------

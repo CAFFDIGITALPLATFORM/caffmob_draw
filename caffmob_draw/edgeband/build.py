@@ -9,10 +9,30 @@ fora; seis faces por faixa.
 import bmesh  # type: ignore
 import bpy  # type: ignore
 
+from ..texture_library.uv_core import LAYER_UV
 from . import core
 
 OFFSET = 0.0002                 # 0,2 mm entre a chapa e a fita
 SOLID_PREFIX = "Fita lisa "
+
+
+def _uv_faixa(obj, band):
+    """UV próprio da faixa (024, T006; RN-03): U no comprimento e V na espessura, em metros.
+
+    A faixa é malha própria (não herda o UV da chapa): o comprimento corre no eixo mais longo do plano e a largura
+    aparente da fita ocupa o V, então a textura não estica na quina.
+    """
+    plano = [eixo for eixo in range(3) if eixo != band.axis]
+    eixo_u = max(plano, key=lambda eixo: band.rect[plano.index(eixo)][1] - band.rect[plano.index(eixo)][0])
+    antiga = obj.data.uv_layers.get(LAYER_UV)
+    if antiga is not None:
+        obj.data.uv_layers.remove(antiga)
+    camada = obj.data.uv_layers.new(name=LAYER_UV)
+    for poligono in obj.data.polygons:
+        for indice in poligono.loop_indices:
+            co = obj.data.vertices[obj.data.loops[indice].vertex_index].co
+            camada.data[indice].uv = (co[eixo_u], co[band.axis])
+    return camada
 
 
 def _write(obj, band, thickness):
@@ -26,6 +46,7 @@ def _write(obj, band, thickness):
     bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
     bm.to_mesh(obj.data)
     bm.free()
+    _uv_faixa(obj, band)
     obj.data.update()
 
 

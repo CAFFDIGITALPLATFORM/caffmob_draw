@@ -50,3 +50,17 @@
 - Contorno de arestas no Solid depende do motor de desenho da GPU.
 - Percepção de “mesma textura” entre Solid, Preview e render.
 - Diálogo de aviso de migração na tela.
+
+## 6. Resultado da rodada de implementação (2026-11-25)
+
+O que já está provado sem olho humano:
+
+- textura MDF gerada em runtime, 512², empacotada no `.blend`, só na chapa (vidro/alumínio sem textura);
+- UV por face: EXTERNA e INTERNA em retângulos distintos, quatro faces de fita, tudo em metros;
+- faixa da fita com `UVMap` próprio (U no comprimento, V na espessura);
+- `exibicao_armario` com dois itens e `cabinet_color` preservado;
+- migração única por `exibicao_versao`, com handler removido no `unregister()`;
+- i18n das chaves novas em pt_BR e en_US.
+
+O que continua só no olho (passos 1 a 4 acima): aparência do grão, contorno no Solid, igualdade Solid/Preview/render
+e o aviso de migração na tela.

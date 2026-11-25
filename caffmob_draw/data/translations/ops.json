@@ -191,6 +191,10 @@
   "pt_BR": "Liga o tipo de cor por objeto",
   "en_US": "This setting turns on the object color type"
  },
+ "This setting turns on the texture color type": {
+  "pt_BR": "Esta opção liga o tipo de cor de textura",
+  "en_US": "This setting turns on the texture color type"
+ },
  "This setting turns on vertex snapping": {
   "pt_BR": "Liga o encaixe em vértices",
   "en_US": "This setting turns on vertex snapping"
@@ -222,6 +226,14 @@
  "Turn On Object Color Type - REQUIRED": {
   "pt_BR": "Ligar Cor por Objeto - OBRIGATÓRIO",
   "en_US": "Turn On Object Color Type - REQUIRED"
+ },
+ "Turn On Texture Color Type": {
+  "pt_BR": "Ligar Cor de Textura",
+  "en_US": "Turn On Texture Color Type"
+ },
+ "Turn On Texture Color Type - REQUIRED": {
+  "pt_BR": "Ligar Cor de Textura - OBRIGATÓRIO",
+  "en_US": "Turn On Texture Color Type - REQUIRED"
  },
  "Updated {} annotations ({} lines, {} texts, {} dimensions)": {
   "pt_BR": "{} anotações atualizadas ({} linhas, {} textos, {} cotas)",

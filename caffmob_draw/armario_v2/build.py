@@ -306,7 +306,7 @@ def medidas_de_corte(item):
     return tuple(vao[i] for i in range(3) if i != fino)
 
 
-def _material(nome, cor, roughness=0.45, metallic=0.0):
+def _material(nome, cor, roughness=0.45, metallic=0.0, textura=False):
     import bpy  # type: ignore
 
     material = bpy.data.materials.get(nome)
@@ -322,14 +322,17 @@ def _material(nome, cor, roughness=0.45, metallic=0.0):
         if 'Transmission Weight' in bsdf.inputs and cor[3] < 1.0:
             bsdf.inputs['Transmission Weight'].default_value = 1.0 - cor[3]
     material.diffuse_color = cor
+    if textura:
+        from . import textura_padrao
+        textura_padrao.aplicar(material)      # 024: a chapa nasce com a textura padrão, não com cor chapada
     return material
 
 
 def materiais(acabamento):
-    """{'CHAPA', 'VIDRO', 'ALUMINIO'} do acabamento escolhido (RF-17)."""
+    """{'CHAPA', 'VIDRO', 'ALUMINIO'} do acabamento escolhido (RF-17); só a chapa leva a textura (024, RN-01)."""
     cor = ACABAMENTOS.get(acabamento, ACABAMENTOS['MADEIRADO'])
     return {
-        'CHAPA': _material(f"Armário v2 {acabamento.lower()}", cor),
+        'CHAPA': _material(f"Armário v2 {acabamento.lower()}", cor, textura=True),
         'VIDRO': _material("Armário v2 vidro", (0.82, 0.88, 0.90, 0.25), roughness=0.05),
         'ALUMINIO': _material("Armário v2 alumínio", (0.72, 0.73, 0.75, 1.0), roughness=0.3, metallic=1.0),
     }
@@ -388,24 +391,24 @@ def limpar(root):
 
 
 def _uv_metros(malha):
-    """UV planar por eixo dominante da face, em metros: 1 unidade de UV = 1 m (018, T010, RN-08, D-02).
+    """UV por face em metros: 1 unidade de UV = 1 m (018, T010, RN-08, D-02; 024, T007, RN-03).
 
-    A escala real da textura fica no `Mapping` do material (`1 / tamanho em metros`), então trocar a textura da peça
-    não exige refazer o UV. O layer é `UVMap`, o mesmo nome que o resto do pacote usa e que o UV Editor mostra.
+    Cada face recebe o mapa do seu tipo — EXTERNA, INTERNA ou FITA — pela regra de `face_uv_core`, em vez do antigo
+    “eixo dominante” que não distinguia dentro de fora. A escala real da textura continua no `Mapping` do material
+    (`1 / tamanho em metros`), então trocar a textura não exige refazer o UV. O layer é `UVMap`, o mesmo nome que o
+    resto do pacote usa e que o UV Editor mostra.
     """
-    camada = malha.uv_layers.new(name='UVMap')
+    from . import face_uv_core
+
+    camada = malha.uv_layers.new(name=face_uv_core.LAYER_UV)
+    minimo = [min(vertice.co[i] for vertice in malha.vertices) for i in range(3)]
+    maximo = [max(vertice.co[i] for vertice in malha.vertices) for i in range(3)]
+    caixa = (tuple(minimo), tuple(maximo))
     for poligono in malha.polygons:
         normal = poligono.normal
-        eixo = max(range(3), key=lambda i: abs(normal[i]))
         for indice in poligono.loop_indices:
             co = malha.vertices[malha.loops[indice].vertex_index].co
-            if eixo == 0:
-                u, v = co.y, co.z
-            elif eixo == 1:
-                u, v = co.x, co.z
-            else:
-                u, v = co.x, co.y
-            camada.data[indice].uv = (u, v)
+            camada.data[indice].uv = face_uv_core.uv_metros(caixa, normal, co)
     return camada
 
 

@@ -591,6 +591,10 @@
   "en_US": "Left Side",
   "pt_BR": "Lateral Esquerda"
  },
+ "Leitura de exibição dos armários novos: só a textura ou textura com as arestas": {
+  "pt_BR": "Leitura de exibição dos armários novos: só a textura ou textura com as arestas",
+  "en_US": "Display of new cabinets: texture only or texture with the edges"
+ },
  "Liga laterais, base inferior, base superior e fundo e gera o armário": {
   "en_US": "Turns on the sides, the bottom base, the top base and the back, then generates the cabinet",
   "pt_BR": "Liga laterais, base inferior, base superior e fundo e gera o armário"
@@ -646,6 +650,14 @@
  "Marque ao menos uma peça antes de converter": {
   "en_US": "Mark at least one part before converting",
   "pt_BR": "Marque ao menos uma peça antes de converter"
+ },
+ "Material com as arestas de todos os objetos": {
+  "pt_BR": "Material com as arestas de todos os objetos",
+  "en_US": "Material with the edges of every object"
+ },
+ "Material puro, sem linhas de aresta": {
+  "pt_BR": "Material puro, sem linhas de aresta",
+  "en_US": "Plain material, no edge lines"
  },
  "Montagem e orientações": {
   "en_US": "Assembly and orientations",
@@ -934,6 +946,22 @@
  "Sobreposto": {
   "en_US": "Overlaid",
   "pt_BR": "Sobreposto"
+ },
+ "Somente textura": {
+  "pt_BR": "Somente textura",
+  "en_US": "Texture only"
+ },
+ "Textura com linhas": {
+  "pt_BR": "Textura com linhas",
+  "en_US": "Texture with lines"
+ },
+ "Textura do armário": {
+  "pt_BR": "Textura do armário",
+  "en_US": "Cabinet texture"
+ },
+ "Textura padrão aplicada em {} armário(s)": {
+  "pt_BR": "Textura padrão aplicada em {} armário(s)",
+  "en_US": "Default texture applied to {} cabinet(s)"
  },
  "Travessas": {
   "en_US": "Rails",

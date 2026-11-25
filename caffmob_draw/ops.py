@@ -36,8 +36,8 @@ class home_builder_OT_set_recommended_settings(bpy.types.Operator):
                                                         description="This setting clutters the interface with unneeded relationship lines",
                                                         default=True)# type: ignore
 
-    turn_on_object_color_type: bpy.props.BoolProperty(name="Turn On Object Color Type",
-                                                        description="This setting turns on the object color type",
+    turn_on_texture_color_type: bpy.props.BoolProperty(name="Turn On Texture Color Type",
+                                                        description="This setting turns on the texture color type",
                                                         default=True)# type: ignore
 
     use_vertex_snapping: bpy.props.BoolProperty(name="Use Vertex Snapping",
@@ -86,8 +86,8 @@ class home_builder_OT_set_recommended_settings(bpy.types.Operator):
 
         if self.turn_off_relationship_lines:
             overlay.show_relationship_lines = False
-        if self.turn_on_object_color_type:
-            shading.color_type = 'OBJECT'
+        if self.turn_on_texture_color_type:
+            shading.color_type = 'TEXTURE'       # 024 (RN-01): Solid mostra a cor média da textura, não a cor de objeto
         if self.turn_off_3d_cursor:
             overlay.show_cursor = False
         if self.show_wireframes:
@@ -107,7 +107,7 @@ class home_builder_OT_set_recommended_settings(bpy.types.Operator):
         layout = self.layout
         box = layout.box()
         box.label(text="These are the required CAFFMob Draw settings.")
-        box.prop(self,'turn_on_object_color_type',text="Turn On Object Color Type - REQUIRED")
+        box.prop(self,'turn_on_texture_color_type',text="Turn On Texture Color Type - REQUIRED")
         box = layout.box()
         box.label(text="These are the recommended CAFFMob Draw settings.")
         box.prop(self,'turn_off_relationship_lines')

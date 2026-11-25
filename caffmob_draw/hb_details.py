@@ -96,7 +96,7 @@ class DetailView:
                 for space in area.spaces:
                     if space.type == 'VIEW_3D':
                         space.shading.type = 'SOLID'
-                        space.shading.color_type = 'OBJECT'
+                        space.shading.color_type = 'TEXTURE'      # 024 (RN-01): o detalhe mostra a textura, não a cor de objeto
                         break
 
 

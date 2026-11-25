@@ -35,12 +35,12 @@ class HOME_BUILDER_PT_hidden_header(bpy.types.Panel):
     def draw(self, context):
         layout = self.layout
 
-        # Check if Object Color Type is enabled in the viewport shading
-        if context.space_data.shading.color_type != 'OBJECT':
+        # 024 (RN-01, T017): o Solid recomendado agora é TEXTURE; a cor de objeto continua válida para cenas antigas.
+        if context.space_data.shading.color_type not in ('OBJECT', 'TEXTURE'):
             box = layout.box()
             row = box.row()
             row.alert = True
-            row.label(text="Object Color Type is not enabled!", icon='ERROR')
+            row.label(text="Texture or Object Color is not enabled!", icon='ERROR')
             box.label(text="Colors will not display correctly.", icon='BLANK1')
             box.operator("caffmob.set_recommended_settings",
                         text="Open Recommended Settings", icon='PREFERENCES')

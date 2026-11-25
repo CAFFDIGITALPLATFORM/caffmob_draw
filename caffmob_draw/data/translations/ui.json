@@ -1103,6 +1103,10 @@
   "pt_BR": "Deslocamento X do Texto",
   "en_US": "Text X Offset Amount"
  },
+ "Texture or Object Color is not enabled!": {
+  "pt_BR": "Textura ou Cor por Objeto não está ativada!",
+  "en_US": "Texture or Object Color is not enabled!"
+ },
  "Thickness": {
   "pt_BR": "Espessura",
   "en_US": "Thickness"
