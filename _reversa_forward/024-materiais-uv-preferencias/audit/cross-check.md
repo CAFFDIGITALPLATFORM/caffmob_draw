@@ -73,6 +73,25 @@ bloco em alerta com o botão que abre o diálogo recomendado. Com o Solid em `TE
 todo armário novo, transformando um diagnóstico em ruído permanente. T017 corrige a condição junto com T008; sem isso a
 feature entrega o próprio erro na cara do usuário.
 
+## Escopo de escrita: nenhuma ação fora de `caffmob_draw/`
+
+Esta auditoria conferiu, ação por ação, o caminho que cada uma escreve. **Nenhuma das 17 ações exige mudança de código
+de produto fora de `caffmob_draw/`**, e por isso nenhuma precisou ser corrigida por esse motivo. As três exceções são
+superfícies que não são produto:
+
+| Ação | Caminho escrito | Por que não é código de produto |
+|---|---|---|
+| T001 | `_reversa_forward/024-materiais-uv-preferencias/audit/cross-check.md` | Nota de confirmação na pasta do próprio Reversa; não altera arquivo do add-on |
+| T013 | `_reversa_forward/024-materiais-uv-preferencias/onboarding.md` | Documento de onboarding, pasta do Reversa |
+| T014 | `tests/` (leitura e execução) | Harness de ensaio, liberado por `allowedPaths: tests/*`; não altera `caffmob_draw/` |
+
+As demais 14 ações escrevem exclusivamente em `caffmob_draw/` (`armario_v2/props.py`, `armario_v2/build.py`,
+`armario_v2/textura_padrao.py`, `armario_v2/face_uv_core.py`, `armario_v2/mdf_core.py`, `armario_v2/exibicao.py`,
+`armario_v2/__init__.py`, `edgeband/build.py`, `hb_details.py`, `ops.py`, `ui/view3d_sidebar.py`, `__init__.py`,
+`data/translations/*.json`). Nenhuma delas toca o gerador de geometria de módulo (fora de escopo, §5 do requirements),
+o plano de corte, as bibliotecas herdadas nem os fluxos 2D que dependem de `color_type = 'OBJECT'`
+(`hb_utils.set_layout_shading`, `hb_layouts`, `catalog/render_thumbnails`).
+
 ## Critério de pronto vs. o que o to-do realmente cobre
 
 | Critério (`roadmap.md` §10) | Ações | Situação |
@@ -125,10 +144,10 @@ herdados. Nenhuma delas se resolve por código — são decisões do titular, e 
 - T009/T010/T016/T017 dividem superfícies distintas (`__init__.py`, `exibicao.py`, `ops.py`, `view3d_sidebar.py`).
 
 ### Política de escrita
-- Todo alvo de produto está em `caffmob_draw/`; os ensaios em `tests/`, que a configuração do Reversa libera
-  (`tests/*`). Nenhuma ação exige mudança fora dessas pastas. Observação: `.reversa/reversa-config.json` traz
-  `allowedPaths` com `"***"` além de `caffmob_draw/*` e `tests/*`, o que na prática libera o projeto inteiro — quem
-  depende da trava deve removê-lo.
+- Detalhe por ação na seção “Escopo de escrita”: 14 ações escrevem em `caffmob_draw/`, três em documentação/ensaio
+  (`_reversa_forward/` e `tests/`) e nenhuma em código de produto fora do pacote.
+- Observação de configuração: `.reversa/reversa-config.json` traz `allowedPaths` com `"***"` além de `caffmob_draw/*`
+  e `tests/*`, o que na prática libera o projeto inteiro — quem depende da trava deve remover o curinga.
 
 ## Aviso
 
