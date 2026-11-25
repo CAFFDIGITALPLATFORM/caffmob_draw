@@ -199,3 +199,10 @@ caffmob_draw/textures/**/*.JPEG
 caffmob_draw/textures/**/*.png
 caffmob_draw/textures/**/*.PNG
 !caffmob_draw/textures/thumbs/**
+
+# Artefatos locais de ferramentas/agente (nao fazem parte do add-on)
+.kilo/skills/mcp-blender/references/
+.blender-mcp/reload_addon.py
+.blender-mcp/reload_result.json
+MODELS/
+*.skill
