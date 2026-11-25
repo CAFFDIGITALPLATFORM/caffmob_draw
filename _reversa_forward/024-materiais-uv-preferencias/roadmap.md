@@ -41,19 +41,19 @@ Delta cirúrgico sobre o construtor v2 e a biblioteca de texturas, sem tocar geo
 | D-02 | Trocar `space.shading.color_type` de `'OBJECT'` para `'TEXTURE'` no fluxo de detalhes e nos pontos que forçam cor de objeto, mantendo `shading.type = 'SOLID'` | Decisão 2a do clarify; é o único caminho para o Solid mostrar a textura sem material por peça | Manter `OBJECT` e pintar a cor média manualmente (não acompanha a textura) | 🟢 |
 | D-03 | Núcleo puro `armario_v2/face_uv_core.py`: classifica cada face da chapa em **EXTERNA**, **INTERNA** ou **FITA** pela normal e pela posição relativa à caixa e devolve o retângulo UV em metros; `build.py` grava o layer `UVMap` a partir dele | Separa regra de cena, permite testar canto/rotação sem Blender e substitui o critério atual “eixo dominante” (que não distingue dentro/fora) | Classificar por índice de face da caixa (quebra quando a peça ganha bisel/furo) | 🟢 |
 | D-04 | A fita de borda (`edgeband/build.py`, faixa fina separada) recebe UV próprio: **U = comprimento da faixa em metros**, **V = largura da fita / largura repetida da textura**; a faixa mantém a cor sólida quando `use_color` estiver ligado | Decisão 4a do clarify; a faixa é malha própria, então o mapa dela não pode herdar o da chapa | Herdar o UV da face vizinha (textura esticada na quina) | 🟢 |
-| D-05 | Nas `BTM_AddonPreferences`, trocar o controle de cor do armário por um `EnumProperty exibicao_armario` com `('TEXTURA_SO', 'TEXTURA_LINHAS')`, mantendo `cabinet_color` apenas como cor de apoio/legado; `show_legacy_libraries`, `panel_mode`, `stick_magnet`, `mobi_url` e demais opções ficam intactas | Decisão 2 do pedido; nenhuma preferência existente é removida além do controle de cor, e o valor antigo é lido na migração | Renomear `cabinet_color` (perde o valor salvo); criar uma segunda tela de preferências | 🟢 |
-| D-06 | “Textura com linhas” desenha **todas as arestas de cada peça** pelo contorno de malha (Freestyle/`show_object_outline` no Solid e arestas marcadas `use_edge_sharp`/atributo para render), sem material extra por peça; a variante “Somente textura” desliga esse contorno | Decisão 3a do clarify; usa o contorno que o Blender já desenha, sem sombrear a malha duas vezes | Criar objeto de wireframe por peça (custo de cena e de undo) | 🟡 |
+| D-05 | Nas `BTM_AddonPreferences`, **acrescentar** `exibicao_armario` (Enum `TEXTURA_SO`/`TEXTURA_LINHAS`, default `TEXTURA_SO`) e **manter** `cabinet_color` e a linha `layout.prop(self, "cabinet_color")` (`__init__.py:304`) — esse valor é lido em `ops_placement.py:40` como `obj.color` dos armários herdados e não é a opção "Cor por objeto"; `show_legacy_libraries`, `panel_mode`, `stick_magnet`, `mobi_url` e demais opções ficam intactas | Decisão 2 do pedido + T009 do audit; o controle "Cor por objeto" que muda é o do diálogo `ops.py:39`, não a preferência de cor | Renomear `cabinet_color` (perderia o valor lido por `ops_placement.py:40`); criar uma segunda tela de preferências | 🟢 |
+| D-06 | "Textura com linhas" liga o **interruptor Linhas já existente** — `Scene.btm_view_lines` → `overlay.show_wireframes`, por `ui/view_mode_core.settings` (`:24`) e `ui/view_mode.apply` (`:26`, reaplicado no `load_post`); "Somente textura" desliga. Sem Freestyle, sem `show_object_outline` e sem objeto de wireframe por peça | Decisão 3 **confirmada pelo titular** em 2026-11-25: as arestas de todos os objetos são aceitas e o mecanismo já existe e é testado (`tests/test_view_mode.py`) | Contorno só das chapas (mecanismo novo, mais caro); objeto de wireframe por peça (custo de cena e de undo) | 🟢 |
 | D-07 | Migração única em `load_post`: se o armário não tem marca `btm_armario.exibicao_versao`, aplica a textura padrão nas peças sem material, grava `exibicao_versao = 1` e emite um aviso único por cena | Decisão 5a do clarify; idempotente e não reaplica em toda abertura | Migrar em `depsgraph_update` (rodaria a cada frame) | 🟢 |
 
 ## 4. Premissas
 
 | Premissa | Origem (`requirements.md` seção) | Risco se errada |
 |----------|----------------------------------|-----------------|
-| “Cursos 3D” é uma opção existente da interface de preferências/recomendações; **não há string com esse nome no código** (`pt_BR`/`en_US`/Python). A feature trata a decisão como “não remover nenhuma opção existente além do controle de cor” | RN-02 | Se “Cursos 3D” for outro controle (ex.: biblioteca de cursos), o plano precisa de uma ação extra só para ele |
+| “Cursos 3D” é o checkbox **“Turn Off 3D Cursor”** (`turn_off_3d_cursor`, `ops.py:54`), do diálogo `caffmob.set_recommended_settings`; fica intacto. Não há string com esse nome em Python nem nos catálogos | RN-02 e sessão 2 do clarify | Nenhum: o titular confirmou em 2026-11-25 e a T001 virou verificação de teste, não bloqueio |
 | A textura padrão MDF claro é gerada em runtime como imagem empacotada; não há PNG de MDF no pacote hoje | RN-01, D-01 | Se o titular exigir um arquivo de textura real do catálogo, entra o download/asset e o escopo cresce |
 
 Nenhuma premissa vem de `[DÚVIDA]`: as cinco decisões foram fechadas em `/reversa-clarify` (2026-11-25). A premissa
-“Cursos 3D” é factual, não uma dúvida de produto — a T001 a confirma na GUI antes de mexer nas preferências.
+A premissa “Cursos 3D” foi **confirmada** pelo titular em 2026-11-25 (sessão 2 do clarify). Segue aberta apenas uma dúvida — preferência do add-on vs. `Scene.btm_view_mode` —, registrada em `requirements.md` §7.
 
 ## 5. Delta arquitetural
 
@@ -97,7 +97,7 @@ Nenhum: a feature não abre HTTP, fila ou formato de arquivo. Por isso não há 
 | Textura gerada em runtime ficar com aparência fraca | médio | média | Grão determinístico com semente fixa e teste de que a imagem é empacotada (`pack()`) e sobrevive ao salvar/reabrir |
 | `color_type = 'TEXTURE'` deixar peças sem material cinza no Solid | baixo | alta | Toda peça sem material recebe o material padrão com imagem antes de desenhar |
 | Migração rodar em cena grande e travar a abertura | médio | baixa | Só raízes de `Marcenaria`, uma passada, sem regenerar geometria |
-| “Textura com linhas” pesar o viewport em armário grande | médio | média | Contorno de objeto, sem objeto extra; medir com o ensaio de 54 peças da 023 |
+| “Textura com linhas” pesar o viewport em armário grande | médio | média | Overlay de wireframe já existente, sem objeto extra; medir com o ensaio de 54 peças da 023 |
 
 ## 10. Critério de pronto
 
@@ -114,3 +114,4 @@ Nenhum: a feature não abre HTTP, fila ou formato de arquivo. Por isso não há 
 | Data | Alteração | Autor |
 |------|-----------|-------|
 | 2026-11-25 | Versão inicial gerada por `/reversa-plan` a partir das cinco decisões do `/reversa-clarify` | reversa |
+| 2026-11-25 | Segunda sessão do `/reversa-clarify`: D-05 corrigida (mantém `cabinet_color`), D-06 passou a reusar o interruptor Linhas existente, premissa “Cursos 3D” confirmada | reversa |

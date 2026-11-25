@@ -48,9 +48,7 @@ mantendo a opção "Cursos 3D" intacta.
    - Origem no legado: `caffmob_draw/hb_details.py:98`; mockup do construtor.
    - Tipo: alterada
 2. **RN-02 (Variantes "Somente textura" e "Textura com linhas"):** a opção "Textura" deve oferecer exatamente duas
-   variantes: **Somente textura** (material puro, sem linhas de aresta) e **Textura com linhas** (material + **todas
-   as arestas de cada peça**, ou seja, o contorno de cada chapa). A opção **"Cursos 3D"** permanece e não pode ser
-   escondida nem removida por essa mudança. 🟢
+   variantes: **Somente textura** (material puro, sem linhas de aresta) e **Textura com linhas** (material + **todas as arestas visíveis na viewport**, pelo interruptor **Linhas** que já existe — `overlay.show_wireframes`; não é contorno exclusivo das chapas). A opção **"Cursos 3D"** — confirmada pelo titular, em 2026-11-25, como o checkbox **"Turn Off 3D Cursor"** (`turn_off_3d_cursor`, `ops.py:54`) — permanece e não pode ser escondida nem removida por essa mudança. 🟢
    - Origem no legado: mockup do construtor; preferências recomendadas do add-on.
    - Tipo: nova
 3. **RN-03 (UV por face com o mesmo mapa em todos os modos):** ao aplicar textura, cada face deve receber o mapa do
@@ -88,10 +86,33 @@ mantendo a opção "Cursos 3D" intacta.
 - **Q:** O que acontece com armários já salvos com "Cor por objeto"?
   **R:** Migram uma única vez, na abertura da cena, para a textura padrão, com aviso e marca de migração.
 
+### Sessão 2026-11-25 — segunda rodada
+
+> Três das quatro perguntas abertas pelo `/reversa-audit` foram respondidas pelo titular; a quarta segue em §7.
+> Nenhum código foi tocado nesta rodada.
+
+- **Q:** "Cursos 3D" — qual controle é, para não removê-lo por engano?
+  **R:** É o checkbox **"Turn Off 3D Cursor"** (`turn_off_3d_cursor`, `caffmob_draw/ops.py:54`), do diálogo
+  `caffmob.set_recommended_settings`. **Preservar intacto**: só o controle de cor (`turn_on_object_color_type`,
+  `ops.py:39`) muda.
+- **Q:** O `color_type` vale para a viewport inteira — qual o escopo aceito?
+  **R:** **Global**, como no clarify: paredes, portas e armários das bibliotecas herdadas (que usam `obj.color`,
+  inclusive `cabinet_color`) passam a mostrar a cor média do material no Solid.
+- **Q:** "Textura com linhas" — quais arestas desenhar?
+  **R:** Reusar o **interruptor Linhas já existente** (`Scene.btm_view_lines` → `overlay.show_wireframes`): arestas de
+  todos os objetos, sem contorno exclusivo das chapas e sem objeto de wireframe novo.
+
 ## 7. Lacunas
 
-Nenhuma dúvida pendente após a sessão de esclarecimentos de 2026-11-25. O próximo ciclo é o `/reversa-plan`; nenhuma
-ação foi aberta e nenhuma implementação começou.
+Resta **uma** dúvida, aberta pelo `/reversa-audit` e ainda não respondida pelo titular (as outras três foram fechadas
+na segunda rodada de 2026-11-25, em §6):
+
+1. **`exibicao_armario` vs. `Scene.btm_view_mode` (T009/T010):** manter os dois níveis — a preferência do add-on como
+   padrão de fábrica e `Scene.btm_view_mode` como estado gravado no arquivo — ou um só? A preferência não consegue
+   herdar default em `bpy.props` (ver T002), e o controle "Sólido·Textura" da barra lateral já grava o estado na cena.
+   *Decide a forma final de T009 e o destino de T010.*
+
+Nenhuma implementação começou; o próximo ciclo é `/reversa-clarify` (uma pergunta) e depois `/reversa-coding`.
 
 ## 8. Histórico de alterações
 
@@ -99,3 +120,4 @@ ação foi aberta e nenhuma implementação começou.
 |------|-----------|-------|
 | 2026-11-25 | Versão inicial gerada na auditoria da feature 021 (lacuna de material/UV/preferências separada como candidata) | reversa |
 | 2026-11-25 | `/reversa-clarify`: cinco decisões integradas (textura padrão MDF, Solid `TEXTURE`, linhas em todas as arestas, UV próprio da fita, migração única com aviso); 0 dúvidas restantes | reversa |
+| 2026-11-25 | `/reversa-clarify` (2ª sessão): três respostas do titular integradas ("Cursos 3D" = `turn_off_3d_cursor`; `color_type` global; linhas pelo interruptor existente); resta 1 dúvida (`exibicao_armario` vs. `Scene.btm_view_mode`) | reversa |
