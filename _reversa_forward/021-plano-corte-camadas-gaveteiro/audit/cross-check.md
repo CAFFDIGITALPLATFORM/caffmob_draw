@@ -1,6 +1,6 @@
 # Cross-check: 021-plano-corte-camadas-gaveteiro
 
-> Data: 2026-11-24 (auditoria de fechamento, depois do `/reversa-debugger` e dos ciclos de correção)
+> Data: 2026-11-24, revisado em 2026-11-25 (re-verificação de interface executada, não presumida)
 > Feature: `_reversa_forward/021-plano-corte-camadas-gaveteiro`
 > Artefatos analisados: [requirements.md](../requirements.md) · [roadmap.md](../roadmap.md) · [actions.md](../actions.md)
 > Evidência de execução: `_reversa_bugs/cabinet_editor/inspections/2026-11-24-debugger/`
@@ -19,6 +19,11 @@ suíte pura **1582/1582**, OK com 5 pulados (fontes do MOBI só disponíveis na 
 `blender_021_mcp_e2e.py` **52/52** (inclui a nova prova do RF-08), `blender_022_mover_sobre_frente.py` **10/10**,
 `blender_017_armario_smoke.py` OK e a sonda de interface **22/22**.
 
+Revisão de 2026-11-25: suíte pura **1600 ensaios** com uma única falha ambiente-gated (`test_sessao_mobi.py:19`),
+harness novo de interface `tests/blender_021_ciclo_debug.py` **12/12**, `blender_023_fase7.py` **36/36**,
+`blender_021_mcp_e2e.py` **52/52**, `blender_017`/`blender_066`/`blender_067` OK e `blender_022` **10/10**. O placar de
+severidade não mudou: A006 entrou já **Resolvido**.
+
 ## Achados e situação
 
 | ID | Severidade | Eixo | Descrição | Situação |
@@ -28,6 +33,7 @@ suíte pura **1582/1582**, OK com 5 pulados (fontes do MOBI só disponíveis na 
 | A003 | MEDIUM | Consistência | `RF-10` não registrava que, com um móvel legado ativo, "Criar Armário" cai no diálogo antigo e cria um `BTM_Cabinet` | **Resolvido** — `requirements.md` §5 e o cenário Gherkin passam a declarar a condição e a RN-23 |
 | A004 | LOW | Cobertura | Os ensaios que provam aparência/janela (`blender_004_cabinet_editor_smoke.py`, `blender_012_convert_undo.py`, `blender_012_library_ui.py`) exigem GUI e não rodaram nesta rodada | **Aberto por ambiente** — só uma sessão gráfica fecha |
 | A005 | LOW | Sanidade | Os números "187/187" e "186/186" das rodadas anteriores contavam arquivos de ensaio, não ensaios | **Resolvido** — `roadmap.md` §10 usa a contagem medida de ensaios |
+| A006 | LOW | Cobertura | As perguntas de interface (editor abre, botão de colisão, criar/redimensionar/editar peças) tinham sido respondidas por memória, sem comando | **Resolvido** — `tests/blender_021_ciclo_debug.py` 12/12 e `blender_023_fase7` 36/36; falhas restantes reproduzidas na asserção exata e classificadas como ambiente-gated |
 
 ## Fechamento
 
@@ -57,6 +63,17 @@ Resultado medido: **52/52, exit 0**.
 O requisito e o cenário Gherkin agora dizem o comportamento real: sem móvel legado ativo, "Criar Armário" abre o
 Construtor v2; com móvel legado ativo, mantém de propósito o diálogo antigo da RN-23
 (`caffmob_draw/library_panel/ops_cabinet.py:40-46`). A redação absoluta anterior não descrevia o código.
+
+### A006 — interface afirmada por memória
+
+A rodada de 2026-11-25 executou o que faltava: operador de colisão sem erro e alternando as duas chaves, desenho do
+cabeçalho emitindo o botão com o rótulo do estado, montar caixa do zero (5 chapas, Gerar idempotente), redimensionar
+para 900 mm sem perder peça nem degenerar, lote movendo e devolvendo cada peça e as sete abas registradas. O item de
+menu "Abrir janela do construtor" é emitido em `menu.py:149`; no `--background` o operador de abrir recusa por `poll`
+(contexto), o que é a fronteira da GUI e não um defeito. As três falhas restantes foram reproduzidas:
+`blender_065_ida_e_volta.py:34` (MOBI em 127.0.0.1), `blender_ensaio_mobi.py:19` (`CAFFMOB_BASE` + `--online-mode`) e
+`test_sessao_mobi.py:19` (438 ≠ 384, permissão NTFS). Relatório em
+`_reversa_bugs/cabinet_editor/inspections/2026-11-25-debugger-f021/report.md`.
 
 ### A004 — ensaios de GUI
 

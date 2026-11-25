@@ -89,6 +89,18 @@
   com os valores gravados na cena (2,85 m e 180 mm); o ensaio foi a **52/52**. O RF-10 foi redigido com a condição
   real do móvel legado (RN-23). A001/A002/A003/A005 fechados; resta A004 (GUI) e a T033.
 
+- **2026-11-25, `/reversa-debugger` (re-verificação de interface):** as perguntas de UI que a auditoria anterior
+  respondera por memória foram executadas. Harness novo `tests/blender_021_ciclo_debug.py` **12/12**: operador de
+  colisão sem erro e alternando `collision_global`/`block_penetration`, desenho do cabeçalho emitindo o botão,
+  armário do zero (5 chapas e Gerar idempotente), redimensionar 900 mm sem perder peça nem degenerar, lote movendo e
+  devolvendo cada peça, sete abas registradas. O item "Abrir janela do construtor" é emitido em
+  `caffmob_draw/armario_v2/menu.py:149`; no `--background` o operador recusa por `poll` (contexto), o que é a
+  fronteira da GUI. As três falhas restantes foram reproduzidas na asserção exata e são ambiente-gated:
+  `blender_065_ida_e_volta.py:34`, `blender_ensaio_mobi.py:19` e `test_sessao_mobi.py:19` (438 ≠ 384, NTFS).
+  Nenhum defeito de produto novo; T033/A004 seguem abertas por exigirem sessão gráfica. Evidência em
+  `_reversa_bugs/cabinet_editor/inspections/2026-11-25-debugger-f021/report.md`. A lacuna de material/UV/preferências
+  saiu da 021 e virou a candidata `_reversa_forward/024-materiais-uv-preferencias` (parada antes do `/reversa-clarify`).
+
 ## Histórico de alterações
 
 | Data | Alteração | Autor |
@@ -96,3 +108,4 @@
 | 2026-11-24 | Versão inicial gerada por `/reversa-to-do` (32 ações em 5 fases) | reversa |
 | 2026-11-24 | `/reversa-to-do` após a inspeção: T033 aberta (única pendência real), notas da execução da suíte | reversa |
 | 2026-11-24 | Fechamento da auditoria: prova headless do RF-08 no e2e (52/52) e RF-10 condicionado ao móvel legado | reversa |
+| 2026-11-25 | Re-verificação de interface pelo `/reversa-debugger`: harness 12/12; nenhum defeito novo; T033/A004 abertas (GUI); material/UV/preferências movido para a candidata 024 | reversa |

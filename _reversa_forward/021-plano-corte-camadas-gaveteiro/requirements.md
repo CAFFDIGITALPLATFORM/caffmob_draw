@@ -247,6 +247,7 @@ Nenhuma lacuna ou dúvida pendente após a sessão de esclarecimentos de 2026-11
 | 2026-11-24 | Versão inicial gerada por `/reversa-requirements` | reversa |
 | 2026-11-24 | Esclarecimentos integrados por `/reversa-clarify` (5 decisões fechadas, 0 dúvidas restantes) | reversa |
 | 2026-11-24 | Verificação de interface do `/reversa-debugger`: nenhum requisito mudou. Registrado que o "Editor de Armário" vivo é o construtor v2 (`caffmob.cabinet_editor` pertence ao `Abrir` do v2 desde a 017/T027; o editor 2D está aposentado) e que a paridade visual com o mockup é a única pendência (T033) | reversa |
+| 2026-11-25 | Re-verificação de interface executada (§13): nenhum requisito mudou; T033/A004 seguem as únicas pendências; a lacuna de material/UV/preferências saiu desta feature e virou a candidata `024-materiais-uv-preferencias` | reversa |
 
 ## 12. Verificação de interface (2026-11-24)
 
@@ -261,3 +262,23 @@ Nenhuma regra de negócio foi alterada. O que a inspeção fixou, para quem reto
    ativo cai no diálogo antigo de propósito. Não é regressão.
 4. **RF-11 e RF-12/13:** cobertos por `tests/blender_021_mcp_e2e.py` (50/50).
 5. **Pendência:** paridade visual com `mockup_construtor_armarios.html` (T033), que exige GUI.
+
+## 13. Re-verificação de interface (2026-11-25)
+
+As respostas acima foram refeitas com execução, não com memória, em `tests/blender_021_ciclo_debug.py` (**12/12**):
+
+1. **RF-04 (colisão global):** `caffmob.toggle_global_collision` executa sem exceção, alterna `collision_global` e
+   `block_penetration`, e o desenho do cabeçalho emite o botão com o rótulo do estado. O clique real só em GUI.
+2. **Editor de armário:** o item "Abrir janela do construtor" é emitido pelo menu do armário v2
+   (`caffmob_draw/armario_v2/menu.py:149`); no `--background` o operador de abrir recusa por `poll` (contexto), que é a
+   fronteira da GUI. Sessão e ciclo da janela passam em `tests/blender_023_janela_open.py`. Aparência pixel a pixel
+   continua a T033.
+3. **Criar do zero:** `montar_caixa` cria 5 chapas e o `Gerar` repete; **redimensionar** 900 mm mantém 5 peças, largura
+   coerente e nenhuma peça degenerada; **editar cada peça** pelo lote move e devolve todas.
+4. **Falhas restantes:** reproduzidas na asserção exata e ambiente-gated — `blender_065_ida_e_volta.py:34`
+   (MOBI em 127.0.0.1), `blender_ensaio_mobi.py:19` (`CAFFMOB_BASE` + `--online-mode`) e `test_sessao_mobi.py:19`
+   (438 ≠ 384, permissão NTFS). Nenhuma é defeito de produto.
+5. **Fora do escopo desta feature:** cor padrão, textura no Solid/Preview, UV por face com fita de borda e
+   preferências ("Cor por objeto" → "Textura", variantes "Somente textura"/"Textura com linhas"). Virou a candidata
+   `_reversa_forward/024-materiais-uv-preferencias/requirements.md`, com cinco decisões pendentes para o
+   `/reversa-clarify`.

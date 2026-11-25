@@ -30,3 +30,8 @@
 {"ts": "2026-11-24T05:06:26Z", "action": "T030", "status": "done", "files": ["caffmob_draw/data/translations/feature_021.json", "caffmob_draw/cutting/ops_opcut.py"]}
 {"ts": "2026-11-24T05:06:26Z", "action": "T031", "status": "done", "files": ["tests/test_smoke_021.py"]}
 {"ts": "2026-11-24T05:06:26Z", "action": "T032", "status": "done", "files": ["build.py", "caffmob_draw.zip"]}
+{"ts": "2026-11-25T12:00:00Z", "action": "debugger", "status": "done", "files": ["tests/blender_021_ciclo_debug.py", "_reversa_bugs/cabinet_editor/inspections/2026-11-25-debugger-f021/report.md"], "note": "12/12; colisao, zero, resize, lote por peca; 3 falhas ambiente-gated reproduzidas"}
+{"ts": "2026-11-25T12:10:00Z", "action": "requirements", "status": "done", "files": ["_reversa_forward/021-plano-corte-camadas-gaveteiro/requirements.md", "_reversa_forward/024-materiais-uv-preferencias/requirements.md"], "note": "021 sem requisito novo; material/UV/preferencias separado em 024 com 5 duvidas"}
+{"ts": "2026-11-25T12:20:00Z", "action": "plan", "status": "done", "files": ["_reversa_forward/021-plano-corte-camadas-gaveteiro/roadmap.md"], "note": "10.2 com evidencia; unico criterio aberto e T033 (GUI)"}
+{"ts": "2026-11-25T12:25:00Z", "action": "to-do", "status": "done", "files": ["_reversa_forward/021-plano-corte-camadas-gaveteiro/actions.md"], "note": "32 acoes [X]; T033 aberta; 024 nao planejada (parada no clarify)"}
+{"ts": "2026-11-25T12:30:00Z", "action": "audit", "status": "done", "files": ["_reversa_forward/021-plano-corte-camadas-gaveteiro/audit/cross-check.md"], "note": "A006 resolvido; 0 CRITICAL, 0 HIGH, 0 MEDIUM, 1 LOW aberto (A004/T033)"}
