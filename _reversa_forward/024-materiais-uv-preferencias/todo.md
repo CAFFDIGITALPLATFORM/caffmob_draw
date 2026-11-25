@@ -83,7 +83,9 @@
 5. **T011** fecha a migração; **T012** traduz os rótulos que T008/T016/T017/T009/T010/T011 criaram.
 6. **T013 → T014** medem e provam offline/UNDO; **T015** valida na GUI.
 
-## Lacunas e perguntas pendentes para o `/reversa-clarify`
+## Lacunas
+
+Perguntas pendentes para o `/reversa-clarify` (nada abaixo foi perguntado ao titular nesta rodada):
 
 1. **“Cursos 3D” (T001):** é o checkbox **“Turn Off 3D Cursor”** do diálogo `caffmob.set_recommended_settings`
    (`ops.py:54`), ou outro controle fora do add-on? *Bloqueia T009 e T016; nenhum código deve mexer no diálogo antes
