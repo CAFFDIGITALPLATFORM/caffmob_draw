@@ -10,8 +10,9 @@
 
 
 def _modules():
-    from . import draw, ops_cabinet, ops_categories, ops_click, ops_drag, ops_replace, ops_search, popover, props
-    return (props, popover, ops_categories, ops_cabinet, ops_replace, ops_click, ops_search, ops_drag, draw)
+    from . import (draw, ops_cabinet, ops_categories, ops_click, ops_detail, ops_drag, ops_replace, ops_search, popover,
+                   props)
+    return (props, popover, ops_categories, ops_cabinet, ops_replace, ops_detail, ops_click, ops_search, ops_drag, draw)
 
 
 def register():

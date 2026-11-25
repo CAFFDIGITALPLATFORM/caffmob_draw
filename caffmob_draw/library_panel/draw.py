@@ -20,7 +20,7 @@ import gpu  # type: ignore
 
 from ..data.i18n import N_, tr
 from ..hb_gpu_draw import get_visible_window_bounds
-from . import categories, categories_core, draw_kit as kit, grid_core, layout_core, models_core, style, thumbs_gpu
+from . import categories, categories_core, detail_core, draw_kit as kit, grid_core, layout_core, models_core, style, thumbs_gpu
 
 FONT_SIZE = 11
 # Cores da 012, mantidas para quem as importa; o desenho usa `style` (feature 014).
@@ -685,6 +685,53 @@ def _draw_footer(lay, viewport, s):
                         style.FONT_LABEL * s, style.TEXT_MUTED)
 
 
+def _draw_detail(region, lay, state, viewport, s):
+    """Card branco do módulo: nome, ambiente, medidas, chips de ambiente, aviso e botões."""
+    d = detail_core.layout(lay.grid, s)
+    x, y, w, h = d.card
+    kit.shadow(x, y, w, h, style.RADIUS_PANEL * s, s)
+    kit.rect(x, y, w, h, detail_core.FUNDO, 12 * s)
+    kit.outline(x, y, w, h, detail_core.BORDA, viewport, 12 * s)
+    kit.text(state.detail_name, d.title[0], d.title[1] + 4 * s, style.FONT_TITLE * s, detail_core.TINTA,
+             max_w=d.title[2])
+    kit.text(tr("Ambiente: {}").format(tr(detail_core.ambiente_label(state.detail_line))),
+             d.subtitle[0], d.subtitle[1] + 2 * s, style.FONT_LABEL * s, detail_core.TINTA_FRACA,
+             max_w=d.subtitle[2])
+    labels = dict(detail_core.CAMPOS)
+    for key, rect in d.campos:
+        active = state.detail_field == key
+        kit.rect(rect[0], rect[1], rect[2], rect[3], detail_core.CAMPO, 6 * s)
+        kit.outline(rect[0], rect[1], rect[2], rect[3], style.ACCENT if active else detail_core.BORDA, viewport, 6 * s)
+        kit.text(tr(labels[key]), rect[0] + 10 * s, rect[1] + rect[3] - 15 * s, style.FONT_SMALL * s,
+                 detail_core.TINTA_FRACA, max_w=rect[2] - 20 * s)
+        value = (state.detail_text + "|") if active else detail_core.fmt(getattr(state, 'detail_' + key))
+        kit.text(value, rect[0] + 10 * s, rect[1] + 7 * s, style.FONT_BODY * s, detail_core.TINTA,
+                 max_w=rect[2] - 20 * s)
+    for code, rect in d.chips:
+        active = state.detail_line == code
+        kit.rect(rect[0], rect[1], rect[2], rect[3], style.ACCENT_TINT if active else detail_core.CAMPO, 12 * s)
+        kit.outline(rect[0], rect[1], rect[2], rect[3], style.ACCENT if active else detail_core.BORDA, viewport, 12 * s)
+        label = tr(detail_core.ambiente_label(code))
+        lw = kit.width_of(label, style.FONT_SMALL * s)
+        kit.text_centered_y(label, rect, rect[0] + max(4 * s, (rect[2] - lw) / 2.0), style.FONT_SMALL * s,
+                            detail_core.TINTA if active else detail_core.TINTA_FRACA, max_w=rect[2] - 8 * s)
+    kit.text(tr("Espessura da chapa: {} mm").format(detail_core.fmt(state.detail_thickness)),
+             d.espessura[0], d.espessura[1], style.FONT_SMALL * s, detail_core.TINTA_FRACA, max_w=d.espessura[2])
+    if state.detail_error:
+        kit.text(state.detail_error, d.erro[0], d.erro[1] + 8 * s, style.FONT_SMALL * s, detail_core.ERRO,
+                 max_w=d.erro[2])
+    ox, oy, ow, oh = d.ok
+    insertar = tr("Inserir módulo")
+    kit.rect(ox, oy, ow, oh, style.ACCENT, 6 * s)
+    kit.text_centered_y(insertar, d.ok, ox + max(4 * s, (ow - kit.width_of(insertar, style.FONT_LABEL * s)) / 2.0),
+                        style.FONT_LABEL * s, style.ACCENT_INK)
+    cx, cy, cw, ch = d.cancelar
+    cancelar = tr("Cancelar")
+    kit.outline(cx, cy, cw, ch, detail_core.BORDA, viewport, 6 * s)
+    kit.text_centered_y(cancelar, d.cancelar, cx + max(4 * s, (cw - kit.width_of(cancelar, style.FONT_LABEL * s)) / 2.0),
+                        style.FONT_LABEL * s, detail_core.TINTA_FRACA)
+
+
 def _draw_max(context, region, state, mouse, viewport):
     s = _scale(context)
     lay = max_layout(context, context.area)
@@ -695,6 +742,8 @@ def _draw_max(context, region, state, mouse, viewport):
     _draw_header(lay, state, mouse, viewport, s)
     _draw_sidebar(lay, state, mouse, viewport, s)
     _draw_grid(region, lay, state, mouse, viewport, s)
+    if state.detail_open:
+        _draw_detail(region, lay, state, viewport, s)
     _draw_footer(lay, viewport, s)
     for i in range(3):                                   # alça de redimensionar
         kit.polyline([(x + w - (4 + 4 * i) * s, y + 3 * s), (x + w - 3 * s, y + (4 + 4 * i) * s)], style.TEXT_SUBTLE,
