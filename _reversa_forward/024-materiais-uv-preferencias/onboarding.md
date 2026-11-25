@@ -46,10 +46,9 @@
 
 ## 5. O que ainda não está coberto por ensaio automático
 
-- Aparência do grão gerado (só o olho julga).
-- Contorno de arestas no Solid depende do motor de desenho da GPU.
-- Percepção de “mesma textura” entre Solid, Preview e render.
-- Diálogo de aviso de migração na tela.
+- Aparência do grão gerado (só o olho julga se *parece* MDF; o ensaio prova que ele existe e distingue do liso).
+- Contorno de arestas no Solid depende do motor de desenho da GPU (o ensaio prova as flags, não o traço na tela).
+- Diálogo de aviso de migração na tela (o ensaio prova a chamada, com contagem, e o silêncio na segunda abertura).
 
 ## 6. Resultado da rodada de implementação (2026-11-25)
 
@@ -62,5 +61,18 @@ O que já está provado sem olho humano:
 - migração única por `exibicao_versao`, com handler removido no `unregister()`;
 - i18n das chaves novas em pt_BR e en_US.
 
-O que continua só no olho (passos 1 a 4 acima): aparência do grão, contorno no Solid, igualdade Solid/Preview/render
-e o aviso de migração na tela.
+Segunda rodada (mesmo dia), com janela real do Blender 5.2 — no Windows não há `xvfb-run`; o equivalente é
+`blender.exe --factory-startup --enable-event-simulate --python <ensaio>`, e `--python-exit-code 1` reprova o ensaio.
+
+- `tests/blender_024_exibicao.py`: 23 checagens OK. O fluxo de detalhes (`hb_details.DetailView().create()`) deixa a
+  vista 3D em `SOLID`/`TEXTURE` (T008), o operador de preferências recomendadas aplica `TEXTURE` (T016) e o aviso da
+  barra lateral não aparece nem em `TEXTURE` nem em `OBJECT` (T017).
+- `tests/blender_024_visual.py`: 20 checagens OK, render EEVEE. Cor média da chapa (0,6285) igual ao material liso de
+  controle com a cor média da textura (0,6279); close-up com grão 0,00353 contra 0,00005 do liso (dithering desligado
+  para o degrau de 8 bits não imitar grão); render idêntico com a vista em Material Preview (0,6285); “Textura com
+  linhas” liga `show_wireframes` com o limiar/opacidade de `view_mode_core` e “Somente textura” desliga; o aviso de
+  migração é chamado uma vez com a contagem e não volta na segunda abertura. O PNG fica em
+  `%TEMP%\caffmob_024_mdf.png` para inspeção.
+
+O que continua só no olho: se o grão *parece* MDF à distância de trabalho, se o traço do contorno fica bom na sua GPU e
+como o aviso de migração aparece na tela (o ensaio prova a chamada e o texto, não o desenho do popup).

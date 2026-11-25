@@ -72,7 +72,7 @@
 | T012 | **i18n bilíngue** de todos os rótulos novos/alterados: “Textura”, “Somente textura”, “Textura com linhas” e o aviso de migração em `data/translations/armario_v2.json`; o rótulo do controle em `ops.json` (`:218-224`, hoje “Turn On Object Color Type”/“- REQUIRED”) e o aviso em `ui.json` (`:778`). `pt_BR` **e** `en_US` preenchidos, sem texto montado por f-string | T008, T016, T017, T009, T010, T011 | - | `caffmob_draw/data/translations/armario_v2.json`, `ops.json`, `ui.json` | `cd tests && python -m unittest test_i18n_coverage` (comando conferido nesta árvore: 3 testes OK); o teste reprova texto novo sem as duas línguas | `[X]` |
 | T013 | Atualizar `onboarding.md` com o resultado real dos passos 1–4 e rodar a bateria | T005, T006, T007, T008, T009, T010, T011, T012, T016, T017 | - | `_reversa_forward/024-materiais-uv-preferencias/onboarding.md` | `tests/test_face_uv_024`, `test_mdf_core_024`, `blender_024_*`, `blender_017_armario_smoke`, `blender_023_fase7`, `blender_023_desempenho`, suíte pura (`python -m unittest` em `tests/`), `docs/rag/tools/check_api.py` | `[X]` |
 | T014 | **Offline e UNDO**: rodar os ensaios da 024 com `CAFFMOB_BASE` vazio e sem `--online-mode`, confirmando zero chamada de rede; conferir que o handler novo tem remoção no `unregister` (T011) e que nenhum operador novo declara `UPDATE`/`UNDO` sem desfazer o que criou | T013 | - | `tests/` | `CAFFMOB_BASE= blender --background --factory-startup --python-exit-code 1 --python tests/blender_024_*.py` sem acesso de rede; `grep -n "bl_options"` nos arquivos tocados; `grep -n "load_post" caffmob_draw/armario_v2/exibicao.py` com append **e** remove | `[X]` |
-| T015 | Verificação visual em sessão gráfica: grão do MDF, Solid/Preview/render iguais, contorno da variante “com linhas”, aviso de migração, e o diálogo de preferências recomendadas sem o “REQUIRED” de cor de objeto | T013 | - | `_reversa_forward/024-materiais-uv-preferencias/onboarding.md` §5 | Checklist preenchido na GUI | `[ ]` **requer GUI** |
+| T015 | Verificação visual em sessão gráfica: grão do MDF, Solid/Preview/render iguais, contorno da variante “com linhas”, aviso de migração, e o diálogo de preferências recomendadas sem o “REQUIRED” de cor de objeto | T013 | - | `_reversa_forward/024-materiais-uv-preferencias/onboarding.md` §5 | `tests/blender_024_visual.py` sob janela: render amplo com cor média igual ao material liso de controle (0,6285 vs 0,6279), close-up com grão 70× acima do liso (rugosidade 0,00353 vs 0,00005), render idêntico com a vista em Preview, contorno ligado/desligado e aviso de migração uma vez | `[X]` |
 
 ## Ordem recomendada
 
@@ -98,8 +98,9 @@
 
 ## Notas de execução
 
-Rodada de `/reversa-coding` em 2026-11-25. T001 já havia sido respondida no clarify; T015 fica pendente porque
-exige olho humano numa sessão gráfica.
+Rodada de `/reversa-coding` em 2026-11-25. T001 já havia sido respondida no clarify. Segunda rodada: T008 e T015
+fechadas com ensaios gráficos (janela real do Blender 5.2 no Windows, que é o headless disponível aqui — não há
+`xvfb-run`), `ruff` instalado e limpo no código da 024.
 
 | Prova | Resultado |
 |---|---|
@@ -112,12 +113,26 @@ exige olho humano numa sessão gráfica.
 | `CAFFMOB_BASE= ...` nos quatro ensaios da 024 | todos OK, sem rede |
 | `blender_017_armario_smoke` / `blender_023_fase7` / `blender_023_desempenho` | OK (36 checagens / meta 200 ms) |
 | suíte pura completa (1612 testes) | 1 falha ambiente-gated (`test_sessao_mobi`, NTFS 0666≠0600), 5 skipped |
-| `docs/rag/tools/check_api.py` | OK, nenhuma API desconhecida |
-| `ruff check` | não executado: ruff não instalado nesta máquina |
+| `docs/rag/tools/check_api.py` | OK, 633 arquivos contra 24 382 símbolos do Blender 5.2, nenhuma API desconhecida |
 
-**Limites conhecidos desta rodada:** T008 (`hb_details`) não foi exercitado ponta a ponta porque o fluxo de
-detalhes exige janela; a linha foi trocada e `tests/blender_024_exibicao.py` cobre a variante, o operador e o
-aviso quando houver tela (`xvfb-run`). T015 continua aberta.
+### Segunda rodada (janela real, provas gráficas)
+
+| Prova | Resultado |
+|---|---|
+| `blender.exe --factory-startup --enable-event-simulate --python tests/blender_024_exibicao.py` | **23 checagens OK, 0 falhas**, exit 0: `hb_details.DetailView().create()` deixa `shading.type == 'SOLID'` e `color_type == 'TEXTURE'` (T008), operador `caffmob.set_recommended_settings` com defaults aplica `TEXTURE` (T016), `view3d_sidebar.precisa_aviso` não acusa nada em TEXTURE/OBJECT (T017) |
+| `blender.exe ... --python tests/blender_024_visual.py` | **20 checagens OK, 0 falhas**, exit 0 (T015): cor média do render = material liso de controle (0,6285 vs 0,6279); grão no close-up 0,00353 contra 0,00005 do liso; render idêntico com a vista em Preview (0,6285 vs 0,6285); contorno ligado em TEXTURA_LINHAS e desligado em TEXTURA_SO; aviso de migração uma vez, com contagem, e silêncio na segunda abertura; PNG salvo em `%TEMP%\caffmob_024_mdf.png` |
+| `python -m unittest test_face_uv_024 test_mdf_core_024 test_view_mode test_i18n_coverage` (PYTHONPATH=tests) | 20 testes OK |
+| `blender_024_textura` / `blender_024_uv` / `blender_024_prefs` / `blender_024_migracao` (`--background`) | 9 / 8 / 17 / 10 checagens OK, 0 falhas |
+| `blender_017_armario_smoke` / `blender_023_fase7` / `blender_023_desempenho` | OK / 36 pass, 0 fail / OK com 0,2 ms (meta 200 ms) |
+| `python -m ruff check` nos arquivos da 024 | **All checks passed** (ruff 0.17.6) |
+
+**Correções de código desta rodada:** `face_uv_core` reexporta `LAYER_UV` de forma explícita (o import estava
+marcado como não usado, mas é contrato público do núcleo, coberto por `test_face_uv_024`); `textura_padrao.aplicar`
+perdeu o `import bpy` morto.
+
+**Limites conhecidos:** o julgamento estético (o grão *parece* MDF? o contorno fica bom na GPU?) continua humano,
+embora as medidas existam. O diálogo de preferências recomendadas é lido por RNA (`get_rna_type().properties`), não
+clicado à mão. Nada da 024 ficou sem prova por código.
 
 ## Histórico de alterações
 
@@ -128,3 +143,4 @@ aviso quando houver tela (`xvfb-run`). T015 continua aberta.
 | 2026-11-25 | 3ª rodada: `/reversa-clarify` (2ª sessão) — três das quatro perguntas respondidas (Cursos 3D = `turn_off_3d_cursor`; `color_type` global; linhas globais). T001 fechada; resta 1 pergunta (preferência vs. `Scene.btm_view_mode`). Nenhum código tocado | reversa |
 | 2026-11-25 | 4ª rodada: 4ª resposta do clarify integrada (dois níveis: `exibicao_armario` + `Scene.btm_view_mode`); T009 desbloqueada e §Lacunas zerada. Nenhum código tocado | reversa |
 | 2026-11-25 | `/reversa-coding`: T002–T014, T016 e T017 implementadas e provadas (núcleos puros, textura empacotada, UV por face, preferência, migração, i18n); T015 pendente de GUI | reversa |
+| 2026-11-25 | 2ª rodada de `/reversa-coding`: T008 e T015 fechadas com ensaios gráficos em janela real (23 + 20 checagens, 0 falhas), `ruff` instalado e limpo nos arquivos da 024; bateria reexecutada | reversa |

@@ -35,8 +35,6 @@ def imagem():
 
 def aplicar(material):
     """Liga a textura ao Base Color do material da chapa, com o mapa em metros; devolve o material."""
-    import bpy  # type: ignore
-
     if material is None or not material.use_nodes or material.node_tree is None:
         return material
     arvore = material.node_tree

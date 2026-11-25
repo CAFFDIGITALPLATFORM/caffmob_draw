@@ -13,7 +13,7 @@ layer `UVMap` do resto do pacote (018, RN-08).
   do mesmo canto no referencial do armário.
 """
 
-from ..texture_library.uv_core import LAYER_UV
+from ..texture_library.uv_core import LAYER_UV as LAYER_UV   # reexportado: quem usa o núcleo importa daqui
 
 EXTERNA, INTERNA, FITA = 'EXTERNA', 'INTERNA', 'FITA'
 TIPOS = (EXTERNA, INTERNA, FITA)

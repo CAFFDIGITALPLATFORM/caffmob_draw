@@ -15,6 +15,11 @@ def _hide_2d_drawing_panels(context):
         return False
     return bool(getattr(prefs, "hide_2d_drawing_panels", False))
 
+
+def precisa_aviso(color_type):
+    """024 (RN-01, T017): o aviso de cor só aparece quando nem TEXTURE nem OBJECT estão ligados."""
+    return color_type not in ('OBJECT', 'TEXTURE')
+
 # =============================================================================
 # HOME BUILDER UI PANELS
 # All panels in the "Home Builder" category tab
@@ -36,7 +41,7 @@ class HOME_BUILDER_PT_hidden_header(bpy.types.Panel):
         layout = self.layout
 
         # 024 (RN-01, T017): o Solid recomendado agora é TEXTURE; a cor de objeto continua válida para cenas antigas.
-        if context.space_data.shading.color_type not in ('OBJECT', 'TEXTURE'):
+        if precisa_aviso(context.space_data.shading.color_type):
             box = layout.box()
             row = box.row()
             row.alert = True

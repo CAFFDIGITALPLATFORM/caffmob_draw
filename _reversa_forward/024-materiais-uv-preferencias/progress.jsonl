@@ -14,3 +14,8 @@
 {"ts":"2026-11-25T14:50:00Z","action":"T013","status":"done","files":["_reversa_forward/024-materiais-uv-preferencias/onboarding.md"]}
 {"ts":"2026-11-25T14:55:00Z","action":"T014","status":"done","files":["caffmob_draw/armario_v2/exibicao.py","tests/blender_024_textura.py","tests/blender_024_uv.py","tests/blender_024_prefs.py","tests/blender_024_migracao.py"]}
 {"ts":"2026-11-25T14:56:00Z","action":"T015","status":"pending-gui","files":[]}
+{"ts":"2026-11-25T15:10:00Z","action":"T008","status":"done","files":["caffmob_draw/hb_details.py"],"prova":"blender_024_exibicao.py em janela: 23 OK, 0 falhas; DetailView().create() deixa color_type=TEXTURE com shading.type=SOLID"}
+{"ts":"2026-11-25T15:11:00Z","action":"T016","status":"done","files":["caffmob_draw/ops.py"],"prova":"blender_024_exibicao.py: operador set_recommended_settings com defaults aplica TEXTURE; propriedade lida por get_rna_type().properties"}
+{"ts":"2026-11-25T15:12:00Z","action":"T017","status":"done","files":["caffmob_draw/ui/view3d_sidebar.py"],"prova":"blender_024_exibicao.py: precisa_aviso() falso em TEXTURE e OBJECT, verdadeiro nas demais variantes"}
+{"ts":"2026-11-25T15:35:00Z","action":"T015","status":"done","files":["tests/blender_024_visual.py"],"prova":"render EEVEE em janela: 20 OK, 0 falhas; cor media 0.6285 vs liso 0.6279; grao 0.00353 vs 0.00005; Solid=Preview=render; contorno e aviso de migracao verificados"}
+{"ts":"2026-11-25T15:40:00Z","action":"bateria","status":"done","files":[],"prova":"puros 20 OK; textura 9, uv 8, prefs 17, migracao 10 OK; 017 OK; 023 fase7 36 pass; 023 desempenho 0.2 ms; check_api OK; ruff 0.17.6 limpo nos arquivos da 024"}

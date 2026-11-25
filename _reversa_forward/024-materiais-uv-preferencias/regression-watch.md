@@ -16,6 +16,7 @@
 | W007 | `_reversa_sdd/domain.md`, migração | `exibicao_versao` grava 1 na primeira abertura e a segunda não migra nem avisa de novo | presença | migração repetindo ou apagando material do usuário |
 | W008 | `_reversa_sdd/architecture.md`, handlers | O `load_post` da exibição é removido no `unregister()` | ausência | handler pendurado depois de desregistrar o add-on |
 | W009 | `_reversa_sdd/domain.md`, fita de borda | A faixa tem UV próprio (U no comprimento, V na espessura) e mantém a cor lisa quando `use_color` | presença | faixa herdando o UV da chapa ou perdendo o layer ao reconstruir |
+| W010 | `_reversa_sdd/domain.md`, aparência da chapa | O material da chapa renderiza a textura: grão de alta frequência no close-up e cor média igual a um material liso de controle | medição (`tests/blender_024_visual.py`) | render da chapa liso, grão dentro do ruído, ou média do render longe do material em `TEXTURE` |
 
 ## Histórico de re-extrações
 
@@ -25,4 +26,6 @@
 
 - A suíte pura completa tem uma falha ambiente-gated conhecida nesta máquina: `test_sessao_mobi.test_permissao_e_endereco`
   (NTFS devolve 0666 em vez de 0600). Não tem relação com a 024.
-- `ruff` não está instalado nesta máquina; o lint ficou sem executar nesta rodada.
+- `ruff` 0.17.6 instalado no Python do projeto (`python -m pip install ruff`). Nesta rodada passou limpo nos arquivos
+da 024; `ruff check caffmob_draw/` ainda acusa 26 avisos antigos de outras features (imports mortos, `lambda`
+atribuído, `l`/`I` ambíguos) — fora do escopo da 024, não foram reformatados.
