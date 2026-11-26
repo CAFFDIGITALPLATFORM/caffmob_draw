@@ -6,9 +6,9 @@ Precisa de janela (não roda em --background):
 Sem a extensão instalada, o HUD fica desligado (a preferência não existe): é o caso "painel sem o HUD" (RF-01).
 T023 (prova): o rótulo está no canto superior esquerdo, o clique abre a coluna, e clicar numa categoria abre o conteúdo
 dela a partir do operador de keymap (desde a feature 014, T040, na grade do retângulo maximizado, aba Blocos).
-T040: Criar armário pelo diálogo (Enter) cria o módulo e abre o editor de armário; uma categoria criada aparece na
-coluna; com o painel fechado, o clique na viewport segue para a seleção (por componente, 011); Inserir sem as
-bibliotecas herdadas.
+T040: Criar armário abre o Construtor de Armários v2 (a partir da 021, sem o diálogo antigo); uma categoria criada
+aparece na coluna; com o painel fechado, o clique na viewport segue para a seleção (por componente, 011); Inserir sem
+as bibliotecas herdadas.
 Sai com código 0 (tudo certo) ou 1 (falhas listadas no console).
 """
 
@@ -76,8 +76,8 @@ def script():
         lay = lib_draw.layout(bpy.context, area, region)
     keys = [key for key, _rect in lay.items]
     check("ordem: Criar armário, categorias, Criar categoria",
-          keys[:5] == ['CREATE_CABINET', 'CAT:Cozinha', 'CAT:Banheiro', 'CAT:Sala', 'CAT:Home office']
-          and keys[-1] == 'CREATE_CATEGORY', str(keys))
+          keys[:6] == ['CREATE_CABINET', 'CAT:Cozinha', 'CAT:Dormitório', 'CAT:Banheiro', 'CAT:Sala',
+                       'CAT:Home office'] and keys[-1] == 'CREATE_CATEGORY', str(keys))
 
     rect = dict(lay.items)['CAT:Cozinha']
     yield from click(win, *center(region, rect))
@@ -104,18 +104,14 @@ def script():
     check("categoria criada aparece antes de Criar categoria", keys[-2:] == ['CAT:Lavanderia', 'CREATE_CATEGORY'],
           str(keys))
 
-    # T040: Criar armário pelo diálogo até o editor abrir.
+    # T040/021: Criar armário abre direto o Construtor de Armários v2, sem o diálogo antigo.
     before = {o.name for o in ctx.scene.objects}
     yield from click(win, *center(region, dict(lay.items)['CREATE_CABINET']))
-    yield 0.3
-    ev(win, 'RET', 'PRESS', region.x + region.width / 2, region.y + region.height / 2)
-    ev(win, 'RET', 'RELEASE', region.x + region.width / 2, region.y + region.height / 2)
     yield 1.0
-    new = [o for o in ctx.scene.objects if o.name not in before and o.btm_plane.object_kind == 'MODULE']
-    from caffmob_draw.cabinet_editor import props as editor_props
-    check("Criar armário cria o módulo pelo diálogo", len(new) == 1, str([o.name for o in new]))
-    check("e abre o editor de armário nele", editor_props.session() is not None
-          and editor_props.session().root_name == (new[0].name if new else ""))
+    new = [o for o in ctx.scene.objects if o.name not in before and getattr(o, 'btm_armario', None) is not None]
+    check("Criar armário abre o Construtor v2", len(new) == 1, str([o.name for o in new]))
+    check("e deixa o armário v2 ativo no construtor", bool(new) and ctx.active_object == new[0]
+          and new[0].select_get(), str(ctx.active_object.name if ctx.active_object else ""))
     check("painel fechado depois da ação", not state.open)
 
 

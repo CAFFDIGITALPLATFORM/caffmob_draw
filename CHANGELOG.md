@@ -1,5 +1,20 @@
 # Changelog do CAFFMob Draw
 
+## 1.33.2 — 2026-11-26
+
+### Biblioteca (ensaios de GUI)
+
+- `tests/blender_012_library_ui.py` atualizado ao fluxo atual: a coluna inclui Dormitório e "Criar armário" abre o
+  Construtor de Armários v2 (021), deixando o armário ativo, em vez do diálogo antigo; o ensaio voltou a 9/9.
+- `tests/blender_biblioteca_detalhe.py` ganhou a recusa específica da chapa máxima, com um padrão temporário de
+  600 × 1000 mm: 1200 × 2700 × 900 mm é recusado com mensagem de chapa e nenhuma peça é criada; a prova do card ficou
+  38/38, exit 0.
+- A captura do card aberto (`biblioteca_detalhe.png`) foi regerada com 550 × 800 × 500 mm em Dormitório.
+
+### Como a numeração foi calculada
+
+`1.33.1 + 1 correção = 1.33.2` (patch, sem recurso novo).
+
 ## 1.33.1 — 2026-11-26
 
 ### Construtor de Armário v2 (021, T033)

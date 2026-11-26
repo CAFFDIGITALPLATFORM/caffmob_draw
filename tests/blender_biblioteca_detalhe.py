@@ -81,6 +81,25 @@ def run_checks():
     check("recusa não cria peça", _conta_objetos() == antes)
     check("card continua aberto", STATE.detail_open)
 
+    # Recusa específica da chapa máxima: uma chapa pequena no Padrão faz uma medida válida para o módulo exceder a
+    # chapa; a mensagem precisa citar a chapa e nada pode ser criado. O padrão original é restaurado no fim.
+    from caffmob_draw.data import dimension_schema as schema
+    from caffmob_draw.standards import api as standards_api
+    original = standards_api.active_definition(bpy.context.scene)
+    temporaria = standards_api.duplicate_definition(bpy.context.scene, original, "Teste chapa do card")
+    standards_api.set_values(temporaria, {schema.max_key('sheet_width_max'): 600.0,
+                                          schema.max_key('sheet_length_max'): 1000.0})
+    STATE.detail_width, STATE.detail_height, STATE.detail_depth = 1200.0, 2700.0, 900.0
+    STATE.detail_line, STATE.detail_error = 'DOR', ""
+    STATE.detail_thickness = ops_detail.espessura(bpy.context, 'DOR')
+    antes = _conta_objetos()
+    check("medida acima da chapa é recusada", ops_detail.confirmar(bpy.context) is False)
+    check("recusa de chapa mostra mensagem", "chapa" in STATE.detail_error.lower(), STATE.detail_error)
+    check("recusa de chapa não cria peça", _conta_objetos() == antes)
+    check("card continua aberto após recusa de chapa", STATE.detail_open)
+    standards_api.set_active(bpy.context.scene, original)
+    standards_api.remove_definition(bpy.context.scene, temporaria)
+
     # Medidas e ambiente diferentes do padrão, dentro dos limites.
     largura = min(1200.0, padrao[0] + 100.0)
     altura = min(2700.0, padrao[1] + 80.0)
