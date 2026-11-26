@@ -219,22 +219,87 @@ def _part_setter(field):
     return set_
 
 
-def _multi_thickness_get(_self):
-    target = _target()
-    values = [v for v in (target.multi_thickness if target is not None else ()) if v is not None]
-    return float(values[0]) if values else 0.0
+# Seleção múltipla (067 RF-026; 027 RF-04): as quatro medidas que valem para todos os objetos ativos.
+MULTI_HINT = N_("Vazio com ? quando os selecionados têm valores diferentes. Digite a medida na unidade do projeto "
+                "(mm, cm ou m): a confirmação aplica em todos num só passo de Desfazer.")
+_MULTI_FIELDS = {'multi_width': (0, 'width'), 'multi_height': (1, 'height'), 'multi_depth': (2, 'depth'),
+                 'multi_thickness': (3, 'thickness')}
 
 
-def _multi_thickness_set(_self, value):
-    def apply():
-        from ..target import part_edit, snapshot
+def _multi_values(target, index):
+    """Valores da medida na seleção, um por objeto (o vazio não conta)."""
+    if target is None:
+        return []
+    if target.multi_sizes:
+        return [size[index] for size in target.multi_sizes if size is not None and size[index] is not None]
+    if index == 3:                                   # alvo montado sem snapshot: a espessura antiga ainda serve
+        return [value for value in target.multi_thickness if value is not None]
+    return []
+
+
+def _multi_multiplos(target, prop):
+    """True quando os selecionados não têm um valor comum para a medida."""
+    entry = _MULTI_FIELDS.get(prop)
+    values = _multi_values(target, entry[0]) if entry is not None else []
+    return len({round(value, 6) for value in values}) > 1
+
+
+def _multi_getter(prop):
+    def get(_self):
+        from ..data import units
+        values = _multi_values(_target(), _MULTI_FIELDS[prop][0])
+        if not values or len({round(value, 6) for value in values}) > 1:
+            return ""                            # divergente ou sem valor: o campo fica vazio com "?"
+        return units.format_length(values[0], unit=units.get_scene_length_unit())
+    return get
+
+
+def _multi_setter(prop):
+    field = _MULTI_FIELDS[prop][1]
+
+    def set_(_self, text):
+        from ..data import units
+        text = (text or '').strip()
+        if not text:
+            return
+        try:
+            value = units.parse_length(text, default_unit=units.get_scene_length_unit())
+        except ValueError as exc:
+            _set_error(str(exc))
+            return
+        _clear_error()
+        _request_multi_apply(field, text, value)
+    return set_
+
+
+def _apply_all_selected():
+    """Preferência "Aplicar transformações em todos os selecionados" (padrão ligada, 027 RF-04)."""
+    addon = bpy.context.preferences.addons.get(__package__.rsplit('.', 1)[0])
+    return getattr(getattr(addon, 'preferences', None), 'aplicar_em_todos', True)
+
+
+def _request_multi_apply(field, text, meters):
+    """Com a preferência ligada pergunta antes; desligada, o valor fica no objeto ativo e pronto."""
+    try:
         target = _edit_target()
-        for uid in target.selected_uids:              # um só passo de Desfazer: o da edição do campo (RF-026)
-            obj = snapshot.object_for(bpy.context, uid)
-            sheet = snapshot.sheet_target(bpy.context, obj) if obj is not None else None
-            if sheet is not None and sheet.measures is not None:
-                part_edit.resize(sheet, obj, 'part_thickness', value)
-    _guard(apply)
+    except ValueError as exc:
+        _set_error(str(exc))
+        return
+    if not _apply_all_selected():
+        from ..target import multi_apply
+        uids = (target.uid,)
+        _guard(lambda: multi_apply.apply(bpy.context, uids, field, meters))
+        return
+    bpy.app.timers.register(lambda: _open_multi_dialog(field, text), first_interval=0.0)
+
+
+def _open_multi_dialog(field, text):
+    """Abre a confirmação fora do evento da propriedade (o setter não pode rodar um modal aqui dentro)."""
+    try:
+        bpy.ops.caffmob.target_multi_apply('INVOKE_DEFAULT', field=field, value=text)
+    except Exception:
+        pass
+    return None
 
 
 def _length(name, getter, setter, description=""):
@@ -276,7 +341,10 @@ class BTM_PG_SelectionEdit(bpy.types.PropertyGroup):
     part_a: _length(N_("Medida A"), _part_getter('part_a'), _part_setter('part_a'))  # type: ignore
     part_b: _length(N_("Medida B"), _part_getter('part_b'), _part_setter('part_b'))  # type: ignore
     part_thickness: _length(N_("Espessura"), _part_getter('part_thickness'), _part_setter('part_thickness'))  # type: ignore
-    multi_thickness: _length(N_("Espessura"), _multi_thickness_get, _multi_thickness_set)  # type: ignore
+    multi_width: bpy.props.StringProperty(name=N_("Largura"), description=tr(MULTI_HINT), get=_multi_getter('multi_width'), set=_multi_setter('multi_width'), options=set())  # type: ignore
+    multi_height: bpy.props.StringProperty(name=N_("Altura"), description=tr(MULTI_HINT), get=_multi_getter('multi_height'), set=_multi_setter('multi_height'), options=set())  # type: ignore
+    multi_depth: bpy.props.StringProperty(name=N_("Profundidade"), description=tr(MULTI_HINT), get=_multi_getter('multi_depth'), set=_multi_setter('multi_depth'), options=set())  # type: ignore
+    multi_thickness: bpy.props.StringProperty(name=N_("Espessura"), description=tr(MULTI_HINT), get=_multi_getter('multi_thickness'), set=_multi_setter('multi_thickness'), options=set())  # type: ignore
 
 
 # Painel (067 T087): desenha o ViewModel do alvo (`target/view.py`) ----------------------------------------------
@@ -366,8 +434,8 @@ def _draw_field(layout, context, target, obj, field):
     if field.index >= 0:
         kwargs['index'] = field.index
     row.prop(data, field.prop, **kwargs)
-    if field.mixed and len({round(v, 6) for v in target.multi_thickness if v is not None}) > 1:
-        row.label(text=tr("Múltiplos"), icon='DOCUMENTS')
+    if field.mixed and _multi_multiplos(target, field.prop):
+        row.label(text="?", icon='QUESTION')
 
 
 def _draw_action(layout, action):

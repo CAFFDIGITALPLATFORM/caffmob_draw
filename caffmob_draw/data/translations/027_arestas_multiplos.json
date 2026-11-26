@@ -1,0 +1,54 @@
+{
+  "Espessura da aresta": {
+    "pt_BR": "Espessura da aresta",
+    "en_US": "Edge thickness"
+  },
+  "Espessura da linha preta das arestas no viewport, em pixels. 0,2 é a linha mais fina que a placa de vídeo desenha": {
+    "pt_BR": "Espessura da linha preta das arestas no viewport, em pixels. 0,2 é a linha mais fina que a placa de vídeo desenha",
+    "en_US": "Thickness of the black edge line in the viewport, in pixels. 0.2 is the thinnest line the graphics card draws"
+  },
+  "Aplicar transformações em todos os selecionados": {
+    "pt_BR": "Aplicar transformações em todos os selecionados",
+    "en_US": "Apply transforms to all selected"
+  },
+  "Com vários objetos selecionados, largura, altura, profundidade e espessura valem para todos: o painel pede confirmação antes de aplicar num só passo de Desfazer": {
+    "pt_BR": "Com vários objetos selecionados, largura, altura, profundidade e espessura valem para todos: o painel pede confirmação antes de aplicar num só passo de Desfazer",
+    "en_US": "With several objects selected, width, height, depth and thickness apply to all of them: the panel asks for confirmation before applying in a single undo step"
+  },
+  "Vazio com ? quando os selecionados têm valores diferentes. Digite a medida na unidade do projeto (mm, cm ou m): a confirmação aplica em todos num só passo de Desfazer.": {
+    "pt_BR": "Vazio com ? quando os selecionados têm valores diferentes. Digite a medida na unidade do projeto (mm, cm ou m): a confirmação aplica em todos num só passo de Desfazer.",
+    "en_US": "Empty with ? when the selected objects have different values. Type the length in the project unit (mm, cm or m): the confirmation applies it to all in a single undo step."
+  },
+  "Vazio com ? quando os valores diferem; editar pergunta e aplica em todos num passo de Desfazer.": {
+    "pt_BR": "Vazio com ? quando os valores diferem; editar pergunta e aplica em todos num passo de Desfazer.",
+    "en_US": "Empty with ? when the values differ; editing asks and applies to all in a single undo step."
+  },
+  "Aplicar em todos os selecionados": {
+    "pt_BR": "Aplicar em todos os selecionados",
+    "en_US": "Apply to all selected"
+  },
+  "Aplica a medida digitada em todos os objetos ativos, com confirmação (027, RF-04)": {
+    "pt_BR": "Aplica a medida digitada em todos os objetos ativos, com confirmação (027, RF-04)",
+    "en_US": "Applies the typed length to all active objects, with confirmation (027, RF-04)"
+  },
+  "Medida na unidade do projeto, com mm, cm ou m": {
+    "pt_BR": "Medida na unidade do projeto, com mm, cm ou m",
+    "en_US": "Length in the project unit, with mm, cm or m"
+  },
+  "Você está prestes a aplicar transformação em todos os objetos ativos: Confirma?": {
+    "pt_BR": "Você está prestes a aplicar transformação em todos os objetos ativos: Confirma?",
+    "en_US": "You are about to apply a transform to all active objects: Confirm?"
+  },
+  "{} em {} objeto(s)": {
+    "pt_BR": "{} em {} objeto(s)",
+    "en_US": "{} on {} object(s)"
+  },
+  "Nenhum objeto aceitou a medida.": {
+    "pt_BR": "Nenhum objeto aceitou a medida.",
+    "en_US": "No object accepted the length."
+  },
+  "Medida aplicada em {} objeto(s).": {
+    "pt_BR": "Medida aplicada em {} objeto(s).",
+    "en_US": "Length applied to {} object(s)."
+  }
+}

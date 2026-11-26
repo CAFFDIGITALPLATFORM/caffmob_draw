@@ -3,7 +3,7 @@
 Precisa de janela (a vista 3D só existe com tela):
     xvfb-run -a blender --factory-startup --enable-event-simulate --python tests/blender_010_view_mode_smoke.py
 
-- Textura com Linhas ligado: `color_type` TEXTURE e arestas (limiar 0,5, opacidade 0,6) em todas as vistas 3D;
+- Textura com Linhas ligado: `color_type` TEXTURE em todas as vistas 3D e as arestas pretas pelo handler próprio;
 - desligar Linhas tira as arestas; voltar a Sólido devolve o `color_type` anterior;
 - o estado vai no arquivo (salvar e reler as propriedades em outro Blender) e o `load_post` reaplica;
 - a barra lateral desenha o controle sem erro.
@@ -20,7 +20,8 @@ import bpy
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import _blender_env as env  # noqa: E402,F401
-from caffmob_draw.ui import sidebar_build, view_mode, view_mode_core  # noqa: E402
+from caffmob_draw.overlays import arestas  # noqa: E402
+from caffmob_draw.ui import sidebar_build, view_mode  # noqa: E402
 from caffmob_draw.ui import layout_probe  # noqa: E402
 
 FAILURES = []
@@ -44,12 +45,13 @@ def main():
         space.shading.color_type = 'OBJECT'
     scene.btm_view_mode = 'TEXTURE'
     scene.btm_view_lines = True
-    ok = all(s.shading.color_type == 'TEXTURE' and s.overlay.show_wireframes
-             and abs(s.overlay.wireframe_threshold - view_mode_core.THRESHOLD) < 1e-6
-             and abs(s.overlay.wireframe_opacity - view_mode_core.OPACITY) < 1e-6 for s in spaces())
-    check("Textura com linha em todas as vistas", ok)
+    ok = all(s.shading.color_type == 'TEXTURE' and not s.overlay.show_wireframes for s in spaces())
+    check("Textura com linha em todas as vistas (arestas próprias, wireframe do Blender desligado)", ok)
+    check("handler das arestas pretas registrado", arestas._handler is not None)
+    check("espessura da aresta nas preferências", arestas.espessura() >= 0.2, str(arestas.espessura()))
     scene.btm_view_lines = False
-    check("desligar Linhas tira as arestas", not any(s.overlay.show_wireframes for s in spaces()))
+    check("desligar Linhas tira as arestas", not scene.btm_view_lines and not any(
+        s.overlay.show_wireframes for s in spaces()))
     scene.btm_view_mode = 'SOLID'
     check("Sólido devolve a cor anterior (Objeto)", all(s.shading.color_type == 'OBJECT' for s in spaces()))
     scene.btm_view_mode, scene.btm_view_lines = 'TEXTURE', True
@@ -57,8 +59,8 @@ def main():
         space.shading.color_type, space.overlay.show_wireframes = 'MATERIAL', False
     check("load_post registrado", view_mode._on_load in bpy.app.handlers.load_post)
     view_mode._on_load(None)
-    check("o load_post reaplica o modo salvo", all(s.shading.color_type == 'TEXTURE' and s.overlay.show_wireframes
-                                                   for s in spaces()))
+    check("o load_post reaplica o modo salvo", all(s.shading.color_type == 'TEXTURE' for s in spaces()))
+    check("o load_post reaplica o interruptor Linhas", scene.btm_view_lines)
     path = os.path.join(tempfile.mkdtemp(), "vista.blend")
     bpy.ops.wm.save_as_mainfile(filepath=path, copy=True)
     expr = ("import sys; sys.path.insert(0, %r); import _blender_env; import bpy; s = bpy.context.scene; "

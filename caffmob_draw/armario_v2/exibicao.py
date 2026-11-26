@@ -4,8 +4,8 @@ Dois níveis, como decidido no clarify (D-08):
 
 - `BTM_AddonPreferences.exibicao_armario` é o **padrão de fábrica** dos armários novos;
 - `Scene.btm_view_mode` continua sendo o **estado do arquivo** e o controle "Sólido·Textura" da barra lateral manda
-  na cena. A variante não inventa mecanismo: liga/desliga o interruptor Linhas que já existe (`overlay.show_wireframes`
-  por `ui/view_mode.apply`).
+  na cena. A variante não inventa mecanismo: liga/desliga o interruptor Linhas que já existe (`ui/view_mode.apply`
+  aplica a vista e `overlays/arestas.py` desenha as arestas pretas, com a espessura da preferência).
 
 A migração (T011) percorre uma vez as raízes `btm_armario` com `exibicao_versao == 0`, garante a textura padrão nas
 peças sem material, aplica a variante da preferência, grava `exibicao_versao = 1` e avisa uma vez por cena. Rodar de

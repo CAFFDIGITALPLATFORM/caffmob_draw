@@ -41,8 +41,11 @@ def sections(target):
         return [position_section(target, move_over=False, rotation_index=-1),
                 unavailable_cotas(N_("cota e anotação"))]
     common = Section('multiple', N_("Comuns aos selecionados"), (
+        Field('selection', 'multi_width', N_("Largura"), essential=True, mixed=True),
+        Field('selection', 'multi_height', N_("Altura"), essential=True, mixed=True),
+        Field('selection', 'multi_depth', N_("Profundidade"), essential=True, mixed=True),
         Field('selection', 'multi_thickness', N_("Espessura"), essential=True, mixed=True),
-        Note(N_("Campos com valores diferentes mostram \"Múltiplos\"; editar aplica a todos num passo de Desfazer."),
+        Note(N_("Vazio com ? quando os valores diferem; editar pergunta e aplica em todos num passo de Desfazer."),
              'INFO', False)), True)
     return [common, finish_section(target), cotas_section(target)]
 

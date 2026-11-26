@@ -199,12 +199,11 @@ def sheet_target(context, obj):
 
 def _with_multi(context, target):
     import dataclasses
-    values = []
-    for uid in target.selected_uids:
-        obj = object_for(context, uid)
-        sheet = sheet_target(context, obj) if obj is not None else None
-        values.append(sheet.measures.thickness.value if sheet is not None and sheet.measures is not None else None)
-    return dataclasses.replace(target, multi_thickness=tuple(values))
+    from . import multi_apply
+
+    sizes = multi_apply.sizes(context, target.selected_uids)
+    thickness = tuple(size[3] if size is not None else None for size in sizes)
+    return dataclasses.replace(target, multi_sizes=sizes, multi_thickness=thickness)
 
 
 def _with_measures(context, target):

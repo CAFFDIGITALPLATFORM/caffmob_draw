@@ -2,8 +2,11 @@
 
 import bpy  # type: ignore
 
-from ..data.i18n import tr
+from ..data.i18n import N_, tr
 from . import capabilities, snapshot
+
+MULTI_LABELS = {'width': N_("Largura"), 'height': N_("Altura"), 'depth': N_("Profundidade"),
+                'thickness': N_("Espessura")}
 
 
 class BTM_OT_TargetSelectOwner(bpy.types.Operator):
@@ -63,7 +66,59 @@ class BTM_OT_TargetCladdingApply(bpy.types.Operator):
         return {'FINISHED'}
 
 
-classes = (BTM_OT_TargetSelectOwner, BTM_OT_TargetCladdingApply)
+class BTM_OT_TargetMultiApply(bpy.types.Operator):
+    """Aplica a medida digitada em todos os objetos ativos, com confirmação (027, RF-04)"""
+    bl_idname = 'caffmob.target_multi_apply'
+    bl_label = "Aplicar em todos os selecionados"
+    bl_options = {'REGISTER', 'UNDO'}
+
+    field: bpy.props.EnumProperty(
+        name="Medida",
+        items=[(code, label, "") for code, label in MULTI_LABELS.items()],
+        default='width',
+    )  # type: ignore
+    value: bpy.props.StringProperty(name="Valor", description="Medida na unidade do projeto, com mm, cm ou m")  # type: ignore
+
+    @classmethod
+    def poll(cls, context):
+        return snapshot.current(context) is not None
+
+    def invoke(self, context, event):
+        return context.window_manager.invoke_props_dialog(
+            self, width=380,
+            title=tr("Você está prestes a aplicar transformação em todos os objetos ativos: Confirma?"),
+            confirm_text=tr("Sim"))
+
+    def draw(self, context):
+        target = snapshot.current(context)
+        count = target.count if target is not None else 0
+        self.layout.label(text=tr("{} em {} objeto(s)").format(tr(MULTI_LABELS.get(self.field, '')), count),
+                          icon='INFO')
+        self.layout.prop(self, 'value')
+
+    def execute(self, context):
+        from ..data import units
+        from . import multi_apply
+
+        target = snapshot.ensure(context)
+        uids = tuple(target.selected_uids) if target is not None and target.selected_uids else \
+            ((target.uid,) if target is not None else ())
+        try:
+            meters = units.parse_length(self.value or "", default_unit=units.get_scene_length_unit(context.scene))
+        except ValueError as exc:
+            self.report({'ERROR'}, str(exc))
+            return {'CANCELLED'}
+        done, ignored, failures = multi_apply.apply(context, uids, self.field, meters)
+        for name, reason in failures:
+            self.report({'WARNING'}, tr("{}: {}").format(name, reason))
+        if not done:
+            self.report({'ERROR'}, tr("Nenhum objeto aceitou a medida.") if not failures else failures[0][1])
+            return {'CANCELLED'}
+        self.report({'INFO'}, tr("Medida aplicada em {} objeto(s).").format(done))
+        return {'FINISHED'}
+
+
+classes = (BTM_OT_TargetSelectOwner, BTM_OT_TargetCladdingApply, BTM_OT_TargetMultiApply)
 
 
 def register():

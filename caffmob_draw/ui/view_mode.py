@@ -1,8 +1,9 @@
-"""Modo de vista Sólido · Textura e o interruptor Linhas (feature 010, T023; RN-06, D-05).
+"""Modo de vista Sólido · Textura e o interruptor Linhas (feature 010, T023; RN-06, D-05; 027, RF-03).
 
 O estado fica na cena (vai junto com o arquivo): `Scene.btm_view_mode`, `btm_view_lines` e o `color_type` que a vista
 tinha antes de Textura (`btm_view_prev_color`). Mudar qualquer um aplica em todas as vistas 3D abertas; um
-`load_post` reaplica ao abrir o arquivo. Os valores vêm de `view_mode_core.settings`.
+`load_post` reaplica ao abrir o arquivo. Os valores vêm de `view_mode_core.settings`; as arestas pretas do interruptor
+Linhas são desenhadas por `overlays/arestas.py`, que lê a mesma `btm_view_lines`.
 """
 
 import bpy  # type: ignore
@@ -21,6 +22,18 @@ def _spaces(context):
                         yield space
 
 
+def _redraw():
+    wm = getattr(bpy.context, 'window_manager', None)
+    if wm is None:
+        return
+    for window in wm.windows:
+        if window.screen is None:
+            continue
+        for area in window.screen.areas:
+            if area.type == 'VIEW_3D':
+                area.tag_redraw()
+
+
 def apply(context, scene=None):
     scene = scene or context.scene
     for space in _spaces(context):
@@ -30,14 +43,12 @@ def apply(context, scene=None):
         if space.shading.type in ('WIREFRAME', 'SOLID'):
             space.shading.type = values['shading_type']
         space.shading.color_type = values['color_type']
-        overlay = space.overlay
-        overlay.show_wireframes = values['show_wireframes']
-        overlay.wireframe_threshold = values['wireframe_threshold']
-        overlay.wireframe_opacity = values['wireframe_opacity']
+        space.overlay.show_wireframes = values['show_wireframes']      # as arestas são as nossas, não as do Blender
 
 
 def _update(self, context):
     apply(context, self)
+    _redraw()
 
 
 @persistent

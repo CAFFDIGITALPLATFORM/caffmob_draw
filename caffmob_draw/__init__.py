@@ -191,6 +191,23 @@ class BTM_AddonPreferences(bpy.types.AddonPreferences):
         default='TEXTURA_SO',
     )  # type: ignore
 
+    # Feature 027 (RF-03): as arestas do interruptor Linhas são desenhadas em preto com esta espessura, em pixels.
+    espessura_aresta: bpy.props.FloatProperty(
+        name="Espessura da aresta",
+        description=("Espessura da linha preta das arestas no viewport, em pixels. 0,2 é a linha mais fina que a "
+                     "placa de vídeo desenha"),
+        default=0.2, min=0.2, max=3.0, precision=2, step=10,
+        update=_update_use_viewport_hud,
+    )  # type: ignore
+
+    # Feature 027 (RF-04): com vários objetos selecionados, editar uma medida pede confirmação e aplica em todos.
+    aplicar_em_todos: bpy.props.BoolProperty(
+        name="Aplicar transformações em todos os selecionados",
+        description=("Com vários objetos selecionados, largura, altura, profundidade e espessura valem para todos: "
+                     "o painel pede confirmação antes de aplicar num só passo de Desfazer"),
+        default=True,
+    )  # type: ignore
+
     wall_color: bpy.props.FloatVectorProperty(name="Cor das Paredes", size=4, min=0, max=1, default=(0.252832, 0.500434, 0.735662, 1.0), subtype="COLOR")  # type: ignore
     cabinet_color: bpy.props.FloatVectorProperty(name="Cor dos Armários", size=4, min=0, max=1, default=(0.0, 0.5, 0.7, 0.3), subtype="COLOR")  # type: ignore
     door_window_color: bpy.props.FloatVectorProperty(name="Cor de Portas/Janelas", size=4, min=0, max=1, default=(0.0, 0.5, 0.7, 0.1), subtype="COLOR")  # type: ignore
@@ -311,6 +328,8 @@ class BTM_AddonPreferences(bpy.types.AddonPreferences):
         col.operator("caffmob.refresh_asset_libraries", text="", icon='FILE_REFRESH')
 
         layout.prop(self, "exibicao_armario")
+        layout.prop(self, "espessura_aresta")
+        layout.prop(self, "aplicar_em_todos")
         layout.prop(self, "wall_color")
         layout.prop(self, "cabinet_color")
         layout.prop(self, "door_window_color")

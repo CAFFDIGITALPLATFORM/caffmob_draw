@@ -32,7 +32,6 @@ from mathutils import Vector
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import _blender_env as env  # noqa: E402,F401
 from caffmob_draw.armario_v2 import build, exibicao, mdf_core, textura_padrao  # noqa: E402
-from caffmob_draw.ui import view_mode_core  # noqa: E402
 
 FAILURES = []
 LIMIAR_PAINEL = 0.40            # o PNG carrega em sRGB: o fundo escuro fica ~0,23 e a chapa iluminada ~0,63
@@ -222,9 +221,8 @@ def main():
     check("há vista 3D para o contorno", bool(vistas))
     check("Solid com TEXTURE", all(s.shading.type == 'SOLID' and s.shading.color_type == 'TEXTURE' for s in vistas),
           str([(s.shading.type, s.shading.color_type) for s in vistas]))
-    check("contorno ligado com limiar do modo de vista",
-          all(s.overlay.show_wireframes and abs(s.overlay.wireframe_threshold - view_mode_core.THRESHOLD) < 1e-6
-              and abs(s.overlay.wireframe_opacity - view_mode_core.OPACITY) < 1e-6 for s in vistas))
+    check("contorno ligado no modo de vista", bpy.context.scene.btm_view_lines
+          and not any(s.overlay.show_wireframes for s in vistas))
     check("material da chapa é o da cena", len(objeto.data.materials) == 1 and objeto.data.materials[0] is chapa)
     no = chapa.node_tree.nodes.get(textura_padrao.NOME_NO)
     check("imagem empacotada usada no render", bool(no and no.image and no.image.packed_file))
@@ -236,7 +234,8 @@ def main():
     check("render idêntico com a vista em Preview", abs(media_preview - media) < 0.01,
           f"solid={media:.4f} preview={media_preview:.4f}")
     exibicao.aplicar(bpy.context, 'TEXTURA_SO')
-    check("sem linhas na variante somente textura", not any(s.overlay.show_wireframes for s in vistas))
+    check("sem linhas na variante somente textura", not bpy.context.scene.btm_view_lines
+          and not any(s.overlay.show_wireframes for s in vistas))
 
     # 4) Aviso de migração: uma chamada por cena migrada, nenhuma na segunda abertura.
     chamadas = []

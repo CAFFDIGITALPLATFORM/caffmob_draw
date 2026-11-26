@@ -59,6 +59,7 @@ class Target:
     measures: object = None         # PartMeasures da chapa (preenchido pelo snapshot, que lê a malha)
     measure_error: str = ''         # motivo quando a medida foi recusada (shear, escala zero…)
     multi_thickness: tuple = ()     # espessuras das chapas da seleção múltipla, na ordem de `selected_uids`
+    multi_sizes: tuple = ()         # (largura, altura, profundidade, espessura) editáveis de cada selecionado (027)
     has_leaf: bool = False          # porta com folha gerada (`openings.ops.door_of`; preenchido pelo snapshot)
     finish: tuple = ()              # ((domínio, material ou MULTIPLE ou '', ((peça, material), …)), …) (onda 2)
     finish_roles: bool = False      # o dono tem papéis de acabamento; sem eles, o assistente (RF-042)

@@ -4,7 +4,8 @@ Precisa de janela (a vista 3D e o fluxo de detalhes só existem com tela). No Li
 `xvfb-run -a blender --factory-startup --enable-event-simulate --python tests/blender_024_exibicao.py`; no Windows,
 `blender.exe --factory-startup --enable-event-simulate --python tests/blender_024_exibicao.py`.
 
-- a variante aplica `TEXTURE` e o interruptor Linhas em todas as vistas 3D; "Somente textura" desliga as linhas;
+- a variante aplica `TEXTURE` e o interruptor Linhas; "Somente textura" desliga as linhas (as arestas pretas são
+  desenhadas por `overlays/arestas.py`, com o wireframe do Blender desligado);
 - o diálogo recomendado aplica `color_type = 'TEXTURE'` e mantém os demais controles (inclusive "Cursos 3D");
 - o fluxo de detalhes (`DetailView.create`) deixa a vista em `SOLID` + `TEXTURE` (T008);
 - com `TEXTURE` o aviso da barra lateral não aparece; fora de `OBJECT`/`TEXTURE`, aparece (T017).
@@ -47,11 +48,13 @@ def main():
         space.overlay.show_wireframes = False
     check("aplica com linhas", exibicao.aplicar(bpy.context, 'TEXTURA_LINHAS'))
     check("modo TEXTURE", bpy.context.scene.btm_view_mode == 'TEXTURE')
-    check("linhas ligadas em todas as vistas", all(s.overlay.show_wireframes for s in vistas))
+    check("linhas ligadas em todas as vistas", bpy.context.scene.btm_view_lines
+          and not any(s.overlay.show_wireframes for s in vistas))
     check("cor média da textura", all(s.shading.color_type == 'TEXTURE' for s in vistas))
 
     exibicao.aplicar(bpy.context, 'TEXTURA_SO')
-    check("linhas desligadas", not any(s.overlay.show_wireframes for s in vistas))
+    check("linhas desligadas", not bpy.context.scene.btm_view_lines and not any(s.overlay.show_wireframes
+                                                                               for s in vistas))
     check("textura mantida", all(s.shading.color_type == 'TEXTURE' for s in vistas))
 
     classe = getattr(caffmob_draw, 'BTM_AddonPreferences', None)

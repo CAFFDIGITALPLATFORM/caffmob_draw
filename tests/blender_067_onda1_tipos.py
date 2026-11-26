@@ -131,8 +131,11 @@ def body(w):
     t = target_of(sheets, sheets[0])
     op.remember_drawn(t)
     j.check(t.kind == r.MULTIPLE and len({round(v, 6) for v in t.multi_thickness}) > 1, "15/15/18 mostra Múltiplos")
+    j.check(bpy.context.scene.btm_selection.multi_thickness == "", "o campo fica vazio quando os valores divergem")
     w.push("Antes da espessura comum")
-    bpy.context.scene.btm_selection.multi_thickness = 0.018
+    # 027 RF-04: com vários selecionados a medida entra pela confirmação, e a confirmação é um passo só de Desfazer.
+    resultado = bpy.ops.caffmob.target_multi_apply('EXEC_DEFAULT', field='thickness', value='18')
+    j.check(resultado == {'FINISHED'}, "a confirmação aplica a espessura comum", str(resultado))
     w.push("Espessura comum")
     names = [g.name for g in sheets]
     j.check(all(abs(bpy.data.objects[n].btm_geometry.thickness - 0.018) < 1e-6 for n in names),
