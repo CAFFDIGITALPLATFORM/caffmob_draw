@@ -11,6 +11,8 @@
 - Confirmar passa as medidas e o ambiente escolhidos para `caffmob.library_insert_model`, que agora aceita
   `width_mm`/`height_mm`/`depth_mm` e os repassa ao construtor de armários; módulos de preset sem variação continuam
   usando os valores do JSON (`library_panel/popover.py`).
+- Arrastar o módulo cujo card está aberto leva as mesmas medidas e o ambiente definidos nele; sem card, o arraste
+  mantém o comportamento anterior, com os valores do catálogo (`library_panel/ops_drag.py`, `library_panel/ops_click.py`).
 - Validação contra o Padrão de Dimensões: máximos do módulo, faces de chapa (largura × altura, largura × profundidade,
   altura × profundidade) contra a chapa máxima do fornecedor e espessura da lateral. Medida inválida é recusada com
   mensagem no card e nada é criado; o filtro de acervo por ambiente e a galeria do Editor de Armário V2 continuam

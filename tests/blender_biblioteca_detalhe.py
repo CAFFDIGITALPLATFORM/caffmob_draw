@@ -15,11 +15,12 @@ import sys
 from pathlib import Path
 
 import bpy  # type: ignore
+from mathutils import Vector  # type: ignore
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import _blender_env  # noqa: E402,F401
-from caffmob_draw.library_panel import draw, ops_detail  # noqa: E402
+from caffmob_draw.library_panel import draw, ops_detail, ops_drag  # noqa: E402
 
 FAILURES = []
 STATE = None
@@ -108,6 +109,27 @@ def capture_and_confirm():
         check("profundidade do objeto", abs(cab.depth - ALVO["depth"] / 1000.0) < 1e-4, str(cab.depth))
         check("ambiente do objeto", cab.line == 'DOR', cab.line)
         check("modelo gravado no objeto", obj.get('btm_model_id') == ALVO.get("model"), str(obj.get('btm_model_id')))
+
+    # Arraste: a soltura usa as medidas e o ambiente definidos no card, sem passar pelo mouse.
+    class _Arraste:
+        width_mm, height_mm, depth_mm, line = 600.0, 700.0, 450.0, 'SAL'
+        entry = dict(ALVO)
+
+        @staticmethod
+        def report(*_args, **_kwargs):
+            pass
+
+    antes = _conta_objetos()
+    resultado = ops_drag.BTM_OT_LibraryDrag._drop_model(_Arraste(), bpy.context, Vector((2.0, 2.0, 0.0)))
+    check("arraste insere", 'FINISHED' in resultado)
+    check("arraste insere uma peça", _conta_objetos() > antes)
+    arrastado = bpy.context.active_object
+    if arrastado is not None and hasattr(arrastado, 'btm_cabinet'):
+        cab = arrastado.btm_cabinet
+        check("arraste usa largura do card", abs(cab.width - 0.6) < 1e-4, str(cab.width))
+        check("arraste usa altura do card", abs(cab.height - 0.7) < 1e-4, str(cab.height))
+        check("arraste usa profundidade do card", abs(cab.depth - 0.45) < 1e-4, str(cab.depth))
+        check("arraste usa ambiente do card", cab.line == 'SAL', cab.line)
 
     print("RESULTADO", "OK" if not FAILURES else "FALHA", FAILURES, flush=True)
     os._exit(1 if FAILURES else 0)

@@ -78,6 +78,21 @@ class MedidaTest(unittest.TestCase):
         self.assertIsNone(dc.parse_mm(''))
 
 
+class InsertPropsTest(unittest.TestCase):
+    """Props levadas ao inserir: o arraste usa as do card; sem card, só o ambiente do catálogo."""
+
+    def test_medidas_e_ambiente_do_card(self):
+        props = dc.insert_props(900.0, 800.0, 500.0, 'DOR', 'COZ')
+        self.assertEqual(props, {'line': 'DOR', 'width_mm': 900.0, 'height_mm': 800.0, 'depth_mm': 500.0})
+
+    def test_sem_medidas_mantem_o_arraste_atual(self):
+        props = dc.insert_props(0.0, 0.0, 0.0, '', 'COZ')
+        self.assertEqual(props, {'line': 'COZ'})
+
+    def test_ambiente_invalido_cai_no_catalogo(self):
+        self.assertEqual(dc.insert_props(0.0, 0.0, 0.0, 'XYZ', 'BAN')['line'], 'BAN')
+
+
 class ValidateTest(unittest.TestCase):
     def test_aceita_medida_valida(self):
         self.assertEqual(dc.validate(900.0, 800.0, 550.0, CHAPA, MODULO, 15.0), (True, ""))

@@ -17,7 +17,7 @@ from bpy_extras import view3d_utils  # type: ignore
 from mathutils import Vector, geometry  # type: ignore
 
 from ..data.i18n import N_, tr
-from . import draw, draw_kit as kit, style, thumbs_gpu
+from . import detail_core, draw, draw_kit as kit, style, thumbs_gpu
 
 EMPTY_DROP = N_("Solte sobre uma peça, frente, módulo ou objeto")
 BLOCK_HINT = N_("Solte na cena para inserir")
@@ -63,6 +63,11 @@ class BTM_OT_LibraryDrag(bpy.types.Operator):
     key: bpy.props.StringProperty(options={'HIDDEN', 'SKIP_SAVE'})  # type: ignore
     start_x: bpy.props.FloatProperty(options={'HIDDEN', 'SKIP_SAVE'})  # type: ignore
     start_y: bpy.props.FloatProperty(options={'HIDDEN', 'SKIP_SAVE'})  # type: ignore
+    # Medidas e ambiente definidos no card de detalhe (0 = usa o catálogo, como antes).
+    width_mm: bpy.props.FloatProperty(default=0.0, min=0.0, options={'HIDDEN', 'SKIP_SAVE'})  # type: ignore
+    height_mm: bpy.props.FloatProperty(default=0.0, min=0.0, options={'HIDDEN', 'SKIP_SAVE'})  # type: ignore
+    depth_mm: bpy.props.FloatProperty(default=0.0, min=0.0, options={'HIDDEN', 'SKIP_SAVE'})  # type: ignore
+    line: bpy.props.StringProperty(options={'HIDDEN', 'SKIP_SAVE'})  # type: ignore
 
     @classmethod
     def poll(cls, context):
@@ -169,9 +174,10 @@ class BTM_OT_LibraryDrag(bpy.types.Operator):
         cursor = context.scene.cursor
         before = cursor.location.copy()
         cursor.location = (point.x, point.y, 0.0)        # no piso; o aéreo sobe para a altura do padrão
+        props = detail_core.insert_props(self.width_mm, self.height_mm, self.depth_mm, self.line,
+                                         self.entry.get("line", 'COZ'))
         try:
-            result = bpy.ops.caffmob.library_insert_model('EXEC_DEFAULT', model_id=self.entry["model"],
-                                                         line=self.entry.get("line", 'COZ'))
+            result = bpy.ops.caffmob.library_insert_model('EXEC_DEFAULT', model_id=self.entry["model"], **props)
         finally:
             cursor.location = before
         return {'FINISHED'} if 'FINISHED' in result else {'CANCELLED'}

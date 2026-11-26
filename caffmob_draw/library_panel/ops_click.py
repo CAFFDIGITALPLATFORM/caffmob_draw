@@ -202,11 +202,13 @@ class BTM_OT_LibraryClick(bpy.types.Operator):
             from . import detail_core, ops_detail
             hit = detail_core.hit(detail_core.layout(lay.grid, draw._scale(context)), mx, my)
             if hit is None:
-                ops_detail.fechar_painel(context)
-                return {'PASS_THROUGH'} if part is None else {'FINISHED'}
-            if hit != 'CARD':
-                ops_detail.click(context, hit)
-            return {'FINISHED'}
+                if part != 'GRID':               # clique na grade segue o fluxo normal; o arraste usa o card
+                    ops_detail.fechar_painel(context)
+                    return {'PASS_THROUGH'} if part is None else {'FINISHED'}
+            else:
+                if hit != 'CARD':
+                    ops_detail.click(context, hit)
+                return {'FINISHED'}
         if part is None:
             state.mode = grid_core.next_mode(state.mode, 'OUTSIDE', state.pinned)
             draw.tag_redraw(context)
@@ -250,7 +252,14 @@ class BTM_OT_LibraryClick(bpy.types.Operator):
         if self.action == 'CELL':
             if (dx * dx + dy * dy) ** 0.5 >= DRAG_THRESHOLD * s:
                 self._dragged = True
-                if _run("caffmob.library_drag", key=self.cell, start_x=mx, start_y=my):
+                state = context.window_manager.btm_library
+                extra = {}
+                if state.detail_open and state.detail_key == self.cell:
+                    from . import detail_core, ops_detail
+                    extra = detail_core.insert_props(state.detail_width, state.detail_height, state.detail_depth,
+                                                     state.detail_line, "")
+                    ops_detail.fechar_painel(context)     # o arraste leva as medidas do card
+                if _run("caffmob.library_drag", key=self.cell, start_x=mx, start_y=my, **extra):
                     return {'FINISHED'}          # o arraste segue no modal dele (T032)
             return {'RUNNING_MODAL'}
         bounds, hud = _bounds(context), draw.hud_rects(context, context.area)

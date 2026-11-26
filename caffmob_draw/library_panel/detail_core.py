@@ -101,6 +101,15 @@ def ambiente_label(code):
     return dict(AMBIENTES).get(code, code)
 
 
+def insert_props(width, height, depth, line, fallback_line):
+    """Props de `caffmob.library_insert_model`: medidas > 0 em mm e o ambiente do card (ou o do catálogo)."""
+    props = {'line': line if line in dict(AMBIENTES) else fallback_line}
+    for key, value in (('width_mm', width), ('height_mm', height), ('depth_mm', depth)):
+        if float(value) > 0:
+            props[key] = float(value)
+    return props
+
+
 def validate(width, height, depth, sheet, module_max, thickness):
     """(True, "") ou (False, mensagem) comparando com o Padrão de Dimensões.
 
