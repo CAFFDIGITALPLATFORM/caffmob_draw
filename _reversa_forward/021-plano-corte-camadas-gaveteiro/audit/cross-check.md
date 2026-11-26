@@ -112,3 +112,14 @@ Os números antigos contavam arquivos de ensaio. O placar atual conta ensaios ex
 Esta auditoria não alterou `requirements.md`, `roadmap.md`, `actions.md`, `data-delta.md`, `interfaces/` nem
 `investigation.md`. As correções de conteúdo acima foram feitas pelos ciclos anteriores desta mesma rodada
 (`/reversa-debugger`, `/reversa-requirements`, `/reversa-plan`, `/reversa-to-do`), não por este relatório.
+
+## Fechamento posterior — 2026-11-26
+
+A T033 foi executada numa janela real: `tests/blender_021_panel_visual.py` abriu o armário 1000×2400×510, montou a
+caixa e capturou o painel (`audit/painel-021.png`) para comparar com o mockup (`audit/mockup-021.png`). A comparação
+achou um defeito real — `icon='MOD_LENGTHWISE'` não existe no Blender 5.2 e quebrava o desenho de "Travessas" — e três
+truncamentos na barra de 280 px; os quatro foram corrigidos. O relatório está em `../visual-parity.md`.
+
+Do A004, `blender_012_convert_undo` passou; `blender_004_cabinet_editor_smoke` e `blender_012_library_ui` falharam
+por expectativas anteriores às mudanças atuais (a guarda de "construção antiga" no editor e o card de detalhe da
+Biblioteca), não pelo painel. A004 permanece LOW para esses dois ensaios desatualizados.

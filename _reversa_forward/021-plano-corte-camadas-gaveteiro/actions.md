@@ -73,7 +73,7 @@
 
 | ID | Descrição | Dependências | Paralelismo | Arquivo alvo | Confidência | Status |
 |----|-----------|--------------|-------------|--------------|-------------|--------|
-| T033 | Comparar o painel do construtor com `novo_arm_building/.../mockup_construtor_armarios.html` numa sessão gráfica (paleta, espaçamento, ícones) e registrar divergências | T030 | - | `caffmob_draw/armario_v2/panel.py` | 🟢 | `[ ]` |
+| T033 | Comparar o painel do construtor com `novo_arm_building/.../mockup_construtor_armarios.html` numa sessão gráfica (paleta, espaçamento, ícones) e registrar divergências | T030 | - | `caffmob_draw/armario_v2/panel.py` | 🟢 | `[X]` |
 
 ## Notas de execução
 
@@ -101,6 +101,16 @@
   `_reversa_bugs/cabinet_editor/inspections/2026-11-25-debugger-f021/report.md`. A lacuna de material/UV/preferências
   saiu da 021 e virou a candidata `_reversa_forward/024-materiais-uv-preferencias` (parada antes do `/reversa-clarify`).
 
+- **2026-11-26, T033 (paridade visual):** o painel foi capturado numa janela real com
+  `tests/blender_021_panel_visual.py` (armário 1000×2400×510, contrato 2730×1810) e comparado com o mockup. A
+  comparação achou um defeito real: `icon='MOD_LENGTHWISE'`, removido no Blender 5.2, levantava `TypeError` ao desenhar
+  "Travessas" e o painel não terminava; trocado por `MOD_LENGTH`. Também foram corrigidos três truncamentos na barra
+  de 280 px: abas em grade 2×4, título/atalhos em linhas separadas e "Montagem"/"Vão ativo" em linhas separadas.
+  Evidência e divergências aceitas por design em `visual-parity.md` e `audit/painel-021.png`.
+  Dos três ensaios de GUI do A004, `blender_012_convert_undo` passou; `blender_004_cabinet_editor_smoke` e
+  `blender_012_library_ui` falharam por expectativas anteriores às mudanças atuais (guarda de construção antiga e
+  card de detalhe da Biblioteca), não pelo painel; A004 segue LOW para esses dois ensaios.
+
 ## Histórico de alterações
 
 | Data | Alteração | Autor |
@@ -109,3 +119,4 @@
 | 2026-11-24 | `/reversa-to-do` após a inspeção: T033 aberta (única pendência real), notas da execução da suíte | reversa |
 | 2026-11-24 | Fechamento da auditoria: prova headless do RF-08 no e2e (52/52) e RF-10 condicionado ao móvel legado | reversa |
 | 2026-11-25 | Re-verificação de interface pelo `/reversa-debugger`: harness 12/12; nenhum defeito novo; T033/A004 abertas (GUI); material/UV/preferências movido para a candidata 024 | reversa |
+| 2026-11-26 | T033 fechada: captura real do painel, ícone `MOD_LENGTHWISE` corrigido e três truncamentos resolvidos; A004 parcial (2 ensaios de GUI desatualizados) | reversa |

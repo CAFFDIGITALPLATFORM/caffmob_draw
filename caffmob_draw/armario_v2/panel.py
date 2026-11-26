@@ -142,9 +142,11 @@ def _cabecalho(layout, context, raiz, spec, contrato):
     violacoes = _violacoes(raiz, spec, contrato)
 
     # Barra de título estilo mockup (título + status de chapa + acesso rápido ao Plano de Corte)
+    # Título em linha própria: com os dois atalhos na mesma linha, o painel estreito truncava o título e os botões.
     topo = layout.box()
+    titulo = topo.row(align=True)
+    titulo.label(text=tr("Construtor de Armários"), icon='MESH_CUBE')
     linha = topo.row(align=True)
-    linha.label(text=tr("Construtor de Armários"), icon='MESH_CUBE')
     linha.operator("caffmob.opcut_generate", text=tr("Plano de Corte"), icon='MOD_ARRAY')
     linha.operator("caffmob.armario_v2_window_open", text=tr("Abrir Janela"), icon='FULLSCREEN_ENTER')
 
@@ -168,22 +170,24 @@ def _cabecalho(layout, context, raiz, spec, contrato):
 
 
 def _desenhar_abas(layout, armario):
-    """Grade de 7 abas em 2 linhas (4 + 3) com ícones, fiel ao mockup sem truncar texto no painel estreito."""
-    abas_l1 = (
+    """Grade de 7 abas em 2 colunas (4 linhas) com ícones: os rótulos completos cabem na largura do painel.
+
+    A grade de 4 + 3 numa linha só (como no mockup, que tem a janela inteira) truncava "Estrutura", "Divisões",
+    "Gavetas" e "Internos" na barra lateral padrão de 280 px; em duas colunas o texto do mockup aparece inteiro.
+    """
+    abas = (
         ('ESTRUTURA', "Estrutura", 'CUBE'),
         ('DIVISOES', "Divisões", 'GRID'),
         ('GAVETAS', "Gavetas", 'MOD_ARRAY'),
         ('INTERNOS', "Internos", 'MOD_BEVEL'),
-    )
-    abas_l2 = (
         ('PORTAS', "Portas", 'MESH_PLANE'),
         ('DESLIZANTES', "Deslizantes", 'ARROW_LEFTRIGHT'),
         ('FUNDOS', "Fundos", 'MOD_SOLIDIFY'),
     )
-    for grupo in (abas_l1, abas_l2):
-        row = layout.row(align=True)
-        for chave, rotulo, icone in grupo:
-            row.prop_enum(armario, 'aba', chave, text=tr(rotulo), icon=icone)
+    for inicio in range(0, len(abas), 2):
+        linha = layout.row(align=True)
+        for chave, rotulo, icone in abas[inicio:inicio + 2]:
+            linha.prop_enum(armario, 'aba', chave, text=tr(rotulo), icon=icone)
 
 
 def _subcabecalho(layout, raiz, spec):
@@ -195,7 +199,8 @@ def _subcabecalho(layout, raiz, spec):
     ), icon='FULLSCREEN_ENTER')
     r2 = sub.row(align=True)
     r2.label(text=tr("Montagem: {}").format(tr(resumo.MONTAGENS.get(armario.tipo_montagem, armario.tipo_montagem))))
-    r2.label(text=tr("Vão ativo: {}").format(_vao_ativo(armario)))
+    r3 = sub.row(align=True)
+    r3.label(text=tr("Vão ativo: {}").format(_vao_ativo(armario)))
 
 
 def _janela_vazia(layout, armario):
@@ -235,7 +240,7 @@ def _estrutura(layout, context, raiz):
     linha.prop(armario, 'orientacao_tras')
 
     caixa = layout.box()
-    caixa.label(text=tr("Travessas"), icon='MOD_LENGTHWISE')
+    caixa.label(text=tr("Travessas"), icon='MOD_LENGTH')
     linha = caixa.row(align=True)
     linha.prop(armario, 'contra_frente_ativa', text=tr("Contra-frente"))
     linha.prop(armario, 'peca_tras_ativa', text=tr("Peça de trás"))

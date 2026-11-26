@@ -133,9 +133,14 @@ A rodada anterior respondia às perguntas de interface por memória. Esta execut
 - suíte pura **1600** ensaios, com a única falha em `test_sessao_mobi.py:19` (438 ≠ 384, NTFS) e as duas falhas de
   MOBI reproduzidas em `blender_065_ida_e_volta.py:34` e `blender_ensaio_mobi.py:19` — todas ambiente-gated.
 
-O que continua aberto é só o que exige GUI: **T033/A004** (aparência pixel a pixel e gestos). Nenhum defeito de
-produto novo foi encontrado. A lacuna de material/UV/preferências não é da 021: virou a candidata
-`_reversa_forward/024-materiais-uv-preferencias`, parada antes do `/reversa-clarify`.
+A **T033** foi executada em 2026-11-26, numa janela real: o painel foi capturado e comparado com o mockup. A
+comparação achou um defeito real (`icon='MOD_LENGTHWISE'` não existe no Blender 5.2 e quebrava o desenho de
+"Travessas") e três truncamentos na barra de 280 px; os quatro foram corrigidos. Evidência em
+`visual-parity.md` e `audit/painel-021.png`. Do **A004**, o ensaio `blender_012_convert_undo` passou; restam dois
+ensaios de GUI desatualizados (`blender_004_cabinet_editor_smoke` e `blender_012_library_ui`), que falham por
+expectativas anteriores às mudanças atuais (guarda de construção antiga e card de detalhe da Biblioteca), não pelo
+painel. Nenhum defeito de produto novo foi encontrado. A lacuna de material/UV/preferências não é da 021: virou a
+candidata `_reversa_forward/024-materiais-uv-preferencias`, parada antes do `/reversa-clarify`.
 
 ## 11. Histórico de alterações
 
@@ -144,3 +149,4 @@ produto novo foi encontrado. A lacuna de material/UV/preferências não é da 02
 | 2026-11-24 | Versão inicial gerada por `/reversa-plan` | reversa |
 | 2026-11-24 | §10 marcado com a evidência de cada critério na reconciliação do `/reversa-audit` (a feature já estava entregue; os `[ ]` eram do plano, não do código) | reversa |
 | 2026-11-25 | §10.2: interface re-verificada em execução (harness 12/12); só T033/A004 abertas (GUI); lacuna de material/UV/preferências separada na candidata 024 | reversa |
+| 2026-11-26 | §10.2: T033 fechada (captura real do painel, ícone inválido e três truncamentos corrigidos); A004 parcial com 2 ensaios de GUI desatualizados | reversa |

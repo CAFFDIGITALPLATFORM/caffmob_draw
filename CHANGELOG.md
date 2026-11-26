@@ -1,5 +1,21 @@
 # Changelog do CAFFMob Draw
 
+## 1.33.1 — 2026-11-26
+
+### Construtor de Armário v2 (021, T033)
+
+- O painel lateral usava `icon='MOD_LENGTHWISE'`, removido no Blender 5.2; a caixa "Travessas" levantava `TypeError`
+  e o painel não terminava de desenhar. Trocado por `MOD_LENGTH` (`armario_v2/panel.py`).
+- As sete abas passam a uma grade de 2 colunas (4 linhas), e o título/atalhos e "Montagem"/"Vão ativo" ficam em
+  linhas separadas: os rótulos completos do mockup aparecem na largura padrão da barra lateral, sem "Estr..." ou
+  "Const...".
+- `tests/blender_021_panel_visual.py` captura o painel numa janela real; a comparação com o mockup está em
+  `_reversa_forward/021-plano-corte-camadas-gaveteiro/visual-parity.md`.
+
+### Como a numeração foi calculada
+
+`1.33.0 + 1 correção = 1.33.1` (patch, sem recurso novo).
+
 ## 1.33.0 — 2026-11-26
 
 ### Biblioteca
