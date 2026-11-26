@@ -1,5 +1,30 @@
 # Changelog do CAFFMob Draw
 
+## 1.34.0 — 2026-11-26
+
+### Criação e posicionamento do armário v2 (025)
+
+- **Criar armário** abre o Construtor v2 direto na Vista 3D, sem criar a janela própria da 023; a janela continua
+  disponível por **Abrir Janela**.
+- Depois de **Aplicar** — no painel da Vista 3D e no rodapé da janela 023 — a janela pergunta **“Onde adicionar o
+  armário?”** com **Escolher na viewport** e **Cursor 3D**. O aviso é agendado para o popup sobreviver ao operador de
+  Aplicar.
+- **Escolher** oculta o armário real e mostra uma **caixa de arame** de 8 vértices/12 arestas/0 faces, nas medidas do
+  spec, acompanhando o mouse no piso. As setas **cima/baixo/esquerda/direita** viram a frente para 0°/90°/180°/270°,
+  **R** soma 90°, o **clique** confirma e **Esc/botão direito** restauram posição, giro e visibilidade.
+- **Cursor 3D** posiciona a raiz no cursor preservando o giro; as chapas filhas acompanham. Sem viewport, o modo
+  Escolher cai no Cursor 3D.
+- **Biblioteca**: a galeria de blocos/texturas passa a usar a paleta **Light** do mockup (`#FFFBF5` janela,
+  `#FFF8EC` sidebar, `#F5EFE3` card, `#2B1A0E` tinta, `#B45309` primário, `#0E7C74` teal), mantendo abas, busca,
+  grade, seleção e filtros.
+- Provas: `tests/blender_025_place.py` **16/16** na janela real; `test_placement_025` + `test_library_style_025`
+  **7/7**; card **38/38**, UI 012 **9/9**, puros **36**, puros amplos **54**, i18n **3/3** (28 chaves novas nos
+  catálogos `armario_v2.json`/`library.json`), smoke 017 OK, `check_api.py` sem API desconhecida.
+
+### Como a numeração foi calculada
+
+`1.33.3 + 1 recurso novo = 1.34.0` (minor, fluxo de criação/posicionamento e aparência da galeria).
+
 ## 1.33.3 — 2026-11-26
 
 ### Editor de Armário (ensaio 004)

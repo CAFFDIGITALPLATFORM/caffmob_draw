@@ -1134,5 +1134,69 @@
  "◫ Internos": {
   "en_US": "◫ Interiors",
   "pt_BR": "◫ Internos"
+ },
+ "Não foi possível abrir o posicionamento: {}": {
+  "en_US": "Could not open placement: {}",
+  "pt_BR": "Não foi possível abrir o posicionamento: {}"
+ },
+ "Onde adicionar o armário?": {
+  "en_US": "Where should the cabinet be added?",
+  "pt_BR": "Onde adicionar o armário?"
+ },
+ "Pergunta onde adicionar o armário: escolher na viewport ou no Cursor 3D": {
+  "en_US": "Asks where to add the cabinet: pick in the viewport or use the 3D Cursor",
+  "pt_BR": "Pergunta onde adicionar o armário: escolher na viewport ou no Cursor 3D"
+ },
+ "O armário já está montado; escolha o ponto de entrada.": {
+  "en_US": "The cabinet is already built; choose the entry point.",
+  "pt_BR": "O armário já está montado; escolha o ponto de entrada."
+ },
+ "Escolher na viewport": {
+  "en_US": "Pick in the viewport",
+  "pt_BR": "Escolher na viewport"
+ },
+ "Cursor 3D": {
+  "en_US": "3D Cursor",
+  "pt_BR": "Cursor 3D"
+ },
+ "Posicionar no Cursor 3D": {
+  "en_US": "Place at 3D Cursor",
+  "pt_BR": "Posicionar no Cursor 3D"
+ },
+ "Coloca o armário na posição do Cursor 3D": {
+  "en_US": "Places the cabinet at the 3D Cursor position",
+  "pt_BR": "Coloca o armário na posição do Cursor 3D"
+ },
+ "Armário: posicionar no cursor 3D": {
+  "en_US": "Cabinet: place at 3D cursor",
+  "pt_BR": "Armário: posicionar no cursor 3D"
+ },
+ "Armário posicionado no Cursor 3D": {
+  "en_US": "Cabinet placed at the 3D Cursor",
+  "pt_BR": "Armário posicionado no Cursor 3D"
+ },
+ "Escolher posição do armário": {
+  "en_US": "Choose cabinet position",
+  "pt_BR": "Escolher posição do armário"
+ },
+ "Escolhe a posição do armário com a caixa de arame acompanhando o mouse": {
+  "en_US": "Chooses the cabinet position with a wire box following the mouse",
+  "pt_BR": "Escolhe a posição do armário com a caixa de arame acompanhando o mouse"
+ },
+ "Não foi possível criar a prévia: {}": {
+  "en_US": "Could not create the preview: {}",
+  "pt_BR": "Não foi possível criar a prévia: {}"
+ },
+ "Mouse: posicionar · setas: orientar · clique: confirmar · Esc: cancelar": {
+  "en_US": "Mouse: place · arrows: rotate · click: confirm · Esc: cancel",
+  "pt_BR": "Mouse: posicionar · setas: orientar · clique: confirmar · Esc: cancelar"
+ },
+ "Armário: posicionar": {
+  "en_US": "Cabinet: place",
+  "pt_BR": "Armário: posicionar"
+ },
+ "Armário posicionado": {
+  "en_US": "Cabinet placed",
+  "pt_BR": "Armário posicionado"
  }
 }

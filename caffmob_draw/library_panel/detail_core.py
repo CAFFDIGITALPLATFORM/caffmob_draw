@@ -17,13 +17,13 @@ AMBIENTES = (('COZ', N_("Cozinha")), ('DOR', N_("Dormitório")), ('BAN', N_("Ban
              ('SAL', N_("Sala")), ('ESC', N_("Home office")))
 CAMPOS = (('width', N_("Largura (mm)")), ('height', N_("Altura (mm)")), ('depth', N_("Profundidade (mm)")))
 
-# Fundo branco moderno do card (o painel continua escuro em volta).
+# Fundo branco do card dentro da janela creme do mockup (feature 025).
 FUNDO = (1.0, 1.0, 1.0, 0.98)
-TINTA = (0.09, 0.10, 0.12, 1.0)
-TINTA_FRACA = (0.42, 0.45, 0.50, 1.0)
-CAMPO = (0.955, 0.965, 0.975, 1.0)
-BORDA = (0.84, 0.86, 0.89, 1.0)
-ERRO = (0.78, 0.15, 0.12, 1.0)
+TINTA = (0.169, 0.102, 0.055, 1.0)          # #2B1A0E
+TINTA_FRACA = (0.478, 0.416, 0.353, 1.0)    # #7A6A5A
+CAMPO = (0.961, 0.937, 0.890, 1.0)          # #F5EFE3
+BORDA = (0.918, 0.867, 0.796, 1.0)          # #EADDCB
+ERRO = (0.706, 0.137, 0.094, 1.0)           # #B42318
 PAD = 18.0
 CARD_H = 360.0
 

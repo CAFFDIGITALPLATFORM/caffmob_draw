@@ -15,6 +15,7 @@ Cascata de submódulos do pacote. Só os módulos que registram algo no Blender 
 - `ponte`: módulo de biblioteca para o spec v2, Gerar e Recriar do módulo (T026)
 - `window`: sessão da janela própria (Image Editor) do construtor (T001)
 - `ops_window`: operadores Abrir/Aplicar/Cancelar/OK da janela própria (T002, T008)
+- `ops_placement`: aviso de onde adicionar, posicionamento no Cursor 3D e escolha com a caixa de arame (025)
 - `panel_window`: painel de 7 abas desenhado na região lateral da janela própria (T006, T007, T011)
 
 Os núcleos puros (`spec`, `vaos`, `chapas`, `conferencia`, `gavetas`, `portas`, `internos`, `resumo`, `corredica`,
@@ -28,8 +29,8 @@ Blender não carrega `bpy`. `unregister()` percorre a mesma tupla ao contrário,
 from importlib import import_module
 
 # Cascata de registro, na ordem de `register()`; desregistro na ordem inversa.
-_MODULES = ('props', 'exibicao', 'anim', 'ops', 'ops_drawer_convert', 'panel', 'menu', 'hud', 'ponte', 'window',
-            'ops_window', 'panel_window')
+_MODULES = ('props', 'exibicao', 'anim', 'ops', 'ops_drawer_convert', 'ops_placement', 'panel', 'menu', 'hud',
+            'ponte', 'window', 'ops_window', 'panel_window')
 
 
 def _modules():

@@ -14,23 +14,25 @@ def hex_rgba(value, alpha=1.0):
 
 
 # Cores ---------------------------------------------------------------------------------------------------------------
-# Feature 021 (T020; RF-10, RN-09): paleta oficial CAFFMob (neutro escuro + laranja CAFF), sem o verde escuro legado.
-SURFACE = hex_rgba("#1A1B1E", 0.96)          # Superfície principal CAFFMob
-SURFACE_RAISED = hex_rgba("#23252A", 0.98)   # Cabeçalho, coluna de filtros
-SURFACE_HOVER = hex_rgba("#2E3138")
-SURFACE_SUNKEN = hex_rgba("#131417")         # Fundo da miniatura, busca, chip da conta
-BORDER = (1.0, 1.0, 1.0, 0.10)
-BORDER_STRONG = (1.0, 1.0, 1.0, 0.22)
-TEXT = hex_rgba("#F2F4F7")
-TEXT_MUTED = hex_rgba("#C4C9D4")
-TEXT_SUBTLE = hex_rgba("#8F96A3")
-ACCENT = hex_rgba("#F07A2A")                 # Laranja CAFF: seleção, aba ativa, ação principal, fixar ligado
-ACCENT_INK = hex_rgba("#1A1B1E")             # Texto sobre o laranja
-ACCENT_TINT = hex_rgba("#F07A2A", 0.18)
-SUCCESS = hex_rgba("#22C55E")                # Baixada, conta conectada
-INFO = hex_rgba("#5BC0FF")                   # Progresso, aviso de rede, espera do login
-ERROR = hex_rgba("#FF6B5E")
-CREAM, ORANGE, BLUE_SPARK = hex_rgba("#FFF4EA"), hex_rgba("#D35400"), hex_rgba("#2EA8F5")   # só no ícone
+# Feature 025: a janela da Biblioteca segue o mockup de 2026-11-26 — Light é o padrão, com a página creme, a
+# janela quente, cartões brancos, texto café e o laranja/teal da identidade. O Dark do mockup fica como referência de
+# tema, mas o desenho atual usa o Light; trocar a paleta aqui muda o painel inteiro (grade, coluna, popover e card).
+SURFACE = hex_rgba("#FFFBF5", 0.98)          # Janela da Biblioteca
+SURFACE_RAISED = hex_rgba("#FFF8EC", 0.99)   # Cabeçalho, coluna de categorias/filtros
+SURFACE_HOVER = hex_rgba("#FFF0DF")          # Hover e seleção suave
+SURFACE_SUNKEN = hex_rgba("#F5EFE3")         # Fundo da miniatura, busca, chip da conta
+BORDER = hex_rgba("#EADDCB")
+BORDER_STRONG = hex_rgba("#DECBB0")
+TEXT = hex_rgba("#2B1A0E")
+TEXT_MUTED = hex_rgba("#7A6A5A")
+TEXT_SUBTLE = hex_rgba("#A89784")
+ACCENT = hex_rgba("#B45309")                 # Laranja CAFF: seleção, aba ativa, ação principal, fixar ligado
+ACCENT_INK = hex_rgba("#FFFFFF")             # Texto sobre o laranja
+ACCENT_TINT = hex_rgba("#B45309", 0.14)
+SUCCESS = hex_rgba("#0E7C74")                # Conta conectada (teal do mockup)
+INFO = hex_rgba("#0E7C74")                   # Progresso, aviso de rede, espera do login
+ERROR = hex_rgba("#B42318")
+CREAM, ORANGE, BLUE_SPARK = hex_rgba("#FFF0DF"), hex_rgba("#B45309"), hex_rgba("#0E7C74")   # só no ícone
 
 # Tipografia (px) -----------------------------------------------------------------------------------------------------
 FONT_SMALL, FONT_LABEL, FONT_BODY, FONT_TITLE, FONT_CODE = 10, 11, 12, 14, 22

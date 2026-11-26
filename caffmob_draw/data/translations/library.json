@@ -878,5 +878,53 @@
  "{} textura(s) deste projeto não estão no catálogo instalado: {}": {
   "pt_BR": "{} textura(s) deste projeto não estão no catálogo instalado: {}",
   "en_US": "{} texture(s) in this project are not in the installed catalog: {}"
+ },
+ "Home office": {
+  "pt_BR": "Home office",
+  "en_US": "Home office"
+ },
+ "Informe medidas maiores que zero": {
+  "pt_BR": "Informe medidas maiores que zero",
+  "en_US": "Enter dimensions greater than zero"
+ },
+ "{} acima do máximo do módulo ({} mm)": {
+  "pt_BR": "{} acima do máximo do módulo ({} mm)",
+  "en_US": "{} above the module maximum ({} mm)"
+ },
+ "A peça de {} × {} mm excede a chapa máxima do padrão ({} × {} mm)": {
+  "pt_BR": "A peça de {} × {} mm excede a chapa máxima do padrão ({} × {} mm)",
+  "en_US": "The {} × {} mm part exceeds the standard's maximum sheet ({} × {} mm)"
+ },
+ "A espessura de {} mm não cabe nas medidas do módulo": {
+  "pt_BR": "A espessura de {} mm não cabe nas medidas do módulo",
+  "en_US": "The {} mm thickness does not fit the module dimensions"
+ },
+ "Ambiente: {}": {
+  "pt_BR": "Ambiente: {}",
+  "en_US": "Environment: {}"
+ },
+ "Espessura da chapa: {} mm": {
+  "pt_BR": "Espessura da chapa: {} mm",
+  "en_US": "Sheet thickness: {} mm"
+ },
+ "Modelo {}: ambiente desconhecido": {
+  "pt_BR": "Modelo {}: ambiente desconhecido",
+  "en_US": "Model {}: unknown environment"
+ },
+ "Não foi possível inserir o módulo": {
+  "pt_BR": "Não foi possível inserir o módulo",
+  "en_US": "Could not insert the module"
+ },
+ "Medida inválida: {}": {
+  "pt_BR": "Medida inválida: {}",
+  "en_US": "Invalid measurement: {}"
+ },
+ "Digitar medida do módulo": {
+  "pt_BR": "Digitar medida do módulo",
+  "en_US": "Type module measurement"
+ },
+ "Digitar a medida do campo escolhido no card do módulo": {
+  "pt_BR": "Digitar a medida do campo escolhido no card do módulo",
+  "en_US": "Type the measurement of the field selected in the module card"
  }
 }

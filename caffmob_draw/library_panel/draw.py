@@ -24,11 +24,11 @@ from . import categories, categories_core, detail_core, draw_kit as kit, grid_co
 
 FONT_SIZE = 11
 # Cores da 012, mantidas para quem as importa; o desenho usa `style` (feature 014).
-BG = (0.13, 0.13, 0.14, 0.95)
-BG_HOVER = (0.25, 0.25, 0.27, 0.96)
-BG_TITLE = (0.20, 0.43, 0.70, 0.98)
+BG = (1.0, 0.984, 0.961, 0.98)              # janela clara do mockup (#FFFBF5)
+BG_HOVER = (1.0, 0.941, 0.875, 0.99)         # #FFF0DF
+BG_TITLE = (0.706, 0.325, 0.035, 0.99)       # #B45309
 BORDER = (1.0, 1.0, 1.0, 0.14)
-TEXT = (0.90, 0.90, 0.90, 1.0)
+TEXT = (0.169, 0.102, 0.055, 1.0)            # #2B1A0E
 
 ASSETS = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "assets")
 LOGO_PATH = os.path.join(ASSETS, "caffmobi_draw_icon.png")
@@ -661,10 +661,10 @@ def _draw_grid(region, lay, state, mouse, viewport, s):
         gpu.state.scissor_set(*previous)
     if content > area[3]:
         ax, ay, aw, ah = area
-        kit.rect(ax + aw - 3 * s, ay, 3 * s, ah, (1.0, 1.0, 1.0, 0.05), 1.5 * s)
+        kit.rect(ax + aw - 3 * s, ay, 3 * s, ah, (0.17, 0.10, 0.05, 0.10), 1.5 * s)
         thumb_h = max(24 * s, ah * ah / content)
         thumb_y = ay + (ah - thumb_h) * (1.0 - scroll / max(1.0, content - ah))
-        kit.rect(ax + aw - 3 * s, thumb_y, 3 * s, thumb_h, (1.0, 1.0, 1.0, 0.22), 1.5 * s)
+        kit.rect(ax + aw - 3 * s, thumb_y, 3 * s, thumb_h, (0.17, 0.10, 0.05, 0.28), 1.5 * s)
 
 
 def _draw_footer(lay, viewport, s):
@@ -678,7 +678,7 @@ def _draw_footer(lay, viewport, s):
                                        "{:.1f}".format(total_mb).replace(".", ","))
     kit.text_centered_y(label, lay.footer, fx + style.SPACE_MD * s, style.FONT_LABEL * s, style.TEXT_MUTED)
     bar_x = fx + 300 * s
-    kit.rect(bar_x, fy + 12 * s, 220 * s, 4 * s, (1.0, 1.0, 1.0, 0.10), 2 * s)
+    kit.rect(bar_x, fy + 12 * s, 220 * s, 4 * s, (0.17, 0.10, 0.05, 0.12), 2 * s)
     kit.rect(bar_x, fy + 12 * s, 220 * s * (received_mb / total_mb if total_mb else 0.0), 4 * s, style.INFO, 2 * s)
     cancel = tr(CANCEL)
     kit.text_centered_y(cancel, lay.footer, fx + fw - style.SPACE_MD * s - kit.width_of(cancel, style.FONT_LABEL * s),

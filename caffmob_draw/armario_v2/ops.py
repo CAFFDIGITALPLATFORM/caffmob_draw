@@ -403,6 +403,13 @@ class BTM_OT_ArmarioV2Aplicar(_ArmarioOperator, bpy.types.Operator):
             return {'CANCELLED'}
         bpy.ops.ed.undo_push(message=tr("Armário: Aplicar"))
         root.btm_armario.snapshot = snapshot_de(root)
+        # Feature 025: depois de aplicar, o armário pergunta onde entra na cena. O aviso é opcional; se a janela
+        # gráfica não estiver disponível (script/--background), o Aplicar continua valendo.
+        try:
+            from . import ops_placement
+            ops_placement.abrir_prompt(context)
+        except Exception as erro:
+            self.report({'WARNING'}, tr("Não foi possível abrir o posicionamento: {}").format(erro))
         return {'FINISHED'}
 
 

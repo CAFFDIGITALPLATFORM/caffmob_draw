@@ -363,6 +363,13 @@ class BTM_OT_ArmarioV2WindowAplicar(_WindowOperator, bpy.types.Operator):
         s.suja = False
         win_mod.gravar_memoria(context.scene, s)
         self.report({'INFO'}, "Estado aplicado: este vira o ponto de retorno do Cancelar")
+        # Feature 025: a janela do construtor também pergunta onde adicionar; o popup abre na Vista 3D principal,
+        # porque a janela 023 é um Image Editor e não tem o plano do piso para o mouse.
+        try:
+            from . import ops_placement
+            ops_placement.abrir_prompt(context)
+        except Exception as erro:
+            self.report({'WARNING'}, tr("Não foi possível abrir o posicionamento: {}").format(erro))
         return {'FINISHED'}
 
 
