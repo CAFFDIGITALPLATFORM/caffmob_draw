@@ -123,3 +123,46 @@ Não há requisito sem decisão nem decisão sem ação.
 - Sanidade: dependências válidas, sem ciclo, sem `[//]` no mesmo arquivo.
 - Provas: 026 23/23; puros 109; i18n 3/3; API 638; smoke OK; UI 9/9; card 38/38.
 - Nenhuma linha da matriz está pendente, bloqueada ou fora de escopo.
+
+## 8. Revisão de paridade do cabeçalho da Biblioteca (2026-11-26, a pedido do titular)
+
+> Gatilho: o titular relatou que a área de **conta** do cabeçalho da Biblioteca não corresponde ao mockup novo
+> (`docs/Caff+Mob+Biblioteca+Mockup.tar.gz`, `App.tsx`) e mostra “ícones que não têm a ver”.
+> Esta seção é a única escrita desta rodada; nenhum requisito, roadmap ou ação foi alterado.
+
+| ID | Severidade | Eixo | Descrição | Onde está |
+|----|------------|------|-----------|-----------|
+| A-01 | MEDIUM | mockup → requisitos | A área de conta desenhada não é a do mockup: lá é um avatar circular com a inicial, nome da empresa, “Conta ativa”, chevron e menu suspenso de 4 itens; no add-on é uma pílula com um ponto de 3,5 px e rótulo truncado, sem avatar, sem menu. Em largura estreita o ponto é tudo o que sobra — na captura do painel vira uma mancha cinza sem significado. | mockup `App.tsx:92–126` × `library_panel/draw.py:432–443`; colapso em `layout_core.py:131` (`SEARCH_MIN`/`CHIP_PAD`) |
+| A-02 | LOW | mockup → requisitos | O mockup troca o tema por uma pílula segmentada **Light \| Dark** com ícones de sol e lua; o add-on usa um glifo único `THEME` (círculo meio preenchido, `draw_kit.py:184–187`), sem rótulo e sem estado legível. | mockup `App.tsx:84–90` × `library_panel/layout_core.py:120–124` + `draw_kit.py:184` |
+| A-03 | MEDIUM | rastreabilidade | Nenhum RF, decisão (D-xx) ou ação (Txxx) da 026 menciona conta, avatar ou menu de conta: o mockup novo entrou no repositório (`7d106a13`) sem virar requisito. A pílula com ponto é contrato da **014** (`mocks/04-login-conta.png`, “● Entrar com a conta CAFF Mob”) e continua como estava — o mockup novo a substitui, mas nada na feature registra a substituição. | `026/requirements.md` (sem “conta”); `014/mocks/04-login-conta.png` |
+
+### 8.1 O que o mockup pede, item por item
+
+| Elemento | Mockup (`App.tsx`) | Estado no add-on |
+|----------|--------------------|------------------|
+| Avatar | círculo teal com inicial + selo verde de “online” (`:97`) | não existe |
+| Nome + subtítulo | nome da empresa e “Conta ativa” (`:96`) | não existe (só `account_email()` ou o texto de login) |
+| Chevron de menu | `ChevronDown` que gira aberto (`:97`) | não existe |
+| Cabeçalho do menu | avatar 56 px, nome planejado e e-mail (`:104–107`) | não existe |
+| Entrar com outra conta | `UserPlus` teal (`:110`) | não existe |
+| Trocar de conta | `RefreshCw` teal (`:111`) | não existe |
+| Gerenciar contas | `Users` teal (`:112`) | não existe |
+| Divisor + Sair | linha e `LogOut` vermelho (`:113–114`) | não existe |
+| Deslogado | pílula teal “Entrar” com avatar “M” e chevron (`:100`) | pílula neutra com ponto + rótulo |
+
+Os demais glifos do cabeçalho (pin, minimizar, fechar) **conferem** com o mockup; a divergência está concentrada na conta
+(A-01) e no tema (A-02).
+
+### 8.2 Viabilidade das ações do menu
+
+- **Implementável hoje:** “Entrar com outra conta” e “Sair” — `texture_library/auth.py` já expõe `start_login()`,
+  `logout()`, `signed_in()`, `account_email()` e o operador `caffmob.texture_login`.
+- **Exige decisão de produto:** “Trocar de conta” e “Gerenciar contas” não têm equivalente no add-on (sessão única, sem
+  multi-conta). O próprio mockup só emite toast “exemplo” nesses dois.
+
+### 8.3 Encaminhamento
+
+A-01/A-02/A-03 são **paridade pendente**, não defeito de código: o código faz o que a 014/026 mandaram. Para fechar, é
+preciso uma feature nova (028 — cabeçalho da Biblioteca igual ao mockup) com RF, decisões e ações próprias, incluindo
+a decisão de §8.2. Enquanto ela não existir, a matriz da 026 continua 14/14 fechada — o que falta está fora do que a
+026 se propôs a entregar.
