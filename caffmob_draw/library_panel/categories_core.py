@@ -17,16 +17,16 @@ LINES = ('COZ', 'DOR', 'BAN', 'SAL', 'ESC')
 LINE_LABELS = {'COZ': N_("Cozinha"), 'DOR': N_("Dormitório"), 'BAN': N_("Banheiro"), 'SAL': N_("Sala"),
                'ESC': N_("Escritório")}
 FIXED = (
-    Category("Cozinha", 'COZ', True),
-    Category("Dormitório", 'DOR', True),
-    Category("Banheiro", 'BAN', True),
-    Category("Sala", 'SAL', True),
-    Category("Home office", 'ESC', True),
+    Category("Armários", 'COZ', True),
+    Category("Armários autorais", 'COZ', True),
 )
 OPENING_CATEGORIES = (
     Category("Portas", 'COZ', True),
     Category("Janelas", 'COZ', True),
 )
+# Ordem do documento da Biblioteca: Armários, Portas, Janelas, Armários autorais. As linhas/ambientes continuam
+# existindo para o card de detalhe; só a navegação principal mudou.
+SIDEBAR_FIXED = (FIXED[0], OPENING_CATEGORIES[0], OPENING_CATEGORIES[1], FIXED[1])
 DEFAULT_LINE = 'COZ'
 SCHEMA_VERSION = 1
 
@@ -37,13 +37,13 @@ INVALID_FILE = N_("Arquivo de categorias inválido; as categorias do usuário fo
 
 
 def all_categories(user):
-    """Fixas e depois as do usuário, na ordem em que foram criadas."""
-    return list(FIXED) + list(user)
+    """Fixas (incluindo Portas/Janelas) e depois as do usuário, na ordem em que foram criadas."""
+    return list(SIDEBAR_FIXED) + list(user)
 
 
 def sidebar_categories(user):
-    """Categorias da coluna lateral da Biblioteca (ambientes fixos, Portas, Janelas e categorias do usuário)."""
-    return list(FIXED) + list(OPENING_CATEGORIES) + list(user)
+    """Categorias da coluna lateral da Biblioteca na ordem do documento, depois as do usuário."""
+    return list(SIDEBAR_FIXED) + list(user)
 
 
 def _key(name):

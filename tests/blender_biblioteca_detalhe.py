@@ -44,7 +44,7 @@ def run_checks():
     except Exception:
         pass
     STATE = bpy.context.window_manager.btm_library
-    STATE.tab, STATE.category, STATE.search, STATE.scroll = 'BLOCKS', "Cozinha", "", 0.0
+    STATE.tab, STATE.category, STATE.search, STATE.scroll = 'BLOCKS', "Armários", "", 0.0
     STATE.mode, STATE.pinned, STATE.rect = 'MAX', True, (0.0, 0.0, 0.0, 0.0)
 
     entries = draw.grid_entries(STATE)
@@ -54,13 +54,13 @@ def run_checks():
         return
     ALVO.update(target)
 
-    # Filtro de acervo por ambiente segue íntegro (entrega anterior).
-    cozinha = {e["name"] for e in draw.grid_entries(STATE)}
-    STATE.category = "Banheiro"
-    banheiro = {e["name"] for e in draw.grid_entries(STATE)}
-    STATE.category = "Cozinha"
-    check("filtro por ambiente intacto", "Gabinete de banheiro" in banheiro and not (cozinha & banheiro),
-          str(sorted(cozinha & banheiro)))
+    # Feature 026: a navegação tem as quatro categorias do documento e elas filtram o acervo.
+    armarios = {e["name"] for e in draw.grid_entries(STATE)}
+    STATE.category = "Portas"
+    portas = {e["name"] for e in draw.grid_entries(STATE)}
+    STATE.category = "Armários"
+    check("categorias do documento filtram o acervo", bool(armarios) and not (armarios & portas),
+          str(sorted(armarios & portas)))
 
     abriu = ops_detail.abrir(bpy.context, draw.entry_key(target))
     check("clique no módulo abre o card", abriu and STATE.detail_open)
@@ -162,7 +162,7 @@ def capture_and_confirm():
         check("arraste usa ambiente do card", cab.line == 'SAL', cab.line)
 
     # Preset sem variação: confirma com os valores do catálogo e continua inserindo.
-    STATE.tab, STATE.category, STATE.search, STATE.scroll = 'BLOCKS', "Cozinha", "", 0.0
+    STATE.tab, STATE.category, STATE.search, STATE.scroll = 'BLOCKS', "Armários", "", 0.0
     preset = next((e for e in draw.grid_entries(STATE)
                    if e.get('kind') == 'PRESET' and not e.get('right_width_mm')
                    and e.get('corner_kind') in ('', 'NONE', None)), None)

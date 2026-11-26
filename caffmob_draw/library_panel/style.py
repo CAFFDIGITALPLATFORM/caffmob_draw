@@ -60,5 +60,35 @@ CHIP_PAD = 30.0                              # ponto de estado + respiro do chip
 MAXIMIZE_W = 26.0                            # espaço do botão de maximizar no rótulo
 LABEL_LOGO = 22.0                            # ícone CAFF MOBI DRAW (16 px) antes do texto do rótulo
 
+# Temas (feature 026) ------------------------------------------------------------------------------------------------
+# Light é o padrão do pacote. O Dark usa os tokens do documento de requisitos; `aplicar_tema` troca os globais, e
+# `draw_panel` aplica o tema da sessão antes de desenhar. O dicionário LIGHT é uma cópia dos valores acima.
+_THEME_NAMES = ('SURFACE', 'SURFACE_RAISED', 'SURFACE_HOVER', 'SURFACE_SUNKEN', 'BORDER', 'BORDER_STRONG', 'TEXT',
+                'TEXT_MUTED', 'TEXT_SUBTLE', 'ACCENT', 'ACCENT_INK', 'ACCENT_TINT', 'SUCCESS', 'INFO', 'ERROR',
+                'CREAM', 'ORANGE', 'BLUE_SPARK')
+LIGHT = {name: globals()[name] for name in _THEME_NAMES}
+DARK = {
+    'SURFACE': hex_rgba("#1B1B1B", 0.98), 'SURFACE_RAISED': hex_rgba("#242424", 0.99),
+    'SURFACE_HOVER': hex_rgba("#332A22"), 'SURFACE_SUNKEN': hex_rgba("#161616"),
+    'BORDER': hex_rgba("#3A342E"), 'BORDER_STRONG': hex_rgba("#51463B"),
+    'TEXT': hex_rgba("#F5F0E8"), 'TEXT_MUTED': hex_rgba("#C9BFB2"), 'TEXT_SUBTLE': hex_rgba("#9A8F82"),
+    'ACCENT': hex_rgba("#F59E0B"), 'ACCENT_INK': hex_rgba("#1B1206"), 'ACCENT_TINT': hex_rgba("#F59E0B", 0.18),
+    'SUCCESS': hex_rgba("#2DD4BF"), 'INFO': hex_rgba("#2DD4BF"), 'ERROR': hex_rgba("#F87171"),
+    'CREAM': hex_rgba("#332A22"), 'ORANGE': hex_rgba("#F59E0B"), 'BLUE_SPARK': hex_rgba("#2DD4BF"),
+}
+TEMA = 'LIGHT'
+MIN_TOUCH = 44.0                 # alvo mínimo do documento; o desenho pode ser menor, a área de clique não
+
+
+def aplicar_tema(tema):
+    """Troca os tokens do painel para LIGHT/DARK e devolve o tema aplicado."""
+    global TEMA
+    escolhido = tema if tema in ('LIGHT', 'DARK') else 'LIGHT'
+    for nome, valor in (LIGHT if escolhido == 'LIGHT' else DARK).items():
+        globals()[nome] = valor
+    TEMA = escolhido
+    return escolhido
+
+
 # Tempos (s) ----------------------------------------------------------------------------------------------------------
 HOVER_TIME, OPEN_TIME = 0.12, 0.16

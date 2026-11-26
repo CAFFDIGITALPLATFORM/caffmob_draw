@@ -113,7 +113,7 @@ def offer_groups():
 
 
 def items(context):
-    names = [c.name for c in categories.all_categories()]
+    names = [c.name for c in categories.sidebar_categories()]
     return [(key, tr(label)) for key, label in layout_core.menu_items(names, offer_groups())]
 
 
@@ -276,21 +276,42 @@ def block_entries(state):
         found = categories.find(name)
         line = found.line if found is not None else categories_core.DEFAULT_LINE
         models, _warnings = models_core.load_default()
-        models = models_core.by_environment(models, line)      # 032: cada ambiente com o seu acervo
-        for m in models:
-            width, height, z = _model_size(line, m.cabinet_type)
-            entries.append({"id": "BLK:MODEL:" + m.id, "name": tr(m.label), "kind": 'MODEL', "model": m.id, "line": line,
-                            "thumb_file": "", "cabinet_type": m.cabinet_type, "door_swing": m.door_swing,
-                            "shelves": m.shelves, "size_mm": (m.width_mm or width, height, z)})
-        presets, _pw = models_core.load_presets()
-        presets = models_core.by_environment(presets, line)
-        for m in presets:
-            width, height, z = _model_size(line, m.cabinet_type)
-            entries.append({"id": "BLK:PRESET:" + m.id, "name": tr(m.label), "kind": 'PRESET', "model": m.id,
-                            "line": line, "thumb_file": "", "cabinet_type": m.cabinet_type, "door_swing": m.door_swing,
-                            "shelves": m.shelves, "drawers": m.drawers, "corner_kind": m.corner_kind,
-                            "right_width_mm": m.right_width_mm, "size_mm": (m.width_mm or width, height, z)})
-        entries += _module_entries(name)
+        # Feature 026: "Armários" é a categoria de todos os armários do documento; as demais continuam
+        # filtrando pelo ambiente/linha da categoria (Portas/Janelas usam o caminho de aberturas acima).
+        if name == "Armários":
+            for m in models:
+                width, height, z = _model_size(line, m.cabinet_type)
+                entries.append({"id": "BLK:MODEL:" + m.id, "name": tr(m.label), "kind": 'MODEL', "model": m.id,
+                                "line": line, "thumb_file": "", "cabinet_type": m.cabinet_type,
+                                "door_swing": m.door_swing, "shelves": m.shelves,
+                                "size_mm": (m.width_mm or width, height, z)})
+            presets, _pw = models_core.load_presets()
+            for m in presets:
+                width, height, z = _model_size(line, m.cabinet_type)
+                entries.append({"id": "BLK:PRESET:" + m.id, "name": tr(m.label), "kind": 'PRESET',
+                                "model": m.id, "line": line, "thumb_file": "", "cabinet_type": m.cabinet_type,
+                                "door_swing": m.door_swing, "shelves": m.shelves, "drawers": m.drawers,
+                                "corner_kind": m.corner_kind, "right_width_mm": m.right_width_mm,
+                                "size_mm": (m.width_mm or width, height, z)})
+            entries += _module_entries(name)
+        else:
+            models = models_core.by_environment(models, line)
+            for m in models:
+                width, height, z = _model_size(line, m.cabinet_type)
+                entries.append({"id": "BLK:MODEL:" + m.id, "name": tr(m.label), "kind": 'MODEL', "model": m.id,
+                                "line": line, "thumb_file": "", "cabinet_type": m.cabinet_type,
+                                "door_swing": m.door_swing, "shelves": m.shelves,
+                                "size_mm": (m.width_mm or width, height, z)})
+            presets, _pw = models_core.load_presets()
+            presets = models_core.by_environment(presets, line)
+            for m in presets:
+                width, height, z = _model_size(line, m.cabinet_type)
+                entries.append({"id": "BLK:PRESET:" + m.id, "name": tr(m.label), "kind": 'PRESET',
+                                "model": m.id, "line": line, "thumb_file": "", "cabinet_type": m.cabinet_type,
+                                "door_swing": m.door_swing, "shelves": m.shelves, "drawers": m.drawers,
+                                "corner_kind": m.corner_kind, "right_width_mm": m.right_width_mm,
+                                "size_mm": (m.width_mm or width, height, z)})
+            entries += _module_entries(name)
     text = state.search.strip().casefold()
     return [e for e in entries if text in e["name"].casefold()] if text else entries
 
@@ -645,9 +666,10 @@ def _draw_grid(region, lay, state, mouse, viewport, s):
     if warnings:
         kit.text(tr(warnings[0]), area[0] + 4 * s, area[1] + area[3] + 4 * s,
                  style.FONT_SMALL * s, style.TEXT, max_w=area[2])
-    content = grid_core.content_height(area[2], len(entries), s)
+    fixed = 2 if blocks else 0
+    content = grid_core.content_height(area[2], len(entries), s, fixed)
     scroll = grid_core.clamp_scroll(state.scroll, content, area[3])
-    cells = grid_core.visible_cells(area, len(entries), s, scroll)
+    cells = grid_core.visible_cells(area, len(entries), s, scroll, fixed)
     hovered = grid_core.hit_cell(cells, *mouse)
     previous = _clip(region, (area[0] - 6 * s, area[1], area[2] + 12 * s, area[3] + 6 * s))
     try:
@@ -758,6 +780,7 @@ def draw_panel():
     state = getattr(context.window_manager, 'btm_library', None)
     if state is None:
         return
+    style.aplicar_tema(getattr(state, 'theme', 'LIGHT'))
     mouse = _mouse['pos'] if _mouse['region'] == region.as_pointer() else (-1, -1)
     viewport = (region.width, region.height)
     try:

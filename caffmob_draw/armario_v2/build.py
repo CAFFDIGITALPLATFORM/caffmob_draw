@@ -690,6 +690,24 @@ def gerar(root, spec, divisoes=(), lista_gavetas=(), lista_internos=()):
                 objeto.location.y += ajuste.dy
                 objeto.location.z += ajuste.dz
             objetos.append(objeto)
-    if getattr(root, 'btm_armario', None) is not None:
-        root.btm_armario.gerado = True
+    # Feature 026: duplicata manual de uma peça. O ajuste guarda o uid/nome de origem; o Gerar recria a peça e
+    # acrescenta uma cópia deslocada, em vez de perder a duplicata na próxima geração.
+    armario = getattr(root, 'btm_armario', None)
+    if armario is not None:
+        for ajuste in armario.ajustes:
+            if not ajuste.duplicada:
+                continue
+            origem = next((obj for obj in objetos if getattr(obj, 'btm_armario_parte', None) is not None
+                           and obj.btm_armario_parte.uid == ajuste.uid and obj.name == ajuste.nome), None)
+            if origem is None:
+                continue
+            copia = origem.copy()
+            copia.data = origem.data.copy()
+            destino.objects.link(copia)
+            copia.parent = root
+            copia.matrix_parent_inverse = Matrix.Identity(4)
+            copia.name = origem.name + " (cópia)"
+            copia.location.x += 0.02
+            objetos.append(copia)
+        armario.gerado = True
     return objetos

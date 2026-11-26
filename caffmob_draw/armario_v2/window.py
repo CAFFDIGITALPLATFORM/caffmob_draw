@@ -26,7 +26,10 @@ from . import selecao
 MEMORIA_CHAVE = "caffmob_armario_v2_janela"
 ABAS = ('ESTRUTURA', 'DIVISOES', 'GAVETAS', 'INTERNOS', 'PORTAS', 'DESLIZANTES', 'FUNDOS')
 ABA_PADRAO = 'ESTRUTURA'
+VISTAS = ('SPLIT', 'FRONTAL', 'LATERAL')
+TEMAS = ('LIGHT', 'DARK')
 DELTA_LOTE = 10.0           # mm por toque nas ações de mover
+ARRASTE_MIN_PX = 3.0        # abaixo disso o clique continua sendo clique
 
 
 class JanelaSessao:
@@ -49,6 +52,12 @@ class JanelaSessao:
         self.aba = ABA_PADRAO       # aba ativa da janela (persistida por cena, RN-07)
         self.mostrar_cotas = True
         self.mostrar_portas = True
+        self.vista = 'SPLIT'        # SPLIT, FRONTAL ou LATERAL (toolbar do mockup)
+        self.tema = 'LIGHT'         # LIGHT/DARK do preview (o chrome nativo segue o tema do Blender)
+        self.apenas_laterais = False
+        self.escala_frontal = 1.0
+        self.escala_lateral = 1.0
+        self.deslocamento_frontal = 0.0
 
 
 _sessao = [None]
@@ -232,6 +241,31 @@ def _ajuste_de(root, obj):
     ajuste = armario.ajustes.add()
     ajuste.uid, ajuste.nome, ajuste.papel = parte.uid, obj.name, parte.papel
     return ajuste
+
+
+def registrar_movimento(root, obj, dx_mm, dz_mm, dy_mm=0.0):
+    """Grava no armário o deslocamento já aplicado ao objeto (arraste), para o Gerar reaplicar."""
+    if root is None or obj is None:
+        return False
+    ajuste = _ajuste_de(root, obj)
+    if ajuste is None:
+        return False
+    ajuste.removida = False
+    ajuste.dx += float(dx_mm)
+    ajuste.dy += float(dy_mm)
+    ajuste.dz += float(dz_mm)
+    return True
+
+
+def registrar_duplicata(root, obj):
+    """Marca a peça duplicada para o Gerar recriar a cópia depois de regenerar o spec."""
+    if root is None or obj is None:
+        return False
+    ajuste = _ajuste_de(root, obj)
+    if ajuste is None:
+        return False
+    ajuste.duplicada = True
+    return True
 
 
 def aplicar_lote(root, s, acao, delta=DELTA_LOTE):

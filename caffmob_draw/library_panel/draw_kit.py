@@ -181,6 +181,10 @@ def icon(name, x, y, size, color, viewport):
         line([(11, 3), (3, 11)], 1.6)
     elif name == 'MAXIMIZE':
         line([(3, 3), (11, 3), (11, 11), (3, 11), (3, 3)])
+    elif name == 'THEME':
+        line([(7, 2), (7, 12)], 1.4)
+        line([(2.5, 4.5), (2.5, 9.5), (7, 12), (7, 2), (2.5, 4.5)], 1.2)
+        line([(11.5, 4.5), (11.5, 9.5), (7, 12), (7, 2), (11.5, 4.5)], 1.2)
     elif name == 'SEARCH':
         line([(6 + 4 * math.cos(a * math.pi / 8), 8 + 4 * math.sin(a * math.pi / 8)) for a in range(17)])
         line([(9, 5), (12, 2)], 1.6)

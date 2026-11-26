@@ -1,0 +1,6 @@
+{"ts":"2026-11-26T00:00:00Z","feature":"026","event":"requirements","status":"done"}
+{"ts":"2026-11-26T00:00:00Z","feature":"026","event":"roadmap","status":"done"}
+{"ts":"2026-11-26T00:00:00Z","feature":"026","event":"actions","status":"done"}
+{"ts":"2026-11-26T00:00:00Z","feature":"026","event":"coding","status":"done","actions":"12/12"}
+{"ts":"2026-11-26T00:00:00Z","feature":"026","event":"tests","status":"done","detail":"026 23/23; 025 16/16; 023 36/36; 012 9/9; card 38/38; puros 109; i18n 3/3; API 638; smoke OK"}
+{"ts":"2026-11-26T00:00:00Z","feature":"026","event":"audit","status":"done","findings":{"critical":0,"high":0,"medium":0,"low":0}}

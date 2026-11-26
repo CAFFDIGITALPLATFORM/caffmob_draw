@@ -1,5 +1,31 @@
 # Changelog do CAFFMob Draw
 
+## 1.35.0 — 2026-11-26
+
+### Paridade restante do Construtor e padrão completo da Biblioteca (026)
+
+- **Toolbar completa** na janela 023: montagem, limpeza, vistas dividida/frontal/lateral, cotas, portas,
+  abrir/fechar tudo, **Apenas Laterais**, plano de corte, export JSON, tema e painel lateral (N restaura).
+- **Titlebar** com dimensões, contrato de chapas, export e tema; **sete abas em uma linha horizontal**.
+- **Export JSON + cutlist** com schema `caffmob.armario.v1`, spec, peças e grupos agregados; o painel de peças
+  exporta o mesmo payload.
+- **Menu de contexto** (botão direito) com duplicar, medida, espelhar e apagar. A duplicata grava
+  `ajustes.duplicada` e **sobrevive ao Gerar**.
+- **Popover de medida** (largura/altura/profundidade) e **arraste de peças** por press→move→release, com ajuste
+  dx/dy/dz e limite de 3 px para não confundir com clique.
+- **Apenas Laterais** liga as duas laterais, desliga base/fundo e gera somente chapas `LATERAL`.
+- **Light/Dark** no preview: as cores das peças passam a ser lidas em tempo de desenho; a Biblioteca ganhou tokens
+  Dark e botão de tema.
+- **Biblioteca**: categorias do documento (**Armários, Portas, Janelas, Armários autorais**), “Armários” com todo o
+  acervo, grade de Blocos **2×3** e alvo de toque mínimo de **44 px** no cabeçalho.
+- Provas: `blender_026_parity` **23/23**, `blender_025_place` **16/16**, `blender_023_fase7` **36/36**, UI 012
+  **9/9**, card **38/38**, puros **109**, i18n **3/3** (36 chaves novas), `check_api.py` 638 arquivos, smoke OK.
+- Auditoria 026 em `_reversa_forward/026-paridade-total-construtor-biblioteca/audit/cross-check.md`: 0/0/0/0.
+
+### Como a numeração foi calculada
+
+`1.34.0 + 1 recurso novo de paridade = 1.35.0` (minor).
+
 ## 1.34.0 — 2026-11-26
 
 ### Criação e posicionamento do armário v2 (025)

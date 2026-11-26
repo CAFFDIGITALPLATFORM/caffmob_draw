@@ -75,17 +75,17 @@ def script():
     with ctx.temp_override(window=win, area=area, region=region):
         lay = lib_draw.layout(bpy.context, area, region)
     keys = [key for key, _rect in lay.items]
-    check("ordem: Criar armário, categorias, Criar categoria",
-          keys[:6] == ['CREATE_CABINET', 'CAT:Cozinha', 'CAT:Dormitório', 'CAT:Banheiro', 'CAT:Sala',
-                       'CAT:Home office'] and keys[-1] == 'CREATE_CATEGORY', str(keys))
+    check("ordem: Criar armário, categorias do documento, Criar categoria",
+          keys[:6] == ['CREATE_CABINET', 'CAT:Armários', 'CAT:Portas', 'CAT:Janelas',
+                       'CAT:Armários autorais', 'CREATE_CATEGORY'] and keys[-1] == 'CREATE_CATEGORY', str(keys))
 
-    rect = dict(lay.items)['CAT:Cozinha']
+    rect = dict(lay.items)['CAT:Armários']
     yield from click(win, *center(region, rect))
     yield 0.3
     # Feature 014 (T040): a categoria abre na grade do retângulo maximizado, aba Blocos (o popover fica de reserva).
     check("categoria abre a grade da categoria pelo keymap (014, T040)", state.mode == 'MAX' and state.tab == 'BLOCKS'
-          and state.category == "Cozinha", f"{state.mode} {state.tab} {state.category}")
-    check("categoria grava a linha", state.category == "Cozinha" and state.line == 'COZ',
+          and state.category == "Armários", f"{state.mode} {state.tab} {state.category}")
+    check("categoria grava a linha", state.category == "Armários" and state.line == 'COZ',
           f"{state.category} {state.line}")
     ev(win, 'ESC', 'PRESS', region.x + 30, region.y + 30)
     ev(win, 'ESC', 'RELEASE', region.x + 30, region.y + 30)

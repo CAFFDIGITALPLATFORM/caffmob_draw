@@ -191,6 +191,7 @@ class BTM_PG_ArmarioAjuste(bpy.types.PropertyGroup):
     dz: bpy.props.FloatProperty(subtype='DISTANCE', unit='LENGTH', default=0.0)  # type: ignore
     espelho_x: bpy.props.BoolProperty(default=False)  # type: ignore
     removida: bpy.props.BoolProperty(default=False)  # type: ignore
+    duplicada: bpy.props.BoolProperty(default=False)  # type: ignore
 
 
 # Spec do armário -------------------------------------------------------------------------------------------------

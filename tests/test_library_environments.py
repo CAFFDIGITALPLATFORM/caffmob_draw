@@ -58,9 +58,11 @@ class EnvironmentsTest(unittest.TestCase):
         self.assertEqual([model.id for model in models], ["certo"])
         self.assertEqual(len(warnings), 1)
 
-    def test_dormitorio_e_categoria_fixa(self):
-        fixed = {category.name: category.line for category in cc.FIXED}
-        self.assertEqual(fixed.get("Dormitório"), 'DOR')
+    def test_categorias_do_documento_da_biblioteca(self):
+        """Feature 026: a navegação segue o documento — Armários, Portas, Janelas, Armários autorais."""
+        sidebar = [category.name for category in cc.sidebar_categories([])]
+        self.assertEqual(sidebar[:4], ["Armários", "Portas", "Janelas", "Armários autorais"])
+        self.assertEqual(cc.LINE_LABELS['DOR'], "Dormitório")   # o ambiente continua no card de detalhe
 
 
 if __name__ == "__main__":

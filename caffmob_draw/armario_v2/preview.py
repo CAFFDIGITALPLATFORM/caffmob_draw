@@ -31,6 +31,38 @@ COR_MUTED = (0.373, 0.420, 0.478, 1.0)      # #5f6b7a
 COR_FERRAGEM = (0.612, 0.639, 0.686, 1.0)   # #9ca3af
 COR_SELECAO = (0.984, 0.749, 0.141, 1.0)    # #fbbf24
 
+# Tema do preview (o chrome nativo do Blender não é repintado por add-on; o mockup Light/Dark vale para a área
+# desenhada, que é o preview). O Light é o padrão do pacote da Biblioteca e do mockup do construtor.
+PALETAS = {
+    'LIGHT': {},
+    'DARK': {
+        'COR_BG': (0.086, 0.086, 0.086, 1.0),          # #161616
+        'COR_SURFACE': (0.122, 0.122, 0.122, 1.0),     # #1f1f1f
+        'COR_ACCENT': (0.851, 0.467, 0.024, 1.0),      # #d97706
+        'COR_WOOD_FILL': (0.478, 0.353, 0.227, 1.0),
+        'COR_WOOD_STROKE': (0.788, 0.627, 0.416, 1.0),
+        'COR_WOOD_DARK': (0.353, 0.255, 0.157, 1.0),
+        'COR_FRONT_FILL': (0.541, 0.416, 0.282, 1.0),
+        'COR_BACK_FILL': (0.290, 0.227, 0.165, 1.0),
+        'COR_GRID_LINE': (0.200, 0.200, 0.200, 1.0),
+        'COR_TEXTO': (0.961, 0.941, 0.910, 1.0),      # #f5f0e8
+        'COR_MUTED': (0.659, 0.635, 0.620, 1.0),       # #a8a29e
+        'COR_FERRAGEM': (0.400, 0.400, 0.400, 1.0),
+        'COR_SELECAO': (0.984, 0.749, 0.141, 1.0),
+    },
+}
+PALETAS['LIGHT'] = {nome: globals()[nome] for nome in (
+    'COR_BG', 'COR_SURFACE', 'COR_ACCENT', 'COR_WOOD_FILL', 'COR_WOOD_STROKE', 'COR_WOOD_DARK', 'COR_FRONT_FILL',
+    'COR_BACK_FILL', 'COR_GRID_LINE', 'COR_TEXTO', 'COR_MUTED', 'COR_FERRAGEM', 'COR_SELECAO')}
+
+
+def aplicar_tema(tema):
+    """Troca os tokens do preview para LIGHT/DARK; devolve o tema aplicado."""
+    escolhido = tema if tema in PALETAS else 'LIGHT'
+    for nome, valor in PALETAS[escolhido].items():
+        globals()[nome] = valor
+    return escolhido
+
 # Cor de cada papel de chapa no preview.
 CORES = {
     'LATERAL': COR_WOOD_STROKE,
@@ -118,6 +150,16 @@ def _grade(shader, x0, y0, largura, altura, passo):
     batch.draw(shader)
 
 
+def _cor_do_papel(papel):
+    """Cor do papel lida dos tokens atuais (o tema Light/Dark troca os globais em `aplicar_tema`)."""
+    return {
+        'LATERAL': COR_WOOD_STROKE, 'BASE_INF': COR_WOOD_STROKE, 'BASE_SUP': COR_WOOD_STROKE,
+        'DIVISORIA': COR_WOOD_DARK, 'PRATELEIRA': COR_WOOD_FILL, 'FUNDO': COR_BACK_FILL,
+        'CONTRA_FRENTE': COR_WOOD_DARK, 'PECA_TRAS': COR_WOOD_DARK, 'FRENTE_GAVETA': COR_FRONT_FILL,
+        'SEPARADOR': COR_WOOD_FILL, 'AFASTADOR': COR_WOOD_FILL, 'PORTA': COR_FRONT_FILL, 'FOLHA': COR_FRONT_FILL,
+    }.get(papel, COR_WOOD_FILL)
+
+
 def _vista(shader, pecas, caixa, eixo, deslocamento, escala, vista, chaves=()):
     """Fundo, grade e peças de uma vista; devolve os retângulos desenhados (para o clique escolher a peça)."""
     x0, y0, largura, altura = caixa
@@ -132,7 +174,7 @@ def _vista(shader, pecas, caixa, eixo, deslocamento, escala, vista, chaves=()):
                                                                                  ay1 + deslocamento)
         if fim - inicio <= 0.0 or az1 - az0 <= 0.0:
             continue
-        cor = COR_FERRAGEM if peca.get('ferragem') else CORES.get(peca['papel'], COR_WOOD_FILL)
+        cor = COR_FERRAGEM if peca.get('ferragem') else _cor_do_papel(peca['papel'])
         px0, py0 = x0 + inicio * escala, y0 + az0 * escala
         px1, py1 = x0 + fim * escala, y0 + az1 * escala
         _retangulo(shader, px0, py0, px1, py1, cor)
@@ -166,8 +208,13 @@ def desenhar_preview(region, raiz, area=None, sessao=None):
     if spec is None:
         return
 
+    tema = aplicar_tema(getattr(sessao, 'tema', 'LIGHT'))
+    if sessao is not None:
+        sessao.tema = tema
     if sessao is not None and not sessao.mostrar_portas:
         pecas = [p for p in pecas if p['papel'] not in PAPEIS_PORTA]
+    if sessao is not None and getattr(sessao, 'apenas_laterais', False):
+        pecas = [p for p in pecas if p['papel'] == 'LATERAL']
     pecas = sorted(pecas, key=lambda p: PRIORIDADE.get(p['papel'], 9))
 
     shader = gpu.shader.from_builtin('UNIFORM_COLOR')
@@ -180,7 +227,13 @@ def desenhar_preview(region, raiz, area=None, sessao=None):
     _retangulo(shader, 0.0, 0.0, float(region.width), altura_area, COR_BG)
 
     margem = 18.0
-    meio = (largura_area - 3.0 * margem) / 2.0
+    vista = getattr(sessao, 'vista', 'SPLIT') if sessao is not None else 'SPLIT'
+    mostrar_f = vista in ('SPLIT', 'FRONTAL')
+    mostrar_l = vista in ('SPLIT', 'LATERAL')
+    if mostrar_f and mostrar_l:
+        meio = (largura_area - 3.0 * margem) / 2.0
+    else:
+        meio = largura_area - 2.0 * margem
     if meio <= 0.0:
         return
     util_altura = altura_area - 2.0 * margem
@@ -191,27 +244,41 @@ def desenhar_preview(region, raiz, area=None, sessao=None):
         chaves = {(unico.get('nome'), unico.get('vista'))} if unico else set()
 
     # ---- Elevação frontal (X × Z): o X da peça entra centrado na largura ----
-    escala_f = min(meio / max(1.0, spec.largura), util_altura / max(1.0, spec.altura))
-    largura_f, altura_f = spec.largura * escala_f, spec.altura * escala_f
-    ox_f, oy_f = margem, altura_area - margem - altura_f
-    hits = _vista(shader, pecas, (ox_f, oy_f, largura_f, altura_f), 'x', spec.largura / 2.0, escala_f,
-                  'FRONTAL', chaves)
-    _rotulo(tr("Frontal"), ox_f, oy_f + altura_f + 5.0, COR_ACCENT, 12)
+    hits = []
+    ox_f = margem
+    oy_f = altura_area - margem
+    escala_f = 1.0
+    if mostrar_f:
+        escala_f = min(meio / max(1.0, spec.largura), util_altura / max(1.0, spec.altura))
+        largura_f, altura_f = spec.largura * escala_f, spec.altura * escala_f
+        ox_f, oy_f = margem, altura_area - margem - altura_f
+        hits += _vista(shader, pecas, (ox_f, oy_f, largura_f, altura_f), 'x', spec.largura / 2.0, escala_f,
+                       'FRONTAL', chaves)
+        _rotulo(tr("Frontal"), ox_f, oy_f + altura_f + 5.0, COR_ACCENT, 12)
 
     # ---- Corte lateral (Y × Z): Y da frente (−profundidade) para trás (0), a frente à esquerda ----
-    escala_l = min(meio / max(1.0, spec.profundidade), util_altura / max(1.0, spec.altura))
-    largura_l, altura_l = spec.profundidade * escala_l, spec.altura * escala_l
-    ox_l, oy_l = largura_area - margem - largura_l, altura_area - margem - altura_l
-    hits += _vista(shader, pecas, (ox_l, oy_l, largura_l, altura_l), 'y', spec.profundidade, escala_l,
-                   'LATERAL', chaves)
-    _rotulo(tr("Corte Lateral"), ox_l, oy_l + altura_l + 5.0, COR_ACCENT, 12)
+    ox_l = margem
+    oy_l = altura_area - margem
+    escala_l = 1.0
+    if mostrar_l:
+        escala_l = min(meio / max(1.0, spec.profundidade), util_altura / max(1.0, spec.altura))
+        largura_l, altura_l = spec.profundidade * escala_l, spec.altura * escala_l
+        ox_l = margem if not mostrar_f else largura_area - margem - largura_l
+        oy_l = altura_area - margem - altura_l
+        hits += _vista(shader, pecas, (ox_l, oy_l, largura_l, altura_l), 'y', spec.profundidade, escala_l,
+                       'LATERAL', chaves)
+        _rotulo(tr("Corte Lateral"), ox_l, oy_l + altura_l + 5.0, COR_ACCENT, 12)
 
     if sessao is not None:
         sessao.hits = hits
+        sessao.escala_frontal = escala_f
+        sessao.escala_lateral = escala_l
         if sessao.mostrar_cotas:
-            _rotulo(tr("{} × {} mm").format(f"{spec.largura:g}", f"{spec.altura:g}"), ox_f, oy_f - 14.0,
-                    COR_MUTED, 11)
-            _rotulo(tr("{} mm").format(f"{spec.profundidade:g}"), ox_l, oy_l - 14.0, COR_MUTED, 11)
+            if mostrar_f:
+                _rotulo(tr("{} × {} mm").format(f"{spec.largura:g}", f"{spec.altura:g}"), ox_f, oy_f - 14.0,
+                        COR_MUTED, 11)
+            if mostrar_l:
+                _rotulo(tr("{} mm").format(f"{spec.profundidade:g}"), ox_l, oy_l - 14.0, COR_MUTED, 11)
 
     # Empty state do mockup: nenhuma chapa da caixa ligada.
     if not tem_estrutura(spec):

@@ -97,7 +97,7 @@ def bounds(layout):
 # ---------------------------------------------------------------------------------------------------------------------
 
 MaxLayout = namedtuple('MaxLayout', 'rect header logo title tabs search account buttons body sidebar grid footer compact')
-BUTTON_KEYS = ('CLOSE', 'MINIMIZE', 'PIN')        # da direita para a esquerda no cabeçalho
+BUTTON_KEYS = ('CLOSE', 'MINIMIZE', 'PIN', 'THEME')        # da direita para a esquerda no cabeçalho
 
 
 def max_layout(rect, scale, text_width, tabs, account_label, footer=False):
@@ -143,6 +143,16 @@ def max_layout(rect, scale, text_width, tabs, account_label, footer=False):
     return MaxLayout(rect, header, logo, title, tab_rects, search, account, buttons, body, sidebar, grid, foot, compact)
 
 
+def _touch(rect, px, py, scale):
+    """Alvo de toque mínimo de 44 px (documento da Biblioteca), sem mudar o tamanho desenhado."""
+    x, y, w, h = rect
+    alvo = style.MIN_TOUCH * float(scale)
+    if w >= alvo and h >= alvo:
+        return _inside(px, py, rect)
+    cx, cy = x + w / 2.0, y + h / 2.0
+    return abs(px - cx) <= alvo / 2.0 and abs(py - cy) <= alvo / 2.0
+
+
 def hit_max(layout, px, py, scale):
     """Parte do retângulo sob o ponto: borda ('LEFT', 'RIGHT', 'TOP', 'BOTTOM'), botão ('CLOSE', 'MINIMIZE', 'PIN'),
     'TAB:<chave>', 'SEARCH', 'ACCOUNT', 'HEADER', 'FOOTER', 'SIDEBAR', 'GRID', 'BODY' ou None (fora)."""
@@ -152,10 +162,10 @@ def hit_max(layout, px, py, scale):
     if region in ('LEFT', 'RIGHT', 'TOP', 'BOTTOM'):
         return region
     for key, rect in layout.buttons:
-        if _inside(px, py, rect):
+        if _touch(rect, px, py, scale):
             return key
     for key, rect in layout.tabs:
-        if _inside(px, py, rect):
+        if _touch(rect, px, py, scale):
             return 'TAB:' + key
     if _inside(px, py, layout.search):
         return 'SEARCH'

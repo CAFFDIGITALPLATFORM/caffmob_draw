@@ -119,6 +119,8 @@ def max_click(context, part, lay, mx, my):
         state.mode = 'MIN'
     elif part == 'PIN':
         state.pinned = not state.pinned
+    elif part == 'THEME':
+        state.theme = 'DARK' if state.theme == 'LIGHT' else 'LIGHT'
     elif part.startswith('TAB:'):
         state.tab, state.scroll = part[4:], 0.0
     elif part == 'SEARCH':
@@ -161,9 +163,10 @@ def cell_at(context, lay, mx, my):
     entries = draw.grid_entries(state)
     s = draw._scale(context)
     area = lay.grid
-    content = grid_core.content_height(area[2], len(entries), s)
+    fixed = 2 if state.tab != 'TEXTURES' else 0
+    content = grid_core.content_height(area[2], len(entries), s, fixed)
     scroll = grid_core.clamp_scroll(state.scroll, content, area[3])
-    index = grid_core.hit_cell(grid_core.visible_cells(area, len(entries), s, scroll), mx, my)
+    index = grid_core.hit_cell(grid_core.visible_cells(area, len(entries), s, scroll, fixed), mx, my)
     if index is not None and entries[index]["id"] == draw._more_id:
         draw._catalog().refresh(state.search, state.manufacturer, state.collection, more=True)
         return ""

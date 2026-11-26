@@ -150,14 +150,17 @@ def grid_area(rect, scale, sidebar=True):
     return (left, y + PAD * s, max(0.0, x + w - PAD * s - left), max(0.0, h - HEADER_H * s - 2 * PAD * s))
 
 
-def columns(width, scale):
+def columns(width, scale, fixed=0):
+    """Colunas da grade; `fixed` força a grade 2×3 dos modelos da Biblioteca (documento), 0 calcula pela largura."""
+    if fixed:
+        return max(1, int(fixed))
     s = float(scale)
     return max(1, int((width + GAP * s) // ((CELL_W + GAP) * s)))
 
 
-def content_height(width, count, scale):
+def content_height(width, count, scale, fixed=0):
     s = float(scale)
-    rows = -(-count // columns(width, scale)) if count else 0
+    rows = -(-count // columns(width, scale, fixed)) if count else 0
     return max(0.0, rows * (CELL_H + GAP) * s - GAP * s)
 
 
@@ -165,11 +168,11 @@ def clamp_scroll(scroll, content, view):
     return min(max(0.0, float(scroll)), max(0.0, float(content) - float(view)))
 
 
-def visible_cells(area, count, scale, scroll):
+def visible_cells(area, count, scale, scroll, fixed=0):
     """[(índice, (x, y, w, h))] das células que aparecem na área, de cima para baixo, rolada por `scroll` px."""
     s = float(scale)
     ax, ay, aw, ah = area
-    cols = columns(aw, scale)
+    cols = columns(aw, scale, fixed)
     cw, ch, gap = CELL_W * s, CELL_H * s, GAP * s
     step = ch + gap
     top = ay + ah

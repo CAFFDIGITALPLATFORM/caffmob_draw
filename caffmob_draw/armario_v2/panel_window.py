@@ -107,14 +107,19 @@ class BTM_PT_ArmarioV2WindowHeader(bpy.types.Panel):
         linha.label(text=tr("{} × {} × {} mm").format(f"{armario.largura:.0f}", f"{armario.altura:.0f}",
                                                        f"{armario.profundidade:.0f}"),
                     icon="FULLSCREEN_ENTER")
+        acoes = topo.row(align=True)
+        acoes.operator("caffmob.armario_v2_window_aba", text="Contrato", icon="FILE_TEXT").alvo = 'ESTRUTURA'
+        acoes.operator("caffmob.armario_v2_window_export_json", text="Exportar JSON", icon="EXPORT")
+        acoes.operator("caffmob.armario_v2_window_tema", text="", icon="COLOR")
 
-        # Barra de abas: 4 + 3, como o mockup, com a aba ativa deprimida.
+        # Barra de abas horizontal única, com a aba ativa deprimida.
         ativa = _aba_atual()
-        for grupo in (ABAS[:4], ABAS[4:]):
-            linha = topo.row(align=True)
-            for chave, rotulo, icone in grupo:
-                linha.operator("caffmob.armario_v2_window_aba", text=tr(rotulo), icon=icone,
-                               depress=(chave == ativa)).alvo = chave
+        linha = topo.row(align=True)
+        for chave, rotulo, icone in ABAS:
+            linha.operator("caffmob.armario_v2_window_aba", text="", icon=icone,
+                           depress=(chave == ativa)).alvo = chave
+        rotulo_ativo = dict((c, r) for c, r, _i in ABAS).get(ativa, ativa)
+        topo.label(text=tr("Aba: {}").format(tr(rotulo_ativo)), icon="INFO")
 
         # Barra "Selecionado: …" (uma peça ou o conjunto).
         itens = _selecionados()
@@ -129,6 +134,8 @@ class BTM_PT_ArmarioV2WindowHeader(bpy.types.Panel):
                                        ('MOVER_CIMA', "↑", 'TRIA_UP'), ('MOVER_BAIXO', "↓", 'TRIA_DOWN')):
                 lote.operator("caffmob.armario_v2_window_lote", text=texto, icon=icone).acao = acao
             lote.operator("caffmob.armario_v2_window_lote", text="Espelhar", icon="MOD_MIRROR").acao = 'ESPELHAR'
+            lote.operator("caffmob.armario_v2_window_duplicar", text="", icon="DUPLICATE")
+            lote.operator("caffmob.armario_v2_window_medida", text="Medida", icon="DRIVER_DISTANCE")
             lote.operator("caffmob.armario_v2_window_lote", text="Apagar", icon="TRASH").acao = 'APAGAR'
 
         erros = _erros(raiz)
@@ -140,9 +147,11 @@ class BTM_PT_ArmarioV2WindowHeader(bpy.types.Panel):
             box = layout.box()
             box.label(text="Janela de Armário Vazia", icon="INFO")
             box.label(text="Ative as chapas ou use a montagem rápida.")
-            row = box.row()
+            row = box.row(align=True)
             row.scale_y = 1.3
             row.operator("caffmob.armario_v2_window_pedido", text="Montar Caixa", icon="CUBE").acao = 'MONTAR_CAIXA'
+            row.operator("caffmob.armario_v2_window_apenas_laterais", text="Apenas Laterais",
+                         icon="MOD_SOLIDIFY").criar = True
 
 
 # Barra de ferramentas ---------------------------------------------------------------------------------------------
@@ -164,10 +173,15 @@ class BTM_PT_ArmarioV2WindowToolbar(bpy.types.Panel):
         linha = layout.row(align=True)
         linha.operator("caffmob.armario_v2_window_pedido", text="Montar Caixa", icon="CUBE").acao = 'MONTAR_CAIXA'
         linha.operator("caffmob.armario_v2_window_pedido", text="Limpar", icon="TRASH").acao = 'LIMPAR'
-        layout.operator("caffmob.armario_v2_window_pedido", text="Plano de Corte",
-                        icon="MOD_ARRAY").acao = 'PLANO_CORTE'
+        linha.operator("caffmob.armario_v2_window_abrir_tudo", text="Abrir/Fechar Tudo", icon="ARROW_LEFTRIGHT")
 
         s = win_mod.sessao()
+        vista = getattr(s, 'vista', 'SPLIT') if s is not None else 'SPLIT'
+        linha = layout.row(align=True)
+        for chave, rotulo in (('SPLIT', "Dividida"), ('FRONTAL', "Frontal"), ('LATERAL', "Lateral")):
+            linha.operator("caffmob.armario_v2_window_vista", text=tr(rotulo),
+                           depress=(vista == chave)).vista = chave
+
         cotas = s.mostrar_cotas if s is not None else True
         portas = s.mostrar_portas if s is not None else True
         layout.separator()
@@ -178,6 +192,15 @@ class BTM_PT_ArmarioV2WindowToolbar(bpy.types.Panel):
         linha.operator("caffmob.armario_v2_window_toggle",
                        text=tr("Portas: {}").format("On" if portas else "Off"),
                        icon="MESH_PLANE", depress=portas).alvo = 'PORTAS'
+        linha.operator("caffmob.armario_v2_window_apenas_laterais", text="", icon="MOD_SOLIDIFY",
+                       depress=getattr(s, 'apenas_laterais', False)).criar = False
+
+        linha = layout.row(align=True)
+        linha.operator("caffmob.armario_v2_window_pedido", text="Plano de Corte",
+                       icon="MOD_ARRAY").acao = 'PLANO_CORTE'
+        linha.operator("caffmob.armario_v2_window_export_json", text="Exportar JSON", icon="EXPORT")
+        linha.operator("caffmob.armario_v2_window_tema", text="Tema", icon="COLOR")
+        linha.operator("caffmob.armario_v2_window_painel", text="", icon="WINDOW")
 
 
 # Estrutura --------------------------------------------------------------------------------------------------------
@@ -227,6 +250,14 @@ class BTM_PT_ArmarioV2WindowEstrutura(_AbaPainel, bpy.types.Panel):
         col.prop(armario, "espessura_base_inferior", text="Base Inf.")
         col.prop(armario, "espessura_base_superior", text="Base Sup.")
         col.prop(armario, "espessura_fundo", text="Fundo")
+
+        contrato = getattr(context.scene, 'btm_armario_contrato', None)
+        if contrato is not None:
+            box = layout.box()
+            box.label(text="Contrato de chapas", icon="FILE_TEXT")
+            col = box.column(align=True)
+            col.prop(contrato, "comprimento_max")
+            col.prop(contrato, "largura_max")
 
 
 # Divisões ---------------------------------------------------------------------------------------------------------
@@ -403,6 +434,7 @@ class BTM_PT_ArmarioV2WindowPecas(bpy.types.Panel):
         if spec is None:
             return
         layout.label(text=tr("{} peça(s)").format(len(itens)))
+        layout.operator("caffmob.armario_v2_window_export_json", text="Exportar cutlist JSON", icon="EXPORT")
         col = layout.column(align=True)
         for item in itens[:24]:
             (x0, _y0, z0), (x1, _y1, z1) = item['box']

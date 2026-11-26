@@ -1198,5 +1198,149 @@
  "Armário posicionado": {
   "en_US": "Cabinet placed",
   "pt_BR": "Armário posicionado"
+ },
+ "Armário: arrastar peça": {
+  "en_US": "Cabinet: drag part",
+  "pt_BR": "Armário: arrastar peça"
+ },
+ "Armário: duplicar peça": {
+  "en_US": "Cabinet: duplicate part",
+  "pt_BR": "Armário: duplicar peça"
+ },
+ "Vista do preview": {
+  "en_US": "Preview view",
+  "pt_BR": "Vista do preview"
+ },
+ "Troca o preview entre dividido, frontal e corte lateral (toolbar do mockup)": {
+  "en_US": "Switches the preview between split, front and side cut (mockup toolbar)",
+  "pt_BR": "Troca o preview entre dividido, frontal e corte lateral (toolbar do mockup)"
+ },
+ "Dividida": {
+  "en_US": "Split",
+  "pt_BR": "Dividida"
+ },
+ "Frontal e corte lateral": {
+  "en_US": "Front and side cut",
+  "pt_BR": "Frontal e corte lateral"
+ },
+ "Só a elevação": {
+  "en_US": "Front elevation only",
+  "pt_BR": "Só a elevação"
+ },
+ "Só o corte lateral": {
+  "en_US": "Side cut only",
+  "pt_BR": "Só o corte lateral"
+ },
+ "Tema do preview": {
+  "en_US": "Preview theme",
+  "pt_BR": "Tema do preview"
+ },
+ "Alterna o tema do preview entre Light e Dark (o chrome nativo segue o tema do Blender)": {
+  "en_US": "Switches the preview theme between Light and Dark (native chrome follows the Blender theme)",
+  "pt_BR": "Alterna o tema do preview entre Light e Dark (o chrome nativo segue o tema do Blender)"
+ },
+ "Light": {
+  "en_US": "Light",
+  "pt_BR": "Light"
+ },
+ "Dark": {
+  "en_US": "Dark",
+  "pt_BR": "Dark"
+ },
+ "Alternar": {
+  "en_US": "Toggle",
+  "pt_BR": "Alternar"
+ },
+ "Apenas Laterais": {
+  "en_US": "Sides only",
+  "pt_BR": "Apenas Laterais"
+ },
+ "Liga só as duas laterais (e desliga base/fundo), opcionalmente gerando o armário": {
+  "en_US": "Turns on only the two sides (and turns off base/back), optionally generating the cabinet",
+  "pt_BR": "Liga só as duas laterais (e desliga base/fundo), opcionalmente gerando o armário"
+ },
+ "Criar caixa só com laterais": {
+  "en_US": "Create carcass with sides only",
+  "pt_BR": "Criar caixa só com laterais"
+ },
+ "Abrir/Fechar tudo": {
+  "en_US": "Open/Close all",
+  "pt_BR": "Abrir/Fechar tudo"
+ },
+ "Abre todas as peças animáveis; se já estão abertas, fecha todas": {
+  "en_US": "Opens all animatable parts; if already open, closes them all",
+  "pt_BR": "Abre todas as peças animáveis; se já estão abertas, fecha todas"
+ },
+ "Nenhuma peça animável": {
+  "en_US": "No animatable part",
+  "pt_BR": "Nenhuma peça animável"
+ },
+ "Painel lateral": {
+  "en_US": "Side panel",
+  "pt_BR": "Painel lateral"
+ },
+ "Mostra/oculta o painel lateral da janela (restaurável pela tecla N)": {
+  "en_US": "Shows/hides the window side panel (restore with N)",
+  "pt_BR": "Mostra/oculta o painel lateral da janela (restaurável pela tecla N)"
+ },
+ "Medida do armário": {
+  "en_US": "Cabinet measurement",
+  "pt_BR": "Medida do armário"
+ },
+ "Popover de medida: altera largura/altura/profundidade do armário e regenera": {
+  "en_US": "Measurement popover: changes cabinet width/height/depth and regenerates",
+  "pt_BR": "Popover de medida: altera largura/altura/profundidade do armário e regenera"
+ },
+ "Duplicar peça": {
+  "en_US": "Duplicate part",
+  "pt_BR": "Duplicar peça"
+ },
+ "Duplica a(s) peça(s) selecionada(s) e grava a duplicata para sobreviver ao Gerar": {
+  "en_US": "Duplicates the selected part(s) and records the duplicate to survive Generate",
+  "pt_BR": "Duplica a(s) peça(s) selecionada(s) e grava a duplicata para sobreviver ao Gerar"
+ },
+ "Nenhuma peça selecionada": {
+  "en_US": "No part selected",
+  "pt_BR": "Nenhuma peça selecionada"
+ },
+ "Exportar armário em JSON": {
+  "en_US": "Export cabinet as JSON",
+  "pt_BR": "Exportar armário em JSON"
+ },
+ "Exporta spec, peças e cutlist do armário para JSON": {
+  "en_US": "Exports cabinet spec, parts and cutlist to JSON",
+  "pt_BR": "Exporta spec, peças e cutlist do armário para JSON"
+ },
+ "Armário exportado: {}": {
+  "en_US": "Cabinet exported: {}",
+  "pt_BR": "Armário exportado: {}"
+ },
+ "Peça do armário": {
+  "en_US": "Cabinet part",
+  "pt_BR": "Peça do armário"
+ },
+ "Contrato": {
+  "en_US": "Contract",
+  "pt_BR": "Contrato"
+ },
+ "Exportar JSON": {
+  "en_US": "Export JSON",
+  "pt_BR": "Exportar JSON"
+ },
+ "Aba: {}": {
+  "en_US": "Tab: {}",
+  "pt_BR": "Aba: {}"
+ },
+ "Medida": {
+  "en_US": "Measurement",
+  "pt_BR": "Medida"
+ },
+ "Abrir/Fechar Tudo": {
+  "en_US": "Open/Close all",
+  "pt_BR": "Abrir/Fechar Tudo"
+ },
+ "Exportar cutlist JSON": {
+  "en_US": "Export cutlist JSON",
+  "pt_BR": "Exportar cutlist JSON"
  }
 }

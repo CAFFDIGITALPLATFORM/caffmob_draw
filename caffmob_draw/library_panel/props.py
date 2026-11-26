@@ -43,6 +43,8 @@ class BTM_PG_LibraryState(bpy.types.PropertyGroup):
     line: bpy.props.StringProperty(default='COZ')  # type: ignore
     opening_material: bpy.props.EnumProperty(name="Material da esquadria", items=OPENING_MATERIALS,
                                              default='madeira')  # type: ignore
+    theme: bpy.props.EnumProperty(name="Tema", items=[('LIGHT', "Light", ""), ('DARK', "Dark", "")],
+                                  default='LIGHT')  # type: ignore
     # Detalhe branco do módulo (medidas e ambiente antes de inserir/arrastar).
     detail_open: bpy.props.BoolProperty(default=False)  # type: ignore
     detail_key: bpy.props.StringProperty()  # type: ignore

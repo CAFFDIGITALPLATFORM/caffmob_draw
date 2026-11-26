@@ -13,11 +13,16 @@
 OK e Aplicar recusam quando `validar` acusa GEO-001/GEO-002 (RF-03), com o código no aviso.
 """
 
+import json
+
 import bpy  # type: ignore
+from bpy_extras.io_utils import ExportHelper  # type: ignore
 
 from ..data.i18n import tr
+from . import anim
 from . import build
 from . import ops as ops_v2
+from . import parity_core
 from . import validar
 from . import window as win_mod
 
@@ -232,6 +237,7 @@ class BTM_OT_ArmarioV2WindowModal(bpy.types.Operator):
 
     _timer = None
     _tab_pronta = False
+    _drag = None
 
     def invoke(self, context, event):
         if win_mod.sessao() is None:
@@ -277,9 +283,63 @@ class BTM_OT_ArmarioV2WindowModal(bpy.types.Operator):
             return {'PASS_THROUGH'}
 
         if event.type == 'LEFTMOUSE' and event.value == 'PRESS':
-            win_mod.selecionar_no_ponto(context, s, event.mouse_x, event.mouse_y,
-                                        acumular=bool(event.shift or event.ctrl))
+            escolhido = win_mod.selecionar_no_ponto(context, s, event.mouse_x, event.mouse_y,
+                                                    acumular=bool(event.shift or event.ctrl))
+            alvos = win_mod.objetos_da_selecao(s.armario_root, s) if escolhido is not None else []
+            if alvos:
+                obj = alvos[-1]
+                self._drag = {'obj': obj, 'x': event.mouse_x, 'y': event.mouse_y,
+                              'loc': obj.location.copy(), 'vista': (escolhido or {}).get('vista', 'FRONTAL'),
+                              'dx': 0.0, 'dy': 0.0, 'dz': 0.0, 'moved': False}
             return {'PASS_THROUGH'}
+
+        if event.type == 'MOUSEMOVE' and self._drag is not None:
+            drag = self._drag
+            obj = drag['obj']
+            if obj.name not in bpy.data.objects:
+                self._drag = None
+                return {'PASS_THROUGH'}
+            dx_px = event.mouse_x - drag['x']
+            dy_px = event.mouse_y - drag['y']
+            if not drag['moved'] and abs(dx_px) + abs(dy_px) < win_mod.ARRASTE_MIN_PX:
+                return {'PASS_THROUGH'}
+            drag['moved'] = True
+            lateral = drag['vista'] == 'LATERAL'
+            escala = max(1e-6, s.escala_lateral if lateral else s.escala_frontal)
+            dx_mm = dx_px / escala
+            dz_mm = dy_px / escala
+            if lateral:
+                drag['dy'] = dx_mm
+                obj.location.y = drag['loc'].y + dx_mm * 0.001
+            else:
+                drag['dx'] = dx_mm
+                obj.location.x = drag['loc'].x + dx_mm * 0.001
+            drag['dz'] = dz_mm
+            obj.location.z = drag['loc'].z + dz_mm * 0.001
+            return {'PASS_THROUGH'}
+
+        if event.type == 'LEFTMOUSE' and event.value == 'RELEASE' and self._drag is not None:
+            drag = self._drag
+            self._drag = None
+            if drag['moved']:
+                win_mod.registrar_movimento(s.armario_root, drag['obj'], drag['dx'], drag['dz'], drag['dy'])
+                s.suja = True
+                bpy.ops.ed.undo_push(message="Armário: arrastar peça")
+                _janela, area, _region = win_mod._area_da_sessao()
+                if area is not None:
+                    area.tag_redraw()
+            return {'PASS_THROUGH'}
+
+        if event.type == 'RIGHTMOUSE' and event.value == 'PRESS':
+            escolhido = win_mod.selecionar_no_ponto(context, s, event.mouse_x, event.mouse_y, acumular=False)
+            if escolhido is not None:
+                bpy.ops.wm.call_menu(name=BTM_MT_ArmarioV2WindowContext.bl_idname)
+                return {'RUNNING_MODAL'}
+            return {'PASS_THROUGH'}
+
+        if event.type == 'N' and event.value == 'PRESS':
+            bpy.ops.caffmob.armario_v2_window_painel()
+            return {'RUNNING_MODAL'}
 
         if event.type == 'ESC' and event.value == 'PRESS':
             self._end(context, keep=False)
@@ -343,6 +403,235 @@ class BTM_OT_ArmarioV2WindowToggle(bpy.types.Operator):
         if area is not None:
             area.tag_redraw()
         return {'FINISHED'}
+
+
+class BTM_OT_ArmarioV2WindowVista(_WindowOperator, bpy.types.Operator):
+    """Troca o preview entre dividido, frontal e corte lateral (toolbar do mockup)"""
+    bl_idname = "caffmob.armario_v2_window_vista"
+    bl_label = "Vista do preview"
+
+    vista: bpy.props.EnumProperty(
+        name="Vista",
+        items=[('SPLIT', "Dividida", "Frontal e corte lateral"), ('FRONTAL', "Frontal", "Só a elevação"),
+               ('LATERAL', "Lateral", "Só o corte lateral")],
+        default='SPLIT')  # type: ignore
+
+    def execute(self, context):
+        s = win_mod.sessao()
+        if s is None:
+            return {'CANCELLED'}
+        s.vista = parity_core.vista_valida(self.vista)
+        _janela, area, _region = win_mod._area_da_sessao()
+        if area is not None:
+            area.tag_redraw()
+        return {'FINISHED'}
+
+
+class BTM_OT_ArmarioV2WindowTema(_WindowOperator, bpy.types.Operator):
+    """Alterna o tema do preview entre Light e Dark (o chrome nativo segue o tema do Blender)"""
+    bl_idname = "caffmob.armario_v2_window_tema"
+    bl_label = "Tema do preview"
+
+    tema: bpy.props.EnumProperty(
+        name="Tema", items=[('LIGHT', "Light", ""), ('DARK', "Dark", "")], default='LIGHT')  # type: ignore
+    alternar: bpy.props.BoolProperty(name="Alternar", default=True)  # type: ignore
+
+    def execute(self, context):
+        s = win_mod.sessao()
+        if s is None:
+            return {'CANCELLED'}
+        s.tema = parity_core.alternar_tema(s.tema) if self.alternar else parity_core.tema_valido(self.tema)
+        win_mod.preview_mod.aplicar_tema(s.tema)
+        _janela, area, _region = win_mod._area_da_sessao()
+        if area is not None:
+            area.tag_redraw()
+        return {'FINISHED'}
+
+
+class BTM_OT_ArmarioV2WindowApenasLaterais(_WindowOperator, bpy.types.Operator):
+    """Liga só as duas laterais (e desliga base/fundo), opcionalmente gerando o armário"""
+    bl_idname = "caffmob.armario_v2_window_apenas_laterais"
+    bl_label = "Apenas Laterais"
+
+    criar: bpy.props.BoolProperty(name="Criar caixa só com laterais", default=False)  # type: ignore
+
+    def execute(self, context):
+        s = win_mod.sessao()
+        root = s.armario_root if s is not None else None
+        if root is None:
+            return {'CANCELLED'}
+        armario = root.btm_armario
+        if not self.criar:
+            s.apenas_laterais = not s.apenas_laterais
+            _janela, area, _region = win_mod._area_da_sessao()
+            if area is not None:
+                area.tag_redraw()
+            return {'FINISHED'}
+        s.apenas_laterais = True
+        if self.criar:
+            armario.lateral_esq_ativa = True
+            armario.lateral_dir_ativa = True
+            armario.base_inf_ativa = False
+            armario.base_sup_ativa = False
+            armario.fundo_ativo = False
+            s.suja = True
+            if armario.gerado:
+                gerou, avisos = ops_v2.gerar_armario(root, context)
+                self._avisar(avisos)
+                if not gerou:
+                    return {'CANCELLED'}
+        _janela, area, _region = win_mod._area_da_sessao()
+        if area is not None:
+            area.tag_redraw()
+        return {'FINISHED'}
+
+
+class BTM_OT_ArmarioV2WindowAbrirTudo(_WindowOperator, bpy.types.Operator):
+    """Abre todas as peças animáveis; se já estão abertas, fecha todas"""
+    bl_idname = "caffmob.armario_v2_window_abrir_tudo"
+    bl_label = "Abrir/Fechar tudo"
+
+    def execute(self, context):
+        s = win_mod.sessao()
+        root = s.armario_root if s is not None else None
+        if root is None:
+            return {'CANCELLED'}
+        alvos = [obj for obj in root.children if anim.animavel(obj)]
+        if not alvos:
+            self.report({'INFO'}, tr("Nenhuma peça animável"))
+            return {'CANCELLED'}
+        alvo = not all(anim.estado(obj) for obj in alvos)
+        for obj in alvos:
+            if anim.estado(obj) != alvo:
+                anim.alternar(obj)
+        s.suja = True
+        _janela, area, _region = win_mod._area_da_sessao()
+        if area is not None:
+            area.tag_redraw()
+        return {'FINISHED'}
+
+
+class BTM_OT_ArmarioV2WindowPainel(_WindowOperator, bpy.types.Operator):
+    """Mostra/oculta o painel lateral da janela (restaurável pela tecla N)"""
+    bl_idname = "caffmob.armario_v2_window_painel"
+    bl_label = "Painel lateral"
+
+    def execute(self, context):
+        area = context.area
+        space = area.spaces.active if area is not None else None
+        if space is None or not hasattr(space, 'show_region_ui'):
+            return {'CANCELLED'}
+        space.show_region_ui = not space.show_region_ui
+        return {'FINISHED'}
+
+
+class BTM_OT_ArmarioV2WindowMedida(_WindowOperator, bpy.types.Operator):
+    """Popover de medida: altera largura/altura/profundidade do armário e regenera"""
+    bl_idname = "caffmob.armario_v2_window_medida"
+    bl_label = "Medida do armário"
+
+    medida: bpy.props.FloatProperty(name="Medida (mm)", default=600.0, min=1.0, max=10000.0)  # type: ignore
+    eixo: bpy.props.EnumProperty(
+        name="Eixo", items=[('LARGURA', "Largura", ""), ('ALTURA', "Altura", ""),
+                            ('PROFUNDIDADE', "Profundidade", "")], default='LARGURA')  # type: ignore
+
+    def invoke(self, context, event):
+        return context.window_manager.invoke_props_dialog(self, width=320)
+
+    def draw(self, context):
+        self.layout.prop(self, 'eixo')
+        self.layout.prop(self, 'medida')
+
+    def execute(self, context):
+        s = win_mod.sessao()
+        root = s.armario_root if s is not None else None
+        if root is None:
+            return {'CANCELLED'}
+        armario = root.btm_armario
+        campo = {'LARGURA': 'largura', 'ALTURA': 'altura', 'PROFUNDIDADE': 'profundidade'}[self.eixo]
+        setattr(armario, campo, float(self.medida))
+        s.suja = True
+        if armario.gerado:
+            gerou, avisos = ops_v2.gerar_armario(root, context)
+            self._avisar(avisos)
+            if not gerou:
+                return {'CANCELLED'}
+        _janela, area, _region = win_mod._area_da_sessao()
+        if area is not None:
+            area.tag_redraw()
+        return {'FINISHED'}
+
+
+class BTM_OT_ArmarioV2WindowDuplicar(_WindowOperator, bpy.types.Operator):
+    """Duplica a(s) peça(s) selecionada(s) e grava a duplicata para sobreviver ao Gerar"""
+    bl_idname = "caffmob.armario_v2_window_duplicar"
+    bl_label = "Duplicar peça"
+
+    def execute(self, context):
+        s = win_mod.sessao()
+        root = s.armario_root if s is not None else None
+        if root is None:
+            return {'CANCELLED'}
+        alvos = win_mod.objetos_da_selecao(root, s)
+        if not alvos:
+            self.report({'WARNING'}, "Nenhuma peça selecionada")
+            return {'CANCELLED'}
+        for obj in alvos:
+            copia = obj.copy()
+            copia.data = obj.data.copy()
+            obj.users_collection[0].objects.link(copia)
+            copia.parent = root
+            copia.name = obj.name + " (cópia)"
+            copia.location.x += 0.02
+            win_mod.registrar_duplicata(root, obj)
+        s.suja = True
+        bpy.ops.ed.undo_push(message="Armário: duplicar peça")
+        _janela, area, _region = win_mod._area_da_sessao()
+        if area is not None:
+            area.tag_redraw()
+        return {'FINISHED'}
+
+
+class BTM_OT_ArmarioV2WindowExportJson(_WindowOperator, ExportHelper, bpy.types.Operator):
+    """Exporta spec, peças e cutlist do armário para JSON"""
+    bl_idname = "caffmob.armario_v2_window_export_json"
+    bl_label = "Exportar armário em JSON"
+    filename_ext = ".json"
+    filter_glob: bpy.props.StringProperty(default="*.json", options={'HIDDEN'})  # type: ignore
+    filepath: bpy.props.StringProperty(subtype='FILE_PATH')  # type: ignore
+
+    def invoke(self, context, event):
+        if not self.filepath:
+            self.filepath = "armario.json"
+        context.window_manager.fileselect_add(self)
+        return {'RUNNING_MODAL'}
+
+    def execute(self, context):
+        s = win_mod.sessao()
+        root = s.armario_root if s is not None else None
+        if root is None or not self.filepath:
+            return {'CANCELLED'}
+        spec, itens = validar.pecas_da_raiz(root)
+        if spec is None:
+            return {'CANCELLED'}
+        with open(self.filepath, 'w', encoding='utf-8') as arquivo:
+            json.dump(parity_core.payload(spec, itens), arquivo, ensure_ascii=False, indent=2)
+        self.report({'INFO'}, tr("Armário exportado: {}").format(self.filepath))
+        return {'FINISHED'}
+
+
+class BTM_MT_ArmarioV2WindowContext(bpy.types.Menu):
+    """Menu de contexto da janela 023 (botão direito sobre a peça)"""
+    bl_idname = "BTM_MT_ArmarioV2WindowContext"
+    bl_label = "Peça do armário"
+
+    def draw(self, context):
+        layout = self.layout
+        layout.operator("caffmob.armario_v2_window_duplicar", text="Duplicar", icon="DUPLICATE")
+        layout.operator("caffmob.armario_v2_window_medida", text="Medida do armário", icon="DRIVER_DISTANCE")
+        layout.separator()
+        layout.operator("caffmob.armario_v2_window_lote", text="Espelhar", icon="MOD_MIRROR").acao = 'ESPELHAR'
+        layout.operator("caffmob.armario_v2_window_lote", text="Apagar", icon="TRASH").acao = 'APAGAR'
 
 
 class BTM_OT_ArmarioV2WindowAplicar(_WindowOperator, bpy.types.Operator):
@@ -435,6 +724,15 @@ classes = (
     BTM_OT_ArmarioV2WindowLimparAjustes,
     BTM_OT_ArmarioV2WindowPedido,
     BTM_OT_ArmarioV2WindowToggle,
+    BTM_OT_ArmarioV2WindowVista,
+    BTM_OT_ArmarioV2WindowTema,
+    BTM_OT_ArmarioV2WindowApenasLaterais,
+    BTM_OT_ArmarioV2WindowAbrirTudo,
+    BTM_OT_ArmarioV2WindowPainel,
+    BTM_OT_ArmarioV2WindowMedida,
+    BTM_OT_ArmarioV2WindowDuplicar,
+    BTM_OT_ArmarioV2WindowExportJson,
+    BTM_MT_ArmarioV2WindowContext,
     BTM_OT_ArmarioV2WindowAplicar,
     BTM_OT_ArmarioV2WindowCancelar,
     BTM_OT_ArmarioV2WindowOK,

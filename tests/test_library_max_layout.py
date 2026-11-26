@@ -39,8 +39,8 @@ class TokensTest(unittest.TestCase):
         self.assertEqual(style.SIDEBAR_W, gc.SIDEBAR_W)
         self.assertEqual((style.CELL_W, style.CELL_H), (gc.CELL_W, gc.CELL_H))
         self.assertEqual(len(style.SURFACE), 4)
-        self.assertAlmostEqual(style.SURFACE[3], 0.96)
-        self.assertEqual(style.hex_rgba("#F07A2A")[:3], style.ACCENT[:3])
+        self.assertAlmostEqual(style.SURFACE[3], 0.98)
+        self.assertEqual(style.hex_rgba("#B45309")[:3], style.ACCENT[:3])
 
 
 class OpenLabelTest(unittest.TestCase):
@@ -86,7 +86,7 @@ class MaxLayoutTest(unittest.TestCase):
         """Ícone e título à esquerda, abas, e da direita para a esquerda: fechar, minimizar, fixar, conta, busca."""
         lay = self.lay
         keys = [k for k, _r in lay.buttons]
-        self.assertEqual(keys, ['CLOSE', 'MINIMIZE', 'PIN'])
+        self.assertEqual(keys, ['CLOSE', 'MINIMIZE', 'PIN', 'THEME'])
         xs = [r[0] for _k, r in lay.buttons]
         self.assertEqual(xs, sorted(xs, reverse=True))
         self.assertLess(lay.account[0] + lay.account[2], min(xs))
