@@ -120,6 +120,7 @@ caixa e capturou o painel (`audit/painel-021.png`) para comparar com o mockup (`
 achou um defeito real — `icon='MOD_LENGTHWISE'` não existe no Blender 5.2 e quebrava o desenho de "Travessas" — e três
 truncamentos na barra de 280 px; os quatro foram corrigidos. O relatório está em `../visual-parity.md`.
 
-Do A004, `blender_012_convert_undo` passou; `blender_004_cabinet_editor_smoke` e `blender_012_library_ui` falharam
-por expectativas anteriores às mudanças atuais (a guarda de "construção antiga" no editor e o card de detalhe da
-Biblioteca), não pelo painel. A004 permanece LOW para esses dois ensaios desatualizados.
+Do A004, `blender_012_convert_undo` passou; `blender_004_cabinet_editor_smoke` e `blender_012_library_ui` foram
+atualizados ao contrato atual — o primeiro ao Construtor v2, depois do editor 2D removido em 021/T027 (11/11,
+exit 0), e o segundo ao card/Dormitório e ao "Criar armário" v2 (9/9, exit 0). O A004 está fechado; o card da
+Biblioteca segue 38/38.

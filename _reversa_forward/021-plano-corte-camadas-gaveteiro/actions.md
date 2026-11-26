@@ -109,7 +109,12 @@
   Evidência e divergências aceitas por design em `visual-parity.md` e `audit/painel-021.png`.
   Dos três ensaios de GUI do A004, `blender_012_convert_undo` passou; `blender_004_cabinet_editor_smoke` e
   `blender_012_library_ui` falharam por expectativas anteriores às mudanças atuais (guarda de construção antiga e
-  card de detalhe da Biblioteca), não pelo painel; A004 segue LOW para esses dois ensaios.
+  card de detalhe da Biblioteca), não pelo painel; A004 foi fechado na nota seguinte.
+
+- **2026-11-26, A004 fechado:** `tests/blender_004_cabinet_editor_smoke.py` deixou de abrir o editor 2D removido em
+  021/T027 e passou a provar o contrato atual do Construtor v2 — guarda do legado, abertura, Montar Caixa,
+  Aplicar/Cancelar: **11/11, exit 0**. `tests/blender_012_library_ui.py` foi atualizado ao card/Dormitório e ao
+  "Criar armário" v2: **9/9, exit 0**. O card da Biblioteca segue **38/38**. Não resta ensaio de GUI vermelho no A004.
 
 ## Histórico de alterações
 
@@ -120,3 +125,4 @@
 | 2026-11-24 | Fechamento da auditoria: prova headless do RF-08 no e2e (52/52) e RF-10 condicionado ao móvel legado | reversa |
 | 2026-11-25 | Re-verificação de interface pelo `/reversa-debugger`: harness 12/12; nenhum defeito novo; T033/A004 abertas (GUI); material/UV/preferências movido para a candidata 024 | reversa |
 | 2026-11-26 | T033 fechada: captura real do painel, ícone `MOD_LENGTHWISE` corrigido e três truncamentos resolvidos; A004 parcial (2 ensaios de GUI desatualizados) | reversa |
+| 2026-11-26 | A004 fechado: 004 atualizado ao Construtor v2 (11/11) e 012 ao card/Dormitório e "Criar armário" v2 (9/9); card 38/38 | reversa |

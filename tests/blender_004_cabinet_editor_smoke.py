@@ -1,15 +1,11 @@
-"""Teste de fumaça da feature 004, incremento I3 (T058): Editor de Armário, com janela.
+"""Teste de fumaça do Editor de Armário (feature 004), atualizado para o Construtor v2 (021/T027).
+
+O editor 2D antigo saiu do registro em T027; `caffmob.cabinet_editor` hoje é o abridor do armário v2. Este ensaio
+mantém o propósito da feature 004 — abrir, montar, alterar e cancelar — no contrato atual, e confirma que o móvel da
+construção antiga continua recusado com o motivo, sem criar armário nenhum.
 
 Precisa de janela (não roda em --background), numa instância própria (encerra com o código do resultado):
-    blender --factory-startup --enable-event-simulate --python tests/blender_004_cabinet_editor_smoke.py
-(sem tela: `xvfb-run -a blender ...`)
-
-Para um módulo de cada biblioteca (frameless, face frame, closets, `btm`):
-- abrir o editor, mudar a largura e trocar a frente de um vão; Ctrl+Z no editor desfaz a frente sem mexer no desfazer
-  da cena; Cancelar devolve a mesma vista frontal e as mesmas medidas;
-- abrir de novo, mudar a largura e Confirmar; um único Ctrl+Z na cena devolve o módulo de antes do editor (nenhum
-  passo intermediário entrou na pilha do Blender);
-- largura abaixo do mínimo dá `DIM-003` e impede Confirmar.
+    blender --factory-startup --enable-event-simulate --python-exit-code 1 --python tests/blender_004_cabinet_editor_smoke.py
 """
 
 import os
@@ -22,10 +18,7 @@ import bpy
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import _blender_env as env  # noqa: E402
 from caffmob_draw import hb_utils  # noqa: E402
-from caffmob_draw.cabinet_editor import bridge, elevation, props  # noqa: E402
-from caffmob_draw.cabinet_editor import window as cew  # noqa: E402
-from caffmob_draw.product_libraries.closets import types_closets as tc  # noqa: E402
-from caffmob_draw.product_libraries.face_frame import types_face_frame as tff  # noqa: E402
+from caffmob_draw.armario_v2 import build  # noqa: E402
 from caffmob_draw.product_libraries.frameless import types_frameless as tf  # noqa: E402
 
 FAILURES = []
@@ -37,9 +30,25 @@ def check(name, ok, detail=""):
         FAILURES.append(name)
 
 
-def key(win, kind, x, y, ctrl=False, shift=False):
-    win.event_simulate(kind, 'PRESS', x=int(x), y=int(y), ctrl=ctrl, shift=shift)
-    win.event_simulate(kind, 'RELEASE', x=int(x), y=int(y), ctrl=ctrl, shift=shift)
+def raiz():
+    """Raiz v2: o EMPTY na coleção do construtor (o PointerProperty `btm_armario` existe em todo objeto)."""
+    return next((obj for obj in bpy.data.objects if obj.type == 'EMPTY'
+                 and any(colecao.name == build.COLECAO for colecao in obj.users_collection)), None)
+
+
+def pecas(root):
+    return [filho for filho in root.children if getattr(filho, 'btm_armario_parte', None) is not None]
+
+
+def papeis(root):
+    return sorted(getattr(item.btm_armario_parte, 'papel', '') for item in pecas(root))
+
+
+def selecionar(obj):
+    for other in bpy.context.selected_objects:
+        other.select_set(False)
+    obj.select_set(True)
+    bpy.context.view_layer.objects.active = obj
 
 
 def view3d(ctx):
@@ -49,132 +58,59 @@ def view3d(ctx):
     return win, area, region
 
 
-def signature(ctx, name):
-    root = bpy.data.objects[name]
-    # As bibliotecas recriam as frentes com outro nome (sufixo .001): compara tipo e caixa, não o nome.
-    parts = sorted((p.kind, tuple(round(v, 4) for v in p.lo + p.hi)) for p in bridge.parts(ctx, root))
-    dims = tuple(round(v, 4) for v in bridge.read_state(root).dimensions)
-    return dims, parts
-
-
-def make_modules(ctx):
-    env.clean_scene()
-    base = tf.BaseCabinet()
-    base.create("Balcao")
-    hb_utils.run_calc_fix_until_stable(ctx, base.obj)
-    ff = tff.BaseFaceFrameCabinet()
-    ff.create("FaceFrame")
-    ff.obj.location.x = 3.0
-    starter = tc.BaseClosetStarter()
-    starter.create_starter("Roupeiro", bay_qty=2)
-    starter.obj.location.x = 6.0
-    tc.recalculate_closet_starter(starter.obj)
+def abrir(ctx):
     win, area, region = view3d(ctx)
     with ctx.temp_override(window=win, area=area, region=region):
-        bpy.ops.caffmob.cabinet_builder(width=0.6)
-    quick = ctx.object
-    quick.location.x = 9.0
-    env.settle()
-    return [base.obj.name, ff.obj.name, starter.obj.name, quick.name]
-
-
-def open_editor(ctx, name):
-    root = bpy.data.objects[name]
-    for obj in ctx.selected_objects:
-        obj.select_set(False)
-    root.select_set(True)
-    ctx.view_layer.objects.active = root
-    win, area, region = view3d(ctx)
-    with ctx.temp_override(window=win, area=area, region=region, active_object=root, object=root):
-        result = bpy.ops.caffmob.cabinet_editor('INVOKE_DEFAULT')
-    return result
-
-
-def editor_window(ctx):
-    ewin, _area, ereg = cew.editor_area(ctx)
-    return ewin, ereg
-
-
-def first_opening(s):
-    return next((p.name for p in s.parts if p.kind == elevation.OPENING), None)
-
-
-def run_library(ctx, name):
-    before = signature(ctx, name)
-    check(f"{name}: abre o editor", open_editor(ctx, name) == {'FINISHED'})
-    yield 1.2
-    s = props.session()
-    check(f"{name}: sessão e janela", s is not None and editor_window(ctx)[0] is not None)
-    if s is None:
-        return
-    ewin, ereg = editor_window(ctx)
-    mx, my = ereg.x + 30, ereg.y + 30
-    ewin.event_simulate('MOUSEMOVE', 'NOTHING', x=mx, y=my)
-    width0 = s.draft.current.dimensions[0]
-    s.push('dimension', ('width', width0 + 0.1))
-    yield 0.6
-    check(f"{name}: largura aplicada", abs(s.draft.current.dimensions[0] - (width0 + 0.1)) < 1e-4,
-          str(s.draft.current.dimensions))
-    opening = first_opening(s)
-    if opening is not None:
-        s.selected = opening
-        path = bridge.opening_of(s.root(), opening)
-        front_before = bridge.read_state(s.root()).spec['openings'][0]['front']
-        wanted = 'DOUBLE_DOORS' if front_before in ('OPEN', '') else 'OPEN'
-        s.push('edit', ('FRONT', {'path': path, 'front': wanted, 'targets': [opening]}))
-        yield 0.8
-        front_after = bridge.read_state(s.root()).spec['openings'][0]['front']
-        key(ewin, 'Z', mx, my, ctrl=True)
-        yield 0.8
-        front_undo = bridge.read_state(s.root()).spec['openings'][0]['front']
-        check(f"{name}: Ctrl+Z no editor desfaz a frente", front_after == wanted and front_undo == front_before,
-              f"{front_before} → {front_after} → {front_undo}")
-    s.request = 'cancel'
-    yield 1.0
-    check(f"{name}: Cancelar fecha o editor", props.session() is None)
-    after = signature(ctx, name)
-    check(f"{name}: Cancelar devolve medidas e vista frontal", after == before,
-          "" if after == before else f"{before[0]} → {after[0]}; "
-          f"só antes: {sorted(set(before[1]) - set(after[1]))[:4]}; só depois: {sorted(set(after[1]) - set(before[1]))[:4]}")
-
-    # Confirmar: um Ctrl+Z na cena volta ao módulo de antes do editor.
-    open_editor(ctx, name)
-    yield 1.2
-    s = props.session()
-    if s is None:
-        check(f"{name}: reabre o editor", False)
-        return
-    s.push('dimension', ('width', width0 + 0.05))
-    yield 0.6
-    s.push('dimension', ('width', width0 + 0.15))
-    yield 0.6
-    s.push('dimension', ('width', 0.005))
-    yield 0.6
-    check(f"{name}: DIM-003 impede Confirmar", s.blocking() and any(m.code == 'DIM-003' for m in s.messages))
-    s.push('dimension', ('width', width0 + 0.15))
-    yield 0.6
-    check(f"{name}: medida válida libera Confirmar", not s.blocking(), str([m.code for m in s.messages]))
-    s.request = 'ok'
-    yield 1.0
-    confirmed = signature(ctx, name)
-    check(f"{name}: Confirmar aplica", abs(confirmed[0][0] - round(width0 + 0.15, 4)) < 1e-3, str(confirmed[0]))
-    win, area, region = view3d(ctx)
-    with ctx.temp_override(window=win, area=area, region=region):
-        bpy.ops.ed.undo()
-    yield 0.8
-    undone = signature(ctx, name)
-    check(f"{name}: um Ctrl+Z na cena volta ao anterior", undone[0] == before[0], f"{before[0]} → {undone[0]}")
+        return bpy.ops.caffmob.cabinet_editor('INVOKE_DEFAULT')
 
 
 def script():
     ctx = bpy.context
-    names = make_modules(ctx)
-    win, area, region = view3d(ctx)
-    with ctx.temp_override(window=win, area=area, region=region):
-        bpy.ops.ed.undo_push(message="Módulos de teste")
     yield 0.5
-    for name in names:
-        yield from run_library(ctx, name)
+
+    # 1. Móvel da construção antiga: a guarda recusa e não cria raiz v2.
+    env.clean_scene()
+    legado = tf.BaseCabinet()
+    legado.create("Balcao")
+    hb_utils.run_calc_fix_until_stable(ctx, legado.obj)
+    selecionar(legado.obj)
+    win, area, region = view3d(ctx)
+    with ctx.temp_override(window=win, area=area, region=region, active_object=legado.obj, object=legado.obj):
+        aceita = bpy.ops.caffmob.cabinet_editor.poll()
+    check("móvel legado recusado pelo construtor v2", not aceita)
+    check("recusa não cria armário v2", raiz() is None)
+
+    # 2. Projeto limpo: abrir cria o armário vazio e semeia o contrato.
+    env.clean_scene()
+    resultado = abrir(ctx)
+    root = raiz()
+    check("abrir num projeto limpo cria o armário vazio", resultado == {'FINISHED'} and root is not None,
+          str(resultado))
+    check("abrir não cria peça", root is not None and not pecas(root))
+    check("abrir guarda o instantâneo", bool(root.btm_armario.snapshot) if root is not None else False)
+    check("abrir semeia o contrato de chapas", ctx.scene.btm_armario_contrato.configurado)
+
+    # 3. Montar Caixa gera as quatro chapas e o fundo.
+    selecionar(root)
+    resultado = bpy.ops.caffmob.armario_v2_montar_caixa()
+    check("Montar Caixa cria as cinco chapas", resultado == {'FINISHED'} and papeis(root) == [
+        'BASE_INF', 'BASE_SUP', 'FUNDO', 'LATERAL', 'LATERAL'], str(papeis(root)))
+    check("Montar Caixa marca o armário como gerado", root.btm_armario.gerado)
+
+    # 4. Aplicar fixa o ponto; alterar e Cancelar devolve o estado aplicado, sem perder as chapas.
+    resultado = bpy.ops.caffmob.armario_v2_aplicar()
+    largura0 = float(root.btm_armario.largura)
+    root.btm_armario.largura = largura0 + 100.0
+    gerou = bpy.ops.caffmob.armario_v2_gerar()
+    check("alterar a largura gera o armário", gerou == {'FINISHED'}
+          and abs(float(root.btm_armario.largura) - (largura0 + 100.0)) < 1e-4, str(root.btm_armario.largura))
+    resultado = bpy.ops.caffmob.armario_v2_cancelar()
+    check("Cancelar volta a largura aplicada", resultado == {'FINISHED'}
+          and abs(float(root.btm_armario.largura) - largura0) < 1e-4, str(root.btm_armario.largura))
+    check("Cancelar mantém as cinco chapas", len(pecas(root)) >= 5, str(len(pecas(root))))
+
+    print("RESULTADO", "OK" if not FAILURES else "FALHA", FAILURES, flush=True)
+    os._exit(1 if FAILURES else 0)
 
 
 _gen = script()

@@ -136,10 +136,10 @@ A rodada anterior respondia às perguntas de interface por memória. Esta execut
 A **T033** foi executada em 2026-11-26, numa janela real: o painel foi capturado e comparado com o mockup. A
 comparação achou um defeito real (`icon='MOD_LENGTHWISE'` não existe no Blender 5.2 e quebrava o desenho de
 "Travessas") e três truncamentos na barra de 280 px; os quatro foram corrigidos. Evidência em
-`visual-parity.md` e `audit/painel-021.png`. Do **A004**, o ensaio `blender_012_convert_undo` passou; restam dois
-ensaios de GUI desatualizados (`blender_004_cabinet_editor_smoke` e `blender_012_library_ui`), que falham por
-expectativas anteriores às mudanças atuais (guarda de construção antiga e card de detalhe da Biblioteca), não pelo
-painel. Nenhum defeito de produto novo foi encontrado. A lacuna de material/UV/preferências não é da 021: virou a
+`visual-parity.md` e `audit/painel-021.png`. Do **A004**, os três ensaios de GUI passaram:
+`blender_012_convert_undo` (já verde), `blender_004_cabinet_editor_smoke` atualizado do editor 2D removido em
+021/T027 para o contrato do Construtor v2 (11/11) e `blender_012_library_ui` atualizado ao card/Dormitório e ao
+"Criar armário" v2 (9/9). O A004 está fechado; o card segue 38/38. Nenhum defeito de produto novo foi encontrado. A lacuna de material/UV/preferências não é da 021: virou a
 candidata `_reversa_forward/024-materiais-uv-preferencias`, parada antes do `/reversa-clarify`.
 
 ## 11. Histórico de alterações
@@ -150,3 +150,4 @@ candidata `_reversa_forward/024-materiais-uv-preferencias`, parada antes do `/re
 | 2026-11-24 | §10 marcado com a evidência de cada critério na reconciliação do `/reversa-audit` (a feature já estava entregue; os `[ ]` eram do plano, não do código) | reversa |
 | 2026-11-25 | §10.2: interface re-verificada em execução (harness 12/12); só T033/A004 abertas (GUI); lacuna de material/UV/preferências separada na candidata 024 | reversa |
 | 2026-11-26 | §10.2: T033 fechada (captura real do painel, ícone inválido e três truncamentos corrigidos); A004 parcial com 2 ensaios de GUI desatualizados | reversa |
+| 2026-11-26 | §10.2: A004 fechado — 004 no contrato v2 (11/11) e 012 no card/Dormitório (9/9); card 38/38 | reversa |

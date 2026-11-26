@@ -1,5 +1,19 @@
 # Changelog do CAFFMob Draw
 
+## 1.33.3 — 2026-11-26
+
+### Editor de Armário (ensaio 004)
+
+- `tests/blender_004_cabinet_editor_smoke.py` deixou de abrir o editor 2D removido em 021/T027 e passou a provar o
+  contrato atual do Construtor v2: guarda do móvel legado, abertura do armário vazio, Montar Caixa, Aplicar e
+  Cancelar. O ensaio voltou a **11/11, exit 0** na janela real.
+- O card da Biblioteca segue **38/38** e `tests/blender_012_library_ui.py` segue **9/9**; puros e `check_api.py`
+  verdes. O A004 do 021 não tem mais ensaio de GUI vermelho.
+
+### Como a numeração foi calculada
+
+`1.33.2 + 1 correção = 1.33.3` (patch, sem recurso novo).
+
 ## 1.33.2 — 2026-11-26
 
 ### Biblioteca (ensaios de GUI)

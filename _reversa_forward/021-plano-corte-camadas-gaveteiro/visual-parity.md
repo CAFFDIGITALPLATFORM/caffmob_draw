@@ -52,7 +52,7 @@ na captura final.
 
 **T033:** fechada.
 
-**A004:** a paridade T033 foi executada. Dos três ensaios de GUI citados pela auditoria, `blender_012_convert_undo`
-passou (OK); `blender_004_cabinet_editor_smoke` e `blender_012_library_ui` falharam por expectativas anteriores às
-mudanças atuais (a guarda de "construção antiga" no editor e o card de detalhe da Biblioteca), não pelo painel.
-A004 permanece LOW para esses dois ensaios desatualizados; nenhum código de produto foi alterado por eles.
+**A004:** fechado. Dos três ensaios de GUI citados pela auditoria, `blender_012_convert_undo` passou (OK);
+`blender_004_cabinet_editor_smoke` foi atualizado do editor 2D removido em 021/T027 para o contrato do Construtor v2
+(11/11, exit 0); `blender_012_library_ui` foi atualizado ao card/Dormitório e ao "Criar armário" v2 (9/9, exit 0).
+Nenhum código de produto foi alterado por eles.
