@@ -54,6 +54,14 @@ def run_checks():
         return
     ALVO.update(target)
 
+    # Filtro de acervo por ambiente segue íntegro (entrega anterior).
+    cozinha = {e["name"] for e in draw.grid_entries(STATE)}
+    STATE.category = "Banheiro"
+    banheiro = {e["name"] for e in draw.grid_entries(STATE)}
+    STATE.category = "Cozinha"
+    check("filtro por ambiente intacto", "Gabinete de banheiro" in banheiro and not (cozinha & banheiro),
+          str(sorted(cozinha & banheiro)))
+
     abriu = ops_detail.abrir(bpy.context, draw.entry_key(target))
     check("clique no módulo abre o card", abriu and STATE.detail_open)
     check("nome no card", STATE.detail_name == target["name"], STATE.detail_name)
@@ -109,6 +117,9 @@ def capture_and_confirm():
         check("profundidade do objeto", abs(cab.depth - ALVO["depth"] / 1000.0) < 1e-4, str(cab.depth))
         check("ambiente do objeto", cab.line == 'DOR', cab.line)
         check("modelo gravado no objeto", obj.get('btm_model_id') == ALVO.get("model"), str(obj.get('btm_model_id')))
+        from caffmob_draw.cabinet_editor import structures_core
+        check("estrutura do Editor V2 no módulo",
+              bool(cab.structure_id) and structures_core.get(cab.structure_id) is not None, cab.structure_id)
 
     # Arraste: a soltura usa as medidas e o ambiente definidos no card, sem passar pelo mouse.
     class _Arraste:
@@ -130,6 +141,24 @@ def capture_and_confirm():
         check("arraste usa altura do card", abs(cab.height - 0.7) < 1e-4, str(cab.height))
         check("arraste usa profundidade do card", abs(cab.depth - 0.45) < 1e-4, str(cab.depth))
         check("arraste usa ambiente do card", cab.line == 'SAL', cab.line)
+
+    # Preset sem variação: confirma com os valores do catálogo e continua inserindo.
+    STATE.tab, STATE.category, STATE.search, STATE.scroll = 'BLOCKS', "Cozinha", "", 0.0
+    preset = next((e for e in draw.grid_entries(STATE)
+                   if e.get('kind') == 'PRESET' and not e.get('right_width_mm')
+                   and e.get('corner_kind') in ('', 'NONE', None)), None)
+    check("acervo tem preset sem variação", preset is not None)
+    if preset is not None:
+        check("preset abre o card", ops_detail.abrir(bpy.context, draw.entry_key(preset)))
+        antes = _conta_objetos()
+        check("preset confirma com o catálogo", ops_detail.confirmar(bpy.context))
+        check("preset insere uma peça", _conta_objetos() > antes)
+        preset_obj = bpy.context.active_object
+        if preset_obj is not None and hasattr(preset_obj, 'btm_cabinet'):
+            cab = preset_obj.btm_cabinet
+            check("preset usa a largura do catálogo",
+                  abs(cab.width - float(preset["size_mm"][0]) / 1000.0) < 1e-4, str(cab.width))
+            check("preset grava o modelo", preset_obj.get('btm_model_id') == preset.get("model"))
 
     print("RESULTADO", "OK" if not FAILURES else "FALHA", FAILURES, flush=True)
     os._exit(1 if FAILURES else 0)
