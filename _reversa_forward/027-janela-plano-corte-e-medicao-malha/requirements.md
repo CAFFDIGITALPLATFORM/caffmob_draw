@@ -19,7 +19,8 @@ preferência está ligada. O defeito da coleção de câmeras foi corrigido e pr
 
 | ID | Função | Critério de aceite | Estado |
 |----|--------|--------------------|--------|
-| RF-05 | Coleção de câmeras | O gerenciador cria **uma** coleção `CAMERAS`, dá a ela uma cor de etiqueta aleatória, adota as câmeras já existentes que ainda não foram organizadas, reaproveita a coleção antiga `Câmeras do Promob` em vez de duplicá-la, e põe a nova câmera (e o alvo) dentro dela. | ✅ provado (`tests/blender_cameras_colecao.py`, 17/17) |
+| RF-05 | Coleção de câmeras | O gerenciador cria **uma** coleção `CAMERAS`, dá a ela uma cor de etiqueta aleatória, adota as câmeras já existentes que ainda não foram organizadas, reaproveita a coleção antiga `Câmeras do Promob` em vez de duplicá-la, e põe a nova câmera dentro dela. | ✅ provado (`tests/blender_cameras_colecao.py`, 27/27) |
+| RF-05b | Câmera sem rastreador | Nenhuma câmera cria Empty nem restrição Track To: o alvo é um ponto guardado na própria câmera (`btm_camera_alvo`), e a câmera é orientada por código. Cenas antigas com Empty alvo são migradas na primeira leitura: o Empty vira ponto e é removido. Altura do alvo, Atualizar pela vista e Percorrer continuam funcionando pelo ponto. | ✅ provado (`tests/blender_cameras_colecao.py`, 27/27) |
 
 ### 2.2 Especificado, não implementado
 
@@ -53,8 +54,9 @@ Cenário: Coleção de câmeras
   Dado uma cena com câmeras soltas na coleção mestre
   Quando crio uma câmera pelo Gerenciar câmeras
   Então existe uma única coleção CAMERAS com cor de etiqueta
-  E todas as câmeras e alvos estão dentro dela
+  E todas as câmeras estão dentro dela
   E nenhuma coleção "Câmeras do Promob" sobra
+  E nenhum Empty nem restrição Track To foi criado
 
 Cenário: Plano de corte em janela
   Dado um projeto com peças

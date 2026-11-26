@@ -139,9 +139,9 @@
   "pt_BR": "Saia da vista da câmera e enquadre antes de atualizar.",
   "en_US": "Leave the camera view and frame the shot before updating."
  },
- "Remove a câmera escolhida e o alvo dela": {
-  "pt_BR": "Remove a câmera escolhida e o alvo dela",
-  "en_US": "Remove the chosen camera and its target"
+ "Remove a câmera escolhida": {
+  "pt_BR": "Remove a câmera escolhida",
+  "en_US": "Remove the chosen camera"
  },
  "Remover câmera": {
   "pt_BR": "Remover câmera",

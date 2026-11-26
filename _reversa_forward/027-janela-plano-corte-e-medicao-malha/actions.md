@@ -18,7 +18,8 @@
 | ID | Descrição | Dependências | Paralelismo | Arquivo alvo | Status |
 |----|-----------|--------------|-------------|--------------|--------|
 | T001 | Coleção `CAMERAS`, cor de etiqueta aleatória, adoção das câmeras existentes e reaproveitamento da coleção antiga | - | `[//]` | `caffmob_draw/promob/cameras.py` | `[X]` |
-| T002 | Ensaio no Blender: nome único, cor estável, adoção, não mover câmera já organizada, alvo e Track To | T001 | - | `tests/blender_cameras_colecao.py` | `[X]` |
+| T001b | Câmera sem Empty e sem Track To: alvo vira ponto na câmera, orientação por código, migração das cenas antigas, Altura do alvo / Atualizar / Percorrer pelo ponto | T001 | - | `caffmob_draw/promob/cameras.py` | `[X]` |
+| T002 | Ensaio no Blender: nome único, cor estável, adoção, não mover câmera já organizada, sem Empty/Track To, migração e importação de vistas | T001, T001b | - | `tests/blender_cameras_colecao.py` | `[X]` |
 | T003 | Revisão de API e lint do arquivo tocado | T001 | - | `docs/rag/tools/check_api.py`, ruff | `[X]` |
 
 ## Fase 2, Arestas
@@ -56,7 +57,10 @@
 
 | Comando | Resultado |
 |---------|-----------|
-| `tests/blender_cameras_colecao.py` (Blender 5.2.0, `--background`) | **17/17 OK**, saída 0 |
+| `tests/blender_cameras_colecao.py` (Blender 5.2.0, `--background`) | **27/27 OK**, saída 0 |
+| `tests/blender_025_place.py` (Blender 5.2 do Windows, janela real) | **16/16 OK**, saída 0 |
+| `tests/blender_012_library_ui.py` (Blender 5.2 do Windows, janela real) | OK, saída 0 |
+| `tests/blender_biblioteca_detalhe.py` (Blender 5.2 do Windows, janela real) | OK, saída 0 |
 | `tests/blender_026_parity.py` (Blender 5.2.0, xvfb) | **23/23 OK**, saída 0 |
 | `tests/blender_023_fase7.py` (Blender 5.2.0, `--background`) | OK, saída 0 |
 | `tests/test_armario_026_parity` + `test_i18n_coverage` | **9/9 OK** |
@@ -66,9 +70,9 @@
 
 ## Limites desta rodada
 
-- `tests/blender_025_place.py`, `blender_012_library_ui.py` e `blender_biblioteca_detalhe.py` exigem janela com GPU;
-  nesta máquina (WSL sem EGL/Zink) o Blender aborta ao criar a janela. **Não foram executados**: não contam como
-  aprovados.
+- Os três ensaios de GUI exigem janela com GPU: no Blender do Linux/WSL o EGL/Zink não cria superfície e o processo
+  aborta. Passaram a ser executados no **Blender 5.2 do Windows**, chamado do WSL por `powershell.exe` com
+  `Start-Process -Wait -RedirectStandardOutput`, e aí sim rodaram com janela real.
 - A matriz tem 11 linhas abertas. **A auditoria da 027 não é 0/0/0/0.**
 
 ## Histórico

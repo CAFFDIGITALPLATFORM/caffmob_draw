@@ -2,8 +2,9 @@
 
 O `.promob` guarda as vistas salvas (`VIEWPOINTCOLLECTION`: "CAM 0001"...) e a vista dinâmica do momento em que foi
 salvo (`VIEWPOINT`), cada uma com observador, alvo, campo de visão e os cortes anterior e posterior. Cada vista vira
-uma câmera do Blender com o alvo num Empty (Track To): mover o alvo ou o observador reapontam a câmera, como o olho e
-a mira da Vista Dinâmica do Promob.
+uma câmera do Blender apontada para o alvo, como o olho e a mira da Vista Dinâmica do Promob. O alvo é só um ponto
+guardado na própria câmera (`btm_camera_alvo`), sem Empty e sem restrição Track To: a cena não ganha objeto nenhum
+além das câmeras.
 
 A ferramenta lista todas as câmeras da cena (as do Promob e as da pessoa), olha por uma, cria uma da vista atual,
 regrava uma pela vista atual, remove e percorre as vistas em sequência (Passo = quadros entre duas vistas; FPS = da
@@ -23,9 +24,8 @@ COLECAO_ANTIGA = "Câmeras do Promob"
 # Etiquetas de cor de coleção do Blender (3.0+); a coleção de câmeras ganha uma ao ser criada.
 CORES_DA_COLECAO = ('COLOR_01', 'COLOR_02', 'COLOR_03', 'COLOR_04',
                     'COLOR_05', 'COLOR_06', 'COLOR_07', 'COLOR_08')
-ALVO_PROP = 'btm_camera_alvo'          # nome do Empty alvo da câmera
+ALVO_PROP = 'btm_camera_alvo'          # posição do alvo (x, y, z) guardada na câmera
 PROMOB_PROP = 'btm_camera_promob'      # a câmera veio do .promob
-SUFIXO_DO_ALVO = " · alvo"
 PERCURSO = "Percurso"
 
 
@@ -44,11 +44,11 @@ def _adotar(colecao, mestre, antiga, obj):
 
 
 def _reorganizar(context, colecao, antiga):
-    """Todas as câmeras da cena (e os alvos delas) passam a morar na coleção de câmeras."""
+    """Todas as câmeras da cena passam a morar na coleção de câmeras."""
     mestre = context.scene.collection
     for cam in todas(context.scene):
+        alvo_de(cam)                        # migra o Empty alvo das cenas antigas
         _adotar(colecao, mestre, antiga, cam)
-        _adotar(colecao, mestre, antiga, alvo_de(cam))
     if antiga is not None and antiga is not colecao and not antiga.objects and not antiga.children:
         bpy.data.collections.remove(antiga)
 
@@ -69,20 +69,23 @@ def _colecao(context):
     return colecao
 
 
+def _apontar(cam, alvo):
+    """Orienta a câmera para o alvo (olha pelo -Z, com o +Y para cima, como o Track To de antes)."""
+    direcao = Vector(alvo) - Vector(cam.location)
+    if direcao.length < 1e-6:
+        return
+    cam.rotation_mode = 'QUATERNION'
+    cam.rotation_quaternion = direcao.to_track_quat('-Z', 'Y')
+
+
 def _nova(context, nome, observador, alvo, colecao=None):
     colecao = colecao or _colecao(context)
     dados = bpy.data.cameras.new(nome)
     cam = bpy.data.objects.new(nome, dados)
     colecao.objects.link(cam)
-    mira = bpy.data.objects.new(nome + SUFIXO_DO_ALVO, None)
-    mira.empty_display_type = 'SPHERE'
-    mira.empty_display_size = 0.05
-    colecao.objects.link(mira)
-    cam.location, mira.location = observador, alvo
-    trava = cam.constraints.new('TRACK_TO')
-    trava.target = mira
-    trava.track_axis, trava.up_axis = 'TRACK_NEGATIVE_Z', 'UP_Y'
-    cam[ALVO_PROP] = mira.name
+    cam.location = observador
+    cam[ALVO_PROP] = list(alvo)
+    _apontar(cam, alvo)
     return cam
 
 
@@ -114,8 +117,27 @@ def criar(context, vistas):
 
 # -- consulta -----------------------------------------------------------------------------------------------------------
 def alvo_de(cam):
-    nome = cam.get(ALVO_PROP) if cam is not None else None
-    return bpy.data.objects.get(nome) if nome else None
+    """Posição do alvo da câmera. Cenas antigas tinham um Empty alvo: ele vira um ponto e é removido aqui."""
+    if cam is None:
+        return None
+    valor = cam.get(ALVO_PROP)
+    if isinstance(valor, str):
+        antigo = bpy.data.objects.get(valor)
+        # `matrix_basis` vale na hora; `matrix_world` só depois da avaliação do grafo (e aqui pode ser consultado
+        # durante o desenho). O alvo do add-on nunca tem pai, então a base é a posição no mundo.
+        if antigo is None:
+            posicao = Vector(cam.location)
+        else:
+            matriz = antigo.matrix_world if antigo.parent else antigo.matrix_basis
+            posicao = matriz.translation.copy()
+        cam[ALVO_PROP] = list(posicao)
+        if antigo is not None:
+            bpy.data.objects.remove(antigo, do_unlink=True)
+        _apontar(cam, posicao)
+        return posicao
+    if valor is None:
+        return Vector(cam.location)
+    return Vector(valor)
 
 
 def todas(scene):
@@ -142,7 +164,7 @@ def _get(campo):
         cam = ativa(bpy.context)
         if cam is None:
             return 0.0
-        mira = alvo_de(cam)
+        alvo = alvo_de(cam)
         if campo == 'corte_anterior':
             return cam.data.clip_start
         if campo == 'corte_posterior':
@@ -150,7 +172,7 @@ def _get(campo):
         if campo == 'altura_do_observador':
             return cam.matrix_world.translation.z
         if campo == 'altura_do_alvo':
-            return mira.matrix_world.translation.z if mira is not None else 0.0
+            return alvo.z if alvo is not None else 0.0
         return cam.data.angle_y
     return get
 
@@ -160,15 +182,18 @@ def _set(campo):
         cam = ativa(bpy.context)
         if cam is None:
             return
-        mira = alvo_de(cam)
+        alvo = alvo_de(cam)
         if campo == 'corte_anterior':
             cam.data.clip_start = max(valor, 0.001)
         elif campo == 'corte_posterior':
             cam.data.clip_end = max(valor, cam.data.clip_start + 0.01)
         elif campo == 'altura_do_observador':
             cam.location.z = valor
-        elif campo == 'altura_do_alvo' and mira is not None:
-            mira.location.z = valor
+            _apontar(cam, alvo)
+        elif campo == 'altura_do_alvo' and alvo is not None:
+            alvo.z = valor
+            cam[ALVO_PROP] = list(alvo)
+            _apontar(cam, alvo)
         elif campo == 'campo_de_visao':
             cam.data.sensor_fit = 'VERTICAL'
             cam.data.angle_y = max(math.radians(1.0), min(valor, math.radians(170.0)))
@@ -255,14 +280,13 @@ class CAFFMOB_OT_camera_atualizar(bpy.types.Operator):
             self.report({'INFO'}, tr("Saia da vista da câmera e enquadre antes de atualizar."))
             return {'CANCELLED'}
         cam.location = rv3d.view_matrix.inverted().translation
-        mira = alvo_de(cam)
-        if mira is not None:
-            mira.location = rv3d.view_location
+        cam[ALVO_PROP] = list(rv3d.view_location)
+        _apontar(cam, rv3d.view_location)
         return {'FINISHED'}
 
 
 class CAFFMOB_OT_camera_remover(bpy.types.Operator):
-    """Remove a câmera escolhida e o alvo dela"""
+    """Remove a câmera escolhida"""
     bl_idname = 'caffmob.camera_remover'
     bl_label = N_("Remover câmera")
     bl_options = {'REGISTER', 'UNDO'}
@@ -271,11 +295,8 @@ class CAFFMOB_OT_camera_remover(bpy.types.Operator):
         cam = ativa(context)
         if cam is None:
             return {'CANCELLED'}
-        mira = alvo_de(cam)
         dados = cam.data
         bpy.data.objects.remove(cam, do_unlink=True)
-        if mira is not None:
-            bpy.data.objects.remove(mira, do_unlink=True)
         if dados is not None and dados.users == 0:
             bpy.data.cameras.remove(dados)
         sincronizar_linhas(context)
@@ -292,23 +313,22 @@ class CAFFMOB_OT_camera_percorrer(bpy.types.Operator):
 
     def execute(self, context):
         cena, estado = context.scene, context.window_manager.btm_cameras
-        vistas = [c for c in todas(cena) if c.name != PERCURSO and alvo_de(c) is not None]
+        vistas = [c for c in todas(cena) if c.name != PERCURSO]
         if len(vistas) < 2:
             self.report({'ERROR'}, tr("O percurso precisa de duas câmeras ou mais."))
             return {'CANCELLED'}
         cam = bpy.data.objects.get(PERCURSO)
         if cam is None:
-            cam = _nova(context, PERCURSO, vistas[0].matrix_world.translation, alvo_de(vistas[0]).location)
-        mira = alvo_de(cam)
-        for o in (cam, mira):
-            o.animation_data_clear()
+            cam = _nova(context, PERCURSO, vistas[0].matrix_world.translation, alvo_de(vistas[0]))
+        cam.animation_data_clear()
+        cam.rotation_mode = 'QUATERNION'
         for i, vista in enumerate(vistas):
             quadro = 1 + i * estado.passo
             cam.location = vista.matrix_world.translation
-            mira.location = alvo_de(vista).matrix_world.translation
+            _apontar(cam, alvo_de(vista))
             cam.data.angle_y = vista.data.angle_y
             cam.keyframe_insert('location', frame=quadro)
-            mira.keyframe_insert('location', frame=quadro)
+            cam.keyframe_insert('rotation_quaternion', frame=quadro)
         cena.render.fps = estado.fps
         cena.frame_start, cena.frame_end = 1, 1 + (len(vistas) - 1) * estado.passo
         cena.frame_set(1)
