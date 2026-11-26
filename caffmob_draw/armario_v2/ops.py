@@ -373,6 +373,10 @@ class BTM_OT_ArmarioV2Abrir(_ArmarioOperator, bpy.types.Operator):
         armario = root.btm_armario
         armario.snapshot = snapshot_de(root)
         armario.aberto = False
+        # 027: criar/abrir o armário leva direto à janela própria do construtor. Sem interface (`--background`, script)
+        # ou com uma janela já aberta, o `poll` recusa e o construtor continua na vista 3D, como antes.
+        if bpy.ops.caffmob.armario_v2_window_open.poll():
+            bpy.ops.caffmob.armario_v2_window_open('INVOKE_DEFAULT')
         return {'FINISHED'}
 
 

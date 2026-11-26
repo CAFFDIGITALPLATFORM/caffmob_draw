@@ -2,7 +2,7 @@
 
 Prova, sem `--background`:
 
-1. `Criar armário` (`caffmob.cabinet_editor`) abre o construtor na própria viewport, sem criar janela nova;
+1. `Criar armário` (`caffmob.cabinet_editor`) cria a raiz e abre a janela própria do construtor (027);
 2. `Aplicar` pede o posicionamento (o gancho é chamado) e o aviso tem os dois modos;
 3. `Cursor 3D` move a raiz para o cursor, com as peças filhas;
 4. `Escolher` cria a caixa de arame nas medidas do spec, oculta o armário, acompanha o mouse, gira com as setas,
@@ -24,6 +24,7 @@ from mathutils import Vector
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import _blender_env as env  # noqa: E402
 from caffmob_draw.armario_v2 import build, ops as ops_v2, ops_placement, placement  # noqa: E402
+from caffmob_draw.armario_v2 import window as win_mod  # noqa: E402
 
 FAILURES = []
 
@@ -71,9 +72,15 @@ def script():
     with ctx.temp_override(window=win, area=area, region=region):
         resultado = bpy.ops.caffmob.cabinet_editor('INVOKE_DEFAULT')
     root = raiz()
-    check("Criar armário abre o construtor na viewport, sem janela nova",
-          resultado == {'FINISHED'} and root is not None and len(ctx.window_manager.windows) == janelas,
-          f"{resultado} janelas={len(ctx.window_manager.windows)}")
+    check("Criar armário cria a raiz e abre a janela do construtor",
+          resultado == {'FINISHED'} and root is not None and len(ctx.window_manager.windows) == janelas + 1
+          and win_mod.sessao() is not None,
+          f"{resultado} janelas={len(ctx.window_manager.windows)} sessao={win_mod.sessao() is not None}")
+    # Fecha a janela para o resto do roteiro rodar na vista 3D, como antes.
+    bpy.ops.caffmob.armario_v2_window_cancelar()
+    yield 0.4
+    check("Cancelar fecha a janela do construtor", len(ctx.window_manager.windows) == janelas
+          and win_mod.sessao() is None, str(len(ctx.window_manager.windows)))
 
     with ctx.temp_override(window=win, area=area, region=region):
         bpy.ops.caffmob.armario_v2_montar_caixa()

@@ -1,5 +1,21 @@
 # Changelog do CAFFMob Draw
 
+## 1.36.1 — 2026-11-26
+
+### Criar armário abre a janela do construtor (027, correção de entrada)
+
+- `caffmob.cabinet_editor` — o “Criar armário” da Biblioteca, da barra lateral e das propriedades — passou a abrir a
+  **janela própria do construtor** depois de criar ou preparar a raiz do armário, em vez de deixar o usuário na vista
+  3D. Com a janela já aberta, ou em `--background`/script, o `poll` de `caffmob.armario_v2_window_open` recusa e o
+  comportamento antigo continua (construir na vista 3D).
+- O botão “Abrir Janela do Construtor” continua no painel, para quando a janela foi fechada por engano.
+- Provas: `blender_025_place` **18/18** no Blender 5.2 do Windows (a janela abre ao criar e o Cancelar a fecha,
+  voltando a vista 3D para o resto do roteiro), `blender_026_parity` 23/23, `blender_023_fase7` e smoke OK.
+
+### Como a numeração foi calculada
+
+`1.36.0 + correção de caminho de entrada, sem recurso novo = 1.36.1` (patch).
+
 ## 1.36.0 — 2026-11-26
 
 ### Janela do plano de corte e V-Ray Mesh Measure (027, fases 4 a 8)
