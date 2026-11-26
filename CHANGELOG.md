@@ -1,5 +1,25 @@
 # Changelog do CAFFMob Draw
 
+## 1.33.0 — 2026-11-26
+
+### Biblioteca
+
+- Card branco de detalhe do módulo antes de inserir: clicar num módulo da grade abre um card claro com o nome, o
+  ambiente, largura, altura e profundidade pré-preenchidos pelo catálogo e pelos padrões do Padrão de Dimensões, mais o
+  seletor de ambiente (Cozinha, Banheiro, Dormitório, Sala, Home office) e os botões Inserir e Cancelar
+  (`library_panel/detail_core.py`, `library_panel/ops_detail.py`, `library_panel/draw.py`, `library_panel/props.py`).
+- Confirmar passa as medidas e o ambiente escolhidos para `caffmob.library_insert_model`, que agora aceita
+  `width_mm`/`height_mm`/`depth_mm` e os repassa ao construtor de armários; módulos de preset sem variação continuam
+  usando os valores do JSON (`library_panel/popover.py`).
+- Validação contra o Padrão de Dimensões: máximos do módulo, faces de chapa (largura × altura, largura × profundidade,
+  altura × profundidade) contra a chapa máxima do fornecedor e espessura da lateral. Medida inválida é recusada com
+  mensagem no card e nada é criado; o filtro de acervo por ambiente e a galeria do Editor de Armário V2 continuam
+  intactos.
+
+### Como a numeração foi calculada
+
+`1.32.0 + 1 feature entregue = 1.33.0`, mantendo a convenção do repositório de uma minor por entrega.
+
 ## 1.32.0 — 2026-11-25
 
 Primeiro incremento desde a 1.27.0 (2026-11-23). Entre uma e outra entraram cinco features com código no pacote, sem

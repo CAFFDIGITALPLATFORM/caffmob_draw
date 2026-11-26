@@ -66,6 +66,9 @@ class BTM_OT_LibraryInsertModel(bpy.types.Operator):
 
     model_id: bpy.props.StringProperty()  # type: ignore
     line: bpy.props.StringProperty(default='COZ')  # type: ignore
+    width_mm: bpy.props.FloatProperty(name="Largura (mm)", default=0.0, min=0.0)  # type: ignore
+    height_mm: bpy.props.FloatProperty(name="Altura (mm)", default=0.0, min=0.0)  # type: ignore
+    depth_mm: bpy.props.FloatProperty(name="Profundidade (mm)", default=0.0, min=0.0)  # type: ignore
 
     def execute(self, context):
         model = models_core.find_any(self.model_id)
@@ -76,7 +79,9 @@ class BTM_OT_LibraryInsertModel(bpy.types.Operator):
             from ..openings import build, door_core, window_core
             state = getattr(context.window_manager, 'btm_library', None) if context.window_manager else None
             mat = (getattr(state, 'opening_material', "") if state is not None else "") or model.default_material
-            w, h, wall = model.width_mm / 1000.0, model.height_mm / 1000.0, 0.15
+            w = (self.width_mm / 1000.0) if self.width_mm > 0 else (model.width_mm / 1000.0)
+            h = (self.height_mm / 1000.0) if self.height_mm > 0 else (model.height_mm / 1000.0)
+            wall = 0.15
             if model.kind == 'WINDOW':
                 parts = window_core.window_parts(w, h, wall, model=model.opening_model, material=mat)
             else:
@@ -103,8 +108,13 @@ class BTM_OT_LibraryInsertModel(bpy.types.Operator):
 
         kwargs = dict(cabinet_type=model.cabinet_type, line=self.line if self.line in categories_core.LINES else 'COZ',
                       door_swing=model.door_swing, shelves=model.shelves)
-        if model.width_mm:
-            kwargs['width'] = model.width_mm / 1000.0
+        width_mm = self.width_mm if self.width_mm > 0 else model.width_mm
+        if width_mm:
+            kwargs['width'] = width_mm / 1000.0
+        if self.height_mm > 0:
+            kwargs['height'] = self.height_mm / 1000.0
+        if self.depth_mm > 0:
+            kwargs['depth'] = self.depth_mm / 1000.0
         kwargs['structure_id'] = models_core.model_structure(model, kwargs['line'])     # feature 015 (RN-13)
         res = bpy.ops.caffmob.cabinet_builder(**kwargs)
         if 'FINISHED' in res and context.active_object is not None:

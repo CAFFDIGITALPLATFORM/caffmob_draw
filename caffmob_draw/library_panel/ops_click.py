@@ -198,6 +198,15 @@ class BTM_OT_LibraryClick(bpy.types.Operator):
         state = context.window_manager.btm_library
         lay, part = _hit_max(context, event)
         mx, my = event.mouse_region_x, event.mouse_region_y
+        if state.detail_open:                    # o card branco captura o clique antes da grade
+            from . import detail_core, ops_detail
+            hit = detail_core.hit(detail_core.layout(lay.grid, draw._scale(context)), mx, my)
+            if hit is None:
+                ops_detail.fechar_painel(context)
+                return {'PASS_THROUGH'} if part is None else {'FINISHED'}
+            if hit != 'CARD':
+                ops_detail.click(context, hit)
+            return {'FINISHED'}
         if part is None:
             state.mode = grid_core.next_mode(state.mode, 'OUTSIDE', state.pinned)
             draw.tag_redraw(context)
