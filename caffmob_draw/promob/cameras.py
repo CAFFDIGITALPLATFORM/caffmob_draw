@@ -10,6 +10,7 @@ regrava uma pela vista atual, remove e percorre as vistas em sequência (Passo =
 cena). Os campos seguem a Vista Dinâmica: Corte anterior, Corte posterior, Altura do alvo, Altura do observador.
 """
 import math
+import random
 
 import bpy  # type: ignore
 from mathutils import Vector  # type: ignore
@@ -17,7 +18,11 @@ from mathutils import Vector  # type: ignore
 from ..data.i18n import N_, tr
 
 MM = 0.001
-COLECAO = "Câmeras do Promob"
+COLECAO = "CAMERAS"
+COLECAO_ANTIGA = "Câmeras do Promob"
+# Etiquetas de cor de coleção do Blender (3.0+); a coleção de câmeras ganha uma ao ser criada.
+CORES_DA_COLECAO = ('COLOR_01', 'COLOR_02', 'COLOR_03', 'COLOR_04',
+                    'COLOR_05', 'COLOR_06', 'COLOR_07', 'COLOR_08')
 ALVO_PROP = 'btm_camera_alvo'          # nome do Empty alvo da câmera
 PROMOB_PROP = 'btm_camera_promob'      # a câmera veio do .promob
 SUFIXO_DO_ALVO = " · alvo"
@@ -25,12 +30,42 @@ PERCURSO = "Percurso"
 
 
 # -- criar (importação) ----------------------------------------------------------------------------------------------
+def _adotar(colecao, mestre, antiga, obj):
+    """Põe o objeto na coleção de câmeras, respeitando quem já organizou o objeto à mão."""
+    if obj is None or colecao.objects.get(obj.name) is not None:
+        return
+    externas = [c for c in obj.users_collection if c not in (mestre, colecao, antiga)]
+    if externas:
+        return                      # já está numa coleção da pessoa: não mexemos
+    colecao.objects.link(obj)
+    for outra in list(obj.users_collection):
+        if outra != colecao:
+            outra.objects.unlink(obj)
+
+
+def _reorganizar(context, colecao, antiga):
+    """Todas as câmeras da cena (e os alvos delas) passam a morar na coleção de câmeras."""
+    mestre = context.scene.collection
+    for cam in todas(context.scene):
+        _adotar(colecao, mestre, antiga, cam)
+        _adotar(colecao, mestre, antiga, alvo_de(cam))
+    if antiga is not None and antiga is not colecao and not antiga.objects and not antiga.children:
+        bpy.data.collections.remove(antiga)
+
+
 def _colecao(context):
     colecao = bpy.data.collections.get(COLECAO)
+    antiga = bpy.data.collections.get(COLECAO_ANTIGA)
+    if colecao is None and antiga is not None:
+        antiga.name = COLECAO        # a coleção antiga é reaproveitada, não duplicada
+        colecao = antiga
     if colecao is None:
         colecao = bpy.data.collections.new(COLECAO)
     if colecao.name not in context.scene.collection.children:
         context.scene.collection.children.link(colecao)
+    if getattr(colecao, 'color_tag', 'NONE') == 'NONE':
+        colecao.color_tag = random.choice(CORES_DA_COLECAO)
+    _reorganizar(context, colecao, antiga)
     return colecao
 
 
