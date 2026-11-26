@@ -174,9 +174,11 @@ def draw_cut_plan(layout, context, compact=False):
         warn.alert = True
         warn.label(text="O projeto mudou: recalcule o plano de corte.", icon='ERROR')
 
+    # 027, T009: o plano de corte abre na janela própria; o cálculo antigo fica como recálculo.
     row = layout.row(align=True)
     row.scale_y = 1.3
-    row.operator("caffmob.calculate_nesting", text="Calcular Plano de Corte", icon='PLAY')
+    row.operator("caffmob.cut_plan_window", text="Abrir Plano de Corte", icon='WINDOW')
+    layout.operator("caffmob.calculate_nesting", text="Recalcular Plano de Corte", icon='PLAY')
 
     col = layout.column(align=True)
     row = col.row(align=True)

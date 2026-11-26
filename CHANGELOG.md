@@ -1,5 +1,36 @@
 # Changelog do CAFFMob Draw
 
+## 1.36.0 — 2026-11-26
+
+### Janela do plano de corte e V-Ray Mesh Measure (027, fases 4 a 8)
+
+- **Plano de corte em janela própria** (`caffmob.cut_plan_window`): o botão da barra lateral abre a janela com a
+  chapa, o refilo, as peças coloridas por módulo (nome e medidas), o aproveitamento no rodapé e navegação por roda,
+  arraste e setas. Painel lateral com chapas, peças da chapa, resumo, recálculo e as exportações de sempre.
+  O cálculo antigo continua alcançável como “Recalcular Plano de Corte”.
+- **V-Ray Mesh Measure** (`caffmob.mesh_measure_window`): janela de medição de malha com detecção da malha
+  selecionada, conta-gotas na Vista 3D e aviso quando não há seleção.
+- **Partes soltas como camadas**, com medidas de cada uma (caixa em mm/cm/m), mostrar/esconder e cor sólida por parte.
+- **Câmera orbital** com perspectiva e ortográfica, enquadrar, pan e zoom; **snap** nas extremidades do objeto, das
+  partes ou de ambos, com limite em mm.
+- **Cinco representações**: Aramado, Linhas Ocultas, Sólido, Raio-X e Material.
+- **Medidas manuais** por Ctrl+clique entre extremidades (com snap), unidade **absoluta ou arredondada** em mm/cm/m.
+- **Impressão** com folhas A4 retrato/paisagem, A3 paisagem e Carta; **views com badge** (V1, V2, …), tamanho e
+  proporção por view.
+- Arquivos de referência: `caffmob_draw/cutting/plan_window.py`, `caffmob_draw/cutting/plan_window_core.py`,
+  `caffmob_draw/mesh_measure/` (`core.py`, `camera.py`, `scene.py`, `draw.py`, `window.py`).
+- Provas: `blender_027_plano_corte` **29/29**, `blender_027_medicao_malha` **81/81**,
+  `blender_027_janelas` **18/18** (janela real: as duas janelas abrem, desenham nas cinco representações, montam a
+  folha e fecham), `blender_021_mcp_e2e` **52/52**, `blender_026_parity` **23/23**, `blender_025_place` **16/16**,
+  `blender_023_fase7`, `blender_005_sidebar_inventory`, smoke, i18n **3/3** (135 chaves novas), `check_api.py` 648
+  arquivos. Suíte pura: 1648 testes, 5 falhas pré-existentes em arquivos não tocados.
+- Cobre a feature `027-janela-plano-corte-e-medicao-malha` (T001–T014, RF-01 a RF-05b).
+
+### Como a numeração foi calculada
+
+`1.35.0 + 1 recurso novo entregue (plano de corte em janela + V-Ray Mesh Measure, a mesma feature 027) = 1.36.0`
+(minor). A 027 estava pausada nas rodadas anteriores e só conta agora, com a matriz 14/14.
+
 ## 1.35.0 — 2026-11-26
 
 ### Paridade restante do Construtor e padrão completo da Biblioteca (026)

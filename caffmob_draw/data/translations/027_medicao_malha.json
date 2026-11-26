@@ -1,0 +1,338 @@
+{
+  "A janela de medição não está aberta.": {
+    "pt_BR": "A janela de medição não está aberta.",
+    "en_US": "The measurement window is not open."
+  },
+  "A malha selecionada não tem vértices para medir.": {
+    "pt_BR": "A malha selecionada não tem vértices para medir.",
+    "en_US": "The selected mesh has no vertices to measure."
+  },
+  "Abre a janela de medição da malha selecionada": {
+    "pt_BR": "Abre a janela de medição da malha selecionada",
+    "en_US": "Opens the measurement window for the selected mesh"
+  },
+  "Abrir V-Ray Mesh Measure": {
+    "pt_BR": "Abrir V-Ray Mesh Measure",
+    "en_US": "Open V-Ray Mesh Measure"
+  },
+  "Absoluta": {
+    "pt_BR": "Absoluta",
+    "en_US": "Absolute"
+  },
+  "Ambos": {
+    "pt_BR": "Ambos",
+    "en_US": "Both"
+  },
+  "Apaga as medidas manuais da janela": {
+    "pt_BR": "Apaga as medidas manuais da janela",
+    "en_US": "Deletes the window's manual measures"
+  },
+  "Aramado": {
+    "pt_BR": "Aramado",
+    "en_US": "Wireframe"
+  },
+  "Arredondada": {
+    "pt_BR": "Arredondada",
+    "en_US": "Rounded"
+  },
+  "Arredondamento": {
+    "pt_BR": "Arredondamento",
+    "en_US": "Rounding"
+  },
+  "Caixa de cada parte": {
+    "pt_BR": "Caixa de cada parte",
+    "en_US": "Box of each part"
+  },
+  "Camadas (partes soltas)": {
+    "pt_BR": "Camadas (partes soltas)",
+    "en_US": "Layers (loose parts)"
+  },
+  "Clique na malha com o conta-gotas, na Vista 3D.": {
+    "pt_BR": "Clique na malha com o conta-gotas, na Vista 3D.",
+    "en_US": "Click the mesh with the eyedropper in the 3D View."
+  },
+  "Clique na outra extremidade.": {
+    "pt_BR": "Clique na outra extremidade.",
+    "en_US": "Click the other end."
+  },
+  "Conta-gotas: escolher malha": {
+    "pt_BR": "Conta-gotas: escolher malha",
+    "en_US": "Eyedropper: pick mesh"
+  },
+  "Cor sólida": {
+    "pt_BR": "Cor sólida",
+    "en_US": "Solid color"
+  },
+  "Cria uma view da impressão, muda o tamanho ou a proporção, ou remove a view": {
+    "pt_BR": "Cria uma view da impressão, muda o tamanho ou a proporção, ou remove a view",
+    "en_US": "Creates a print view, changes its size or proportion, or removes the view"
+  },
+  "Criar view": {
+    "pt_BR": "Criar view",
+    "en_US": "Create view"
+  },
+  "Criar view com badge": {
+    "pt_BR": "Criar view com badge",
+    "en_US": "Create view with badge"
+  },
+  "Crie uma view para montar a folha.": {
+    "pt_BR": "Crie uma view para montar a folha.",
+    "en_US": "Create a view to build the sheet."
+  },
+  "Ctrl+clique em duas extremidades para medir.": {
+    "pt_BR": "Ctrl+clique em duas extremidades para medir.",
+    "en_US": "Ctrl+click two ends to measure."
+  },
+  "Desligado": {
+    "pt_BR": "Desligado",
+    "en_US": "Off"
+  },
+  "Enquadrar a malha": {
+    "pt_BR": "Enquadrar a malha",
+    "en_US": "Frame the mesh"
+  },
+  "Escolhe a malha a medir com um clique na Vista 3D": {
+    "pt_BR": "Escolhe a malha a medir com um clique na Vista 3D",
+    "en_US": "Picks the mesh to measure with a click in the 3D View"
+  },
+  "Escolhe qual malha da cena medir e abre a janela": {
+    "pt_BR": "Escolhe qual malha da cena medir e abre a janela",
+    "en_US": "Picks which scene mesh to measure and opens the window"
+  },
+  "Escolher": {
+    "pt_BR": "Escolher",
+    "en_US": "Select"
+  },
+  "Escolher malha": {
+    "pt_BR": "Escolher malha",
+    "en_US": "Pick mesh"
+  },
+  "Escolher malha para medir": {
+    "pt_BR": "Escolher malha para medir",
+    "en_US": "Pick a mesh to measure"
+  },
+  "Fecha a janela de medição": {
+    "pt_BR": "Fecha a janela de medição",
+    "en_US": "Closes the measurement window"
+  },
+  "Fechar medição": {
+    "pt_BR": "Fechar medição",
+    "en_US": "Close measurement"
+  },
+  "Impressão": {
+    "pt_BR": "Impressão",
+    "en_US": "Print"
+  },
+  "Limpar medidas": {
+    "pt_BR": "Limpar medidas",
+    "en_US": "Clear measures"
+  },
+  "Limpar medidas manuais": {
+    "pt_BR": "Limpar medidas manuais",
+    "en_US": "Clear manual measures"
+  },
+  "Linhas Ocultas": {
+    "pt_BR": "Linhas Ocultas",
+    "en_US": "Hidden Lines"
+  },
+  "Malha": {
+    "pt_BR": "Malha",
+    "en_US": "Mesh"
+  },
+  "Malha: {}": {
+    "pt_BR": "Malha: {}",
+    "en_US": "Mesh: {}"
+  },
+  "Medidas manuais: {}": {
+    "pt_BR": "Medidas manuais: {}",
+    "en_US": "Manual measures: {}"
+  },
+  "Medidas na tela": {
+    "pt_BR": "Medidas na tela",
+    "en_US": "Measures on screen"
+  },
+  "Medidas na tela: {}": {
+    "pt_BR": "Medidas na tela: {}",
+    "en_US": "Measures on screen: {}"
+  },
+  "Mostra, esconde, escolhe ou troca a cor sólida de uma parte solta": {
+    "pt_BR": "Mostra, esconde, escolhe ou troca a cor sólida de uma parte solta",
+    "en_US": "Shows, hides, selects or changes the solid color of a loose part"
+  },
+  "Mostrar ou esconder": {
+    "pt_BR": "Mostrar ou esconder",
+    "en_US": "Show or hide"
+  },
+  "Muda uma opção da janela de medição: representação, projeção, snap, unidade ou folha": {
+    "pt_BR": "Muda uma opção da janela de medição: representação, projeção, snap, unidade ou folha",
+    "en_US": "Changes a measurement window option: representation, projection, snap, unit or sheet"
+  },
+  "Navegação da janela: arraste orbita, Shift+arraste move, roda dá zoom, Ctrl+clique mede, Esc fecha": {
+    "pt_BR": "Navegação da janela: arraste orbita, Shift+arraste move, roda dá zoom, Ctrl+clique mede, Esc fecha",
+    "en_US": "Window navigation: drag orbits, Shift+drag pans, wheel zooms, Ctrl+click measures, Esc closes"
+  },
+  "Nenhuma malha medida.": {
+    "pt_BR": "Nenhuma malha medida.",
+    "en_US": "No measured mesh."
+  },
+  "Nenhuma malha na cena": {
+    "pt_BR": "Nenhuma malha na cena",
+    "en_US": "No mesh in the scene"
+  },
+  "Nenhuma malha na cena.": {
+    "pt_BR": "Nenhuma malha na cena.",
+    "en_US": "No mesh in the scene."
+  },
+  "Nenhuma malha selecionada.": {
+    "pt_BR": "Nenhuma malha selecionada.",
+    "en_US": "No mesh selected."
+  },
+  "Nenhuma malha sob o cursor.": {
+    "pt_BR": "Nenhuma malha sob o cursor.",
+    "en_US": "No mesh under the cursor."
+  },
+  "Nenhuma view: a folha fica vazia.": {
+    "pt_BR": "Nenhuma view: a folha fica vazia.",
+    "en_US": "No view: the sheet stays empty."
+  },
+  "O V-Ray Mesh Measure precisa de uma janela do Blender aberta.": {
+    "pt_BR": "O V-Ray Mesh Measure precisa de uma janela do Blender aberta.",
+    "en_US": "V-Ray Mesh Measure needs an open Blender window."
+  },
+  "Opção": {
+    "pt_BR": "Opção",
+    "en_US": "Option"
+  },
+  "Opção da medição": {
+    "pt_BR": "Opção da medição",
+    "en_US": "Measurement option"
+  },
+  "Ortográfica": {
+    "pt_BR": "Ortográfica",
+    "en_US": "Orthographic"
+  },
+  "P: voltar ao modelo  ·  Esc: fechar": {
+    "pt_BR": "P: voltar ao modelo  ·  Esc: fechar",
+    "en_US": "P: back to the model  ·  Esc: close"
+  },
+  "Parte da malha": {
+    "pt_BR": "Parte da malha",
+    "en_US": "Mesh part"
+  },
+  "Parte {}": {
+    "pt_BR": "Parte {}",
+    "en_US": "Part {}"
+  },
+  "Partes": {
+    "pt_BR": "Partes",
+    "en_US": "Parts"
+  },
+  "Perspectiva": {
+    "pt_BR": "Perspectiva",
+    "en_US": "Perspective"
+  },
+  "Proporção": {
+    "pt_BR": "Proporção",
+    "en_US": "Proportion"
+  },
+  "Raio-X": {
+    "pt_BR": "Raio-X",
+    "en_US": "X-Ray"
+  },
+  "Reenquadra a malha na janela": {
+    "pt_BR": "Reenquadra a malha na janela",
+    "en_US": "Reframes the mesh in the window"
+  },
+  "Reler": {
+    "pt_BR": "Reler",
+    "en_US": "Reload"
+  },
+  "Reler a malha": {
+    "pt_BR": "Reler a malha",
+    "en_US": "Reload the mesh"
+  },
+  "Reler malha": {
+    "pt_BR": "Reler malha",
+    "en_US": "Reload mesh"
+  },
+  "Relê a malha do objeto escolhido": {
+    "pt_BR": "Relê a malha do objeto escolhido",
+    "en_US": "Re-reads the chosen object's mesh"
+  },
+  "Remover view": {
+    "pt_BR": "Remover view",
+    "en_US": "Remove view"
+  },
+  "Representação": {
+    "pt_BR": "Representação",
+    "en_US": "Representation"
+  },
+  "Selecione uma malha para medir.": {
+    "pt_BR": "Selecione uma malha para medir.",
+    "en_US": "Select a mesh to measure."
+  },
+  "Snap": {
+    "pt_BR": "Snap",
+    "en_US": "Snap"
+  },
+  "Snap nas extremidades": {
+    "pt_BR": "Snap nas extremidades",
+    "en_US": "Snap on the ends"
+  },
+  "Unidades e snap": {
+    "pt_BR": "Unidades e snap",
+    "en_US": "Units and snap"
+  },
+  "Use o conta-gotas para escolher a malha.": {
+    "pt_BR": "Use o conta-gotas para escolher a malha.",
+    "en_US": "Use the eyedropper to pick the mesh."
+  },
+  "V-Ray Mesh Measure": {
+    "pt_BR": "V-Ray Mesh Measure",
+    "en_US": "V-Ray Mesh Measure"
+  },
+  "Ver a folha": {
+    "pt_BR": "Ver a folha",
+    "en_US": "View the sheet"
+  },
+  "View da impressão": {
+    "pt_BR": "View da impressão",
+    "en_US": "Print view"
+  },
+  "arraste: orbitar  ·  Shift+arraste: mover  ·  roda: zoom  ·  clique: parte  ·  Ctrl+clique: medida  ·  Esc: fechar": {
+    "pt_BR": "arraste: orbitar  ·  Shift+arraste: mover  ·  roda: zoom  ·  clique: parte  ·  Ctrl+clique: medida  ·  Esc: fechar",
+    "en_US": "drag: orbit  ·  Shift+drag: pan  ·  wheel: zoom  ·  click: part  ·  Ctrl+click: measure  ·  Esc: close"
+  },
+  "desligadas": {
+    "pt_BR": "desligadas",
+    "en_US": "off"
+  },
+  "impressão · {}": {
+    "pt_BR": "impressão · {}",
+    "en_US": "print · {}"
+  },
+  "ligadas": {
+    "pt_BR": "ligadas",
+    "en_US": "on"
+  },
+  "{} parte(s)": {
+    "pt_BR": "{} parte(s)",
+    "en_US": "{} part(s)"
+  },
+  "{} parte(s) · {} triângulo(s)": {
+    "pt_BR": "{} parte(s) · {} triângulo(s)",
+    "en_US": "{} part(s) · {} triangle(s)"
+  },
+  "{} · {} · {} parte(s)": {
+    "pt_BR": "{} · {} · {} parte(s)",
+    "en_US": "{} · {} · {} part(s)"
+  },
+  "◎ V-Ray Mesh Measure": {
+    "pt_BR": "◎ V-Ray Mesh Measure",
+    "en_US": "◎ V-Ray Mesh Measure"
+  },
+  "◎ {} · {} parte(s) · {} triângulo(s)": {
+    "pt_BR": "◎ {} · {} parte(s) · {} triângulo(s)",
+    "en_US": "◎ {} · {} part(s) · {} triangle(s)"
+  }
+}

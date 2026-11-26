@@ -42,3 +42,17 @@ só depois da avaliação do grafo — e esta leitura pode acontecer durante o d
   `_get`/`_set` de Altura do alvo, Atualizar pela vista, Remover câmera e Percorrer (que agora anima
   `location` + `rotation_quaternion` da câmera, sem animar um Empty).
 - Projetos antigos continuam abrindo: a migração acontece na primeira leitura, sem passo manual.
+
+## 5. Janelas do plano de corte e da medição (T009–T014)
+
+| Antes | Depois |
+|-------|--------|
+| O plano de corte só existia como cálculo (cache da cena) e texto no painel | O plano continua no cache (`btm_nesting_json_cache`, `btm_nesting_*`), e a janela lê dali; nenhuma chave nova de cena |
+| Nenhum alvo de medição guardado | `Scene["btm_mesh_measure_target"]`: **nome** do último objeto de malha medido, para o projeto reabrir com a mesma malha no seletor |
+| Nenhum estado de janela persistido | Estado da janela de medição e da janela do plano (representação, projeção, unidade, snap, views, chapa atual, zoom) é de **sessão**: vive em Python, fora do `.blend` e fora do Desfazer |
+
+### O que **não** mudou
+
+- O objeto medido não é tocado: sem modificador, sem camada de exibição, sem material novo, sem vértice alterado.
+- O plano de corte não grava nada novo: `caffmob.calculate_nesting` continua escrevendo exatamente as mesmas chaves.
+- Nenhuma propriedade de `bpy.types` foi criada, então não há migração nem `unregister` de propriedade a fazer.

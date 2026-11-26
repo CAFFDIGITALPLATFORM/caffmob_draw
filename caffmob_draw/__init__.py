@@ -15,7 +15,7 @@ _submodule_names = [
     "walls", "doors_windows", "layouts", "rooms", "details",
     "ops_obstacles", "export", "ops_stairs", "scene_navigator",
     "viewport_hud", "ops_general", "closets", "face_frame",
-    "frameless", "wood_hoods", "molding", "hb_layouts", "hb_assets",
+    "frameless", "wood_hoods", "molding", "hb_layouts", "hb_assets", "mesh_measure",
     "selection.overlap_core", "selection.overlap_select"
 ]
 for _mod_name in _submodule_names:
@@ -55,6 +55,7 @@ from . import mobi
 from . import promob  # feature 071: projeto do Promob no Blender
 from . import stairs  # feature 071: editor de escadas
 from . import drawers  # feature 072: construtor de gavetas
+from . import mesh_measure  # feature 027: janela V-Ray Mesh Measure
 from . import compat_identity
 from . import ui
 from . import overlays
@@ -405,6 +406,7 @@ def register():
     promob.register()  # feature 071: importar .promob
     stairs.register()  # feature 071: editor de escadas
     drawers.register()  # feature 072: construtor de gavetas
+    mesh_measure.register()  # feature 027: janela de medição de malha
 
     # Register legacy UI
     view3d_sidebar.register()
@@ -453,6 +455,7 @@ def unregister():
     view3d_sidebar.unregister()
 
     # Unregister modern UI, operators & draw handlers
+    mesh_measure.unregister()
     drawers.unregister()
     stairs.unregister()
     promob.unregister()

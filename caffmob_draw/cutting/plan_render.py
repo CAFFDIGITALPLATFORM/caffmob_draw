@@ -23,6 +23,10 @@ def _module_rgba(module_ref: str) -> Tuple[float, float, float, float]:
     return _COLORS_RGBA[sum(ord(c) for c in key) % len(_COLORS_RGBA)]
 
 
+# Nome público: a janela do plano de corte (027, T009) pinta as peças com a mesma cor por módulo dos rasters.
+module_color = _module_rgba
+
+
 def rasterize_sheet_rgba(sheet: SheetLayout, img_w: int = 512, img_h: int = 340) -> List[float]:
     """Desenha uma `SheetLayout` num buffer RGBA float (0..1) compatível com `bpy.types.Image.pixels`."""
     bg = (0.12, 0.13, 0.15, 1.0)

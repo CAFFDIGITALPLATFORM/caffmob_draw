@@ -1,0 +1,158 @@
+{
+  "O Plano de Corte precisa de uma janela do Blender aberta.": {
+    "pt_BR": "O Plano de Corte precisa de uma janela do Blender aberta.",
+    "en_US": "The Cut Plan needs an open Blender window."
+  },
+  "Nenhuma peça de marcenaria encontrada no projeto.": {
+    "pt_BR": "Nenhuma peça de marcenaria encontrada no projeto.",
+    "en_US": "No joinery part found in the project."
+  },
+  "‹  ↑  ↓  →  roda: zoom  ·  arraste: mover  ·  Esc: fechar": {
+    "pt_BR": "‹  ↑  ↓  →  roda: zoom  ·  arraste: mover  ·  Esc: fechar",
+    "en_US": "‹  ↑  ↓  →  wheel: zoom  ·  drag: pan  ·  Esc: close"
+  },
+  "{} peça(s) · aproveitamento {}% · {} m² aproveitados": {
+    "pt_BR": "{} peça(s) · aproveitamento {}% · {} m² aproveitados",
+    "en_US": "{} part(s) · {}% used · {} m² used"
+  },
+  "{} peça(s) não couberam na chapa": {
+    "pt_BR": "{} peça(s) não couberam na chapa",
+    "en_US": "{} part(s) did not fit the sheet"
+  },
+  "{} peça(s) não couberam na chapa.": {
+    "pt_BR": "{} peça(s) não couberam na chapa.",
+    "en_US": "{} part(s) did not fit the sheet."
+  },
+  "{} peça(s) não couberam na chapa:": {
+    "pt_BR": "{} peça(s) não couberam na chapa:",
+    "en_US": "{} part(s) did not fit the sheet:"
+  },
+  "Abrir Plano de Corte": {
+    "pt_BR": "Abrir Plano de Corte",
+    "en_US": "Open Cut Plan"
+  },
+  "Recalcular Plano de Corte": {
+    "pt_BR": "Recalcular Plano de Corte",
+    "en_US": "Recalculate Cut Plan"
+  },
+  "Abre o plano de corte numa janela própria, com as chapas e as peças desenhadas": {
+    "pt_BR": "Abre o plano de corte numa janela própria, com as chapas e as peças desenhadas",
+    "en_US": "Opens the cut plan in its own window, with sheets and parts drawn"
+  },
+  "Ir para a chapa": {
+    "pt_BR": "Ir para a chapa",
+    "en_US": "Go to sheet"
+  },
+  "Mostra outra chapa do plano na janela": {
+    "pt_BR": "Mostra outra chapa do plano na janela",
+    "en_US": "Shows another sheet of the plan in the window"
+  },
+  "Próxima chapa": {
+    "pt_BR": "Próxima chapa",
+    "en_US": "Next sheet"
+  },
+  "Passa para a chapa seguinte ou anterior": {
+    "pt_BR": "Passa para a chapa seguinte ou anterior",
+    "en_US": "Moves to the next or previous sheet"
+  },
+  "Zoom do plano de corte": {
+    "pt_BR": "Zoom do plano de corte",
+    "en_US": "Cut plan zoom"
+  },
+  "Aproxima, afasta ou reenquadra a chapa na janela": {
+    "pt_BR": "Aproxima, afasta ou reenquadra a chapa na janela",
+    "en_US": "Zooms in, zooms out or refits the sheet in the window"
+  },
+  "Selecionar peça do plano": {
+    "pt_BR": "Selecionar peça do plano",
+    "en_US": "Select cut plan part"
+  },
+  "Seleciona uma peça da chapa pelo identificador": {
+    "pt_BR": "Seleciona uma peça da chapa pelo identificador",
+    "en_US": "Selects a sheet part by its identifier"
+  },
+  "Recalcular plano de corte": {
+    "pt_BR": "Recalcular plano de corte",
+    "en_US": "Recalculate cut plan"
+  },
+  "Recalcula o plano de corte com o projeto atual e atualiza a janela": {
+    "pt_BR": "Recalcula o plano de corte com o projeto atual e atualiza a janela",
+    "en_US": "Recalculates the cut plan with the current project and refreshes the window"
+  },
+  "A janela do plano de corte não está aberta.": {
+    "pt_BR": "A janela do plano de corte não está aberta.",
+    "en_US": "The cut plan window is not open."
+  },
+  "Fechar plano de corte": {
+    "pt_BR": "Fechar plano de corte",
+    "en_US": "Close cut plan"
+  },
+  "Fecha a janela do plano de corte": {
+    "pt_BR": "Fecha a janela do plano de corte",
+    "en_US": "Closes the cut plan window"
+  },
+  "Navegação da janela do plano de corte: roda dá zoom, arraste move, clique escolhe a peça, Esc fecha": {
+    "pt_BR": "Navegação da janela do plano de corte: roda dá zoom, arraste move, clique escolhe a peça, Esc fecha",
+    "en_US": "Cut plan window navigation: wheel zooms, drag pans, click picks a part, Esc closes"
+  },
+  "▦ Plano de Corte": {
+    "pt_BR": "▦ Plano de Corte",
+    "en_US": "▦ Cut Plan"
+  },
+  "Nenhuma chapa no plano.": {
+    "pt_BR": "Nenhuma chapa no plano.",
+    "en_US": "No sheet in the plan."
+  },
+  "{} de {}": {
+    "pt_BR": "{} de {}",
+    "en_US": "{} of {}"
+  },
+  "Resumo": {
+    "pt_BR": "Resumo",
+    "en_US": "Summary"
+  },
+  "Chapas: {}": {
+    "pt_BR": "Chapas: {}",
+    "en_US": "Sheets: {}"
+  },
+  "Peças posicionadas: {}": {
+    "pt_BR": "Peças posicionadas: {}",
+    "en_US": "Placed parts: {}"
+  },
+  "Sobra: {} m²": {
+    "pt_BR": "Sobra: {} m²",
+    "en_US": "Waste: {} m²"
+  },
+  "Recalcular plano": {
+    "pt_BR": "Recalcular plano",
+    "en_US": "Recalculate plan"
+  },
+  "JSON": {
+    "pt_BR": "JSON",
+    "en_US": "JSON"
+  },
+  "CSV": {
+    "pt_BR": "CSV",
+    "en_US": "CSV"
+  },
+  "Peças da chapa": {
+    "pt_BR": "Peças da chapa",
+    "en_US": "Sheet parts"
+  },
+  "Fita: {}": {
+    "pt_BR": "Fita: {}",
+    "en_US": "Edge band: {}"
+  },
+  "Material não informado": {
+    "pt_BR": "Material não informado",
+    "en_US": "Material not set"
+  },
+  "Chapa {}/{} · {} {}": {
+    "pt_BR": "Chapa {}/{} · {} {}",
+    "en_US": "Sheet {}/{} · {} {}"
+  },
+  "Peça sem nome": {
+    "pt_BR": "Peça sem nome",
+    "en_US": "Unnamed part"
+  }
+}
