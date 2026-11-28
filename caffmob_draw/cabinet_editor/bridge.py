@@ -114,7 +114,8 @@ def library_limits(root, library):
     from ..selection import module_resize
     info = info_of(root)
     if module_resize.handles(info):
-        # 080 D-08: a faixa que o editor mostra e confere é a física (gerador convertido pela escala dos ancestrais).
+        # 080 D-08 + A2 (D-15): a faixa que o editor mostra ("faixa: min – max") e confere é a física do master
+        # (RN-SELECTION-11), sem estreitar pelo hard_min/hard_max do gerador — esse limite só explica a recusa.
         try:
             return editing.physical_limits(info)
         except ValueError:

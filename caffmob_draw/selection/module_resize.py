@@ -2,8 +2,9 @@
 
 Um ponto só para o painel, o editor de armário, o Redimensionar e a substituição. Para as 5 famílias (BTM,
 FACE_FRAME, CLOSETS, AUTHORED, FRAMELESS):
-1. valida o valor físico contra os limites gerais e o parâmetro convertido contra a faixa da propriedade do gerador
-   (recusa, nunca corta) e recusa módulo vindo de biblioteca, com override ou com malha compartilhada;
+1. valida o valor físico contra a faixa do master (`RN-SELECTION-11`, A2/D-15: sem faixa local mais estreita) e
+   recusa módulo vindo de biblioteca, com override ou com malha compartilhada. O `hard_min/hard_max` do gerador não
+   é limite de entrada: entra só na mensagem da recusa, quando a pós-condição mostra que ele não representou o valor;
 2. guarda o estado (parâmetros, `btm_overrides`, `matrix_basis` da raiz e dos descendentes que o gerador não recria);
 3. assa a escala própria da raiz: ±1 por eixo, rotação e posição mantidas;
 4. grava as 3 medidas com uma regeneração só;
@@ -81,7 +82,9 @@ def physical_of(info, field):
 
 
 def param_range(root, family, field):
-    """Faixa da propriedade do gerador (`hard_min/hard_max`), ou None quando não há limite próprio."""
+    """Faixa da propriedade do gerador (`hard_min/hard_max`), ou None quando não há limite próprio.
+
+    A2 (D-15): **não** é limite de entrada — serve só para explicar a recusa quando o gerador não representa o valor."""
     if family not in _PROPS:
         return None
     prop = type(getattr(root, _PROPS[family])).bl_rna.properties[field]
@@ -92,12 +95,13 @@ def param_range(root, family, field):
 
 
 def physical_ranges(info, limits):
-    """Faixa física de cada eixo para o módulo: o que o painel e o editor mostram e conferem."""
+    """Faixa física de cada eixo para o módulo: o que o painel e o editor mostram e conferem.
+
+    A2 (D-15): é a faixa do master (`LIMITS`), sem o estreitamento pelo `hard_min/hard_max` do gerador."""
     root, family = info.root, info.library
     _params, own, world, _phys = measure(root, family)
     ancestor = mg.ancestor_scales(world, own)
-    return {f: mg.physical_range(limits[f], param_range(root, family, f), ancestor[mg.AXIS[f]])
-            for f in mg.FIELDS}
+    return {f: mg.physical_range(limits[f], None, ancestor[mg.AXIS[f]]) for f in mg.FIELDS}
 
 
 # Validação --------------------------------------------------------------------------------------------------
@@ -112,9 +116,9 @@ def _refuse_unsafe(root, family):
 
 
 def _validate(root, family, own, world, edits, limits):
+    # A2 (D-15): a entrada confere só a faixa do master; o que o gerador não representa é recusado na pós-condição.
     ancestor = mg.ancestor_scales(world, own)
-    return {f: mg.check_value(f, v, limits[f], param_range(root, family, f), ancestor[mg.AXIS[f]])
-            for f, v in edits.items()}
+    return {f: mg.check_value(f, v, limits[f], None, ancestor[mg.AXIS[f]]) for f, v in edits.items()}
 
 
 # Estado e rollback ------------------------------------------------------------------------------------------
@@ -328,12 +332,33 @@ def _apply_authored(context, state, plan):
     stretch.resize(context, root, [p * 1000 for p in plan.params])
 
 
-def _postcondition(state, plan):
+def _not_represented(root, family, field, asked, produced, general, ancestor):
+    """Por que a pós-condição recusou (A2/D-15): a faixa aceita é a do master e, se houver, a do gerador."""
+    from ..data import units
+    from .editing import DIM_LABELS
+    unit = units.get_scene_length_unit()
+    label = tr(DIM_LABELS[field])
+    low, high = (units.format_length(v, unit) for v in general)
+    declared = param_range(root, family, field)
+    if declared is not None and all(math.isfinite(v) for v in declared):
+        low_g, high_g = declared
+        return tr("O gerador não produziu a medida pedida em {}: pedido {}, produzido {}. A faixa aceita é {} a {}; "
+                  "o gerador declara {} a {}. Nada foi alterado.").format(
+            label, units.format_length(asked, unit), units.format_length(produced, unit), low, high,
+            units.format_length(low_g * ancestor, unit), units.format_length(high_g * ancestor, unit))
+    return tr("O gerador não produziu a medida pedida em {}: pedido {}, produzido {}. A faixa aceita é {} a {}. "
+              "Nada foi alterado.").format(
+        label, units.format_length(asked, unit), units.format_length(produced, unit), low, high)
+
+
+def _postcondition(state, plan, limits):
     root, family = state.root, state.family
-    _params, own, _world, phys = measure(root, family)
+    _params, own, world, phys = measure(root, family)
+    ancestor = mg.ancestor_scales(world, own)
     for i, field in enumerate(mg.FIELDS):
         if abs(phys[i] - plan.physical[i]) > mg.TOLERANCE:
-            raise PostconditionError(N_("O gerador não produziu a medida pedida; nada foi alterado."))
+            raise PostconditionError(_not_represented(root, family, field, plan.physical[i], phys[i],
+                                                      limits[field], ancestor[i]))
     if any(abs(o - s) > 1e-6 for o, s in zip(own, plan.scale)):
         raise PostconditionError(N_("A escala do módulo não foi assada; nada foi alterado."))
 
@@ -360,7 +385,7 @@ def apply_physical(context, info, edits, limits):
             _write(context, root, family, plan.params, previous=params)
             _rekeep(context, state)
         context.view_layer.update()
-        _postcondition(state, plan)
+        _postcondition(state, plan, limits)
 
     def restore():
         state.restore(context)

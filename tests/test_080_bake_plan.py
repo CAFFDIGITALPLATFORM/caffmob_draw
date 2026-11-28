@@ -2,6 +2,7 @@
 
 import math
 import unittest
+from pathlib import Path
 
 import _bootstrap  # noqa: F401
 from caffmob_draw.target import module_geometry as mg
@@ -82,6 +83,54 @@ class RangeTest(unittest.TestCase):
         for bad in (0, -0.01, math.nan, math.inf, -math.inf, "abc", None):
             with self.assertRaises(mg.ModuleGeometryError, msg=repr(bad)):
                 mg.check_value('width', bad, GENERAL, BTM_WIDTH, 1.0)
+
+
+class MasterRangeEntryTest(unittest.TestCase):
+    """A2 (D-15, clarify de 2026-11-27): a faixa de ENTRADA é só a do master (RN-SELECTION-11).
+
+    O `hard_min/hard_max` do gerador deixa de estreitar a entrada e fica só no diagnóstico da recusa; quem barra o
+    valor que o gerador não representa é a pós-condição (D-07), nunca um corte silencioso.
+    """
+
+    GENERAL_DEPTH = (0.005, 10.0)
+
+    def test_master_range_without_narrowing(self):
+        for ancestor in (0.5, 1.0, 2.0, 5.0):
+            self.assertEqual(mg.physical_range(GENERAL, None, ancestor), GENERAL)
+            self.assertEqual(mg.physical_range(self.GENERAL_DEPTH, None, ancestor), self.GENERAL_DEPTH)
+
+    def test_values_outside_generator_range_are_accepted_at_entry(self):
+        # 3,5 m e 0,05 m estão dentro do master e fora do BTM (0,1–3,0 m): a entrada aceita.
+        self.assertEqual(mg.check_value('width', 3.5, GENERAL, None, 1.0), 3.5)
+        self.assertEqual(mg.check_value('width', 0.05, GENERAL, None, 1.0), 0.05)
+        self.assertEqual(mg.check_value('depth', 0.05, self.GENERAL_DEPTH, None, 1.0), 0.05)
+
+    def test_master_range_still_refuses(self):
+        for field, general, bad in (('width', GENERAL, 0.005), ('width', GENERAL, 10.5),
+                                    ('depth', self.GENERAL_DEPTH, 0.004), ('depth', self.GENERAL_DEPTH, 10.5)):
+            with self.assertRaises(mg.PhysicalRangeError, msg=f"{field}={bad}") as caught:
+                mg.check_value(field, bad, general, None, 1.0)
+            self.assertEqual((caught.exception.low, caught.exception.high), general)
+
+    def test_generator_range_remains_available_for_diagnosis(self):
+        self.assertEqual(mg.physical_range(GENERAL, BTM_WIDTH, 1.0), BTM_WIDTH)
+
+    def test_transaction_entry_uses_master_range_only(self):
+        # Guarda de regressão no ponto real (module_resize importa bpy, então a conferência é estática):
+        # `physical_ranges` e `_validate` não podem voltar a passar a faixa do gerador como limite de entrada.
+        import ast
+        source = (Path(__file__).resolve().parents[1] / 'caffmob_draw' / 'selection' / 'module_resize.py').read_text(
+            encoding='utf-8')
+        tree = ast.parse(source)
+        for name, position in (('physical_ranges', 1), ('_validate', 3)):
+            function = next(n for n in ast.walk(tree) if isinstance(n, ast.FunctionDef) and n.name == name)
+            calls = [n for n in ast.walk(function) if isinstance(n, ast.Call)
+                     and isinstance(n.func, ast.Attribute) and n.func.attr in ('physical_range', 'check_value')]
+            self.assertTrue(calls, name)
+            for call in calls:
+                argument = call.args[position]
+                self.assertIsInstance(argument, ast.Constant, f"{name}: faixa de entrada não é constante")
+                self.assertIsNone(argument.value, f"{name}: a faixa do gerador voltou a limitar a entrada")
 
 
 if __name__ == '__main__':

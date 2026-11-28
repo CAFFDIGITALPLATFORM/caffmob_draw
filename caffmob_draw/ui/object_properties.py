@@ -156,7 +156,9 @@ def _fixed_getter(name):
 def _fixed_setter(name):
     def set_(_self, value):
         from ..overlays import side_cotas
-        _guard(lambda: side_cotas.apply_fixed(bpy.context, name, value))
+        # 080 D-13: o campo confere o registro que ele mostrou (alvo e referência), como o popup; nunca o de um
+        # cálculo novo, que aceitaria em silêncio uma referência trocada.
+        _guard(lambda: side_cotas.apply_fixed(bpy.context, name, value, side_cotas.shown(bpy.context)))
     return set_
 
 

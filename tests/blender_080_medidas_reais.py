@@ -7,8 +7,9 @@ Empty com escala 2 em X e um espelhado (−0,75 em X).
 - Leitura (CA-01): a medida mostrada é parâmetro × escala do eixo no mundo; ler não escreve nada (CA-14).
 - Escrita (CA-02): a medida digitada vira medida física, a raiz fica com escala ±1 (o espelho fica), os eixos não
   editados guardam a medida física, o pai não muda e os descendentes não recriados ficam na mesma pose física.
-- Recusas (CA-04), sobreposição aceita (CA-11), falha injetada com rollback (CA-06), editor e Redimensionar na mesma
-  transação, substituição de 650 mm (CA-05), salvar e reabrir (CA-14).
+- Recusas (CA-04), faixa do master sem corte silencioso (A2/D-15, `case_master_range`), sobreposição aceita (CA-11),
+  falha injetada com rollback (CA-06), editor e Redimensionar na mesma transação, substituição de 650 mm (CA-05),
+  salvar e reabrir (CA-14).
 O banco do Padrão de Dimensões é descartável (o do portão, ou um temporário quando roda sozinho).
 """
 
@@ -293,7 +294,7 @@ def case_refusals(x):
     root = build('BTM', "BTM recusas", x)
     set_scale(root, (0.8125, 1.0, 1.0))
     before = state(root)
-    for bad in (3.5, 0.0, -0.01, float('nan'), float('inf'), "abc"):
+    for bad in (0.005, 10.5, 0.0, -0.01, float('nan'), float('inf'), "abc"):
         try:
             editing.set_dimension(CTX, info_of(root), 'width', bad)
             refused, message = False, ""
@@ -302,11 +303,61 @@ def case_refusals(x):
         check(refused, f"BTM: {bad!r} recusado ({message})")
     check(state(root) == before, "BTM: as recusas não mudam nada")
     try:
-        editing.set_dimension(CTX, info_of(root), 'width', 3.5)
+        editing.set_dimension(CTX, info_of(root), 'width', 10.5)
     except ValueError as exc:
         text = str(exc)
-        check(root.name in text and ("3" in text and "100" in text or "0,1" in text or "0.1" in text),
-              f"BTM: a recusa de 3500 mm diz o alvo e a faixa física ({text})")
+        check(root.name in text and "10000" in text.replace(".", "").replace(",", ""),
+              f"BTM: a recusa de 10,5 m diz o alvo e a faixa do master ({text})")
+
+
+def case_master_range(x):
+    """A2 (D-15, CA-04 revisto): a entrada aceita a faixa do master; o gerador não pode cortar em silêncio.
+
+    3500 mm e 50 mm estão dentro do master e fora do BTM (0,1–3,0 m): ou o gerador representa e a medida fica
+    exatamente a pedida, ou a pós-condição recusa com a faixa do master + o limite do gerador e nada muda.
+    """
+    root = build('BTM', "BTM faixa do master", x)
+    set_scale(root, (0.8125, 1.0, 1.0))
+    info = info_of(root)
+    limits = editing.physical_limits(info)
+    check(close(limits['width'][0], 0.01) and close(limits['width'][1], 10.0),
+          f"A2: faixa de entrada da largura é a do master {limits.get('width')}")
+    check(close(limits['depth'][0], 0.005) and close(limits['depth'][1], 10.0),
+          f"A2: faixa de entrada da profundidade é a do master {limits.get('depth')}")
+    for field, value in (('width', 3.5), ('width', 0.05), ('depth', 0.05)):
+        before = state(root)
+        before_physical = physical(root)
+        try:
+            editing.set_dimension(CTX, info, field, value)
+            message = ""
+        except ValueError as exc:
+            message = str(exc)
+        env.settle()
+        if message:
+            check(state(root) == before, f"A2: {field}={value} recusado com rollback ({message})")
+            check("10000" in message.replace(".", "").replace(",", ""),
+                  f"A2: a recusa cita a faixa do master ({message})")
+            check("3000" in message.replace(".", "").replace(",", "") or field == 'depth',
+                  f"A2: a recusa cita o limite do gerador ({message})")
+        else:
+            produced = physical(root)[('width', 'depth', 'height').index(field)]
+            check(close(produced, value) and close(params(root)[('width', 'depth', 'height').index(field)], value),
+                  f"A2: {field}={value} aceito sem corte (produzido {produced * 1000:.1f} mm)")
+            check(tuple(root.scale) == (1.0, 1.0, 1.0), "A2: escala assada na edição aceita")
+        after = physical(root)
+        check(close(after[('width', 'depth', 'height').index(field)], value)
+              or all(close(a, b) for a, b in zip(after, before_physical)),
+              f"A2: {field}={value} nunca vira um valor intermediário (corte silencioso)")
+    # Fora do master continua recusado na entrada, sem tocar no módulo.
+    before = state(root)
+    for field, value in (('width', 0.005), ('width', 10.5), ('depth', 0.004), ('depth', 10.5)):
+        try:
+            editing.set_dimension(CTX, info, field, value)
+            message = ""
+        except ValueError as exc:
+            message = str(exc)
+        check(bool(message), f"A2: {field}={value} fora do master recusado ({message})")
+    check(state(root) == before, "A2: as recusas de fora do master não mudam nada")
 
 
 def case_overlap(x):
@@ -341,7 +392,8 @@ def case_editor(x):
     current = bridge.read_state(root)
     check(close(current.dimensions[0], 0.65), f"editor: lê a largura física ({current.dimensions[0] * 1000:.1f} mm)")
     limits = bridge.library_limits(root, 'BTM')
-    check(close(limits['width'][1], 3.0), f"editor: faixa física da largura {limits.get('width')}")
+    check(close(limits['width'][0], 0.01) and close(limits['width'][1], 10.0),
+          f"editor: faixa física da largura é a do master (A2) {limits.get('width')}")
     target = dataclasses.replace(current, dimensions=(0.9, 0.6, 0.5))
     bridge.apply_state(CTX, root, target)
     env.settle()
@@ -397,7 +449,14 @@ def case_panel(x):
           "painel: a edição seguinte não é recusada por mudança de pose")
     sel.width = 3.5
     message = CTX.window_manager.get(op.ERROR_KEY) or ""
-    check("3000" in message and close(physical(root)[0], 0.7), f"painel: 3500 mm recusado com a faixa ({message})")
+    if message:
+        check("10000" in message.replace(".", "").replace(",", "") and close(physical(root)[0], 0.7),
+              f"painel: 3500 mm recusado com a faixa do master e rollback ({message})")
+    else:
+        check(close(physical(root)[0], 3.5), f"painel: 3500 mm aceito sem corte ({physical(root)[0] * 1000:.1f} mm)")
+    sel.width = 0.7
+    env.settle()
+    check(close(physical(root)[0], 0.7), "painel: depois da A2, voltar a 700 mm funciona")
 
 
 def case_save_reopen(x):
@@ -432,8 +491,8 @@ def main():
                 traceback.print_exc()
                 FAILS.append(f"{family}: {case.__name__} levantou")
             x += 3.0
-    for case in (case_frameless_depth, case_refusals, case_overlap, case_leaf, case_editor, case_resize,
-                 case_replace, case_panel):
+    for case in (case_frameless_depth, case_refusals, case_master_range, case_overlap, case_leaf, case_editor,
+                 case_resize, case_replace, case_panel):
         try:
             case(x)
         except Exception:

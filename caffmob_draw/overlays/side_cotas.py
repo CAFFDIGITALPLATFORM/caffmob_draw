@@ -25,6 +25,7 @@ _owner = [None]        # ponteiro da área que desenha as cotas
 _revision = [0]        # muda a cada alteração da cena: invalida os caches abaixo
 _snap = {'key': None, 'records': {}}     # último cálculo: lado → (Gap, nome da referência)
 _labels = {}           # ponteiro da região → [(lado, retângulo do rótulo na tela)]
+_popup = [None]        # registro mostrado pelo último popup de edição (080 D-13)
 _addon_keymaps = []
 SIDES = ('LEFT', 'RIGHT', 'TOP', 'BOTTOM')
 TICK = 0.15
@@ -117,13 +118,45 @@ def _key(context, refresh=False):
     return (_revision[0], context.scene.as_pointer(), mover.session_uid, scope), mover
 
 
-def check_unchanged(context, mover_uid, pose):
-    """Recusa (ValueError) se o alvo móvel trocou ou andou desde que a cota foi lida: operador e campo usam a mesma."""
+def check_unchanged(context, mover_uid, pose, shown=None, side=None):
+    """Recusa (ValueError) se o alvo móvel trocou ou andou desde que a cota foi lida: operador e campo usam a mesma.
+    Com o registro mostrado (`shown`, 080 D-13), confere também a pose completa do alvo e a referência do lado: uid,
+    matriz e caixa (ou a altura do teto), contra um cálculo novo feito agora, fora do desenho e dos campos de leitura."""
     from ..data.i18n import tr
+    from . import cota_token
     _key_now, mover = _key(context, refresh=True)
     if mover is None or mover.session_uid != mover_uid or (mover.matrix_world.translation - Vector(pose)).length > 1e-6:
         raise ValueError(tr("O item ou a posição mudou durante a edição; nada foi alterado."))
+    if shown is not None:
+        live = _compute(context, mover).get('token')
+        reason = cota_token.compare(shown.get('token'), live, side)
+        if reason is not None:
+            raise ValueError(tr(reason))
     return mover
+
+
+def _ref_token(context, obj, corners):
+    from . import cota_token
+    return cota_token.RefToken(cota_token.OBJECT, uid=obj.session_uid, matrix=cota_token.flat(obj.matrix_world),
+                               box=(tuple(min(c[i] for c in corners) for i in range(3)),
+                                    tuple(max(c[i] for c in corners) for i in range(3))))
+
+
+def _token(context, mover, out, entries, obstacles, ceiling):
+    """O registro conferível do cálculo (080 D-13): alvo inteiro e, por lado, a referência medida."""
+    from . import cota_token
+    scope = getattr(getattr(context.window_manager, 'btm_target', None), 'cota_scope', 'PART')
+    refs = {}
+    for name, (gap, _ref_name_) in out.items():
+        if gap.ref == -1:
+            refs[name] = cota_token.RefToken(cota_token.FLOOR)
+        elif gap.ref == -2:
+            refs[name] = cota_token.RefToken(cota_token.CEILING, ceiling=float(ceiling))
+        elif gap.ref is not None:
+            refs[name] = _ref_token(context, entries[gap.ref].obj, obstacles[gap.ref])
+    return cota_token.CotaToken(mover.session_uid, cota_token.flat(mover.matrix_world), scope,
+                                mover.parent.session_uid if mover.parent is not None else 0,
+                                context.scene.as_pointer(), refs)
 
 
 def _compute(context, mover):
@@ -146,7 +179,8 @@ def _compute(context, mover):
     corners = [c for it in body for c in it.box.corners()]
     names = [_ref_name(e.obj) for e in entries]
     lateral = side.gaps(axis, corners, obstacles)
-    vertical = side.vertical(axis, corners, obstacles, 0.0, scene_cotas.ceiling_height(context.scene, wall))
+    ceiling = scene_cotas.ceiling_height(context.scene, wall)
+    vertical = side.vertical(axis, corners, obstacles, 0.0, ceiling)
     special = {-1: tr("Piso"), -2: tr("Teto")}
     out = {}
     for name, gap in (('LEFT', lateral.left), ('RIGHT', lateral.right), ('BOTTOM', vertical.below),
@@ -154,7 +188,7 @@ def _compute(context, mover):
         if gap is not None:
             out[name] = (gap, special.get(gap.ref) if gap.ref in special else names[gap.ref] if gap.ref is not None
                          else "")
-    return {'axis': axis, 'gaps': out}
+    return {'axis': axis, 'gaps': out, 'token': _token(context, mover, out, entries, obstacles, ceiling)}
 
 
 def snapshot(context, compute=True):
@@ -184,8 +218,15 @@ def specs(context, view_right=None, compute=True):
                              units.format_value(gaps[name][0].value)) for name in SIDES if name in gaps]
 
 
-def apply_fixed(context, name, value):
-    """Põe a cota `name` em `value` (metros) movendo o conjunto pela diferença; ValueError sem mover nada."""
+def shown(context):
+    """O cálculo que o desenho e os campos mostram agora (sem recalcular)."""
+    return snapshot(context, compute=False)
+
+
+def apply_fixed(context, name, value, shown_snap=None):
+    """Põe a cota `name` em `value` (metros) movendo o conjunto pela diferença; ValueError sem mover nada.
+    080 D-13: a diferença sai do registro mostrado (`shown_snap`, ou o que os campos leem agora), nunca de um cálculo
+    novo, e o registro é conferido antes (alvo e referência no mesmo lugar, com a mesma identidade)."""
     import math
     from ..collision import guard
     from ..data.i18n import tr
@@ -193,11 +234,15 @@ def apply_fixed(context, name, value):
         raise ValueError(tr("Cota desconhecida: {}").format(name))
     if not isinstance(value, (int, float)) or math.isnan(value) or math.isinf(value) or value < 0:
         raise ValueError(tr("Valor Inválido: a cota precisa ser um número positivo."))
-    snap = snapshot(context, compute=True)
+    snap = shown_snap if shown_snap is not None else shown(context)
     record = snap.get('gaps', {}).get(name)
     if record is None:
         raise ValueError(tr("Este lado não tem referência para medir."))
-    key, mover = _key(context, refresh=True)
+    token = snap.get('token')
+    if token is None:
+        raise ValueError(tr("O item ou a posição mudou durante a edição; nada foi alterado."))
+    pose = tuple(token.matrix[i * 4 + 3] for i in range(3))
+    mover = check_unchanged(context, token.uid, pose, snap, name)
     delta = value - record[0].value
     axis = Vector(snap['axis'])
     up = Vector((0.0, 0.0, 1.0))
@@ -209,6 +254,11 @@ def apply_fixed(context, name, value):
         context.view_layer.update()
         guard.accept(mover)
     _changed()
+    # O que se mostra depois de mover é o cálculo novo, já (o timer faria em 150 ms): a próxima edição confere
+    # contra a pose que a tela vai mostrar, não contra a de antes do movimento.
+    key, mover = _key(context, refresh=True)
+    if key is not None:
+        _snap.update(key=key, records=_compute(context, mover))
     return move
 
 
@@ -304,19 +354,21 @@ class BTM_OT_FixedCotaEdit(bpy.types.Operator):
             if region is not None and context.area is not None and context.area.type == 'VIEW_3D' else None
         if name is None:
             return {'PASS_THROUGH'}
+        snap = shown(context)
         record = records(context, compute=False).get(name)
         key, mover = _key(context, refresh=True)
         if record is None or mover is None:
             return {'PASS_THROUGH'}
         self.side, self.value = name, record[0]
         self.mover_uid, self.pose = mover.session_uid, tuple(mover.matrix_world.translation)
+        _popup[0] = snap                 # 080 D-13: o registro que o popup mostrou é o que o execute confere
         return context.window_manager.invoke_props_dialog(self, title=tr_label(name, record[1]))
 
     def execute(self, context):
         try:
             if self.mover_uid:
                 check_unchanged(context, self.mover_uid, self.pose)
-            apply_fixed(context, self.side, self.value)
+            apply_fixed(context, self.side, self.value, _popup[0])
         except ValueError as exc:
             self.report({'WARNING'}, str(exc))
             return {'CANCELLED'}
@@ -366,6 +418,7 @@ def unregister():
             handlers.remove(_changed)
     _changed()
     _snap.update(key=None, records={})
+    _popup[0] = None
     _labels.clear()
     release()
     if BTM_OT_FixedCotaEdit.is_registered:

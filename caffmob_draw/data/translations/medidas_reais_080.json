@@ -63,5 +63,15 @@
   "pt_BR": "Campo de medida desconhecido.",
   "en_US": "Unknown dimension field.",
   "es_ES": "Campo de medida desconocido."
+ },
+ "O gerador não produziu a medida pedida em {}: pedido {}, produzido {}. A faixa aceita é {} a {}; o gerador declara {} a {}. Nada foi alterado.": {
+  "pt_BR": "O gerador não produziu a medida pedida em {}: pedido {}, produzido {}. A faixa aceita é {} a {}; o gerador declara {} a {}. Nada foi alterado.",
+  "en_US": "The generator did not produce the requested size for {}: asked {}, got {}. The accepted range is {} to {}; the generator declares {} to {}. Nothing was changed.",
+  "es_ES": "El generador no produjo la medida pedida en {}: pedido {}, producido {}. El rango aceptado es de {} a {}; el generador declara de {} a {}. No se cambió nada."
+ },
+ "O gerador não produziu a medida pedida em {}: pedido {}, produzido {}. A faixa aceita é {} a {}. Nada foi alterado.": {
+  "pt_BR": "O gerador não produziu a medida pedida em {}: pedido {}, produzido {}. A faixa aceita é {} a {}. Nada foi alterado.",
+  "en_US": "The generator did not produce the requested size for {}: asked {}, got {}. The accepted range is {} to {}. Nothing was changed.",
+  "es_ES": "El generador no produjo la medida pedida en {}: pedido {}, producido {}. El rango aceptado es de {} a {}. No se cambió nada."
  }
 }

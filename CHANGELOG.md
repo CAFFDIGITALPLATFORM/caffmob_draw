@@ -1,5 +1,32 @@
 # Changelog do CAFFMob Draw
 
+## 1.37.0 — 2026-11-28
+
+### Faixa de medida única e confirmação de cota pelo que foi mostrado (080, A2 + onda B)
+
+- **Uma faixa só na edição de medidas** (`selection/module_resize.py`): a entrada de largura, altura e profundidade
+  passa a valer exatamente a faixa documentada — **10 a 10.000 mm** para largura/altura e **5 a 10.000 mm** para
+  profundidade — sem o estreitamento pelo `hard_min/hard_max` do gerador, que deixava o BTM preso a 100–3.000 mm.
+  O painel e o editor de armário mostram a mesma faixa.
+- **Nada de corte silencioso:** o que o gerador não representa continua recusado pela pós-condição, com rollback, e a
+  mensagem agora diz o quanto foi pedido, o quanto saiu e as duas faixas. Exemplo: “pedido 3500 mm, produzido
+  3000 mm. A faixa aceita é 10 mm a 10000 mm; o gerador declara 100 mm a 3000 mm. Nada foi alterado.”
+- **Cota confirmada pelo registro mostrado** (`overlays/cota_token.py`, `side_cotas.py`, `ui/object_properties.py`):
+  o popup e o campo de cota conferem identidade e pose completas do item e da referência (matriz 4x4, caixa, escopo,
+  pai, cena, altura do teto) antes de mover. Mover, girar, escalar, deformar ou apagar e recriar a referência recusa a
+  edição com aviso e sem mover nada; só renomear não invalida. A diferença aplicada sai do que estava na tela, nunca de
+  um cálculo novo.
+- Sem migração: arquivos antigos abrem iguais, nenhuma propriedade nova é gravada e o token de cota não persiste.
+- Provas: `blender_080_medidas_reais` **163 verificações OK**, `blender_080_cotas` **23 verificações OK** (popup e
+  campo), `test_080_bake_plan` com `MasterRangeEntryTest`, `test_080_cota_token` 11 testes, `test_i18n_coverage` e
+  `check_api.py` (Blender 5.2) verdes. O portão completo segue com 5 falhas puras **pré-existentes** na Biblioteca
+  (categorias, cabeçalho e paleta), reproduzidas no master anterior a esta entrega e fora do escopo da 080.
+
+### Como a numeração foi calculada
+
+`1.36.1 + mudança de comportamento na edição dimensional e nova confirmação de cota, sem quebra de formato = 1.37.0`
+(minor).
+
 ## 1.36.1 — 2026-11-26
 
 ### Criar armário abre a janela do construtor (027, correção de entrada)

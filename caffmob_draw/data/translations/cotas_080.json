@@ -1,0 +1,22 @@
+{
+ "O item mudou desde que a cota foi lida: confira a cota e digite de novo. Nada foi alterado.": {
+  "pt_BR": "O item mudou desde que a cota foi lida: confira a cota e digite de novo. Nada foi alterado.",
+  "en_US": "The item changed since the dimension was read: check the dimension and type it again. Nothing was changed.",
+  "es_ES": "El elemento cambió desde que se leyó la cota: revise la cota y escríbala de nuevo. No se cambió nada."
+ },
+ "A referência da cota mudou desde que foi lida: confira a cota e digite de novo. Nada foi alterado.": {
+  "pt_BR": "A referência da cota mudou desde que foi lida: confira a cota e digite de novo. Nada foi alterado.",
+  "en_US": "The dimension reference changed since it was read: check the dimension and type it again. Nothing was changed.",
+  "es_ES": "La referencia de la cota cambió desde que se leyó: revise la cota y escríbala de nuevo. No se cambió nada."
+ },
+ "A altura do teto mudou desde que a cota foi lida: confira a cota e digite de novo. Nada foi alterado.": {
+  "pt_BR": "A altura do teto mudou desde que a cota foi lida: confira a cota e digite de novo. Nada foi alterado.",
+  "en_US": "The ceiling height changed since the dimension was read: check the dimension and type it again. Nothing was changed.",
+  "es_ES": "La altura del techo cambió desde que se leyó la cota: revise la cota y escríbala de nuevo. No se cambió nada."
+ },
+ "A cota não pode ser conferida: confira a cota e digite de novo. Nada foi alterado.": {
+  "pt_BR": "A cota não pode ser conferida: confira a cota e digite de novo. Nada foi alterado.",
+  "en_US": "The dimension cannot be checked: check the dimension and type it again. Nothing was changed.",
+  "es_ES": "La cota no se puede verificar: revise la cota y escríbala de nuevo. No se cambió nada."
+ }
+}
