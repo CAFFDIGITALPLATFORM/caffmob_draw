@@ -78,3 +78,49 @@ Nenhuma propriedade nova é persistida; o token de cota vive só em memória e s
 - `python3 docs/rag/tools/check_api.py`: sem referências desconhecidas na API 5.2.
 - Traduções novas da A2 em `data/translations/medidas_reais_080.json` (pt_BR, en_US, es_ES); `test_i18n_coverage` verde.
 - QA visual do titular: `onboarding.md` §2.7 (A2) e §3 (cotas).
+
+## Atualização 2026-11-28
+
+Sincronização pós-`/reversa-coding` (`/reversa-sync`). Cenário: **legado**.
+
+### Resumo da entrega
+
+Dar ao módulo uma medida física coerente e segura: a onda A (já no master desde a 1.25.0) fez a leitura/escrita física e
+a transação; esta entrega fechou as duas pontas que faltavam. A2 alinhou a faixa aceita na entrada à faixa documentada
+no master, eliminando a faixa efetiva mais estreita do BTM, e a onda B fez a confirmação de cota conferir a identidade
+e a pose do que foi mostrado, no popup e no campo. **19 de 19 ações concluídas** (T033–T051; T050 como QA automatizado
+no Blender, a pedido do titular). Publicação: commit `4edcdfc7` no `master` + tag `1.37.0`, com push para `origin`.
+
+### Impacto por artefato da extração
+
+| Artefato | Seção | Tipo de impacto | Delta |
+|----------|-------|-----------------|-------|
+| `_reversa_sdd/domain.md` | Catálogo de regras extraídas, RN-SELECTION-11 | regra-alterada | A faixa de entrada é só a documentada (0,01–10 m; profundidade 0,005–10 m); o `hard_min/hard_max` do gerador não estreita mais a entrada, só explica a recusa da pós-condição. |
+| `_reversa_sdd/domain.md` | Catálogo de regras extraídas, RN-CABINET_EDITOR-03 | regra-alterada | A faixa exibida e conferida pelo editor é a do master, por delegação a `editing.physical_limits`; não há mais estreitamento pela faixa da biblioteca. |
+| `_reversa_sdd/architecture.md` | Re-extração 2026-10-10, Posicionamento (selection) | regra-alterada | `selection/module_resize.py` ganha `_not_represented` e `_postcondition(state, plan, limits)`: a recusa informa pedido, produzido e as duas faixas, com rollback. |
+| `_reversa_sdd/architecture.md` | Re-extração 2026-10-10, Posicionamento (overlays/measure) | componente-novo | `overlays/cota_token.py`, puro: token de alvo + referência com tolerâncias 1e-6; `_compute` emite o token e `apply_fixed` aplica o registro mostrado. |
+| `_reversa_sdd/architecture.md` | Re-extração 2026-10-10, Posicionamento (ui) | regra-alterada | `ui/object_properties._fixed_setter` confere o mesmo registro do popup via `side_cotas.shown(context)`. |
+| `_reversa_sdd/architecture.md` | Re-extração 2026-10-10, Limites e organização (portão) | regra-alterada | `tools/portao.sh` inclui `tests/blender_080_cotas.py` na lista padrão `BLENDER_SCRIPTS`. |
+| `_reversa_sdd/architecture.md` | Re-extração 2026-10-10, Limites e organização (testes) | componente-novo | `tests/test_080_cota_token.py` (11 testes) e `tests/blender_080_cotas.py` (23 verificações); `MasterRangeEntryTest` e `case_master_range` reforçam a faixa do master. |
+| `_reversa_sdd/data-dictionary.md` | Campos virtuais e traduções | delta-de-dados | `data/translations/cotas_080.json` (4 msgids) e duas mensagens novas em `medidas_reais_080.json`, em pt_BR/en_US/es_ES; nenhuma propriedade persistida nova. |
+| `_reversa_sdd/deployment.md` | Pacote da extensão | delta-de-contrato-externo | `blender_manifest.toml` e `CHANGELOG.md` em **1.37.0**; formato do pacote e contrato `caffmob.ambiente/v2` inalterados. |
+| `_reversa_sdd/addenda/073-texturas-pbr.md` | Adendo novo na extração | delta-de-dados | O PBR distribuído desde a 1.23.0 passa a ter adendo vigente no master (dívida D-17). |
+| `_reversa_sdd/addenda/bug-BUG-20261023-HYCE-v002.md` | Cotas fixas | regra-alterada | Popup e campo conferem o token completo do registro mostrado; `apply_fixed` não recalcula antes de aplicar. |
+
+### Regras sob vigilância
+
+`W001`–`W011` (onda A/B) e os novos **`W012`** (faixa de entrada do master; substitui a cláusula de faixa de `W001`) e
+**`W013`** (conteúdo da mensagem da pós-condição). Conteúdo e sinais de violação:
+`_reversa_forward/080-edicao-medidas-reais/regression-watch.md`.
+
+### Fontes
+
+- `_reversa_forward/080-edicao-medidas-reais/legacy-impact.md` (§5 entrega, §6 publicação)
+- `_reversa_forward/080-edicao-medidas-reais/regression-watch.md`
+- `_reversa_forward/080-edicao-medidas-reais/requirements.md`
+- `_reversa_forward/080-edicao-medidas-reais/progress.jsonl`
+- `_reversa_forward/080-edicao-medidas-reais/onboarding.md` (§5 resultados, §6 QA)
+- `_reversa_sdd/architecture.md`, `_reversa_sdd/domain.md` (nomes de seção, somente leitura)
+
+Os artefatos da feature ficam em
+`caff_systems/.claude/worktrees/065-studio-mobi-e-blender/_reversa_forward/080-edicao-medidas-reais/`.
